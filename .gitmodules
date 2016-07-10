@@ -1,0 +1,9 @@
+[submodule "cross/gcc/src"]
+	path = cross/gcc/src
+	url = git://gcc.gnu.org/git/gcc.git
+[submodule "cross/binutils/src"]
+	path = cross/binutils/src
+	url = git://sourceware.org/git/binutils-gdb.git
+[submodule "cross/autoconf-v2.64/src"]
+	path = cross/autoconf-v2.64/src
+	url = http://git.sv.gnu.org/r/autoconf.git

@@ -1,0 +1,152 @@
+From 4814bd681f61ae2d61881215f922046de491190a Mon Sep 17 00:00:00 2001
+From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
+Date: Wed, 29 Jun 2016 09:28:28 +0000
+Subject: [PATCH] Add managarm target
+
+---
+ config.sub                  |  2 +-
+ fixincludes/mkfixinc.sh     |  1 +
+ gcc/config.gcc              |  9 +++++++++
+ gcc/config/managarm.h       | 34 ++++++++++++++++++++++++++++++++++
+ libgcc/config.host          |  7 +++++++
+ libstdc++-v3/crossconfig.m4 |  6 ++++++
+ 6 files changed, 58 insertions(+), 1 deletion(-)
+ create mode 100644 gcc/config/managarm.h
+
+diff --git a/config.sub b/config.sub
+index da6d1b6..e4235e2 100755
+--- a/config.sub
++++ b/config.sub
+@@ -1399,7 +1399,7 @@ case $os in
+ 	      | -morphos* | -superux* | -rtmk* | -rtmk-nova* | -windiss* \
+ 	      | -powermax* | -dnix* | -nx6 | -nx7 | -sei* | -dragonfly* \
+ 	      | -skyos* | -haiku* | -rdos* | -toppers* | -drops* | -es* \
+-	      | -onefs* | -tirtos*)
++	      | -onefs* | -tirtos* | -managarm* )
+ 	# Remember, each alternative MUST END IN *, to match a version number.
+ 		;;
+ 	-qnx*)
+diff --git a/fixincludes/mkfixinc.sh b/fixincludes/mkfixinc.sh
+index 0d96c8c..0c4e21c 100755
+--- a/fixincludes/mkfixinc.sh
++++ b/fixincludes/mkfixinc.sh
+@@ -12,6 +12,7 @@ target=fixinc.sh
+ # Check for special fix rules for particular targets
+ case $machine in
+     i?86-*-cygwin* | \
++    x86_64-*-managarm* | \
+     i?86-*-mingw32* | \
+     x86_64-*-mingw32* | \
+     i?86-*-interix* | \
+diff --git a/gcc/config.gcc b/gcc/config.gcc
+index f66e48c..7d59f93 100644
+--- a/gcc/config.gcc
++++ b/gcc/config.gcc
+@@ -768,6 +768,11 @@ case ${target} in
+   tmake_file="${tmake_file} t-glibc"
+   target_has_targetcm=yes
+   ;;
++*-*-managarm*)
++  gas=yes
++  gnu_ld=yes
++  default_use_cxa_atexit=yes
++  ;;
+ *-*-netbsd*)
+   tmake_file="t-slibgcc"
+   gas=yes
+@@ -1594,6 +1599,10 @@ x86_64-*-linux* | x86_64-*-kfreebsd*-gnu | x86_64-*-knetbsd*-gnu)
+ 	done
+ 	TM_MULTILIB_CONFIG=`echo $TM_MULTILIB_CONFIG | sed 's/^,//'`
+ 	;;
++x86_64-*-managarm*)
++	tm_file="${tm_file} i386/unix.h i386/att.h dbxelf.h elfos.h gnu-user.h glibc-stdint.h \
++		 i386/x86-64.h i386/gnu-user-common.h i386/gnu-user64.h managarm.h"
++	;;
+ i[34567]86-pc-msdosdjgpp*)
+ 	xm_file=i386/xm-djgpp.h
+ 	tm_file="dbxcoff.h ${tm_file} i386/unix.h i386/bsd.h i386/gas.h i386/djgpp.h i386/djgpp-stdint.h"
+diff --git a/gcc/config/managarm.h b/gcc/config/managarm.h
+new file mode 100644
+index 0000000..8e17496
+--- /dev/null
++++ b/gcc/config/managarm.h
+@@ -0,0 +1,34 @@
++
++#undef TARGET_MANAGARM
++#define TARGET_MANAGARM 1
++
++#undef LIB_SPEC
++#define LIB_SPEC "-lc -lg -lm"
++
++#undef  NO_IMPLICIT_EXTERN_C
++#define NO_IMPLICIT_EXTERN_C 1
++
++#undef STARTFILE_SPEC
++#define STARTFILE_SPEC "%{!shared:crt0.o%s} crti.o%s %{shared:crtbeginS.o%s;:crtbegin.o%s}"
++
++#undef ENDFILE_SPEC
++#define ENDFILE_SPEC "%{shared:crtendS.o%s;:crtend.o%s} crtn.o%s"
++
++#define GNU_USER_LINK_EMULATION32 "elf_i386_managarm"
++#define GNU_USER_LINK_EMULATION64 "elf_x86_64_managarm"
++#define GNU_USER_LINK_EMULATIONX32 "elf32_x86_64_managarm"
++
++#define GNU_USER_DYNAMIC_LINKER32 "ld-init-32.so"
++#define GNU_USER_DYNAMIC_LINKER64 "ld-init-64.so"
++#define GNU_USER_DYNAMIC_LINKERX32 "ld-init-x32.so"
++
++#undef TARGET_OS_CPP_BUILTINS
++#define TARGET_OS_CPP_BUILTINS() \
++	do {                                \
++		builtin_define ("__managarm__");      \
++		builtin_define ("__unix__");      \
++		builtin_assert ("system=managarm");   \
++		builtin_assert ("system=unix");   \
++		builtin_assert ("system=posix");   \
++	} while(0);
++
+diff --git a/libgcc/config.host b/libgcc/config.host
+index b61a579..dcaf3d6 100644
+--- a/libgcc/config.host
++++ b/libgcc/config.host
+@@ -237,6 +237,10 @@ case ${host} in
+     extra_parts="$extra_parts vtv_start.o vtv_end.o vtv_start_preinit.o vtv_end_preinit.o"
+   fi
+   ;;
++*-*-managarm*)
++	extra_parts="$extra_parts crti.o crtbegin.o crtbeginS.o crtend.o crtendS.o crtn.o"
++	tmake_file="$tmake_file t-crtstuff-pic t-libgcc-pic"
++	;;
+ *-*-lynxos*)
+   tmake_file="$tmake_file t-lynx $cpu_type/t-crtstuff t-crtstuff-pic t-libgcc-pic"
+   extra_parts="crtbegin.o crtbeginS.o crtend.o crtendS.o"
+@@ -624,6 +628,9 @@ x86_64-*-linux*)
+ 	tm_file="${tm_file} i386/elf-lib.h"
+ 	md_unwind_header=i386/linux-unwind.h
+ 	;;
++x86_64-*-managarm*)
++	tmake_file="$tmake_file i386/t-crtstuff"
++	;;
+ x86_64-*-kfreebsd*-gnu | x86_64-*-knetbsd*-gnu)
+ 	extra_parts="$extra_parts crtprec32.o crtprec64.o crtprec80.o crtfastmath.o"
+ 	tmake_file="${tmake_file} i386/t-crtpc t-crtfm i386/t-crtstuff t-dfprules"
+diff --git a/libstdc++-v3/crossconfig.m4 b/libstdc++-v3/crossconfig.m4
+index ece1256..1f7bc4f 100644
+--- a/libstdc++-v3/crossconfig.m4
++++ b/libstdc++-v3/crossconfig.m4
+@@ -159,6 +159,12 @@ case "${host}" in
+     AC_CHECK_FUNCS(__cxa_thread_atexit_impl)
+     AM_ICONV
+     ;;
++  *-managarm*)
++    GLIBCXX_CHECK_COMPILER_FEATURES
++    GLIBCXX_CHECK_LINKER_FEATURES
++    GLIBCXX_CHECK_MATH_SUPPORT
++    GLIBCXX_CHECK_STDLIB_SUPPORT
++    ;;
+   *-mingw32*)
+     GLIBCXX_CHECK_LINKER_FEATURES
+     GLIBCXX_CHECK_MATH_SUPPORT
+-- 
+2.7.4
+
