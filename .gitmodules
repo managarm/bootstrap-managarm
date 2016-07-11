@@ -7,3 +7,6 @@
 [submodule "cross/autoconf-v2.64/src"]
 	path = cross/autoconf-v2.64/src
 	url = http://git.sv.gnu.org/r/autoconf.git
+[submodule "managarm/src"]
+	path = managarm/src
+	url = https://github.com/avdgrinten/managarm.git
