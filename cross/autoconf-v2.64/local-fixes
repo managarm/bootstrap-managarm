@@ -1,0 +1,34 @@
+From e9bbb31dea19fee282dff758efcb1d2eb1d9d205 Mon Sep 17 00:00:00 2001
+From: avdgrinten <alexander.vandergrinten@gmail.com>
+Date: Mon, 11 Jul 2016 22:17:22 +0200
+Subject: [PATCH] Local fixes
+
+---
+ doc/autoconf.texi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/doc/autoconf.texi b/doc/autoconf.texi
+index 4f046c0..efbb409 100644
+--- a/doc/autoconf.texi
++++ b/doc/autoconf.texi
+@@ -15,7 +15,7 @@
+ @c The ARG is an optional argument.  To be used for macro arguments in
+ @c their documentation (@defmac).
+ @macro ovar{varname}
+-@r{[}@var{\varname\}@r{]}@c
++@r{[}@var{\varname\}@r{]}
+ @end macro
+ 
+ @c @dvar(ARG, DEFAULT)
+@@ -23,7 +23,7 @@
+ @c The ARG is an optional argument, defaulting to DEFAULT.  To be used
+ @c for macro arguments in their documentation (@defmac).
+ @macro dvar{varname, default}
+-@r{[}@var{\varname\} = @samp{\default\}@r{]}@c
++@r{[}@var{\varname\} = @samp{\default\}@r{]}
+ @end macro
+ 
+ @c Handling the indexes with Texinfo yields several different problems.
+-- 
+2.1.4
+

@@ -2,29 +2,30 @@
 c := cross/autoconf-v2.64
 
 .PHONY: all-$c
-all-$c: $(TREEPATH)/$c/build.tag
+all-$c: $B/$c/install.tag
 
 .PHONY: clean-$c
 clean-$c: c := $c
 clean-$c:
-	rm $(TREEPATH)/$c/*.tag
+	rm $B/$c/*.tag
+
+$B/$c/init.tag: c := $c
+$B/$c/init.tag: | $B/$c
+$B/$c/init.tag:
+	cd $T && git submodule update --init $c/src
+	cd $T/$c/src && git am ../local-fixes
+	cd $T/$c/src && autoreconf
+	touch $@
+
+$B/$c/configure.tag: c := $c
+$B/$c/configure.tag: $B/$c/init.tag
+	rm -rf $B/$c/build
+	mkdir -p $B/$c/build
+	cd $B/$c/build && $T/$c/src/configure --prefix=$B/host-install
+	touch $@
 	
-$(TREEPATH)/$c/build.tag: c := $c
-$(TREEPATH)/$c/build.tag: $(TREEPATH)/$c/configure.tag
-	cd $(TREEPATH)/$c/build && make && make install
-	touch $@
-
-$(TREEPATH)/$c/init.tag: c := $c
-$(TREEPATH)/$c/init.tag:
-	git submodule update --init $c/src
-	touch $@
-
-$(TREEPATH)/$c/configure.tag: c := $c
-$(TREEPATH)/$c/configure.tag: $(TREEPATH)/$c/init.tag
-	rm -rf $(TREEPATH)/$c/build
-	rm -rf $(TREEPATH)/host-roots/autoconf-v2.64
-	mkdir -p $(TREEPATH)/$c/build
-	mkdir -p $(TREEPATH)/host-roots/autoconf-v2.64
-	cd $(TREEPATH)/$c/build && ../src/configure --prefix=$(TREEPATH)/host-roots/autoconf-v2.64
+$B/$c/install.tag: c := $c
+$B/$c/install.tag: $B/$c/configure.tag
+	cd $B/$c/build && make && make install
 	touch $@
 
