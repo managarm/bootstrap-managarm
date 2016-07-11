@@ -1,35 +1,36 @@
 
 c := cross/binutils
 
-$c_BARE_CONFIG := --prefix=$(TREEPATH)/host-installs/toolchain-bare
-$c_BARE_CONFIG += --target=x86_64-elf --with-sysroot=$(TREEPATH)/sysroot-bare
+$c_ELF_CONFIG := --prefix=$B/host-install
+$c_ELF_CONFIG += --target=x86_64-elf --with-sysroot
 
 .PHONY: all-$c
-all-$c: $(TREEPATH)/$c/install-bare.tag
+all-$c: $B/$c/install-elf.tag
 
 .PHONY: clean-$c
 clean-$c: c := $c
 clean-$c:
-	rm $(TREEPATH)/$c/*-bare.tag
-	
-$(TREEPATH)/$c/install-bare.tag: c := $c
-$(TREEPATH)/$c/install-bare.tag: $(TREEPATH)/$c/configure-bare.tag
-	cd $(TREEPATH)/$c/build-bare && make all-binutils all-gas all-ld \
+	rm $B/$c/*-elf.tag
+
+$B/$c/init-elf.tag: c := $c
+$B/$c/init-elf.tag: | $B/$c
+$B/$c/init-elf.tag:
+	cd $T && git submodule update --init $c/src
+	touch $@
+
+$B/$c/configure-elf.tag: c := $c
+$B/$c/configure-elf.tag: $B/$c/init-elf.tag
+$B/$c/configure-elf.tag: | $B/host-install
+$B/$c/configure-elf.tag: | $B/host-install/x86_64-elf/sys-root/usr/include
+$B/$c/configure-elf.tag: | $B/host-install/x86_64-elf/sys-root/usr/lib
+	rm -rf $B/$c/build-elf
+	mkdir -p $B/$c/build-elf
+	cd $B/$c/build-elf && $T/$c/src/configure $($c_ELF_CONFIG)
+	touch $@
+
+$B/$c/install-elf.tag: c := $c
+$B/$c/install-elf.tag: $B/$c/configure-elf.tag
+	cd $B/$c/build-elf && make all-binutils all-gas all-ld \
 			&& make install-binutils install-gas install-ld
-	touch $@
-
-$(TREEPATH)/$c/init-bare.tag: c := $c
-$(TREEPATH)/$c/init-bare.tag:
-	git submodule update --init $c/src
-	touch $@
-
-$(TREEPATH)/$c/configure-bare.tag: c := $c
-$(TREEPATH)/$c/configure-bare.tag: $(TREEPATH)/$c/init-bare.tag
-$(TREEPATH)/$c/configure-bare.tag: | $(TREEPATH)/host-installs/toolchain-bare
-$(TREEPATH)/$c/configure-bare.tag: | $(TREEPATH)/sysroot-bare/usr/include
-$(TREEPATH)/$c/configure-bare.tag: | $(TREEPATH)/sysroot-bare/usr/lib
-	rm -rf $(TREEPATH)/$c/build-bare
-	mkdir -p $(TREEPATH)/$c/build-bare
-	cd $(TREEPATH)/$c/build-bare && ../src/configure $($c_BARE_CONFIG)
 	touch $@
 

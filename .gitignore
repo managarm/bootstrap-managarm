@@ -1,7 +1,1 @@
 
-*.tag
-cross/binutils/build-bare
-cross/gcc/build-bare
-host-installs
-sysroot-bare
-
