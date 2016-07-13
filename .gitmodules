@@ -10,3 +10,6 @@
 [submodule "managarm/src"]
 	path = managarm/src
 	url = https://github.com/avdgrinten/managarm.git
+[submodule "cross/automake-v1.11/src"]
+	path = cross/automake-v1.11/src
+	url = http://git.savannah.gnu.org/r/automake.git
