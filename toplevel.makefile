@@ -9,8 +9,8 @@ DIRS := $B/cross/autoconf-v2.64 $B/cross/automake-v1.11
 DIRS += $B/cross/binutils $B/cross/gcc
 DIRS += $B/managarm
 DIRS += $B/host-install
-DIRS += $B/host-install/x86_64-elf/sys-root/usr/include
-DIRS += $B/host-install/x86_64-elf/sys-root/usr/lib
+DIRS += $B/sysroot/usr/include
+DIRS += $B/sysroot/usr/lib
 
 $(DIRS):
 	mkdir -p $@

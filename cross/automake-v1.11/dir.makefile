@@ -21,7 +21,7 @@ $B/$c/configure.tag: $B/$c/init.tag
 	rm -rf $B/$c/build
 	mkdir -p $B/$c/build
 	cd $B/$c/build && $T/$c/src/configure --prefix=$B/host-install \
-		MAKEINFO=true
+		MAKEINFO=true AUTOCONF=$B/host-install/bin/autoconf AUTOM4TE=$B/host-install/bin/autom4te
 	touch $@
 	
 $B/$c/install.tag: c := $c
