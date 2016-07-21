@@ -1,8 +1,8 @@
 
-c := cross/automake-v1.11
+c := cross/libtool
 
-$c_ORIGIN = http://git.savannah.gnu.org/r/automake.git
-$c_REF = v1.11.6
+$c_ORIGIN = http://git.savannah.gnu.org/r/libtool.git
+$c_REF = v2.4.5
 
 .PHONY: all-$c
 all-$c: $c/install.tag
@@ -22,16 +22,15 @@ $c/clone.tag: clone-$c
 $c/init.tag: c := $c
 $c/init.tag: | $c
 $c/init.tag: $c/clone.tag
-	git -C $c/repo checkout --detach $($c_REF) && git -C $c/repo clean -xf
+	git -C $c/repo checkout --detach $($c_REF) -- && git -C $c/repo clean -xf
 	cd $c/repo && ./bootstrap
 	touch $@
 
 $c/configure.tag: c := $c
 $c/configure.tag: $c/init.tag
 	rm -rf $c/build && mkdir -p $c/build
-	cd $c/build && ../repo/configure --prefix=$(realpath .)/host-install \
-		MAKEINFO=true AUTOCONF=$(realpath .)/host-install/bin/autoconf \
-		AUTOM4TE=$(realpath .)/host-install/bin/autom4te
+	export PATH=$(realpath .)/host-install/bin:$$PATH \
+		&& cd $c/build && ../repo/configure --prefix=$(realpath .)/host-install
 	touch $@
 	
 $c/install.tag: c := $c

@@ -1,18 +1,6 @@
-[submodule "cross/gcc/src"]
-	path = cross/gcc/src
-	url = git://gcc.gnu.org/git/gcc.git
-[submodule "cross/binutils/src"]
-	path = cross/binutils/src
-	url = git://sourceware.org/git/binutils-gdb.git
-[submodule "cross/autoconf-v2.64/src"]
-	path = cross/autoconf-v2.64/src
-	url = http://git.sv.gnu.org/r/autoconf.git
 [submodule "managarm/src"]
 	path = managarm/src
 	url = https://github.com/avdgrinten/managarm.git
-[submodule "cross/automake-v1.11/src"]
-	path = cross/automake-v1.11/src
-	url = http://git.savannah.gnu.org/r/automake.git
-[submodule "cross/autoconf-v2.69"]
-	path = cross/autoconf-v2.69
-	url = http://git.sv.gnu.org/r/autoconf.git
+[submodule "mlibc/src"]
+	path = mlibc/src
+	url = https://github.com/avdgrinten/mlibc.git

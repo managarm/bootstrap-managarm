@@ -1,4 +1,4 @@
-From d32a59639ccc69af1ff0110a94bf2e8fb7ddbbdd Mon Sep 17 00:00:00 2001
+From 572ab5af8566c8bcf3eec697739b97e07ea87ddb Mon Sep 17 00:00:00 2001
 From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
 Date: Wed, 29 Jun 2016 09:28:28 +0000
 Subject: [PATCH] Managarm target
@@ -6,11 +6,11 @@ Subject: [PATCH] Managarm target
 ---
  config.sub                  |  2 +-
  fixincludes/mkfixinc.sh     |  1 +
- gcc/config.gcc              |  9 +++++++++
+ gcc/config.gcc              | 11 +++++++++++
  gcc/config/managarm.h       | 34 ++++++++++++++++++++++++++++++++++
- libgcc/config.host          |  7 +++++++
+ libgcc/config.host          |  8 ++++++++
  libstdc++-v3/crossconfig.m4 |  6 ++++++
- 6 files changed, 58 insertions(+), 1 deletion(-)
+ 6 files changed, 61 insertions(+), 1 deletion(-)
  create mode 100644 gcc/config/managarm.h
 
 diff --git a/config.sub b/config.sub
@@ -39,10 +39,10 @@ index 0d96c8c..0c4e21c 100755
      x86_64-*-mingw32* | \
      i?86-*-interix* | \
 diff --git a/gcc/config.gcc b/gcc/config.gcc
-index f66e48c..7d59f93 100644
+index f66e48c..4bcde47 100644
 --- a/gcc/config.gcc
 +++ b/gcc/config.gcc
-@@ -768,6 +768,11 @@ case ${target} in
+@@ -768,6 +768,13 @@ case ${target} in
    tmake_file="${tmake_file} t-glibc"
    target_has_targetcm=yes
    ;;
@@ -50,11 +50,13 @@ index f66e48c..7d59f93 100644
 +  gas=yes
 +  gnu_ld=yes
 +  default_use_cxa_atexit=yes
++  use_gcc_stdint=wrap
++  tmake_file="${tmake_file} t-slibgcc"
 +  ;;
  *-*-netbsd*)
    tmake_file="t-slibgcc"
    gas=yes
-@@ -1594,6 +1599,10 @@ x86_64-*-linux* | x86_64-*-kfreebsd*-gnu | x86_64-*-knetbsd*-gnu)
+@@ -1594,6 +1601,10 @@ x86_64-*-linux* | x86_64-*-kfreebsd*-gnu | x86_64-*-knetbsd*-gnu)
  	done
  	TM_MULTILIB_CONFIG=`echo $TM_MULTILIB_CONFIG | sed 's/^,//'`
  	;;
@@ -106,21 +108,22 @@ index 0000000..8e17496
 +	} while(0);
 +
 diff --git a/libgcc/config.host b/libgcc/config.host
-index b61a579..dcaf3d6 100644
+index b61a579..2656cba 100644
 --- a/libgcc/config.host
 +++ b/libgcc/config.host
-@@ -237,6 +237,10 @@ case ${host} in
+@@ -237,6 +237,11 @@ case ${host} in
      extra_parts="$extra_parts vtv_start.o vtv_end.o vtv_start_preinit.o vtv_end_preinit.o"
    fi
    ;;
 +*-*-managarm*)
 +	extra_parts="$extra_parts crti.o crtbegin.o crtbeginS.o crtend.o crtendS.o crtn.o"
-+	tmake_file="$tmake_file t-crtstuff-pic t-libgcc-pic"
++	tmake_file="$tmake_file t-crtstuff-pic"
++	tmake_file="$tmake_file t-slibgcc t-slibgcc-gld t-slibgcc-elf-ver t-libgcc-pic"
 +	;;
  *-*-lynxos*)
    tmake_file="$tmake_file t-lynx $cpu_type/t-crtstuff t-crtstuff-pic t-libgcc-pic"
    extra_parts="crtbegin.o crtbeginS.o crtend.o crtendS.o"
-@@ -624,6 +628,9 @@ x86_64-*-linux*)
+@@ -624,6 +629,9 @@ x86_64-*-linux*)
  	tm_file="${tm_file} i386/elf-lib.h"
  	md_unwind_header=i386/linux-unwind.h
  	;;
