@@ -4,6 +4,9 @@ c := managarm
 $c_CONFIG := --sysroot=$(realpath .)/sysroot
 # TODO: do not use the host protoc
 $c_CONFIG += --protoc=protoc
+$c_CONFIG += --host-cxx=g++
+$c_CONFIG += --host-cppflags="-I $(realpath .)/host-install/include"
+$c_CONFIG += --host-ldflags="-L $(realpath .)/host-install/lib"
 $c_CONFIG += --elf-cxx=$(realpath .)/host-install/bin/x86_64-elf-g++
 $c_CONFIG += --elf-as=$(realpath .)/host-install/bin/x86_64-elf-as
 $c_CONFIG += --elf-ld=$(realpath .)/host-install/bin/x86_64-elf-ld
@@ -29,6 +32,13 @@ $c/configure.tag: $c/init.tag
 	cd $c/build && $T/$c/src/configure $($c_CONFIG)
 	touch $@
 
+.PHONY: build-$c-tools
+build-$c-tools: c := $c
+build-$c-tools: $c/configure.tag
+	$T/scripts/touch-if-make $c/build-tools.tag $c/build all-tools/frigg_pb
+
+$c/build-tools.tag: build-$c-tools
+
 $c/install-thor.tag: c := $c
 $c/install-thor.tag: $c/configure.tag
 	cd $c/build && make all-thor/kernel
@@ -37,5 +47,13 @@ $c/install-thor.tag: $c/configure.tag
 $c/install-frigg.tag: c := $c
 $c/install-frigg.tag: $c/configure.tag
 	cd $c/build && make install-frigg
+	touch $@
+
+$c/install-rtdl.tag: c := $c
+$c/install-rtdl.tag: $c/configure.tag
+	export LD_LIBRARY_PATH=$(realpath .)/host-install/lib \
+	export PATH=$(realpath .)/host-install/bin:$$PATH \
+		&& cd $c/build && make gen-ld-init/linker && \
+		make all-ld-init/linker && make install-ld-init/linker
 	touch $@
 

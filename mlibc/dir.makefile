@@ -9,7 +9,10 @@ clean-$c: c := $c
 clean-$c:
 	rm $c/*.tag
 
-$c_CONFIG := --sysroot=$(realpath .)/sysroot
+$c_CONFIG := --sysroot=$(realpath .)/sysroot \
+	--frigg-path=$(realpath $T/managarm/src/frigg) \
+	--managarm-src-path=$(realpath $T/managarm/src) \
+	--managarm-build-path=$(realpath managarm/build)
 
 $c/init.tag: c := $c
 $c/init.tag: | $c
@@ -31,8 +34,11 @@ $c/install-headers.tag: $c/configure.tag
 
 $c/install.tag: c := $c
 $c/install.tag: $c/configure.tag
+$c/install.tag: managarm/install-frigg.tag
+$c/install.tag: managarm/install-rtdl.tag
 	# TODO: gen should be done automatically by the mlibc makefile
-	cd $c/build && PATH=$(realpath .)/host-install/bin:$$PATH make gen
-	cd $c/build && PATH=$(realpath .)/host-install/bin:$$PATH make && make install
+	export PATH=$(realpath .)/host-install/bin:$$PATH \
+		&& export LD_LIBRARY_PATH=$(realpath .)/host-install/lib \
+		&& cd $c/build && make gen && make && make install
 	touch $@
 

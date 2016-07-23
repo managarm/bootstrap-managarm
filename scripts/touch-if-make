@@ -1,0 +1,21 @@
+#!/bin/sh
+
+if test $# -le 2; then
+	echo "Usage: $0 tag_file directory targets"
+	exit 1
+fi
+
+tag_file="$1"
+directory="$2"
+shift 2
+
+if make -q -C "$directory" $@; then
+	exit 0
+fi
+
+if ! make -C "$directory" $@; then
+	exit $?
+fi
+
+touch "$tag_file"
+
