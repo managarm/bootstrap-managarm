@@ -1,8 +1,9 @@
-From 572ab5af8566c8bcf3eec697739b97e07ea87ddb Mon Sep 17 00:00:00 2001
+From 368342e4f918b59d50c15de8d7dc343513eba0a1 Mon Sep 17 00:00:00 2001
 From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
 Date: Wed, 29 Jun 2016 09:28:28 +0000
 Subject: [PATCH] Managarm target
 
+TODO: Use libtoolize instead of modifying in-tree libtool?
 ---
  config.sub                  |  2 +-
  fixincludes/mkfixinc.sh     |  1 +
@@ -10,7 +11,8 @@ Subject: [PATCH] Managarm target
  gcc/config/managarm.h       | 34 ++++++++++++++++++++++++++++++++++
  libgcc/config.host          |  8 ++++++++
  libstdc++-v3/crossconfig.m4 |  6 ++++++
- 6 files changed, 61 insertions(+), 1 deletion(-)
+ libtool.m4                  | 14 ++++++++++++++
+ 7 files changed, 75 insertions(+), 1 deletion(-)
  create mode 100644 gcc/config/managarm.h
 
 diff --git a/config.sub b/config.sub
@@ -150,6 +152,38 @@ index ece1256..1f7bc4f 100644
    *-mingw32*)
      GLIBCXX_CHECK_LINKER_FEATURES
      GLIBCXX_CHECK_MATH_SUPPORT
+diff --git a/libtool.m4 b/libtool.m4
+index 24d13f3..fb4ff19 100644
+--- a/libtool.m4
++++ b/libtool.m4
+@@ -2494,6 +2494,16 @@ linux* | k*bsd*-gnu | kopensolaris*-gnu)
+   dynamic_linker='GNU/Linux ld.so'
+   ;;
+ 
++managarm*)
++  version_type=linux
++  need_lib_prefix=no
++  need_version=no
++  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}${major} ${libname}${shared_ext}'
++  soname_spec='${libname}${release}${shared_ext}$major'
++  shlibpath_var=LD_LIBRARY_PATH
++  hardcode_into_libs=yes
++  ;;
++
+ netbsd*)
+   version_type=sunos
+   need_lib_prefix=no
+@@ -3093,6 +3103,10 @@ linux* | k*bsd*-gnu | kopensolaris*-gnu)
+   lt_cv_deplibs_check_method=pass_all
+   ;;
+ 
++managarm*)
++  lt_cv_deplibs_check_method=pass_all
++  ;;
++
+ netbsd*)
+   if echo __ELF__ | $CC -E - | $GREP __ELF__ > /dev/null; then
+     lt_cv_deplibs_check_method='match_pattern /lib[[^/]]+(\.so\.[[0-9]]+\.[[0-9]]+|_pic\.a)$'
 -- 
 2.1.4
 
