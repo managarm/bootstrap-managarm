@@ -20,6 +20,7 @@ install-$f: f := $f
 install-$f: u := $u
 
 configure-$f: | $(call milestone_tag,install-cross-binutils)
+configure-$f: | $(call milestone_tag,install-sys-headers)
 configure-$f: | $(call upstream_tag,init-$u)
 	rm -rf $B/cross/$f && mkdir -p $B/cross/$f
 	cd $B/cross/$f && $($f_CONFIGURE)
