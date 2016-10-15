@@ -1,0 +1,26 @@
+#!/bin/sh
+
+shallow="--depth 1"
+
+if test $# -gt 0 && test "$1" = --no-shallow; then
+	shallow=
+	shift
+fi
+
+if test $# -ne 3; then
+	echo "Usage: ./fetch [--no-shallow] directory repository ref"
+	exit 1
+fi
+
+if ! test -d $1; then
+	if ! git clone -b $3 $shallow $2 $1; then
+		exit $?
+	fi
+fi
+
+if ! git -C $1 show-ref -q $3; then
+	if ! git -C $1 fetch origin $3; then
+		exit $?
+	fi
+fi
+
