@@ -7,11 +7,14 @@ milestone_tag = tags/$1.tag
 
 include $T/upstream/autoconf-v2.64.makefile
 include $T/upstream/automake-v1.11.makefile
+include $T/upstream/mlibc.makefile
+include $T/upstream/managarm.makefile
 include $T/upstream/binutils.makefile
 include $T/upstream/gcc.makefile
 
 include $T/milestone/cross-autoconf-v2.64.makefile
 include $T/milestone/cross-automake-v1.11.makefile
+include $T/milestone/sys-headers.makefile
 include $T/milestone/cross-binutils.makefile
 include $T/milestone/cross-gcc.makefile
 
