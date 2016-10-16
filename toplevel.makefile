@@ -24,8 +24,9 @@ include $T/milestone/host-frigg_pb.makefile
 include $T/milestone/sys-headers.makefile
 include $T/milestone/cross-binutils.makefile
 include $T/milestone/cross-gcc.makefile
-include $T/milestone/sys-mlibc.makefile
-include $T/milestone/helix.makefile
 include $T/milestone/rtdl.makefile
-include $T/milestone/libsupc++.makefile
+include $T/milestone/sys-mlibc.makefile
+include $T/milestone/libgcc.makefile
+include $T/milestone/libstdc++.makefile
+include $T/milestone/helix.makefile
 

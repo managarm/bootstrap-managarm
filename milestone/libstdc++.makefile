@@ -1,20 +1,22 @@
 
-f := sys-mlibc
-g := mlibc
+f := libstdc++
+g := cross-gcc
+u := gcc
 
 $f_RUNPKG := $s/runpkg $B/hostpkg cross-autoconf-v2.64
 $f_RUNPKG += $s/runpkg $B/hostpkg cross-automake-v1.11
-$f_RUNPKG += $s/runpkg $B/hostpkg host-protoc
 $f_RUNPKG += $s/runpkg $B/hostpkg cross-binutils
 $f_RUNPKG += $s/runpkg $B/hostpkg cross-gcc
+
+$f_MAKE_ALL := make all-target-libstdc++-v3
 
 .PHONY: install-$f
 install-$f: f := $f
 install-$f: g := $g
+install-$f: u := $u
 
-install-$f: | $(call milestone_tag,install-sys-headers)
-	cd $B/$g && $($f_RUNPKG) make gen
-	cd $B/$g && $($f_RUNPKG) make && $($f_RUNPKG) make install
+install-$f: | $(call milestone_tag,install-$g)
+	cd $B/cross/$g && $($f_RUNPKG) $($f_MAKE_ALL)
 	touch $(call milestone_tag,install-$f)
 
 $(call milestone_tag,install-$f): f := $f
