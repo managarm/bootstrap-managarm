@@ -7,8 +7,8 @@ milestone_tag = tags/$1.tag
 
 include $T/upstream/autoconf-v2.64.makefile
 include $T/upstream/automake-v1.11.makefile
-include $T/upstream/mlibc.makefile
 include $T/upstream/managarm.makefile
+include $T/upstream/mlibc.makefile
 include $T/upstream/binutils.makefile
 include $T/upstream/gcc.makefile
 
@@ -17,24 +17,8 @@ include $T/milestone/cross-automake-v1.11.makefile
 include $T/milestone/sys-headers.makefile
 include $T/milestone/cross-binutils.makefile
 include $T/milestone/cross-gcc.makefile
-
-#include $T/cross/autoconf-v2.64/dir.makefile
-#include $T/cross/automake-v1.11/dir.makefile
-#include $T/cross/libtool/dir.makefile
-#include $T/cross/binutils/dir.makefile
-#include $T/cross/gcc/dir.makefile
-#include $T/managarm/dir.makefile
-#include $T/mlibc/dir.makefile
-#include $T/cross/protobuf/dir.makefile
-
-#DIRS := cross/autoconf-v2.64 cross/automake-v1.11
-#DIRS += cross/binutils cross/gcc
-#DIRS += managarm
-#DIRS += mlibc
-#DIRS += host-install
-#DIRS += sysroot/usr/include
-#DIRS += sysroot/usr/lib
-
-#$(DIRS):
-#	mkdir -p $@
+include $T/milestone/sys-mlibc.makefile
+include $T/milestone/helix.makefile
+include $T/milestone/rtdl.makefile
+include $T/milestone/libsupc++.makefile
 
