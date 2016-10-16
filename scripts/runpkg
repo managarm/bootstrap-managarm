@@ -26,7 +26,7 @@ apply_pkg () {
 	fi
 	if [ -e "$d/lib" ]; then
 		export LIBRARY_PATH=$(prepend "$LIBRARY_PATH" "$d/lib")
-		export LD_LIBRARY_PATH=$(prepend "$LD_LIBRARY_PATH" "$d/lib/x86_64-linux-gnu")
+		export LD_LIBRARY_PATH=$(prepend "$LD_LIBRARY_PATH" "$d/lib/x86_64-linux-gnu:$d/lib")
 	fi
 }
 

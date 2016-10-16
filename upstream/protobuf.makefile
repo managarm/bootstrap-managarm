@@ -1,11 +1,11 @@
 
-f := gcc
+f := protobuf
 
-$f_RUNPKG := $s/runpkg $B/hostpkg cross-autoconf-v2.64
+$f_RUNPKG := $s/runpkg $B/hostpkg host-autoconf-v2.69
 $f_RUNPKG += $s/runpkg $B/hostpkg cross-automake-v1.11
 
-$f_ORIGIN = git://gcc.gnu.org/git/gcc.git
-$f_REF = gcc-6_1_0-release
+$f_ORIGIN = https://github.com/google/protobuf.git
+$f_REF = v3.1.0
 
 .PHONY: clone-$f init-$f regenerate-$f
 clone-$f: f := $f
@@ -18,15 +18,14 @@ clone-$f:
 
 init-$f: | $(call upstream_tag,clone-$f)
 	git -C $T/ports/$f checkout --detach $($f_REF)
-	git -C $T/ports/$f clean -xf -e{gmp,isl,mpc,mpfr}
-	git -C $T/ports/$f am $T/patches/$f/*.patch
-	cd $T/ports/$f && ./contrib/download_prerequisites
+	git -C $T/ports/$f clean -xf
 	touch $(call upstream_tag,init-$f)
 
-init-$f: | $(call milestone_tag,install-cross-autoconf-v2.64)
-init-$f: | $(call milestone_tag,install-cross-automake-v1.11)
+regenerate-$f: | $(call milestone_tag,install-host-autoconf-v2.69)
+regenerate-$f: | $(call milestone_tag,install-cross-automake-v1.11)
+regenerate-$f: | $(call milestone_tag,install-cross-libtool)
 regenerate-$f: | $(call upstream_tag,init-$f)
-	cd $T/ports/$f && cd libstdc++-v3 && $($f_RUNPKG) autoconf
+	cd $T/ports/$f && $($f_RUNPKG) ./autogen.sh
 	touch $(call upstream_tag,regenerate-$f)
 
 $(call upstream_tag,clone-$f): f := $f
