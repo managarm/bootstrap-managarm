@@ -21,9 +21,11 @@ include $T/milestone/cross-automake-v1.11.makefile
 include $T/milestone/cross-libtool.makefile
 include $T/milestone/host-protoc.makefile
 include $T/milestone/host-frigg_pb.makefile
+include $T/milestone/kernel-gcc.makefile
+include $T/milestone/kernel-libgcc.makefile
 include $T/milestone/sys-headers.makefile
 include $T/milestone/cross-binutils.makefile
-include $T/milestone/cross-gcc.makefile
+include $T/milestone/system-gcc.makefile
 include $T/milestone/rtdl.makefile
 include $T/milestone/sys-mlibc.makefile
 include $T/milestone/libgcc.makefile
