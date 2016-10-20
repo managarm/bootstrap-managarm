@@ -1,30 +1,44 @@
-From 368342e4f918b59d50c15de8d7dc343513eba0a1 Mon Sep 17 00:00:00 2001
+From dbce35f91be8d90ce18c3dc94b0a797626c91b6f Mon Sep 17 00:00:00 2001
 From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
 Date: Wed, 29 Jun 2016 09:28:28 +0000
 Subject: [PATCH] Managarm target
 
 TODO: Use libtoolize instead of modifying in-tree libtool?
 ---
- config.sub                  |  2 +-
- fixincludes/mkfixinc.sh     |  1 +
- gcc/config.gcc              | 11 +++++++++++
- gcc/config/managarm.h       | 34 ++++++++++++++++++++++++++++++++++
- libgcc/config.host          |  8 ++++++++
- libstdc++-v3/crossconfig.m4 |  6 ++++++
- libtool.m4                  | 14 ++++++++++++++
- 7 files changed, 75 insertions(+), 1 deletion(-)
+ config.sub                   |  3 ++-
+ fixincludes/mkfixinc.sh      |  1 +
+ gcc/config.gcc               | 23 +++++++++++++++++++++++
+ gcc/config/i386/t-managarm64 |  5 +++++
+ gcc/config/managarm-kernel.h | 10 ++++++++++
+ gcc/config/managarm-system.h | 10 ++++++++++
+ gcc/config/managarm.h        | 25 +++++++++++++++++++++++++
+ libgcc/config.host           |  8 ++++++++
+ libstdc++-v3/crossconfig.m4  |  6 ++++++
+ libtool.m4                   | 14 ++++++++++++++
+ 10 files changed, 104 insertions(+), 1 deletion(-)
+ create mode 100644 gcc/config/i386/t-managarm64
+ create mode 100644 gcc/config/managarm-kernel.h
+ create mode 100644 gcc/config/managarm-system.h
  create mode 100644 gcc/config/managarm.h
 
 diff --git a/config.sub b/config.sub
-index da6d1b6..e4235e2 100755
+index da6d1b6..e24b02e 100755
 --- a/config.sub
 +++ b/config.sub
-@@ -1399,7 +1399,7 @@ case $os in
+@@ -116,6 +116,7 @@ maybe_os=`echo $1 | sed 's/^\(.*\)-\([^-]*-[^-]*\)$/\2/'`
+ case $maybe_os in
+   nto-qnx* | linux-gnu* | linux-android* | linux-dietlibc | linux-newlib* | \
+   linux-musl* | linux-uclibc* | uclinux-uclibc* | uclinux-gnu* | kfreebsd*-gnu* | \
++  managarm-kernel* | managarm-system* | \
+   knetbsd*-gnu* | netbsd*-gnu* | netbsd*-eabi* | \
+   kopensolaris*-gnu* | \
+   storm-chaos* | os2-emx* | rtmk-nova*)
+@@ -1399,7 +1400,7 @@ case $os in
  	      | -morphos* | -superux* | -rtmk* | -rtmk-nova* | -windiss* \
  	      | -powermax* | -dnix* | -nx6 | -nx7 | -sei* | -dragonfly* \
  	      | -skyos* | -haiku* | -rdos* | -toppers* | -drops* | -es* \
 -	      | -onefs* | -tirtos*)
-+	      | -onefs* | -tirtos* | -managarm* )
++	      | -onefs* | -tirtos* | -managarm-kernel* | -managarm-system* )
  	# Remember, each alternative MUST END IN *, to match a version number.
  		;;
  	-qnx*)
@@ -41,7 +55,7 @@ index 0d96c8c..0c4e21c 100755
      x86_64-*-mingw32* | \
      i?86-*-interix* | \
 diff --git a/gcc/config.gcc b/gcc/config.gcc
-index f66e48c..4bcde47 100644
+index f66e48c..c206613 100644
 --- a/gcc/config.gcc
 +++ b/gcc/config.gcc
 @@ -768,6 +768,13 @@ case ${target} in
@@ -58,32 +72,65 @@ index f66e48c..4bcde47 100644
  *-*-netbsd*)
    tmake_file="t-slibgcc"
    gas=yes
-@@ -1594,6 +1601,10 @@ x86_64-*-linux* | x86_64-*-kfreebsd*-gnu | x86_64-*-knetbsd*-gnu)
+@@ -1594,6 +1601,22 @@ x86_64-*-linux* | x86_64-*-kfreebsd*-gnu | x86_64-*-knetbsd*-gnu)
  	done
  	TM_MULTILIB_CONFIG=`echo $TM_MULTILIB_CONFIG | sed 's/^,//'`
  	;;
 +x86_64-*-managarm*)
 +	tm_file="${tm_file} i386/unix.h i386/att.h dbxelf.h elfos.h gnu-user.h glibc-stdint.h \
 +		 i386/x86-64.h i386/gnu-user-common.h i386/gnu-user64.h managarm.h"
++	
++	case ${target} in
++	*-managarm-system*)
++		tm_file="${tm_file} managarm-system.h" ;;
++	*-managarm-kernel*)
++		tm_file="${tm_file} managarm-kernel.h" ;;
++	*)
++		echo "managarm target '${target}' not supported."
++		exit 1
++	esac
++
++	tmake_file="${tmake_file} i386/t-managarm64"
 +	;;
  i[34567]86-pc-msdosdjgpp*)
  	xm_file=i386/xm-djgpp.h
  	tm_file="dbxcoff.h ${tm_file} i386/unix.h i386/bsd.h i386/gas.h i386/djgpp.h i386/djgpp-stdint.h"
-diff --git a/gcc/config/managarm.h b/gcc/config/managarm.h
+diff --git a/gcc/config/i386/t-managarm64 b/gcc/config/i386/t-managarm64
 new file mode 100644
-index 0000000..8e17496
+index 0000000..0182d6a
 --- /dev/null
-+++ b/gcc/config/managarm.h
-@@ -0,0 +1,34 @@
++++ b/gcc/config/i386/t-managarm64
+@@ -0,0 +1,5 @@
 +
-+#undef TARGET_MANAGARM
-+#define TARGET_MANAGARM 1
++MULTILIB_OPTIONS = m64/m32
++MULTILIB_DIRNAMES = fizz buzz
++MULTILIB_OSDIRNAMES = foo:x86_64-managarm bar:i386-managarm
++
+diff --git a/gcc/config/managarm-kernel.h b/gcc/config/managarm-kernel.h
+new file mode 100644
+index 0000000..62bce67
+--- /dev/null
++++ b/gcc/config/managarm-kernel.h
+@@ -0,0 +1,10 @@
 +
 +#undef LIB_SPEC
-+#define LIB_SPEC "-lc -lg -lm"
++#define LIB_SPEC ""
 +
-+#undef  NO_IMPLICIT_EXTERN_C
-+#define NO_IMPLICIT_EXTERN_C 1
++#undef STARTFILE_SPEC
++#define STARTFILE_SPEC "crti.o%s %{shared:crtbeginS.o%s;:crtbegin.o%s}"
++
++#undef ENDFILE_SPEC
++#define ENDFILE_SPEC "%{shared:crtendS.o%s;:crtend.o%s} crtn.o%s"
++
+diff --git a/gcc/config/managarm-system.h b/gcc/config/managarm-system.h
+new file mode 100644
+index 0000000..d0b424e
+--- /dev/null
++++ b/gcc/config/managarm-system.h
+@@ -0,0 +1,10 @@
++
++#undef LIB_SPEC
++#define LIB_SPEC "-lc -lm"
 +
 +#undef STARTFILE_SPEC
 +#define STARTFILE_SPEC "%{!shared:crt0.o%s} crti.o%s %{shared:crtbeginS.o%s;:crtbegin.o%s}"
@@ -91,9 +138,22 @@ index 0000000..8e17496
 +#undef ENDFILE_SPEC
 +#define ENDFILE_SPEC "%{shared:crtendS.o%s;:crtend.o%s} crtn.o%s"
 +
-+#define GNU_USER_LINK_EMULATION32 "elf_i386_managarm"
-+#define GNU_USER_LINK_EMULATION64 "elf_x86_64_managarm"
-+#define GNU_USER_LINK_EMULATIONX32 "elf32_x86_64_managarm"
+diff --git a/gcc/config/managarm.h b/gcc/config/managarm.h
+new file mode 100644
+index 0000000..8d4aff6
+--- /dev/null
++++ b/gcc/config/managarm.h
+@@ -0,0 +1,25 @@
++
++#undef TARGET_MANAGARM
++#define TARGET_MANAGARM 1
++
++#undef  NO_IMPLICIT_EXTERN_C
++#define NO_IMPLICIT_EXTERN_C 1
++
++#define GNU_USER_LINK_EMULATION32 "elf_i386"
++#define GNU_USER_LINK_EMULATION64 "elf_x86_64"
++#define GNU_USER_LINK_EMULATIONX32 "elf32_x86_64"
 +
 +#define GNU_USER_DYNAMIC_LINKER32 "ld-init-32.so"
 +#define GNU_USER_DYNAMIC_LINKER64 "ld-init-64.so"

@@ -7,10 +7,12 @@ $f_RUNPKG += $s/runpkg $B/hostpkg cross-autoconf-v2.64
 $f_RUNPKG += $s/runpkg $B/hostpkg cross-automake-v1.11
 
 $f_CONFIGURE := $($f_RUNPKG) $T/ports/$u/configure --prefix=$B/hostpkg/$f
-$f_CONFIGURE += --program-prefix=kernel- --target=x86_64-managarm
-$f_CONFIGURE += --enable-languages=c,c++ --disable-shared --disable-hosted-libstdcxx
+$f_CONFIGURE += --target=x86_64-managarm-kernel --with-sysroot=$B/kernel-root
+$f_CONFIGURE += --enable-languages=c,c++
+$f_CONFIGURE += --disable-shared --disable-hosted-libstdcxx
 
-$f_MAKE_ALL := $($f_RUNPKG) make all-gcc
+# set inhibit_libc to prevent libgcov build.
+$f_MAKE_ALL := $($f_RUNPKG) make all-gcc inhibit_libc=true
 $f_MAKE_INSTALL := $($f_RUNPKG) make install-gcc
 
 .PHONY: configure-$f install-$f
