@@ -7,7 +7,7 @@ $f_RUNPKG := $s/runpkg $B/hostpkg host-protoc
 $f_RUNPKG += $s/runpkg $B/hostpkg cross-binutils
 $f_RUNPKG += $s/runpkg $B/hostpkg cross-gcc
 
-$f_CONFIGURE := $T/$u/configure --sysroot=$B/sysroot
+$f_CONFIGURE := $T/$u/configure --sysroot=$B/system-root
 $f_CONFIGURE += --protoc=protoc --host-cxx=g++ --host-cppflags= --host-ldflags=
 $f_CONFIGURE += --elf-cxx= --elf-as= --elf-ld=
 

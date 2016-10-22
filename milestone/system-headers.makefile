@@ -1,9 +1,9 @@
 
-f := sys-headers
+f := system-headers
 g := mlibc
 u := mlibc
 
-$f_CONFIGURE := $T/$u/configure --sysroot=$B/sysroot
+$f_CONFIGURE := $T/$u/configure --sysroot=$B/system-root
 $f_CONFIGURE += --frigg-path=$T/managarm/frigg
 $f_CONFIGURE += --managarm-src-path=$T/managarm
 $f_CONFIGURE += --managarm-build-path=$B/managarm
