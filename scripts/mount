@@ -1,0 +1,27 @@
+#!/bin/bash
+
+file=image
+offset=8388608
+size=259611648
+fstype=ext2
+dir=/mnt/managarm
+
+if ! mkdir -p $dir; then
+	echo "mount: mkdir failed."
+	exit 1
+fi
+
+dev=$(losetup -o $offset --sizelimit $size --show -f $file)
+if [ $? -ne 0 ]; then
+	echo "mount: losetup failed."
+	exit 1
+fi
+
+echo "Using loopback device $dev"
+
+mount -t $fstype $dev $dir
+if [ $? -ne 0 ]; then
+	echo "mount: mount failed."
+	exit 1
+fi
+

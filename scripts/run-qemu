@@ -1,0 +1,10 @@
+
+HDD="-drive file=image,if=virtio"
+#HDD="-hda image/managarm.raw"
+
+NET="-netdev user,id=net0 -device virtio-net,netdev=net0"
+#NET="-netdev tap,id=net0 -device virtio-net,netdev=net0"
+
+USB="-device piix3-usb-uhci -device usb-mouse"
+
+qemu-system-x86_64 $QFLAGS -smp 1 -m 1024 $HDD $NET $USB -vga std -debugcon stdio -s
