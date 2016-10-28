@@ -21,11 +21,7 @@ apply_pkg () {
 	if [ -e "$d/bin" ]; then
 		export PATH=$(prepend "$PATH" "$d/bin")
 	fi
-	if [ -e "$d/include" ]; then
-		export CPATH=$(prepend "$CPATH" "$d/include")
-	fi
 	if [ -e "$d/lib" ]; then
-		export LIBRARY_PATH=$(prepend "$LIBRARY_PATH" "$d/lib")
 		export LD_LIBRARY_PATH=$(prepend "$LD_LIBRARY_PATH" "$d/lib/x86_64-linux-gnu:$d/lib")
 	fi
 }

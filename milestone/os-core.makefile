@@ -11,9 +11,9 @@ install-$f: b := $b
 
 install-$f: | $(call milestone_tag,install-system-gcc)
 install-$f: | $(call milestone_tag,configure-managarm-bundle)
-	cd $B/$b && $($f_RUNPKG) make gen-thor/user_boot
-	cd $B/$b && $($f_RUNPKG) make all-thor/user_boot
-	cd $B/$b && $($f_RUNPKG) make install-thor/user_boot
+	cd $B/$b && $($f_RUNPKG) make gen-thor/user_boot gen-mbus
+	cd $B/$b && $($f_RUNPKG) make all-thor/user_boot all-mbus
+	cd $B/$b && $($f_RUNPKG) make install-thor/user_boot install-mbus
 	touch $(call milestone_tag,install-$f)
 
 $(call milestone_tag,install-$f): f := $f

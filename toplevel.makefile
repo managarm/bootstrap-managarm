@@ -9,6 +9,7 @@ include $T/upstream/autoconf-v2.64.makefile
 include $T/upstream/autoconf-v2.69.makefile
 include $T/upstream/automake-v1.11.makefile
 include $T/upstream/binutils.makefile
+include $T/upstream/boost.makefile
 include $T/upstream/gcc.makefile
 include $T/upstream/libcofiber.makefile
 include $T/upstream/libtool.makefile
@@ -31,6 +32,7 @@ include $T/milestone/kernel-libstdc++.makefile
 include $T/milestone/libarch.makefile
 include $T/milestone/managarm-bundle.makefile
 include $T/milestone/managarm-kernel.makefile
+include $T/milestone/native-boost.makefile
 include $T/milestone/native-protobuf.makefile
 include $T/milestone/native-libcofiber.makefile
 include $T/milestone/os-core.makefile
