@@ -8,6 +8,7 @@ milestone_tag = tags/$1.tag
 define _upstream_action =
 .PHONY: $1
 $1 $(call upstream_tag,$1): f := $f
+$1: | $T/tags
 $(call upstream_tag,$1):
 	make $1
 
@@ -24,7 +25,7 @@ $(call milestone_tag,$1):
 endef
 milestone_action = $(eval $(foreach x,$1,$(call _milestone_action,$x)))
 
-$B/tags:
+$T/tags $B/tags:
 	mkdir -p $@
 
 include $T/upstream/autoconf-v2.64.makefile
