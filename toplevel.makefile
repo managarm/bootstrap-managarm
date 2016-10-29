@@ -5,6 +5,28 @@ s = $T/scripts
 upstream_tag = $T/tags/$1.tag
 milestone_tag = tags/$1.tag
 
+define _upstream_action =
+.PHONY: $1
+$1 $(call upstream_tag,$1): f := $f
+$(call upstream_tag,$1):
+	make $1
+
+endef
+upstream_action = $(eval $(foreach x,$1,$(call _upstream_action,$x)))
+
+define _milestone_action =
+.PHONY: $1
+$1 $(call milestone_tag,$1): f := $f
+$1: | $B/tags
+$(call milestone_tag,$1):
+	make $1
+
+endef
+milestone_action = $(eval $(foreach x,$1,$(call _milestone_action,$x)))
+
+$B/tags:
+	mkdir -p $@
+
 include $T/upstream/autoconf-v2.64.makefile
 include $T/upstream/autoconf-v2.69.makefile
 include $T/upstream/automake-v1.11.makefile
@@ -17,13 +39,13 @@ include $T/upstream/managarm.makefile
 include $T/upstream/mlibc.makefile
 include $T/upstream/protobuf.makefile
 
-include $T/milestone/cross-autoconf-v2.64.makefile
-include $T/milestone/cross-automake-v1.11.makefile
 include $T/milestone/cross-binutils.makefile
 include $T/milestone/cross-libtool.makefile
 include $T/milestone/helix.makefile
 include $T/milestone/helpers.makefile
+include $T/milestone/host-autoconf-v2.64.makefile
 include $T/milestone/host-autoconf-v2.69.makefile
+include $T/milestone/host-automake-v1.11.makefile
 include $T/milestone/host-frigg_pb.makefile
 include $T/milestone/host-protoc.makefile
 include $T/milestone/kernel-gcc.makefile

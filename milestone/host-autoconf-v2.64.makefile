@@ -1,6 +1,6 @@
 
-f := host-autoconf-v2.69
-$f_up := autoconf-v2.69
+f := host-autoconf-v2.64
+$f_up := autoconf-v2.64
 
 $(call milestone_action,configure-$f install-$f)
 
