@@ -2,7 +2,7 @@
 f := kernel-gcc
 $f_up := gcc
 
-$f_RUNPKG := $B/withprefix $B/prefixes cross-binutils --
+$f_RUN := $B/withprefix $B/prefixes cross-binutils --
 
 $f_CONFIGURE := $T/ports/$($f_up)/configure --prefix=$B/prefixes/$f
 $f_CONFIGURE += --target=x86_64-managarm-kernel --with-sysroot=$B/kernel-root
