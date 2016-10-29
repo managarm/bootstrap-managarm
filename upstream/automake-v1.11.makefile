@@ -8,7 +8,7 @@ $(call upstream_action,clone-$f init-$f regenerate-$f)
 
 clone-$f:
 	$T/scripts/fetch --no-shallow $T/ports/$f $($f_ORIGIN) $($f_REF)
-	touch $(call upstream_tag,clone-$f)
+	touch $(call upstream_tag,$@)
 
 init-$f: $(call upstream_tag,clone-$f)
 	git -C $T/ports/$f checkout --detach $($f_REF)
