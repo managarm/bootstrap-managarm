@@ -62,7 +62,7 @@ include $T/milestone/native-libcofiber.makefile
 include $T/milestone/os-core.makefile
 include $T/milestone/system-gcc.makefile
 include $T/milestone/system-headers.makefile
-include $T/milestone/system-mlibc.makefile
+include $T/milestone/system-libc.makefile
 include $T/milestone/system-libgcc.makefile
 include $T/milestone/system-libstdc++.makefile
 include $T/milestone/system-rtdl.makefile
