@@ -1,34 +1,26 @@
 
 f := host-protoc
-u := protobuf
+$f_up := protobuf
 
-$f_RUNPKG := $s/runpkg $B/hostpkg host-autoconf-v2.69
-$f_RUNPKG += $s/runpkg $B/hostpkg cross-automake-v1.11
+$f_RUN_CONFIG := $B/withprefix $B/prefixes
+$f_RUN_CONFIG += host-autoconf-v2.69 host-automake-v1.11
+$f_RUN_CONFIG += --
 
-$f_CONFIGURE := $($f_RUNPKG) $T/ports/$u/configure --prefix=$B/hostpkg/$f
+$f_CONFIGURE := $T/ports/$($f_up)/configure --prefix=$B/prefixes/$f
 
-$f_MAKE_ALL := $($f_RUNPKG) make all
-$f_MAKE_INSTALL := $($f_RUNPKG) make install
+$f_MAKE_ALL := make all
+$f_MAKE_INSTALL := make install
 
-.PHONY: configure-$f install-$f
-configure-$f: f := $f
-configure-$f: u := $u
-install-$f: f := $f
-install-$f: u := $u
+$(call milestone_action,configure-$f install-$f)
 
-configure-$f: | $(call upstream_tag,init-$u)
-	rm -rf $B/cross/$f && mkdir -p $B/cross/$f
-	cd $B/cross/$f && $($f_CONFIGURE)
+configure-$f: | $(call milestone_tag,install-host-autoconf-v2.69)
+configure-$f: | $(call milestone_tag,install-host-automake-v1.11)
+configure-$f: $(call upstream_tag,regenerate-$($f_up))
+	rm -rf $B/host/$f && mkdir -p $B/host/$f
+	cd $B/host/$f && $($f_RUN_CONFIG) $($f_CONFIGURE)
 	touch $(call milestone_tag,configure-$f)
 
-install-$f: | $(call milestone_tag,configure-$f)
-	cd $B/cross/$f && $($f_MAKE_ALL) && $($f_MAKE_INSTALL)
+install-$f: $(call milestone_tag,configure-$f)
+	cd $B/host/$f && $($f_MAKE_ALL) && $($f_MAKE_INSTALL)
 	touch $(call milestone_tag,install-$f)
-
-$(call milestone_tag,configure-$f): f := $f
-$(call milestone_tag,configure-$f):
-	make configure-$f
-$(call milestone_tag,install-$f): f := $f
-$(call milestone_tag,install-$f):
-	make install-$f
 

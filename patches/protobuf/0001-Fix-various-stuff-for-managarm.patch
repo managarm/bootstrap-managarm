@@ -1,0 +1,95 @@
+From 63957b708ea9db538e3940f0db47de1a1c887ef8 Mon Sep 17 00:00:00 2001
+From: avdgrinten <alexander.vandergrinten@gmail.com>
+Date: Fri, 21 Oct 2016 17:22:35 +0200
+Subject: [PATCH] Fix various stuff for managarm
+
+---
+ src/google/protobuf/io/coded_stream.h | 8 ++++++++
+ src/google/protobuf/message_lite.cc   | 1 +
+ src/google/protobuf/stubs/common.cc   | 8 ++++++--
+ src/google/protobuf/stubs/port.h      | 8 ++++++++
+ 4 files changed, 23 insertions(+), 2 deletions(-)
+
+diff --git a/src/google/protobuf/io/coded_stream.h b/src/google/protobuf/io/coded_stream.h
+index 1402cc1..2c3d4f6 100644
+--- a/src/google/protobuf/io/coded_stream.h
++++ b/src/google/protobuf/io/coded_stream.h
+@@ -122,6 +122,14 @@
+     // runtime.  This file contains some intentional truncating casts.
+     #pragma runtime_checks("c", off)
+   #endif
++#elif defined(__GNUC__)
++  #if !defined(__BYTE_ORDER__)
++    #error "No __BYTE_ORDER__ on gcc"
++  #elif __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
++    #define PROTOBUF_LITTLE_ENDIAN 1
++  #else
++    #error "Unsupported __BYTE_ORDER__"
++  #endif
+ #else
+   #include <sys/param.h>   // __BYTE_ORDER
+   #if ((defined(__LITTLE_ENDIAN__) && !defined(__BIG_ENDIAN__)) || \
+diff --git a/src/google/protobuf/message_lite.cc b/src/google/protobuf/message_lite.cc
+index 9d6da26..d976930 100644
+--- a/src/google/protobuf/message_lite.cc
++++ b/src/google/protobuf/message_lite.cc
+@@ -33,6 +33,7 @@
+ //  Based on original Protocol Buffers design by
+ //  Sanjay Ghemawat, Jeff Dean, and others.
+ 
++#include <limits.h> // temporary fix for INT_MAX
+ #include <google/protobuf/arena.h>
+ #include <google/protobuf/generated_message_util.h>
+ #include <google/protobuf/message_lite.h>
+diff --git a/src/google/protobuf/stubs/common.cc b/src/google/protobuf/stubs/common.cc
+index 54dbafab..6d6d3b8 100644
+--- a/src/google/protobuf/stubs/common.cc
++++ b/src/google/protobuf/stubs/common.cc
+@@ -41,11 +41,15 @@
+ #include <stdio.h>
+ #include <vector>
+ 
++#ifndef _WIN32
++#include <unistd.h> // for _POSIX_THREADS
++#endif
++
+ #ifdef _WIN32
+ #define WIN32_LEAN_AND_MEAN  // We only need minimal includes
+ #include <windows.h>
+ #define snprintf _snprintf    // see comment in strutil.cc
+-#elif defined(HAVE_PTHREAD)
++#elif defined(_POSIX_THREADS)
+ #include <pthread.h>
+ #else
+ #error "No suitable threading library available."
+@@ -346,7 +350,7 @@ void Mutex::AssertHeld() {
+ #endif
+ }
+ 
+-#elif defined(HAVE_PTHREAD)
++#elif defined(_POSIX_THREADS)
+ 
+ struct Mutex::Internal {
+   pthread_mutex_t mutex;
+diff --git a/src/google/protobuf/stubs/port.h b/src/google/protobuf/stubs/port.h
+index 376be5f..3e71e71 100644
+--- a/src/google/protobuf/stubs/port.h
++++ b/src/google/protobuf/stubs/port.h
+@@ -58,6 +58,14 @@
+     // runtime.  This file contains some intentional truncating casts.
+     #pragma runtime_checks("c", off)
+   #endif
++#elif defined(__GNUC__)
++  #if !defined(__BYTE_ORDER__)
++    #error "No __BYTE_ORDER__ on gcc"
++  #elif __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
++    #define PROTOBUF_LITTLE_ENDIAN 1
++  #else
++    #error "Unsupported __BYTE_ORDER__"
++  #endif
+ #else
+   #include <sys/param.h>   // __BYTE_ORDER
+   #if ((defined(__LITTLE_ENDIAN__) && !defined(__BIG_ENDIAN__)) || \
+-- 
+2.1.4
+
