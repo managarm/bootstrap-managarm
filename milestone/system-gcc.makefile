@@ -4,7 +4,7 @@ $f_up := gcc
 
 $f_RUN := $B/withprefix $B/prefixes cross-binutils --
 
-$f_CONFIGURE := $T/ports/$($f_up)/configure --prefix=$B/hostpkg/$f
+$f_CONFIGURE := $T/ports/$($f_up)/configure --prefix=$B/prefixes/$f
 $f_CONFIGURE += --target=x86_64-managarm --with-sysroot=$B/system-root
 $f_CONFIGURE += --enable-languages=c,c++ --disable-multilib
 
