@@ -1,6 +1,0 @@
-[submodule "managarm/src"]
-	path = managarm/src
-	url = https://github.com/avdgrinten/managarm.git
-[submodule "mlibc/src"]
-	path = mlibc/src
-	url = https://github.com/avdgrinten/mlibc.git
