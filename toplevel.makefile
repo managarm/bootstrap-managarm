@@ -42,7 +42,6 @@ include $T/upstream/protobuf.makefile
 
 include $T/milestone/cross-binutils.makefile
 include $T/milestone/cross-libtool.makefile
-include $T/milestone/helix.makefile
 include $T/milestone/helpers.makefile
 include $T/milestone/host-autoconf-v2.64.makefile
 include $T/milestone/host-autoconf-v2.69.makefile
@@ -56,9 +55,10 @@ include $T/milestone/managarm-bundle.makefile
 include $T/milestone/mlibc-bundle.makefile
 include $T/milestone/native-boost.makefile
 include $T/milestone/native-protobuf.makefile
-include $T/milestone/native-libcofiber.makefile
 include $T/milestone/os-core.makefile
+include $T/milestone/os-helix.makefile
 include $T/milestone/os-kernel.makefile
+include $T/milestone/os-libcofiber.makefile
 include $T/milestone/system-gcc.makefile
 include $T/milestone/system-headers.makefile
 include $T/milestone/system-libc.makefile

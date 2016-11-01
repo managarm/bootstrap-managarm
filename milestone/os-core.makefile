@@ -1,22 +1,19 @@
 
 f := os-core
-b := managarm
+$f_grp := managarm
 
-$f_RUNPKG := $s/runpkg $B/hostpkg host-protoc
-$f_RUNPKG += $s/runpkg $B/hostpkg cross-binutils
-$f_RUNPKG += $s/runpkg $B/hostpkg system-gcc
+$f_RUN := $B/withprefix $B/prefixes
+$f_RUN += host-protoc cross-binutils system-gcc
+$f_RUN += --
 
-install-$f: f := $f
-install-$f: b := $b
+$(call milestone_action,install-$f)
 
 install-$f: | $(call milestone_tag,install-system-gcc)
-install-$f: | $(call milestone_tag,configure-managarm-bundle)
-	cd $B/$b && $($f_RUNPKG) make gen-thor/user_boot gen-mbus
-	cd $B/$b && $($f_RUNPKG) make all-thor/user_boot all-mbus
-	cd $B/$b && $($f_RUNPKG) make install-thor/user_boot install-mbus
-	touch $(call milestone_tag,install-$f)
-
-$(call milestone_tag,install-$f): f := $f
-$(call milestone_tag,install-$f):
-	make install-$f
+install-$f: | $(call milestone_tag,install-os-libcofiber)
+install-$f: | $(call milestone_tag,install-os-helix)
+install-$f: $(call milestone_tag,configure-managarm-bundle)
+	cd $B/$($f_grp) && $($f_RUN) make gen-thor/user_boot gen-mbus
+	cd $B/$($f_grp) && $($f_RUN) make all-thor/user_boot all-mbus
+	cd $B/$($f_grp) && $($f_RUN) make install-thor/user_boot install-mbus
+	touch $(call milestone_tag,$@)
 
