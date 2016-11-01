@@ -63,7 +63,6 @@ include $T/milestone/os-core.makefile
 include $T/milestone/system-gcc.makefile
 include $T/milestone/system-headers.makefile
 include $T/milestone/system-libc.makefile
-include $T/milestone/system-libgcc.makefile
-include $T/milestone/system-libstdc++.makefile
 include $T/milestone/system-rtdl.makefile
+include $T/milestone/system-runtime.makefile
 
