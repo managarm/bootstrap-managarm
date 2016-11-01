@@ -50,8 +50,7 @@ include $T/milestone/host-automake-v1.11.makefile
 include $T/milestone/host-frigg_pb.makefile
 include $T/milestone/host-protoc.makefile
 include $T/milestone/kernel-gcc.makefile
-include $T/milestone/kernel-libgcc.makefile
-include $T/milestone/kernel-libstdc++.makefile
+include $T/milestone/kernel-runtime.makefile
 include $T/milestone/libarch.makefile
 include $T/milestone/managarm-bundle.makefile
 include $T/milestone/mlibc-bundle.makefile
