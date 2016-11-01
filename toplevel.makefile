@@ -54,12 +54,12 @@ include $T/milestone/kernel-libgcc.makefile
 include $T/milestone/kernel-libstdc++.makefile
 include $T/milestone/libarch.makefile
 include $T/milestone/managarm-bundle.makefile
-include $T/milestone/managarm-kernel.makefile
 include $T/milestone/mlibc-bundle.makefile
 include $T/milestone/native-boost.makefile
 include $T/milestone/native-protobuf.makefile
 include $T/milestone/native-libcofiber.makefile
 include $T/milestone/os-core.makefile
+include $T/milestone/os-kernel.makefile
 include $T/milestone/system-gcc.makefile
 include $T/milestone/system-headers.makefile
 include $T/milestone/system-libc.makefile
