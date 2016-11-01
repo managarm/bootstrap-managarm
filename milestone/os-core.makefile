@@ -9,6 +9,7 @@ $f_RUN += --
 $(call milestone_action,install-$f)
 
 install-$f: | $(call milestone_tag,install-system-gcc)
+install-$f: | $(call milestone_tag,install-os-boost)
 install-$f: | $(call milestone_tag,install-os-libcofiber)
 install-$f: | $(call milestone_tag,install-os-helix)
 install-$f: $(call milestone_tag,configure-managarm-bundle)

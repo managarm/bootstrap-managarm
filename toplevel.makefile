@@ -53,8 +53,8 @@ include $T/milestone/kernel-runtime.makefile
 include $T/milestone/libarch.makefile
 include $T/milestone/managarm-bundle.makefile
 include $T/milestone/mlibc-bundle.makefile
-include $T/milestone/native-boost.makefile
 include $T/milestone/native-protobuf.makefile
+include $T/milestone/os-boost.makefile
 include $T/milestone/os-core.makefile
 include $T/milestone/os-helix.makefile
 include $T/milestone/os-kernel.makefile
