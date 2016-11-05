@@ -7,7 +7,7 @@ $f_CONFIGURE := $T/$($f_up)/configure --sysroot=$B/system-root
 $f_CONFIGURE += --protoc=protoc --host-cxx=g++
 $f_CONFIGURE += --host-cppflags=-I$B/prefixes/host-protoc/include
 $f_CONFIGURE += --host-ldflags=-L$B/prefixes/host-protoc/lib
-$f_CONFIGURE += --elf-cxx= --elf-as= --elf-ld=
+$f_CONFIGURE += --acpica=$T/ports/acpica
 
 $(call milestone_action,configure-$f)
 

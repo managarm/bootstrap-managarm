@@ -28,6 +28,7 @@ milestone_action = $(eval $(foreach x,$1,$(call _milestone_action,$x)))
 $T/tags $B/tags:
 	mkdir -p $@
 
+include $T/upstream/acpica.makefile
 include $T/upstream/autoconf-v2.64.makefile
 include $T/upstream/autoconf-v2.69.makefile
 include $T/upstream/automake-v1.11.makefile

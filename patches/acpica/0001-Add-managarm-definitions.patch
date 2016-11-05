@@ -1,0 +1,61 @@
+From 0fa9a3e642a2a9e9a0622c58e61a032e905a7626 Mon Sep 17 00:00:00 2001
+From: avdgrinten <alexander.vandergrinten@gmail.com>
+Date: Sat, 5 Nov 2016 16:32:29 +0100
+Subject: [PATCH] Add managarm definitions
+
+---
+ source/include/platform/acenv.h      |  3 +++
+ source/include/platform/acmanagarm.h | 27 +++++++++++++++++++++++++++
+ 2 files changed, 30 insertions(+)
+ create mode 100644 source/include/platform/acmanagarm.h
+
+diff --git a/source/include/platform/acenv.h b/source/include/platform/acenv.h
+index 4982c87..8eb1ab9 100644
+--- a/source/include/platform/acenv.h
++++ b/source/include/platform/acenv.h
+@@ -298,6 +298,9 @@
+ #elif defined(__QNX__)
+ #include "acqnx.h"
+ 
++#elif defined(__managarm__)
++#include "acmanagarm.h"
++
+ /*
+  * EFI applications can be built with -nostdlib, in this case, it must be
+  * included after including all other host environmental definitions, in
+diff --git a/source/include/platform/acmanagarm.h b/source/include/platform/acmanagarm.h
+new file mode 100644
+index 0000000..e8441a8
+--- /dev/null
++++ b/source/include/platform/acmanagarm.h
+@@ -0,0 +1,27 @@
++
++#ifndef __ACMANAGARM_H__
++#define __ACMANAGARM_H__
++
++#include <stdarg.h>
++
++#include "acgcc.h"
++
++typedef __SIZE_TYPE__ size_t;
++
++#define ACPI_USE_SYSTEM_CLIBRARY
++#define ACPI_USE_STANDARD_HEADERS
++#define ACPI_USE_NATIVE_DIVIDE
++
++#define ACPI_MACHINE_WIDTH 64
++
++// let the ACPICA library use its own cache objects
++#define ACPI_USE_LOCAL_CACHE
++#define ACPI_CACHE_T ACPI_MEMORY_LIST
++
++struct AcpiSemaphore {
++	int counter;
++};
++
++#define ACPI_SEMAPHORE struct AcpiSemaphore *
++
++#endif /* __ACMANAGARM_H__ */
+-- 
+2.1.4
+

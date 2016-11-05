@@ -2,7 +2,7 @@
 
 dir=/mnt/managarm
 
-sudo ./mount
+./mount
 
 mkdir -p $dir/boot/managarm
 
@@ -13,8 +13,8 @@ install -s managarm/thor/user_boot/bin/user_boot $dir/boot/managarm
 
 # userspace core components
 install -s managarm/hel/bin/libhelix.so $dir/boot/managarm
-#install -s ../thor/acpi/bin/acpi $dir/boot/managarm
-#install -s ../mbus/bin/mbus $dir/boot/managarm
+install -s managarm/thor/acpi/bin/acpi $dir/boot/managarm
+install -s managarm/mbus/bin/mbus $dir/boot/managarm
 #install -s ../posix/subsystem/bin/posix-subsystem $dir/boot/managarm
 
 # essential libraries
@@ -25,7 +25,7 @@ install -s prefixes/system-gcc/x86_64-managarm/lib/foo/libgcc_s.so.1 $dir/boot/m
 install -s prefixes/system-gcc/x86_64-managarm/lib/foo/libstdc++.so.6 $dir/boot/managarm
 #install -s ../../../managarm-sysroot/usr/lib/libz.so.1 $dir/boot/managarm
 #install -s ../../../managarm-sysroot/usr/lib/libprotobuf-lite.so.10 $dir/boot/managarm
-install -s native/os-libcofiber/bin/libcofiber.so $dir/boot/managarm
+install -s native/native-libcofiber/bin/libcofiber.so $dir/boot/managarm
 #install -s ../../../managarm-sysroot/usr/lib/libmbus.so $dir/boot/managarm
 #install -s ../../../managarm-sysroot/usr/lib/libfs.so $dir/boot/managarm
 
@@ -38,5 +38,5 @@ install -s native/os-libcofiber/bin/libcofiber.so $dir/boot/managarm
 # copy the sysroot
 #cp -ru ../../../managarm-sysroot/usr $dir
 
-sudo ./umount
+./umount
 
