@@ -1,5 +1,5 @@
 
-f := os-libcofiber
+f := native-libcofiber
 $f_up := libcofiber
 
 $f_RUN := $B/withprefix $B/prefixes cross-binutils system-gcc --

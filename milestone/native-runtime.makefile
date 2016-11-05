@@ -1,5 +1,5 @@
 
-f := system-runtime
+f := native-runtime
 $f_grp := system-gcc
 
 $f_RUN := $B/withprefix $B/prefixes
@@ -8,7 +8,7 @@ $f_RUN += --
 
 $(call milestone_action,install-$f)
 
-install-$f: | $(call milestone_tag,install-system-libc)
+install-$f: | $(call milestone_tag,install-native-libc)
 install-$f: $(call milestone_tag,configure-$($f_grp))
 	cd $B/host/$($f_grp) && $($f_RUN) make all-target-libgcc
 	cd $B/host/$($f_grp) && $($f_RUN) make install-target-libgcc

@@ -1,5 +1,5 @@
 
-f := system-rtdl
+f := native-rtdl
 $f_grp := managarm
 
 $f_RUN := $B/withprefix $B/prefixes

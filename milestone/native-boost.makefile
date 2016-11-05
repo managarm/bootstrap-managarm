@@ -1,5 +1,5 @@
 
-f := os-boost
+f := native-boost
 $f_up := boost
 
 $(call milestone_action,install-$f)

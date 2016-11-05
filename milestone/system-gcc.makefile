@@ -1,5 +1,5 @@
 
-f := system-gcc
+f := native-gcc
 $f_up := gcc
 
 $f_RUN := $B/withprefix $B/prefixes cross-binutils --
@@ -14,7 +14,7 @@ $f_MAKE_INSTALL := make install-gcc
 $(call milestone_action,configure-$f install-$f)
 
 configure-$f: | $(call milestone_tag,install-cross-binutils)
-configure-$f: | $(call milestone_tag,install-system-headers)
+configure-$f: | $(call milestone_tag,install-native-headers)
 configure-$f: $(call upstream_tag,regenerate-$($f_up))
 	rm -rf $B/host/$f && mkdir -p $B/host/$f
 	cd $B/host/$f && $($f_RUN) $($f_CONFIGURE)

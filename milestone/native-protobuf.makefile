@@ -1,5 +1,5 @@
 
-f := os-protobuf
+f := native-protobuf
 $f_up := protobuf
 
 $f_RUN := $B/withprefix $B/prefixes

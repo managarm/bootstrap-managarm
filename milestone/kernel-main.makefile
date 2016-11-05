@@ -1,5 +1,5 @@
 
-f := os-kernel
+f := kernel-main
 $f_grp := managarm
 
 $f_RUN := $B/withprefix $B/prefixes
