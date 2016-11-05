@@ -24,9 +24,9 @@ install -s mlibc/libm/bin/libm.so $dir/boot/managarm
 install -s prefixes/system-gcc/x86_64-managarm/lib/foo/libgcc_s.so.1 $dir/boot/managarm
 install -s prefixes/system-gcc/x86_64-managarm/lib/foo/libstdc++.so.6 $dir/boot/managarm
 #install -s ../../../managarm-sysroot/usr/lib/libz.so.1 $dir/boot/managarm
-#install -s ../../../managarm-sysroot/usr/lib/libprotobuf-lite.so.10 $dir/boot/managarm
+install -s system-root/usr/lib/libprotobuf-lite.so.11 $dir/boot/managarm
 install -s native/native-libcofiber/bin/libcofiber.so $dir/boot/managarm
-#install -s ../../../managarm-sysroot/usr/lib/libmbus.so $dir/boot/managarm
+install -s managarm/libmbus/bin/libmbus.so $dir/boot/managarm
 #install -s ../../../managarm-sysroot/usr/lib/libfs.so $dir/boot/managarm
 
 # essential drivers

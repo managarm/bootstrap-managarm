@@ -13,6 +13,6 @@ clone-$f:
 init-$f: | $(call upstream_tag,clone-$f)
 	git -C $T/ports/$f checkout --detach $($f_REF)
 	git -C $T/ports/$f clean -xf
-#	git -C $T/ports/$f am $T/patches/$f/*.patch
+	git -C $T/ports/$f am $T/patches/$f/*.patch
 	touch $(call upstream_tag,$@)
 
