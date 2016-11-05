@@ -42,12 +42,12 @@ include $T/upstream/mlibc.makefile
 include $T/upstream/protobuf.makefile
 
 include $T/milestone/cross-binutils.makefile
-include $T/milestone/cross-libtool.makefile
 include $T/milestone/helpers.makefile
 include $T/milestone/host-autoconf-v2.64.makefile
 include $T/milestone/host-autoconf-v2.69.makefile
 include $T/milestone/host-automake-v1.11.makefile
 include $T/milestone/host-frigg_pb.makefile
+include $T/milestone/host-libtool.makefile
 include $T/milestone/host-protoc.makefile
 include $T/milestone/kernel-gcc.makefile
 include $T/milestone/kernel-main.makefile
