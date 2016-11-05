@@ -9,5 +9,5 @@ install-$f:
 	ln -sf $T/scripts/umount $B/umount
 	ln -sf $T/scripts/mkimage $B/mkimage
 	ln -sf $T/scripts/run-qemu $B/run-qemu
-	touch $(call milestone_tag,install-$f)
+	touch $(call milestone_tag,$@)
 

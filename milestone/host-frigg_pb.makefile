@@ -12,5 +12,5 @@ $(call milestone_action,install-$f)
 install-$f: | $(call milestone_tag,install-host-protoc)
 install-$f: $(call milestone_tag,configure-managarm-bundle)
 	cd $B/$($f_grp) && $($f_RUN) $($f_MAKE_ALL) && $($f_RUN) $($f_MAKE_INSTALL)
-	touch $(call milestone_tag,install-$f)
+	touch $(call milestone_tag,$@)
 

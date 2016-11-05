@@ -18,9 +18,9 @@ configure-$f: | $(call milestone_tag,install-host-automake-v1.11)
 configure-$f: $(call upstream_tag,regenerate-$($f_up))
 	rm -rf $B/host/$f && mkdir -p $B/host/$f
 	cd $B/host/$f && $($f_RUN_CONFIG) $($f_CONFIGURE)
-	touch $(call milestone_tag,configure-$f)
+	touch $(call milestone_tag,$@)
 
 install-$f: $(call milestone_tag,configure-$f)
 	cd $B/host/$f && $($f_MAKE_ALL) && $($f_MAKE_INSTALL)
-	touch $(call milestone_tag,install-$f)
+	touch $(call milestone_tag,$@)
 

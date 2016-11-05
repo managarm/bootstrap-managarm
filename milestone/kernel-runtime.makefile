@@ -18,5 +18,5 @@ install-$f: | $(call milestone_tag,install-kernel-gcc)
 	cd $B/host/$($f_grp) && $($f_RUN) make install-target-libgcc
 	cd $B/host/$($f_grp) && $($f_RUN) make all-target-libstdc++-v3
 	cd $B/host/$($f_grp) && $($f_RUN) make install-target-libstdc++-v3
-	touch $(call milestone_tag,install-$f)
+	touch $(call milestone_tag,$@)
 

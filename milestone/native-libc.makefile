@@ -12,5 +12,5 @@ install-$f: | $(call milestone_tag,install-native-rtdl)
 install-$f: $(call milestone_tag,configure-mlibc-bundle)
 	cd $B/$($f_grp) && $($f_RUN) make gen
 	cd $B/$($f_grp) && $($f_RUN) make && $($f_RUN) make install
-	touch $(call milestone_tag,install-$f)
+	touch $(call milestone_tag,$@)
 

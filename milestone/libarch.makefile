@@ -13,7 +13,7 @@ install-$f: b := $b
 
 install-$f:
 	cd $B/$b && $($f_RUNPKG) $($f_MAKE_INSTALL)
-	touch $(call milestone_tag,install-$f)
+	touch $(call milestone_tag,$@)
 
 $(call milestone_tag,install-$f): f := $f
 $(call milestone_tag,install-$f):

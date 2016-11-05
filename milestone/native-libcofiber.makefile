@@ -14,5 +14,5 @@ $(call milestone_action,install-$f)
 install-$f: $(call upstream_tag,init-$($f_up))
 	rm -rf $B/native/$f && mkdir -p $B/native/$f
 	cd $B/native/$f && $($f_RUN) $($f_MAKE_INSTALL)
-	touch $(call milestone_tag,install-$f)
+	touch $(call milestone_tag,$@)
 
