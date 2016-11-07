@@ -14,11 +14,11 @@ $f_CONFIGURE := $T/ports/$u/configure --prefix=$B/prefixes/host-automake-v1.11
 $(call milestone_action,configure-$f install-$f)
 
 configure-$f: $(call upstream_tag,init-$u)
-	rm -rf $B/cross/$f && mkdir -p $B/cross/$f
-	cd $B/cross/$f && $($f_RUN) $($f_CONFIGURE)
+	rm -rf $B/host/$f && mkdir -p $B/host/$f
+	cd $B/host/$f && $($f_RUN) $($f_CONFIGURE)
 	touch $(call milestone_tag,$@)
 
 install-$f: $(call milestone_tag,configure-$f)
-	cd $B/cross/$f && $($f_RUN) make all && $($f_RUN) make install
+	cd $B/host/$f && $($f_RUN) make all && $($f_RUN) make install
 	touch $(call milestone_tag,$@)
 
