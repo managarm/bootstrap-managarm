@@ -21,8 +21,8 @@ install -s managarm/posix/subsystem/bin/posix-subsystem $dir/boot/managarm
 install -s managarm/ld-init/linker/bin/ld-init.so $dir/boot/managarm
 install -s mlibc/libc/bin/libc.so $dir/boot/managarm
 install -s mlibc/libm/bin/libm.so $dir/boot/managarm
-install -s prefixes/system-gcc/x86_64-managarm/lib/foo/libgcc_s.so.1 $dir/boot/managarm
-install -s prefixes/system-gcc/x86_64-managarm/lib/foo/libstdc++.so.6 $dir/boot/managarm
+install -s prefixes/native-gcc/x86_64-managarm/lib/foo/libgcc_s.so.1 $dir/boot/managarm
+install -s prefixes/native-gcc/x86_64-managarm/lib/foo/libstdc++.so.6 $dir/boot/managarm
 #install -s ../../../managarm-sysroot/usr/lib/libz.so.1 $dir/boot/managarm
 install -s system-root/usr/lib/libprotobuf-lite.so.11 $dir/boot/managarm
 install -s native/native-libcofiber/bin/libcofiber.so $dir/boot/managarm

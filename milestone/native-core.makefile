@@ -3,12 +3,12 @@ f := native-core
 $f_grp := managarm
 
 $f_RUN := $B/withprefix $B/prefixes
-$f_RUN += host-protoc cross-binutils system-gcc
+$f_RUN += host-protoc cross-binutils native-gcc
 $f_RUN += --
 
 $(call milestone_action,install-$f)
 
-install-$f: | $(call milestone_tag,install-system-gcc)
+install-$f: | $(call milestone_tag,install-native-gcc)
 install-$f: | $(call milestone_tag,install-native-boost)
 install-$f: | $(call milestone_tag,install-native-protobuf)
 install-$f: | $(call milestone_tag,install-native-libcofiber)

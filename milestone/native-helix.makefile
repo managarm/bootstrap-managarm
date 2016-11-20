@@ -2,7 +2,7 @@
 f := native-helix
 $f_grp := managarm
 
-$f_RUN := $B/withprefix $B/prefixes cross-binutils system-gcc --
+$f_RUN := $B/withprefix $B/prefixes cross-binutils native-gcc --
 
 $(call milestone_action,install-$f)
 

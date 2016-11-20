@@ -2,7 +2,7 @@
 f := native-libcofiber
 $f_up := libcofiber
 
-$f_RUN := $B/withprefix $B/prefixes cross-binutils system-gcc --
+$f_RUN := $B/withprefix $B/prefixes cross-binutils native-gcc --
 
 $f_MAKE_INSTALL := make -f $T/ports/$($f_up)/library.makefile S=$T/ports/$($f_up)
 $f_MAKE_INSTALL += "DESTDIR=$B/system-root" prefix=/usr/

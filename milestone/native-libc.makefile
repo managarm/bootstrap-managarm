@@ -3,7 +3,7 @@ f := native-libc
 $f_grp := mlibc
 
 $f_RUN := $B/withprefix $B/prefixes
-$f_RUN += host-protoc cross-binutils system-gcc
+$f_RUN += host-protoc cross-binutils native-gcc
 $f_RUN += --
 
 $(call milestone_action,install-$f)

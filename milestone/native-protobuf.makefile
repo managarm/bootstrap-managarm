@@ -3,7 +3,7 @@ f := native-protobuf
 $f_up := protobuf
 
 $f_RUN := $B/withprefix $B/prefixes
-$f_RUN += host-protoc cross-binutils system-gcc
+$f_RUN += host-protoc cross-binutils native-gcc
 $f_RUN += --
 
 $f_CONFIGURE := $T/ports/$($f_up)/configure --host=x86_64-managarm --prefix=/usr

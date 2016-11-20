@@ -1,9 +1,9 @@
 
 f := native-runtime
-$f_grp := system-gcc
+$f_grp := native-gcc
 
 $f_RUN := $B/withprefix $B/prefixes
-$f_RUN += cross-binutils system-gcc
+$f_RUN += cross-binutils native-gcc
 $f_RUN += --
 
 $(call milestone_action,install-$f)
