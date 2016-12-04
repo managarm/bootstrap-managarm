@@ -57,6 +57,7 @@ include $T/milestone/managarm-bundle.makefile
 include $T/milestone/mlibc-bundle.makefile
 include $T/milestone/native-boost.makefile
 include $T/milestone/native-core.makefile
+include $T/milestone/native-drivers.makefile
 include $T/milestone/native-headers.makefile
 include $T/milestone/native-helix.makefile
 include $T/milestone/native-libc.makefile

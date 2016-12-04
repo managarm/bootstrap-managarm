@@ -31,7 +31,7 @@ install -s managarm/protocols/fs/bin/libfs_protocol.so $dir/boot/managarm
 #install -s ../../../managarm-sysroot/usr/lib/libfs.so $dir/boot/managarm
 
 # essential drivers
-#install -s ../drivers/uhci/bin/uhci $dir/boot/managarm
+install -s managarm/drivers/uhci/bin/uhci $dir/boot/managarm
 install -s managarm/posix/init/bin/posix-init $dir/boot/managarm
 #install -s ../drivers/ata/bin/ata $dir/boot/managarm
 #install -s ../drivers/virtio/bin/virtio-block $dir/boot/managarm
