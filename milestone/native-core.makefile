@@ -23,6 +23,9 @@ install-$f: $(call milestone_tag,configure-managarm-bundle)
 	cd $B/$($f_grp) && $($f_RUN) make gen-protocols/fs
 	cd $B/$($f_grp) && $($f_RUN) make all-protocols/fs
 	cd $B/$($f_grp) && $($f_RUN) make install-protocols/fs
+	cd $B/$($f_grp) && $($f_RUN) make gen-protocols/usb
+	cd $B/$($f_grp) && $($f_RUN) make all-protocols/usb
+	cd $B/$($f_grp) && $($f_RUN) make install-protocols/usb
 	# TODO: this should be replaced by a better protocol.
 	cd $B/$($f_grp) && $($f_RUN) make install-thor/kernel-headers
 	cd $B/$($f_grp) && $($f_RUN) make gen-thor/acpi

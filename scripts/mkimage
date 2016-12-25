@@ -28,6 +28,7 @@ install -s system-root/usr/lib/libprotobuf-lite.so.11 $dir/boot/managarm
 install -s native/native-libcofiber/bin/libcofiber.so $dir/boot/managarm
 install -s managarm/libmbus/bin/libmbus.so $dir/boot/managarm
 install -s managarm/protocols/fs/bin/libfs_protocol.so $dir/boot/managarm
+install -s managarm/protocols/usb/bin/libusb_protocol.so $dir/boot/managarm
 #install -s ../../../managarm-sysroot/usr/lib/libfs.so $dir/boot/managarm
 
 # essential drivers
