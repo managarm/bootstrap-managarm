@@ -10,12 +10,12 @@ $(call milestone_action,install-$f)
 
 install-$f: | $(call milestone_tag,install-native-core)
 install-$f: $(call milestone_tag,configure-managarm-bundle)
-	cd $B/$($f_grp) && $($f_RUN) make gen-libcompose
-	cd $B/$($f_grp) && $($f_RUN) make all-libcompose
-	cd $B/$($f_grp) && $($f_RUN) make install-libcompose
-	cd $B/$($f_grp) && $($f_RUN) make gen-libterminal
-	cd $B/$($f_grp) && $($f_RUN) make all-libterminal
-	cd $B/$($f_grp) && $($f_RUN) make install-libterminal
+	cd $B/$($f_grp) && $($f_RUN) make gen-drivers/libcompose
+	cd $B/$($f_grp) && $($f_RUN) make all-drivers/libcompose
+	cd $B/$($f_grp) && $($f_RUN) make install-drivers/libcompose
+	cd $B/$($f_grp) && $($f_RUN) make gen-drivers/libterminal
+	cd $B/$($f_grp) && $($f_RUN) make all-drivers/libterminal
+	cd $B/$($f_grp) && $($f_RUN) make install-drivers/libterminal
 	cd $B/$($f_grp) && $($f_RUN) make gen-drivers/vga_terminal
 	cd $B/$($f_grp) && $($f_RUN) make all-drivers/vga_terminal
 	cd $B/$($f_grp) && $($f_RUN) make install-drivers/vga_terminal
