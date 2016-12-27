@@ -34,8 +34,9 @@ install -s managarm/protocols/usb/bin/libusb_protocol.so $dir/boot/managarm
 # essential drivers
 install -s managarm/drivers/uhci/bin/uhci $dir/boot/managarm
 install -s managarm/posix/init/bin/posix-init $dir/boot/managarm
+install -s managarm/drivers/libblockfs/bin/libblockfs.so $dir/boot/managarm
+install -s managarm/drivers/virtio/bin/virtio-block $dir/boot/managarm
 #install -s ../drivers/ata/bin/ata $dir/boot/managarm
-#install -s ../drivers/virtio/bin/virtio-block $dir/boot/managarm
 
 # copy the sysroot
 #cp -ru ../../../managarm-sysroot/usr $dir

@@ -12,8 +12,12 @@ install-$f: | $(call milestone_tag,install-native-gcc)
 install-$f: | $(call milestone_tag,install-native-boost)
 install-$f: | $(call milestone_tag,install-native-protobuf)
 install-$f: | $(call milestone_tag,install-native-libcofiber)
+install-$f: | $(call milestone_tag,install-native-libasync)
 install-$f: | $(call milestone_tag,install-native-helix)
 install-$f: $(call milestone_tag,configure-managarm-bundle)
+	cd $B/$($f_grp) && $($f_RUN) make gen-libarch
+	cd $B/$($f_grp) && $($f_RUN) make all-libarch
+	cd $B/$($f_grp) && $($f_RUN) make install-libarch
 	cd $B/$($f_grp) && $($f_RUN) make gen-mbus
 	cd $B/$($f_grp) && $($f_RUN) make all-mbus
 	cd $B/$($f_grp) && $($f_RUN) make install-mbus
