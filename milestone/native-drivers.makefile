@@ -28,5 +28,8 @@ install-$f: $(call milestone_tag,configure-managarm-bundle)
 	cd $B/$($f_grp) && $($f_RUN) make gen-drivers/uhci
 	cd $B/$($f_grp) && $($f_RUN) make all-drivers/uhci
 	cd $B/$($f_grp) && $($f_RUN) make install-drivers/uhci
+	cd $B/$($f_grp) && $($f_RUN) make gen-drivers/hid
+	cd $B/$($f_grp) && $($f_RUN) make all-drivers/hid
+	cd $B/$($f_grp) && $($f_RUN) make install-drivers/hid
 	touch $(call milestone_tag,$@)
 
