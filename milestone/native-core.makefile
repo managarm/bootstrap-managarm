@@ -21,9 +21,9 @@ install-$f: $(call milestone_tag,configure-managarm-bundle)
 	cd $B/$($f_grp) && $($f_RUN) make gen-mbus
 	cd $B/$($f_grp) && $($f_RUN) make all-mbus
 	cd $B/$($f_grp) && $($f_RUN) make install-mbus
-	cd $B/$($f_grp) && $($f_RUN) make gen-libmbus
-	cd $B/$($f_grp) && $($f_RUN) make all-libmbus
-	cd $B/$($f_grp) && $($f_RUN) make install-libmbus
+	cd $B/$($f_grp) && $($f_RUN) make gen-protocols/mbus
+	cd $B/$($f_grp) && $($f_RUN) make all-protocols/mbus
+	cd $B/$($f_grp) && $($f_RUN) make install-protocols/mbus
 	cd $B/$($f_grp) && $($f_RUN) make gen-protocols/fs
 	cd $B/$($f_grp) && $($f_RUN) make all-protocols/fs
 	cd $B/$($f_grp) && $($f_RUN) make install-protocols/fs
