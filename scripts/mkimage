@@ -5,6 +5,7 @@ dir=/mnt/managarm
 ./mount
 
 mkdir -p $dir/boot/managarm
+mkdir -p $dir/usr/bin
 
 # kernel and startup files
 install -s managarm/eir/bin/eir $dir/boot/managarm
@@ -41,7 +42,8 @@ install -s managarm/drivers/virtio/bin/virtio-block $dir/boot/managarm
 #install -s ../drivers/ata/bin/ata $dir/boot/managarm
 
 # copy the sysroot
-#cp -ru ../../../managarm-sysroot/usr $dir
+#cp -ru system-root/usr $dir
+install -s system-root/usr/bin/vga_terminal $dir/usr/bin
 
 ./umount
 
