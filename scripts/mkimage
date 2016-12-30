@@ -32,8 +32,9 @@ install -s managarm/protocols/mbus/bin/libmbus_protocol.so $dir/boot/managarm
 install -s managarm/protocols/usb/bin/libusb_protocol.so $dir/boot/managarm
 
 # essential drivers
-install -s managarm/drivers/uhci/bin/uhci $dir/boot/managarm
-install -s managarm/drivers/hid/bin/hid $dir/boot/managarm
+install -s managarm/drivers/usb/devices/hid/bin/hid $dir/boot/managarm
+install -s managarm/drivers/usb/devices/storage/bin/storage $dir/boot/managarm
+install -s managarm/drivers/usb/hcds/uhci/bin/uhci $dir/boot/managarm
 install -s managarm/posix/init/bin/posix-init $dir/boot/managarm
 install -s managarm/drivers/libblockfs/bin/libblockfs.so $dir/boot/managarm
 install -s managarm/drivers/virtio/bin/virtio-block $dir/boot/managarm

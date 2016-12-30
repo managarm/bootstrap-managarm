@@ -25,11 +25,11 @@ install-$f: $(call milestone_tag,configure-managarm-bundle)
 	cd $B/$($f_grp) && $($f_RUN) make gen-drivers/vga_terminal
 	cd $B/$($f_grp) && $($f_RUN) make all-drivers/vga_terminal
 	cd $B/$($f_grp) && $($f_RUN) make install-drivers/vga_terminal
-	cd $B/$($f_grp) && $($f_RUN) make gen-drivers/uhci
-	cd $B/$($f_grp) && $($f_RUN) make all-drivers/uhci
-	cd $B/$($f_grp) && $($f_RUN) make install-drivers/uhci
-	cd $B/$($f_grp) && $($f_RUN) make gen-drivers/hid
-	cd $B/$($f_grp) && $($f_RUN) make all-drivers/hid
-	cd $B/$($f_grp) && $($f_RUN) make install-drivers/hid
+	cd $B/$($f_grp) && $($f_RUN) make gen-drivers/usb/hcds/uhci
+	cd $B/$($f_grp) && $($f_RUN) make all-drivers/usb/hcds/uhci
+	cd $B/$($f_grp) && $($f_RUN) make install-drivers/usb/hcds/uhci
+	cd $B/$($f_grp) && $($f_RUN) make gen-drivers/usb/devices/hid
+	cd $B/$($f_grp) && $($f_RUN) make all-drivers/usb/devices/hid
+	cd $B/$($f_grp) && $($f_RUN) make install-drivers/usb/devices/hid
 	touch $(call milestone_tag,$@)
 
