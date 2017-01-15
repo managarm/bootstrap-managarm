@@ -27,6 +27,7 @@ install -s prefixes/native-gcc/x86_64-managarm/lib/foo/libstdc++.so.6 $dir/boot/
 #install -s ../../../managarm-sysroot/usr/lib/libz.so.1 $dir/boot/managarm
 install -s system-root/usr/lib/libprotobuf-lite.so.11 $dir/boot/managarm
 install -s native/native-libcofiber/bin/libcofiber.so $dir/boot/managarm
+install -s managarm/libarch/bin/libarch.so $dir/boot/managarm
 install -s managarm/protocols/fs/bin/libfs_protocol.so $dir/boot/managarm
 install -s managarm/protocols/hw/bin/libhw_protocol.so $dir/boot/managarm
 install -s managarm/protocols/mbus/bin/libmbus_protocol.so $dir/boot/managarm
