@@ -34,6 +34,7 @@ include $T/upstream/autoconf-v2.69.makefile
 include $T/upstream/automake-v1.11.makefile
 include $T/upstream/binutils.makefile
 include $T/upstream/boost.makefile
+include $T/upstream/frigg.makefile
 include $T/upstream/gcc.makefile
 include $T/upstream/libasync.makefile
 include $T/upstream/libcofiber.makefile
@@ -59,6 +60,7 @@ include $T/milestone/mlibc-bundle.makefile
 include $T/milestone/native-boost.makefile
 include $T/milestone/native-core.makefile
 include $T/milestone/native-drivers.makefile
+include $T/milestone/native-frigg.makefile
 include $T/milestone/native-headers.makefile
 include $T/milestone/native-helix.makefile
 include $T/milestone/native-libasync.makefile
