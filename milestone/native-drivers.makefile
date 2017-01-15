@@ -28,6 +28,9 @@ install-$f: $(call milestone_tag,configure-managarm-bundle)
 	cd $B/$($f_grp) && $($f_RUN) make gen-drivers/usb/hcds/uhci
 	cd $B/$($f_grp) && $($f_RUN) make all-drivers/usb/hcds/uhci
 	cd $B/$($f_grp) && $($f_RUN) make install-drivers/usb/hcds/uhci
+	cd $B/$($f_grp) && $($f_RUN) make gen-drivers/usb/devices/storage
+	cd $B/$($f_grp) && $($f_RUN) make all-drivers/usb/devices/storage
+	cd $B/$($f_grp) && $($f_RUN) make install-drivers/usb/devices/storage
 	cd $B/$($f_grp) && $($f_RUN) make gen-drivers/usb/devices/hid
 	cd $B/$($f_grp) && $($f_RUN) make all-drivers/usb/devices/hid
 	cd $B/$($f_grp) && $($f_RUN) make install-drivers/usb/devices/hid
