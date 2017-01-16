@@ -10,7 +10,6 @@ mkdir -p $dir/usr/bin
 # kernel and startup files
 install -s managarm/eir/bin/eir $dir/boot/managarm
 install -s managarm/thor/kernel/bin/thor $dir/boot/managarm
-install -s managarm/thor/user_boot/bin/user_boot $dir/boot/managarm
 
 # userspace core components
 install -s managarm/hel/bin/libhelix.so $dir/boot/managarm
