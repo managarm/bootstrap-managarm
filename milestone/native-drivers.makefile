@@ -25,6 +25,8 @@ install-$f: $(call milestone_tag,configure-managarm-bundle)
 	cd $B/$($f_grp) && $($f_RUN) make gen-drivers/vga_terminal
 	cd $B/$($f_grp) && $($f_RUN) make all-drivers/vga_terminal
 	cd $B/$($f_grp) && $($f_RUN) make install-drivers/vga_terminal
+	cd $B/$($f_grp) && $($f_RUN) make all-drivers/gfx/intel
+	cd $B/$($f_grp) && $($f_RUN) make install-drivers/gfx/intel
 	cd $B/$($f_grp) && $($f_RUN) make gen-drivers/usb/hcds/uhci
 	cd $B/$($f_grp) && $($f_RUN) make all-drivers/usb/hcds/uhci
 	cd $B/$($f_grp) && $($f_RUN) make install-drivers/usb/hcds/uhci

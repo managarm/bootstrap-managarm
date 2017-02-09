@@ -33,6 +33,7 @@ install -s managarm/protocols/mbus/bin/libmbus_protocol.so $dir/boot/managarm
 install -s managarm/protocols/usb/bin/libusb_protocol.so $dir/boot/managarm
 
 # essential drivers
+install -s managarm/drivers/gfx/intel/bin/gfx_intel $dir/boot/managarm
 install -s managarm/drivers/usb/devices/hid/bin/hid $dir/boot/managarm
 install -s managarm/drivers/usb/devices/storage/bin/storage $dir/boot/managarm
 install -s managarm/drivers/usb/hcds/uhci/bin/uhci $dir/boot/managarm
