@@ -19,6 +19,9 @@ install-$f: $(call milestone_tag,configure-managarm-bundle)
 	cd $B/$($f_grp) && $($f_RUN) make gen-drivers/libterminal
 	cd $B/$($f_grp) && $($f_RUN) make all-drivers/libterminal
 	cd $B/$($f_grp) && $($f_RUN) make install-drivers/libterminal
+	cd $B/$($f_grp) && $($f_RUN) make gen-drivers/uart
+	cd $B/$($f_grp) && $($f_RUN) make all-drivers/uart
+	cd $B/$($f_grp) && $($f_RUN) make install-drivers/uart
 	cd $B/$($f_grp) && $($f_RUN) make gen-drivers/virtio
 	cd $B/$($f_grp) && $($f_RUN) make all-drivers/virtio
 	cd $B/$($f_grp) && $($f_RUN) make install-drivers/virtio
