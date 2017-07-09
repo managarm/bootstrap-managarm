@@ -1,28 +1,28 @@
-From b05ab4a6532be993c589af5f55182abc6a849c97 Mon Sep 17 00:00:00 2001
+From eb3e1b58ee0acde939daa1fc4a45e5be8ef93378 Mon Sep 17 00:00:00 2001
 From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
 Date: Wed, 29 Jun 2016 09:28:28 +0000
-Subject: [PATCH] Managarm target
+Subject: [PATCH 1/2] Managarm target
 
 TODO: Use libtoolize instead of modifying in-tree libtool?
 ---
- config.sub                   |  6 +++++-
+ config.sub                   |  7 ++++++-
  fixincludes/mkfixinc.sh      |  1 +
- gcc/config.gcc               | 24 ++++++++++++++++++++++++
+ gcc/config.gcc               | 36 ++++++++++++++++++++++++++++++++++++
  gcc/config/i386/t-managarm64 |  5 +++++
  gcc/config/managarm-kernel.h | 10 ++++++++++
  gcc/config/managarm-system.h | 10 ++++++++++
  gcc/config/managarm.h        | 25 +++++++++++++++++++++++++
- libgcc/config.host           | 11 ++++++++++-
+ libgcc/config.host           |  8 ++++++++
  libstdc++-v3/crossconfig.m4  |  6 ++++++
  libtool.m4                   | 14 ++++++++++++++
- 10 files changed, 110 insertions(+), 2 deletions(-)
+ 10 files changed, 121 insertions(+), 1 deletion(-)
  create mode 100644 gcc/config/i386/t-managarm64
  create mode 100644 gcc/config/managarm-kernel.h
  create mode 100644 gcc/config/managarm-system.h
  create mode 100644 gcc/config/managarm.h
 
 diff --git a/config.sub b/config.sub
-index da6d1b6..02271ac 100755
+index 62b8259..e00194b 100755
 --- a/config.sub
 +++ b/config.sub
 @@ -116,6 +116,7 @@ maybe_os=`echo $1 | sed 's/^\(.*\)-\([^-]*-[^-]*\)$/\2/'`
@@ -31,18 +31,19 @@ index da6d1b6..02271ac 100755
    linux-musl* | linux-uclibc* | uclinux-uclibc* | uclinux-gnu* | kfreebsd*-gnu* | \
 +  managarm-kernel* | managarm-system* | \
    knetbsd*-gnu* | netbsd*-gnu* | netbsd*-eabi* | \
-   kopensolaris*-gnu* | \
+   kopensolaris*-gnu* | cloudabi*-eabi* | \
    storm-chaos* | os2-emx* | rtmk-nova*)
-@@ -1399,7 +1400,7 @@ case $os in
+@@ -1409,7 +1410,8 @@ case $os in
  	      | -morphos* | -superux* | -rtmk* | -rtmk-nova* | -windiss* \
  	      | -powermax* | -dnix* | -nx6 | -nx7 | -sei* | -dragonfly* \
  	      | -skyos* | -haiku* | -rdos* | -toppers* | -drops* | -es* \
--	      | -onefs* | -tirtos*)
-+	      | -onefs* | -tirtos* | -managarm-kernel* | -managarm-system* )
+-	      | -onefs* | -tirtos* | -phoenix* | -fuchsia* | -redox*)
++	      | -onefs* | -tirtos* | -phoenix* | -fuchsia* | -redox* \
++	      | -managarm-kernel* | -managarm-system*)
  	# Remember, each alternative MUST END IN *, to match a version number.
  		;;
  	-qnx*)
-@@ -1423,6 +1424,9 @@ case $os in
+@@ -1433,6 +1435,9 @@ case $os in
  	-mac*)
  		os=`echo $os | sed -e 's|mac|macos|'`
  		;;
@@ -53,7 +54,7 @@ index da6d1b6..02271ac 100755
  		os=-linux-dietlibc
  		;;
 diff --git a/fixincludes/mkfixinc.sh b/fixincludes/mkfixinc.sh
-index 0d96c8c..0c4e21c 100755
+index 0f96486..5d34be85 100755
 --- a/fixincludes/mkfixinc.sh
 +++ b/fixincludes/mkfixinc.sh
 @@ -12,6 +12,7 @@ target=fixinc.sh
@@ -63,12 +64,12 @@ index 0d96c8c..0c4e21c 100755
 +    x86_64-*-managarm* | \
      i?86-*-mingw32* | \
      x86_64-*-mingw32* | \
-     i?86-*-interix* | \
+     powerpc-*-eabisim* | \
 diff --git a/gcc/config.gcc b/gcc/config.gcc
-index f66e48c..017b7a0 100644
+index b8bb4d6..cd5b912 100644
 --- a/gcc/config.gcc
 +++ b/gcc/config.gcc
-@@ -768,6 +768,14 @@ case ${target} in
+@@ -774,6 +774,24 @@ case ${target} in
    tmake_file="${tmake_file} t-glibc"
    target_has_targetcm=yes
    ;;
@@ -77,13 +78,23 @@ index f66e48c..017b7a0 100644
 +  gnu_ld=yes
 +  default_use_cxa_atexit=yes
 +  use_gcc_stdint=wrap
-+  tmake_file="${tmake_file} t-slibgcc"
-+  thread_file='posix'
++
++  case ${target} in
++  *-managarm-system*)
++    tmake_file="${tmake_file} t-slibgcc"
++    thread_file='posix'
++    ;;
++  *-managarm-kernel*)
++    ;;
++  *)
++    echo "managarm target '${target}' not supported."
++    exit 1
++  esac
 +  ;;
  *-*-netbsd*)
    tmake_file="t-slibgcc"
    gas=yes
-@@ -1594,6 +1602,22 @@ x86_64-*-linux* | x86_64-*-kfreebsd*-gnu | x86_64-*-knetbsd*-gnu)
+@@ -1605,6 +1623,24 @@ x86_64-*-linux* | x86_64-*-kfreebsd*-gnu)
  	done
  	TM_MULTILIB_CONFIG=`echo $TM_MULTILIB_CONFIG | sed 's/^,//'`
  	;;
@@ -93,9 +104,11 @@ index f66e48c..017b7a0 100644
 +	
 +	case ${target} in
 +	*-managarm-system*)
-+		tm_file="${tm_file} managarm-system.h" ;;
++		tm_file="${tm_file} managarm-system.h"
++		;;
 +	*-managarm-kernel*)
-+		tm_file="${tm_file} managarm-kernel.h" ;;
++		tm_file="${tm_file} managarm-kernel.h"
++		;;
 +	*)
 +		echo "managarm target '${target}' not supported."
 +		exit 1
@@ -181,10 +194,10 @@ index 0000000..8d4aff6
 +	} while(0);
 +
 diff --git a/libgcc/config.host b/libgcc/config.host
-index b61a579..0e4da4a 100644
+index b279a64..59d9dce 100644
 --- a/libgcc/config.host
 +++ b/libgcc/config.host
-@@ -237,6 +237,11 @@ case ${host} in
+@@ -238,6 +238,11 @@ case ${host} in
      extra_parts="$extra_parts vtv_start.o vtv_end.o vtv_start_preinit.o vtv_end_preinit.o"
    fi
    ;;
@@ -196,32 +209,22 @@ index b61a579..0e4da4a 100644
  *-*-lynxos*)
    tmake_file="$tmake_file t-lynx $cpu_type/t-crtstuff t-crtstuff-pic t-libgcc-pic"
    extra_parts="crtbegin.o crtbeginS.o crtend.o crtendS.o"
-@@ -624,6 +629,9 @@ x86_64-*-linux*)
+@@ -631,6 +636,9 @@ x86_64-*-linux*)
  	tm_file="${tm_file} i386/elf-lib.h"
  	md_unwind_header=i386/linux-unwind.h
  	;;
 +x86_64-*-managarm*)
 +	tmake_file="$tmake_file i386/t-crtstuff"
 +	;;
- x86_64-*-kfreebsd*-gnu | x86_64-*-knetbsd*-gnu)
+ x86_64-*-kfreebsd*-gnu)
  	extra_parts="$extra_parts crtprec32.o crtprec64.o crtprec80.o crtfastmath.o"
  	tmake_file="${tmake_file} i386/t-crtpc t-crtfm i386/t-crtstuff t-dfprules"
-@@ -1368,7 +1376,8 @@ i[34567]86-*-darwin* | x86_64-*-darwin* | \
-   i[34567]86-*-mingw* | x86_64-*-mingw* | \
-   i[34567]86-*-dragonfly* | x86_64-*-dragonfly* | \
-   i[34567]86-*-freebsd* | x86_64-*-freebsd* | \
--  i[34567]86-*-openbsd* | x86_64-*-openbsd*)
-+  i[34567]86-*-openbsd* | x86_64-*-openbsd* | \
-+  x86_64-*-managarm*)
-   	tmake_file="${tmake_file} t-softfp-tf"
- 	if test "${host_address}" = 32; then
- 		tmake_file="${tmake_file} i386/${host_address}/t-softfp"
 diff --git a/libstdc++-v3/crossconfig.m4 b/libstdc++-v3/crossconfig.m4
-index ece1256..1f7bc4f 100644
+index 77c9828..1c331ca 100644
 --- a/libstdc++-v3/crossconfig.m4
 +++ b/libstdc++-v3/crossconfig.m4
-@@ -159,6 +159,12 @@ case "${host}" in
-     AC_CHECK_FUNCS(__cxa_thread_atexit_impl)
+@@ -193,6 +193,12 @@ case "${host}" in
+     AC_CHECK_FUNCS(aligned_alloc posix_memalign memalign _aligned_malloc)
      AM_ICONV
      ;;
 +  *-managarm*)

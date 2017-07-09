@@ -1,0 +1,29 @@
+From 33904d5bc00c0927f8f51c6ffca4f3f49c95a10a Mon Sep 17 00:00:00 2001
+From: avdgrinten <alexander.vandergrinten@gmail.com>
+Date: Sun, 9 Jul 2017 16:09:54 +0200
+Subject: [PATCH 2/2] libstdc++: Fix aligned allocation
+
+---
+ libstdc++-v3/libsupc++/new_opa.cc | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/libstdc++-v3/libsupc++/new_opa.cc b/libstdc++-v3/libsupc++/new_opa.cc
+index e2a0d2f..47c5f9c 100644
+--- a/libstdc++-v3/libsupc++/new_opa.cc
++++ b/libstdc++-v3/libsupc++/new_opa.cc
+@@ -56,6 +56,12 @@ extern "C" void *memalign(std::size_t boundary, std::size_t size);
+ #define aligned_alloc memalign
+ #else
+ #include <stdint.h>
++#if _GLIBCXX_HOSTED
++#else
++// A freestanding C runtime may not provide "malloc" -- but there is no
++// other reasonable way to implement "operator new".
++extern "C" void *malloc (std::size_t);
++#endif
+ // The C library doesn't provide any aligned allocation functions, define one.
+ // This is a modified version of code from gcc/config/i386/gmm_malloc.h
+ static inline void*
+-- 
+2.1.4
+

@@ -1,7 +1,7 @@
 
 f := gcc
 $f_ORIGIN := git://gcc.gnu.org/git/gcc.git
-$f_REF := gcc-6_1_0-release
+$f_REF := gcc-7_1_0-release
 
 $f_RUN := $B/withprefix $B/prefixes
 $f_RUN += host-autoconf-v2.64 host-automake-v1.11
