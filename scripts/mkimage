@@ -4,48 +4,63 @@ dir=/mnt/managarm
 
 ./mount
 
+# -----------------------------------------------------------------------------
+# Build the initrd.
+# -----------------------------------------------------------------------------
+
+mkdir -p initrd/{lib,sbin}
+
+# Runtime libraries.
+install -s managarm/hel/bin/libhelix.so initrd/lib/
+install -s managarm/ld-init/linker/bin/ld-init.so initrd/lib/
+install -s mlibc/libc/bin/libc.so initrd/lib/
+install -s mlibc/libm/bin/libm.so initrd/lib/
+install -s prefixes/native-gcc/x86_64-managarm/lib/foo/libgcc_s.so.1 initrd/lib/
+install -s prefixes/native-gcc/x86_64-managarm/lib/foo/libstdc++.so.6 initrd/lib/
+#install -s ../../../managarm-sysroot/usr/lib/libz.so.1 initrd/
+install -s system-root/usr/lib/libprotobuf-lite.so.11 initrd/lib/
+install -s native/native-libcofiber/bin/libcofiber.so initrd/lib/
+install -s managarm/libarch/bin/libarch.so initrd/lib/
+install -s managarm/protocols/fs/bin/libfs_protocol.so initrd/lib/
+install -s managarm/protocols/hw/bin/libhw_protocol.so initrd/lib/
+install -s managarm/protocols/mbus/bin/libmbus_protocol.so initrd/lib/
+install -s managarm/protocols/usb/bin/libusb_protocol.so initrd/lib/
+
+# User-space core components.
+install -s managarm/mbus/bin/mbus initrd/sbin/
+install -s managarm/posix/subsystem/bin/posix-subsystem initrd/sbin/
+install -s managarm/posix/init/bin/posix-init initrd/sbin/
+
+# Essential drivers.
+install -s managarm/drivers/libblockfs/bin/libblockfs.so initrd/lib/
+
+install -s managarm/drivers/uart/bin/uart initrd/sbin/
+install -s managarm/drivers/gfx/intel/bin/gfx_intel initrd/sbin/
+install -s managarm/drivers/usb/devices/hid/bin/hid initrd/sbin/
+install -s managarm/drivers/usb/devices/storage/bin/storage initrd/sbin/
+install -s managarm/drivers/usb/hcds/uhci/bin/uhci initrd/sbin/
+install -s managarm/drivers/usb/hcds/ehci/bin/ehci initrd/sbin/
+install -s managarm/drivers/virtio/bin/virtio-block initrd/sbin/
+#install -s ../drivers/ata/bin/ata initrd/
+
+(cd initrd/ && find * | cpio -o --format newc > ../initrd.cpio)
+
+# -----------------------------------------------------------------------------
+# Copy files to the image.
+# -----------------------------------------------------------------------------
+
 mkdir -p $dir/boot/managarm
+install -s managarm/eir/bin/eir $dir/boot/managarm/
+install -s managarm/thor/kernel/bin/thor $dir/boot/managarm/
+cp initrd.cpio $dir/boot/managarm/
+
+# Copy the sysroot.
 mkdir -p $dir/usr/bin
-
-# kernel and startup files
-install -s managarm/eir/bin/eir $dir/boot/managarm
-install -s managarm/thor/kernel/bin/thor $dir/boot/managarm
-
-# userspace core components
-install -s managarm/hel/bin/libhelix.so $dir/boot/managarm
-install -s managarm/thor/acpi/bin/acpi $dir/boot/managarm
-install -s managarm/mbus/bin/mbus $dir/boot/managarm
-install -s managarm/posix/subsystem/bin/posix-subsystem $dir/boot/managarm
-
-# essential libraries
-install -s managarm/ld-init/linker/bin/ld-init.so $dir/boot/managarm
-install -s mlibc/libc/bin/libc.so $dir/boot/managarm
-install -s mlibc/libm/bin/libm.so $dir/boot/managarm
-install -s prefixes/native-gcc/x86_64-managarm/lib/foo/libgcc_s.so.1 $dir/boot/managarm
-install -s prefixes/native-gcc/x86_64-managarm/lib/foo/libstdc++.so.6 $dir/boot/managarm
-#install -s ../../../managarm-sysroot/usr/lib/libz.so.1 $dir/boot/managarm
-install -s system-root/usr/lib/libprotobuf-lite.so.11 $dir/boot/managarm
-install -s native/native-libcofiber/bin/libcofiber.so $dir/boot/managarm
-install -s managarm/libarch/bin/libarch.so $dir/boot/managarm
-install -s managarm/protocols/fs/bin/libfs_protocol.so $dir/boot/managarm
-install -s managarm/protocols/hw/bin/libhw_protocol.so $dir/boot/managarm
-install -s managarm/protocols/mbus/bin/libmbus_protocol.so $dir/boot/managarm
-install -s managarm/protocols/usb/bin/libusb_protocol.so $dir/boot/managarm
-
-# essential drivers
-install -s managarm/drivers/gfx/intel/bin/gfx_intel $dir/boot/managarm
-install -s managarm/drivers/usb/devices/hid/bin/hid $dir/boot/managarm
-install -s managarm/drivers/usb/devices/storage/bin/storage $dir/boot/managarm
-install -s managarm/drivers/usb/hcds/uhci/bin/uhci $dir/boot/managarm
-install -s managarm/drivers/usb/hcds/ehci/bin/ehci $dir/boot/managarm
-install -s managarm/posix/init/bin/posix-init $dir/boot/managarm
-install -s managarm/drivers/libblockfs/bin/libblockfs.so $dir/boot/managarm
-install -s managarm/drivers/virtio/bin/virtio-block $dir/boot/managarm
-#install -s ../drivers/ata/bin/ata $dir/boot/managarm
-
-# copy the sysroot
-#cp -ru system-root/usr $dir
-install -s system-root/usr/bin/vga_terminal $dir/usr/bin
+rsync -a --delete system-root/lib/* $dir/lib
+rsync -a --delete system-root/usr/bin/* $dir/usr/bin
+rsync -a --delete system-root/usr/lib/* $dir/usr/lib
+cp prefixes/native-gcc/x86_64-managarm/lib/foo/libgcc_s.so.1 $dir/usr/lib
+cp prefixes/native-gcc/x86_64-managarm/lib/foo/libstdc++.so.6 $dir/usr/lib
 
 ./umount
 
