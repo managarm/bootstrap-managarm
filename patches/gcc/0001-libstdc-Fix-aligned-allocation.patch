@@ -1,7 +1,7 @@
-From 33904d5bc00c0927f8f51c6ffca4f3f49c95a10a Mon Sep 17 00:00:00 2001
+From 82aaa421c3e50edcbf3cc7234d53cc590d325c11 Mon Sep 17 00:00:00 2001
 From: avdgrinten <alexander.vandergrinten@gmail.com>
 Date: Sun, 9 Jul 2017 16:09:54 +0200
-Subject: [PATCH 2/2] libstdc++: Fix aligned allocation
+Subject: [PATCH 1/2] libstdc++: Fix aligned allocation
 
 ---
  libstdc++-v3/libsupc++/new_opa.cc | 6 ++++++
