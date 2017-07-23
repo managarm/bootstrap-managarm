@@ -8,6 +8,17 @@ $f_RUN += --
 
 $(call milestone_action,install-$f)
 
+$f_gen := gen-libarch gen-protocols/fs gen-protocols/hw \
+	gen-protocols/mbus gen-protocols/usb \
+	gen-mbus \
+	install-thor/kernel-headers
+$f_all_libs := all-libarch all-protocols/fs all-protocols/hw \
+	all-protocols/mbus all-protocols/usb
+$f_install_libs := install-libarch install-protocols/fs install-protocols/hw \
+	install-protocols/mbus install-protocols/usb
+$f_all_progs := all-mbus all-posix/subsystem all-posix/init
+$f_install_progs := install-mbus install-posix/subsystem install-posix/init
+
 install-$f: | $(call milestone_tag,install-native-gcc)
 install-$f: | $(call milestone_tag,install-native-boost)
 install-$f: | $(call milestone_tag,install-native-protobuf)
@@ -16,31 +27,10 @@ install-$f: | $(call milestone_tag,install-native-libcofiber)
 install-$f: | $(call milestone_tag,install-native-libasync)
 install-$f: | $(call milestone_tag,install-native-helix)
 install-$f: $(call milestone_tag,configure-managarm-bundle)
-	cd $B/$($f_grp) && $($f_RUN) make gen-libarch
-	cd $B/$($f_grp) && $($f_RUN) make all-libarch
-	cd $B/$($f_grp) && $($f_RUN) make install-libarch
-	cd $B/$($f_grp) && $($f_RUN) make gen-mbus
-	cd $B/$($f_grp) && $($f_RUN) make all-mbus
-	cd $B/$($f_grp) && $($f_RUN) make install-mbus
-	cd $B/$($f_grp) && $($f_RUN) make gen-protocols/mbus
-	cd $B/$($f_grp) && $($f_RUN) make all-protocols/mbus
-	cd $B/$($f_grp) && $($f_RUN) make install-protocols/mbus
-	cd $B/$($f_grp) && $($f_RUN) make gen-protocols/fs
-	cd $B/$($f_grp) && $($f_RUN) make all-protocols/fs
-	cd $B/$($f_grp) && $($f_RUN) make install-protocols/fs
-	cd $B/$($f_grp) && $($f_RUN) make gen-protocols/hw
-	cd $B/$($f_grp) && $($f_RUN) make all-protocols/hw
-	cd $B/$($f_grp) && $($f_RUN) make install-protocols/hw
-	cd $B/$($f_grp) && $($f_RUN) make gen-protocols/usb
-	cd $B/$($f_grp) && $($f_RUN) make all-protocols/usb
-	cd $B/$($f_grp) && $($f_RUN) make install-protocols/usb
-	# TODO: this should be replaced by a better protocol.
-	cd $B/$($f_grp) && $($f_RUN) make install-thor/kernel-headers
-	cd $B/$($f_grp) && $($f_RUN) make gen-posix/subsystem
-	cd $B/$($f_grp) && $($f_RUN) make all-posix/subsystem
-	cd $B/$($f_grp) && $($f_RUN) make install-posix/subsystem
-	cd $B/$($f_grp) && $($f_RUN) make gen-posix/init
-	cd $B/$($f_grp) && $($f_RUN) make all-posix/init
-	cd $B/$($f_grp) && $($f_RUN) make install-posix/init
+	cd $B/$($f_grp) && $($f_RUN) make $($f_gen)
+	cd $B/$($f_grp) && $($f_RUN) make $($f_all_libs)
+	cd $B/$($f_grp) && $($f_RUN) make $($f_install_libs)
+	cd $B/$($f_grp) && $($f_RUN) make $($f_all_progs)
+	cd $B/$($f_grp) && $($f_RUN) make $($f_install_progs)
 	touch $(call milestone_tag,$@)
 
