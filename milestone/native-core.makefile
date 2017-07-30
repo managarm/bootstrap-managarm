@@ -11,6 +11,7 @@ $(call milestone_action,install-$f)
 $f_gen := gen-libarch gen-protocols/fs gen-protocols/hw \
 	gen-protocols/mbus gen-protocols/usb \
 	gen-mbus \
+	gen-posix/subsystem gen-posix/init \
 	install-thor/kernel-headers
 $f_all_libs := all-libarch all-protocols/fs all-protocols/hw \
 	all-protocols/mbus all-protocols/usb
