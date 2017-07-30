@@ -32,8 +32,10 @@ include $T/upstream/acpica.makefile
 include $T/upstream/autoconf-v2.64.makefile
 include $T/upstream/autoconf-v2.69.makefile
 include $T/upstream/automake-v1.11.makefile
+include $T/upstream/bash.makefile
 include $T/upstream/binutils.makefile
 include $T/upstream/boost.makefile
+include $T/upstream/coreutils.makefile
 include $T/upstream/cxxshim.makefile
 include $T/upstream/frigg.makefile
 include $T/upstream/gcc.makefile
@@ -61,8 +63,10 @@ include $T/milestone/kernel-runtime.makefile
 include $T/milestone/libarch.makefile
 include $T/milestone/managarm-bundle.makefile
 include $T/milestone/mlibc-bundle.makefile
+include $T/milestone/native-bash.makefile
 include $T/milestone/native-boost.makefile
 include $T/milestone/native-core.makefile
+include $T/milestone/native-coreutils.makefile
 include $T/milestone/native-drivers.makefile
 include $T/milestone/native-frigg.makefile
 include $T/milestone/native-headers.makefile

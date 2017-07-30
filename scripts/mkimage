@@ -36,6 +36,7 @@ install -s managarm/drivers/libblockfs/bin/libblockfs.so initrd/lib/
 
 install -s managarm/drivers/uart/bin/uart initrd/sbin/
 install -s managarm/drivers/gfx/intel/bin/gfx_intel initrd/sbin/
+install -s managarm/drivers/gfx/bochs/bin/gfx_bochs initrd/sbin/
 install -s managarm/drivers/usb/devices/hid/bin/hid initrd/sbin/
 install -s managarm/drivers/usb/devices/storage/bin/storage initrd/sbin/
 install -s managarm/drivers/usb/hcds/uhci/bin/uhci initrd/sbin/
@@ -43,6 +44,11 @@ install -s managarm/drivers/usb/hcds/ehci/bin/ehci initrd/sbin/
 install -s managarm/drivers/virtio/bin/virtio-block initrd/sbin/
 #install -s ../drivers/ata/bin/ata initrd/
 
+# Other stuff.
+install -s system-root/usr/lib/libdrm.so.2 initrd/lib/
+
+
+# Actually build the initrd.
 (cd initrd/ && find * | cpio -o --format newc > ../initrd.cpio)
 
 # -----------------------------------------------------------------------------
