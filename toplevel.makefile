@@ -38,11 +38,13 @@ include $T/upstream/cxxshim.makefile
 include $T/upstream/frigg.makefile
 include $T/upstream/gcc.makefile
 include $T/upstream/libasync.makefile
+include $T/upstream/libdrm.makefile
 include $T/upstream/libcofiber.makefile
 include $T/upstream/libtool.makefile
 include $T/upstream/managarm.makefile
 include $T/upstream/mlibc.makefile
 include $T/upstream/protobuf.makefile
+include $T/upstream/xorg-macros.makefile
 
 include $T/milestone/cross-binutils.makefile
 include $T/milestone/helpers.makefile
@@ -52,6 +54,7 @@ include $T/milestone/host-automake-v1.11.makefile
 include $T/milestone/host-frigg_pb.makefile
 include $T/milestone/host-libtool.makefile
 include $T/milestone/host-protoc.makefile
+include $T/milestone/host-xorg-macros.makefile
 include $T/milestone/kernel-gcc.makefile
 include $T/milestone/kernel-main.makefile
 include $T/milestone/kernel-runtime.makefile
@@ -67,6 +70,7 @@ include $T/milestone/native-helix.makefile
 include $T/milestone/native-libasync.makefile
 include $T/milestone/native-libc.makefile
 include $T/milestone/native-libcofiber.makefile
+include $T/milestone/native-libdrm.makefile
 include $T/milestone/native-protobuf.makefile
 include $T/milestone/native-rtdl.makefile
 include $T/milestone/native-runtime.makefile
