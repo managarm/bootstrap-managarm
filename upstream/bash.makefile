@@ -1,13 +1,12 @@
 
-f := libdrm
+f := bash
 
-$f_RUN := ACLOCAL_PATH=$B/prefixes/host-pkg-config/share/aclocal
-$f_RUN += $B/withprefix $B/prefixes
+$f_RUN := $B/withprefix $B/prefixes
 $f_RUN += host-autoconf-v2.69 host-automake-v1.11
 $f_RUN += --
 
-$f_ORIGIN = git://anongit.freedesktop.org/mesa/drm
-$f_REF = libdrm-2.4.81
+$f_ORIGIN = git://git.savannah.gnu.org/bash.git
+$f_REF = bash-4.4
 
 $(call upstream_action,clone-$f init-$f regenerate-$f)
 
@@ -24,6 +23,6 @@ regenerate-$f: | $(call milestone_tag,install-host-autoconf-v2.69)
 regenerate-$f: | $(call milestone_tag,install-host-automake-v1.11)
 regenerate-$f: | $(call milestone_tag,install-host-libtool)
 regenerate-$f: | $(call upstream_tag,init-$f)
-	cd $T/ports/$f && NOCONFIGURE=yes $($f_RUN) ./autogen.sh
+	cd $T/ports/$f && $($f_RUN) ./autogen.sh
 	touch $(call upstream_tag,$@)
 

@@ -37,6 +37,7 @@ include $T/upstream/binutils.makefile
 include $T/upstream/boost.makefile
 include $T/upstream/coreutils.makefile
 include $T/upstream/cxxshim.makefile
+include $T/upstream/eudev.makefile
 include $T/upstream/frigg.makefile
 include $T/upstream/gcc.makefile
 include $T/upstream/libasync.makefile
@@ -44,9 +45,12 @@ include $T/upstream/libdrm.makefile
 include $T/upstream/libcofiber.makefile
 include $T/upstream/libtool.makefile
 include $T/upstream/managarm.makefile
+include $T/upstream/mesa.makefile
 include $T/upstream/mlibc.makefile
+include $T/upstream/pkg-config.makefile
 include $T/upstream/protobuf.makefile
 include $T/upstream/xorg-macros.makefile
+include $T/upstream/zlib.makefile
 
 include $T/milestone/cross-binutils.makefile
 include $T/milestone/helpers.makefile
@@ -55,6 +59,7 @@ include $T/milestone/host-autoconf-v2.69.makefile
 include $T/milestone/host-automake-v1.11.makefile
 include $T/milestone/host-frigg_pb.makefile
 include $T/milestone/host-libtool.makefile
+include $T/milestone/host-pkg-config.makefile
 include $T/milestone/host-protoc.makefile
 include $T/milestone/host-xorg-macros.makefile
 include $T/milestone/kernel-gcc.makefile
@@ -75,8 +80,10 @@ include $T/milestone/native-libasync.makefile
 include $T/milestone/native-libc.makefile
 include $T/milestone/native-libcofiber.makefile
 include $T/milestone/native-libdrm.makefile
+include $T/milestone/native-mesa.makefile
 include $T/milestone/native-protobuf.makefile
 include $T/milestone/native-rtdl.makefile
 include $T/milestone/native-runtime.makefile
+include $T/milestone/native-zlib.makefile
 include $T/milestone/system-gcc.makefile
 

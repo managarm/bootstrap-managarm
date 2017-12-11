@@ -1,13 +1,13 @@
 
-f := libdrm
+f := mesa
 
 $f_RUN := ACLOCAL_PATH=$B/prefixes/host-pkg-config/share/aclocal
 $f_RUN += $B/withprefix $B/prefixes
 $f_RUN += host-autoconf-v2.69 host-automake-v1.11
 $f_RUN += --
 
-$f_ORIGIN = git://anongit.freedesktop.org/mesa/drm
-$f_REF = libdrm-2.4.81
+$f_ORIGIN = git://anongit.freedesktop.org/mesa/mesa
+$f_REF = mesa-17.1.5
 
 $(call upstream_action,clone-$f init-$f regenerate-$f)
 
