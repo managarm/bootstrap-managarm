@@ -41,8 +41,9 @@ include $T/upstream/eudev.makefile
 include $T/upstream/frigg.makefile
 include $T/upstream/gcc.makefile
 include $T/upstream/libasync.makefile
-include $T/upstream/libdrm.makefile
 include $T/upstream/libcofiber.makefile
+include $T/upstream/libdrm.makefile
+include $T/upstream/libexpat.makefile
 include $T/upstream/libtool.makefile
 include $T/upstream/managarm.makefile
 include $T/upstream/mesa.makefile
@@ -80,6 +81,7 @@ include $T/milestone/native-libasync.makefile
 include $T/milestone/native-libc.makefile
 include $T/milestone/native-libcofiber.makefile
 include $T/milestone/native-libdrm.makefile
+include $T/milestone/native-libexpat.makefile
 include $T/milestone/native-mesa.makefile
 include $T/milestone/native-protobuf.makefile
 include $T/milestone/native-rtdl.makefile
