@@ -8,7 +8,7 @@ Subject: [PATCH 1/2] libstdc++: Fix aligned allocation
  1 file changed, 6 insertions(+)
 
 diff --git a/libstdc++-v3/libsupc++/new_opa.cc b/libstdc++-v3/libsupc++/new_opa.cc
-index e2a0d2f..47c5f9c 100644
+index e2a0d2f5371..47c5f9c67a0 100644
 --- a/libstdc++-v3/libsupc++/new_opa.cc
 +++ b/libstdc++-v3/libsupc++/new_opa.cc
 @@ -56,6 +56,12 @@ extern "C" void *memalign(std::size_t boundary, std::size_t size);
@@ -25,5 +25,5 @@ index e2a0d2f..47c5f9c 100644
  // This is a modified version of code from gcc/config/i386/gmm_malloc.h
  static inline void*
 -- 
-2.1.4
+2.11.0
 
