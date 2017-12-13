@@ -1,0 +1,24 @@
+From dc7f78ba02d22fa645130620d96a12788b85fea0 Mon Sep 17 00:00:00 2001
+From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
+Date: Wed, 13 Dec 2017 16:34:30 +0100
+Subject: [PATCH] Fix cross compilation under older automake
+
+---
+ expat/configure.ac | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/expat/configure.ac b/expat/configure.ac
+index c24f518..c21ffb7 100644
+--- a/expat/configure.ac
++++ b/expat/configure.ac
+@@ -66,6 +66,7 @@ dnl Checks for programs.
+ AC_PROG_CC_C99
+ AC_PROG_CXX
+ AC_PROG_INSTALL
++AM_PROG_CC_C_O
+ 
+ if test "$GCC" = yes ; then
+     dnl
+-- 
+2.11.0
+

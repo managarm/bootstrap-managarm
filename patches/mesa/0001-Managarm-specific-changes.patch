@@ -1,0 +1,38 @@
+From 50a594d7c9eb24a66c603dfd4eed9943493a91e3 Mon Sep 17 00:00:00 2001
+From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
+Date: Wed, 13 Dec 2017 16:35:26 +0100
+Subject: [PATCH] Managarm-specific changes
+
+---
+ configure.ac     | 2 +-
+ src/util/debug.c | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/configure.ac b/configure.ac
+index f4cc9989f6..6e7f2aabd5 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -846,7 +846,7 @@ PTHREAD_LIBS="$PTHREAD_LIBS -pthread"
+ dnl pthread-stubs is mandatory on BSD platforms, due to the nature of the
+ dnl project. Even then there's a notable issue as described in the project README
+ case "$host_os" in
+-linux* | cygwin* | darwin* | solaris* | *-gnu* | gnu*)
++linux* | cygwin* | darwin* | solaris* | *-gnu* | gnu* | managarm*)
+     pthread_stubs_possible="no"
+     ;;
+ * )
+diff --git a/src/util/debug.c b/src/util/debug.c
+index 98b1853325..dbf168b8cb 100644
+--- a/src/util/debug.c
++++ b/src/util/debug.c
+@@ -22,6 +22,7 @@
+  */
+ 
+ #include <string.h>
++#include <strings.h>
+ #include "main/macros.h"
+ #include "debug.h"
+ 
+-- 
+2.11.0
+
