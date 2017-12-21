@@ -1,12 +1,24 @@
-From 50a594d7c9eb24a66c603dfd4eed9943493a91e3 Mon Sep 17 00:00:00 2001
+From 61135efa00f5a15dc03319523c101b919faa01bc Mon Sep 17 00:00:00 2001
 From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
 Date: Wed, 13 Dec 2017 16:35:26 +0100
 Subject: [PATCH] Managarm-specific changes
 
 ---
- configure.ac     | 2 +-
- src/util/debug.c | 1 +
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ configure.ac                                          | 2 +-
+ src/gallium/auxiliary/hud/hud_context.c               | 2 ++
+ src/gallium/auxiliary/os/os_misc.c                    | 4 ++--
+ src/gallium/auxiliary/os/os_process.c                 | 7 ++++---
+ src/gallium/auxiliary/os/os_thread.h                  | 2 +-
+ src/gallium/auxiliary/os/os_time.c                    | 4 ++--
+ src/gallium/auxiliary/pipebuffer/pb_buffer_fenced.c   | 4 ++--
+ src/gallium/auxiliary/util/u_cpu_detect.c             | 2 +-
+ src/gallium/auxiliary/util/u_network.c                | 8 +++++---
+ src/gallium/auxiliary/util/u_network.h                | 2 +-
+ src/gallium/drivers/ddebug/dd_draw.c                  | 2 +-
+ src/gallium/include/pipe/p_config.h                   | 9 +++++++--
+ src/gallium/winsys/svga/drm/pb_buffer_simple_fenced.c | 4 ++--
+ src/util/debug.c                                      | 1 +
+ 14 files changed, 32 insertions(+), 21 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
 index f4cc9989f6..6e7f2aabd5 100644
@@ -21,6 +33,249 @@ index f4cc9989f6..6e7f2aabd5 100644
      pthread_stubs_possible="no"
      ;;
  * )
+diff --git a/src/gallium/auxiliary/hud/hud_context.c b/src/gallium/auxiliary/hud/hud_context.c
+index f492c81fe6..a3e25018dc 100644
+--- a/src/gallium/auxiliary/hud/hud_context.c
++++ b/src/gallium/auxiliary/hud/hud_context.c
+@@ -33,6 +33,8 @@
+  * Set GALLIUM_HUD=help for more info.
+  */
+ 
++#include <unistd.h>
++
+ #include <inttypes.h>
+ #include <signal.h>
+ #include <stdio.h>
+diff --git a/src/gallium/auxiliary/os/os_misc.c b/src/gallium/auxiliary/os/os_misc.c
+index 09d4400e08..6b9e0fabdc 100644
+--- a/src/gallium/auxiliary/os/os_misc.c
++++ b/src/gallium/auxiliary/os/os_misc.c
+@@ -47,7 +47,7 @@
+ #endif
+ 
+ 
+-#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_CYGWIN) || defined(PIPE_OS_SOLARIS)
++#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_MANAGARM) || defined(PIPE_OS_CYGWIN) || defined(PIPE_OS_SOLARIS)
+ #  include <unistd.h>
+ #elif defined(PIPE_OS_APPLE) || defined(PIPE_OS_BSD)
+ #  include <sys/sysctl.h>
+@@ -124,7 +124,7 @@ os_get_option(const char *name)
+ bool
+ os_get_total_physical_memory(uint64_t *size)
+ {
+-#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_CYGWIN) || defined(PIPE_OS_SOLARIS)
++#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_MANAGARM) || defined(PIPE_OS_CYGWIN) || defined(PIPE_OS_SOLARIS)
+    const long phys_pages = sysconf(_SC_PHYS_PAGES);
+    const long page_size = sysconf(_SC_PAGE_SIZE);
+ 
+diff --git a/src/gallium/auxiliary/os/os_process.c b/src/gallium/auxiliary/os/os_process.c
+index 6622b9b2bc..1a86a9fb00 100644
+--- a/src/gallium/auxiliary/os/os_process.c
++++ b/src/gallium/auxiliary/os/os_process.c
+@@ -43,7 +43,7 @@
+ #warning unexpected platform in os_process.c
+ #endif
+ 
+-#if defined(PIPE_OS_LINUX)
++#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_MANAGARM)
+ #  include <fcntl.h>
+ #endif
+ 
+@@ -132,9 +132,10 @@ os_get_command_line(char *cmdline, size_t size)
+       cmdline[size - 1] = 0;
+       return TRUE;
+    }
+-#elif defined(PIPE_OS_LINUX)
++#elif defined(PIPE_OS_LINUX) || defined(PIPE_OS_MANAGARM) 
+    int f = open("/proc/self/cmdline", O_RDONLY);
+-   if (f) {
++   // change the managarm patch but this is a bug in mesa: if(f) -> if(f >= 0)
++   if (f >= 0) {
+       const int n = read(f, cmdline, size - 1);
+       int i;
+       assert(n < size);
+diff --git a/src/gallium/auxiliary/os/os_thread.h b/src/gallium/auxiliary/os/os_thread.h
+index b6e0698da6..6471584041 100644
+--- a/src/gallium/auxiliary/os/os_thread.h
++++ b/src/gallium/auxiliary/os/os_thread.h
+@@ -75,7 +75,7 @@ __pipe_mutex_assert_locked(mtx_t *mutex)
+  * pipe_barrier
+  */
+ 
+-#if (defined(PIPE_OS_LINUX) || defined(PIPE_OS_BSD) || defined(PIPE_OS_SOLARIS) || defined(PIPE_OS_HURD)) && !defined(PIPE_OS_ANDROID)
++#if (defined(PIPE_OS_LINUX) || defined(PIPE_OS_MANAGARM) || defined(PIPE_OS_BSD) || defined(PIPE_OS_SOLARIS) || defined(PIPE_OS_HURD)) && !defined(PIPE_OS_ANDROID)
+ 
+ typedef pthread_barrier_t pipe_barrier;
+ 
+diff --git a/src/gallium/auxiliary/os/os_time.c b/src/gallium/auxiliary/os/os_time.c
+index e169139034..d032de4414 100644
+--- a/src/gallium/auxiliary/os/os_time.c
++++ b/src/gallium/auxiliary/os/os_time.c
+@@ -53,7 +53,7 @@
+ int64_t
+ os_time_get_nano(void)
+ {
+-#if defined(PIPE_OS_LINUX)
++#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_MANAGARM)
+ 
+    struct timespec tv;
+    clock_gettime(CLOCK_MONOTONIC, &tv);
+@@ -86,7 +86,7 @@ os_time_get_nano(void)
+ void
+ os_time_sleep(int64_t usecs)
+ {
+-#if defined(PIPE_OS_LINUX)
++#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_MANAGARM)
+    struct timespec time;
+    time.tv_sec = usecs / 1000000;
+    time.tv_nsec = (usecs % 1000000) * 1000;
+diff --git a/src/gallium/auxiliary/pipebuffer/pb_buffer_fenced.c b/src/gallium/auxiliary/pipebuffer/pb_buffer_fenced.c
+index 7421741c17..5c48ca8711 100644
+--- a/src/gallium/auxiliary/pipebuffer/pb_buffer_fenced.c
++++ b/src/gallium/auxiliary/pipebuffer/pb_buffer_fenced.c
+@@ -36,7 +36,7 @@
+ 
+ #include "pipe/p_config.h"
+ 
+-#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_BSD) || defined(PIPE_OS_SOLARIS)
++#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_MANAGARM) || defined(PIPE_OS_BSD) || defined(PIPE_OS_SOLARIS)
+ #include <unistd.h>
+ #include <sched.h>
+ #endif
+@@ -979,7 +979,7 @@ fenced_bufmgr_destroy(struct pb_manager *mgr)
+    /* Wait on outstanding fences. */
+    while (fenced_mgr->num_fenced) {
+       mtx_unlock(&fenced_mgr->mutex);
+-#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_BSD) || defined(PIPE_OS_SOLARIS)
++#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_MANAGARM) || defined(PIPE_OS_BSD) || defined(PIPE_OS_SOLARIS)
+       sched_yield();
+ #endif
+       mtx_lock(&fenced_mgr->mutex);
+diff --git a/src/gallium/auxiliary/util/u_cpu_detect.c b/src/gallium/auxiliary/util/u_cpu_detect.c
+index 845fc6b34d..26e7ce5784 100644
+--- a/src/gallium/auxiliary/util/u_cpu_detect.c
++++ b/src/gallium/auxiliary/util/u_cpu_detect.c
+@@ -57,7 +57,7 @@
+ #include <sys/sysctl.h>
+ #endif
+ 
+-#if defined(PIPE_OS_LINUX)
++#if defined(PIPE_OS_LINUX) 
+ #include <signal.h>
+ #endif
+ 
+diff --git a/src/gallium/auxiliary/util/u_network.c b/src/gallium/auxiliary/util/u_network.c
+index 45b3691f90..a5d2aaa383 100644
+--- a/src/gallium/auxiliary/util/u_network.c
++++ b/src/gallium/auxiliary/util/u_network.c
+@@ -3,10 +3,12 @@
+ #include "util/u_network.h"
+ #include "util/u_debug.h"
+ 
++#include <arpa/inet.h>
++
+ #if defined(PIPE_SUBSYSTEM_WINDOWS_USER)
+ #  include <winsock2.h>
+ #  include <windows.h>
+-#elif defined(PIPE_OS_LINUX) || defined(PIPE_OS_HAIKU) || \
++#elif defined(PIPE_OS_LINUX) || defined(PIPE_OS_MANAGARM) || defined(PIPE_OS_HAIKU) || \
+    defined(PIPE_OS_APPLE) || defined(PIPE_OS_CYGWIN) || defined(PIPE_OS_SOLARIS)
+ #  include <sys/socket.h>
+ #  include <netinet/in.h>
+@@ -55,7 +57,7 @@ u_socket_close(int s)
+    if (s < 0)
+       return;
+ 
+-#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_HAIKU) \
++#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_MANAGARM) || defined(PIPE_OS_HAIKU) \
+     || defined(PIPE_OS_APPLE) || defined(PIPE_OS_SOLARIS)
+    shutdown(s, SHUT_RDWR);
+    close(s);
+@@ -171,7 +173,7 @@ u_socket_listen_on_port(uint16_t portnum)
+ void
+ u_socket_block(int s, boolean block)
+ {
+-#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_HAIKU) \
++#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_MANAGARM) || defined(PIPE_OS_HAIKU) \
+     || defined(PIPE_OS_APPLE) || defined(PIPE_OS_SOLARIS)
+    int old = fcntl(s, F_GETFL, 0);
+    if (old == -1)
+diff --git a/src/gallium/auxiliary/util/u_network.h b/src/gallium/auxiliary/util/u_network.h
+index 61fe9a3c60..2749d5ca5b 100644
+--- a/src/gallium/auxiliary/util/u_network.h
++++ b/src/gallium/auxiliary/util/u_network.h
+@@ -6,7 +6,7 @@
+ 
+ #if defined(PIPE_SUBSYSTEM_WINDOWS_USER)
+ #  define PIPE_HAVE_SOCKETS
+-#elif defined(PIPE_OS_LINUX) || defined(PIPE_OS_HAIKU) || \
++#elif defined(PIPE_OS_LINUX) || defined(PIPE_OS_MANAGARM) || defined(PIPE_OS_HAIKU) || \
+     defined(PIPE_OS_APPLE) || defined(PIPE_OS_SOLARIS)
+ #  define PIPE_HAVE_SOCKETS
+ #endif
+diff --git a/src/gallium/drivers/ddebug/dd_draw.c b/src/gallium/drivers/ddebug/dd_draw.c
+index 6e96c7247a..4600bd56f0 100644
+--- a/src/gallium/drivers/ddebug/dd_draw.c
++++ b/src/gallium/drivers/ddebug/dd_draw.c
+@@ -975,7 +975,7 @@ dd_thread_pipelined_hang_detect(void *input)
+ static char *
+ dd_get_driver_shader_log(struct dd_context *dctx)
+ {
+-#if defined(PIPE_OS_LINUX)
++#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_MANAGARM)
+    FILE *f;
+    char *buf;
+    int written_bytes;
+diff --git a/src/gallium/include/pipe/p_config.h b/src/gallium/include/pipe/p_config.h
+index 98c433f024..3a94e58c94 100644
+--- a/src/gallium/include/pipe/p_config.h
++++ b/src/gallium/include/pipe/p_config.h
+@@ -151,6 +151,11 @@
+ #define PIPE_OS_UNIX
+ #endif
+ 
++#if defined(__managarm__)
++#define PIPE_OS_MANAGARM
++#define PIPE_OS_UNIX
++#endif
++
+ /*
+  * Android defines __linux__ so PIPE_OS_LINUX and PIPE_OS_UNIX will also be
+  * defined.
+@@ -218,9 +223,9 @@
+  * NOTE: There is no way to auto-detect most of these.
+  */
+ 
+-#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_BSD) || defined(PIPE_OS_SOLARIS)
++#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_MANAGARM) || defined(PIPE_OS_BSD) || defined(PIPE_OS_SOLARIS)
+ #define PIPE_SUBSYSTEM_DRI
+-#endif /* PIPE_OS_LINUX || PIPE_OS_BSD || PIPE_OS_SOLARIS */
++#endif /* PIPE_OS_LINUX || PIPE_OS_MANAGARM || PIPE_OS_BSD || PIPE_OS_SOLARIS */
+ 
+ #if defined(PIPE_OS_WINDOWS)
+ #if defined(PIPE_SUBSYSTEM_WINDOWS_USER)
+diff --git a/src/gallium/winsys/svga/drm/pb_buffer_simple_fenced.c b/src/gallium/winsys/svga/drm/pb_buffer_simple_fenced.c
+index f7211c29ac..db120d8069 100644
+--- a/src/gallium/winsys/svga/drm/pb_buffer_simple_fenced.c
++++ b/src/gallium/winsys/svga/drm/pb_buffer_simple_fenced.c
+@@ -36,7 +36,7 @@
+ 
+ #include "pipe/p_config.h"
+ 
+-#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_BSD) || defined(PIPE_OS_SOLARIS)
++#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_MANAGARM) || defined(PIPE_OS_BSD) || defined(PIPE_OS_SOLARIS)
+ #include <unistd.h>
+ #include <sched.h>
+ #endif
+@@ -796,7 +796,7 @@ fenced_bufmgr_destroy(struct pb_manager *mgr)
+    /* Wait on outstanding fences */
+    while (fenced_mgr->num_fenced) {
+       mtx_unlock(&fenced_mgr->mutex);
+-#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_BSD) || defined(PIPE_OS_SOLARIS)
++#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_MANAGARM) || defined(PIPE_OS_BSD) || defined(PIPE_OS_SOLARIS)
+       sched_yield();
+ #endif
+       mtx_lock(&fenced_mgr->mutex);
 diff --git a/src/util/debug.c b/src/util/debug.c
 index 98b1853325..dbf168b8cb 100644
 --- a/src/util/debug.c
