@@ -1,5 +1,7 @@
+#!/bin/bash
 
-args="-smp 2 -m 1500"
+args="-enable-kvm -smp 2 -m 1500"
+args="$args -cpu qemu64,+smap"
 
 args="$args -device piix3-usb-uhci"
 #args="$args -device usb-kbd"
@@ -9,16 +11,19 @@ args="$args -device piix3-usb-uhci"
 args="$args -device usb-ehci"
 
 #args="$args -hda image"
-#args="$args -drive file=image,if=virtio"
-args="$args -drive id=managarm,file=image,if=none -device usb-storage,drive=managarm"
+args="$args -drive id=image,file=image,format=raw,if=none \
+		-device virtio-blk-pci,drive=image"
+#args="$args -drive id=managarm,file=image,format=raw,if=none \
+#		-device usb-storage,drive=managarm"
 
 args="$args -netdev user,id=net0 -device virtio-net,netdev=net0"
 #args="$args -netdev tap,id=net0 -device virtio-net,netdev=net0"
 
-args="$args -vga std"
+#args="$args -vga std"
+args="$args -vga virtio"
 
-#args="$args -debugcon stdio"
-args="$args -serial stdio"
+args="$args -debugcon stdio"
+#args="$args -serial stdio"
 
 args="$args -d guest_errors"
 #args="$args -d cpu_reset"
