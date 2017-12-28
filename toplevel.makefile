@@ -40,6 +40,7 @@ include $T/upstream/cxxshim.makefile
 include $T/upstream/eudev.makefile
 include $T/upstream/frigg.makefile
 include $T/upstream/gcc.makefile
+include $T/upstream/kmscube.makefile
 include $T/upstream/libasync.makefile
 include $T/upstream/libcofiber.makefile
 include $T/upstream/libdrm.makefile
@@ -74,9 +75,11 @@ include $T/milestone/native-boost.makefile
 include $T/milestone/native-core.makefile
 include $T/milestone/native-coreutils.makefile
 include $T/milestone/native-drivers.makefile
+include $T/milestone/native-eudev.makefile
 include $T/milestone/native-frigg.makefile
 include $T/milestone/native-headers.makefile
 include $T/milestone/native-helix.makefile
+include $T/milestone/native-kmscube.makefile
 include $T/milestone/native-libasync.makefile
 include $T/milestone/native-libc.makefile
 include $T/milestone/native-libcofiber.makefile
