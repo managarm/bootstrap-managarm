@@ -12,7 +12,7 @@ $f_MESON_ENV := PKG_CONFIG_SYSROOT_DIR=$B/system-root
 $f_MESON_ENV += PKG_CONFIG_PATH=$B/system-root/usr/lib/pkgconfig
 
 $f_MAKE_ALL := ninja
-$f_MAKE_INSTALL := ninja "DESTDIR=$B/system-root" install
+$f_MAKE_INSTALL := ninja install
 
 $(call milestone_action,configure-$f install-$f)
 
@@ -23,6 +23,6 @@ configure-$f:
 	touch $(call milestone_tag,$@)
 
 install-$f: | $(call milestone_tag,configure-$f)
-	cd $B/native/$f && $($f_RUN) $($f_MAKE_ALL) && $($f_RUN) $($f_MAKE_INSTALL)
+	cd $B/native/$f && $($f_RUN) $($f_MAKE_ALL) && DESTDIR=$B/system-root $($f_RUN) $($f_MAKE_INSTALL)
 	touch $(call milestone_tag,$@)
 
