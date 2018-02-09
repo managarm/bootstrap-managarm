@@ -45,12 +45,15 @@ include $T/upstream/libasync.makefile
 include $T/upstream/libcofiber.makefile
 include $T/upstream/libdrm.makefile
 include $T/upstream/libexpat.makefile
+include $T/upstream/libffi.makefile
 include $T/upstream/libtool.makefile
 include $T/upstream/managarm.makefile
 include $T/upstream/mesa.makefile
 include $T/upstream/mlibc.makefile
 include $T/upstream/pkg-config.makefile
 include $T/upstream/protobuf.makefile
+include $T/upstream/wayland.makefile
+include $T/upstream/weston.makefile
 include $T/upstream/xorg-macros.makefile
 include $T/upstream/zlib.makefile
 
@@ -85,10 +88,13 @@ include $T/milestone/native-libc.makefile
 include $T/milestone/native-libcofiber.makefile
 include $T/milestone/native-libdrm.makefile
 include $T/milestone/native-libexpat.makefile
+include $T/milestone/native-libffi.makefile
 include $T/milestone/native-mesa.makefile
 include $T/milestone/native-protobuf.makefile
 include $T/milestone/native-rtdl.makefile
 include $T/milestone/native-runtime.makefile
+include $T/milestone/native-wayland.makefile
+include $T/milestone/native-weston.makefile
 include $T/milestone/native-zlib.makefile
 include $T/milestone/system-gcc.makefile
 
