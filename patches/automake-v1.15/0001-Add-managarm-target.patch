@@ -1,0 +1,25 @@
+From 6c9f48bb70f56b128370e982bc55734ff6e994e2 Mon Sep 17 00:00:00 2001
+From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
+Date: Fri, 9 Feb 2018 16:39:45 +0100
+Subject: [PATCH] Add managarm target
+
+---
+ lib/config.sub | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/config.sub b/lib/config.sub
+index 40ea5dfe1..4132283a3 100755
+--- a/lib/config.sub
++++ b/lib/config.sub
+@@ -1417,7 +1417,7 @@ case $os in
+ 	      | -morphos* | -superux* | -rtmk* | -rtmk-nova* | -windiss* \
+ 	      | -powermax* | -dnix* | -nx6 | -nx7 | -sei* | -dragonfly* \
+ 	      | -skyos* | -haiku* | -rdos* | -toppers* | -drops* | -es* \
+-	      | -onefs* | -tirtos* | -phoenix* | -fuchsia* | -redox*)
++	      | -onefs* | -tirtos* | -phoenix* | -fuchsia* | -redox* | -managarm*)
+ 	# Remember, each alternative MUST END IN *, to match a version number.
+ 		;;
+ 	-qnx*)
+-- 
+2.11.0
+

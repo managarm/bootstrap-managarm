@@ -2,15 +2,19 @@
 f := native-cairo
 $f_up := cairo
 
-$f_RUN := $B/withprefix $B/prefixes
+$f_RUN := ACLOCAL_PATH=$B/prefixes/host-libtool/share/aclocal:$B/prefixes/host-pkg-config/share/aclocal
+$f_RUN += $B/withprefix $B/prefixes
+$f_RUN += host-autoconf-v2.69 host-automake-v1.15 host-libtool
 $f_RUN += host-protoc cross-binutils native-gcc
 $f_RUN += --
 
+# For now, we build without glesv2 backend as Weston prefers the image backend.
 $f_CONFIGURE := $T/ports/$($f_up)/configure --host=x86_64-managarm --prefix=/usr
+$f_CONFIGURE += --disable-maintainer-mode --with-sysroot=$B/system-root
 $f_CONFIGURE_ENV := PKG_CONFIG_SYSROOT_DIR=$B/system-root
 $f_CONFIGURE_ENV += PKG_CONFIG_PATH=$B/system-root/usr/lib/pkgconfig
 
-$f_MAKE_ALL := make all
+$f_MAKE_ALL := make
 $f_MAKE_INSTALL := make "DESTDIR=$B/system-root" install
 
 $(call milestone_action,configure-$f install-$f)

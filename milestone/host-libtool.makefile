@@ -9,7 +9,7 @@ $f_RUN += --
 
 # We need to install libtool into the automake prefix.
 # Otherwise aclocal does not find libtool's files.
-$f_CONFIGURE := $T/ports/$u/configure --prefix=$B/prefixes/host-automake-v1.11
+$f_CONFIGURE := $T/ports/$u/configure --prefix=$B/prefixes/host-libtool
 
 $(call milestone_action,configure-$f install-$f)
 

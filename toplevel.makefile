@@ -32,6 +32,7 @@ include $T/upstream/acpica.makefile
 include $T/upstream/autoconf-v2.64.makefile
 include $T/upstream/autoconf-v2.69.makefile
 include $T/upstream/automake-v1.11.makefile
+include $T/upstream/automake-v1.15.makefile
 include $T/upstream/bash.makefile
 include $T/upstream/binutils.makefile
 include $T/upstream/boost.makefile
@@ -69,6 +70,7 @@ include $T/milestone/helpers.makefile
 include $T/milestone/host-autoconf-v2.64.makefile
 include $T/milestone/host-autoconf-v2.69.makefile
 include $T/milestone/host-automake-v1.11.makefile
+include $T/milestone/host-automake-v1.15.makefile
 include $T/milestone/host-frigg_pb.makefile
 include $T/milestone/host-libtool.makefile
 include $T/milestone/host-pkg-config.makefile
@@ -99,6 +101,7 @@ include $T/milestone/native-libevdev.makefile
 include $T/milestone/native-libexpat.makefile
 include $T/milestone/native-libffi.makefile
 include $T/milestone/native-libinput.makefile
+include $T/milestone/native-libpng.makefile
 include $T/milestone/native-libxkbcommon.makefile
 include $T/milestone/native-mesa.makefile
 include $T/milestone/native-mtdev.makefile

@@ -1,9 +1,9 @@
 
 f := cairo
 
-$f_RUN := ACLOCAL_PATH=$B/prefixes/host-pkg-config/share/aclocal
+$f_RUN := ACLOCAL_PATH=$B/prefixes/host-libtool/share/aclocal:$B/prefixes/host-pkg-config/share/aclocal
 $f_RUN += $B/withprefix $B/prefixes
-$f_RUN += host-autoconf-v2.69 host-automake-v1.11
+$f_RUN += host-autoconf-v2.69 host-automake-v1.15 host-libtool
 $f_RUN += --
 
 $f_ORIGIN = git://anongit.freedesktop.org/cairo
