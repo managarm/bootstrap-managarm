@@ -7,11 +7,12 @@ $f_RUN += host-protoc cross-binutils native-gcc host-pkg-config
 $f_RUN += --
 
 $f_MESON := meson --cross-file $T/scripts/meson.cross-file
+$f_MESON += -Dlibwacom=false -Ddebug-gui=false -Dtests=false -Ddocumentation=false
 $f_MESON_ENV := PKG_CONFIG_SYSROOT_DIR=$B/system-root
 $f_MESON_ENV += PKG_CONFIG_PATH=$B/system-root/usr/lib/pkgconfig
 
-$f_MAKE_ALL := make all
-$f_MAKE_INSTALL := make "DESTDIR=$B/system-root" install
+$f_MAKE_ALL := ninja
+$f_MAKE_INSTALL := ninja "DESTDIR=$B/system-root" install
 
 $(call milestone_action,configure-$f install-$f)
 
