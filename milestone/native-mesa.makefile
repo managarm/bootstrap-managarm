@@ -7,9 +7,12 @@ $f_RUN += host-protoc cross-binutils native-gcc
 $f_RUN += --
 
 $f_CONFIGURE := $T/ports/$($f_up)/configure --host=x86_64-managarm --prefix=/usr
-$f_CONFIGURE += --disable-glx --with-platforms=drm,surfaceless
+$f_CONFIGURE += --with-sysroot=$B/system-root
+$f_CONFIGURE += --disable-glx --with-platforms=drm,surfaceless,wayland
 $f_CONFIGURE += --with-dri-drivers=swrast --with-gallium-drivers=swrast
-$f_CONFIGURE_ENV := PKG_CONFIG_SYSROOT_DIR=$B/system-root
+$f_CONFIGURE += --enable-debug
+$f_CONFIGURE_ENV := PKG_CONFIG=$B/prefixes/host-pkg-config/bin/pkg-config
+$f_CONFIGURE_ENV += PKG_CONFIG_SYSROOT_DIR=$B/system-root
 $f_CONFIGURE_ENV += PKG_CONFIG_PATH=$B/system-root/usr/lib/pkgconfig
 
 $f_MAKE_ALL := make all
