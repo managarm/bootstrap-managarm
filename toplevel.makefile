@@ -35,6 +35,7 @@ include $T/upstream/automake-v1.11.makefile
 include $T/upstream/bash.makefile
 include $T/upstream/binutils.makefile
 include $T/upstream/boost.makefile
+include $T/upstream/cairo.makefile
 include $T/upstream/coreutils.makefile
 include $T/upstream/cxxshim.makefile
 include $T/upstream/eudev.makefile
@@ -48,12 +49,14 @@ include $T/upstream/libevdev.makefile
 include $T/upstream/libexpat.makefile
 include $T/upstream/libffi.makefile
 include $T/upstream/libinput.makefile
+include $T/upstream/libpng.makefile
 include $T/upstream/libtool.makefile
 include $T/upstream/libxkbcommon.makefile
 include $T/upstream/managarm.makefile
 include $T/upstream/mesa.makefile
 include $T/upstream/mlibc.makefile
 include $T/upstream/mtdev.makefile
+include $T/upstream/pixman.makefile
 include $T/upstream/pkg-config.makefile
 include $T/upstream/protobuf.makefile
 include $T/upstream/wayland.makefile
@@ -79,6 +82,7 @@ include $T/milestone/managarm-bundle.makefile
 include $T/milestone/mlibc-bundle.makefile
 include $T/milestone/native-bash.makefile
 include $T/milestone/native-boost.makefile
+include $T/milestone/native-cairo.makefile
 include $T/milestone/native-core.makefile
 include $T/milestone/native-coreutils.makefile
 include $T/milestone/native-drivers.makefile
@@ -98,6 +102,7 @@ include $T/milestone/native-libinput.makefile
 include $T/milestone/native-libxkbcommon.makefile
 include $T/milestone/native-mesa.makefile
 include $T/milestone/native-mtdev.makefile
+include $T/milestone/native-pixman.makefile
 include $T/milestone/native-protobuf.makefile
 include $T/milestone/native-rtdl.makefile
 include $T/milestone/native-runtime.makefile
