@@ -7,8 +7,9 @@ $f_RUN += host-protoc cross-binutils native-gcc
 $f_RUN += --
 
 $f_CONFIGURE := $T/ports/$($f_up)/configure --host=x86_64-managarm --prefix=/usr
+$f_CONFIGURE += --disable-xwayland --disable-x11-compositor --disable-weston-launch
 $f_CONFIGURE_ENV := PKG_CONFIG_SYSROOT_DIR=$B/system-root
-$f_CONFIGURE_ENV += PKG_CONFIG_PATH=$B/system-root/usr/lib/pkgconfig
+$f_CONFIGURE_ENV += PKG_CONFIG_PATH=$B/system-root/usr/lib/pkgconfig:$B/system-root/usr/share/pkgconfig
 
 $f_MAKE_ALL := make all
 $f_MAKE_INSTALL := make "DESTDIR=$B/system-root" install
