@@ -61,6 +61,7 @@ include $T/upstream/pixman.makefile
 include $T/upstream/pkg-config.makefile
 include $T/upstream/protobuf.makefile
 include $T/upstream/wayland.makefile
+include $T/upstream/wayland-protocols.makefile
 include $T/upstream/weston.makefile
 include $T/upstream/xorg-macros.makefile
 include $T/upstream/zlib.makefile
@@ -110,6 +111,7 @@ include $T/milestone/native-protobuf.makefile
 include $T/milestone/native-rtdl.makefile
 include $T/milestone/native-runtime.makefile
 include $T/milestone/native-wayland.makefile
+include $T/milestone/native-wayland-protocols.makefile
 include $T/milestone/native-weston.makefile
 include $T/milestone/native-zlib.makefile
 include $T/milestone/system-gcc.makefile
