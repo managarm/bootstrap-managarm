@@ -11,7 +11,8 @@ $f_RUN += --
 # For now, we build without glesv2 backend as Weston prefers the image backend.
 $f_CONFIGURE := $T/ports/$($f_up)/configure --host=x86_64-managarm --prefix=/usr
 $f_CONFIGURE += --disable-maintainer-mode --with-sysroot=$B/system-root
-$f_CONFIGURE_ENV := PKG_CONFIG_SYSROOT_DIR=$B/system-root
+$f_CONFIGURE_ENV := PKG_CONFIG=$B/prefixes/host-pkg-config/bin/pkg-config
+$f_CONFIGURE_ENV += PKG_CONFIG_SYSROOT_DIR=$B/system-root
 $f_CONFIGURE_ENV += PKG_CONFIG_PATH=$B/system-root/usr/lib/pkgconfig
 
 $f_MAKE_ALL := make
