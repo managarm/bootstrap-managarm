@@ -4,9 +4,12 @@ $f_up := gcc
 
 $f_RUN := $B/withprefix $B/prefixes cross-binutils --
 
+# When cross-compiling, GCC is unable to detect initfini-array support.
+# Furthermore, stack alignment seems to be broken for legacy .init sections on x86_64.
 $f_CONFIGURE := $T/ports/$($f_up)/configure --prefix=$B/prefixes/$f
 $f_CONFIGURE += --target=x86_64-managarm --with-sysroot=$B/system-root
 $f_CONFIGURE += --enable-languages=c,c++ --disable-multilib
+$f_CONFIGURE += --enable-initfini-array
 
 $f_MAKE_ALL := make all-gcc
 $f_MAKE_INSTALL := make install-gcc
