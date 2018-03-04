@@ -20,7 +20,7 @@ mkdir -p initrd/{lib,sbin}
 # Runtime libraries.
 install -s managarm/hel/bin/libhelix.so initrd/lib/
 install -s managarm/ld-init/linker/bin/ld-init.so initrd/lib/
-install -s mlibc/libc/bin/libc.so initrd/lib/
+install -s mlibc/libc.so initrd/lib/
 install -s mlibc/libm/bin/libm.so initrd/lib/
 install -s prefixes/native-gcc/x86_64-managarm/lib/foo/libgcc_s.so.1 initrd/lib/
 install -s prefixes/native-gcc/x86_64-managarm/lib/foo/libstdc++.so.6 initrd/lib/
@@ -74,6 +74,9 @@ rsync -a --delete system-root/lib/ $dir/lib
 rsync -a --delete system-root/root/ $dir/root
 rsync -a --delete system-root/usr/bin/ $dir/usr/bin
 rsync -a --delete system-root/usr/lib/ $dir/usr/lib
+rsync -a --delete system-root/usr/libexec/ $dir/usr/libexec
+rsync -a --delete system-root/usr/share/ $dir/usr/share
+rsync -a --delete system-root/run/ $dir/run
 cp prefixes/native-gcc/x86_64-managarm/lib/foo/libgcc_s.so.1 $dir/usr/lib
 cp prefixes/native-gcc/x86_64-managarm/lib/foo/libstdc++.so.6 $dir/usr/lib
 
