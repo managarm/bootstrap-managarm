@@ -10,7 +10,9 @@ $f_CONFIGURE := $T/ports/$($f_up)/configure --host=x86_64-managarm --prefix=/usr
 $f_CONFIGURE += --with-sysroot=$B/system-root
 $f_CONFIGURE += --disable-glx --with-platforms=drm,surfaceless,wayland
 $f_CONFIGURE += --with-dri-drivers=swrast --with-gallium-drivers=swrast
-$f_CONFIGURE += --enable-debug
+# --enable-debug logs each buffer mmap()/munmap() which leads to multiple log lines
+#f or each eglSwapBuffers.
+#$f_CONFIGURE += --enable-debug
 $f_CONFIGURE_ENV := PKG_CONFIG=$B/prefixes/host-pkg-config/bin/pkg-config
 $f_CONFIGURE_ENV += PKG_CONFIG_SYSROOT_DIR=$B/system-root
 $f_CONFIGURE_ENV += PKG_CONFIG_PATH=$B/system-root/usr/lib/pkgconfig
