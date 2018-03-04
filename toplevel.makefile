@@ -51,6 +51,7 @@ include $T/upstream/libexpat.makefile
 include $T/upstream/libffi.makefile
 include $T/upstream/libinput.makefile
 include $T/upstream/libpng.makefile
+include $T/upstream/libsmarter.makefile
 include $T/upstream/libtool.makefile
 include $T/upstream/libxkbcommon.makefile
 include $T/upstream/managarm.makefile
@@ -103,6 +104,7 @@ include $T/milestone/native-libexpat.makefile
 include $T/milestone/native-libffi.makefile
 include $T/milestone/native-libinput.makefile
 include $T/milestone/native-libpng.makefile
+include $T/milestone/native-libsmarter.makefile
 include $T/milestone/native-libxkbcommon.makefile
 include $T/milestone/native-mesa.makefile
 include $T/milestone/native-mtdev.makefile
