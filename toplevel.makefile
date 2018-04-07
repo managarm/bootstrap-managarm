@@ -87,7 +87,6 @@ include $T/milestone/mlibc-bundle.makefile
 include $T/milestone/native-bash.makefile
 include $T/milestone/native-boost.makefile
 include $T/milestone/native-cairo.makefile
-include $T/milestone/native-core.makefile
 include $T/milestone/native-coreutils.makefile
 include $T/milestone/native-drivers.makefile
 include $T/milestone/native-eudev.makefile
@@ -112,6 +111,7 @@ include $T/milestone/native-pixman.makefile
 include $T/milestone/native-protobuf.makefile
 include $T/milestone/native-rtdl.makefile
 include $T/milestone/native-runtime.makefile
+include $T/milestone/native-system.makefile
 include $T/milestone/native-wayland.makefile
 include $T/milestone/native-wayland-protocols.makefile
 include $T/milestone/native-weston.makefile
