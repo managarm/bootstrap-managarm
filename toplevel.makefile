@@ -88,7 +88,6 @@ include $T/milestone/native-bash.makefile
 include $T/milestone/native-boost.makefile
 include $T/milestone/native-cairo.makefile
 include $T/milestone/native-coreutils.makefile
-include $T/milestone/native-drivers.makefile
 include $T/milestone/native-eudev.makefile
 include $T/milestone/native-frigg.makefile
 include $T/milestone/native-headers.makefile
