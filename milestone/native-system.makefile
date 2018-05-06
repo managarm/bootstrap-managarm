@@ -5,7 +5,8 @@ $f_RUN := $B/withprefix $B/prefixes
 $f_RUN += host-protoc cross-binutils native-gcc host-pkg-config
 $f_RUN += --
 
-$f_MESON := meson --cross-file $T/scripts/meson.cross-file --prefix=/usr
+$f_MESON := meson --cross-file $T/scripts/meson.cross-file --prefix=/usr --libdir=lib \
+		--buildtype=debugoptimized
 $f_MESON_ENV := PKG_CONFIG_SYSROOT_DIR=$B/system-root
 $f_MESON_ENV += PKG_CONFIG_PATH=$B/system-root/usr/lib/pkgconfig
 

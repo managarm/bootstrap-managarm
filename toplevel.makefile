@@ -64,6 +64,7 @@ include $T/upstream/protobuf.makefile
 include $T/upstream/wayland.makefile
 include $T/upstream/wayland-protocols.makefile
 include $T/upstream/weston.makefile
+include $T/upstream/xkeyboard-config.makefile
 include $T/upstream/xorg-macros.makefile
 include $T/upstream/zlib.makefile
 

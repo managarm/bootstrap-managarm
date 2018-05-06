@@ -1,12 +1,14 @@
 #!/bin/bash
 
-args="-enable-kvm -smp 2 -m 1500"
+args="-enable-kvm -smp 2 -m 2048"
 args="$args -cpu qemu64,+smap"
 
 args="$args -device piix3-usb-uhci"
-#args="$args -device usb-kbd"
-#args="$args -device usb-mouse"
+args="$args -device usb-kbd"
+args="$args -device usb-mouse"
 #args="$args -device usb-tablet"
+#args="$args -device usb-host,vendorid=0x17ef,productid=0x602d" # Real keyboard
+#args="$args -device usb-host,vendorid=0x045e,productid=0x00cb" # Real mouse
 
 args="$args -device usb-ehci"
 

@@ -7,7 +7,7 @@ $f_RUN += host-protoc cross-binutils native-gcc
 $f_RUN += --
 
 $f_CONFIGURE := $T/ports/$($f_up)/configure --host=x86_64-managarm --prefix=/usr
-$f_CONFIGURE += --disable-programs --disable-blkid --disable-selinux --disable-manpages
+$f_CONFIGURE += --disable-blkid --disable-selinux --disable-manpages
 $f_CONFIGURE += --disable-kmod --disable-rule-generator --disable-mtd-probe
 $f_CONFIGURE_ENV := PKG_CONFIG_SYSROOT_DIR=$B/system-root
 $f_CONFIGURE_ENV += PKG_CONFIG_PATH=$B/system-root/usr/lib/pkgconfig
