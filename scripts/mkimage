@@ -44,9 +44,9 @@ install -s system-root/usr/bin/posix-init initrd/sbin/
 install -s system-root/usr/lib/libblockfs.so initrd/lib/
 install -s system-root/usr/bin/uhci initrd/sbin/
 install -s system-root/usr/bin/ehci initrd/sbin/
+install -s system-root/usr/bin/block-ata initrd/sbin/
 install -s system-root/usr/bin/storage initrd/sbin/
 install -s system-root/usr/bin/virtio-block initrd/sbin/
-#install -s ../drivers/ata/bin/ata initrd/
 
 # Actually build the initrd.
 (cd initrd/ && find * | cpio -o --format newc > ../initrd.cpio)
