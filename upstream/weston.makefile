@@ -1,7 +1,7 @@
 
 f := weston
 
-$f_RUN := ACLOCAL_PATH=$B/prefixes/host-pkg-config/share/aclocal
+$f_RUN := ACLOCAL_PATH=$B/prefixes/host-automake-v1.11/share/aclocal:$B/prefixes/host-libtool/share/aclocal:$B/prefixes/host-pkg-config/share/aclocal
 $f_RUN += $B/withprefix $B/prefixes
 $f_RUN += host-autoconf-v2.69 host-automake-v1.11
 $f_RUN += --

@@ -10,7 +10,8 @@ $f_CONFIGURE := $T/ports/$($f_up)/configure --host=x86_64-managarm --prefix=/usr
 $f_CONFIGURE += --disable-xwayland --disable-x11-compositor --disable-weston-launch
 $f_CONFIGURE += --with-sysroot=$B/system-root --disable-fbdev-compositor
 $f_CONFIGURE += --disable-simple-dmabuf-drm-client --disable-simple-dmabuf-v4l-client
-$f_CONFIGURE_ENV := PKG_CONFIG_SYSROOT_DIR=$B/system-root
+$f_CONFIGURE_ENV := PKG_CONFIG=$B/prefixes/host-pkg-config/bin/pkg-config
+$f_CONFIGURE_ENV += PKG_CONFIG_SYSROOT_DIR=$B/system-root
 $f_CONFIGURE_ENV += PKG_CONFIG_PATH=$B/system-root/usr/lib/pkgconfig:$B/system-root/usr/share/pkgconfig
 
 $f_MAKE_ALL := make all
