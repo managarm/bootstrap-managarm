@@ -58,6 +58,8 @@ include $T/upstream/managarm.makefile
 include $T/upstream/mesa.makefile
 include $T/upstream/mlibc.makefile
 include $T/upstream/mtdev.makefile
+include $T/upstream/nano.makefile
+include $T/upstream/ncurses.makefile
 include $T/upstream/pixman.makefile
 include $T/upstream/pkg-config.makefile
 include $T/upstream/protobuf.makefile
@@ -107,6 +109,8 @@ include $T/milestone/native-libsmarter.makefile
 include $T/milestone/native-libxkbcommon.makefile
 include $T/milestone/native-mesa.makefile
 include $T/milestone/native-mtdev.makefile
+include $T/milestone/native-nano.makefile
+include $T/milestone/native-ncurses.makefile
 include $T/milestone/native-pixman.makefile
 include $T/milestone/native-protobuf.makefile
 include $T/milestone/native-rtdl.makefile
