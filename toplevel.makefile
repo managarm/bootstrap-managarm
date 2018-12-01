@@ -86,7 +86,6 @@ include $T/milestone/kernel-main.makefile
 include $T/milestone/kernel-runtime.makefile
 include $T/milestone/libarch.makefile
 include $T/milestone/managarm-bundle.makefile
-include $T/milestone/mlibc-bundle.makefile
 include $T/milestone/native-bash.makefile
 include $T/milestone/native-boost.makefile
 include $T/milestone/native-cairo.makefile
@@ -97,7 +96,6 @@ include $T/milestone/native-headers.makefile
 include $T/milestone/native-helix.makefile
 include $T/milestone/native-kmscube.makefile
 include $T/milestone/native-libasync.makefile
-include $T/milestone/native-libc.makefile
 include $T/milestone/native-libcofiber.makefile
 include $T/milestone/native-libdrm.makefile
 include $T/milestone/native-libevdev.makefile
@@ -113,7 +111,6 @@ include $T/milestone/native-nano.makefile
 include $T/milestone/native-ncurses.makefile
 include $T/milestone/native-pixman.makefile
 include $T/milestone/native-protobuf.makefile
-include $T/milestone/native-rtdl.makefile
 include $T/milestone/native-runtime.makefile
 include $T/milestone/native-system.makefile
 include $T/milestone/native-wayland.makefile

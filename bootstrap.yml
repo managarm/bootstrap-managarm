@@ -1,0 +1,28 @@
+
+host-packages:
+  - name: cross-binutils
+  - name: host-protoc
+    has_shared_libs: true
+  - name: native-gcc
+    dependencies:
+      - cross-binutils
+
+target-packages:
+  - name: mlibc
+    host-deps:
+      - host-protoc
+      - native-gcc
+    configure:
+      - args:
+          - 'meson'
+          - '--cross-file'
+          - '@SOURCE_ROOT@/scripts/meson.cross-file'
+          - '--prefix=/usr'
+          - '--libdir=lib'
+          - '--buildtype=debugoptimized'
+          - '@PKG_SOURCE_DIR@'
+    build:
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@PKG_COLLECT_DIR@'
+
