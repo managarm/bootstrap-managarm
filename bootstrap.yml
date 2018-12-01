@@ -1,5 +1,6 @@
 
 host-packages:
+  - name: host-pkg-config
   - name: cross-binutils
   - name: host-protoc
     has_shared_libs: true
@@ -8,6 +9,86 @@ host-packages:
       - cross-binutils
 
 target-packages:
+  - name: cairo
+    source_dir: 'ports/cairo'
+    host-deps:
+      - host-pkg-config
+      - native-gcc
+    dependencies:
+      - libpng
+      - pixman
+    configure:
+      - args:
+        # For now, we build without glesv2 backend as Weston prefers the image backend.
+        - '@PKG_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        environ:
+          PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
+          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@PKG_COLLECT_DIR@'
+
+  - name: coreutils
+    source_dir: 'ports/coreutils'
+    host-deps:
+      - native-gcc
+    configure:
+      - args:
+        - '@PKG_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - 'CFLAGS=-DSLOW_BUT_NO_HACKS'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@PKG_COLLECT_DIR@'
+
+  - name: eudev
+    source_dir: 'ports/eudev'
+    host-deps:
+      - native-gcc
+    configure:
+      - args:
+        - '@PKG_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--disable-blkid'
+        - '--disable-selinux'
+        - '--disable-kmod'
+        - '--disable-mtd-probe'
+        - '--disable-rule-generator'
+        - '--disable-manpages'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@PKG_COLLECT_DIR@'
+
+  - name: libdrm
+    source_dir: 'ports/libdrm'
+    host-deps:
+      - native-gcc
+    configure:
+      - args:
+        - '@PKG_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--disable-intel'
+        - '--disable-vmwgfx'
+        - '--disable-radeon'
+        - '--disable-amdgpu'
+        - '--disable-nouveau'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@PKG_COLLECT_DIR@'
+
   - name: libevdev
     source_dir: 'ports/libevdev'
     host-deps:
@@ -55,10 +136,38 @@ target-packages:
         environ:
           DESTDIR: '@PKG_COLLECT_DIR@'
 
+  - name: libinput
+    source_dir: 'ports/libinput'
+    host-deps:
+      - native-gcc
+    configure:
+      - args:
+          - 'meson'
+          - '--cross-file'
+          - '@SOURCE_ROOT@/scripts/meson.cross-file'
+          - '--prefix=/usr'
+          - '--libdir=lib'
+          - '--buildtype=debugoptimized'
+          - '-Dlibwacom=false'
+          - '-Ddebug-gui=false'
+          - '-Dtests=false'
+          - '-Ddocumentation=false'
+          - '@PKG_SOURCE_DIR@'
+        environ:
+          PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
+          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@PKG_COLLECT_DIR@'
+  
   - name: libpng
     source_dir: 'ports/libpng'
     host-deps:
       - native-gcc
+    dependencies:
+      - zlib
     configure:
       - args:
         - '@PKG_SOURCE_DIR@/configure'
@@ -92,15 +201,31 @@ target-packages:
       - host-protoc
     configure:
       - args:
-          - 'meson'
-          - '--cross-file'
-          - '@SOURCE_ROOT@/scripts/meson.cross-file'
-          - '--prefix=/usr'
-          - '--libdir=lib'
-          - '--buildtype=debugoptimized'
-          - '@PKG_SOURCE_DIR@'
+        - 'meson'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '@PKG_SOURCE_DIR@'
     build:
+      - args: ['ninja']
       - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@PKG_COLLECT_DIR@'
+
+  - name: mtdev
+    source_dir: 'ports/mtdev'
+    host-deps:
+      - native-gcc
+    configure:
+      - args:
+        - '@PKG_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
         environ:
           DESTDIR: '@PKG_COLLECT_DIR@'
 
