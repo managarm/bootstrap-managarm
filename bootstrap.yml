@@ -195,6 +195,49 @@ target-packages:
         environ:
           DESTDIR: '@PKG_COLLECT_DIR@'
 
+  - name: kmscube
+    source_dir: 'ports/kmscube'
+    host-deps:
+      - native-gcc
+    configure:
+      - args:
+        - '@PKG_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        environ:
+          PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
+          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@PKG_COLLECT_DIR@'
+
+  - name: mesa
+    source_dir: 'ports/mesa'
+    host-deps:
+      - native-gcc
+    configure:
+      - args:
+        - '@PKG_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--disable-glx'
+        - '--with-platforms=drm,surfaceless,wayland'
+        - '--with-dri-drivers=swrast'
+        - '--with-gallium-drivers=swrast'
+        # --enable-debug logs each buffer mmap()/munmap() which
+        # leads to multiple log lines for each call to eglSwapBuffers().
+        #- '--enable-debug'
+        environ:
+          PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
+          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@PKG_COLLECT_DIR@'
+
   - name: mlibc
     host-deps:
       - native-gcc
@@ -228,6 +271,35 @@ target-packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@PKG_COLLECT_DIR@'
+
+  - name: nano
+    source_dir: 'ports/nano'
+    host-deps:
+      - native-gcc
+    configure:
+      - args:
+        - '@PKG_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - 'CFLAGS=-DSLOW_BUT_NO_HACKS'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@PKG_COLLECT_DIR@'
+
+  - name: ncurses
+    source_dir: 'ports/ncurses'
+    host-deps:
+      - native-gcc
+    configure:
+      - args:
+        - '@PKG_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+    build:
+      - args: ['make', '-j@PARALLELISM@', 'all']
+      - args: ['make', 'DESTDIR=@PKG_COLLECT_DIR@', 'install']
 
   - name: pixman
     source_dir: 'ports/pixman'
