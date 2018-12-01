@@ -8,6 +8,23 @@ host-packages:
       - cross-binutils
 
 target-packages:
+  - name: libexpat
+    source_dir: 'ports/libexpat'
+    host-deps:
+      - native-gcc
+    configure:
+      - args:
+        - '@PKG_SOURCE_DIR@/expat/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        # We disable xmlwf to avoid building its documentation.
+        - '--without-xmlwf'
+    build:
+      - args: ['make']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@PKG_COLLECT_DIR@'
+
   - name: mlibc
     host-deps:
       - host-protoc
@@ -23,6 +40,22 @@ target-packages:
           - '@PKG_SOURCE_DIR@'
     build:
       - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@PKG_COLLECT_DIR@'
+
+  - name: zlib
+    source_dir: 'ports/zlib'
+    host-deps:
+      - native-gcc
+    configure:
+      - args:
+        - '@PKG_SOURCE_DIR@/configure'
+        environ:
+          CHOST: 'x86_64-managarm'
+          prefix: '/usr'
+    build:
+      - args: ['make']
+      - args: ['make', 'install']
         environ:
           DESTDIR: '@PKG_COLLECT_DIR@'
 

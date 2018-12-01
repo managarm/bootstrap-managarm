@@ -99,7 +99,6 @@ include $T/milestone/native-libasync.makefile
 include $T/milestone/native-libcofiber.makefile
 include $T/milestone/native-libdrm.makefile
 include $T/milestone/native-libevdev.makefile
-include $T/milestone/native-libexpat.makefile
 include $T/milestone/native-libffi.makefile
 include $T/milestone/native-libinput.makefile
 include $T/milestone/native-libpng.makefile
@@ -116,6 +115,5 @@ include $T/milestone/native-system.makefile
 include $T/milestone/native-wayland.makefile
 include $T/milestone/native-wayland-protocols.makefile
 include $T/milestone/native-weston.makefile
-include $T/milestone/native-zlib.makefile
 include $T/milestone/system-gcc.makefile
 
