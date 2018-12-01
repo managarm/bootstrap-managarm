@@ -8,6 +8,21 @@ host-packages:
       - cross-binutils
 
 target-packages:
+  - name: libevdev
+    source_dir: 'ports/libevdev'
+    host-deps:
+      - native-gcc
+    configure:
+      - args:
+        - '@PKG_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@PKG_COLLECT_DIR@'
+
   - name: libexpat
     source_dir: 'ports/libexpat'
     host-deps:
@@ -20,15 +35,61 @@ target-packages:
         # We disable xmlwf to avoid building its documentation.
         - '--without-xmlwf'
     build:
-      - args: ['make']
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@PKG_COLLECT_DIR@'
+
+  - name: libffi
+    source_dir: 'ports/libffi'
+    host-deps:
+      - native-gcc
+    configure:
+      - args:
+        - '@PKG_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@PKG_COLLECT_DIR@'
+
+  - name: libpng
+    source_dir: 'ports/libpng'
+    host-deps:
+      - native-gcc
+    configure:
+      - args:
+        - '@PKG_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@PKG_COLLECT_DIR@'
+
+  - name: libxkbcommon
+    source_dir: 'ports/libxkbcommon'
+    host-deps:
+      - native-gcc
+    configure:
+      - args:
+        - '@PKG_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--disable-x11'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
         environ:
           DESTDIR: '@PKG_COLLECT_DIR@'
 
   - name: mlibc
     host-deps:
-      - host-protoc
       - native-gcc
+      - host-protoc
     configure:
       - args:
           - 'meson'
@@ -43,6 +104,39 @@ target-packages:
         environ:
           DESTDIR: '@PKG_COLLECT_DIR@'
 
+  - name: pixman
+    source_dir: 'ports/pixman'
+    host-deps:
+      - native-gcc
+    configure:
+      - args:
+        - '@PKG_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@PKG_COLLECT_DIR@'
+
+  - name: protobuf
+    source_dir: 'ports/protobuf'
+    host-deps:
+      - native-gcc
+      - host-protoc
+    configure:
+      - args:
+        - '@PKG_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        # protobuf needs a host protoc when cross-compiling.
+        - '--with-protoc=protoc'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@PKG_COLLECT_DIR@'
+
   - name: zlib
     source_dir: 'ports/zlib'
     host-deps:
@@ -54,7 +148,7 @@ target-packages:
           CHOST: 'x86_64-managarm'
           prefix: '/usr'
     build:
-      - args: ['make']
+      - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
         environ:
           DESTDIR: '@PKG_COLLECT_DIR@'
