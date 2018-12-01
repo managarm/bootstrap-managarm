@@ -25,7 +25,7 @@ target-packages:
         - '--prefix=/usr'
         environ:
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
-          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig'
+          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
@@ -155,7 +155,7 @@ target-packages:
           - '@PKG_SOURCE_DIR@'
         environ:
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
-          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig'
+          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
     build:
       - args: ['ninja']
       - args: ['ninja', 'install']
@@ -206,7 +206,7 @@ target-packages:
         - '--prefix=/usr'
         environ:
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
-          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig'
+          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
@@ -231,7 +231,7 @@ target-packages:
         #- '--enable-debug'
         environ:
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
-          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig'
+          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
@@ -328,6 +328,70 @@ target-packages:
         - '--prefix=/usr'
         # protobuf needs a host protoc when cross-compiling.
         - '--with-protoc=protoc'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@PKG_COLLECT_DIR@'
+
+  - name: wayland
+    source_dir: 'ports/wayland'
+    host-deps:
+      - native-gcc
+    configure:
+      - args:
+        - '@PKG_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--with-host-scanner'
+        - '--disable-dtd-validation'
+        - '--disable-documentation'
+        environ:
+          PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
+          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@PKG_COLLECT_DIR@'
+
+  - name: wayland-protocols
+    source_dir: 'ports/wayland-protocols'
+    host-deps:
+      - native-gcc
+    configure:
+      - args:
+        - '@PKG_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@PKG_COLLECT_DIR@'
+
+  - name: weston
+    source_dir: 'ports/weston'
+    host-deps:
+      - native-gcc
+    configure:
+      - args:
+        - '@PKG_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--with-host-scanner'
+        - '--disable-dtd-validation'
+        - '--disable-documentation'
+        - '--disable-xwayland'
+        - '--disable-x11-compositor'
+        - '--disable-weston-launch'
+     #   - '--with-sysroot=$B/system-root'
+        - '--disable-fbdev-compositor'
+        - '--disable-simple-dmabuf-drm-client'
+        - '--disable-simple-dmabuf-v4l-client'
+        environ:
+          PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
+          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
