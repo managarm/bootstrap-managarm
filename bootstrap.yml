@@ -1,5 +1,7 @@
 
 host-packages:
+  - name: host-autoconf-v2.69
+  - name: host-automake-v1.11
   - name: host-pkg-config
   - name: cross-binutils
   - name: host-protoc
@@ -13,6 +15,9 @@ target-packages:
     source_dir: 'ports/cairo'
     host-deps:
       - host-pkg-config
+      # cairo wants to regerenate its build system at configure time.
+      - host-autoconf-v2.69
+      - host-automake-v1.11
       - native-gcc
     dependencies:
       - libpng
@@ -83,6 +88,9 @@ target-packages:
         - '--disable-radeon'
         - '--disable-amdgpu'
         - '--disable-nouveau'
+        # We might want to build cairo with OpenGL support.
+        # Doing so would introduce a circular dependency here.
+        - '--disable-cairo-tests'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
@@ -140,6 +148,10 @@ target-packages:
     source_dir: 'ports/libinput'
     host-deps:
       - native-gcc
+    dependencies:
+      - eudev
+      - libevdev
+      - mtdev
     configure:
       - args:
           - 'meson'
@@ -199,6 +211,8 @@ target-packages:
     source_dir: 'ports/kmscube'
     host-deps:
       - native-gcc
+    dependencies:
+      - mesa
     configure:
       - args:
         - '@PKG_SOURCE_DIR@/configure'
@@ -217,6 +231,8 @@ target-packages:
     source_dir: 'ports/mesa'
     host-deps:
       - native-gcc
+    dependencies:
+      - libdrm
     configure:
       - args:
         - '@PKG_SOURCE_DIR@/configure'
@@ -242,6 +258,7 @@ target-packages:
     host-deps:
       - native-gcc
       - host-protoc
+    implict_package: true
     configure:
       - args:
         - 'meson'
@@ -276,6 +293,8 @@ target-packages:
     source_dir: 'ports/nano'
     host-deps:
       - native-gcc
+    dependencies:
+      - ncurses
     configure:
       - args:
         - '@PKG_SOURCE_DIR@/configure'
@@ -305,6 +324,8 @@ target-packages:
     source_dir: 'ports/pixman'
     host-deps:
       - native-gcc
+    dependencies:
+      - libpng
     configure:
       - args:
         - '@PKG_SOURCE_DIR@/configure'
@@ -338,6 +359,10 @@ target-packages:
     source_dir: 'ports/wayland'
     host-deps:
       - native-gcc
+    dependencies:
+      - libexpat
+      - libffi
+      - wayland-protocols
     configure:
       - args:
         - '@PKG_SOURCE_DIR@/configure'
@@ -374,18 +399,20 @@ target-packages:
     source_dir: 'ports/weston'
     host-deps:
       - native-gcc
+    dependencies:
+      - cairo
+      - libinput
+      - libxkbcommon
+      - mesa
+      - wayland
     configure:
       - args:
         - '@PKG_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
-        - '--with-host-scanner'
-        - '--disable-dtd-validation'
-        - '--disable-documentation'
         - '--disable-xwayland'
         - '--disable-x11-compositor'
         - '--disable-weston-launch'
-     #   - '--with-sysroot=$B/system-root'
         - '--disable-fbdev-compositor'
         - '--disable-simple-dmabuf-drm-client'
         - '--disable-simple-dmabuf-v4l-client'
