@@ -70,7 +70,6 @@ include $T/upstream/xkeyboard-config.makefile
 include $T/upstream/xorg-macros.makefile
 include $T/upstream/zlib.makefile
 
-include $T/milestone/cross-binutils.makefile
 include $T/milestone/helpers.makefile
 include $T/milestone/host-autoconf-v2.64.makefile
 include $T/milestone/host-autoconf-v2.69.makefile

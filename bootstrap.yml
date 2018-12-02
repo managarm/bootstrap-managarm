@@ -1,19 +1,32 @@
 
-host-packages:
+tools:
   - name: host-autoconf-v2.69
   - name: host-automake-v1.11
   - name: host-pkg-config
+
   - name: cross-binutils
+    source_dir: 'ports/binutils'
+    configure:
+      - args:
+        - '@PKG_SOURCE_DIR@/configure'
+        - '--prefix=@PREFIX@'
+        - '--target=x86_64-managarm'
+        - '--with-sysroot=@SYSROOT_DIR@'
+    compile:
+      - args: ['make', '-j@PARALLELISM@', 'all-binutils', 'all-gas', 'all-ld']
+    install:
+      - args: ['make', 'install-binutils', 'install-gas', 'install-ld']
+
   - name: host-protoc
     has_shared_libs: true
   - name: native-gcc
     dependencies:
       - cross-binutils
 
-target-packages:
+packages:
   - name: cairo
     source_dir: 'ports/cairo'
-    host-deps:
+    tools_required:
       - host-pkg-config
       # cairo wants to regerenate its build system at configure time.
       - host-autoconf-v2.69
@@ -39,7 +52,7 @@ target-packages:
 
   - name: coreutils
     source_dir: 'ports/coreutils'
-    host-deps:
+    tools_required:
       - native-gcc
     configure:
       - args:
@@ -55,7 +68,7 @@ target-packages:
 
   - name: eudev
     source_dir: 'ports/eudev'
-    host-deps:
+    tools_required:
       - native-gcc
     configure:
       - args:
@@ -76,7 +89,7 @@ target-packages:
 
   - name: libdrm
     source_dir: 'ports/libdrm'
-    host-deps:
+    tools_required:
       - native-gcc
     configure:
       - args:
@@ -99,7 +112,7 @@ target-packages:
 
   - name: libevdev
     source_dir: 'ports/libevdev'
-    host-deps:
+    tools_required:
       - native-gcc
     configure:
       - args:
@@ -114,7 +127,7 @@ target-packages:
 
   - name: libexpat
     source_dir: 'ports/libexpat'
-    host-deps:
+    tools_required:
       - native-gcc
     configure:
       - args:
@@ -131,7 +144,7 @@ target-packages:
 
   - name: libffi
     source_dir: 'ports/libffi'
-    host-deps:
+    tools_required:
       - native-gcc
     configure:
       - args:
@@ -146,7 +159,7 @@ target-packages:
 
   - name: libinput
     source_dir: 'ports/libinput'
-    host-deps:
+    tools_required:
       - native-gcc
     dependencies:
       - eudev
@@ -176,7 +189,7 @@ target-packages:
   
   - name: libpng
     source_dir: 'ports/libpng'
-    host-deps:
+    tools_required:
       - native-gcc
     dependencies:
       - zlib
@@ -193,7 +206,7 @@ target-packages:
 
   - name: libxkbcommon
     source_dir: 'ports/libxkbcommon'
-    host-deps:
+    tools_required:
       - native-gcc
     configure:
       - args:
@@ -209,7 +222,7 @@ target-packages:
 
   - name: kmscube
     source_dir: 'ports/kmscube'
-    host-deps:
+    tools_required:
       - native-gcc
     dependencies:
       - mesa
@@ -229,7 +242,7 @@ target-packages:
 
   - name: mesa
     source_dir: 'ports/mesa'
-    host-deps:
+    tools_required:
       - native-gcc
     dependencies:
       - libdrm
@@ -255,7 +268,7 @@ target-packages:
           DESTDIR: '@PKG_COLLECT_DIR@'
 
   - name: mlibc
-    host-deps:
+    tools_required:
       - native-gcc
       - host-protoc
     implict_package: true
@@ -276,7 +289,7 @@ target-packages:
 
   - name: mtdev
     source_dir: 'ports/mtdev'
-    host-deps:
+    tools_required:
       - native-gcc
     configure:
       - args:
@@ -291,7 +304,7 @@ target-packages:
 
   - name: nano
     source_dir: 'ports/nano'
-    host-deps:
+    tools_required:
       - native-gcc
     dependencies:
       - ncurses
@@ -309,7 +322,7 @@ target-packages:
 
   - name: ncurses
     source_dir: 'ports/ncurses'
-    host-deps:
+    tools_required:
       - native-gcc
     configure:
       - args:
@@ -322,7 +335,7 @@ target-packages:
 
   - name: pixman
     source_dir: 'ports/pixman'
-    host-deps:
+    tools_required:
       - native-gcc
     dependencies:
       - libpng
@@ -339,7 +352,7 @@ target-packages:
 
   - name: protobuf
     source_dir: 'ports/protobuf'
-    host-deps:
+    tools_required:
       - native-gcc
       - host-protoc
     configure:
@@ -357,7 +370,7 @@ target-packages:
 
   - name: wayland
     source_dir: 'ports/wayland'
-    host-deps:
+    tools_required:
       - native-gcc
     dependencies:
       - libexpat
@@ -382,7 +395,7 @@ target-packages:
 
   - name: wayland-protocols
     source_dir: 'ports/wayland-protocols'
-    host-deps:
+    tools_required:
       - native-gcc
     configure:
       - args:
@@ -397,7 +410,7 @@ target-packages:
 
   - name: weston
     source_dir: 'ports/weston'
-    host-deps:
+    tools_required:
       - native-gcc
     dependencies:
       - cairo
@@ -427,7 +440,7 @@ target-packages:
 
   - name: zlib
     source_dir: 'ports/zlib'
-    host-deps:
+    tools_required:
       - native-gcc
     configure:
       - args:
