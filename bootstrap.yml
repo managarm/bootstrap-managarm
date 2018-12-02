@@ -1,7 +1,51 @@
 
 tools:
+  - name: host-autoconf-v2.64
+    source_dir: 'ports/autoconf-v2.64'
+    configure:
+      - args: ['@PKG_SOURCE_DIR@/configure', '--prefix=@PREFIX@']
+    compile:
+      - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'install']
+ 
   - name: host-autoconf-v2.69
+    source_dir: 'ports/autoconf-v2.69'
+    configure:
+      - args: ['@PKG_SOURCE_DIR@/configure', '--prefix=@PREFIX@']
+    compile:
+      - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'install']
+
   - name: host-automake-v1.11
+    source_dir: 'ports/automake-v1.11'
+    configure:
+      - args:
+        - '@PKG_SOURCE_DIR@/configure'
+        - '--prefix=@PREFIX@'
+        - 'MAKEINFO=/bin/true'
+    compile:
+      - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'install']
+      # Stop aclocal from complaining.
+      - args: ['ln', '-s', '@PREFIX@/share/aclocal-1.11', '@PREFIX@/share/aclocal']
+
+  - name: host-automake-v1.15
+    source_dir: 'ports/automake-v1.15'
+    configure:
+      - args:
+        - '@PKG_SOURCE_DIR@/configure'
+        - '--prefix=@PREFIX@'
+        - 'MAKEINFO=/bin/true'
+    compile:
+      - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'install']
+      # Stop aclocal from complaining.
+      - args: ['ln', '-s', '@PREFIX@/share/aclocal-1.15', '@PREFIX@/share/aclocal']
+
   - name: host-pkg-config
 
   - name: cross-binutils

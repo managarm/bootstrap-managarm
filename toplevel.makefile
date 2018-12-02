@@ -71,10 +71,6 @@ include $T/upstream/xorg-macros.makefile
 include $T/upstream/zlib.makefile
 
 include $T/milestone/helpers.makefile
-include $T/milestone/host-autoconf-v2.64.makefile
-include $T/milestone/host-autoconf-v2.69.makefile
-include $T/milestone/host-automake-v1.11.makefile
-include $T/milestone/host-automake-v1.15.makefile
 include $T/milestone/host-frigg_pb.makefile
 include $T/milestone/host-libtool.makefile
 include $T/milestone/host-pkg-config.makefile
