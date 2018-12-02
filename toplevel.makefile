@@ -91,5 +91,4 @@ include $T/milestone/native-libcofiber.makefile
 include $T/milestone/native-libsmarter.makefile
 include $T/milestone/native-runtime.makefile
 include $T/milestone/native-system.makefile
-include $T/milestone/system-gcc.makefile
 

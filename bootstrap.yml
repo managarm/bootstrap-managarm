@@ -63,9 +63,24 @@ tools:
 
   - name: host-protoc
     has_shared_libs: true
-  - name: native-gcc
+
+  - name: system-gcc
+    source_dir: 'ports/gcc'
     dependencies:
       - cross-binutils
+    configure:
+      - args:
+        - '@PKG_SOURCE_DIR@/configure'
+        - '--prefix=@PREFIX@'
+        - '--target=x86_64-managarm'
+        - '--with-sysroot=@SYSROOT_DIR@'
+        - '--enable-languages=c,c++'
+        - '--disable-multilib'
+        - '--enable-initfini-array'
+    compile:
+      - args: ['make', '-j@PARALLELISM@', 'all-gcc']
+    install:
+      - args: ['make', 'install-gcc']
 
 packages:
   - name: cairo
@@ -75,7 +90,7 @@ packages:
       # cairo wants to regerenate its build system at configure time.
       - host-autoconf-v2.69
       - host-automake-v1.11
-      - native-gcc
+      - system-gcc
     dependencies:
       - libpng
       - pixman
@@ -97,7 +112,7 @@ packages:
   - name: coreutils
     source_dir: 'ports/coreutils'
     tools_required:
-      - native-gcc
+      - system-gcc
     configure:
       - args:
         - '@PKG_SOURCE_DIR@/configure'
@@ -113,7 +128,7 @@ packages:
   - name: eudev
     source_dir: 'ports/eudev'
     tools_required:
-      - native-gcc
+      - system-gcc
     configure:
       - args:
         - '@PKG_SOURCE_DIR@/configure'
@@ -134,7 +149,7 @@ packages:
   - name: libdrm
     source_dir: 'ports/libdrm'
     tools_required:
-      - native-gcc
+      - system-gcc
     configure:
       - args:
         - '@PKG_SOURCE_DIR@/configure'
@@ -157,7 +172,7 @@ packages:
   - name: libevdev
     source_dir: 'ports/libevdev'
     tools_required:
-      - native-gcc
+      - system-gcc
     configure:
       - args:
         - '@PKG_SOURCE_DIR@/configure'
@@ -172,7 +187,7 @@ packages:
   - name: libexpat
     source_dir: 'ports/libexpat'
     tools_required:
-      - native-gcc
+      - system-gcc
     configure:
       - args:
         - '@PKG_SOURCE_DIR@/expat/configure'
@@ -189,7 +204,7 @@ packages:
   - name: libffi
     source_dir: 'ports/libffi'
     tools_required:
-      - native-gcc
+      - system-gcc
     configure:
       - args:
         - '@PKG_SOURCE_DIR@/configure'
@@ -204,7 +219,7 @@ packages:
   - name: libinput
     source_dir: 'ports/libinput'
     tools_required:
-      - native-gcc
+      - system-gcc
     dependencies:
       - eudev
       - libevdev
@@ -234,7 +249,7 @@ packages:
   - name: libpng
     source_dir: 'ports/libpng'
     tools_required:
-      - native-gcc
+      - system-gcc
     dependencies:
       - zlib
     configure:
@@ -251,7 +266,7 @@ packages:
   - name: libxkbcommon
     source_dir: 'ports/libxkbcommon'
     tools_required:
-      - native-gcc
+      - system-gcc
     configure:
       - args:
         - '@PKG_SOURCE_DIR@/configure'
@@ -267,7 +282,7 @@ packages:
   - name: kmscube
     source_dir: 'ports/kmscube'
     tools_required:
-      - native-gcc
+      - system-gcc
     dependencies:
       - mesa
     configure:
@@ -287,7 +302,7 @@ packages:
   - name: mesa
     source_dir: 'ports/mesa'
     tools_required:
-      - native-gcc
+      - system-gcc
     dependencies:
       - libdrm
     configure:
@@ -313,7 +328,7 @@ packages:
 
   - name: mlibc
     tools_required:
-      - native-gcc
+      - system-gcc
       - host-protoc
     implict_package: true
     configure:
@@ -334,7 +349,7 @@ packages:
   - name: mtdev
     source_dir: 'ports/mtdev'
     tools_required:
-      - native-gcc
+      - system-gcc
     configure:
       - args:
         - '@PKG_SOURCE_DIR@/configure'
@@ -349,7 +364,7 @@ packages:
   - name: nano
     source_dir: 'ports/nano'
     tools_required:
-      - native-gcc
+      - system-gcc
     dependencies:
       - ncurses
     configure:
@@ -367,7 +382,7 @@ packages:
   - name: ncurses
     source_dir: 'ports/ncurses'
     tools_required:
-      - native-gcc
+      - system-gcc
     configure:
       - args:
         - '@PKG_SOURCE_DIR@/configure'
@@ -380,7 +395,7 @@ packages:
   - name: pixman
     source_dir: 'ports/pixman'
     tools_required:
-      - native-gcc
+      - system-gcc
     dependencies:
       - libpng
     configure:
@@ -397,7 +412,7 @@ packages:
   - name: protobuf
     source_dir: 'ports/protobuf'
     tools_required:
-      - native-gcc
+      - system-gcc
       - host-protoc
     configure:
       - args:
@@ -415,7 +430,7 @@ packages:
   - name: wayland
     source_dir: 'ports/wayland'
     tools_required:
-      - native-gcc
+      - system-gcc
     dependencies:
       - libexpat
       - libffi
@@ -440,7 +455,7 @@ packages:
   - name: wayland-protocols
     source_dir: 'ports/wayland-protocols'
     tools_required:
-      - native-gcc
+      - system-gcc
     configure:
       - args:
         - '@PKG_SOURCE_DIR@/configure'
@@ -455,7 +470,7 @@ packages:
   - name: weston
     source_dir: 'ports/weston'
     tools_required:
-      - native-gcc
+      - system-gcc
     dependencies:
       - cairo
       - libinput
@@ -485,7 +500,7 @@ packages:
   - name: zlib
     source_dir: 'ports/zlib'
     tools_required:
-      - native-gcc
+      - system-gcc
     configure:
       - args:
         - '@PKG_SOURCE_DIR@/configure'
