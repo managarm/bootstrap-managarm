@@ -89,6 +89,5 @@ include $T/milestone/native-helix.makefile
 include $T/milestone/native-libasync.makefile
 include $T/milestone/native-libcofiber.makefile
 include $T/milestone/native-libsmarter.makefile
-include $T/milestone/native-runtime.makefile
 include $T/milestone/native-system.makefile
 

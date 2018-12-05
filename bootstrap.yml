@@ -77,10 +77,26 @@ tools:
         - '--enable-languages=c,c++'
         - '--disable-multilib'
         - '--enable-initfini-array'
-    compile:
-      - args: ['make', '-j@PARALLELISM@', 'all-gcc']
-    install:
-      - args: ['make', 'install-gcc']
+    stages:
+      - name: 'compiler'
+        compile:
+          - args: ['make', '-j@PARALLELISM@', 'all-gcc']
+        install:
+          - args: ['make', 'install-gcc']
+    stages:
+      - name: 'libgcc'
+        self_required: true
+        compile:
+          - args: ['make', '-j@PARALLELISM@', 'all-target-libgcc']
+        install:
+          - args: ['make', 'install-target-libgcc']
+    stages:
+      - name: 'libstdc++'
+        self_required: true
+        compile:
+          - args: ['make', '-j@PARALLELISM@', 'all-target-libstdc++-v3']
+        install:
+          - args: ['make', 'install-target-libstdc++-v3']
 
 packages:
   - name: cairo
@@ -328,7 +344,8 @@ packages:
 
   - name: mlibc
     tools_required:
-      - system-gcc
+      - tool: system-gcc
+        stage: cc
       - host-protoc
     implict_package: true
     configure:
