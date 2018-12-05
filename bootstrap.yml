@@ -66,7 +66,7 @@ tools:
 
   - name: system-gcc
     source_dir: 'ports/gcc'
-    dependencies:
+    tools_required:
       - cross-binutils
     configure:
       - args:
@@ -78,20 +78,18 @@ tools:
         - '--disable-multilib'
         - '--enable-initfini-array'
     stages:
-      - name: 'compiler'
+      - name: compiler
         compile:
           - args: ['make', '-j@PARALLELISM@', 'all-gcc']
         install:
           - args: ['make', 'install-gcc']
-    stages:
-      - name: 'libgcc'
+      - name: libgcc
         self_required: true
         compile:
           - args: ['make', '-j@PARALLELISM@', 'all-target-libgcc']
         install:
           - args: ['make', 'install-target-libgcc']
-    stages:
-      - name: 'libstdc++'
+      - name: libstdc++
         self_required: true
         compile:
           - args: ['make', '-j@PARALLELISM@', 'all-target-libstdc++-v3']
@@ -107,7 +105,7 @@ packages:
       - host-autoconf-v2.69
       - host-automake-v1.11
       - system-gcc
-    dependencies:
+    pkgs_required:
       - libpng
       - pixman
     configure:
@@ -236,7 +234,7 @@ packages:
     source_dir: 'ports/libinput'
     tools_required:
       - system-gcc
-    dependencies:
+    pkgs_required:
       - eudev
       - libevdev
       - mtdev
@@ -266,7 +264,7 @@ packages:
     source_dir: 'ports/libpng'
     tools_required:
       - system-gcc
-    dependencies:
+    pkgs_required:
       - zlib
     configure:
       - args:
@@ -299,7 +297,7 @@ packages:
     source_dir: 'ports/kmscube'
     tools_required:
       - system-gcc
-    dependencies:
+    pkgs_required:
       - mesa
     configure:
       - args:
@@ -319,7 +317,7 @@ packages:
     source_dir: 'ports/mesa'
     tools_required:
       - system-gcc
-    dependencies:
+    pkgs_required:
       - libdrm
     configure:
       - args:
@@ -345,8 +343,11 @@ packages:
   - name: mlibc
     tools_required:
       - tool: system-gcc
-        stage: cc
+        auto_dependency: false
       - host-protoc
+    tool_dependencies:
+      - tool: system-gcc
+        stage: compiler
     implict_package: true
     configure:
       - args:
@@ -382,7 +383,7 @@ packages:
     source_dir: 'ports/nano'
     tools_required:
       - system-gcc
-    dependencies:
+    pkgs_required:
       - ncurses
     configure:
       - args:
@@ -413,7 +414,7 @@ packages:
     source_dir: 'ports/pixman'
     tools_required:
       - system-gcc
-    dependencies:
+    pkgs_required:
       - libpng
     configure:
       - args:
@@ -448,7 +449,7 @@ packages:
     source_dir: 'ports/wayland'
     tools_required:
       - system-gcc
-    dependencies:
+    pkgs_required:
       - libexpat
       - libffi
       - wayland-protocols
@@ -488,7 +489,7 @@ packages:
     source_dir: 'ports/weston'
     tools_required:
       - system-gcc
-    dependencies:
+    pkgs_required:
       - cairo
       - libinput
       - libxkbcommon
