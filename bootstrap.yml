@@ -85,12 +85,20 @@ tools:
           - args: ['make', 'install-gcc']
       - name: libgcc
         self_required: true
+        tool_dependencies:
+         - tool: system-gcc
+           stage: compiler
+        pkgs_required:
+         - mlibc
         compile:
           - args: ['make', '-j@PARALLELISM@', 'all-target-libgcc']
         install:
           - args: ['make', 'install-target-libgcc']
       - name: libstdc++
         self_required: true
+        tool_dependencies:
+         - tool: system-gcc
+           stage: libgcc
         compile:
           - args: ['make', '-j@PARALLELISM@', 'all-target-libstdc++-v3']
         install:
