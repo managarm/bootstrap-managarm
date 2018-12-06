@@ -84,10 +84,9 @@ tools:
         install:
           - args: ['make', 'install-gcc']
       - name: libgcc
-        self_required: true
-        tool_dependencies:
+        tools_required:
          - tool: system-gcc
-           stage: compiler
+           stage_dependencies: [compiler]
         pkgs_required:
          - mlibc
         compile:
@@ -95,10 +94,9 @@ tools:
         install:
           - args: ['make', 'install-target-libgcc']
       - name: libstdc++
-        self_required: true
-        tool_dependencies:
+        tools_required:
          - tool: system-gcc
-           stage: libgcc
+           stage_dependencies: [libgcc]
         compile:
           - args: ['make', '-j@PARALLELISM@', 'all-target-libstdc++-v3']
         install:
@@ -351,11 +349,8 @@ packages:
   - name: mlibc
     tools_required:
       - tool: system-gcc
-        auto_dependency: false
+        stage_dependencies: [compiler]
       - host-protoc
-    tool_dependencies:
-      - tool: system-gcc
-        stage: compiler
     implict_package: true
     configure:
       - args:
