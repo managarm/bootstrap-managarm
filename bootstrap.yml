@@ -26,6 +26,12 @@ tools:
     source:
         name: automake-v1.11
         subdir: 'ports'
+        git: 'http://git.savannah.gnu.org/r/automake.git'
+        tag: 'v1.11.6'
+        tools_required:
+          - host-autoconf-v2.69
+        regenerate:
+          - args: ['./bootstrap']
     configure:
       - args:
         - '@PKG_SOURCE_DIR@/configure'
@@ -42,6 +48,12 @@ tools:
     source:
         name: automake-v1.15
         subdir: 'ports'
+        git: 'http://git.savannah.gnu.org/r/automake.git'
+        tag: 'v1.15.1'
+        tools_required:
+          - host-autoconf-v2.69
+        regenerate:
+          - args: ['./bootstrap']
     configure:
       - args:
         - '@PKG_SOURCE_DIR@/configure'
@@ -61,7 +73,7 @@ tools:
       name: binutils
       subdir: 'ports'
       git: 'git://sourceware.org/git/binutils-gdb.git'
-      tag: binutils-2_26
+      tag: 'binutils-2_26'
       tools_required:
         - host-autoconf-v2.64
         - host-automake-v1.11
@@ -86,6 +98,14 @@ tools:
     source:
         name: gcc
         subdir: 'ports'
+        git: 'git://gcc.gnu.org/git/gcc.git'
+        tag: 'gcc-7_1_0-release'
+        tools_required:
+          - host-autoconf-v2.64
+          - host-automake-v1.11
+        regenerate:
+          - args: ['autoconf']
+            workdir: '@SOURCE_DIR@/libstdc++-v3'
     tools_required:
       - cross-binutils
     configure:
@@ -379,6 +399,9 @@ packages:
           DESTDIR: '@PKG_COLLECT_DIR@'
 
   - name: mlibc
+    source:
+      git: 'http://github.com/managarm/mlibc.git'
+      branch: 'master'
     tools_required:
       - tool: system-gcc
         stage_dependencies: [compiler]

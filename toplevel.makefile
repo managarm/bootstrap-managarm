@@ -31,8 +31,6 @@ $T/tags $B/tags:
 include $T/upstream/acpica.makefile
 include $T/upstream/autoconf-v2.64.makefile
 include $T/upstream/autoconf-v2.69.makefile
-include $T/upstream/automake-v1.11.makefile
-include $T/upstream/automake-v1.15.makefile
 include $T/upstream/bash.makefile
 include $T/upstream/boost.makefile
 include $T/upstream/cairo.makefile
@@ -40,7 +38,6 @@ include $T/upstream/coreutils.makefile
 include $T/upstream/cxxshim.makefile
 include $T/upstream/eudev.makefile
 include $T/upstream/frigg.makefile
-include $T/upstream/gcc.makefile
 include $T/upstream/kmscube.makefile
 include $T/upstream/libasync.makefile
 include $T/upstream/libcofiber.makefile
