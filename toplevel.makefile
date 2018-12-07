@@ -38,9 +38,6 @@ include $T/upstream/frigg.makefile
 include $T/upstream/kmscube.makefile
 include $T/upstream/libasync.makefile
 include $T/upstream/libcofiber.makefile
-include $T/upstream/libdrm.makefile
-include $T/upstream/libevdev.makefile
-include $T/upstream/libexpat.makefile
 include $T/upstream/libffi.makefile
 include $T/upstream/libinput.makefile
 include $T/upstream/libpng.makefile
@@ -58,13 +55,11 @@ include $T/upstream/wayland.makefile
 include $T/upstream/wayland-protocols.makefile
 include $T/upstream/weston.makefile
 include $T/upstream/xkeyboard-config.makefile
-include $T/upstream/xorg-macros.makefile
 include $T/upstream/zlib.makefile
 
 include $T/milestone/helpers.makefile
 include $T/milestone/host-frigg_pb.makefile
 include $T/milestone/host-protoc.makefile
-include $T/milestone/host-xorg-macros.makefile
 include $T/milestone/kernel-gcc.makefile
 include $T/milestone/kernel-main.makefile
 include $T/milestone/kernel-runtime.makefile

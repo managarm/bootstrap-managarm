@@ -139,6 +139,29 @@ tools:
   - name: host-protoc
     exports_shared_libs: true
 
+  - name: host-xorg-macros
+    exports_aclocal: true
+    source:
+      name: xorg-macros
+      subdir: 'ports'
+      git: 'git://anongit.freedesktop.org/xorg/util/macros'
+      tag: 'util-macros-1.19.1'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.11
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
+    configure:
+      - args:
+        - '@PKG_SOURCE_DIR@/configure'
+        - '--prefix=@PREFIX@'
+    compile:
+      - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'install']
+
   - name: system-gcc
     source:
         name: gcc
@@ -284,6 +307,18 @@ packages:
   - name: libdrm
     source:
       subdir: 'ports'
+      git: 'git://anongit.freedesktop.org/mesa/drm'
+      tag: 'libdrm-2.4.81'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.11
+        - host-libtool
+        - host-pkg-config
+        - host-xorg-macros
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
     tools_required:
       - system-gcc
     configure:
@@ -308,6 +343,17 @@ packages:
   - name: libevdev
     source:
       subdir: 'ports'
+      git: 'git://anongit.freedesktop.org/libevdev'
+      tag: 'libevdev-1.5.8'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.11
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
     tools_required:
       - system-gcc
     configure:
@@ -324,6 +370,14 @@ packages:
   - name: libexpat
     source:
       subdir: 'ports'
+      git: 'https://github.com/libexpat/libexpat.git'
+      tag: 'R_2_2_5'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.11
+      regenerate:
+        - args: ['./buildconf.sh']
+          workdir: '@SOURCE_DIR@/expat'
     tools_required:
       - system-gcc
     configure:
