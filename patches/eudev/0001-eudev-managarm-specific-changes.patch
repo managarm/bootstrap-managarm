@@ -1,7 +1,7 @@
-From 4075ebc3753f2fc9ca131374ac3a843633524311 Mon Sep 17 00:00:00 2001
+From 054d80a41f52229dce1dc25c4332ddb1a1ac8cd4 Mon Sep 17 00:00:00 2001
 From: Andreas Hampicke <ahampicke@gmail.com>
 Date: Wed, 3 Jan 2018 21:03:42 +0100
-Subject: [PATCH] eudev: managarm specific changes
+Subject: [PATCH 1/2] eudev: managarm specific changes
 
 ---
  configure.ac               | 6 +++---

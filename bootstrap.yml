@@ -2,8 +2,8 @@
 tools:
   - name: host-autoconf-v2.64
     source:
-        name: autoconf-v2.64
-        subdir: 'ports'
+      name: autoconf-v2.64
+      subdir: 'ports'
     configure:
       - args: ['@PKG_SOURCE_DIR@/configure', '--prefix=@PREFIX@']
     compile:
@@ -13,8 +13,8 @@ tools:
  
   - name: host-autoconf-v2.69
     source:
-        name: autoconf-v2.69
-        subdir: 'ports'
+      name: autoconf-v2.69
+      subdir: 'ports'
     configure:
       - args: ['@PKG_SOURCE_DIR@/configure', '--prefix=@PREFIX@']
     compile:
@@ -24,14 +24,14 @@ tools:
 
   - name: host-automake-v1.11
     source:
-        name: automake-v1.11
-        subdir: 'ports'
-        git: 'http://git.savannah.gnu.org/r/automake.git'
-        tag: 'v1.11.6'
-        tools_required:
-          - host-autoconf-v2.69
-        regenerate:
-          - args: ['./bootstrap']
+      name: automake-v1.11
+      subdir: 'ports'
+      git: 'http://git.savannah.gnu.org/r/automake.git'
+      tag: 'v1.11.6'
+      tools_required:
+        - host-autoconf-v2.69
+      regenerate:
+        - args: ['./bootstrap']
     configure:
       - args:
         - '@PKG_SOURCE_DIR@/configure'
@@ -65,8 +65,53 @@ tools:
       - args: ['make', 'install']
       # Stop aclocal from complaining.
       - args: ['ln', '-s', '@PREFIX@/share/aclocal-1.15', '@PREFIX@/share/aclocal']
+  
+  - name: host-libtool
+    exports_aclocal: true
+    source:
+      name: libtool
+      subdir: 'ports'
+      git: 'http://git.savannah.gnu.org/r/libtool.git' 
+      tag: 'v2.4.5'
+      regenerate:
+        # libtool's ./bootstrap does a shallow clone with insufficient depth.
+        - args: ['git', 'submodule', 'update', '--init']
+        - args: ['./bootstrap']
+    configure:
+      - args:
+        - '@PKG_SOURCE_DIR@/configure'
+        - '--prefix=@PREFIX@'
+    compile:
+      - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'install']
 
+  # We could run an external pkg-config; however, we need the aclocal files.
+  # The easiest way to ensure that they are available is to just install pkg-config.
   - name: host-pkg-config
+    exports_aclocal: true
+    source:
+      name: 'pkg-config'
+      subdir: 'ports'
+      git: 'git://anongit.freedesktop.org/pkg-config'
+      tag: 'pkg-config-0.29.2'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.11
+        - host-libtool
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
+    configure:
+      - args:
+        - '@PKG_SOURCE_DIR@/configure'
+        - '--prefix=@PREFIX@'
+        - '--with-internal-glib'
+    compile:
+      - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'install']
 
   - name: cross-binutils
     source:
@@ -92,7 +137,7 @@ tools:
       - args: ['make', 'install-binutils', 'install-gas', 'install-ld']
 
   - name: host-protoc
-    has_shared_libs: true
+    exports_shared_libs: true
 
   - name: system-gcc
     source:
@@ -125,8 +170,8 @@ tools:
           - args: ['make', 'install-gcc']
       - name: libgcc
         tools_required:
-         - tool: system-gcc
-           stage_dependencies: [compiler]
+          - tool: system-gcc
+            stage_dependencies: [compiler]
         pkgs_required:
          - mlibc
         compile:
@@ -135,8 +180,8 @@ tools:
           - args: ['make', 'install-target-libgcc']
       - name: libstdc++
         tools_required:
-         - tool: system-gcc
-           stage_dependencies: [libgcc]
+          - tool: system-gcc
+            stage_dependencies: [libgcc]
         compile:
           - args: ['make', '-j@PARALLELISM@', 'all-target-libstdc++-v3']
         install:
@@ -146,11 +191,22 @@ packages:
   - name: cairo
     source:
       subdir: 'ports'
+      git: 'git://anongit.freedesktop.org/cairo'
+      tag: '1.15.10'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.11
+        - host-libtool
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
     tools_required:
       - host-pkg-config
       # cairo wants to regerenate its build system at configure time.
       - host-autoconf-v2.69
       - host-automake-v1.11
+      - host-libtool
       - system-gcc
     pkgs_required:
       - libpng
@@ -173,6 +229,13 @@ packages:
   - name: coreutils
     source:
       subdir: 'ports'
+      git: 'git://git.savannah.gnu.org/coreutils.git'
+      tag: 'v8.27'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.11
+      regenerate:
+        - args: ['./bootstrap']
     tools_required:
       - system-gcc
     configure:
@@ -190,6 +253,15 @@ packages:
   - name: eudev
     source:
       subdir: 'ports'
+      git: 'https://github.com/gentoo/eudev.git'
+      tag: 'v3.2.2'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.11
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['./autogen.sh']
     tools_required:
       - system-gcc
     configure:
