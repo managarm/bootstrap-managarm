@@ -1,7 +1,9 @@
 
 tools:
   - name: host-autoconf-v2.64
-    source_dir: 'ports/autoconf-v2.64'
+    source:
+        name: autoconf-v2.64
+        subdir: 'ports'
     configure:
       - args: ['@PKG_SOURCE_DIR@/configure', '--prefix=@PREFIX@']
     compile:
@@ -10,7 +12,9 @@ tools:
       - args: ['make', 'install']
  
   - name: host-autoconf-v2.69
-    source_dir: 'ports/autoconf-v2.69'
+    source:
+        name: autoconf-v2.69
+        subdir: 'ports'
     configure:
       - args: ['@PKG_SOURCE_DIR@/configure', '--prefix=@PREFIX@']
     compile:
@@ -19,7 +23,9 @@ tools:
       - args: ['make', 'install']
 
   - name: host-automake-v1.11
-    source_dir: 'ports/automake-v1.11'
+    source:
+        name: automake-v1.11
+        subdir: 'ports'
     configure:
       - args:
         - '@PKG_SOURCE_DIR@/configure'
@@ -33,7 +39,9 @@ tools:
       - args: ['ln', '-s', '@PREFIX@/share/aclocal-1.11', '@PREFIX@/share/aclocal']
 
   - name: host-automake-v1.15
-    source_dir: 'ports/automake-v1.15'
+    source:
+        name: automake-v1.15
+        subdir: 'ports'
     configure:
       - args:
         - '@PKG_SOURCE_DIR@/configure'
@@ -49,7 +57,17 @@ tools:
   - name: host-pkg-config
 
   - name: cross-binutils
-    source_dir: 'ports/binutils'
+    source:
+      name: binutils
+      subdir: 'ports'
+      git: 'git://sourceware.org/git/binutils-gdb.git'
+      tag: binutils-2_26
+      tools_required:
+        - host-autoconf-v2.64
+        - host-automake-v1.11
+      regenerate:
+        - args: ['autoreconf']
+          workdir: '@SOURCE_DIR@/ld'
     configure:
       - args:
         - '@PKG_SOURCE_DIR@/configure'
@@ -65,7 +83,9 @@ tools:
     has_shared_libs: true
 
   - name: system-gcc
-    source_dir: 'ports/gcc'
+    source:
+        name: gcc
+        subdir: 'ports'
     tools_required:
       - cross-binutils
     configure:
@@ -104,7 +124,8 @@ tools:
 
 packages:
   - name: cairo
-    source_dir: 'ports/cairo'
+    source:
+      subdir: 'ports'
     tools_required:
       - host-pkg-config
       # cairo wants to regerenate its build system at configure time.
@@ -130,7 +151,8 @@ packages:
           DESTDIR: '@PKG_COLLECT_DIR@'
 
   - name: coreutils
-    source_dir: 'ports/coreutils'
+    source:
+      subdir: 'ports'
     tools_required:
       - system-gcc
     configure:
@@ -146,7 +168,8 @@ packages:
           DESTDIR: '@PKG_COLLECT_DIR@'
 
   - name: eudev
-    source_dir: 'ports/eudev'
+    source:
+      subdir: 'ports'
     tools_required:
       - system-gcc
     configure:
@@ -167,7 +190,8 @@ packages:
           DESTDIR: '@PKG_COLLECT_DIR@'
 
   - name: libdrm
-    source_dir: 'ports/libdrm'
+    source:
+      subdir: 'ports'
     tools_required:
       - system-gcc
     configure:
@@ -190,7 +214,8 @@ packages:
           DESTDIR: '@PKG_COLLECT_DIR@'
 
   - name: libevdev
-    source_dir: 'ports/libevdev'
+    source:
+      subdir: 'ports'
     tools_required:
       - system-gcc
     configure:
@@ -205,7 +230,8 @@ packages:
           DESTDIR: '@PKG_COLLECT_DIR@'
 
   - name: libexpat
-    source_dir: 'ports/libexpat'
+    source:
+      subdir: 'ports'
     tools_required:
       - system-gcc
     configure:
@@ -222,7 +248,8 @@ packages:
           DESTDIR: '@PKG_COLLECT_DIR@'
 
   - name: libffi
-    source_dir: 'ports/libffi'
+    source:
+      subdir: 'ports'
     tools_required:
       - system-gcc
     configure:
@@ -237,7 +264,8 @@ packages:
           DESTDIR: '@PKG_COLLECT_DIR@'
 
   - name: libinput
-    source_dir: 'ports/libinput'
+    source:
+      subdir: 'ports'
     tools_required:
       - system-gcc
     pkgs_required:
@@ -267,7 +295,8 @@ packages:
           DESTDIR: '@PKG_COLLECT_DIR@'
   
   - name: libpng
-    source_dir: 'ports/libpng'
+    source:
+      subdir: 'ports'
     tools_required:
       - system-gcc
     pkgs_required:
@@ -284,7 +313,8 @@ packages:
           DESTDIR: '@PKG_COLLECT_DIR@'
 
   - name: libxkbcommon
-    source_dir: 'ports/libxkbcommon'
+    source:
+      subdir: 'ports'
     tools_required:
       - system-gcc
     configure:
@@ -300,7 +330,8 @@ packages:
           DESTDIR: '@PKG_COLLECT_DIR@'
 
   - name: kmscube
-    source_dir: 'ports/kmscube'
+    source:
+      subdir: 'ports'
     tools_required:
       - system-gcc
     pkgs_required:
@@ -320,7 +351,8 @@ packages:
           DESTDIR: '@PKG_COLLECT_DIR@'
 
   - name: mesa
-    source_dir: 'ports/mesa'
+    source:
+      subdir: 'ports'
     tools_required:
       - system-gcc
     pkgs_required:
@@ -368,7 +400,8 @@ packages:
           DESTDIR: '@PKG_COLLECT_DIR@'
 
   - name: mtdev
-    source_dir: 'ports/mtdev'
+    source:
+      subdir: 'ports'
     tools_required:
       - system-gcc
     configure:
@@ -383,7 +416,8 @@ packages:
           DESTDIR: '@PKG_COLLECT_DIR@'
 
   - name: nano
-    source_dir: 'ports/nano'
+    source:
+      subdir: 'ports'
     tools_required:
       - system-gcc
     pkgs_required:
@@ -401,7 +435,8 @@ packages:
           DESTDIR: '@PKG_COLLECT_DIR@'
 
   - name: ncurses
-    source_dir: 'ports/ncurses'
+    source:
+      subdir: 'ports'
     tools_required:
       - system-gcc
     configure:
@@ -414,7 +449,8 @@ packages:
       - args: ['make', 'DESTDIR=@PKG_COLLECT_DIR@', 'install']
 
   - name: pixman
-    source_dir: 'ports/pixman'
+    source:
+      subdir: 'ports'
     tools_required:
       - system-gcc
     pkgs_required:
@@ -431,7 +467,8 @@ packages:
           DESTDIR: '@PKG_COLLECT_DIR@'
 
   - name: protobuf
-    source_dir: 'ports/protobuf'
+    source:
+      subdir: 'ports'
     tools_required:
       - system-gcc
       - host-protoc
@@ -449,7 +486,8 @@ packages:
           DESTDIR: '@PKG_COLLECT_DIR@'
 
   - name: wayland
-    source_dir: 'ports/wayland'
+    source:
+      subdir: 'ports'
     tools_required:
       - system-gcc
     pkgs_required:
@@ -474,7 +512,8 @@ packages:
           DESTDIR: '@PKG_COLLECT_DIR@'
 
   - name: wayland-protocols
-    source_dir: 'ports/wayland-protocols'
+    source:
+      subdir: 'ports'
     tools_required:
       - system-gcc
     configure:
@@ -489,7 +528,8 @@ packages:
           DESTDIR: '@PKG_COLLECT_DIR@'
 
   - name: weston
-    source_dir: 'ports/weston'
+    source:
+      subdir: 'ports'
     tools_required:
       - system-gcc
     pkgs_required:
@@ -519,7 +559,8 @@ packages:
           DESTDIR: '@PKG_COLLECT_DIR@'
 
   - name: zlib
-    source_dir: 'ports/zlib'
+    source:
+      subdir: 'ports'
     tools_required:
       - system-gcc
     configure:

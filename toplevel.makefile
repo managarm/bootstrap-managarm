@@ -34,7 +34,6 @@ include $T/upstream/autoconf-v2.69.makefile
 include $T/upstream/automake-v1.11.makefile
 include $T/upstream/automake-v1.15.makefile
 include $T/upstream/bash.makefile
-include $T/upstream/binutils.makefile
 include $T/upstream/boost.makefile
 include $T/upstream/cairo.makefile
 include $T/upstream/coreutils.makefile
