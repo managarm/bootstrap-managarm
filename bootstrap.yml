@@ -733,6 +733,17 @@ packages:
   - name: wayland
     source:
       subdir: 'ports'
+      git: 'http://github.com/wayland-project/wayland.git'
+      tag: '1.14.0'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
     tools_required:
       - system-gcc
     pkgs_required:
@@ -759,6 +770,16 @@ packages:
   - name: wayland-protocols
     source:
       subdir: 'ports'
+      git: 'http://github.com/wayland-project/wayland-protocols.git'
+      tag: '1.12'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-pkg-config
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
     tools_required:
       - system-gcc
     configure:
@@ -775,6 +796,16 @@ packages:
   - name: weston
     source:
       subdir: 'ports'
+      git: 'http://github.com/wayland-project/weston.git'
+      tag: '4.0.0'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-pkg-config
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
     tools_required:
       - system-gcc
     pkgs_required:

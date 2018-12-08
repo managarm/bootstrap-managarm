@@ -1,20 +1,34 @@
-From f7ff24ee4fc078ec3a9ed2924deb0f32e92ffe84 Mon Sep 17 00:00:00 2001
+From 326bcf2df8e652d22710e96ebdba578c974ed5c0 Mon Sep 17 00:00:00 2001
 From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
 Date: Sun, 4 Mar 2018 19:56:42 +0100
 Subject: [PATCH] Managarm-specific changes
 
 ---
- clients/multi-resource.c           |  2 +-
- compositor/main.c                  |  4 +++-
- compositor/text-backend.c          |  3 ++-
- libweston/compositor-drm.c         | 15 +++++++++++----
- libweston/launcher-direct.c        |  8 ++++++--
- shared/config-parser.c             |  4 +++-
- shared/timespec-util.h             |  1 +
- tools/zunitc/src/zuc_base_logger.c |  2 +-
- tools/zunitc/src/zunitc_impl.c     |  1 +
- 9 files changed, 29 insertions(+), 11 deletions(-)
+ clients/desktop-shell.c            | 1 +
+ clients/multi-resource.c           | 2 +-
+ clients/window.c                   | 1 -
+ compositor/main.c                  | 4 +++-
+ desktop-shell/shell.c              | 8 ++++----
+ libweston/compositor-drm.c         | 5 ++++-
+ libweston/launcher-direct.c        | 8 ++++++--
+ libweston/weston-sync-file.h       | 2 +-
+ shared/config-parser.c             | 4 +++-
+ tools/zunitc/src/zuc_base_logger.c | 2 +-
+ tools/zunitc/src/zunitc_impl.c     | 1 +
+ 11 files changed, 25 insertions(+), 13 deletions(-)
 
+diff --git a/clients/desktop-shell.c b/clients/desktop-shell.c
+index 6d19d029..88630969 100644
+--- a/clients/desktop-shell.c
++++ b/clients/desktop-shell.c
+@@ -24,6 +24,7 @@
+ 
+ #include "config.h"
+ 
++#include <signal.h>
+ #include <stdint.h>
+ #include <stdio.h>
+ #include <stdlib.h>
 diff --git a/clients/multi-resource.c b/clients/multi-resource.c
 index 2be0a7e3..1d5e4e0c 100644
 --- a/clients/multi-resource.c
@@ -28,8 +42,20 @@ index 2be0a7e3..1d5e4e0c 100644
  #include <float.h>
  #include <math.h>
  
+diff --git a/clients/window.c b/clients/window.c
+index bcf2b017..306f9ab7 100644
+--- a/clients/window.c
++++ b/clients/window.c
+@@ -1359,7 +1359,6 @@ create_cursors(struct display *display)
+ 	free(theme);
+ 	display->cursors =
+ 		xmalloc(ARRAY_LENGTH(cursors) * sizeof display->cursors[0]);
+-
+ 	for (i = 0; i < ARRAY_LENGTH(cursors); i++) {
+ 		cursor = NULL;
+ 		for (j = 0; !cursor && j < cursors[i].count; ++j)
 diff --git a/compositor/main.c b/compositor/main.c
-index f8a60e97..4da976e5 100644
+index 1e827884..d6a32875 100644
 --- a/compositor/main.c
 +++ b/compositor/main.c
 @@ -41,7 +41,7 @@
@@ -39,9 +65,9 @@ index f8a60e97..4da976e5 100644
 -#include <linux/limits.h>
 +#include <limits.h>
  
- #ifdef HAVE_LIBUNWIND
- #define UNW_LOCAL_ONLY
-@@ -721,6 +721,7 @@ weston_compositor_log_capabilities(struct weston_compositor *compositor)
+ #include "weston.h"
+ #include "compositor.h"
+@@ -607,6 +607,7 @@ weston_compositor_log_capabilities(struct weston_compositor *compositor)
  			    clock_name(compositor->presentation_clock),
  			    compositor->presentation_clock);
  
@@ -49,7 +75,7 @@ index f8a60e97..4da976e5 100644
  	if (clock_getres(compositor->presentation_clock, &res) == 0)
  		weston_log_continue(STAMP_SPACE
  				"presentation clock resolution: %d.%09ld s\n",
-@@ -728,6 +729,7 @@ weston_compositor_log_capabilities(struct weston_compositor *compositor)
+@@ -614,6 +615,7 @@ weston_compositor_log_capabilities(struct weston_compositor *compositor)
  	else
  		weston_log_continue(STAMP_SPACE
  				"presentation clock resolution: N/A\n");
@@ -57,25 +83,39 @@ index f8a60e97..4da976e5 100644
  }
  
  static void
-diff --git a/compositor/text-backend.c b/compositor/text-backend.c
-index bf5c45cc..375a1a9a 100644
---- a/compositor/text-backend.c
-+++ b/compositor/text-backend.c
-@@ -1037,7 +1037,8 @@ text_backend_configuration(struct text_backend *text_backend)
- 					    "input-method", NULL, NULL);
- 	ret = asprintf(&client, "%s/weston-keyboard",
- 		       weston_config_get_libexec_dir());
--	if (ret < 0)
-+	// For now, we do not use any input method.
-+//	if (ret < 0)
- 		client = NULL;
- 	weston_config_section_get_string(section, "path",
- 					 &text_backend->input_method.path,
+diff --git a/desktop-shell/shell.c b/desktop-shell/shell.c
+index ceb45c74..f1469088 100644
+--- a/desktop-shell/shell.c
++++ b/desktop-shell/shell.c
+@@ -4184,8 +4184,8 @@ weston_view_set_initial_position(struct weston_view *view,
+ 	}
+ 
+ 	if (!target_output) {
+-		weston_view_set_position(view, 10 + random() % 400,
+-					 10 + random() % 400);
++		weston_view_set_position(view, 10 + rand() % 400,
++					 10 + rand() % 400);
+ 		return;
+ 	}
+ 
+@@ -4201,10 +4201,10 @@ weston_view_set_initial_position(struct weston_view *view,
+ 	range_y = area.height - view->surface->height;
+ 
+ 	if (range_x > 0)
+-		x += random() % range_x;
++		x += rand() % range_x;
+ 
+ 	if (range_y > 0)
+-		y += random() % range_y;
++		y += rand() % range_y;
+ 
+ 	weston_view_set_position(view, x, y);
+ }
 diff --git a/libweston/compositor-drm.c b/libweston/compositor-drm.c
-index 8e1e788f..5ec0dceb 100644
+index c09c49bf..d230dace 100644
 --- a/libweston/compositor-drm.c
 +++ b/libweston/compositor-drm.c
-@@ -539,6 +539,7 @@ drm_fb_get_from_bo(struct gbm_bo *bo, struct drm_backend *backend,
+@@ -974,6 +974,7 @@ drm_fb_get_from_bo(struct gbm_bo *bo, struct drm_backend *backend,
  		goto err_free;
  	}
  
@@ -83,25 +123,15 @@ index 8e1e788f..5ec0dceb 100644
  	if (backend->min_width > fb->width ||
  	    fb->width > backend->max_width ||
  	    backend->min_height > fb->height ||
-@@ -546,6 +547,7 @@ drm_fb_get_from_bo(struct gbm_bo *bo, struct drm_backend *backend,
+@@ -981,6 +982,7 @@ drm_fb_get_from_bo(struct gbm_bo *bo, struct drm_backend *backend,
  		weston_log("bo geometry out of bounds\n");
  		goto err_free;
  	}
 +*/
  
- 	ret = -1;
- 
-@@ -953,7 +955,8 @@ drm_output_repaint(struct weston_output *output_base,
- 		 * becomes active on the display or has been replaced.
- 		 */
- 		vbl.request.signal = (unsigned long)s;
--		ret = drmWaitVBlank(backend->drm.fd, &vbl);
-+		// Do not wait for vblanks for now.
-+		ret = -1; //drmWaitVBlank(backend->drm.fd, &vbl);
- 		if (ret) {
- 			weston_log("vblank event request failed: %d: %s\n",
- 				ret, strerror(errno));
-@@ -1011,7 +1014,8 @@ drm_output_start_repaint_loop(struct weston_output *output_base)
+ 	handles[0] = fb->handle;
+ 	pitches[0] = fb->stride;
+@@ -2432,7 +2434,8 @@ drm_output_start_repaint_loop(struct weston_output *output_base)
  
  	/* Try to get current msc and timestamp via instant query */
  	vbl.request.type |= drm_waitvblank_pipe(output);
@@ -111,46 +141,11 @@ index 8e1e788f..5ec0dceb 100644
  
  	/* Error ret or zero timestamp means failure to get valid timestamp */
  	if ((ret == 0) && (vbl.reply.tval_sec > 0 || vbl.reply.tval_usec > 0)) {
-@@ -1471,7 +1475,7 @@ drm_output_set_cursor(struct drm_output *output)
- 		handle = gbm_bo_get_handle(bo).s32;
- 		if (drmModeSetCursor(b->drm.fd, output->crtc_id, handle,
- 				b->cursor_width, b->cursor_height)) {
--			weston_log("failed to set cursor: %m\n");
-+			weston_log("failed to set cursor: %%m\n");
- 			b->cursors_are_broken = 1;
- 		}
- 	}
-@@ -1482,7 +1486,7 @@ drm_output_set_cursor(struct drm_output *output)
- 		output->base.current_scale;
- 
- 	if (drmModeMoveCursor(b->drm.fd, output->crtc_id, x, y)) {
--		weston_log("failed to move cursor: %m\n");
-+		weston_log("failed to move cursor: %%m\n");
- 		b->cursors_are_broken = 1;
- 	}
- }
-@@ -2870,6 +2874,8 @@ create_sprites(struct drm_backend *b)
- 	drmModePlane *kplane;
- 	uint32_t i;
- 
-+	// Disable plane support for now.
-+/*
- 	kplane_res = drmModeGetPlaneResources(b->drm.fd);
- 	if (!kplane_res) {
- 		weston_log("failed to get plane resources: %s\n",
-@@ -2909,6 +2915,7 @@ create_sprites(struct drm_backend *b)
- 	}
- 
- 	drmModeFreePlaneResources(kplane_res);
-+*/
- }
- 
- static void
 diff --git a/libweston/launcher-direct.c b/libweston/launcher-direct.c
-index a5d3ee53..ad24aef4 100644
+index e0ce6d63..fa6e19ee 100644
 --- a/libweston/launcher-direct.c
 +++ b/libweston/launcher-direct.c
-@@ -134,6 +134,8 @@ setup_tty(struct launcher_direct *launcher, int tty)
+@@ -141,6 +141,8 @@ setup_tty(struct launcher_direct *launcher, int tty)
  		}
  	}
  
@@ -159,7 +154,7 @@ index a5d3ee53..ad24aef4 100644
  	if (fstat(launcher->tty, &buf) == -1 ||
  	    major(buf.st_rdev) != TTY_MAJOR || minor(buf.st_rdev) == 0) {
  		weston_log("%s not a vt\n", tty_device);
-@@ -172,13 +174,15 @@ setup_tty(struct launcher_direct *launcher, int tty)
+@@ -179,13 +181,15 @@ setup_tty(struct launcher_direct *launcher, int tty)
  		weston_log("failed to set KD_GRAPHICS mode on tty: %m\n");
  		goto err_close;
  	}
@@ -176,7 +171,7 @@ index a5d3ee53..ad24aef4 100644
  		weston_log("not enough RT signals available: %u-%u\n",
  			   SIGRTMIN, SIGRTMAX);
  		ret = -EINVAL;
-@@ -198,7 +202,7 @@ setup_tty(struct launcher_direct *launcher, int tty)
+@@ -205,7 +209,7 @@ setup_tty(struct launcher_direct *launcher, int tty)
  		wl_event_loop_add_signal(loop, SIGRTMIN, vt_handler, launcher);
  	if (!launcher->vt_source)
  		goto err_close;
@@ -185,6 +180,19 @@ index a5d3ee53..ad24aef4 100644
  	return 0;
  
   err_close:
+diff --git a/libweston/weston-sync-file.h b/libweston/weston-sync-file.h
+index 114e0b6e..d4d2aef9 100644
+--- a/libweston/weston-sync-file.h
++++ b/libweston/weston-sync-file.h
+@@ -3,7 +3,7 @@
+ #ifndef WESTON_SYNC_FILE_H
+ #define WESTON_SYNC_FILE_H
+ 
+-#include <linux/ioctl.h>
++#include <sys/ioctl.h>
+ #include <linux/types.h>
+ 
+ struct sync_fence_info {
 diff --git a/shared/config-parser.c b/shared/config-parser.c
 index 2a595b1f..81999d5c 100644
 --- a/shared/config-parser.c
@@ -200,18 +208,6 @@ index 2a595b1f..81999d5c 100644
  }
  
  static struct weston_config_entry *
-diff --git a/shared/timespec-util.h b/shared/timespec-util.h
-index 576b3e8f..34a120ae 100644
---- a/shared/timespec-util.h
-+++ b/shared/timespec-util.h
-@@ -28,6 +28,7 @@
- 
- #include <stdint.h>
- #include <assert.h>
-+#include <time.h>
- 
- #define NSEC_PER_SEC 1000000000
- 
 diff --git a/tools/zunitc/src/zuc_base_logger.c b/tools/zunitc/src/zuc_base_logger.c
 index ffa127f0..b93a7a83 100644
 --- a/tools/zunitc/src/zuc_base_logger.c

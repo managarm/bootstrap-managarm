@@ -41,9 +41,6 @@ include $T/upstream/libsmarter.makefile
 include $T/upstream/managarm.makefile
 include $T/upstream/mlibc.makefile
 include $T/upstream/ncurses.makefile
-include $T/upstream/wayland.makefile
-include $T/upstream/wayland-protocols.makefile
-include $T/upstream/weston.makefile
 include $T/upstream/xkeyboard-config.makefile
 
 include $T/milestone/helpers.makefile
