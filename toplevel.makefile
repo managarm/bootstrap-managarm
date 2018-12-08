@@ -29,8 +29,6 @@ $T/tags $B/tags:
 	mkdir -p $@
 
 include $T/upstream/acpica.makefile
-include $T/upstream/autoconf-v2.64.makefile
-include $T/upstream/autoconf-v2.69.makefile
 include $T/upstream/bash.makefile
 include $T/upstream/boost.makefile
 include $T/upstream/cxxshim.makefile
@@ -40,7 +38,6 @@ include $T/upstream/libcofiber.makefile
 include $T/upstream/libsmarter.makefile
 include $T/upstream/managarm.makefile
 include $T/upstream/mlibc.makefile
-include $T/upstream/ncurses.makefile
 include $T/upstream/xkeyboard-config.makefile
 
 include $T/milestone/helpers.makefile

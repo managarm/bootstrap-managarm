@@ -4,6 +4,9 @@ tools:
     source:
       name: autoconf-v2.64
       subdir: 'ports'
+      url: 'https://ftp.gnu.org/gnu/autoconf/autoconf-2.64.tar.xz'
+      format: 'tar.xz'
+      extract_path: 'autoconf-2.64'
     configure:
       - args: ['@PKG_SOURCE_DIR@/configure', '--prefix=@PREFIX@']
     compile:
@@ -15,6 +18,9 @@ tools:
     source:
       name: autoconf-v2.69
       subdir: 'ports'
+      url: 'https://ftp.gnu.org/gnu/autoconf/autoconf-2.69.tar.xz'
+      format: 'tar.xz'
+      extract_path: 'autoconf-2.69'
     configure:
       - args: ['@PKG_SOURCE_DIR@/configure', '--prefix=@PREFIX@']
     compile:
@@ -385,6 +391,7 @@ packages:
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
+        - host-libtool
       regenerate:
         - args: ['./buildconf.sh']
           workdir: '@SOURCE_DIR@/expat'
@@ -663,6 +670,8 @@ packages:
   - name: ncurses
     source:
       subdir: 'ports'
+      url: 'ftp://ftp.invisible-island.net/ncurses/ncurses.tar.gz'
+      format: 'tar.gz'
     tools_required:
       - system-gcc
     configure:
