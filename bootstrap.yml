@@ -637,6 +637,13 @@ packages:
   - name: nano
     source:
       subdir: 'ports'
+      git: 'git://git.savannah.gnu.org/nano.git'
+      tag: 'v2.9.8'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+      regenerate:
+        - args: ['./autogen.sh']
     tools_required:
       - system-gcc
     pkgs_required:
@@ -670,6 +677,17 @@ packages:
   - name: pixman
     source:
       subdir: 'ports'
+      git: 'git://anongit.freedesktop.org/pixman'
+      tag: 'pixman-0.34.0'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
     tools_required:
       - system-gcc
     pkgs_required:
@@ -788,6 +806,8 @@ packages:
   - name: zlib
     source:
       subdir: 'ports'
+      git: 'http://github.com/madler/zlib.git'
+      tag: 'v1.2.11'
     tools_required:
       - system-gcc
     configure:

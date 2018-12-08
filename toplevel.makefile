@@ -40,14 +40,11 @@ include $T/upstream/libcofiber.makefile
 include $T/upstream/libsmarter.makefile
 include $T/upstream/managarm.makefile
 include $T/upstream/mlibc.makefile
-include $T/upstream/nano.makefile
 include $T/upstream/ncurses.makefile
-include $T/upstream/pixman.makefile
 include $T/upstream/wayland.makefile
 include $T/upstream/wayland-protocols.makefile
 include $T/upstream/weston.makefile
 include $T/upstream/xkeyboard-config.makefile
-include $T/upstream/zlib.makefile
 
 include $T/milestone/helpers.makefile
 include $T/milestone/host-frigg_pb.makefile
