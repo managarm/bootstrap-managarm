@@ -38,11 +38,7 @@ include $T/upstream/frigg.makefile
 include $T/upstream/kmscube.makefile
 include $T/upstream/libasync.makefile
 include $T/upstream/libcofiber.makefile
-include $T/upstream/libffi.makefile
-include $T/upstream/libinput.makefile
-include $T/upstream/libpng.makefile
 include $T/upstream/libsmarter.makefile
-include $T/upstream/libxkbcommon.makefile
 include $T/upstream/managarm.makefile
 include $T/upstream/mesa.makefile
 include $T/upstream/mlibc.makefile

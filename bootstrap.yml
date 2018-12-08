@@ -396,6 +396,14 @@ packages:
   - name: libffi
     source:
       subdir: 'ports'
+      git: 'http://github.com/libffi/libffi.git'
+      tag: 'v3.2.1'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.11
+        - host-libtool
+      regenerate:
+        - args: ['./autogen.sh']
     tools_required:
       - system-gcc
     configure:
@@ -412,6 +420,8 @@ packages:
   - name: libinput
     source:
       subdir: 'ports'
+      git: 'https://github.com/wayland-project/libinput.git'
+      tag: '1.9.902'
     tools_required:
       - system-gcc
     pkgs_required:
@@ -443,6 +453,15 @@ packages:
   - name: libpng
     source:
       subdir: 'ports'
+      git: 'http://git.code.sf.net/p/libpng/code'
+      tag: 'v1.6.34'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+      regenerate:
+        - args: ['git', 'clean', '-xf', '-e', 'xbstrap.*']
+        - args: ['./autogen.sh']
     tools_required:
       - system-gcc
     pkgs_required:
@@ -461,6 +480,17 @@ packages:
   - name: libxkbcommon
     source:
       subdir: 'ports'
+      git: 'http://github.com/xkbcommon/libxkbcommon.git'
+      tag: 'xkbcommon-0.8.0'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-pkg-config
+        - host-xorg-macros
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
     tools_required:
       - system-gcc
     configure:
