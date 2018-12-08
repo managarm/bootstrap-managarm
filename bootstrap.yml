@@ -138,6 +138,16 @@ tools:
 
   - name: host-protoc
     exports_shared_libs: true
+    source:
+      name: protobuf
+    configure:
+      - args:
+        - '@PKG_SOURCE_DIR@/configure'
+        - '--prefix=@PREFIX@'
+    compile:
+      - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'install']
 
   - name: host-xorg-macros
     exports_aclocal: true
@@ -508,6 +518,15 @@ packages:
   - name: kmscube
     source:
       subdir: 'ports'
+      git: 'http://gitlab.freedesktop.org/mesa/kmscube.git'
+      branch: 'master'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
     tools_required:
       - system-gcc
     pkgs_required:
@@ -529,10 +548,22 @@ packages:
   - name: mesa
     source:
       subdir: 'ports'
+      git: 'git://anongit.freedesktop.org/mesa/mesa'
+      tag: 'mesa-17.1.5'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
     tools_required:
       - system-gcc
     pkgs_required:
       - libdrm
+      - wayland
     configure:
       - args:
         - '@PKG_SOURCE_DIR@/configure'
@@ -581,6 +612,15 @@ packages:
   - name: mtdev
     source:
       subdir: 'ports'
+      git: 'http://bitmath.org/git/mtdev.git'
+      disable_shallow_fetch: true
+      tag: 'v1.1.5'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+      regenerate:
+        - args: ['./autogen.sh']
     tools_required:
       - system-gcc
     configure:
@@ -648,6 +688,14 @@ packages:
   - name: protobuf
     source:
       subdir: 'ports'
+      git: 'http://github.com/google/protobuf.git'
+      tag: 'v3.1.0'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.11
+        - host-libtool
+      regenerate:
+        - args: ['./autogen.sh']
     tools_required:
       - system-gcc
       - host-protoc

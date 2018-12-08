@@ -35,18 +35,14 @@ include $T/upstream/bash.makefile
 include $T/upstream/boost.makefile
 include $T/upstream/cxxshim.makefile
 include $T/upstream/frigg.makefile
-include $T/upstream/kmscube.makefile
 include $T/upstream/libasync.makefile
 include $T/upstream/libcofiber.makefile
 include $T/upstream/libsmarter.makefile
 include $T/upstream/managarm.makefile
-include $T/upstream/mesa.makefile
 include $T/upstream/mlibc.makefile
-include $T/upstream/mtdev.makefile
 include $T/upstream/nano.makefile
 include $T/upstream/ncurses.makefile
 include $T/upstream/pixman.makefile
-include $T/upstream/protobuf.makefile
 include $T/upstream/wayland.makefile
 include $T/upstream/wayland-protocols.makefile
 include $T/upstream/weston.makefile
@@ -55,7 +51,6 @@ include $T/upstream/zlib.makefile
 
 include $T/milestone/helpers.makefile
 include $T/milestone/host-frigg_pb.makefile
-include $T/milestone/host-protoc.makefile
 include $T/milestone/kernel-gcc.makefile
 include $T/milestone/kernel-main.makefile
 include $T/milestone/kernel-runtime.makefile

@@ -1,10 +1,10 @@
-From 61135efa00f5a15dc03319523c101b919faa01bc Mon Sep 17 00:00:00 2001
+From 0a6d81c3d7f5baf27861a8ef17faa461394393f5 Mon Sep 17 00:00:00 2001
 From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
 Date: Wed, 13 Dec 2017 16:35:26 +0100
 Subject: [PATCH] Managarm-specific changes
 
 ---
- configure.ac                                          | 2 +-
+ configure.ac                                          | 6 +++---
  src/gallium/auxiliary/hud/hud_context.c               | 2 ++
  src/gallium/auxiliary/os/os_misc.c                    | 4 ++--
  src/gallium/auxiliary/os/os_process.c                 | 7 ++++---
@@ -18,12 +18,29 @@ Subject: [PATCH] Managarm-specific changes
  src/gallium/include/pipe/p_config.h                   | 9 +++++++--
  src/gallium/winsys/svga/drm/pb_buffer_simple_fenced.c | 4 ++--
  src/util/debug.c                                      | 1 +
- 14 files changed, 32 insertions(+), 21 deletions(-)
+ 14 files changed, 34 insertions(+), 23 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index f4cc9989f6..6e7f2aabd5 100644
+index f4cc9989f6..495ed085c7 100644
 --- a/configure.ac
 +++ b/configure.ac
+@@ -747,14 +747,14 @@ if test "x$enable_asm" = xyes; then
+     case "$host_cpu" in
+     i?86)
+         case "$host_os" in
+-        linux* | *freebsd* | dragonfly* | *netbsd* | openbsd* | gnu*)
++        linux* | *freebsd* | dragonfly* | *netbsd* | openbsd* | managarm* | gnu*)
+             asm_arch=x86
+             ;;
+         esac
+         ;;
+     x86_64|amd64)
+         case "$host_os" in
+-        linux* | *freebsd* | dragonfly* | *netbsd* | openbsd*)
++        linux* | *freebsd* | dragonfly* | *netbsd* | openbsd* | managarm*)
+             asm_arch=x86_64
+             ;;
+         esac
 @@ -846,7 +846,7 @@ PTHREAD_LIBS="$PTHREAD_LIBS -pthread"
  dnl pthread-stubs is mandatory on BSD platforms, due to the nature of the
  dnl project. Even then there's a notable issue as described in the project README
