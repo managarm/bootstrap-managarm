@@ -1,0 +1,250 @@
+From b2f094e8bc576366f48a99283038a4eba377f948 Mon Sep 17 00:00:00 2001
+From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
+Date: Sun, 9 Dec 2018 10:36:12 +0100
+Subject: [PATCH 1/2] Remove config.h from build-machine source files
+
+---
+ builtins/psize.c      | 27 +++++---------------------
+ mksyntax.c            | 54 ++-------------------------------------------------
+ support/bashversion.c |  7 ++-----
+ support/man2html.c    | 24 -----------------------
+ support/mksignames.c  |  8 +-------
+ support/signames.c    |  9 +--------
+ 6 files changed, 11 insertions(+), 118 deletions(-)
+
+diff --git a/builtins/psize.c b/builtins/psize.c
+index 30881fb..54d19d2 100644
+--- a/builtins/psize.c
++++ b/builtins/psize.c
+@@ -21,33 +21,16 @@
+ /*  Write output in 128-byte chunks until we get a sigpipe or write gets an
+     EPIPE.  Then report how many bytes we wrote.  We assume that this is the
+     pipe size. */
+-#include <config.h>
+ 
+-#if defined (HAVE_UNISTD_H)
+-#  ifdef _MINIX
+-#    include <sys/types.h>
+-#  endif
+-#  include <unistd.h>
+-#endif
+-
+-#include <stdio.h>
+-#ifndef _MINIX
+-#include "../bashtypes.h"
+-#endif
+-#include <signal.h>
+ #include <errno.h>
+-
+-#include "../command.h"
+-#include "../general.h"
+-#include "../sig.h"
+-
+-#ifndef errno
+-extern int errno;
+-#endif
++#include <signal.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <unistd.h>
+ 
+ int nw;
+ 
+-sighandler
++void
+ sigpipe (sig)
+      int sig;
+ {
+diff --git a/mksyntax.c b/mksyntax.c
+index 0385686..4a52c76 100644
+--- a/mksyntax.c
++++ b/mksyntax.c
+@@ -20,30 +20,18 @@
+    along with Bash.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ 
+-#include "config.h"
+-
+ #include <stdio.h>
++#include <string.h>
+ #include "bashansi.h"
+ #include "chartypes.h"
+ #include <errno.h>
+-
+-#ifdef HAVE_UNISTD_H
+-#  include <unistd.h>
+-#endif
++#include <unistd.h>
+ 
+ #include "syntax.h"
+ 
+ extern int optind;
+ extern char *optarg;
+ 
+-#ifndef errno
+-extern int errno;
+-#endif
+-
+-#ifndef HAVE_STRERROR
+-extern char *strerror();
+-#endif
+-
+ struct wordflag {
+ 	int	flag;
+ 	char	*fstr;
+@@ -375,41 +363,3 @@ main(argc, argv)
+     fclose (fp);
+   exit (0);
+ }
+-
+-
+-#if !defined (HAVE_STRERROR)
+-
+-#include <bashtypes.h>
+-#if defined (HAVE_SYS_PARAM_H)
+-#  include <sys/param.h>
+-#endif
+-
+-#if defined (HAVE_UNISTD_H)
+-#  include <unistd.h>
+-#endif
+-
+-/* Return a string corresponding to the error number E.  From
+-   the ANSI C spec. */
+-#if defined (strerror)
+-#  undef strerror
+-#endif
+-
+-char *
+-strerror (e)
+-     int e;
+-{
+-  static char emsg[40];
+-#if defined (HAVE_SYS_ERRLIST)
+-  extern int sys_nerr;
+-  extern char *sys_errlist[];
+-
+-  if (e > 0 && e < sys_nerr)
+-    return (sys_errlist[e]);
+-  else
+-#endif /* HAVE_SYS_ERRLIST */
+-    {
+-      sprintf (emsg, "Unknown system error %d", e);
+-      return (&emsg[0]);
+-    }
+-}
+-#endif /* HAVE_STRERROR */
+diff --git a/support/bashversion.c b/support/bashversion.c
+index 59c2321..6700fc4 100644
+--- a/support/bashversion.c
++++ b/support/bashversion.c
+@@ -18,15 +18,12 @@
+    along with Bash.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ 
+-#include "config.h"
+-
+ #include "stdc.h"
+ 
+ #include <stdio.h>
++#include <string.h>
+ 
+-#if defined (HAVE_UNISTD_H)
+-#  include <unistd.h>
+-#endif
++#include <unistd.h>
+ 
+ #include "bashansi.h"
+ 
+diff --git a/support/man2html.c b/support/man2html.c
+index 6ba5061..d86bd28 100644
+--- a/support/man2html.c
++++ b/support/man2html.c
+@@ -62,9 +62,6 @@
+  *    that all these features work on all manpages. (I didn't have the
+  *    time to look through all the available manpages.)
+  */
+-#ifdef HAVE_CONFIG_H
+-#include <config.h>
+-#endif
+ 
+ #define NROFF 0
+ 
+@@ -123,27 +120,6 @@ char *manpage;
+ #define BD_LITERAL  1
+ #define BD_INDENT   2
+ 
+-#ifndef HAVE_STRERROR
+-static char *
+-strerror(int e)
+-{
+-	static char emsg[40];
+-
+-#if defined (HAVE_SYS_ERRLIST)
+-	extern int sys_nerr;
+-	extern char *sys_errlist[];
+-
+-	if (e > 0 && e < sys_nerr)
+-		return (sys_errlist[e]);
+-	else
+-#endif				/* HAVE_SYS_ERRLIST */
+-	{
+-		sprintf(emsg, "Unknown system error %d", e);
+-		return (&emsg[0]);
+-	}
+-}
+-#endif				/* !HAVE_STRERROR */
+-
+ static char *
+ strgrow(char *old, int len)
+ {
+diff --git a/support/mksignames.c b/support/mksignames.c
+index 5618879..f8a7646 100644
+--- a/support/mksignames.c
++++ b/support/mksignames.c
+@@ -19,17 +19,11 @@
+    along with Bash.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ 
+-#include <config.h>
+-
+ #include <sys/types.h>
+ #include <signal.h>
+ 
+ #include <stdio.h>
+-#if defined (HAVE_STDLIB_H)
+-#  include <stdlib.h>
+-#else
+-#  include "ansi_stdlib.h"
+-#endif /* HAVE_STDLIB_H */
++#include <stdlib.h>
+ 
+ /* Duplicated from signames.c */
+ #if !defined (NSIG)
+diff --git a/support/signames.c b/support/signames.c
+index d297808..1997e0b 100644
+--- a/support/signames.c
++++ b/support/signames.c
+@@ -18,18 +18,11 @@
+    along with Bash.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ 
+-#include <config.h>
+-
+ #include <stdio.h>
+ 
+ #include <sys/types.h>
+ #include <signal.h>
+-
+-#if defined (HAVE_STDLIB_H)
+-#  include <stdlib.h>
+-#else
+-#  include "ansi_stdlib.h"
+-#endif /* HAVE_STDLIB_H */
++#include <stdlib.h>
+ 
+ #if !defined (NSIG)
+ #  define NSIG 64
+-- 
+2.11.0
+

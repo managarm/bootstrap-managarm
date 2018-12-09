@@ -1,0 +1,28 @@
+From 1d5cc4efde39a87a42714be4ea2c6c50b24da18f Mon Sep 17 00:00:00 2001
+From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
+Date: Sun, 9 Dec 2018 10:47:09 +0100
+Subject: [PATCH 2/2] Add managarm to config.sub
+
+bash does not cleanly rebuild its build system using autoreconf
+and there is not autogen.sh script, so we just patch config.sub.
+---
+ support/config.sub | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/support/config.sub b/support/config.sub
+index 61cb4bc..81baee6 100644
+--- a/support/config.sub
++++ b/support/config.sub
+@@ -1376,7 +1376,8 @@ case $os in
+ 	      | -os2* | -vos* | -palmos* | -uclinux* | -nucleus* \
+ 	      | -morphos* | -superux* | -rtmk* | -rtmk-nova* | -windiss* \
+ 	      | -powermax* | -dnix* | -nx6 | -nx7 | -sei* | -dragonfly* \
+-	      | -skyos* | -haiku* | -rdos* | -toppers* | -drops* | -es*)
++	      | -skyos* | -haiku* | -rdos* | -toppers* | -drops* | -es* \
++		  | -managarm*)
+ 	# Remember, each alternative MUST END IN *, to match a version number.
+ 		;;
+ 	-qnx*)
+-- 
+2.11.0
+

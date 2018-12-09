@@ -29,7 +29,6 @@ $T/tags $B/tags:
 	mkdir -p $@
 
 include $T/upstream/acpica.makefile
-include $T/upstream/bash.makefile
 include $T/upstream/boost.makefile
 include $T/upstream/cxxshim.makefile
 include $T/upstream/frigg.makefile
@@ -47,7 +46,6 @@ include $T/milestone/kernel-main.makefile
 include $T/milestone/kernel-runtime.makefile
 include $T/milestone/libarch.makefile
 include $T/milestone/managarm-bundle.makefile
-include $T/milestone/native-bash.makefile
 include $T/milestone/native-boost.makefile
 include $T/milestone/native-frigg.makefile
 include $T/milestone/native-headers.makefile
