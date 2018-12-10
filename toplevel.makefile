@@ -41,9 +41,7 @@ include $T/upstream/xkeyboard-config.makefile
 
 include $T/milestone/helpers.makefile
 include $T/milestone/host-frigg_pb.makefile
-include $T/milestone/kernel-gcc.makefile
 include $T/milestone/kernel-main.makefile
-include $T/milestone/kernel-runtime.makefile
 include $T/milestone/libarch.makefile
 include $T/milestone/managarm-bundle.makefile
 include $T/milestone/native-boost.makefile

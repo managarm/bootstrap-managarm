@@ -1,4 +1,27 @@
 
+sources:
+  - name: gcc
+    subdir: 'ports'
+    git: 'git://gcc.gnu.org/git/gcc.git'
+    tag: 'gcc-7_1_0-release'
+    tools_required:
+      - host-autoconf-v2.64
+      - host-automake-v1.11
+    regenerate:
+      - args: ['autoconf']
+        workdir: '@SOURCE_DIR@/libstdc++-v3'
+
+  - name: protobuf
+    subdir: 'ports'
+    git: 'http://github.com/google/protobuf.git'
+    tag: 'v3.1.0'
+    tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.11
+      - host-libtool
+    regenerate:
+      - args: ['./autogen.sh']
+
 tools:
   - name: host-autoconf-v2.64
     source:
@@ -141,11 +164,18 @@ tools:
       - args: ['make', '-j@PARALLELISM@', 'all-binutils', 'all-gas', 'all-ld']
     install:
       - args: ['make', 'install-binutils', 'install-gas', 'install-ld']
+      - args:
+          - 'sh'
+          - '-c'
+          - |
+              for f in @PREFIX@/bin/x86_64-managarm-*; do
+                tf=$(basename $f | sed 's/x86_64-managarm/x86_64-managarm-kernel/')
+                ln -sf $(basename $f) @PREFIX@/bin/$tf
+              done
 
   - name: host-protoc
     exports_shared_libs: true
-    source:
-      name: protobuf
+    from_source: protobuf
     configure:
       - args:
         - '@PKG_SOURCE_DIR@/configure'
@@ -178,18 +208,46 @@ tools:
     install:
       - args: ['make', 'install']
 
-  - name: system-gcc
-    source:
-        name: gcc
-        subdir: 'ports'
-        git: 'git://gcc.gnu.org/git/gcc.git'
-        tag: 'gcc-7_1_0-release'
+  - name: kernel-gcc
+    from_source: gcc
+    tools_required:
+      - cross-binutils
+    configure:
+      - args:
+        - '@PKG_SOURCE_DIR@/configure'
+        - '--prefix=@PREFIX@'
+        - '--target=x86_64-managarm-kernel'
+        - '--with-sysroot=@BUILD_ROOT@/kernel-root'
+        - '--enable-languages=c,c++'
+        - '--disable-shared'
+        - '--disable-hosted-libstdcxx'
+    stages:
+      - name: compiler
+        compile:
+          # Set inhibit_libc to prevent libgcov build.
+          # This is also required to correctly build the target libraries later.
+          - args: ['make', '-j@PARALLELISM@', 'inhibit_libc=true', 'all-gcc']
+        install:
+          - args: ['make', 'install-gcc']
+      - name: libgcc
         tools_required:
-          - host-autoconf-v2.64
-          - host-automake-v1.11
-        regenerate:
-          - args: ['autoconf']
-            workdir: '@SOURCE_DIR@/libstdc++-v3'
+          - tool: kernel-gcc
+            stage_dependencies: [compiler]
+        compile:
+          - args: ['make', '-j@PARALLELISM@', 'inhibit_libc=true', 'all-target-libgcc']
+        install:
+          - args: ['make', 'install-target-libgcc']
+      - name: libstdc++
+        tools_required:
+          - tool: system-gcc
+            stage_dependencies: [libgcc]
+        compile:
+          - args: ['make', '-j@PARALLELISM@', 'inhibit_libc=true', 'all-target-libstdc++-v3']
+        install:
+          - args: ['make', 'install-target-libstdc++-v3']
+
+  - name: system-gcc
+    from_source: gcc
     tools_required:
       - cross-binutils
     configure:
@@ -733,16 +791,7 @@ packages:
           DESTDIR: '@PKG_COLLECT_DIR@'
 
   - name: protobuf
-    source:
-      subdir: 'ports'
-      git: 'http://github.com/google/protobuf.git'
-      tag: 'v3.1.0'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.11
-        - host-libtool
-      regenerate:
-        - args: ['./autogen.sh']
+    from_source: protobuf
     tools_required:
       - system-gcc
       - host-protoc
