@@ -46,7 +46,6 @@ include $T/milestone/libarch.makefile
 include $T/milestone/managarm-bundle.makefile
 include $T/milestone/native-boost.makefile
 include $T/milestone/native-frigg.makefile
-include $T/milestone/native-headers.makefile
 include $T/milestone/native-helix.makefile
 include $T/milestone/native-libasync.makefile
 include $T/milestone/native-libcofiber.makefile
