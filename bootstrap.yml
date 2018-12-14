@@ -22,6 +22,10 @@ sources:
     regenerate:
       - args: ['./autogen.sh']
 
+  - name: managarm
+    git: 'https://github.com/managarm/managarm.git'
+    branch: 'master'
+
 tools:
   - name: host-autoconf-v2.64
     source:
@@ -304,6 +308,17 @@ packages:
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'DESTDIR=@PKG_COLLECT_DIR@', 'install']
+  
+  - name: boost
+    source:
+      subdir: 'ports'
+      git: 'http://github.com/boostorg/boost.git'
+      tag: 'boost-1.62.0'
+    configure: []
+    build:
+      - args: ['mkdir', '-p', '@PKG_COLLECT_DIR@/usr/include']
+      - args: ['cp', '-r', '--dereference', '@PKG_SOURCE_DIR@/boost',
+            '@PKG_COLLECT_DIR@/usr/include']
 
   - name: cairo
     source:
@@ -342,6 +357,26 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@PKG_COLLECT_DIR@'
+  
+  - name: libcofiber
+    source:
+      git: 'http://github.com/avdgrinten/libcofiber.git'
+      branch: 'master'
+    tools_required:
+      - system-gcc
+    configure: []
+    build:
+      - args:
+        - 'make'
+        - '-f'
+        - '@PKG_SOURCE_DIR@/library.makefile'
+        - 'S=@PKG_SOURCE_DIR@'
+        - 'DESTDIR=@PKG_COLLECT_DIR@'
+        - 'prefix=/usr/'
+        - 'CXX=x86_64-managarm-g++'
+        - 'LD=x86_64-managarm-ld'
+        - 'AS=x86_64-managarm-as'
+        - 'install'
 
   - name: coreutils
     source:
@@ -397,6 +432,26 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@PKG_COLLECT_DIR@'
+
+  - name: libasync
+    source:
+      git: 'http://github.com/avdgrinten/libasync.git'
+      branch: 'master'
+    tools_required:
+      - system-gcc
+    configure: []
+    build:
+      - args:
+        - 'make'
+        - '-f'
+        - '@PKG_SOURCE_DIR@/library.makefile'
+        - 'S=@PKG_SOURCE_DIR@'
+        - 'DESTDIR=@PKG_COLLECT_DIR@'
+        - 'prefix=/usr/'
+        - 'CXX=x86_64-managarm-g++'
+        - 'LD=x86_64-managarm-ld'
+        - 'AS=x86_64-managarm-as'
+        - 'install'
 
   - name: libdrm
     source:
@@ -572,6 +627,27 @@ packages:
         environ:
           DESTDIR: '@PKG_COLLECT_DIR@'
 
+  - name: libsmarter
+    source:
+      git: 'http://github.com/avdgrinten/libsmarter.git'
+      branch: 'master'
+    tools_required:
+      - system-gcc
+    configure: []
+    build:
+      - args: ['mkdir', '-p', '@PKG_COLLECT_DIR@/usr/include']
+      - args:
+        - 'make'
+        - '-f'
+        - '@PKG_SOURCE_DIR@/library.makefile'
+        - 'S=@PKG_SOURCE_DIR@'
+        - 'DESTDIR=@PKG_COLLECT_DIR@'
+        - 'prefix=/usr/'
+        - 'CXX=x86_64-managarm-g++'
+        - 'LD=x86_64-managarm-ld'
+        - 'AS=x86_64-managarm-as'
+        - 'install'
+
   - name: libxkbcommon
     source:
       subdir: 'ports'
@@ -629,6 +705,76 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@PKG_COLLECT_DIR@'
+
+  - name: managarm-helix
+    from_source: managarm
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - boost
+      - libasync
+      - libcofiber
+    configure:
+      - args:
+        - '@PKG_SOURCE_DIR@/configure'
+        - '--sysroot=@SYSROOT_DIR@'
+        - '--protoc=/bin/true'
+        - '--host-cxx=/bin/true'
+        - '--host-cppflags='
+        - '--host-ldflags='
+        - '--cxxshim='
+        - '--frigg='
+        - '--acpica='
+    build:
+      - args: ['make', 'all-hel']
+      - args: ['make', 'install-hel']
+
+  - name: managarm-kernel
+    from_source: managarm
+    tools_required:
+      - host-protoc
+      - kernel-gcc
+    configure:
+      - args:
+        - '@PKG_SOURCE_DIR@/configure'
+        - '--sysroot=@SYSROOT_DIR@'
+        - '--protoc=protoc'
+        - '--host-cxx=g++'
+        - '--host-cppflags=-I@BUILD_ROOT@/prefixes/host-protoc/include'
+        - '--host-ldflags=-L@BUILD_ROOT@/prefixes/host-protoc/lib'
+        - '--cxxshim=@SOURCE_ROOT@/ports/cxxshim'
+        - '--frigg=@SOURCE_ROOT@/ports/frigg'
+        - '--acpica=@SOURCE_ROOT@/ports/acpica'
+    build:
+      - args: ['make', 'all-tools/frigg_pb']
+      - args: ['make', 'gen-thor/kernel']
+      - args: ['make', 'all-eir', 'all-thor/kernel']
+  
+  - name: managarm-system
+    from_source: managarm
+    tools_required:
+      - host-protoc
+      - system-gcc
+    pkgs_required:
+      - libdrm
+      - libsmarter
+      - protobuf
+    configure:
+      - args:
+        - 'meson'
+        - '--cross-file=@SOURCE_ROOT@/scripts/meson.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '@PKG_SOURCE_DIR@'
+        environ:
+          PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
+          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          'DESTDIR': '@PKG_COLLECT_DIR@'
 
   - name: mesa
     source:
