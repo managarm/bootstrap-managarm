@@ -360,6 +360,7 @@ packages:
   
   - name: libcofiber
     source:
+      subdir: 'ports'
       git: 'http://github.com/avdgrinten/libcofiber.git'
       branch: 'master'
     tools_required:
@@ -435,6 +436,7 @@ packages:
 
   - name: libasync
     source:
+      subdir: 'ports'
       git: 'http://github.com/avdgrinten/libasync.git'
       branch: 'master'
     tools_required:
@@ -629,6 +631,7 @@ packages:
 
   - name: libsmarter
     source:
+      subdir: 'ports'
       git: 'http://github.com/avdgrinten/libsmarter.git'
       branch: 'master'
     tools_required:
