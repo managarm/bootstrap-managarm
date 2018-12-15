@@ -676,6 +676,27 @@ packages:
         environ:
           DESTDIR: '@PKG_COLLECT_DIR@'
 
+  - name: llvm
+    source:
+      subdir: 'ports'
+      git: 'http://git.llvm.org/git/llvm.git/'
+      branch: 'release_60'
+    tools_required:
+      - system-gcc
+    configure:
+      - args:
+        - 'cmake'
+      #  - '-GNinja'
+        - '-DCMAKE_TOOLCHAIN_FILE=@BUILD_ROOT@/CMakeToolchain.txt'
+        - '@PKG_SOURCE_DIR@'
+    build:
+      #- args: ['ninja']
+      #- args: ['ninja', 'install']
+      - args: ['make']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@PKG_COLLECT_DIR@'
+
   - name: kmscube
     source:
       subdir: 'ports'
