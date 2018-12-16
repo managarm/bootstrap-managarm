@@ -35,7 +35,7 @@ tools:
       format: 'tar.xz'
       extract_path: 'autoconf-2.64'
     configure:
-      - args: ['@PKG_SOURCE_DIR@/configure', '--prefix=@PREFIX@']
+      - args: ['@THIS_SOURCE_DIR@/configure', '--prefix=@PREFIX@']
     compile:
       - args: ['make', '-j@PARALLELISM@']
     install:
@@ -49,7 +49,7 @@ tools:
       format: 'tar.xz'
       extract_path: 'autoconf-2.69'
     configure:
-      - args: ['@PKG_SOURCE_DIR@/configure', '--prefix=@PREFIX@']
+      - args: ['@THIS_SOURCE_DIR@/configure', '--prefix=@PREFIX@']
     compile:
       - args: ['make', '-j@PARALLELISM@']
     install:
@@ -67,7 +67,7 @@ tools:
         - args: ['./bootstrap']
     configure:
       - args:
-        - '@PKG_SOURCE_DIR@/configure'
+        - '@THIS_SOURCE_DIR@/configure'
         - '--prefix=@PREFIX@'
         - 'MAKEINFO=/bin/true'
     compile:
@@ -89,7 +89,7 @@ tools:
           - args: ['./bootstrap']
     configure:
       - args:
-        - '@PKG_SOURCE_DIR@/configure'
+        - '@THIS_SOURCE_DIR@/configure'
         - '--prefix=@PREFIX@'
         - 'MAKEINFO=/bin/true'
     compile:
@@ -112,7 +112,7 @@ tools:
         - args: ['./bootstrap']
     configure:
       - args:
-        - '@PKG_SOURCE_DIR@/configure'
+        - '@THIS_SOURCE_DIR@/configure'
         - '--prefix=@PREFIX@'
     compile:
       - args: ['make', '-j@PARALLELISM@']
@@ -138,7 +138,7 @@ tools:
             'NOCONFIGURE': 'yes'
     configure:
       - args:
-        - '@PKG_SOURCE_DIR@/configure'
+        - '@THIS_SOURCE_DIR@/configure'
         - '--prefix=@PREFIX@'
         - '--with-internal-glib'
     compile:
@@ -160,7 +160,7 @@ tools:
           workdir: '@SOURCE_DIR@/ld'
     configure:
       - args:
-        - '@PKG_SOURCE_DIR@/configure'
+        - '@THIS_SOURCE_DIR@/configure'
         - '--prefix=@PREFIX@'
         - '--target=x86_64-managarm'
         - '--with-sysroot=@SYSROOT_DIR@'
@@ -168,21 +168,18 @@ tools:
       - args: ['make', '-j@PARALLELISM@', 'all-binutils', 'all-gas', 'all-ld']
     install:
       - args: ['make', 'install-binutils', 'install-gas', 'install-ld']
-      - args:
-          - 'sh'
-          - '-c'
-          - |
-              for f in @PREFIX@/bin/x86_64-managarm-*; do
-                tf=$(basename $f | sed 's/x86_64-managarm/x86_64-managarm-kernel/')
-                ln -sf $(basename $f) @PREFIX@/bin/$tf
-              done
+      - args: |
+          for f in @PREFIX@/bin/x86_64-managarm-*; do
+            tf=$(basename $f | sed 's/x86_64-managarm/x86_64-managarm-kernel/')
+            ln -sf $(basename $f) @PREFIX@/bin/$tf
+          done
 
   - name: host-protoc
     exports_shared_libs: true
     from_source: protobuf
     configure:
       - args:
-        - '@PKG_SOURCE_DIR@/configure'
+        - '@THIS_SOURCE_DIR@/configure'
         - '--prefix=@PREFIX@'
     compile:
       - args: ['make', '-j@PARALLELISM@']
@@ -205,7 +202,7 @@ tools:
             'NOCONFIGURE': 'yes'
     configure:
       - args:
-        - '@PKG_SOURCE_DIR@/configure'
+        - '@THIS_SOURCE_DIR@/configure'
         - '--prefix=@PREFIX@'
     compile:
       - args: ['make', '-j@PARALLELISM@']
@@ -218,7 +215,7 @@ tools:
       - cross-binutils
     configure:
       - args:
-        - '@PKG_SOURCE_DIR@/configure'
+        - '@THIS_SOURCE_DIR@/configure'
         - '--prefix=@PREFIX@'
         - '--target=x86_64-managarm-kernel'
         - '--with-sysroot=@BUILD_ROOT@/kernel-root'
@@ -256,7 +253,7 @@ tools:
       - cross-binutils
     configure:
       - args:
-        - '@PKG_SOURCE_DIR@/configure'
+        - '@THIS_SOURCE_DIR@/configure'
         - '--prefix=@PREFIX@'
         - '--target=x86_64-managarm'
         - '--with-sysroot=@SYSROOT_DIR@'
@@ -301,13 +298,13 @@ packages:
       - system-gcc
     configure:
       - args:
-        - '@PKG_SOURCE_DIR@/configure'
+        - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
         - '--without-bash-malloc'
     build:
       - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'DESTDIR=@PKG_COLLECT_DIR@', 'install']
+      - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
   
   - name: boost
     source:
@@ -316,9 +313,9 @@ packages:
       tag: 'boost-1.62.0'
     configure: []
     build:
-      - args: ['mkdir', '-p', '@PKG_COLLECT_DIR@/usr/include']
-      - args: ['cp', '-r', '--dereference', '@PKG_SOURCE_DIR@/boost',
-            '@PKG_COLLECT_DIR@/usr/include']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/include']
+      - args: ['cp', '-r', '--dereference', '@THIS_SOURCE_DIR@/boost',
+            '@THIS_COLLECT_DIR@/usr/include']
 
   - name: cairo
     source:
@@ -346,7 +343,7 @@ packages:
     configure:
       - args:
         # For now, we build without glesv2 backend as Weston prefers the image backend.
-        - '@PKG_SOURCE_DIR@/configure'
+        - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
         environ:
@@ -356,7 +353,7 @@ packages:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
         environ:
-          DESTDIR: '@PKG_COLLECT_DIR@'
+          DESTDIR: '@THIS_COLLECT_DIR@'
   
   - name: libcofiber
     source:
@@ -370,9 +367,9 @@ packages:
       - args:
         - 'make'
         - '-f'
-        - '@PKG_SOURCE_DIR@/library.makefile'
-        - 'S=@PKG_SOURCE_DIR@'
-        - 'DESTDIR=@PKG_COLLECT_DIR@'
+        - '@THIS_SOURCE_DIR@/library.makefile'
+        - 'S=@THIS_SOURCE_DIR@'
+        - 'DESTDIR=@THIS_COLLECT_DIR@'
         - 'prefix=/usr/'
         - 'CXX=x86_64-managarm-g++'
         - 'LD=x86_64-managarm-ld'
@@ -393,7 +390,7 @@ packages:
       - system-gcc
     configure:
       - args:
-        - '@PKG_SOURCE_DIR@/configure'
+        - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
         - 'CFLAGS=-DSLOW_BUT_NO_HACKS'
@@ -401,7 +398,7 @@ packages:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
         environ:
-          DESTDIR: '@PKG_COLLECT_DIR@'
+          DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: eudev
     source:
@@ -419,7 +416,7 @@ packages:
       - system-gcc
     configure:
       - args:
-        - '@PKG_SOURCE_DIR@/configure'
+        - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
         - '--disable-blkid'
@@ -432,7 +429,7 @@ packages:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
         environ:
-          DESTDIR: '@PKG_COLLECT_DIR@'
+          DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libasync
     source:
@@ -446,9 +443,9 @@ packages:
       - args:
         - 'make'
         - '-f'
-        - '@PKG_SOURCE_DIR@/library.makefile'
-        - 'S=@PKG_SOURCE_DIR@'
-        - 'DESTDIR=@PKG_COLLECT_DIR@'
+        - '@THIS_SOURCE_DIR@/library.makefile'
+        - 'S=@THIS_SOURCE_DIR@'
+        - 'DESTDIR=@THIS_COLLECT_DIR@'
         - 'prefix=/usr/'
         - 'CXX=x86_64-managarm-g++'
         - 'LD=x86_64-managarm-ld'
@@ -474,7 +471,7 @@ packages:
       - system-gcc
     configure:
       - args:
-        - '@PKG_SOURCE_DIR@/configure'
+        - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
         - '--disable-intel'
@@ -489,7 +486,7 @@ packages:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
         environ:
-          DESTDIR: '@PKG_COLLECT_DIR@'
+          DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libevdev
     source:
@@ -509,14 +506,14 @@ packages:
       - system-gcc
     configure:
       - args:
-        - '@PKG_SOURCE_DIR@/configure'
+        - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
         environ:
-          DESTDIR: '@PKG_COLLECT_DIR@'
+          DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libexpat
     source:
@@ -534,7 +531,7 @@ packages:
       - system-gcc
     configure:
       - args:
-        - '@PKG_SOURCE_DIR@/expat/configure'
+        - '@THIS_SOURCE_DIR@/expat/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
         # We disable xmlwf to avoid building its documentation.
@@ -543,7 +540,7 @@ packages:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
         environ:
-          DESTDIR: '@PKG_COLLECT_DIR@'
+          DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libffi
     source:
@@ -560,14 +557,14 @@ packages:
       - system-gcc
     configure:
       - args:
-        - '@PKG_SOURCE_DIR@/configure'
+        - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
         environ:
-          DESTDIR: '@PKG_COLLECT_DIR@'
+          DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libinput
     source:
@@ -592,7 +589,7 @@ packages:
           - '-Ddebug-gui=false'
           - '-Dtests=false'
           - '-Ddocumentation=false'
-          - '@PKG_SOURCE_DIR@'
+          - '@THIS_SOURCE_DIR@'
         environ:
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
           PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
@@ -600,7 +597,7 @@ packages:
       - args: ['ninja']
       - args: ['ninja', 'install']
         environ:
-          DESTDIR: '@PKG_COLLECT_DIR@'
+          DESTDIR: '@THIS_COLLECT_DIR@'
   
   - name: libpng
     source:
@@ -620,14 +617,14 @@ packages:
       - zlib
     configure:
       - args:
-        - '@PKG_SOURCE_DIR@/configure'
+        - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
         environ:
-          DESTDIR: '@PKG_COLLECT_DIR@'
+          DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libsmarter
     source:
@@ -638,13 +635,13 @@ packages:
       - system-gcc
     configure: []
     build:
-      - args: ['mkdir', '-p', '@PKG_COLLECT_DIR@/usr/include']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/include']
       - args:
         - 'make'
         - '-f'
-        - '@PKG_SOURCE_DIR@/library.makefile'
-        - 'S=@PKG_SOURCE_DIR@'
-        - 'DESTDIR=@PKG_COLLECT_DIR@'
+        - '@THIS_SOURCE_DIR@/library.makefile'
+        - 'S=@THIS_SOURCE_DIR@'
+        - 'DESTDIR=@THIS_COLLECT_DIR@'
         - 'prefix=/usr/'
         - 'CXX=x86_64-managarm-g++'
         - 'LD=x86_64-managarm-ld'
@@ -669,7 +666,7 @@ packages:
       - system-gcc
     configure:
       - args:
-        - '@PKG_SOURCE_DIR@/configure'
+        - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
         - '--disable-x11'
@@ -677,7 +674,7 @@ packages:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
         environ:
-          DESTDIR: '@PKG_COLLECT_DIR@'
+          DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: llvm
     source:
@@ -691,14 +688,14 @@ packages:
         - 'cmake'
       #  - '-GNinja'
         - '-DCMAKE_TOOLCHAIN_FILE=@BUILD_ROOT@/CMakeToolchain.txt'
-        - '@PKG_SOURCE_DIR@'
+        - '@THIS_SOURCE_DIR@'
     build:
       #- args: ['ninja']
       #- args: ['ninja', 'install']
       - args: ['make']
       - args: ['make', 'install']
         environ:
-          DESTDIR: '@PKG_COLLECT_DIR@'
+          DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: kmscube
     source:
@@ -718,7 +715,7 @@ packages:
       - mesa
     configure:
       - args:
-        - '@PKG_SOURCE_DIR@/configure'
+        - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
         environ:
@@ -728,7 +725,7 @@ packages:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
         environ:
-          DESTDIR: '@PKG_COLLECT_DIR@'
+          DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: managarm-helix
     from_source: managarm
@@ -740,7 +737,7 @@ packages:
       - libcofiber
     configure:
       - args:
-        - '@PKG_SOURCE_DIR@/configure'
+        - '@THIS_SOURCE_DIR@/configure'
         - '--sysroot=@SYSROOT_DIR@'
         - '--protoc=/bin/true'
         - '--host-cxx=/bin/true'
@@ -760,7 +757,7 @@ packages:
       - kernel-gcc
     configure:
       - args:
-        - '@PKG_SOURCE_DIR@/configure'
+        - '@THIS_SOURCE_DIR@/configure'
         - '--sysroot=@SYSROOT_DIR@'
         - '--protoc=protoc'
         - '--host-cxx=g++'
@@ -790,7 +787,7 @@ packages:
         - '--prefix=/usr'
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
-        - '@PKG_SOURCE_DIR@'
+        - '@THIS_SOURCE_DIR@'
         environ:
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
           PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
@@ -798,7 +795,7 @@ packages:
       - args: ['ninja']
       - args: ['ninja', 'install']
         environ:
-          'DESTDIR': '@PKG_COLLECT_DIR@'
+          'DESTDIR': '@THIS_COLLECT_DIR@'
 
   - name: mesa
     source:
@@ -821,7 +818,7 @@ packages:
       - wayland
     configure:
       - args:
-        - '@PKG_SOURCE_DIR@/configure'
+        - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
         - '--disable-glx'
@@ -838,7 +835,7 @@ packages:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
         environ:
-          DESTDIR: '@PKG_COLLECT_DIR@'
+          DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: mlibc
     source:
@@ -857,12 +854,12 @@ packages:
         - '--prefix=/usr'
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
-        - '@PKG_SOURCE_DIR@'
+        - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
       - args: ['ninja', 'install']
         environ:
-          DESTDIR: '@PKG_COLLECT_DIR@'
+          DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: mtdev
     source:
@@ -880,14 +877,14 @@ packages:
       - system-gcc
     configure:
       - args:
-        - '@PKG_SOURCE_DIR@/configure'
+        - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
         environ:
-          DESTDIR: '@PKG_COLLECT_DIR@'
+          DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: nano
     source:
@@ -905,7 +902,7 @@ packages:
       - ncurses
     configure:
       - args:
-        - '@PKG_SOURCE_DIR@/configure'
+        - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
         - 'CFLAGS=-DSLOW_BUT_NO_HACKS'
@@ -913,7 +910,7 @@ packages:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
         environ:
-          DESTDIR: '@PKG_COLLECT_DIR@'
+          DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: ncurses
     source:
@@ -924,12 +921,12 @@ packages:
       - system-gcc
     configure:
       - args:
-        - '@PKG_SOURCE_DIR@/configure'
+        - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
     build:
       - args: ['make', '-j@PARALLELISM@', 'all']
-      - args: ['make', 'DESTDIR=@PKG_COLLECT_DIR@', 'install']
+      - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
 
   - name: pixman
     source:
@@ -951,14 +948,14 @@ packages:
       - libpng
     configure:
       - args:
-        - '@PKG_SOURCE_DIR@/configure'
+        - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
         environ:
-          DESTDIR: '@PKG_COLLECT_DIR@'
+          DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: protobuf
     from_source: protobuf
@@ -967,7 +964,7 @@ packages:
       - host-protoc
     configure:
       - args:
-        - '@PKG_SOURCE_DIR@/configure'
+        - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
         # protobuf needs a host protoc when cross-compiling.
@@ -976,7 +973,7 @@ packages:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
         environ:
-          DESTDIR: '@PKG_COLLECT_DIR@'
+          DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: wayland
     source:
@@ -1000,7 +997,7 @@ packages:
       - wayland-protocols
     configure:
       - args:
-        - '@PKG_SOURCE_DIR@/configure'
+        - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
         - '--with-host-scanner'
@@ -1013,13 +1010,13 @@ packages:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
         environ:
-          DESTDIR: '@PKG_COLLECT_DIR@'
+          DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: wayland-protocols
     source:
       subdir: 'ports'
       git: 'http://github.com/wayland-project/wayland-protocols.git'
-      tag: '1.12'
+      tag: '1.13'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1032,14 +1029,14 @@ packages:
       - system-gcc
     configure:
       - args:
-        - '@PKG_SOURCE_DIR@/configure'
+        - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
         environ:
-          DESTDIR: '@PKG_COLLECT_DIR@'
+          DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: weston
     source:
@@ -1064,7 +1061,7 @@ packages:
       - wayland
     configure:
       - args:
-        - '@PKG_SOURCE_DIR@/configure'
+        - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
         - '--disable-xwayland'
@@ -1080,7 +1077,7 @@ packages:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
         environ:
-          DESTDIR: '@PKG_COLLECT_DIR@'
+          DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: zlib
     source:
@@ -1091,7 +1088,7 @@ packages:
       - system-gcc
     configure:
       - args:
-        - '@PKG_SOURCE_DIR@/configure'
+        - '@THIS_SOURCE_DIR@/configure'
         environ:
           CHOST: 'x86_64-managarm'
           prefix: '/usr'
@@ -1099,5 +1096,5 @@ packages:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
         environ:
-          DESTDIR: '@PKG_COLLECT_DIR@'
+          DESTDIR: '@THIS_COLLECT_DIR@'
 
