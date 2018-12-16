@@ -333,21 +333,16 @@ packages:
     source:
       subdir: 'ports'
       git: 'git://anongit.freedesktop.org/cairo'
-      tag: '1.15.10'
+      tag: '1.16.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
-        - host-libtool
+        - host-pkg-config
       regenerate:
         - args: ['./autogen.sh']
           environ:
             'NOCONFIGURE': 'yes'
     tools_required:
-      - host-pkg-config
-      # cairo wants to regerenate its build system at configure time.
-      - host-autoconf-v2.69
-      - host-automake-v1.11
-      - host-libtool
       - system-gcc
     pkgs_required:
       - libpng
@@ -359,6 +354,8 @@ packages:
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
         environ:
+          # freetype-config does not support cross-compilation.
+          FREETYPE_CONFIG: 'no'
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
           PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
     build:
