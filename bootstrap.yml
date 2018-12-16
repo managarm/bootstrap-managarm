@@ -65,6 +65,8 @@ tools:
         - host-autoconf-v2.69
       regenerate:
         - args: ['./bootstrap']
+    tools_required:
+      - host-autoconf-v2.69
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -87,6 +89,8 @@ tools:
           - host-autoconf-v2.69
         regenerate:
           - args: ['./bootstrap']
+    tools_required:
+      - host-autoconf-v2.69
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
