@@ -8,6 +8,9 @@ sources:
       - host-autoconf-v2.64
       - host-automake-v1.11
     regenerate:
+      # download_prerequisites should probably move to some "post_checkout" step.
+      - args: ['./contrib/download_prerequisites']
+        workdir: '@SOURCE_DIR@'
       - args: ['autoconf']
         workdir: '@SOURCE_DIR@/libstdc++-v3'
 
