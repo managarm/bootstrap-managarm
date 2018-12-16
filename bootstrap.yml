@@ -110,6 +110,9 @@ tools:
       subdir: 'ports'
       git: 'http://git.savannah.gnu.org/r/libtool.git' 
       tag: 'v2.4.5'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
       regenerate:
         # libtool's ./bootstrap does a shallow clone with insufficient depth.
         - args: ['git', 'submodule', 'update', '--init']
