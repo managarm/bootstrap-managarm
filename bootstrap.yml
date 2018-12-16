@@ -235,6 +235,7 @@ tools:
     stages:
       - name: compiler
         compile:
+          - args: ['mkdir', '-p', '@BUILD_ROOT@/kernel-root/usr/include']
           # Set inhibit_libc to prevent libgcov build.
           # This is also required to correctly build the target libraries later.
           - args: ['make', '-j@PARALLELISM@', 'inhibit_libc=true', 'all-gcc']
@@ -273,6 +274,7 @@ tools:
     stages:
       - name: compiler
         compile:
+          - args: ['mkdir', '-p', '@SYSROOT_DIR@/usr/include']
           - args: ['make', '-j@PARALLELISM@', 'all-gcc']
         install:
           - args: ['make', 'install-gcc']
