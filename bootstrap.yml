@@ -106,6 +106,28 @@ tools:
       # Stop aclocal from complaining.
       - args: ['ln', '-s', '@PREFIX@/share/aclocal-1.15', '@PREFIX@/share/aclocal']
   
+  - name: host-frigg_pb
+    from_source: managarm
+    tools_required:
+      - host-protoc
+    configure:
+      - args:
+        - 'meson'
+        - '--prefix=@PREFIX@'
+        - '-Dbuild_tools=true'
+        - '@THIS_SOURCE_DIR@'
+        environ:
+          # This can be seen as a hack -- remove it.
+          'LIBRARY_PATH': '@BUILD_ROOT@/prefixes/host-protoc/lib'
+    compile:
+      - args: ['ninja']
+        environ:
+          # This can be seen as a hack -- remove it.
+          'CPATH': '@BUILD_ROOT@/prefixes/host-protoc/include'
+          'LIBRARY_PATH': '@BUILD_ROOT@/prefixes/host-protoc/lib'
+    install:
+      - args: ['ninja', 'install']
+  
   - name: host-libtool
     exports_aclocal: true
     source:
@@ -762,6 +784,7 @@ packages:
   - name: managarm-kernel
     from_source: managarm
     tools_required:
+      - host-frigg_pb
       - host-protoc
       - kernel-gcc
     configure:
@@ -776,7 +799,6 @@ packages:
         - '--frigg=@SOURCE_ROOT@/ports/frigg'
         - '--acpica=@SOURCE_ROOT@/ports/acpica'
     build:
-      - args: ['make', 'all-tools/frigg_pb']
       - args: ['make', 'gen-thor/kernel']
       - args: ['make', 'all-eir', 'all-thor/kernel']
   
@@ -796,6 +818,7 @@ packages:
         - '--prefix=/usr'
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
+        - '-Dbuild_drivers=true'
         - '@THIS_SOURCE_DIR@'
         environ:
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
@@ -851,6 +874,7 @@ packages:
       git: 'http://github.com/managarm/mlibc.git'
       branch: 'master'
     tools_required:
+      - host-frigg_pb
       - tool: system-gcc
         stage_dependencies: [compiler]
       - host-protoc
