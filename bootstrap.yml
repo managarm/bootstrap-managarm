@@ -10,9 +10,9 @@ sources:
     regenerate:
       # download_prerequisites should probably move to some "post_checkout" step.
       - args: ['./contrib/download_prerequisites']
-        workdir: '@SOURCE_DIR@'
+        workdir: '@THIS_SOURCE_DIR@'
       - args: ['autoconf']
-        workdir: '@SOURCE_DIR@/libstdc++-v3'
+        workdir: '@THIS_SOURCE_DIR@/libstdc++-v3'
 
   - name: protobuf
     subdir: 'ports'
@@ -80,7 +80,7 @@ tools:
     install:
       - args: ['make', 'install']
       # Stop aclocal from complaining.
-      - args: ['ln', '-s', '@PREFIX@/share/aclocal-1.11', '@PREFIX@/share/aclocal']
+      - args: ['ln', '-sf', '@PREFIX@/share/aclocal-1.11', '@PREFIX@/share/aclocal']
 
   - name: host-automake-v1.15
     source:
@@ -104,7 +104,7 @@ tools:
     install:
       - args: ['make', 'install']
       # Stop aclocal from complaining.
-      - args: ['ln', '-s', '@PREFIX@/share/aclocal-1.15', '@PREFIX@/share/aclocal']
+      - args: ['ln', '-sf', '@PREFIX@/share/aclocal-1.15', '@PREFIX@/share/aclocal']
   
   - name: host-frigg_pb
     from_source: managarm
@@ -189,7 +189,7 @@ tools:
         - host-automake-v1.11
       regenerate:
         - args: ['autoreconf']
-          workdir: '@SOURCE_DIR@/ld'
+          workdir: '@THIS_SOURCE_DIR@/ld'
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -557,7 +557,7 @@ packages:
         - host-libtool
       regenerate:
         - args: ['./buildconf.sh']
-          workdir: '@SOURCE_DIR@/expat'
+          workdir: '@THIS_SOURCE_DIR@/expat'
     tools_required:
       - system-gcc
     configure:
@@ -873,6 +873,10 @@ packages:
     source:
       git: 'http://github.com/managarm/mlibc.git'
       branch: 'master'
+      sources_required:
+        - managarm
+      regenerate:
+        - args: ['ln', '-sf', '@SOURCE_ROOT@/managarm', '@THIS_SOURCE_DIR@/subprojects/managarm']
     tools_required:
       - host-frigg_pb
       - tool: system-gcc
