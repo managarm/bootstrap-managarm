@@ -874,6 +874,7 @@ packages:
       git: 'http://github.com/managarm/mlibc.git'
       branch: 'master'
       sources_required:
+        - libdrm
         - managarm
       regenerate:
         - args: ['ln', '-sf', '@SOURCE_ROOT@/managarm', '@THIS_SOURCE_DIR@/subprojects/managarm']
