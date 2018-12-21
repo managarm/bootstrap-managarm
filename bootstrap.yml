@@ -43,7 +43,7 @@ tools:
       - args: ['make', '-j@PARALLELISM@']
     install:
       - args: ['make', 'install']
- 
+
   - name: host-autoconf-v2.69
     source:
       name: autoconf-v2.69
@@ -68,8 +68,8 @@ tools:
         - host-autoconf-v2.69
       regenerate:
         - args: ['./bootstrap']
-    tools_required:
-      - host-autoconf-v2.69
+    tools_required: []
+      #- host-autoconf-v2.69
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -92,8 +92,8 @@ tools:
           - host-autoconf-v2.69
         regenerate:
           - args: ['./bootstrap']
-    tools_required:
-      - host-autoconf-v2.69
+    tools_required: []
+      #- host-autoconf-v2.69
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -105,7 +105,7 @@ tools:
       - args: ['make', 'install']
       # Stop aclocal from complaining.
       - args: ['ln', '-sf', '@PREFIX@/share/aclocal-1.15', '@PREFIX@/share/aclocal']
-  
+
   - name: host-frigg_pb
     from_source: managarm
     tools_required:
@@ -127,13 +127,13 @@ tools:
           'LIBRARY_PATH': '@BUILD_ROOT@/prefixes/host-protoc/lib'
     install:
       - args: ['ninja', 'install']
-  
+
   - name: host-libtool
     exports_aclocal: true
     source:
       name: libtool
       subdir: 'ports'
-      git: 'http://git.savannah.gnu.org/r/libtool.git' 
+      git: 'http://git.savannah.gnu.org/r/libtool.git'
       tag: 'v2.4.5'
       tools_required:
         - host-autoconf-v2.69
@@ -339,7 +339,7 @@ packages:
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
-  
+
   - name: boost
     source:
       subdir: 'ports'
@@ -357,8 +357,9 @@ packages:
       git: 'git://anongit.freedesktop.org/cairo'
       tag: '1.16.0'
       tools_required:
-        - host-autoconf-v2.69
+        - host-autoconf-v2.64
         - host-automake-v1.11
+        - host-libtool
         - host-pkg-config
       regenerate:
         - args: ['./autogen.sh']
@@ -366,6 +367,10 @@ packages:
             'NOCONFIGURE': 'yes'
     tools_required:
       - system-gcc
+      - host-autoconf-v2.64
+      - host-automake-v1.11
+      - host-libtool
+      - host-pkg-config
     pkgs_required:
       - libpng
       - pixman
@@ -385,7 +390,29 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
-  
+
+  - name: frigg
+    source:
+      subdir: 'ports'
+      git: 'http://github.com/managarm/frigg.git'
+      branch: 'master'
+    tools_required:
+      - system-gcc
+    configure:
+      - args:
+        - 'meson'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: libcofiber
     source:
       subdir: 'ports'
@@ -629,7 +656,7 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
-  
+
   - name: libpng
     source:
       subdir: 'ports'
@@ -687,6 +714,7 @@ packages:
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
+        - host-libtool
         - host-pkg-config
         - host-xorg-macros
       regenerate:
@@ -708,6 +736,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: llvm
+    default: false
     source:
       subdir: 'ports'
       git: 'http://git.llvm.org/git/llvm.git/'
@@ -736,6 +765,7 @@ packages:
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
+        - host-pkg-config
       regenerate:
         - args: ['./autogen.sh']
           environ:
@@ -783,6 +813,8 @@ packages:
 
   - name: managarm-kernel
     from_source: managarm
+    sources_required:
+      - frigg
     tools_required:
       - host-frigg_pb
       - host-protoc
@@ -801,7 +833,7 @@ packages:
     build:
       - args: ['make', 'gen-thor/kernel']
       - args: ['make', 'all-eir', 'all-thor/kernel']
-  
+
   - name: managarm-system
     from_source: managarm
     tools_required:
@@ -925,6 +957,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: nano
+    default: false
     source:
       subdir: 'ports'
       git: 'git://git.savannah.gnu.org/nano.git'
@@ -951,6 +984,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: ncurses
+    default: false
     source:
       subdir: 'ports'
       url: 'ftp://ftp.invisible-island.net/ncurses/ncurses.tar.gz'
@@ -1084,6 +1118,7 @@ packages:
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
+        - host-libtool
         - host-pkg-config
       regenerate:
         - args: ['./autogen.sh']
@@ -1116,6 +1151,28 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: xkeyboard-config
+    source:
+      subdir: 'ports'
+      git: 'git://anongit.freedesktop.org/xkeyboard-config'
+      tag: 'xkeyboard-config-2.23.1'
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
+#    tools_required:
+#      - system-gcc
+    configure: []
+#      - args:
+#        - '@THIS_SOURCE_DIR@/configure'
+#        - '--host=x86_64-managarm'
+#        - '--prefix=/usr'
+    build: []
+#      - args: ['make', '-j@PARALLELISM@']
+#      - args: ['make', 'install']
+#        environ:
+#          DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: zlib
     source:
