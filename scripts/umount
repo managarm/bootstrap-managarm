@@ -1,10 +1,4 @@
 #!/bin/bash
 
-dir=/mnt/managarm
-
-umount -d -l $dir
-if [ $? -ne 0 ]; then
-	echo "umount: umount failed."
-	exit 1
-fi
+guestunmount mountpoint/
 

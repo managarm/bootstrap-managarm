@@ -9,9 +9,10 @@ if [ -n "$1" ]; then
 	dir="$1"
 	echo "Copying to existing directory $dir"
 else
-	dir=/mnt/managarm
+	mkdir -p mountpoint/
+	dir=$(realpath mountpoint/)
 	echo "Mounting image to $dir"
-	sudo ./mount
+	./mount
 	mntlocal=yes
 fi
 
@@ -86,6 +87,6 @@ cp prefixes/system-gcc/x86_64-managarm/lib/foo/libgcc_s.so.1 $dir/usr/lib
 cp prefixes/system-gcc/x86_64-managarm/lib/foo/libstdc++.so.6 $dir/usr/lib
 
 if ! [ -z $mntlocal ]; then
-	sudo ./umount
+	./umount
 fi
 
