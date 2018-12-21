@@ -21,7 +21,7 @@ fi
 # -----------------------------------------------------------------------------
 
 mkdir -p initrd/{bin,lib,sbin}
-#mkdir -p initrd/lib/kernlet
+mkdir -p initrd/lib/kernlet
 
 # Runtime libraries.
 install -s native/native-managarm-helix/hel/bin/libhelix.so initrd/lib/
@@ -37,14 +37,14 @@ install -s system-root/usr/lib/libvirtio_core.so initrd/lib/
 install -s system-root/usr/lib/libarch.so initrd/lib/
 install -s system-root/usr/lib/libfs_protocol.so initrd/lib/
 install -s system-root/usr/lib/libhw_protocol.so initrd/lib/
-#install -s system-root/usr/lib/libkernlet_protocol.so initrd/lib/
+install -s system-root/usr/lib/libkernlet_protocol.so initrd/lib/
 install -s system-root/usr/lib/libmbus.so initrd/lib/
 install -s system-root/usr/lib/libusb_protocol.so initrd/lib/
 
 # User-space core components.
 install -s system-root/usr/bin/mbus initrd/sbin/
-#install -s system-root/usr/bin/kernlet-c initrd/sbin/
-#install -s kernlet-ehci.so initrd/lib/kernlet/
+install -s system-root/usr/bin/kernlet-c initrd/sbin/
+install -s kernlet-ehci.so initrd/lib/kernlet/
 install -s system-root/usr/bin/clocktracker initrd/sbin/
 install -s system-root/usr/bin/posix-subsystem initrd/sbin/
 install -s system-root/usr/bin/posix-init initrd/sbin/
@@ -73,7 +73,9 @@ install -s native/native-managarm-kernel/thor/kernel/bin/thor $dir/boot/managarm
 cp initrd.cpio $dir/boot/managarm/
 
 # Copy the sysroot.
-mkdir -p $dir/lib $dir/root $dir/usr/bin $dir/usr/lib
+mkdir -p $dir/bin $dir/lib $dir/root $dir/usr/bin $dir/usr/lib
+mkdir -p $dir/dev $dir/run $dir/sys
+rsync -a --delete system-root/bin/ $dir/bin
 rsync -a --delete system-root/lib/ $dir/lib
 rsync -a --delete system-root/root/ $dir/root
 rsync -a --delete system-root/usr/bin/ $dir/usr/bin
