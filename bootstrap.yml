@@ -128,6 +128,10 @@ tools:
           'LIBRARY_PATH': '@BUILD_ROOT@/tools/host-protoc/lib'
     install:
       - args: ['ninja', 'install']
+        environ:
+          # This can be seen as a hack -- remove it.
+          'CPATH': '@BUILD_ROOT@/tools/host-protoc/include'
+          'LIBRARY_PATH': '@BUILD_ROOT@/tools/host-protoc/lib'
 
   - name: host-libtool
     exports_aclocal: true
