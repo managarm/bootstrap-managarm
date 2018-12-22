@@ -68,8 +68,8 @@ tools:
         - host-autoconf-v2.69
       regenerate:
         - args: ['./bootstrap']
-    tools_required: []
-      #- host-autoconf-v2.69
+    tools_required:
+      - host-autoconf-v2.69
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -92,8 +92,8 @@ tools:
           - host-autoconf-v2.69
         regenerate:
           - args: ['./bootstrap']
-    tools_required: []
-      #- host-autoconf-v2.69
+    tools_required:
+      - host-autoconf-v2.69
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -109,7 +109,8 @@ tools:
   - name: host-frigg_pb
     from_source: managarm
     tools_required:
-      - host-protoc
+      - tool: host-protoc
+        recursive: true
     configure:
       - args:
         - 'meson'
@@ -118,13 +119,13 @@ tools:
         - '@THIS_SOURCE_DIR@'
         environ:
           # This can be seen as a hack -- remove it.
-          'LIBRARY_PATH': '@BUILD_ROOT@/prefixes/host-protoc/lib'
+          'LIBRARY_PATH': '@BUILD_ROOT@/tools/host-protoc/lib'
     compile:
       - args: ['ninja']
         environ:
           # This can be seen as a hack -- remove it.
-          'CPATH': '@BUILD_ROOT@/prefixes/host-protoc/include'
-          'LIBRARY_PATH': '@BUILD_ROOT@/prefixes/host-protoc/lib'
+          'CPATH': '@BUILD_ROOT@/tools/host-protoc/include'
+          'LIBRARY_PATH': '@BUILD_ROOT@/tools/host-protoc/lib'
     install:
       - args: ['ninja', 'install']
 
@@ -244,7 +245,8 @@ tools:
   - name: kernel-gcc
     from_source: gcc
     tools_required:
-      - cross-binutils
+      - tool: cross-binutils
+        recursive: true
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -283,7 +285,8 @@ tools:
   - name: system-gcc
     from_source: gcc
     tools_required:
-      - cross-binutils
+      - tool: cross-binutils
+        recursive: true
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -435,6 +438,7 @@ packages:
         - 'install'
 
   - name: coreutils
+    default: false
     source:
       subdir: 'ports'
       git: 'git://git.savannah.gnu.org/coreutils.git'
@@ -825,8 +829,8 @@ packages:
         - '--sysroot=@SYSROOT_DIR@'
         - '--protoc=protoc'
         - '--host-cxx=g++'
-        - '--host-cppflags=-I@BUILD_ROOT@/prefixes/host-protoc/include'
-        - '--host-ldflags=-L@BUILD_ROOT@/prefixes/host-protoc/lib'
+        - '--host-cppflags=-I@BUILD_ROOT@/tools/host-protoc/include'
+        - '--host-ldflags=-L@BUILD_ROOT@/tools/host-protoc/lib'
         - '--cxxshim=@SOURCE_ROOT@/ports/cxxshim'
         - '--frigg=@SOURCE_ROOT@/ports/frigg'
         - '--acpica=@SOURCE_ROOT@/ports/acpica'
@@ -1153,6 +1157,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xkeyboard-config
+    default: false
     source:
       subdir: 'ports'
       git: 'git://anongit.freedesktop.org/xkeyboard-config'
