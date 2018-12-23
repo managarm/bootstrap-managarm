@@ -201,6 +201,8 @@ tools:
         - '--prefix=@PREFIX@'
         - '--target=x86_64-managarm'
         - '--with-sysroot=@SYSROOT_DIR@'
+        # -g blows up the binary size.
+        - 'CFLAGS=-O2'
     compile:
       - args: ['make', '-j@PARALLELISM@', 'all-binutils', 'all-gas', 'all-ld']
     install:
@@ -218,6 +220,8 @@ tools:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--prefix=@PREFIX@'
+        # -g blows up the binary size.
+        - 'CXXFLAGS=-O2'
     compile:
       - args: ['make', '-j@PARALLELISM@']
     install:
@@ -260,6 +264,9 @@ tools:
         - '--enable-languages=c,c++'
         - '--disable-shared'
         - '--disable-hosted-libstdcxx'
+        # -g blows up GCC's binary size.
+        - 'CFLAGS=-O2'
+        - 'CXXFLAGS=-O2'
     stages:
       - name: compiler
         compile:
@@ -300,6 +307,9 @@ tools:
         - '--enable-languages=c,c++'
         - '--disable-multilib'
         - '--enable-initfini-array'
+        # -g blows up GCC's binary size.
+        - 'CFLAGS=-O2'
+        - 'CXXFLAGS=-O2'
     stages:
       - name: compiler
         compile:
