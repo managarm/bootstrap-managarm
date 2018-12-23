@@ -1,0 +1,8 @@
+
+language: generic
+os: linux
+dist: xenial
+services: docker
+
+script: docker build -t managarm/managarm-buildtools docker/
+
