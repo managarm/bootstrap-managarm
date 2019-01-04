@@ -1,22 +1,29 @@
 #!/bin/bash
 
-args="-enable-kvm -smp 2 -m 2048"
-args="$args -cpu qemu64,+smap"
+args="-enable-kvm"
+#args="$args -smp 4"
+args="$args -m 2048"
+args="$args -cpu qemu64,+smap,+pcid,+invpcid"
+#args="$args -cpu qemu64,+smap"
 
 args="$args -device piix3-usb-uhci"
 args="$args -device usb-kbd"
-args="$args -device usb-mouse"
-#args="$args -device usb-tablet"
+#args="$args -device usb-mouse"
+args="$args -device usb-tablet"
 #args="$args -device usb-host,vendorid=0x17ef,productid=0x602d" # Real keyboard
 #args="$args -device usb-host,vendorid=0x045e,productid=0x00cb" # Real mouse
+#args="$args -device usb-host,vendorid=0x21ce,productid=0x2519" # Real touch-thingy
 
 args="$args -device usb-ehci"
 
 #args="$args -hda image"
 args="$args -drive id=image,file=image,format=raw,if=none \
 		-device virtio-blk-pci,drive=image"
+#args="$args -drive id=image,file=image,format=raw,if=none \
+#		-device virtio-blk-pci,disable-modern=on,drive=image"
 #args="$args -drive id=managarm,file=image,format=raw,if=none \
 #		-device usb-storage,drive=managarm"
+#args="$args -device usb-host,vendorid=0x090c,productid=0x1000" # Real storage
 
 args="$args -netdev user,id=net0 -device virtio-net,netdev=net0"
 #args="$args -netdev tap,id=net0 -device virtio-net,netdev=net0"
@@ -32,4 +39,5 @@ args="$args -d guest_errors"
 #args="$args -d int"
 
 qemu-system-x86_64 $QFLAGS $args
+#/usr/bin/qemu-system-x86_64 $QFLAGS $args
 

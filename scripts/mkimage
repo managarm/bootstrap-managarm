@@ -24,15 +24,16 @@ mkdir -p initrd/{bin,lib,sbin}
 mkdir -p initrd/lib/kernlet
 
 # Runtime libraries.
-install -s native/native-managarm-helix/hel/bin/libhelix.so initrd/lib/
+install -s pkg-builds/managarm-helix/hel/bin/libhelix.so initrd/lib/
 install -s system-root/usr/lib/ld.so initrd/lib/ld-init.so
 install -s system-root/usr/lib/libc.so initrd/lib/
 install -s system-root/usr/lib/libm.so initrd/lib/
-install -s prefixes/system-gcc/x86_64-managarm/lib/foo/libgcc_s.so.1 initrd/lib/
-install -s prefixes/system-gcc/x86_64-managarm/lib/foo/libstdc++.so.6 initrd/lib/
+install -s tools/system-gcc/x86_64-managarm/lib/foo/libgcc_s.so.1 initrd/lib/
+install -s tools/system-gcc/x86_64-managarm/lib/foo/libstdc++.so.6 initrd/lib/
+install -s system-root/usr/lib/liblewis.so initrd/lib/
 install -s system-root/usr/lib/libz.so initrd/lib/
 install -s system-root/usr/lib/libprotobuf-lite.so.11 initrd/lib/
-install -s native/native-libcofiber/bin/libcofiber.so initrd/lib/
+install -s pkg-builds/libcofiber/bin/libcofiber.so initrd/lib/
 install -s system-root/usr/lib/libvirtio_core.so initrd/lib/
 install -s system-root/usr/lib/libarch.so initrd/lib/
 install -s system-root/usr/lib/libfs_protocol.so initrd/lib/
@@ -43,11 +44,11 @@ install -s system-root/usr/lib/libusb_protocol.so initrd/lib/
 
 # User-space core components.
 install -s system-root/usr/bin/mbus initrd/sbin/
-install -s system-root/usr/bin/kernlet-c initrd/sbin/
-install -s kernlet-ehci.so initrd/lib/kernlet/
+install -s system-root/usr/bin/kernletcc initrd/sbin/
 install -s system-root/usr/bin/clocktracker initrd/sbin/
 install -s system-root/usr/bin/posix-subsystem initrd/sbin/
 install -s system-root/usr/bin/posix-init initrd/sbin/
+install -s kernlet-ehci.so initrd/lib/kernlet
 
 # Essential drivers.
 install -s system-root/usr/lib/libblockfs.so initrd/lib/
@@ -68,8 +69,8 @@ install -s system-root/usr/bin/runsvr initrd/bin/
 # -----------------------------------------------------------------------------
 
 mkdir -p $dir/boot/managarm
-install -s native/native-managarm-kernel/eir/bin/eir $dir/boot/managarm/
-install -s native/native-managarm-kernel/thor/kernel/bin/thor $dir/boot/managarm/
+install -s pkg-builds/managarm-kernel/eir/bin/eir $dir/boot/managarm/
+install -s pkg-builds/managarm-kernel/thor/kernel/bin/thor $dir/boot/managarm/
 cp initrd.cpio $dir/boot/managarm/
 
 # Copy the sysroot.
@@ -85,8 +86,8 @@ rsync -a --delete system-root/usr/sbin/ $dir/usr/sbin
 rsync -a --delete system-root/usr/share/ $dir/usr/share
 rsync -a --delete system-root/run/ $dir/run
 rsync -a --delete system-root/etc/ $dir/etc
-cp prefixes/system-gcc/x86_64-managarm/lib/foo/libgcc_s.so.1 $dir/usr/lib
-cp prefixes/system-gcc/x86_64-managarm/lib/foo/libstdc++.so.6 $dir/usr/lib
+cp tools/system-gcc/x86_64-managarm/lib/foo/libgcc_s.so.1 $dir/usr/lib
+cp tools/system-gcc/x86_64-managarm/lib/foo/libstdc++.so.6 $dir/usr/lib
 
 if ! [ -z $mntlocal ]; then
 	./umount
