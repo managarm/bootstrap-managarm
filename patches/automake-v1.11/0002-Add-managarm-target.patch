@@ -1,7 +1,7 @@
-From 15f9374e989dcca198444f44e588619931f8aed7 Mon Sep 17 00:00:00 2001
+From 9cf1d5ca48c9da110879ee8d7c95ba3303149204 Mon Sep 17 00:00:00 2001
 From: avdgrinten <alexander.vandergrinten@gmail.com>
 Date: Sat, 29 Oct 2016 12:21:16 +0200
-Subject: [PATCH] Add managarm target
+Subject: [PATCH 2/2] Add managarm target
 
 ---
  lib/config.sub | 3 ++-
@@ -22,5 +22,5 @@ index c894da4..c89ec11 100755
  		;;
  	-qnx*)
 -- 
-2.1.4
+2.11.0
 

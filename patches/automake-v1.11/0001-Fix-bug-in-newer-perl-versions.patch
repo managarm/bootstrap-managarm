@@ -1,0 +1,25 @@
+From e6229c1b706f10c00f622d81646d577b1fd5e8b5 Mon Sep 17 00:00:00 2001
+From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
+Date: Sun, 6 Jan 2019 14:17:38 +0100
+Subject: [PATCH 1/2] Fix bug in newer perl versions
+
+---
+ automake.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/automake.in b/automake.in
+index 921a6ae..003ce31 100644
+--- a/automake.in
++++ b/automake.in
+@@ -4156,7 +4156,7 @@ sub substitute_ac_subst_variables_worker($)
+ sub substitute_ac_subst_variables ($)
+ {
+   my ($text) = @_;
+-  $text =~ s/\${([^ \t=:+{}]+)}/&substitute_ac_subst_variables_worker ($1)/ge;
++  $text =~ s/\$\{([^ \t=:+{}]+)\}/&substitute_ac_subst_variables_worker ($1)/ge;
+   return $text;
+ }
+ 
+-- 
+2.11.0
+
