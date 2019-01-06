@@ -29,6 +29,15 @@ sources:
     git: 'https://github.com/managarm/managarm.git'
     branch: 'master'
 
+  - name: mlibc
+    git: 'http://github.com/managarm/mlibc.git'
+    branch: 'master'
+    sources_required:
+      - libdrm
+      - managarm
+    regenerate:
+      - args: ['ln', '-sf', '@SOURCE_ROOT@/managarm', '@THIS_SOURCE_DIR@/subprojects/managarm']
+
 tools:
   - name: host-autoconf-v2.64
     source:
@@ -315,6 +324,8 @@ tools:
         - 'CXXFLAGS=-O2'
     stages:
       - name: compiler
+        pkgs_required:
+         - mlibc-headers
         compile:
           - args: ['mkdir', '-p', '@SYSROOT_DIR@/usr/include']
           - args: ['make', '-j@PARALLELISM@', 'all-gcc']
@@ -922,15 +933,28 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: mlibc-headers
+    from_source: mlibc
+    tools_required:
+      - host-frigg_pb
+      - host-protoc
+    implict_package: true
+    configure:
+      - args:
+        - 'meson'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson.cross-file'
+        - '--prefix=/usr'
+        - '@THIS_SOURCE_DIR@'
+        - '-Dheaders_only=true'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: mlibc
-    source:
-      git: 'http://github.com/managarm/mlibc.git'
-      branch: 'master'
-      sources_required:
-        - libdrm
-        - managarm
-      regenerate:
-        - args: ['ln', '-sf', '@SOURCE_ROOT@/managarm', '@THIS_SOURCE_DIR@/subprojects/managarm']
+    from_source: mlibc
     tools_required:
       - host-frigg_pb
       - tool: system-gcc
