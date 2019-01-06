@@ -869,11 +869,13 @@ packages:
   - name: managarm-system
     from_source: managarm
     tools_required:
+      - host-pkg-config
       - host-protoc
       - system-gcc
     pkgs_required:
       - libdrm
       - libsmarter
+      - managarm-helix
       - protobuf
     configure:
       - args:
