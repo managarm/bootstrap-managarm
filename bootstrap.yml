@@ -378,6 +378,14 @@ packages:
       subdir: 'ports'
       git: 'http://github.com/boostorg/boost.git'
       tag: 'boost-1.62.0'
+      regenerate:
+        - args: |
+            if ! git -C '@THIS_SOURCE_DIR@' remote | grep -q origin; then
+              git -C '@THIS_SOURCE_DIR@' remote add origin http://github.com/boostorg/boost.git
+            fi
+        - args: ['git', '-C', '@THIS_SOURCE_DIR@', 'submodule', 'update', '--init']
+        - args: ['./bootstrap.sh']
+        - args: ['./b2', 'headers']
     configure: []
     build:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/include']
