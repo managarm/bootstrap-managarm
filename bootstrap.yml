@@ -432,6 +432,28 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: fafnir
+    source:
+      subdir: 'ports'
+      git: 'http://github.com/managarm/fafnir.git'
+      branch: 'master'
+    tools_required:
+      - system-gcc
+    configure:
+      - args:
+        - 'meson'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: frigg
     source:
       subdir: 'ports'
@@ -530,6 +552,29 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: lewis
+    source:
+      subdir: 'ports'
+      git: 'http://github.com/managarm/lewis.git'
+      branch: 'master'
+    tools_required:
+      - system-gcc
+    configure:
+      - args:
+        - 'meson'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
 
   - name: libasync
     source:
@@ -883,6 +928,8 @@ packages:
       - host-protoc
       - system-gcc
     pkgs_required:
+      - fafnir
+      - lewis
       - libdrm
       - libsmarter
       - managarm-helix
@@ -1036,6 +1083,30 @@ packages:
         - 'CFLAGS=-DSLOW_BUT_NO_HACKS'
     build:
       - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: nasm
+    default: false
+    source:
+      subdir: 'ports'
+      git: 'https://repo.or.cz/nasm.git'
+      tag: 'nasm-2.14.02'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+      regenerate:
+        - args: ['./autogen.sh']
+    tools_required:
+      - system-gcc
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+    build:
+      - args: ['make']
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
