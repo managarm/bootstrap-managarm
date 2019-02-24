@@ -476,6 +476,31 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: gcc
+    from_source: gcc
+    tools_required:
+      - tool: system-gcc
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--target=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--with-sysroot=/'
+        - '--with-build-sysroot=@SYSROOT_DIR@'
+        - '--enable-languages=c,c++'
+        - '--disable-multilib'
+        - '--enable-initfini-array'
+        # -g blows up GCC's binary size.
+        - 'CFLAGS=-O2'
+        - 'CXXFLAGS=-O2'
+    build:
+      #- args: ['make', '-j@PARALLELISM@', 'all-gcc']
+      - args: ['make', 'all-gcc']
+      - args: ['make', 'install-gcc']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: libcofiber
     source:
       subdir: 'ports'
