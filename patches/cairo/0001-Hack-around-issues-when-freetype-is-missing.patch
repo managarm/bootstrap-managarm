@@ -1,0 +1,25 @@
+From 56e92532f9333352822e9e742ca56924a628e752 Mon Sep 17 00:00:00 2001
+From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
+Date: Fri, 8 Mar 2019 17:36:43 +0100
+Subject: [PATCH] Hack around issues when freetype is missing
+
+---
+ Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile.am b/Makefile.am
+index 03fa352..44e403d 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -20,7 +20,7 @@ DIST_SUBDIRS = src doc util boilerplate test perf
+ SUBDIRS = src doc util
+ # libpng is required for our test programs
+ if CAIRO_HAS_PNG_FUNCTIONS
+-SUBDIRS += boilerplate test perf
++SUBDIRS += boilerplate
+ endif
+ 
+ configure: cairo-version.h
+-- 
+2.11.0
+

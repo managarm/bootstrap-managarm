@@ -353,6 +353,14 @@ tools:
           - args: ['make', 'install-target-libstdc++-v3']
 
 packages:
+  - name: acpica
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/acpica/acpica.git'
+      tag: 'R09_30_16'
+    configure: []
+    build: []
+
   - name: bash
     source:
       subdir: 'ports'
@@ -453,6 +461,14 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: cxxshim
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/managarm/cxxshim.git'
+      branch: 'master'
+    configure: []
+    build: []
 
   - name: frigg
     source:
@@ -692,12 +708,15 @@ packages:
       tag: 'R_2_2_5'
       tools_required:
         - host-autoconf-v2.69
-        - host-automake-v1.11
+        - host-automake-v1.15
         - host-libtool
       regenerate:
         - args: ['./buildconf.sh']
           workdir: '@THIS_SOURCE_DIR@/expat'
     tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.15
+      - host-libtool
       - system-gcc
     configure:
       - args:
@@ -834,6 +853,10 @@ packages:
           environ:
             'NOCONFIGURE': 'yes'
     tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.15
+      - host-libtool
+      - host-pkg-config
       - system-gcc
     configure:
       - args:
@@ -931,6 +954,10 @@ packages:
       - host-frigg_pb
       - host-protoc
       - kernel-gcc
+    pkgs_required:
+      - acpica
+      - cxxshim
+      - frigg
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1215,6 +1242,10 @@ packages:
           environ:
             'NOCONFIGURE': 'yes'
     tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.15
+      - host-libtool
+      - host-pkg-config
       - system-gcc
     pkgs_required:
       - libexpat
@@ -1251,6 +1282,7 @@ packages:
           environ:
             'NOCONFIGURE': 'yes'
     tools_required:
+      # A wayland-scanner executable is also required. TODO: Build it.
       - system-gcc
     configure:
       - args:

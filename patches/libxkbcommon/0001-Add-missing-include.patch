@@ -1,0 +1,24 @@
+From 64d9d903251d071341fa1c4415e852dfd7658675 Mon Sep 17 00:00:00 2001
+From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
+Date: Fri, 8 Mar 2019 17:33:58 +0100
+Subject: [PATCH] Add missing include
+
+---
+ src/keysym.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/keysym.c b/src/keysym.c
+index 6d06de0..a0fba2d 100644
+--- a/src/keysym.c
++++ b/src/keysym.c
+@@ -48,6 +48,7 @@
+  */
+ 
+ #include <stdlib.h>
++#include <strings.h>
+ #include "xkbcommon/xkbcommon.h"
+ #include "utils.h"
+ #include "keysym.h"
+-- 
+2.11.0
+
