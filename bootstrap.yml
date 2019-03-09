@@ -28,6 +28,14 @@ sources:
   - name: managarm
     git: 'https://github.com/managarm/managarm.git'
     branch: 'master'
+    sources_required:
+      - acpica
+      - cxxshim
+      - frigg
+    regenerate:
+      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/acpica', '@THIS_SOURCE_DIR@/subprojects/acpica']
+      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cxxshim', '@THIS_SOURCE_DIR@/subprojects/cxxshim']
+      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/frigg', '@THIS_SOURCE_DIR@/subprojects/frigg']
 
   - name: mlibc
     git: 'http://github.com/managarm/mlibc.git'
@@ -964,18 +972,13 @@ packages:
       - frigg
     configure:
       - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--sysroot=@SYSROOT_DIR@'
-        - '--protoc=protoc'
-        - '--host-cxx=g++'
-        - '--host-cppflags=-I@BUILD_ROOT@/tools/host-protoc/include'
-        - '--host-ldflags=-L@BUILD_ROOT@/tools/host-protoc/lib'
-        - '--cxxshim=@SOURCE_ROOT@/ports/cxxshim'
-        - '--frigg=@SOURCE_ROOT@/ports/frigg'
-        - '--acpica=@SOURCE_ROOT@/ports/acpica'
+        - 'meson'
+        - '--cross-file=@SOURCE_ROOT@/scripts/meson-kernel.cross-file'
+        - '--buildtype=debugoptimized'
+        - '-Dbuild_kernel=true'
+        - '@THIS_SOURCE_DIR@'
     build:
-      - args: ['make', 'gen-thor/kernel']
-      - args: ['make', 'all-eir', 'all-thor/kernel']
+      - args: ['ninja']
 
   - name: managarm-system
     from_source: managarm

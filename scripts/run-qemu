@@ -1,7 +1,7 @@
 #!/bin/bash
 
 args="-enable-kvm"
-#args="$args -smp 4"
+args="$args -smp 4"
 args="$args -m 2048"
 args="$args -cpu qemu64,+smap,+pcid,+invpcid"
 #args="$args -cpu qemu64,+smap"
