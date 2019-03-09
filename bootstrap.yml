@@ -33,10 +33,14 @@ sources:
     git: 'http://github.com/managarm/mlibc.git'
     branch: 'master'
     sources_required:
+      - cxxshim
+      - frigg
       - libdrm
       - managarm
     regenerate:
       - args: ['ln', '-sf', '@SOURCE_ROOT@/managarm', '@THIS_SOURCE_DIR@/subprojects/managarm']
+      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cxxshim', '@THIS_SOURCE_DIR@/subprojects/cxxshim']
+      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/frigg', '@THIS_SOURCE_DIR@/subprojects/frigg']
 
 tools:
   - name: host-autoconf-v2.64
