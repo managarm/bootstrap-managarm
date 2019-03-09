@@ -1,0 +1,14 @@
+
+[binaries]
+c = 'x86_64-managarm-kernel-gcc'
+cpp = 'x86_64-managarm-kernel-g++'
+ar = 'x86_64-managarm-kernel-ar'
+strip = 'x86_64-managarm-kernel-strip'
+pkgconfig = 'pkg-config'
+
+[host_machine]
+system = 'managarm-kernel'
+cpu_family = 'x86_64'
+cpu = 'x86_64'
+endian = 'little'
+
