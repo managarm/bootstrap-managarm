@@ -935,29 +935,6 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
-  - name: managarm-helix
-    from_source: managarm
-    tools_required:
-      - system-gcc
-    pkgs_required:
-      - boost
-      - libasync
-      - libcofiber
-    configure:
-      - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--sysroot=@SYSROOT_DIR@'
-        - '--protoc=/bin/true'
-        - '--host-cxx=/bin/true'
-        - '--host-cppflags='
-        - '--host-ldflags='
-        - '--cxxshim='
-        - '--frigg='
-        - '--acpica='
-    build:
-      - args: ['make', 'all-hel']
-      - args: ['make', 'install-hel']
-
   - name: managarm-kernel
     from_source: managarm
     sources_required:
@@ -991,7 +968,6 @@ packages:
       - lewis
       - libdrm
       - libsmarter
-      - managarm-helix
       - protobuf
     configure:
       - args:
