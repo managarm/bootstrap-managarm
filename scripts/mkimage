@@ -1,5 +1,9 @@
 #!/bin/bash
 
+set -e
+
+scriptdir=$(dirname $0)
+
 mntlocal=
 if [ -n "$1" ]; then
 	if [ ! -e "$1" ]; then
@@ -12,7 +16,7 @@ else
 	mkdir -p mountpoint/
 	dir=$(realpath mountpoint/)
 	echo "Mounting image to $dir"
-	./mount
+	$scriptdir/mount
 	mntlocal=yes
 fi
 
@@ -21,7 +25,6 @@ fi
 # -----------------------------------------------------------------------------
 
 mkdir -p initrd/{bin,lib,sbin}
-mkdir -p initrd/lib/kernlet
 
 # Runtime libraries.
 install -s pkg-builds/managarm-helix/hel/bin/libhelix.so initrd/lib/
@@ -48,7 +51,6 @@ install -s system-root/usr/bin/kernletcc initrd/sbin/
 install -s system-root/usr/bin/clocktracker initrd/sbin/
 install -s system-root/usr/bin/posix-subsystem initrd/sbin/
 install -s system-root/usr/bin/posix-init initrd/sbin/
-install -s kernlet-ehci.so initrd/lib/kernlet
 
 # Essential drivers.
 install -s system-root/usr/lib/libblockfs.so initrd/lib/
@@ -79,17 +81,15 @@ mkdir -p $dir/dev $dir/run $dir/sys
 rsync -a --delete system-root/bin/ $dir/bin
 rsync -a --delete system-root/lib/ $dir/lib
 rsync -a --delete system-root/root/ $dir/root
-rsync -a --delete system-root/usr/bin/ $dir/usr/bin
-rsync -a --delete system-root/usr/lib/ $dir/usr/lib
-rsync -a --delete system-root/usr/libexec/ $dir/usr/libexec
-rsync -a --delete system-root/usr/sbin/ $dir/usr/sbin
-rsync -a --delete system-root/usr/share/ $dir/usr/share
-rsync -a --delete system-root/run/ $dir/run
+echo -n "Updating image via rsync..."
+cp $scriptdir/grub.cfg $dir/boot/grub/
+rsync -a --delete system-root/usr/ $dir/usr
 rsync -a --delete system-root/etc/ $dir/etc
 cp tools/system-gcc/x86_64-managarm/lib/foo/libgcc_s.so.1 $dir/usr/lib
 cp tools/system-gcc/x86_64-managarm/lib/foo/libstdc++.so.6 $dir/usr/lib
+echo " done"
 
 if ! [ -z $mntlocal ]; then
-	./umount
+	$scriptdir/umount
 fi
 
