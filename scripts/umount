@@ -1,4 +1,19 @@
 #!/bin/bash
 
+set -e
+
 guestunmount mountpoint/
+
+pid=$(cat guestfs.pid)
+
+for i in $(seq 10); do
+	if ! kill -0 2>/dev/null; then
+		break
+	fi
+	sleep .1
+done
+
+while kill -0 2>/dev/null; do
+	sleep 1
+done
 

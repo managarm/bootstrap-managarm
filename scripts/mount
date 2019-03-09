@@ -1,4 +1,4 @@
 #!/bin/bash
 
-guestmount -a image -m /dev/sda2 mountpoint/
+guestmount --pid-file guestfs.pid -a image -m /dev/sda2 mountpoint/
 
