@@ -45,10 +45,12 @@ sources:
       - acpica
       - cxxshim
       - frigg
+      - libsmarter
     regenerate:
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/acpica', '@THIS_SOURCE_DIR@/subprojects/acpica']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cxxshim', '@THIS_SOURCE_DIR@/subprojects/cxxshim']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/frigg', '@THIS_SOURCE_DIR@/subprojects/frigg']
+      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/libsmarter', '@THIS_SOURCE_DIR@/subprojects/libsmarter']
 
   - name: mlibc
     git: 'http://github.com/managarm/mlibc.git'
@@ -661,6 +663,8 @@ packages:
       branch: 'master'
     tools_required:
       - system-gcc
+    pkgs_required:
+      - boost
     configure: []
     build:
       - args:
@@ -991,6 +995,8 @@ packages:
     pkgs_required:
       - fafnir
       - lewis
+      - libasync
+      - libcofiber
       - libdrm
       - libsmarter
       - protobuf
