@@ -1,5 +1,16 @@
 
 sources:
+  - name: binutils
+    subdir: 'ports'
+    git: 'git://sourceware.org/git/binutils-gdb.git'
+    tag: 'binutils-2_26'
+    tools_required:
+      - host-autoconf-v2.64
+      - host-automake-v1.11
+    regenerate:
+      - args: ['autoreconf']
+        workdir: '@THIS_SOURCE_DIR@/ld'
+
   - name: gcc
     subdir: 'ports'
     git: 'git://gcc.gnu.org/git/gcc.git'
@@ -11,6 +22,8 @@ sources:
       # download_prerequisites should probably move to some "post_checkout" step.
       - args: ['./contrib/download_prerequisites']
         workdir: '@THIS_SOURCE_DIR@'
+      - args: ['autoconf']
+        workdir: '@THIS_SOURCE_DIR@/gcc'
       - args: ['autoconf']
         workdir: '@THIS_SOURCE_DIR@/libstdc++-v3'
 
@@ -205,17 +218,7 @@ tools:
       - args: ['make', 'install']
 
   - name: cross-binutils
-    source:
-      name: binutils
-      subdir: 'ports'
-      git: 'git://sourceware.org/git/binutils-gdb.git'
-      tag: 'binutils-2_26'
-      tools_required:
-        - host-autoconf-v2.64
-        - host-automake-v1.11
-      regenerate:
-        - args: ['autoreconf']
-          workdir: '@THIS_SOURCE_DIR@/ld'
+    from_source: binutils
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -393,6 +396,28 @@ packages:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
 
+  - name: binutils
+    from_source: binutils
+    tools_required:
+      - tool: system-gcc
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--target=x86_64-managarm'
+        - '--with-sysroot=/'
+        # On recent compilers, binutils 2.26 causes implicit-fallthrough warnings, among others.
+        - '--disable-werror'
+        # -g blows up the binary size.
+        - 'CFLAGS=-O2'
+    build:
+      #- args: ['make', '-j@PARALLELISM@', 'all-binutils', 'all-gas', 'all-ld']
+      - args: ['make', 'all-binutils', 'all-gas', 'all-ld']
+      - args: ['make', 'install-binutils', 'install-gas', 'install-ld']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: boost
     source:
       subdir: 'ports'
@@ -512,8 +537,8 @@ packages:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
-        - '--target=x86_64-managarm'
         - '--prefix=/usr'
+        - '--target=x86_64-managarm'
         - '--with-sysroot=/'
         - '--with-build-sysroot=@SYSROOT_DIR@'
         - '--enable-languages=c,c++'
@@ -524,8 +549,8 @@ packages:
         - 'CXXFLAGS=-O2'
     build:
       #- args: ['make', '-j@PARALLELISM@', 'all-gcc']
-      - args: ['make', 'all-gcc']
-      - args: ['make', 'install-gcc']
+      - args: ['make', 'all-gcc', 'all-target-libgcc', 'all-target-libstdc++-v3']
+      - args: ['make', 'install-gcc', 'install-target-libgcc', 'install-target-libstdc++-v3']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
