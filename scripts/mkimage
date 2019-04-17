@@ -27,7 +27,7 @@ fi
 mkdir -p initrd/{bin,lib,sbin}
 
 # Runtime libraries.
-install -s pkg-builds/managarm-helix/hel/bin/libhelix.so initrd/lib/
+install -s system-root/usr/lib/libhelix.so initrd/lib/
 install -s system-root/usr/lib/ld.so initrd/lib/ld-init.so
 install -s system-root/usr/lib/libc.so initrd/lib/
 install -s system-root/usr/lib/libm.so initrd/lib/
@@ -36,7 +36,7 @@ install -s tools/system-gcc/x86_64-managarm/lib/foo/libstdc++.so.6 initrd/lib/
 install -s system-root/usr/lib/liblewis.so initrd/lib/
 install -s system-root/usr/lib/libz.so initrd/lib/
 install -s system-root/usr/lib/libprotobuf-lite.so.11 initrd/lib/
-install -s pkg-builds/libcofiber/bin/libcofiber.so initrd/lib/
+install -s system-root/usr/lib/libcofiber.so initrd/lib/
 install -s system-root/usr/lib/libvirtio_core.so initrd/lib/
 install -s system-root/usr/lib/libarch.so initrd/lib/
 install -s system-root/usr/lib/libfs_protocol.so initrd/lib/
