@@ -1,21 +1,21 @@
-From face8aab06a0a82225a858fddf5702c31cc500e8 Mon Sep 17 00:00:00 2001
+From 0b97be1583f4c720935d86c15b04c1e3963bd8b6 Mon Sep 17 00:00:00 2001
 From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
 Date: Wed, 29 Jun 2016 13:30:01 +0000
 Subject: [PATCH] Add managarm target
 
 ---
  bfd/config.bfd    | 5 +++++
- config.sub        | 3 ++-
+ config.sub        | 2 +-
  gas/configure.tgt | 1 +
  ld/configure.tgt  | 4 ++++
- 4 files changed, 12 insertions(+), 1 deletion(-)
+ 4 files changed, 11 insertions(+), 1 deletion(-)
 
 diff --git a/bfd/config.bfd b/bfd/config.bfd
-index c5688cb..9c07c4c 100644
+index 0e1ddb65..44900259 100644
 --- a/bfd/config.bfd
 +++ b/bfd/config.bfd
-@@ -716,6 +716,11 @@ case "${targ}" in
-     targ_defvec=x86_64_elf64_vec
+@@ -718,6 +718,11 @@ case "${targ}" in
+     targ_selvecs=i386_elf32_vec
      want64=true
      ;;
 +  x86_64-*-managarm*)
@@ -27,36 +27,35 @@ index c5688cb..9c07c4c 100644
    i[3-7]86-*-lynxos*)
      targ_defvec=i386_elf32_vec
 diff --git a/config.sub b/config.sub
-index f018151..8d0bac1 100755
+index 75bb6a31..fb061be9 100755
 --- a/config.sub
 +++ b/config.sub
-@@ -1399,7 +1399,8 @@ case $os in
- 	      | -os2* | -vos* | -palmos* | -uclinux* | -nucleus* \
- 	      | -morphos* | -superux* | -rtmk* | -rtmk-nova* | -windiss* \
- 	      | -powermax* | -dnix* | -nx6 | -nx7 | -sei* | -dragonfly* \
--	      | -skyos* | -haiku* | -rdos* | -toppers* | -drops* | -es* | -tirtos*)
-+	      | -skyos* | -haiku* | -rdos* | -toppers* | -drops* | -es* | -tirtos* \
-+		  | -managarm*)
+@@ -1363,7 +1363,7 @@ case $os in
+ 	     | powermax* | dnix* | nx6 | nx7 | sei* | dragonfly* \
+ 	     | skyos* | haiku* | rdos* | toppers* | drops* | es* \
+ 	     | onefs* | tirtos* | phoenix* | fuchsia* | redox* | bme* \
+-	     | midnightbsd* | amdhsa* | unleashed* | emscripten*)
++	     | midnightbsd* | amdhsa* | unleashed* | emscripten* | managarm*)
  	# Remember, each alternative MUST END IN *, to match a version number.
  		;;
- 	-qnx*)
+ 	qnx*)
 diff --git a/gas/configure.tgt b/gas/configure.tgt
-index 0b490d4..eed3aa3 100644
+index 616d2113..be761b5a 100644
 --- a/gas/configure.tgt
 +++ b/gas/configure.tgt
-@@ -283,6 +283,7 @@ case ${generic_target} in
+@@ -260,6 +260,7 @@ case ${generic_target} in
    i386-*-chaos)				fmt=elf ;;
    i386-*-rdos*)				fmt=elf ;;
    i386-*-darwin*)			fmt=macho ;;
 +  i386-*-managarm*)         fmt=elf ;;
  
-   i860-*-*)				fmt=elf endian=little ;;
+   ia16-*-elf*)				fmt=elf ;;
  
 diff --git a/ld/configure.tgt b/ld/configure.tgt
-index 6b6bbf2..d68af4a 100644
+index beba17ef..06fee204 100644
 --- a/ld/configure.tgt
 +++ b/ld/configure.tgt
-@@ -383,6 +383,10 @@ x86_64-*-nacl*)		targ_emul=elf32_x86_64_nacl
+@@ -374,6 +374,10 @@ x86_64-*-nacl*)		targ_emul=elf32_x86_64_nacl
  			targ_extra_libpath=$targ_extra_emuls
  			tdir_elf_i386_nacl=`echo ${targ_alias} | sed -e 's/x86_64/i386/'`
  			;;
@@ -64,9 +63,9 @@ index 6b6bbf2..d68af4a 100644
 +			targ_emul=elf_x86_64
 +			targ_extra_emuls=elf_i386
 +			;;
- i860-*-coff)		targ_emul=coff_i860 ;;
- i860-stardent-sysv4* | i860-stardent-elf*)
- 			targ_emul=elf32_i860
+ ia16-*-elf*)		targ_emul=elf_i386 targ_extra_emuls=i386msdos ;;
+ ia64-*-elf*)		targ_emul=elf64_ia64 ;;
+ ia64-*-freebsd* | ia64-*-kfreebsd*-gnu)
 -- 
-2.1.4
+2.11.0
 

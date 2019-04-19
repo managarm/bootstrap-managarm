@@ -3,10 +3,10 @@ sources:
   - name: binutils
     subdir: 'ports'
     git: 'git://sourceware.org/git/binutils-gdb.git'
-    tag: 'binutils-2_26'
+    tag: 'binutils-2_32'
     tools_required:
-      - host-autoconf-v2.64
-      - host-automake-v1.11
+      - host-autoconf-v2.69
+      - host-automake-v1.15
     regenerate:
       - args: ['autoreconf']
         workdir: '@THIS_SOURCE_DIR@/ld'
