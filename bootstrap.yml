@@ -533,6 +533,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: gcc
+    default: false
     from_source: gcc
     tools_required:
       - tool: system-gcc
