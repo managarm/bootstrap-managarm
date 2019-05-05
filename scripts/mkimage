@@ -71,8 +71,8 @@ install -s system-root/usr/bin/runsvr initrd/bin/
 # -----------------------------------------------------------------------------
 
 mkdir -p $dir/boot/managarm
-install -s pkg-builds/managarm-kernel/eir/eir $dir/boot/managarm/
-install -s pkg-builds/managarm-kernel/thor/kernel/thor $dir/boot/managarm/
+install -s pkg-builds/managarm-kernel/kernel/eir/eir $dir/boot/managarm/
+install -s pkg-builds/managarm-kernel/kernel/thor/thor $dir/boot/managarm/
 cp initrd.cpio $dir/boot/managarm/
 
 # Copy the sysroot.
