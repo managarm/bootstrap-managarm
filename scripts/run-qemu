@@ -1,7 +1,9 @@
 #!/bin/bash
 
+QEMU=${QEMU:-qemu-system-x86_64}
+
 args="-enable-kvm"
-args="$args -smp 4"
+#args="$args -smp 4"
 args="$args -m 2048"
 args="$args -cpu qemu64,+smap,+pcid,+invpcid"
 #args="$args -cpu qemu64,+smap"
@@ -38,6 +40,5 @@ args="$args -d guest_errors"
 #args="$args -d cpu_reset"
 #args="$args -d int"
 
-qemu-system-x86_64 $QFLAGS $args
-#/usr/bin/qemu-system-x86_64 $QFLAGS $args
+$QEMU $QFLAGS $args
 
