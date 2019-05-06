@@ -1039,6 +1039,7 @@ packages:
     pkgs_required:
       - libdrm
       - wayland
+      - zlib
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
