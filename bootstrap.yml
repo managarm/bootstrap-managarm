@@ -804,6 +804,7 @@ packages:
       git: 'https://github.com/wayland-project/libinput.git'
       tag: '1.9.902'
     tools_required:
+      - host-pkg-config
       - system-gcc
     pkgs_required:
       - eudev
@@ -949,6 +950,7 @@ packages:
           environ:
             'NOCONFIGURE': 'yes'
     tools_required:
+      - host-pkg-config
       - system-gcc
     pkgs_required:
       - mesa
@@ -1035,6 +1037,7 @@ packages:
           environ:
             'NOCONFIGURE': 'yes'
     tools_required:
+      - host-pkg-config
       - system-gcc
     pkgs_required:
       - libdrm
@@ -1142,6 +1145,7 @@ packages:
       regenerate:
         - args: ['./autogen.sh']
     tools_required:
+      - host-pkg-config
       - system-gcc
     pkgs_required:
       - ncurses
@@ -1263,6 +1267,7 @@ packages:
       regenerate:
         - args: ['autoreconf', '-f', '-i']
     tools_required:
+      - host-pkg-config
       - system-gcc
     configure:
       - args:
@@ -1364,6 +1369,7 @@ packages:
           environ:
             'NOCONFIGURE': 'yes'
     tools_required:
+      - host-pkg-config
       - system-gcc
     pkgs_required:
       - cairo
