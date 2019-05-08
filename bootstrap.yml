@@ -395,6 +395,7 @@ packages:
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
         - '--without-bash-malloc'
+        - '--disable-nls'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
@@ -410,6 +411,7 @@ packages:
         - '--prefix=/usr'
         - '--target=x86_64-managarm'
         - '--with-sysroot=/'
+        - '--disable-nls'
         # On recent compilers, binutils 2.26 causes implicit-fallthrough warnings, among others.
         - '--disable-werror'
         # -g blows up the binary size.
@@ -546,8 +548,9 @@ packages:
         - '--with-sysroot=/'
         - '--with-build-sysroot=@SYSROOT_DIR@'
         - '--enable-languages=c,c++'
-        - '--disable-multilib'
         - '--enable-initfini-array'
+        - '--disable-multilib'
+        - '--disable-nls'
         # -g blows up GCC's binary size.
         - 'CFLAGS=-O2'
         - 'CXXFLAGS=-O2'
