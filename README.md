@@ -57,7 +57,7 @@ Hence, running the following commands in the build directory
 should produce a working image and launch it using QEMU:
 ```
 # Copy some files (e.g., the timezone configuration) from the host to system-root/.
-# This sufficient to run this once
+# It is sufficient to run this once.
 ../src/scripts/prepare-sysroot
 
 # Create a HDD image file called 'image' and copy the system onto it.
