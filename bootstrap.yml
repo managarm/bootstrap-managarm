@@ -386,7 +386,11 @@ packages:
       tag: 'bash-4.4'
       tools_required:
         - host-autoconf-v2.69
-        - host-automake-v1.11
+        - host-automake-v1.15
+      regenerate:
+        # While we do not need to regenerate the configure script, we need to touch it
+        # after patching config.sub so that make does not try to regenerate it.
+        - args: ['autoconf']
     tools_required:
       - system-gcc
     configure:
