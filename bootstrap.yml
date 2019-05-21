@@ -1,4 +1,7 @@
 
+repository:
+  url: 'https://ci.managarm.org/job/managarm-nightly/lastSuccessfulBuild/artifact/build/packages/'
+
 sources:
   - name: binutils
     subdir: 'ports'
