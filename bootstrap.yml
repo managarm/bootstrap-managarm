@@ -406,6 +406,7 @@ packages:
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
+        quiet: true
 
   - name: binutils
     from_source: binutils
@@ -429,6 +430,7 @@ packages:
       - args: ['make', 'install-binutils', 'install-gas', 'install-ld']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
 
   - name: boost
     source:
@@ -488,6 +490,7 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
 
   - name: fafnir
     source:
@@ -510,6 +513,7 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
 
   - name: cxxshim
     source:
@@ -540,6 +544,7 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
 
   - name: gcc
     default: false
@@ -567,6 +572,7 @@ packages:
       - args: ['make', 'install-gcc', 'install-target-libgcc', 'install-target-libstdc++-v3']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
 
   - name: libcofiber
     source:
@@ -613,6 +619,7 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
 
   - name: eudev
     source:
@@ -644,6 +651,7 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
 
   - name: lewis
     source:
@@ -666,6 +674,7 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
 
 
   - name: libasync
@@ -726,6 +735,7 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
 
   - name: libevdev
     source:
@@ -753,6 +763,7 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
 
   - name: libexpat
     source:
@@ -783,6 +794,7 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
 
   - name: libffi
     source:
@@ -807,6 +819,7 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
 
   - name: libinput
     source:
@@ -841,6 +854,7 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
 
   - name: libpng
     source:
@@ -868,6 +882,7 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
 
   - name: libsmarter
     source:
@@ -923,6 +938,7 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
 
   - name: llvm
     default: false
@@ -945,6 +961,7 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
 
   - name: kmscube
     source:
@@ -977,6 +994,7 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
 
   - name: managarm-kernel
     from_source: managarm
@@ -1031,6 +1049,7 @@ packages:
       - args: ['ninja', 'install']
         environ:
           'DESTDIR': '@THIS_COLLECT_DIR@'
+        quiet: true
 
   - name: mesa
     source:
@@ -1073,6 +1092,7 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
 
   - name: mlibc-headers
     from_source: mlibc
@@ -1093,6 +1113,7 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
 
   - name: mlibc
     from_source: mlibc
@@ -1116,6 +1137,7 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
 
   - name: mtdev
     source:
@@ -1141,6 +1163,7 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
 
   - name: nano
     default: false
@@ -1173,6 +1196,7 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
 
   - name: nasm
     default: false
@@ -1197,6 +1221,7 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
 
   - name: ncurses
     default: false
@@ -1215,6 +1240,7 @@ packages:
     build:
       - args: ['make', '-j@PARALLELISM@', 'all']
       - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
+        quiet: true
 
   - name: pixman
     source:
@@ -1244,6 +1270,7 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
 
   - name: protobuf
     from_source: protobuf
@@ -1262,6 +1289,7 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
 
   - name: python
     default: false
@@ -1295,6 +1323,7 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
 
   - name: wayland
     source:
@@ -1336,6 +1365,7 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
 
   - name: wayland-protocols
     source:
@@ -1363,6 +1393,7 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
 
   - name: weston
     source:
@@ -1406,6 +1437,7 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
 
   - name: xkeyboard-config
     default: false
@@ -1448,4 +1480,5 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
 
