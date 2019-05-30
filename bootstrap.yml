@@ -1,6 +1,6 @@
 
 repository:
-  url: 'https://ci.managarm.org/job/managarm-nightly/lastSuccessfulBuild/artifact/build/packages/'
+  url: 'https://pkgs.managarm.org/nightly'
 
 sources:
   - name: binutils
