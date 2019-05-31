@@ -951,14 +951,14 @@ packages:
     configure:
       - args:
         - 'cmake'
-      #  - '-GNinja'
+        - '-GNinja'
         - '-DCMAKE_TOOLCHAIN_FILE=@BUILD_ROOT@/CMakeToolchain.txt'
+        - '-DCMAKE_BUILD_TYPE=Release'
+        - '-DLLVM_TARGETS_TO_BUILD=X86'
         - '@THIS_SOURCE_DIR@'
     build:
-      #- args: ['ninja']
-      #- args: ['ninja', 'install']
-      - args: ['make']
-      - args: ['make', 'install']
+      - args: ['ninja']
+      - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
