@@ -203,7 +203,7 @@ tools:
     source:
       name: 'pkg-config'
       subdir: 'ports'
-      git: 'git://anongit.freedesktop.org/pkg-config'
+      git: 'https://gitlab.freedesktop.org/pkg-config/pkg-config.git'
       tag: 'pkg-config-0.29.2'
       tools_required:
         - host-autoconf-v2.69
@@ -264,7 +264,7 @@ tools:
     source:
       name: xorg-macros
       subdir: 'ports'
-      git: 'git://anongit.freedesktop.org/xorg/util/macros'
+      git: 'https://gitlab.freedesktop.org/xorg/util/macros.git'
       tag: 'util-macros-1.19.1'
       tools_required:
         - host-autoconf-v2.69
@@ -454,7 +454,7 @@ packages:
   - name: cairo
     source:
       subdir: 'ports'
-      git: 'git://anongit.freedesktop.org/cairo'
+      git: 'https://gitlab.freedesktop.org/cairo/cairo.git'
       tag: '1.16.0'
       tools_required:
         - host-autoconf-v2.64
@@ -703,7 +703,7 @@ packages:
   - name: libdrm
     source:
       subdir: 'ports'
-      git: 'git://anongit.freedesktop.org/mesa/drm'
+      git: 'https://gitlab.freedesktop.org/mesa/drm'
       tag: 'libdrm-2.4.81'
       tools_required:
         - host-autoconf-v2.69
@@ -740,7 +740,7 @@ packages:
   - name: libevdev
     source:
       subdir: 'ports'
-      git: 'git://anongit.freedesktop.org/libevdev'
+      git: 'https://gitlab.freedesktop.org/libevdev/libevdev.git'
       tag: 'libevdev-1.5.8'
       tools_required:
         - host-autoconf-v2.69
@@ -1054,7 +1054,7 @@ packages:
   - name: mesa
     source:
       subdir: 'ports'
-      git: 'git://anongit.freedesktop.org/mesa/mesa'
+      git: 'https://gitlab.freedesktop.org/mesa/mesa.git'
       tag: 'mesa-17.1.5'
       tools_required:
         - host-autoconf-v2.69
@@ -1245,7 +1245,7 @@ packages:
   - name: pixman
     source:
       subdir: 'ports'
-      git: 'git://anongit.freedesktop.org/pixman'
+      git: 'https://gitlab.freedesktop.org/pixman/pixman.git'
       tag: 'pixman-0.34.0'
       tools_required:
         - host-autoconf-v2.69
@@ -1443,7 +1443,7 @@ packages:
     default: false
     source:
       subdir: 'ports'
-      git: 'git://anongit.freedesktop.org/xkeyboard-config'
+      git: 'https://gitlab.freedesktop.org/xkeyboard-config/xkeyboard-config.git'
       tag: 'xkeyboard-config-2.23.1'
       regenerate:
         - args: ['./autogen.sh']
