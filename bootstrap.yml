@@ -1012,11 +1012,17 @@ packages:
       - args:
         - 'meson'
         - '--cross-file=@SOURCE_ROOT@/scripts/meson-kernel.cross-file'
+        - '--prefix=/usr/managarm'
+        - '--libdir=lib'
         - '--buildtype=debugoptimized'
         - '-Dbuild_kernel=true'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
 
   - name: managarm-system
     from_source: managarm
