@@ -952,8 +952,14 @@ packages:
       - args:
         - 'cmake'
         - '-GNinja'
-        - '-DCMAKE_TOOLCHAIN_FILE=@BUILD_ROOT@/CMakeToolchain.txt'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain.txt'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        # We really have to build LLVM in Release mode.
+        # Building it in debug mode produces tens of GiB of debugging info.
         - '-DCMAKE_BUILD_TYPE=Release'
+        - '-DLLVM_LINK_LLVM_DYLIB=ON'
+        # RTTI affects the ABI. Hence, we enable it.
+        - '-DLLVM_ENABLE_RTTI=ON'
         - '-DLLVM_TARGETS_TO_BUILD=X86'
         - '@THIS_SOURCE_DIR@'
     build:
