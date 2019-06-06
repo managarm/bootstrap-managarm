@@ -260,6 +260,7 @@ tools:
       - args: ['make', '-j@PARALLELISM@']
     install:
       - args: ['make', 'install']
+      - args: ['ln', '-sf', '@SOURCE_ROOT@/scripts/managarm.cmake', '@PREFIX@/share/cmake-3.14/Modules/Platform/']
 
   - name: host-protoc
     exports_shared_libs: true
