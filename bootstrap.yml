@@ -964,6 +964,7 @@ packages:
       git: 'http://git.llvm.org/git/llvm.git/'
       branch: 'release_60'
     tools_required:
+      - host-cmake
       - system-gcc
     configure:
       - args:
@@ -978,6 +979,8 @@ packages:
         # RTTI affects the ABI. Hence, we enable it.
         - '-DLLVM_ENABLE_RTTI=ON'
         - '-DLLVM_TARGETS_TO_BUILD=X86'
+        # Disable linking against ncurses, which we do not build with -fPIC.
+        - '-DLLVM_ENABLE_TERMINFO=OFF'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
