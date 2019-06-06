@@ -1,0 +1,109 @@
+From 8e1d613175dfd3c7768468ca9a3bdb810124c000 Mon Sep 17 00:00:00 2001
+From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
+Date: Thu, 6 Jun 2019 17:55:59 +0200
+Subject: [PATCH] Managarm-specific changes
+
+---
+ cmake/modules/CrossCompile.cmake    | 4 ++--
+ include/llvm/Support/Host.h         | 2 +-
+ lib/Support/Unix/Path.inc           | 6 +++---
+ lib/Support/Unix/Program.inc        | 1 +
+ tools/llvm-dwarfdump/Statistics.cpp | 1 +
+ tools/llvm-shlib/CMakeLists.txt     | 1 +
+ 6 files changed, 9 insertions(+), 6 deletions(-)
+
+diff --git a/cmake/modules/CrossCompile.cmake b/cmake/modules/CrossCompile.cmake
+index 0ec76ead..d03c1fd7 100644
+--- a/cmake/modules/CrossCompile.cmake
++++ b/cmake/modules/CrossCompile.cmake
+@@ -11,8 +11,8 @@ function(llvm_create_cross_target_internal target_name toolchain buildtype)
+       -DCMAKE_TOOLCHAIN_FILE=\"${LLVM_MAIN_SRC_DIR}/cmake/platforms/${toolchain}.cmake\")
+   else()
+     set(CROSS_TOOLCHAIN_FLAGS_INIT
+-      -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
+-      -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
++      -DCMAKE_C_COMPILER=gcc
++      -DCMAKE_CXX_COMPILER=g++
+       )
+   endif()
+   set(CROSS_TOOLCHAIN_FLAGS_${target_name} ${CROSS_TOOLCHAIN_FLAGS_INIT}
+diff --git a/include/llvm/Support/Host.h b/include/llvm/Support/Host.h
+index a4b0a340..0f6650ba 100644
+--- a/include/llvm/Support/Host.h
++++ b/include/llvm/Support/Host.h
+@@ -16,7 +16,7 @@
+ 
+ #include "llvm/ADT/StringMap.h"
+ 
+-#if defined(__linux__) || defined(__GNU__) || defined(__HAIKU__)
++#if defined(__linux__) || defined(__GNU__) || defined(__HAIKU__) || defined(__managarm__)
+ #include <endian.h>
+ #elif defined(_AIX)
+ #include <sys/machine.h>
+diff --git a/lib/Support/Unix/Path.inc b/lib/Support/Unix/Path.inc
+index 2ecb9731..b0406571 100644
+--- a/lib/Support/Unix/Path.inc
++++ b/lib/Support/Unix/Path.inc
+@@ -68,7 +68,7 @@
+ 
+ #include <sys/types.h>
+ #if !defined(__APPLE__) && !defined(__OpenBSD__) && !defined(__FreeBSD__) &&   \
+-    !defined(__linux__)
++    !defined(__linux__) && !defined(__managarm__)
+ #include <sys/statvfs.h>
+ #define STATVFS statvfs
+ #define FSTATVFS fstatvfs
+@@ -77,7 +77,7 @@
+ #if defined(__OpenBSD__) || defined(__FreeBSD__)
+ #include <sys/mount.h>
+ #include <sys/param.h>
+-#elif defined(__linux__)
++#elif defined(__linux__) || defined(__managarm__)
+ #if defined(HAVE_LINUX_MAGIC_H)
+ #include <linux/magic.h>
+ #else
+@@ -359,7 +359,7 @@ std::error_code remove(const Twine &path, bool IgnoreNonExisting) {
+ }
+ 
+ static bool is_local_impl(struct STATVFS &Vfs) {
+-#if defined(__linux__)
++#if defined(__linux__) || defined(__managarm__)
+ #ifndef NFS_SUPER_MAGIC
+ #define NFS_SUPER_MAGIC 0x6969
+ #endif
+diff --git a/lib/Support/Unix/Program.inc b/lib/Support/Unix/Program.inc
+index 4f791991..d4245be6 100644
+--- a/lib/Support/Unix/Program.inc
++++ b/lib/Support/Unix/Program.inc
+@@ -39,6 +39,7 @@
+ #if HAVE_UNISTD_H
+ #include <unistd.h>
+ #endif
++#undef HAVE_POSIX_SPAWN
+ #ifdef HAVE_POSIX_SPAWN
+ #include <spawn.h>
+ 
+diff --git a/tools/llvm-dwarfdump/Statistics.cpp b/tools/llvm-dwarfdump/Statistics.cpp
+index 9a7454a5..1d076b58 100644
+--- a/tools/llvm-dwarfdump/Statistics.cpp
++++ b/tools/llvm-dwarfdump/Statistics.cpp
+@@ -1,3 +1,4 @@
++#include <cmath>
+ #include "llvm/ADT/DenseMap.h"
+ #include "llvm/DebugInfo/DIContext.h"
+ #include "llvm/DebugInfo/DWARF/DWARFContext.h"
+diff --git a/tools/llvm-shlib/CMakeLists.txt b/tools/llvm-shlib/CMakeLists.txt
+index b2109c87..0e1d739a 100644
+--- a/tools/llvm-shlib/CMakeLists.txt
++++ b/tools/llvm-shlib/CMakeLists.txt
+@@ -40,6 +40,7 @@ list(REMOVE_DUPLICATES LIB_NAMES)
+ if(("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux") OR (MINGW) OR (HAIKU)
+    OR ("${CMAKE_SYSTEM_NAME}" STREQUAL "FreeBSD")
+    OR ("${CMAKE_SYSTEM_NAME}" STREQUAL "DragonFly")
++   OR ("${CMAKE_SYSTEM_NAME}" STREQUAL "managarm")
+    OR ("${CMAKE_SYSTEM_NAME}" STREQUAL "SunOS")) # FIXME: It should be "GNU ld for elf"
+   configure_file(
+   ${CMAKE_CURRENT_SOURCE_DIR}/simple_version_script.map.in
+-- 
+2.11.0
+
