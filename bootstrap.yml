@@ -14,6 +14,11 @@ sources:
       - args: ['autoreconf']
         workdir: '@THIS_SOURCE_DIR@/ld'
 
+  - name: llvm
+    subdir: 'ports'
+    git: 'https://github.com/llvm/llvm-project'
+    tag: 'llvmorg-6.0.1'
+
   - name: gcc
     subdir: 'ports'
     git: 'git://gcc.gnu.org/git/gcc.git'
@@ -959,10 +964,7 @@ packages:
 
   - name: llvm
     default: false
-    source:
-      subdir: 'ports'
-      git: 'http://git.llvm.org/git/llvm.git/'
-      branch: 'release_60'
+    from_source: llvm
     tools_required:
       - host-cmake
       - system-gcc
@@ -981,7 +983,7 @@ packages:
         - '-DLLVM_TARGETS_TO_BUILD=X86'
         # Disable linking against ncurses, which we do not build with -fPIC.
         - '-DLLVM_ENABLE_TERMINFO=OFF'
-        - '@THIS_SOURCE_DIR@'
+        - '@THIS_SOURCE_DIR@/llvm'
     build:
       - args: ['ninja']
       - args: ['ninja', 'install']

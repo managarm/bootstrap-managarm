@@ -1,21 +1,21 @@
-From 8e1d613175dfd3c7768468ca9a3bdb810124c000 Mon Sep 17 00:00:00 2001
+From 15aac642a07214f4ddc8b9c8b304184cbfdc8ca1 Mon Sep 17 00:00:00 2001
 From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
 Date: Thu, 6 Jun 2019 17:55:59 +0200
 Subject: [PATCH] Managarm-specific changes
 
 ---
- cmake/modules/CrossCompile.cmake    | 4 ++--
- include/llvm/Support/Host.h         | 2 +-
- lib/Support/Unix/Path.inc           | 6 +++---
- lib/Support/Unix/Program.inc        | 1 +
- tools/llvm-dwarfdump/Statistics.cpp | 1 +
- tools/llvm-shlib/CMakeLists.txt     | 1 +
+ llvm/cmake/modules/CrossCompile.cmake    | 4 ++--
+ llvm/include/llvm/Support/Host.h         | 2 +-
+ llvm/lib/Support/Unix/Path.inc           | 6 +++---
+ llvm/lib/Support/Unix/Program.inc        | 1 +
+ llvm/tools/llvm-dwarfdump/Statistics.cpp | 1 +
+ llvm/tools/llvm-shlib/CMakeLists.txt     | 1 +
  6 files changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/cmake/modules/CrossCompile.cmake b/cmake/modules/CrossCompile.cmake
-index 0ec76ead..d03c1fd7 100644
---- a/cmake/modules/CrossCompile.cmake
-+++ b/cmake/modules/CrossCompile.cmake
+diff --git a/llvm/cmake/modules/CrossCompile.cmake b/llvm/cmake/modules/CrossCompile.cmake
+index 0ec76ead5..d03c1fd7b 100644
+--- a/llvm/cmake/modules/CrossCompile.cmake
++++ b/llvm/cmake/modules/CrossCompile.cmake
 @@ -11,8 +11,8 @@ function(llvm_create_cross_target_internal target_name toolchain buildtype)
        -DCMAKE_TOOLCHAIN_FILE=\"${LLVM_MAIN_SRC_DIR}/cmake/platforms/${toolchain}.cmake\")
    else()
@@ -27,10 +27,10 @@ index 0ec76ead..d03c1fd7 100644
        )
    endif()
    set(CROSS_TOOLCHAIN_FLAGS_${target_name} ${CROSS_TOOLCHAIN_FLAGS_INIT}
-diff --git a/include/llvm/Support/Host.h b/include/llvm/Support/Host.h
-index a4b0a340..0f6650ba 100644
---- a/include/llvm/Support/Host.h
-+++ b/include/llvm/Support/Host.h
+diff --git a/llvm/include/llvm/Support/Host.h b/llvm/include/llvm/Support/Host.h
+index a4b0a340c..0f6650baf 100644
+--- a/llvm/include/llvm/Support/Host.h
++++ b/llvm/include/llvm/Support/Host.h
 @@ -16,7 +16,7 @@
  
  #include "llvm/ADT/StringMap.h"
@@ -40,10 +40,10 @@ index a4b0a340..0f6650ba 100644
  #include <endian.h>
  #elif defined(_AIX)
  #include <sys/machine.h>
-diff --git a/lib/Support/Unix/Path.inc b/lib/Support/Unix/Path.inc
-index 2ecb9731..b0406571 100644
---- a/lib/Support/Unix/Path.inc
-+++ b/lib/Support/Unix/Path.inc
+diff --git a/llvm/lib/Support/Unix/Path.inc b/llvm/lib/Support/Unix/Path.inc
+index 2ecb97316..b04065718 100644
+--- a/llvm/lib/Support/Unix/Path.inc
++++ b/llvm/lib/Support/Unix/Path.inc
 @@ -68,7 +68,7 @@
  
  #include <sys/types.h>
@@ -71,10 +71,10 @@ index 2ecb9731..b0406571 100644
  #ifndef NFS_SUPER_MAGIC
  #define NFS_SUPER_MAGIC 0x6969
  #endif
-diff --git a/lib/Support/Unix/Program.inc b/lib/Support/Unix/Program.inc
-index 4f791991..d4245be6 100644
---- a/lib/Support/Unix/Program.inc
-+++ b/lib/Support/Unix/Program.inc
+diff --git a/llvm/lib/Support/Unix/Program.inc b/llvm/lib/Support/Unix/Program.inc
+index 4f791991f..d4245be6b 100644
+--- a/llvm/lib/Support/Unix/Program.inc
++++ b/llvm/lib/Support/Unix/Program.inc
 @@ -39,6 +39,7 @@
  #if HAVE_UNISTD_H
  #include <unistd.h>
@@ -83,19 +83,19 @@ index 4f791991..d4245be6 100644
  #ifdef HAVE_POSIX_SPAWN
  #include <spawn.h>
  
-diff --git a/tools/llvm-dwarfdump/Statistics.cpp b/tools/llvm-dwarfdump/Statistics.cpp
-index 9a7454a5..1d076b58 100644
---- a/tools/llvm-dwarfdump/Statistics.cpp
-+++ b/tools/llvm-dwarfdump/Statistics.cpp
+diff --git a/llvm/tools/llvm-dwarfdump/Statistics.cpp b/llvm/tools/llvm-dwarfdump/Statistics.cpp
+index 9a7454a52..1d076b58b 100644
+--- a/llvm/tools/llvm-dwarfdump/Statistics.cpp
++++ b/llvm/tools/llvm-dwarfdump/Statistics.cpp
 @@ -1,3 +1,4 @@
 +#include <cmath>
  #include "llvm/ADT/DenseMap.h"
  #include "llvm/DebugInfo/DIContext.h"
  #include "llvm/DebugInfo/DWARF/DWARFContext.h"
-diff --git a/tools/llvm-shlib/CMakeLists.txt b/tools/llvm-shlib/CMakeLists.txt
-index b2109c87..0e1d739a 100644
---- a/tools/llvm-shlib/CMakeLists.txt
-+++ b/tools/llvm-shlib/CMakeLists.txt
+diff --git a/llvm/tools/llvm-shlib/CMakeLists.txt b/llvm/tools/llvm-shlib/CMakeLists.txt
+index b2109c875..0e1d739ad 100644
+--- a/llvm/tools/llvm-shlib/CMakeLists.txt
++++ b/llvm/tools/llvm-shlib/CMakeLists.txt
 @@ -40,6 +40,7 @@ list(REMOVE_DUPLICATES LIB_NAMES)
  if(("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux") OR (MINGW) OR (HAIKU)
     OR ("${CMAKE_SYSTEM_NAME}" STREQUAL "FreeBSD")
