@@ -201,6 +201,28 @@ tools:
     install:
       - args: ['make', 'install']
 
+  - name: host-llvm-toolchain
+    default: false
+    from_source: llvm
+    tools_required:
+      - host-cmake
+      - system-gcc
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=@PREFIX@'
+        # We really have to build LLVM in Release mode.
+        # Building it in debug mode produces tens of GiB of debugging info.
+        - '-DCMAKE_BUILD_TYPE=Release'
+        - '-DLLVM_TARGETS_TO_BUILD=X86'
+        - '-DLLVM_ENABLE_PROJECTS=clang'
+        - '@THIS_SOURCE_DIR@/llvm'
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
+
   # We could run an external pkg-config; however, we need the aclocal files.
   # The easiest way to ensure that they are available is to just install pkg-config.
   - name: host-pkg-config
