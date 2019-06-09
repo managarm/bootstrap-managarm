@@ -1,4 +1,4 @@
-From 63c9ed24c7e177c7ae465379170a8b23675bf62b Mon Sep 17 00:00:00 2001
+From 93ef5a008089041520eac4d36ec430e363563eca Mon Sep 17 00:00:00 2001
 From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
 Date: Wed, 29 Jun 2016 09:28:28 +0000
 Subject: [PATCH 2/2] Managarm target
@@ -122,14 +122,14 @@ index b8bb4d65825..310b8585519 100644
  	tm_file="dbxcoff.h ${tm_file} i386/unix.h i386/bsd.h i386/gas.h i386/djgpp.h i386/djgpp-stdint.h"
 diff --git a/gcc/config/i386/t-managarm64 b/gcc/config/i386/t-managarm64
 new file mode 100644
-index 00000000000..0182d6a1721
+index 00000000000..6c26cde10ac
 --- /dev/null
 +++ b/gcc/config/i386/t-managarm64
 @@ -0,0 +1,5 @@
 +
 +MULTILIB_OPTIONS = m64/m32
-+MULTILIB_DIRNAMES = fizz buzz
-+MULTILIB_OSDIRNAMES = foo:x86_64-managarm bar:i386-managarm
++MULTILIB_DIRNAMES = 64 32
++MULTILIB_OSDIRNAMES = m64=../lib64:x86_64-managarm m32=../lib32:i386-managarm
 +
 diff --git a/gcc/config/managarm-kernel.h b/gcc/config/managarm-kernel.h
 new file mode 100644

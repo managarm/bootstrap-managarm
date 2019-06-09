@@ -31,8 +31,8 @@ install -s system-root/usr/lib/libhelix.so initrd/lib/
 install -s system-root/usr/lib/ld.so initrd/lib/ld-init.so
 install -s system-root/usr/lib/libc.so initrd/lib/
 install -s system-root/usr/lib/libm.so initrd/lib/
-install -s tools/system-gcc/x86_64-managarm/lib/foo/libgcc_s.so.1 initrd/lib/
-install -s tools/system-gcc/x86_64-managarm/lib/foo/libstdc++.so.6 initrd/lib/
+install -s tools/system-gcc/x86_64-managarm/lib64/libgcc_s.so.1 initrd/lib/
+install -s tools/system-gcc/x86_64-managarm/lib64/libstdc++.so.6 initrd/lib/
 install -s system-root/usr/lib/liblewis.so initrd/lib/
 install -s system-root/usr/lib/libz.so.1 initrd/lib/
 install -s system-root/usr/lib/libprotobuf-lite.so.11 initrd/lib/
@@ -85,8 +85,8 @@ echo -n "Updating image via rsync..."
 cp $scriptdir/grub.cfg $dir/boot/grub/
 rsync -a --delete system-root/usr/ $dir/usr
 rsync -a --delete system-root/etc/ $dir/etc
-cp tools/system-gcc/x86_64-managarm/lib/foo/libgcc_s.so.1 $dir/usr/lib
-cp tools/system-gcc/x86_64-managarm/lib/foo/libstdc++.so.6 $dir/usr/lib
+cp tools/system-gcc/x86_64-managarm/lib64/libgcc_s.so.1 $dir/usr/lib
+cp tools/system-gcc/x86_64-managarm/lib64/libstdc++.so.6 $dir/usr/lib
 echo " done"
 
 if ! [ -z $mntlocal ]; then
