@@ -1,14 +1,15 @@
-From 0b97be1583f4c720935d86c15b04c1e3963bd8b6 Mon Sep 17 00:00:00 2001
+From 05b2fc260c9a869a80288263d8c99d7f6244d541 Mon Sep 17 00:00:00 2001
 From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
 Date: Wed, 29 Jun 2016 13:30:01 +0000
 Subject: [PATCH] Add managarm target
 
 ---
- bfd/config.bfd    | 5 +++++
- config.sub        | 2 +-
- gas/configure.tgt | 1 +
- ld/configure.tgt  | 4 ++++
- 4 files changed, 11 insertions(+), 1 deletion(-)
+ bfd/config.bfd              | 5 +++++
+ config.sub                  | 2 +-
+ gas/configure.tgt           | 1 +
+ ld/configure.tgt            | 4 ++++
+ ld/emulparams/elf_x86_64.sh | 2 +-
+ 5 files changed, 12 insertions(+), 2 deletions(-)
 
 diff --git a/bfd/config.bfd b/bfd/config.bfd
 index 0e1ddb65..44900259 100644
@@ -66,6 +67,19 @@ index beba17ef..06fee204 100644
  ia16-*-elf*)		targ_emul=elf_i386 targ_extra_emuls=i386msdos ;;
  ia64-*-elf*)		targ_emul=elf64_ia64 ;;
  ia64-*-freebsd* | ia64-*-kfreebsd*-gnu)
+diff --git a/ld/emulparams/elf_x86_64.sh b/ld/emulparams/elf_x86_64.sh
+index d8c6e548..f3976444 100644
+--- a/ld/emulparams/elf_x86_64.sh
++++ b/ld/emulparams/elf_x86_64.sh
+@@ -37,7 +37,7 @@ fi
+ # Linux/Solaris modify the default library search path to first include
+ # a 64-bit specific directory.
+ case "$target" in
+-  x86_64*-linux*|i[3-7]86-*-linux-*)
++  x86_64*-linux*|i[3-7]86-*-linux-*|x86_64*-managarm*)
+     case "$EMULATION_NAME" in
+       *64*)
+ 	LIBPATH_SUFFIX=64
 -- 
 2.11.0
 
