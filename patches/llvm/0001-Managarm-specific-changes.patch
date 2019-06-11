@@ -1,7 +1,7 @@
-From 15aac642a07214f4ddc8b9c8b304184cbfdc8ca1 Mon Sep 17 00:00:00 2001
+From 79b719e6b44c4b820e67ac1967286ff6b704b921 Mon Sep 17 00:00:00 2001
 From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
 Date: Thu, 6 Jun 2019 17:55:59 +0200
-Subject: [PATCH] Managarm-specific changes
+Subject: [PATCH 1/2] Managarm-specific changes
 
 ---
  llvm/cmake/modules/CrossCompile.cmake    | 4 ++--
@@ -13,7 +13,7 @@ Subject: [PATCH] Managarm-specific changes
  6 files changed, 9 insertions(+), 6 deletions(-)
 
 diff --git a/llvm/cmake/modules/CrossCompile.cmake b/llvm/cmake/modules/CrossCompile.cmake
-index 0ec76ead5..d03c1fd7b 100644
+index bc3b210f0..568aeddc8 100644
 --- a/llvm/cmake/modules/CrossCompile.cmake
 +++ b/llvm/cmake/modules/CrossCompile.cmake
 @@ -11,8 +11,8 @@ function(llvm_create_cross_target_internal target_name toolchain buildtype)
@@ -28,7 +28,7 @@ index 0ec76ead5..d03c1fd7b 100644
    endif()
    set(CROSS_TOOLCHAIN_FLAGS_${target_name} ${CROSS_TOOLCHAIN_FLAGS_INIT}
 diff --git a/llvm/include/llvm/Support/Host.h b/llvm/include/llvm/Support/Host.h
-index a4b0a340c..0f6650baf 100644
+index 57c79c0b9..d0eb55f30 100644
 --- a/llvm/include/llvm/Support/Host.h
 +++ b/llvm/include/llvm/Support/Host.h
 @@ -16,7 +16,7 @@
@@ -41,19 +41,19 @@ index a4b0a340c..0f6650baf 100644
  #elif defined(_AIX)
  #include <sys/machine.h>
 diff --git a/llvm/lib/Support/Unix/Path.inc b/llvm/lib/Support/Unix/Path.inc
-index 2ecb97316..b04065718 100644
+index d7cc0d627..86bce3979 100644
 --- a/llvm/lib/Support/Unix/Path.inc
 +++ b/llvm/lib/Support/Unix/Path.inc
-@@ -68,7 +68,7 @@
+@@ -56,7 +56,7 @@
  
  #include <sys/types.h>
  #if !defined(__APPLE__) && !defined(__OpenBSD__) && !defined(__FreeBSD__) &&   \
--    !defined(__linux__)
-+    !defined(__linux__) && !defined(__managarm__)
+-    !defined(__linux__) && !defined(__FreeBSD_kernel__)
++    !defined(__linux__) && !defined(__FreeBSD_kernel__) && !defined(__managarm__)
  #include <sys/statvfs.h>
  #define STATVFS statvfs
  #define FSTATVFS fstatvfs
-@@ -77,7 +77,7 @@
+@@ -65,7 +65,7 @@
  #if defined(__OpenBSD__) || defined(__FreeBSD__)
  #include <sys/mount.h>
  #include <sys/param.h>
@@ -62,20 +62,20 @@ index 2ecb97316..b04065718 100644
  #if defined(HAVE_LINUX_MAGIC_H)
  #include <linux/magic.h>
  #else
-@@ -359,7 +359,7 @@ std::error_code remove(const Twine &path, bool IgnoreNonExisting) {
+@@ -370,7 +370,7 @@ std::error_code remove(const Twine &path, bool IgnoreNonExisting) {
  }
  
  static bool is_local_impl(struct STATVFS &Vfs) {
--#if defined(__linux__)
-+#if defined(__linux__) || defined(__managarm__)
+-#if defined(__linux__) || defined(__GNU__)
++#if defined(__linux__) || defined(__GNU__) || defined(__managarm__)
  #ifndef NFS_SUPER_MAGIC
  #define NFS_SUPER_MAGIC 0x6969
  #endif
 diff --git a/llvm/lib/Support/Unix/Program.inc b/llvm/lib/Support/Unix/Program.inc
-index 4f791991f..d4245be6b 100644
+index d0abc3763..a5910651b 100644
 --- a/llvm/lib/Support/Unix/Program.inc
 +++ b/llvm/lib/Support/Unix/Program.inc
-@@ -39,6 +39,7 @@
+@@ -40,6 +40,7 @@
  #if HAVE_UNISTD_H
  #include <unistd.h>
  #endif
@@ -84,26 +84,26 @@ index 4f791991f..d4245be6b 100644
  #include <spawn.h>
  
 diff --git a/llvm/tools/llvm-dwarfdump/Statistics.cpp b/llvm/tools/llvm-dwarfdump/Statistics.cpp
-index 9a7454a52..1d076b58b 100644
+index 5fe7e8b46..d670cc1d6 100644
 --- a/llvm/tools/llvm-dwarfdump/Statistics.cpp
 +++ b/llvm/tools/llvm-dwarfdump/Statistics.cpp
 @@ -1,3 +1,4 @@
 +#include <cmath>
  #include "llvm/ADT/DenseMap.h"
- #include "llvm/DebugInfo/DIContext.h"
- #include "llvm/DebugInfo/DWARF/DWARFContext.h"
+ #include "llvm/ADT/StringExtras.h"
+ #include "llvm/ADT/StringSet.h"
 diff --git a/llvm/tools/llvm-shlib/CMakeLists.txt b/llvm/tools/llvm-shlib/CMakeLists.txt
-index b2109c875..0e1d739ad 100644
+index 187066e5d..ef369e6e8 100644
 --- a/llvm/tools/llvm-shlib/CMakeLists.txt
 +++ b/llvm/tools/llvm-shlib/CMakeLists.txt
-@@ -40,6 +40,7 @@ list(REMOVE_DUPLICATES LIB_NAMES)
- if(("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux") OR (MINGW) OR (HAIKU)
-    OR ("${CMAKE_SYSTEM_NAME}" STREQUAL "FreeBSD")
-    OR ("${CMAKE_SYSTEM_NAME}" STREQUAL "DragonFly")
-+   OR ("${CMAKE_SYSTEM_NAME}" STREQUAL "managarm")
-    OR ("${CMAKE_SYSTEM_NAME}" STREQUAL "SunOS")) # FIXME: It should be "GNU ld for elf"
-   configure_file(
-   ${CMAKE_CURRENT_SOURCE_DIR}/simple_version_script.map.in
+@@ -45,6 +45,7 @@ if(LLVM_BUILD_LLVM_DYLIB)
+   if(("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux") OR (MINGW) OR (HAIKU)
+      OR ("${CMAKE_SYSTEM_NAME}" STREQUAL "FreeBSD")
+      OR ("${CMAKE_SYSTEM_NAME}" STREQUAL "GNU")
++     OR ("${CMAKE_SYSTEM_NAME}" STREQUAL "managarm")
+      OR ("${CMAKE_SYSTEM_NAME}" STREQUAL "OpenBSD")
+      OR ("${CMAKE_SYSTEM_NAME}" STREQUAL "Fuchsia")
+      OR ("${CMAKE_SYSTEM_NAME}" STREQUAL "DragonFly")
 -- 
 2.11.0
 

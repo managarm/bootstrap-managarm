@@ -212,16 +212,22 @@ tools:
         - 'cmake'
         - '-GNinja'
         - '-DCMAKE_INSTALL_PREFIX=@PREFIX@'
+
+        # LLVM configuration options.
         # We really have to build LLVM in Release mode.
         # Building it in debug mode produces tens of GiB of debugging info.
         - '-DCMAKE_BUILD_TYPE=Release'
         - '-DLLVM_TARGETS_TO_BUILD=X86'
         - '-DLLVM_ENABLE_PROJECTS=clang'
+
+        # clang configuration options.
+        - '-DDEFAULT_SYSROOT=@SYSROOT_DIR@'
         - '@THIS_SOURCE_DIR@/llvm'
     compile:
       - args: ['ninja']
     install:
       - args: ['ninja', 'install']
+        quiet: true
 
   # We could run an external pkg-config; however, we need the aclocal files.
   # The easiest way to ensure that they are available is to just install pkg-config.
