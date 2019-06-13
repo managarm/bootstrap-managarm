@@ -1083,6 +1083,7 @@ packages:
   - name: managarm-system
     from_source: managarm
     tools_required:
+      - host-llvm-toolchain
       - host-pkg-config
       - host-protoc
       - system-gcc
@@ -1095,9 +1096,12 @@ packages:
       - libsmarter
       - protobuf
     configure:
+      - args: |
+          sed -e 's|_BUILD_ROOT_|@BUILD_ROOT@|' @SOURCE_ROOT@/scripts/meson-clang.cross-file \
+              > @BUILD_ROOT@/pkg-builds/managarm-system/meson-custom.cross-file
       - args:
         - 'meson'
-        - '--cross-file=@SOURCE_ROOT@/scripts/meson.cross-file'
+        - '--cross-file=@BUILD_ROOT@/pkg-builds/managarm-system/meson-custom.cross-file'
         - '--prefix=/usr'
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
@@ -1200,6 +1204,7 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      - args: ['ln', '-sf', 'crt0.o', '@THIS_COLLECT_DIR@/usr/lib/crt1.o']
 
   - name: mtdev
     source:
