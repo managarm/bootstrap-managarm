@@ -31,7 +31,8 @@ args="$args -netdev user,id=net0 -device virtio-net,netdev=net0"
 #args="$args -netdev tap,id=net0 -device virtio-net,netdev=net0"
 
 #args="$args -vga std"
-args="$args -vga virtio"
+#args="$args -vga virtio"
+args="$args -vga vmware"
 
 args="$args -debugcon stdio"
 #args="$args -serial stdio"
