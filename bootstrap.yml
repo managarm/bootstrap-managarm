@@ -83,7 +83,14 @@ tools:
       format: 'tar.xz'
       extract_path: 'autoconf-2.64'
     configure:
-      - args: ['@THIS_SOURCE_DIR@/configure', '--prefix=@PREFIX@']
+      # Despite its efforts to be POSIX-compatible, autoconf 2.64 fails to configure on dash
+      # (as it assumes that echo does not evaluate backslash escapes).
+      # It *also* fails when setting CONFIG_SHELL to /bin/bash.
+      # The manual (in section "Defining Variables") mentions this bug and the following
+      # workaround: We set *both* CONFIG_SHELL *and* execute the script using /bin/bash.
+      - args: ['/bin/bash', '@THIS_SOURCE_DIR@/configure', '--prefix=@PREFIX@']
+        environ:
+          'CONFIG_SHELL': '/bin/bash'
     compile:
       - args: ['make', '-j@PARALLELISM@']
     install:
