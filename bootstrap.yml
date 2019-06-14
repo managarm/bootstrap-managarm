@@ -231,8 +231,9 @@ tools:
         - '-DDEFAULT_SYSROOT=@SYSROOT_DIR@'
         - '@THIS_SOURCE_DIR@/llvm'
     compile:
+      - args: ['ninja']
       # Build on a single CPU to prevent OOM on smaller systems.
-      - args: ['ninja', '-j1']
+      #- args: ['ninja', '-j1']
     install:
       - args: ['ninja', 'install']
         quiet: true
