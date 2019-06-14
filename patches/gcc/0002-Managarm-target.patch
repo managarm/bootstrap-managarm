@@ -1,4 +1,4 @@
-From 93ef5a008089041520eac4d36ec430e363563eca Mon Sep 17 00:00:00 2001
+From 1835ecb8541ea57f64929a0f325d468e7076eec9 Mon Sep 17 00:00:00 2001
 From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
 Date: Wed, 29 Jun 2016 09:28:28 +0000
 Subject: [PATCH 2/2] Managarm target
@@ -10,12 +10,12 @@ TODO: Use libtoolize instead of modifying in-tree libtool?
  gcc/config.gcc               | 37 +++++++++++++++++++++++++++++++++++++
  gcc/config/i386/t-managarm64 |  5 +++++
  gcc/config/managarm-kernel.h | 10 ++++++++++
- gcc/config/managarm-system.h | 10 ++++++++++
+ gcc/config/managarm-system.h |  4 ++++
  gcc/config/managarm.h        | 25 +++++++++++++++++++++++++
  libgcc/config.host           |  8 ++++++++
  libstdc++-v3/crossconfig.m4  |  7 +++++++
  libtool.m4                   | 14 ++++++++++++++
- 10 files changed, 123 insertions(+), 1 deletion(-)
+ 10 files changed, 117 insertions(+), 1 deletion(-)
  create mode 100644 gcc/config/i386/t-managarm64
  create mode 100644 gcc/config/managarm-kernel.h
  create mode 100644 gcc/config/managarm-system.h
@@ -66,7 +66,7 @@ index 0f9648608e9..5d34be85105 100755
      x86_64-*-mingw32* | \
      powerpc-*-eabisim* | \
 diff --git a/gcc/config.gcc b/gcc/config.gcc
-index b8bb4d65825..310b8585519 100644
+index b8bb4d65825..230c1ecdb9c 100644
 --- a/gcc/config.gcc
 +++ b/gcc/config.gcc
 @@ -774,6 +774,25 @@ case ${target} in
@@ -102,7 +102,7 @@ index b8bb4d65825..310b8585519 100644
 +x86_64-*-managarm*)
 +	tm_file="${tm_file} i386/unix.h i386/att.h dbxelf.h elfos.h gnu-user.h glibc-stdint.h \
 +		 i386/x86-64.h i386/gnu-user-common.h i386/gnu-user64.h managarm.h"
-+	
++
 +	case ${target} in
 +	*-managarm-system*)
 +		tm_file="${tm_file} managarm-system.h"
@@ -149,19 +149,13 @@ index 00000000000..62bce675a0a
 +
 diff --git a/gcc/config/managarm-system.h b/gcc/config/managarm-system.h
 new file mode 100644
-index 00000000000..d0b424e457d
+index 00000000000..8a032c995e0
 --- /dev/null
 +++ b/gcc/config/managarm-system.h
-@@ -0,0 +1,10 @@
+@@ -0,0 +1,4 @@
 +
 +#undef LIB_SPEC
-+#define LIB_SPEC "-lc -lm"
-+
-+#undef STARTFILE_SPEC
-+#define STARTFILE_SPEC "%{!shared:crt0.o%s} crti.o%s %{shared:crtbeginS.o%s;:crtbegin.o%s}"
-+
-+#undef ENDFILE_SPEC
-+#define ENDFILE_SPEC "%{shared:crtendS.o%s;:crtend.o%s} crtn.o%s"
++#define LIB_SPEC "-lc"
 +
 diff --git a/gcc/config/managarm.h b/gcc/config/managarm.h
 new file mode 100644
