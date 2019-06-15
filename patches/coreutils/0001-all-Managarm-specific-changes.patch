@@ -1,0 +1,31 @@
+From a54216b5841f210d8c1f7ffbd06378c5fcb535aa Mon Sep 17 00:00:00 2001
+From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
+Date: Sat, 15 Jun 2019 09:56:43 +0200
+Subject: [PATCH] all: Managarm-specific changes
+
+---
+ src/tail.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/src/tail.c b/src/tail.c
+index ac001d7..627bbdc 100644
+--- a/src/tail.c
++++ b/src/tail.c
+@@ -57,7 +57,13 @@
+ 
+ /* inotify needs to know if a file is local.  */
+ # include "fs.h"
+-# include "fs-is-local.h"
++# ifdef __managarm__
++int is_local_fs_type (unsigned long int magic) {
++    return 0;
++}
++#else
++#  include "fs-is-local.h"
++# endif
+ # if HAVE_SYS_STATFS_H
+ #  include <sys/statfs.h>
+ # elif HAVE_SYS_VFS_H
+-- 
+2.11.0
+
