@@ -1209,6 +1209,8 @@ packages:
         stage_dependencies: [compiler]
       - host-protoc
     implict_package: true
+    pkgs_required:
+      - mlibc-headers
     configure:
       - args:
         - 'meson'
@@ -1217,6 +1219,7 @@ packages:
         - '--prefix=/usr'
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
+        - '-Dmlibc_no_headers=true'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
