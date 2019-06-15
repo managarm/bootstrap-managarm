@@ -676,7 +676,7 @@ packages:
         - '@THIS_SOURCE_DIR@/configure'
       - args: ['make', 'src/make-prime-list']
       - args: |
-          @THIS_BUILD_DIR@/src/make-prime-list 5000 > @THIS_SOURCE_DIR@/src/primes.h
+          ./src/make-prime-list 5000 > @THIS_SOURCE_DIR@/src/primes.h
       - args: ['make', 'clean']
       # No compile coreutils for the correct target.
       - args:
@@ -1118,10 +1118,10 @@ packages:
     configure:
       - args: |
           sed -e 's|_BUILD_ROOT_|@BUILD_ROOT@|' @SOURCE_ROOT@/scripts/meson-clang.cross-file \
-              > @BUILD_ROOT@/pkg-builds/managarm-system/meson-custom.cross-file
+              > ./meson-custom.cross-file
       - args:
         - 'meson'
-        - '--cross-file=@BUILD_ROOT@/pkg-builds/managarm-system/meson-custom.cross-file'
+        - '--cross-file=./meson-custom.cross-file'
         - '--prefix=/usr'
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
