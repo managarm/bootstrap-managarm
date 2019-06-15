@@ -655,7 +655,6 @@ packages:
         - 'install'
 
   - name: coreutils
-    default: false
     source:
       subdir: 'ports'
       git: 'git://git.savannah.gnu.org/coreutils.git'
