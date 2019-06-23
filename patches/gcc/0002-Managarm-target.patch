@@ -1,57 +1,59 @@
-From 1835ecb8541ea57f64929a0f325d468e7076eec9 Mon Sep 17 00:00:00 2001
+From c68c85d325219d0d66c437be5d074c56bf93cafc Mon Sep 17 00:00:00 2001
 From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
 Date: Wed, 29 Jun 2016 09:28:28 +0000
 Subject: [PATCH 2/2] Managarm target
 
 TODO: Use libtoolize instead of modifying in-tree libtool?
 ---
- config.sub                   |  7 ++++++-
+ config.sub                   |  9 +++++++--
  fixincludes/mkfixinc.sh      |  1 +
  gcc/config.gcc               | 37 +++++++++++++++++++++++++++++++++++++
  gcc/config/i386/t-managarm64 |  5 +++++
  gcc/config/managarm-kernel.h | 10 ++++++++++
  gcc/config/managarm-system.h |  4 ++++
- gcc/config/managarm.h        | 25 +++++++++++++++++++++++++
+ gcc/config/managarm.h        | 22 ++++++++++++++++++++++
  libgcc/config.host           |  8 ++++++++
  libstdc++-v3/crossconfig.m4  |  7 +++++++
  libtool.m4                   | 14 ++++++++++++++
- 10 files changed, 117 insertions(+), 1 deletion(-)
+ 10 files changed, 115 insertions(+), 2 deletions(-)
  create mode 100644 gcc/config/i386/t-managarm64
  create mode 100644 gcc/config/managarm-kernel.h
  create mode 100644 gcc/config/managarm-system.h
  create mode 100644 gcc/config/managarm.h
 
 diff --git a/config.sub b/config.sub
-index 62b82599d98..e00194bbcfe 100755
+index 75bb6a3135b..64c314c39d8 100755
 --- a/config.sub
 +++ b/config.sub
-@@ -116,6 +116,7 @@ maybe_os=`echo $1 | sed 's/^\(.*\)-\([^-]*-[^-]*\)$/\2/'`
- case $maybe_os in
-   nto-qnx* | linux-gnu* | linux-android* | linux-dietlibc | linux-newlib* | \
-   linux-musl* | linux-uclibc* | uclinux-uclibc* | uclinux-gnu* | kfreebsd*-gnu* | \
-+  managarm-kernel* | managarm-system* | \
-   knetbsd*-gnu* | netbsd*-gnu* | netbsd*-eabi* | \
-   kopensolaris*-gnu* | cloudabi*-eabi* | \
-   storm-chaos* | os2-emx* | rtmk-nova*)
-@@ -1409,7 +1410,8 @@ case $os in
- 	      | -morphos* | -superux* | -rtmk* | -rtmk-nova* | -windiss* \
- 	      | -powermax* | -dnix* | -nx6 | -nx7 | -sei* | -dragonfly* \
- 	      | -skyos* | -haiku* | -rdos* | -toppers* | -drops* | -es* \
--	      | -onefs* | -tirtos* | -phoenix* | -fuchsia* | -redox*)
-+	      | -onefs* | -tirtos* | -phoenix* | -fuchsia* | -redox* \
-+	      | -managarm-kernel* | -managarm-system*)
+@@ -133,7 +133,8 @@ case $1 in
+ 		case $maybe_os in
+ 			nto-qnx* | linux-gnu* | linux-android* | linux-dietlibc \
+ 			| linux-newlib* | linux-musl* | linux-uclibc* | uclinux-uclibc* \
+-			| uclinux-gnu* | kfreebsd*-gnu* | knetbsd*-gnu* | netbsd*-gnu* \
++			| uclinux-gnu* | managarm-kernel* | managarm-system* \
++			| kfreebsd*-gnu* | knetbsd*-gnu* | netbsd*-gnu* \
+ 			| netbsd*-eabi* | kopensolaris*-gnu* | cloudabi*-eabi* \
+ 			| storm-chaos* | os2-emx* | rtmk-nova*)
+ 				basic_machine=$field1
+@@ -1363,7 +1364,8 @@ case $os in
+ 	     | powermax* | dnix* | nx6 | nx7 | sei* | dragonfly* \
+ 	     | skyos* | haiku* | rdos* | toppers* | drops* | es* \
+ 	     | onefs* | tirtos* | phoenix* | fuchsia* | redox* | bme* \
+-	     | midnightbsd* | amdhsa* | unleashed* | emscripten*)
++	     | midnightbsd* | amdhsa* | unleashed* | emscripten* \
++	     | managarm-kernel* | managarm-system*)
  	# Remember, each alternative MUST END IN *, to match a version number.
  		;;
- 	-qnx*)
-@@ -1433,6 +1435,9 @@ case $os in
- 	-mac*)
- 		os=`echo $os | sed -e 's|mac|macos|'`
+ 	qnx*)
+@@ -1402,6 +1404,9 @@ case $os in
+ 	lynx*)
+ 		os=lynxos
  		;;
-+	-managarm*)
++	managarm*)
 +		os=`echo $os | sed -e 's|managarm|managarm-system|'`
 +		;;
- 	-linux-dietlibc)
- 		os=-linux-dietlibc
+ 	mac*)
+ 		os=`echo "$os" | sed -e 's|mac|macos|'`
  		;;
 diff --git a/fixincludes/mkfixinc.sh b/fixincludes/mkfixinc.sh
 index 0f9648608e9..5d34be85105 100755
@@ -66,12 +68,12 @@ index 0f9648608e9..5d34be85105 100755
      x86_64-*-mingw32* | \
      powerpc-*-eabisim* | \
 diff --git a/gcc/config.gcc b/gcc/config.gcc
-index b8bb4d65825..230c1ecdb9c 100644
+index 09fb9ecd2cd..e72fe37f419 100644
 --- a/gcc/config.gcc
 +++ b/gcc/config.gcc
-@@ -774,6 +774,25 @@ case ${target} in
-   tmake_file="${tmake_file} t-glibc"
+@@ -836,6 +836,25 @@ case ${target} in
    target_has_targetcm=yes
+   target_has_targetdm=yes
    ;;
 +*-*-managarm*)
 +  extra_options="$extra_options gnu-user.opt"
@@ -93,9 +95,9 @@ index b8bb4d65825..230c1ecdb9c 100644
 +  esac
 +  ;;
  *-*-netbsd*)
-   tmake_file="t-slibgcc"
-   gas=yes
-@@ -1605,6 +1624,24 @@ x86_64-*-linux* | x86_64-*-kfreebsd*-gnu)
+   tm_p_file="${tm_p_file} netbsd-protos.h"
+   tmake_file="t-netbsd t-slibgcc"
+@@ -1771,6 +1790,24 @@ x86_64-*-linux* | x86_64-*-kfreebsd*-gnu)
  	done
  	TM_MULTILIB_CONFIG=`echo $TM_MULTILIB_CONFIG | sed 's/^,//'`
  	;;
@@ -159,16 +161,13 @@ index 00000000000..8a032c995e0
 +
 diff --git a/gcc/config/managarm.h b/gcc/config/managarm.h
 new file mode 100644
-index 00000000000..83f2a1b71e0
+index 00000000000..ef22eeadd15
 --- /dev/null
 +++ b/gcc/config/managarm.h
-@@ -0,0 +1,25 @@
+@@ -0,0 +1,22 @@
 +
 +#undef TARGET_MANAGARM
 +#define TARGET_MANAGARM 1
-+
-+#undef  NO_IMPLICIT_EXTERN_C
-+#define NO_IMPLICIT_EXTERN_C 1
 +
 +#define GNU_USER_LINK_EMULATION32 "elf_i386"
 +#define GNU_USER_LINK_EMULATION64 "elf_x86_64"
@@ -189,10 +188,10 @@ index 00000000000..83f2a1b71e0
 +	} while(0);
 +
 diff --git a/libgcc/config.host b/libgcc/config.host
-index b279a6458f9..59d9dceca93 100644
+index 91abc84da03..648bb2f7dc8 100644
 --- a/libgcc/config.host
 +++ b/libgcc/config.host
-@@ -238,6 +238,11 @@ case ${host} in
+@@ -252,6 +252,11 @@ case ${host} in
      extra_parts="$extra_parts vtv_start.o vtv_end.o vtv_start_preinit.o vtv_end_preinit.o"
    fi
    ;;
@@ -204,7 +203,7 @@ index b279a6458f9..59d9dceca93 100644
  *-*-lynxos*)
    tmake_file="$tmake_file t-lynx $cpu_type/t-crtstuff t-crtstuff-pic t-libgcc-pic"
    extra_parts="crtbegin.o crtbeginS.o crtend.o crtendS.o"
-@@ -631,6 +636,9 @@ x86_64-*-linux*)
+@@ -686,6 +691,9 @@ x86_64-*-linux*)
  	tm_file="${tm_file} i386/elf-lib.h"
  	md_unwind_header=i386/linux-unwind.h
  	;;
@@ -215,11 +214,11 @@ index b279a6458f9..59d9dceca93 100644
  	extra_parts="$extra_parts crtprec32.o crtprec64.o crtprec80.o crtfastmath.o"
  	tmake_file="${tmake_file} i386/t-crtpc t-crtfm i386/t-crtstuff t-dfprules"
 diff --git a/libstdc++-v3/crossconfig.m4 b/libstdc++-v3/crossconfig.m4
-index 77c9828fe91..cd1ec63773b 100644
+index 344eec09d8e..9fe971a39f0 100644
 --- a/libstdc++-v3/crossconfig.m4
 +++ b/libstdc++-v3/crossconfig.m4
-@@ -193,6 +193,13 @@ case "${host}" in
-     AC_CHECK_FUNCS(aligned_alloc posix_memalign memalign _aligned_malloc)
+@@ -200,6 +200,13 @@ case "${host}" in
+     AC_CHECK_FUNCS(sockatmark)
      AM_ICONV
      ;;
 +  *-managarm*)
@@ -233,7 +232,7 @@ index 77c9828fe91..cd1ec63773b 100644
      GLIBCXX_CHECK_LINKER_FEATURES
      GLIBCXX_CHECK_MATH_SUPPORT
 diff --git a/libtool.m4 b/libtool.m4
-index 24d13f34409..fb4ff19d283 100644
+index 8966762881f..ace9a37a1d0 100644
 --- a/libtool.m4
 +++ b/libtool.m4
 @@ -2494,6 +2494,16 @@ linux* | k*bsd*-gnu | kopensolaris*-gnu)

@@ -22,9 +22,9 @@ sources:
   - name: gcc
     subdir: 'ports'
     git: 'git://gcc.gnu.org/git/gcc.git'
-    tag: 'gcc-7_1_0-release'
+    tag: 'gcc-9_1_0-release'
     tools_required:
-      - host-autoconf-v2.64
+      - host-autoconf-v2.69
       - host-automake-v1.11
     regenerate:
       # download_prerequisites should probably move to some "post_checkout" step.
@@ -370,6 +370,13 @@ tools:
           - args: ['make', '-j@PARALLELISM@', 'inhibit_libc=true', 'all-gcc']
         install:
           - args: ['make', 'install-gcc']
+          # GCC does *not* look for target-prefixed LD/AS.
+          # Instead, it searches a list of prefix directories. Link AS/LD to make it happy.
+          - args: ['mkdir', '-p', '@PREFIX@/x86_64-managarm-kernel/bin']
+          - args: ['ln', '-sf', '../../../cross-binutils/x86_64-managarm/bin/as',
+                               '@PREFIX@/x86_64-managarm-kernel/bin/as']
+          - args: ['ln', '-sf', '../../../cross-binutils/x86_64-managarm/bin/ls',
+                               '@PREFIX@/x86_64-managarm-kernel/bin/ls']
       - name: libgcc
         tools_required:
           - tool: kernel-gcc
@@ -409,10 +416,18 @@ tools:
         pkgs_required:
          - mlibc-headers
         compile:
+          # GCC complains if the include directory is non-existant.
           - args: ['mkdir', '-p', '@SYSROOT_DIR@/usr/include']
           - args: ['make', '-j@PARALLELISM@', 'all-gcc']
         install:
           - args: ['make', 'install-gcc']
+          # GCC does *not* look for target-prefixed LD/AS.
+          # Instead, it searches a list of prefix directories. Link AS/LD to make it happy.
+          - args: ['mkdir', '-p', '@PREFIX@/x86_64-managarm/bin']
+          - args: ['ln', '-s', '../../../cross-binutils/x86_64-managarm/bin/as',
+                               '@PREFIX@/x86_64-managarm/bin/as']
+          - args: ['ln', '-s', '../../../cross-binutils/x86_64-managarm/bin/ls',
+                               '@PREFIX@/x86_64-managarm/bin/ls']
       - name: libgcc
         tools_required:
           - tool: system-gcc
