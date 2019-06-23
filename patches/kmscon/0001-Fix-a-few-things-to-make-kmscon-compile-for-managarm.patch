@@ -1,0 +1,86 @@
+From fd5eddf36a0205a95bf441dac54df37703568983 Mon Sep 17 00:00:00 2001
+From: qookie <kacper.slominski72@gmail.com>
+Date: Sun, 23 Jun 2019 19:02:21 +0200
+Subject: [PATCH] Fix a few things to make kmscon compile for managarm
+
+---
+ Makefile.am         | 3 +--
+ src/shl_misc.h      | 2 +-
+ src/uterm_monitor.c | 6 ++++++
+ src/uterm_vt.c      | 1 +
+ 4 files changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/Makefile.am b/Makefile.am
+index c8006fe..d829cad 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -60,8 +60,7 @@ AM_CFLAGS = \
+ 	-fno-strict-aliasing \
+ 	-fvisibility=hidden \
+ 	-ffunction-sections \
+-	-fdata-sections \
+-	-fstack-protector
++	-fdata-sections
+ AM_CPPFLAGS = \
+ 	-DBUILD_MODULE_DIR='"$(moduledir)"' \
+ 	-include $(top_builddir)/config.h \
+diff --git a/src/shl_misc.h b/src/shl_misc.h
+index d90fd22..0980e2a 100644
+--- a/src/shl_misc.h
++++ b/src/shl_misc.h
+@@ -54,7 +54,7 @@ static inline int shl_dirent(const char *path, struct dirent **ent)
+ 	struct dirent *tmp;
+ 
+ 	len = offsetof(struct dirent, d_name) +
+-					pathconf(path, _PC_NAME_MAX) + 1;
++					NAME_MAX + 1;
+ 	tmp = malloc(len);
+ 	if (!tmp)
+ 		return -ENOMEM;
+diff --git a/src/uterm_monitor.c b/src/uterm_monitor.c
+index c6e0a6d..5116dc9 100644
+--- a/src/uterm_monitor.c
++++ b/src/uterm_monitor.c
+@@ -34,7 +34,9 @@
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <libudev.h>
++#ifdef BUILD_ENABLE_VIDEO_FBDEV
+ #include <linux/fb.h>
++#endif
+ #include <stdbool.h>
+ #include <stdlib.h>
+ #include <string.h>
+@@ -408,6 +410,7 @@ static int get_fb_id(struct udev_device *dev)
+ 
+ static unsigned int get_fbdev_flags(struct uterm_monitor *mon, const char *node)
+ {
++#ifdef BUILD_ENABLE_VIDEO_FBDEV
+ 	int fd, ret, len;
+ 	struct fb_fix_screeninfo finfo;
+ 	unsigned int flags = UTERM_MONITOR_DRM_BACKED;
+@@ -446,6 +449,9 @@ static unsigned int get_fbdev_flags(struct uterm_monitor *mon, const char *node)
+ out_close:
+ 	close(fd);
+ 	return flags;
++#else
++  return UTERM_MONITOR_DRM_BACKED | UTERM_MONITOR_PRIMARY;
++#endif
+ }
+ 
+ static bool is_drm_primary(struct uterm_monitor *mon, struct udev_device *dev,
+diff --git a/src/uterm_vt.c b/src/uterm_vt.c
+index af377f5..ca21cb9 100644
+--- a/src/uterm_vt.c
++++ b/src/uterm_vt.c
+@@ -38,6 +38,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <sys/ioctl.h>
++#include <sys/sysmacros.h>
+ #include <sys/signalfd.h>
+ #include <sys/stat.h>
+ #include <termios.h>
+-- 
+2.22.0
+

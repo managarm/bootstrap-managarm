@@ -1572,3 +1572,72 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
+  - name: libtsm
+    source:
+      subdir: 'ports'
+      git: 'git://people.freedesktop.org/~dvdhrm/libtsm'
+      tag: 'libtsm-3'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - libxkbcommon
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+
+  - name: kmscon
+    source:
+      subdir: 'ports'
+      git: 'git://people.freedesktop.org/~dvdhrm/kmscon'
+      tag: 'kmscon-8'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': '1'
+    tools_required:
+      - system-gcc
+      - host-pkg-config
+      - host-automake-v1.15
+    pkgs_required:
+      - libxkbcommon
+      - libdrm
+      - libtsm
+      - eudev
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--with-video=drm2d'
+        - '--with-renderers='
+        - '--with-fonts=unifont'
+        - '--disable-multi-seat'
+        - '--with-sessions='
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
