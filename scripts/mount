@@ -1,4 +1,9 @@
 #!/bin/bash
 
-guestmount --pid-file guestfs.pid -a image -m /dev/sda2 mountpoint/
-
+if [ -n "$USE_LOOPBACK" ];
+then
+	losetup -Pf --show image > loopback_dev
+	mount $(<loopback_dev)p2 mountpoint/
+else
+	guestmount --pid-file guestfs.pid -a image -m /dev/sda2 mountpoint/
+fi

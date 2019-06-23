@@ -1,19 +1,24 @@
 #!/bin/bash
 
-set -e
+if [ -n "$USE_LOOPBACK" ];
+then
+	umount mountpoint/
+	losetup -d $(<loopback_dev)
+else
+	set -e
 
-guestunmount mountpoint/
+	guestunmount mountpoint/
 
-pid=$(cat guestfs.pid)
+	pid=$(cat guestfs.pid)
 
-for i in $(seq 10); do
-	if ! kill -0 $pid 2>/dev/null; then
-		break
-	fi
-	sleep .1
-done
+	for i in $(seq 10); do
+		if ! kill -0 $pid 2>/dev/null; then
+			break
+		fi
+		sleep .1
+	done
 
-while kill -0 $pid 2>/dev/null; do
-	sleep 1
-done
-
+	while kill -0 $pid 2>/dev/null; do
+		sleep 1
+	done
+fi
