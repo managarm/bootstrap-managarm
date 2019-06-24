@@ -424,9 +424,9 @@ tools:
           # GCC does *not* look for target-prefixed LD/AS.
           # Instead, it searches a list of prefix directories. Link AS/LD to make it happy.
           - args: ['mkdir', '-p', '@PREFIX@/x86_64-managarm/bin']
-          - args: ['ln', '-s', '../../../cross-binutils/x86_64-managarm/bin/as',
+          - args: ['ln', '-sf', '../../../cross-binutils/x86_64-managarm/bin/as',
                                '@PREFIX@/x86_64-managarm/bin/as']
-          - args: ['ln', '-s', '../../../cross-binutils/x86_64-managarm/bin/ls',
+          - args: ['ln', '-sf', '../../../cross-binutils/x86_64-managarm/bin/ls',
                                '@PREFIX@/x86_64-managarm/bin/ls']
       - name: libgcc
         tools_required:
