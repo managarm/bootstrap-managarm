@@ -1,7 +1,7 @@
 From c68c85d325219d0d66c437be5d074c56bf93cafc Mon Sep 17 00:00:00 2001
 From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
 Date: Wed, 29 Jun 2016 09:28:28 +0000
-Subject: [PATCH 2/2] Managarm target
+Subject: [PATCH 2/3] Managarm target
 
 TODO: Use libtoolize instead of modifying in-tree libtool?
 ---

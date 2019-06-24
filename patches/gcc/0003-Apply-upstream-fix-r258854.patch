@@ -1,0 +1,62 @@
+From 27f317f4784fac7ab77cddc089047cd78bd46bb6 Mon Sep 17 00:00:00 2001
+From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
+Date: Mon, 24 Jun 2019 18:24:20 +0200
+Subject: [PATCH 3/3] Apply upstream fix r258854
+
+See https://gcc.gnu.org/viewcvs/gcc?view=revision&revision=258854
+---
+ libstdc++-v3/include/std/variant | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/libstdc++-v3/include/std/variant b/libstdc++-v3/include/std/variant
+index 8c7d7f37fe2..707c240fef1 100644
+--- a/libstdc++-v3/include/std/variant
++++ b/libstdc++-v3/include/std/variant
+@@ -402,7 +402,7 @@ namespace __variant
+       { _M_reset(); }
+ 
+       void*
+-      _M_storage() const
++      _M_storage() const noexcept
+       {
+ 	return const_cast<void*>(static_cast<const void*>(
+ 	    std::addressof(_M_u)));
+@@ -432,11 +432,11 @@ namespace __variant
+ 	_M_index(_Np)
+ 	{ }
+ 
+-      void _M_reset()
++      void _M_reset() noexcept
+       { _M_index = variant_npos; }
+ 
+       void*
+-      _M_storage() const
++      _M_storage() const noexcept
+       {
+ 	return const_cast<void*>(static_cast<const void*>(
+ 	    std::addressof(_M_u)));
+@@ -760,7 +760,7 @@ namespace __variant
+ 
+   // Returns the raw storage for __v.
+   template<typename _Variant>
+-    void* __get_storage(_Variant&& __v)
++    void* __get_storage(_Variant&& __v) noexcept
+     { return __v._M_storage(); }
+ 
+   template <typename _Maybe_variant_cookie, typename _Variant>
+@@ -1556,10 +1556,10 @@ namespace __variant
+ #endif
+ 
+       template<size_t _Np, typename _Vp>
+-	friend constexpr decltype(auto) __detail::__variant::__get(_Vp&& __v);
++	friend constexpr decltype(auto) __detail::__variant::__get(_Vp&& __v) noexcept;
+ 
+       template<typename _Vp>
+-	friend void* __detail::__variant::__get_storage(_Vp&& __v);
++	friend void* __detail::__variant::__get_storage(_Vp&& __v) noexcept;
+ 
+ #define _VARIANT_RELATION_FUNCTION_TEMPLATE(__OP) \
+       template<typename... _Tp> \
+-- 
+2.11.0
+
