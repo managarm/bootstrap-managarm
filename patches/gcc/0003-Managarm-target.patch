@@ -1,7 +1,7 @@
-From c68c85d325219d0d66c437be5d074c56bf93cafc Mon Sep 17 00:00:00 2001
+From bf878ca7a836ff64421193d98fbf7621d4ef78e8 Mon Sep 17 00:00:00 2001
 From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
 Date: Wed, 29 Jun 2016 09:28:28 +0000
-Subject: [PATCH 2/3] Managarm target
+Subject: [PATCH 3/3] Managarm target
 
 TODO: Use libtoolize instead of modifying in-tree libtool?
 ---
@@ -12,10 +12,10 @@ TODO: Use libtoolize instead of modifying in-tree libtool?
  gcc/config/managarm-kernel.h | 10 ++++++++++
  gcc/config/managarm-system.h |  4 ++++
  gcc/config/managarm.h        | 22 ++++++++++++++++++++++
- libgcc/config.host           |  8 ++++++++
+ libgcc/config.host           |  9 +++++++++
  libstdc++-v3/crossconfig.m4  |  7 +++++++
  libtool.m4                   | 14 ++++++++++++++
- 10 files changed, 115 insertions(+), 2 deletions(-)
+ 10 files changed, 116 insertions(+), 2 deletions(-)
  create mode 100644 gcc/config/i386/t-managarm64
  create mode 100644 gcc/config/managarm-kernel.h
  create mode 100644 gcc/config/managarm-system.h
@@ -188,7 +188,7 @@ index 00000000000..ef22eeadd15
 +	} while(0);
 +
 diff --git a/libgcc/config.host b/libgcc/config.host
-index 91abc84da03..648bb2f7dc8 100644
+index 91abc84da03..9d561a4a7bc 100644
 --- a/libgcc/config.host
 +++ b/libgcc/config.host
 @@ -252,6 +252,11 @@ case ${host} in
@@ -203,12 +203,13 @@ index 91abc84da03..648bb2f7dc8 100644
  *-*-lynxos*)
    tmake_file="$tmake_file t-lynx $cpu_type/t-crtstuff t-crtstuff-pic t-libgcc-pic"
    extra_parts="crtbegin.o crtbeginS.o crtend.o crtendS.o"
-@@ -686,6 +691,9 @@ x86_64-*-linux*)
+@@ -686,6 +691,10 @@ x86_64-*-linux*)
  	tm_file="${tm_file} i386/elf-lib.h"
  	md_unwind_header=i386/linux-unwind.h
  	;;
 +x86_64-*-managarm*)
-+	tmake_file="$tmake_file i386/t-crtstuff"
++	extra_parts="$extra_parts crtprec32.o crtprec64.o crtprec80.o crtfastmath.o"
++	tmake_file="$tmake_file i386/t-crtpc t-crtfm i386/t-crtstuff t-dfprules"
 +	;;
  x86_64-*-kfreebsd*-gnu)
  	extra_parts="$extra_parts crtprec32.o crtprec64.o crtprec80.o crtfastmath.o"

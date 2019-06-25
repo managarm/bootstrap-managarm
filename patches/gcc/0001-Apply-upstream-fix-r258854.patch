@@ -1,7 +1,7 @@
-From 27f317f4784fac7ab77cddc089047cd78bd46bb6 Mon Sep 17 00:00:00 2001
+From ca43c69cba05ce858195997afbab0833cb1bfa69 Mon Sep 17 00:00:00 2001
 From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
 Date: Mon, 24 Jun 2019 18:24:20 +0200
-Subject: [PATCH 3/3] Apply upstream fix r258854
+Subject: [PATCH 1/3] Apply upstream fix r258854
 
 See https://gcc.gnu.org/viewcvs/gcc?view=revision&revision=258854
 ---
