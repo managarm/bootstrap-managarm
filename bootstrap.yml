@@ -1272,7 +1272,6 @@ packages:
         quiet: true
 
   - name: nano
-    default: false
     source:
       subdir: 'ports'
       git: 'git://git.savannah.gnu.org/nano.git'
@@ -1330,12 +1329,16 @@ packages:
         quiet: true
 
   - name: ncurses
-    default: false
     source:
       subdir: 'ports'
       url: 'ftp://ftp.invisible-island.net/ncurses/ncurses.tar.gz'
       format: 'tar.gz'
       extract_path: 'ncurses-6.1'
+      regenerate:
+        - args: ['cp',
+            '@BUILD_ROOT@/tools/host-automake-v1.11/share/automake-1.11/config.sub',
+            '@THIS_SOURCE_DIR@/']
+
     tools_required:
       - system-gcc
     configure:
@@ -1343,6 +1346,7 @@ packages:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
+        - '--without-ada'
     build:
       - args: ['make', '-j@PARALLELISM@', 'all']
       - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
