@@ -1,14 +1,16 @@
-From fd5eddf36a0205a95bf441dac54df37703568983 Mon Sep 17 00:00:00 2001
+From 6942f8b5ec61094f2524ee8d5b288923f83dcd28 Mon Sep 17 00:00:00 2001
 From: qookie <kacper.slominski72@gmail.com>
 Date: Sun, 23 Jun 2019 19:02:21 +0200
 Subject: [PATCH] Fix a few things to make kmscon compile for managarm
 
 ---
- Makefile.am         | 3 +--
- src/shl_misc.h      | 2 +-
- src/uterm_monitor.c | 6 ++++++
- src/uterm_vt.c      | 1 +
- 4 files changed, 9 insertions(+), 3 deletions(-)
+ Makefile.am            |  3 +--
+ src/pty.c              |  1 +
+ src/shl_misc.h         |  2 +-
+ src/uterm_drm_shared.c |  3 ++-
+ src/uterm_monitor.c    | 24 +++++++++++++++++-------
+ src/uterm_vt.c         |  1 +
+ 6 files changed, 23 insertions(+), 11 deletions(-)
 
 diff --git a/Makefile.am b/Makefile.am
 index c8006fe..d829cad 100644
@@ -24,6 +26,18 @@ index c8006fe..d829cad 100644
  AM_CPPFLAGS = \
  	-DBUILD_MODULE_DIR='"$(moduledir)"' \
  	-include $(top_builddir)/config.h \
+diff --git a/src/pty.c b/src/pty.c
+index 3494104..beeccd7 100644
+--- a/src/pty.c
++++ b/src/pty.c
+@@ -23,6 +23,7 @@
+  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  */
+ 
++#include <asm/ioctls.h>
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <inttypes.h>
 diff --git a/src/shl_misc.h b/src/shl_misc.h
 index d90fd22..0980e2a 100644
 --- a/src/shl_misc.h
@@ -37,8 +51,22 @@ index d90fd22..0980e2a 100644
  	tmp = malloc(len);
  	if (!tmp)
  		return -ENOMEM;
+diff --git a/src/uterm_drm_shared.c b/src/uterm_drm_shared.c
+index 75830f3..55c6030 100644
+--- a/src/uterm_drm_shared.c
++++ b/src/uterm_drm_shared.c
+@@ -340,7 +340,8 @@ int uterm_drm_display_swap(struct uterm_display *disp, uint32_t fb,
+ 	int ret;
+ 	drmModeModeInfo *mode;
+ 
+-	if (disp->dpms != UTERM_DPMS_ON)
++	/* assume that displays without DPMS are always on */
++	if (disp->dpms != UTERM_DPMS_ON && disp->dpms != UTERM_DPMS_UNKNOWN)
+ 		return -EINVAL;
+ 
+ 	if (immediate) {
 diff --git a/src/uterm_monitor.c b/src/uterm_monitor.c
-index c6e0a6d..5116dc9 100644
+index c6e0a6d..53f31c2 100644
 --- a/src/uterm_monitor.c
 +++ b/src/uterm_monitor.c
 @@ -34,7 +34,9 @@
@@ -69,6 +97,33 @@ index c6e0a6d..5116dc9 100644
  }
  
  static bool is_drm_primary(struct uterm_monitor *mon, struct udev_device *dev,
+@@ -624,15 +630,19 @@ static void monitor_udev_add(struct uterm_monitor *mon,
+ 		}
+ 		p = udev_device_get_parent_with_subsystem_devtype(dev,
+ 								"input", NULL);
+-		if (!p) {
++		/* parent devices are only required for multiseat */
++		if (p) {
++			if (mon->sd && udev_device_has_tag(p, "seat") != 1) {
++				log_debug("adding non-seat'ed device %s", name);
++				return;
++			}
++			sname = udev_device_get_property_value(p, "ID_SEAT");
++		}else{
+ 			log_debug("adding device without parent %s", name);
+-			return;
+-		}
+-		if (mon->sd && udev_device_has_tag(p, "seat") != 1) {
+-			log_debug("adding non-seat'ed device %s", name);
+-			return;
++			if(mon->sd)
++				return;
++			sname = NULL;
+ 		}
+-		sname = udev_device_get_property_value(p, "ID_SEAT");
+ 		type = UTERM_MONITOR_INPUT;
+ 		flags = 0;
+ 	} else {
 diff --git a/src/uterm_vt.c b/src/uterm_vt.c
 index af377f5..ca21cb9 100644
 --- a/src/uterm_vt.c
@@ -82,5 +137,5 @@ index af377f5..ca21cb9 100644
  #include <sys/stat.h>
  #include <termios.h>
 -- 
-2.22.0
+2.11.0
 

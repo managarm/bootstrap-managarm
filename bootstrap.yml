@@ -1654,7 +1654,7 @@ packages:
         - '--with-renderers='
         - '--with-fonts=unifont'
         - '--disable-multi-seat'
-        - '--with-sessions='
+        - '--with-sessions=dummy,terminal'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
