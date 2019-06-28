@@ -43,6 +43,7 @@ install -s system-root/usr/lib/libfs_protocol.so initrd/lib/
 install -s system-root/usr/lib/libhw_protocol.so initrd/lib/
 install -s system-root/usr/lib/libkernlet_protocol.so initrd/lib/
 install -s system-root/usr/lib/libmbus.so initrd/lib/
+install -s system-root/usr/lib/libsvrctl_protocol.so initrd/lib/
 install -s system-root/usr/lib/libusb_protocol.so initrd/lib/
 
 # User-space core components.
