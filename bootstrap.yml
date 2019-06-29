@@ -158,7 +158,7 @@ tools:
       # Stop aclocal from complaining.
       - args: ['ln', '-sf', '@PREFIX@/share/aclocal-1.15', '@PREFIX@/share/aclocal']
 
-  - name: host-frigg_pb
+  - name: host-managarm-tools
     from_source: managarm
     tools_required:
       - tool: host-protoc
@@ -1093,7 +1093,7 @@ packages:
     sources_required:
       - frigg
     tools_required:
-      - host-frigg_pb
+      - host-managarm-tools
       - host-protoc
       - kernel-gcc
     pkgs_required:
@@ -1200,7 +1200,7 @@ packages:
   - name: mlibc-headers
     from_source: mlibc
     tools_required:
-      - host-frigg_pb
+      - host-managarm-tools
       - host-protoc
     implict_package: true
     configure:
@@ -1221,7 +1221,7 @@ packages:
   - name: mlibc
     from_source: mlibc
     tools_required:
-      - host-frigg_pb
+      - host-managarm-tools
       - tool: system-gcc
         stage_dependencies: [compiler]
       - host-protoc
