@@ -24,7 +24,7 @@ fi
 # Build the initrd.
 # -----------------------------------------------------------------------------
 
-mkdir -p initrd/{bin,lib,sbin}
+mkdir -p initrd/{bin,lib,sbin,managarm/server}
 
 # Runtime libraries.
 install -s system-root/usr/lib/libhelix.so initrd/lib/
@@ -63,6 +63,9 @@ install -s system-root/usr/bin/virtio-block initrd/sbin/
 
 # Essential utilities.
 install -s system-root/usr/bin/runsvr initrd/bin/
+
+# Server descriptions.
+install system-root/usr/lib/managarm/server/*.bin initrd/managarm/server/
 
 # Actually build the initrd.
 (cd initrd/ && find * | cpio -o --format newc > ../initrd.cpio)

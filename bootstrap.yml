@@ -1120,6 +1120,7 @@ packages:
     from_source: managarm
     tools_required:
       - host-llvm-toolchain
+      - host-managarm-tools
       - host-pkg-config
       - host-protoc
       - system-gcc
