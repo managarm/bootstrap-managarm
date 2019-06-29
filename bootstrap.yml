@@ -1124,6 +1124,7 @@ packages:
       - host-protoc
       - system-gcc
     pkgs_required:
+      - eudev
       - fafnir
       - lewis
       - libasync
