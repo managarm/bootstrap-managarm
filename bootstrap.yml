@@ -1597,7 +1597,7 @@ packages:
   - name: libtsm
     source:
       subdir: 'ports'
-      git: 'git://people.freedesktop.org/~dvdhrm/libtsm'
+      git: 'https://github.com/managarm/libtsm-mirror.git'
       tag: 'libtsm-3'
       tools_required:
         - host-autoconf-v2.69
