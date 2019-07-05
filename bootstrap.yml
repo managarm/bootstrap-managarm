@@ -1663,3 +1663,5 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc/kmscon']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/kmscon.conf', '@THIS_COLLECT_DIR@/etc/kmscon/']
