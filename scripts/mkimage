@@ -81,7 +81,7 @@ cp initrd.cpio $dir/boot/managarm/
 
 # Copy the sysroot.
 mkdir -p $dir/bin $dir/lib $dir/root $dir/usr/bin $dir/usr/lib
-mkdir -p $dir/dev $dir/run $dir/sys
+mkdir -p $dir/dev $dir/proc $dir/run $dir/sys
 rsync -a --delete system-root/bin/ $dir/bin
 rsync -a --delete system-root/lib/ $dir/lib
 rsync -a --delete system-root/root/ $dir/root
