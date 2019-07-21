@@ -209,7 +209,6 @@ tools:
       - args: ['make', 'install']
 
   - name: host-llvm-toolchain
-    default: false
     from_source: llvm
     tools_required:
       - host-cmake
@@ -670,7 +669,6 @@ packages:
         - 'install'
 
   - name: coreutils
-    default: false
     source:
       subdir: 'ports'
       git: 'git://git.savannah.gnu.org/coreutils.git'
