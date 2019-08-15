@@ -1665,3 +1665,53 @@ packages:
         quiet: true
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc/kmscon']
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/kmscon.conf', '@THIS_COLLECT_DIR@/etc/kmscon/']
+
+  - name: vim
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/vim/vim.git'
+      tag: 'v8.1.1802'
+    tools_required:
+      - system-gcc
+      - host-pkg-config
+      - host-automake-v1.15
+    pkgs_required:
+      - ncurses
+    configure:
+      # vim does not seem to support out-of-tree builds, so we just copy
+      # the source tree into the build directory instead
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+      - args:
+        - './configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--disable-gtktest'
+        - '--disable-icon-cache-update'
+        - '--disable-desktop-database-update'
+        - '--disable-canberra'
+        - '--disable-selinux'
+        - '--disable-xsmp'
+        - '--disable-channel'
+        - '--disable-netbeans'
+        - '--enable-multibyte'
+        - '--disable-acl'
+        - '--disable-gpm'
+        - '--disable-sysmouse'
+        - '--disable-nls'
+        - '--with-tlib=ncurses'
+        environ:
+          vim_cv_toupper_broken: 'no'
+          vim_cv_terminfo: 'yes'
+          vim_cv_tgetent: 'zero'
+          vim_cv_tty_group: ''
+          vim_cv_tty_mode: '0620'
+          vim_cv_getcwd_broken: 'no'
+          vim_cv_stat_ignores_slash: 'no'
+          vim_cv_memmove_handles_overlap: 'yes'
+        workdir: '@THIS_BUILD_DIR@/src/'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
