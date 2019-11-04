@@ -58,6 +58,7 @@ sources:
       - acpica
       - cxxshim
       - frigg
+      - lai
       - libsmarter
     regenerate:
       - args: ['mkdir', '-p', '@THIS_SOURCE_DIR@/subprojects']
