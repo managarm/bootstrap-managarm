@@ -1720,3 +1720,66 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+
+  - name: sdl2
+    source:
+      subdir: 'ports'
+      hg: 'http://hg.libsdl.org/SDL'
+      tag: 'release-2.0.10'
+    tools_required:
+      - system-gcc
+      - host-cmake
+      - host-pkg-config
+    pkgs_required:
+      - libdrm
+      - eudev
+      - mesa
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain.txt'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DALTIVEC=OFF'
+        - '-DDISKAUDIO=OFF'
+        - '-DVIDEO_DIRECTFB=ON'
+        - '-DVIDEO_OPENGL=ON'
+        - '-DVIDEO_OPENGLES=ON'
+        - '-DPTHREADS=OFF'
+        - '-DPTHREADS_SEM=OFF'
+        - '-DOSS=OFF'
+        - '-DALSA=OFF'
+        - '-DJACK=OFF'
+        - '-DESD=OFF'
+        - '-DPULSEAUDIO=OFF'
+        - '-DARTS=OFF'
+        - '-DNAS=OFF'
+        - '-DSNDIO=OFF'
+        - '-DFUSIONSOUND=OFF'
+        - '-DLIBSAMPLERATE=OFF'
+        - '-DRPATH=OFF'
+        - '-DCLOCK_GETTIME=OFF'
+        - '-DINPUT_TSLIB=OFF'
+        - '-DVIDEO_X11=OFF'
+        - '-DVIDEO_WAYLAND=OFF'
+        - '-DVIDEO_WAYLAND_QT_TOUCH=OFF'
+        - '-DVIDEO_RPI=OFF'
+        - '-DVIDEO_COCOA=OFF'
+        - '-DDIRECTX=OFF'
+        - '-DWASAPI=OFF'
+        - '-DRENDER_D3D=OFF'
+        - '-DVIDEO_VIVANTE=OFF'
+        - '-DVIDEO_VULKAN=OFF'
+        - '-DVIDEO_KMSDRM=ON'
+        - '-DKMSDRM_SHARED=OFF'
+        - '-DSDL_DLOPEN=ON'
+        - '-DHIDAPI=OFF'
+        - '-DSDL_SHARED=ON'
+        - '-DSDL_STATIC=OFF'
+        - '@THIS_SOURCE_DIR@/'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
