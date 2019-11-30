@@ -1,4 +1,4 @@
-From 1fb378c45b1ddd8ca51ca5b74627ee91cdc941d4 Mon Sep 17 00:00:00 2001
+From 41f8ddd05ee3d3ae902d7d515f38b9325ff1b314 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Kacper=20S=C5=82omi=C5=84ski?=
  <kacper.slominski72@gmail.com>
 Date: Sat, 30 Nov 2019 16:13:39 +0100
@@ -6,8 +6,8 @@ Subject: [PATCH 2/2] Add managarm-specific things
 
 ---
  common/sys_managarm.c | 163 ++++++++++++++++++++++++++++++++++++++++++
- meson.build           | 146 +++++++++++++++++++++++++++++++++++++
- 2 files changed, 309 insertions(+)
+ meson.build           | 145 +++++++++++++++++++++++++++++++++++++
+ 2 files changed, 308 insertions(+)
  create mode 100644 common/sys_managarm.c
  create mode 100644 meson.build
 
@@ -182,10 +182,10 @@ index 0000000..0b50756
 +}
 diff --git a/meson.build b/meson.build
 new file mode 100644
-index 0000000..b2a334b
+index 0000000..a74333f
 --- /dev/null
 +++ b/meson.build
-@@ -0,0 +1,146 @@
+@@ -0,0 +1,145 @@
 +# This build only compiles the normal quake software renderer version with SDL, tailored for managarm.
 +
 +project('tyr-quake', 'c')
@@ -311,12 +311,11 @@ index 0000000..b2a334b
 +cc = meson.get_compiler('c')
 +
 +sdl_dep = dependency('sdl2', method: 'pkg-config')
-+sdl_lib = cc.find_library('SDL2')
 +m_dep = cc.find_library('m', required : false)
 +
 +gl_dep = cc.find_library('GLESv2')
 +
-+includes = include_directories('include/', 'NQ/', sdl_dep.get_pkgconfig_variable('includedir') + '/SDL2')
++includes = include_directories('include/', 'NQ/')
 +
 +cflags = [
 +	'-DTYR_VERSION=0.65',
@@ -328,10 +327,10 @@ index 0000000..b2a334b
 +nqsw_exe = executable('tyr-quake',
 +	common_files, client_files, server_files, software_renderer_files, system_files, nq_client_files,
 +	include_directories: [includes],
-+	dependencies: [sdl_lib, m_dep],
++	dependencies: [sdl_dep, m_dep],
 +	c_args: cflags,
 +	install: true
 +)
 -- 
-2.24.0
+2.20.1
 

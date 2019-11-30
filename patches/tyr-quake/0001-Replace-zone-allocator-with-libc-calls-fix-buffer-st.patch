@@ -1,4 +1,4 @@
-From a57bb440bcd7ca21561f60014c0830e8530461d2 Mon Sep 17 00:00:00 2001
+From 28df7a5583e476b8ead56407a063ca4f367d77a5 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Kacper=20S=C5=82omi=C5=84ski?=
  <kacper.slominski72@gmail.com>
 Date: Sat, 30 Nov 2019 15:18:03 +0100
@@ -467,5 +467,5 @@ index fa03121..0f1437e 100644
      Cmd_AddCommand("cache", Cache_f);
  }
 -- 
-2.24.0
+2.20.1
 
