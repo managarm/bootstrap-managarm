@@ -1,0 +1,471 @@
+From a57bb440bcd7ca21561f60014c0830e8530461d2 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Kacper=20S=C5=82omi=C5=84ski?=
+ <kacper.slominski72@gmail.com>
+Date: Sat, 30 Nov 2019 15:18:03 +0100
+Subject: [PATCH 1/2] Replace zone allocator with libc calls, fix buffer/stack
+ overflows
+
+---
+ common/common.c |   5 +
+ common/r_main.c |  25 ++--
+ common/zone.c   | 299 +-----------------------------------------------
+ 3 files changed, 25 insertions(+), 304 deletions(-)
+
+diff --git a/common/common.c b/common/common.c
+index 546dd54..5070999 100644
+--- a/common/common.c
++++ b/common/common.c
+@@ -921,6 +921,11 @@ COM_StripExtension(const char *filename, char *out, size_t buflen)
+ 	return;
+     }
+ 
++    if (!pos) {
++        memcpy(out, filename, qmin(strlen(filename) + 1, buflen));
++        return;
++    }
++
+     copylen = qmin((size_t)(pos - filename), buflen - 1);
+     memcpy(out, filename, copylen);
+     out[copylen] = 0;
+diff --git a/common/r_main.c b/common/r_main.c
+index 245907a..944c70a 100644
+--- a/common/r_main.c
++++ b/common/r_main.c
+@@ -1088,7 +1088,7 @@ R_RenderView_(void)
+     byte warpbuffer[WARP_WIDTH * WARP_HEIGHT];
+     scanflags_t scanflags;
+     int numsavesurfs, numsaveedges;
+-    qboolean realloc, nostack;
++    qboolean _realloc, nostack;
+ 
+     r_warpbuffer = warpbuffer;
+ 
+@@ -1120,11 +1120,11 @@ R_RenderView_(void)
+      * possible to go back to stack based next frame if we're still
+      * below MAX_STACK_*
+      */
+-    nostack = false;
++    nostack = true;
+ 
+  moar_surfedges:
+     // If we ran out of surfs/edges previously, bump the limits
+-    realloc = false;
++    _realloc = false;
+     if (r_edges_overflow) {
+         if (r_numedges < MAX_EDGES_INCREMENT)
+             r_numedges *= 2;
+@@ -1133,7 +1133,7 @@ R_RenderView_(void)
+ 
+         Con_DPrintf("edge limit bumped to %d\n", r_numedges);
+         r_edges_overflow = false;
+-        realloc = true;
++        _realloc = true;
+     }
+     if (r_surfaces_overflow) {
+         if (r_numsurfaces < MAX_SURFACES_INCREMENT)
+@@ -1143,11 +1143,11 @@ R_RenderView_(void)
+ 
+         Con_DPrintf("surface limit bumped to %d\n", r_numsurfaces);
+         r_surfaces_overflow = false;
+-        realloc = true;
++        _realloc = true;
+     }
+ 
+     // Redo heap allocations it needed...
+-    if (realloc) {
++    if (_realloc) {
+         Hunk_FreeToLowMark(r_maphunkmark);
+ 
+         auxsurfaces = NULL;
+@@ -1163,18 +1163,23 @@ R_RenderView_(void)
+         saveedges = Hunk_AllocName(r_numedges * sizeof(edge_t), "saveedge");
+     }
+ 
++    // HACK: this is a hack to avoid using alloca, 
++    //       which causes a stack overflow on managarm
++    static edge_t *tmp_edges = NULL;
++    static surf_t *tmp_surfs = NULL;
++
+     /* If we can fit edges/surfs on the stack, allocate them now */
+     if (auxedges) {
+         r_edges = auxedges;
+     } else {
+-        edge_t *stackedges = alloca(CACHE_PAD_ARRAY(r_numedges, edge_t) * sizeof(edge_t));
+-        r_edges = CACHE_ALIGN_PTR(stackedges);
++        tmp_edges = realloc(tmp_edges, CACHE_PAD_ARRAY(r_numedges, edge_t) * sizeof(edge_t));
++        r_edges = CACHE_ALIGN_PTR(tmp_edges);
+     }
+     if (auxsurfaces) {
+         surfaces = auxsurfaces - 1;
+     } else {
+-        surf_t *stacksurfs = alloca(CACHE_PAD_ARRAY(r_numsurfaces, surf_t) * sizeof(surf_t));
+-        surfaces = CACHE_ALIGN_PTR(stacksurfs);
++        tmp_surfs = realloc(tmp_surfs, CACHE_PAD_ARRAY(r_numsurfaces, surf_t) * sizeof(surf_t));
++        surfaces = CACHE_ALIGN_PTR(tmp_surfs);
+         surf_max = &surfaces[r_numsurfaces];
+ 	// surface 0 doesn't really exist; it's just a dummy because index 0
+ 	// is used to indicate no edge attached to surface
+diff --git a/common/zone.c b/common/zone.c
+index fa03121..0f1437e 100644
+--- a/common/zone.c
++++ b/common/zone.c
+@@ -30,72 +30,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ #define	ZONEID		0x1d4a11
+ #define MINFRAGMENT	64
+ 
+-typedef struct memblock_s {
+-    int size;		/* including the header and possibly tiny fragments */
+-    int tag;		/* a tag of 0 is a free block */
+-    int id;		/* should be ZONEID */
+-    int pad;		/* pad to 64 bit boundary */
+-    struct memblock_s *next, *prev;
+-} memblock_t;
+-
+-typedef struct {
+-    int size;			/* total bytes malloced, including header */
+-    memblock_t blocklist;	/* start/end cap for linked list */
+-    memblock_t *rover;
+-} memzone_t;
+-
+ static void Cache_FreeLow(int new_low_hunk);
+ static void Cache_FreeHigh(int new_high_hunk);
+ static void Cache_Dealloc(cache_user_t *c);
+ 
+-/*
+- * ============================================================================
+- *
+- * ZONE MEMORY ALLOCATION
+- *
+- * There is never any space between memblocks, and there will never be two
+- * contiguous free memblocks.
+- *
+- * The rover can be left pointing at a non-empty block
+- *
+- * The zone calls are pretty much only used for small strings and structures,
+- * all big things are allocated on the hunk.
+- * ============================================================================
+- */
+-
+-static memzone_t *mainzone;
+-
+-static void Z_ClearZone(memzone_t *zone, int size);
+-
+-
+-/*
+- * ========================
+- * Z_ClearZone
+- * ========================
+- */
+-static void
+-Z_ClearZone(memzone_t *zone, int size)
+-{
+-    memblock_t *block;
+-
+-    /*
+-     * set the entire zone to one free block
+-     */
+-    zone->blocklist.next = zone->blocklist.prev = block =
+-	(memblock_t *)((byte *)zone + sizeof(memzone_t));
+-    zone->blocklist.tag = 1;	/* in use block */
+-    zone->blocklist.id = 0;
+-    zone->blocklist.size = 0;
+-    zone->rover = block;
+-    zone->size = size;
+-
+-    block->prev = block->next = &zone->blocklist;
+-    block->tag = 0;		/* free block */
+-    block->id = ZONEID;
+-    block->size = size - sizeof(memzone_t);
+-}
+-
+-
+ /*
+  * ========================
+  * Z_Free
+@@ -104,143 +42,9 @@ Z_ClearZone(memzone_t *zone, int size)
+ void
+ Z_Free(const void *ptr)
+ {
+-    memblock_t *block, *other;
+-
+-    if (!ptr)
+-	Sys_Error("%s: NULL pointer", __func__);
+-
+-    block = (memblock_t *)((const byte *)ptr - sizeof(memblock_t));
+-    if (block->id != ZONEID)
+-	Sys_Error("%s: freed a pointer without ZONEID", __func__);
+-    if (block->tag == 0)
+-	Sys_Error("%s: freed a freed pointer", __func__);
+-
+-    block->tag = 0;		/* mark as free */
+-
+-    other = block->prev;
+-    if (!other->tag) {		/* merge with previous free block */
+-	other->size += block->size;
+-	other->next = block->next;
+-	other->next->prev = other;
+-	if (block == mainzone->rover)
+-	    mainzone->rover = other;
+-	block = other;
+-    }
+-
+-    other = block->next;
+-    if (!other->tag) {		/* merge the next free block onto the end */
+-	block->size += other->size;
+-	block->next = other->next;
+-	block->next->prev = block;
+-	if (other == mainzone->rover)
+-	    mainzone->rover = block;
+-    }
+-
+-    /*
+-     * Always start looking from the first available free block.
+-     * Slower, but not too bad and we don't fragment nearly as much.
+-     */
+-    if (block < mainzone->rover) {
+-	mainzone->rover = block;
+-    }
++    free((void *)ptr);
+ }
+ 
+-
+-/*
+- * ========================
+- * Z_CheckHeap
+- * ========================
+- */
+-static void
+-Z_CheckHeap(void)
+-{
+-#ifdef DEBUG
+-    memblock_t *block;
+-
+-    for (block = mainzone->blocklist.next;; block = block->next) {
+-	if (block->next == &mainzone->blocklist)
+-	    break;	/* all blocks have been hit */
+-	if ((byte *)block + block->size != (byte *)block->next)
+-	    Sys_Error("%s: block size does not touch the next block",
+-		      __func__);
+-	if (block->next->prev != block)
+-	    Sys_Error("%s: next block doesn't have proper back link",
+-		      __func__);
+-	if (!block->tag && !block->next->tag)
+-	    Sys_Error("%s: two consecutive free blocks", __func__);
+-    }
+-#endif
+-}
+-
+-
+-static void *
+-Z_TagMalloc(int size, int tag)
+-{
+-    int extra, *marker;
+-    memblock_t *start, *rover, *new, *base;
+-
+-    if (!tag)
+-	Sys_Error("%s: tried to use a 0 tag", __func__);
+-
+-    /*
+-     * Scan through the block list looking for the first free block of
+-     * sufficient size
+-     */
+-    size += sizeof(memblock_t);	/* account for size of block header */
+-    size += sizeof(int);	/* space for memory trash tester */
+-    size = (size + 7) & ~7;	/* align to 8-byte boundary */
+-
+-    /* If we ended on an allocated block, skip forward to the first free block */
+-    start = mainzone->rover->prev;
+-    while (mainzone->rover->tag && mainzone->rover != start) {
+-	mainzone->rover = mainzone->rover->next;
+-    }
+-
+-    base = rover = mainzone->rover;
+-    do {
+-	if (rover == start)	/* scaned all the way around the list */
+-	    return NULL;
+-	if (rover->tag)
+-	    base = rover = rover->next;
+-	else
+-	    rover = rover->next;
+-    } while (base->tag || base->size < size);
+-
+-    /* found a block big enough */
+-    extra = base->size - size;
+-    if (extra > MINFRAGMENT) {
+-	/* there will be a free fragment after the allocated block */
+-	new = (memblock_t *)((byte *)base + size);
+-	new->size = extra;
+-	new->tag = 0;		/* free block */
+-	new->prev = base;
+-	new->id = ZONEID;
+-	new->next = base->next;
+-	new->next->prev = new;
+-	base->next = new;
+-	base->size = size;
+-    }
+-
+-    base->tag = tag;		   /* no longer a free block */
+-
+-    /*
+-     * If we just allocated the first available block, the next
+-     * allocation starts looking after this one.
+-     */
+-    if (base == mainzone->rover) {
+-	mainzone->rover = base->next;
+-    }
+-
+-    base->id = ZONEID;
+-
+-    /* marker for memory trash testing */
+-    marker = (int *)((byte *)base + base->size - sizeof(int));
+-    *marker = ZONEID;
+-
+-    return base + 1;
+-}
+-
+-
+ /*
+  * ========================
+  * Z_Malloc
+@@ -251,8 +55,7 @@ Z_Malloc(int size)
+ {
+     void *buf;
+ 
+-    Z_CheckHeap();		/* DEBUG */
+-    buf = Z_TagMalloc(size, 1);
++    buf = malloc(size);
+     if (!buf)
+ 	Sys_Error("%s: failed on allocation of %i bytes", __func__, size);
+     memset(buf, 0, size);
+@@ -268,96 +71,7 @@ Z_Malloc(int size)
+ void *
+ Z_Realloc(const void *ptr, int size)
+ {
+-    memblock_t *block;
+-    int orig_size;
+-    void *ret;
+-
+-    if (!ptr)
+-	return Z_Malloc(size);
+-
+-    block = (memblock_t *)((byte *)ptr - sizeof(memblock_t));
+-    if (block->id != ZONEID)
+-	Sys_Error("%s: realloced a pointer without ZONEID", __func__);
+-    if (!block->tag)
+-	Sys_Error("%s: realloced a freed pointer", __func__);
+-
+-    orig_size = block->size;
+-    orig_size -= sizeof(memblock_t);
+-    orig_size -= sizeof(int); /* ZONEID marker */
+-
+-    Z_Free(ptr);
+-    ret = Z_TagMalloc(size, 1);
+-    if (!ret)
+-	Sys_Error("%s: failed on allocation of %i bytes", __func__, size);
+-    if (ret != ptr)
+-	memmove(ret, ptr, qmin(orig_size, size));
+-    if (size > orig_size)
+-	memset((byte *)ret + orig_size, 0, size - orig_size);
+-    return ret;
+-}
+-
+-/*
+- * ========================
+- * Z_Print
+- * ========================
+- */
+-static void
+-Z_Print(const memzone_t *zone, qboolean detailed)
+-{
+-    const memblock_t *block;
+-    unsigned free_blocks = 0, used_blocks = 0;
+-    size_t free_size = 0, used_size = 0;
+-
+-    block = zone->blocklist.next;
+-    while (block) {
+-	if (detailed) {
+-	    const char *rover = (block == zone->rover) ? " <<" : "";
+-	    Con_Printf("block:%p    size:%7i    tag:%3i %s\n",
+-		       block, block->size, block->tag, rover);
+-	}
+-
+-	/* Update totals */
+-	if (!block->tag) {
+-	    free_blocks++;
+-	    free_size += block->size;
+-	} else {
+-	    used_blocks++;
+-	    used_size += block->size;
+-	}
+-
+-	if (block->next == &zone->blocklist)
+-	    break;		/* all blocks have been hit */
+-	if ((byte *)block + block->size != (byte *)block->next)
+-	    Con_Printf("ERROR: block size does not touch the next block\n");
+-	if (block->next->prev != block)
+-	    Con_Printf("ERROR: next block doesn't have proper back link\n");
+-	if (!block->tag && !block->next->tag)
+-	    Con_Printf("ERROR: two consecutive free blocks\n");
+-
+-	block = block->next;
+-    }
+-
+-    Con_Printf("zone size: %d  location: %p\n", zone->size, zone);
+-    Con_Printf("  %7lu bytes used in %d blocks\n",
+-	       (unsigned long)used_size, used_blocks);
+-    Con_Printf("  %7lu bytes available in %d blocks\n",
+-	       (unsigned long)free_size, free_blocks);
+-}
+-
+-static void
+-Z_Zone_f(void)
+-{
+-    if (Cmd_Argc() == 2) {
+-	if (!strcmp(Cmd_Argv(1), "print")) {
+-	    Z_Print(mainzone, false);
+-	    return;
+-	}
+-	if (!strcmp(Cmd_Argv(1), "printall")) {
+-	    Z_Print(mainzone, true);
+-	    return;
+-	}
+-    }
+-    Con_Printf("Usage: zone print\n");
++    return realloc((void *)ptr, size);
+ }
+ 
+ char *
+@@ -579,7 +293,7 @@ Hunk_AllocName(int size, const char *name)
+     memset(hunk, 0, size);
+     hunk->size = size;
+     hunk->sentinal = HUNK_SENTINAL;
+-    memcpy(hunk->name, name, qmin((int)sizeof(hunk->name), HUNK_NAMELEN));
++    memcpy(hunk->name, name, qmin(strlen(name) + 1, HUNK_NAMELEN));
+ 
+     /* Save a copy of the allocated address */
+     hunkstate.lowbase = hunk + 1;
+@@ -715,7 +429,7 @@ Hunk_HighAllocName(int size, const char *name)
+     memset(hunk, 0, size);
+     hunk->size = size;
+     hunk->sentinal = HUNK_SENTINAL;
+-    memcpy(hunk->name, name, qmin((int)sizeof(hunk->name), HUNK_NAMELEN));
++    memcpy(hunk->name, name, qmin(strlen(name) + 1, HUNK_NAMELEN));
+ 
+     return (void *)(hunk + 1);
+ }
+@@ -1266,12 +980,9 @@ Memory_Init(void *buf, int size)
+ 	    Sys_Error("%s: you must specify a size in KB after -zone",
+ 		      __func__);
+     }
+-    mainzone = Hunk_AllocName(zonesize, "zone");
+-    Z_ClearZone(mainzone, zonesize);
+ 
+     /* Needs to be added after the zone init... */
+     Cmd_AddCommand("flush", Cache_Flush);
+     Cmd_AddCommand("hunk", Hunk_f);
+-    Cmd_AddCommand("zone", Z_Zone_f);
+     Cmd_AddCommand("cache", Cache_f);
+ }
+-- 
+2.24.0
+

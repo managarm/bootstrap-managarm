@@ -1,0 +1,337 @@
+From 1fb378c45b1ddd8ca51ca5b74627ee91cdc941d4 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Kacper=20S=C5=82omi=C5=84ski?=
+ <kacper.slominski72@gmail.com>
+Date: Sat, 30 Nov 2019 16:13:39 +0100
+Subject: [PATCH 2/2] Add managarm-specific things
+
+---
+ common/sys_managarm.c | 163 ++++++++++++++++++++++++++++++++++++++++++
+ meson.build           | 146 +++++++++++++++++++++++++++++++++++++
+ 2 files changed, 309 insertions(+)
+ create mode 100644 common/sys_managarm.c
+ create mode 100644 meson.build
+
+diff --git a/common/sys_managarm.c b/common/sys_managarm.c
+new file mode 100644
+index 0000000..0b50756
+--- /dev/null
++++ b/common/sys_managarm.c
+@@ -0,0 +1,163 @@
++/*
++Copyright (C) 2019 managarm authors
++
++This program is free software; you can redistribute it and/or
++modify it under the terms of the GNU General Public License
++as published by the Free Software Foundation; either version 2
++of the License, or (at your option) any later version.
++
++This program is distributed in the hope that it will be useful,
++but WITHOUT ANY WARRANTY; without even the implied warranty of
++MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++
++See the GNU General Public License for more details.
++
++You should have received a copy of the GNU General Public License
++along with this program; if not, write to the Free Software
++Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
++
++*/
++// sys_managarm.h -- system driver for managarm
++
++#include <errno.h>
++#include <fcntl.h>
++#include <stdarg.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <sys/stat.h>
++#include <sys/time.h>
++#include <sys/types.h>
++#include <time.h>
++#include <unistd.h>
++
++#include <signal.h>
++#include <sys/ipc.h>
++#include <sys/mman.h>
++
++#include "buildinfo.h"
++#include "common.h"
++#include "sys.h"
++#include "zone.h"
++
++#include "quakedef.h"
++
++#include "client.h"
++#include "host.h"
++
++qboolean isDedicated;
++
++int64_t Sys_FileTime(const char *path) {
++	struct stat buf;
++
++	if (stat(path, &buf) == -1)
++		return -1;
++
++	return buf.st_mtime;
++}
++
++void Sys_mkdir(const char *path) {
++	mkdir(path, 0777);
++}
++
++void Sys_MakeCodeWriteable(void *start_addr, void *end_addr) {
++	assert(!"Sys_MakeCodeWriteable is unimplemented");
++}
++
++void Sys_DebugLog(const char *file, const char *fmt, ...) {
++}
++
++void Sys_Error(const char *error, ...) {
++	va_list argptr;
++
++	printf("Sys_Error: ");
++	va_start(argptr, error);
++	vprintf(error, argptr);
++	va_end(argptr);
++	printf("\n");
++
++	exit(1);
++}
++
++void Sys_Printf(const char *fmt, ...) {
++	va_list argptr;
++
++	va_start(argptr, fmt);
++	vprintf(fmt, argptr);
++	va_end(argptr);
++}
++
++void Sys_Quit(void) {
++	exit(0);
++}
++
++double Sys_DoubleTime(void) {
++	struct timeval tp;
++	static int secbase;
++
++	gettimeofday(&tp, NULL);
++
++	if (!secbase) {
++		secbase = tp.tv_sec;
++		return tp.tv_usec / 1000000.0;
++	}
++
++	return (tp.tv_sec - secbase) + tp.tv_usec / 1000000.0;
++}
++
++char *Sys_ConsoleInput(void) {
++	return NULL;
++}
++
++void Sys_Sleep(void) {
++	struct timespec ts;
++
++	ts.tv_sec = 0;
++	ts.tv_nsec = 1000000;
++
++	while (nanosleep(&ts, &ts) == -1)
++	if (errno != EINTR)
++		break;
++}
++
++void Sys_HighFPPrecision(void) {}
++void Sys_LowFPPrecision(void) {}
++
++int main(int argc, char **argv) {
++	double time, oldtime, newtime;
++	quakeparms_t parms;
++
++	COM_InitArgv(argc, (const char **)argv);
++
++	parms.memsize = Memory_GetSize();
++	parms.membase = malloc(parms.memsize);
++	parms.basedir = ".";
++
++	parms.argc = com_argc;
++	parms.argv = com_argv;
++
++	Host_Init(&parms);
++
++	oldtime = Sys_DoubleTime();
++	while (1) {
++		newtime = Sys_DoubleTime();
++		time = newtime - oldtime;
++
++		if (cls.state == ca_dedicated) {
++			if (time < sys_ticrate.value) {
++				usleep(1);
++				continue;
++			}
++			time = sys_ticrate.value;
++		}
++
++		if (time > sys_ticrate.value * 2)
++			oldtime = newtime;
++		else
++			oldtime += time;
++
++		Host_Frame(time);
++	}
++
++	return 0;
++}
+diff --git a/meson.build b/meson.build
+new file mode 100644
+index 0000000..b2a334b
+--- /dev/null
++++ b/meson.build
+@@ -0,0 +1,146 @@
++# This build only compiles the normal quake software renderer version with SDL, tailored for managarm.
++
++project('tyr-quake', 'c')
++
++common_files = files(
++	'common/buildinfo.c',
++	'common/cmd.c',
++	'common/common.c',
++	'common/crc.c',
++	'common/cvar.c',
++	'common/mathlib.c',
++	'common/model.c',
++	'common/rb_tree.c',
++	'common/shell.c',
++	'common/zone.c'
++)
++
++client_files = files(
++	'common/alias_model.c',
++	'common/cd_common.c',
++	'NQ/cl_demo.c',
++	'NQ/cl_input.c',
++	'NQ/cl_main.c',
++	'NQ/cl_parse.c',
++	'NQ/cl_tent.c',
++	'common/console.c',
++	'common/developer.c',
++	'common/keys.c',
++	'common/menu.c',
++	'common/pcx.c',
++	'common/r_lerp.c',
++	'common/r_efrag.c',
++	'common/r_light.c',
++	'common/r_model.c',
++	'common/r_part.c',
++	'NQ/sbar.c',
++	'common/screen.c',
++	'common/snd_dma.c',
++	'common/snd_mem.c',
++	'common/snd_mix.c',
++	'common/sprite_model.c',
++	'common/vid_mode.c',
++	'NQ/view.c',
++	'common/wad.c'
++)
++
++server_files = files(
++	'common/pr_cmds.c',
++	'common/pr_edict.c',
++	'common/pr_exec.c',
++	'NQ/sv_main.c',
++	'common/sv_move.c',
++	'common/sv_phys.c',
++	'NQ/sv_user.c'
++)
++
++nq_client_files = files(
++	'NQ/chase.c',
++	'NQ/host.c',
++	'NQ/host_cmd.c',
++	'NQ/net_common.c',
++	'NQ/net_dgrm.c',
++	'NQ/net_loop.c',
++	'NQ/net_main.c',
++	'common/world.c'
++)
++
++software_renderer_files = files(
++	'common/d_edge.c',
++	'common/d_fill.c',
++	'common/d_init.c',
++	'common/d_modech.c',
++	'common/d_part.c',
++	'common/d_polyse.c',
++	'common/d_scan.c',
++	'common/d_sky.c',
++	'common/d_sprite.c',
++	'common/d_surf.c',
++	'common/d_vars.c',
++	'common/draw.c',
++	'common/r_aclip.c',
++	'common/r_alias.c',
++	'common/r_bsp.c',
++	'common/r_draw.c',
++	'common/r_edge.c',
++	'common/r_main.c',
++	'common/r_misc.c',
++	'common/r_sky.c',
++	'common/r_sprite.c',
++	'common/r_surf.c',
++	'common/r_vars.c',
++	'common/nonintel.c'
++)
++
++# unused now, maybe some day
++opengl_renderer_files = files(
++	'common/drawhulls.c',
++	'common/gl_draw.c',
++	'common/gl_extensions.c',
++	'common/gl_fog.c',
++	'common/gl_mesh.c',
++	'common/gl_model.c',
++	'common/gl_rmain.c',
++	'common/gl_rmisc.c',
++	'common/gl_rsurf.c',
++	'common/gl_sky.c',
++	'common/gl_textures.c',
++	'common/gl_warp.c',
++	'common/qpic.c',
++	'common/tga.c',
++)
++
++system_files = files(
++	'common/sys_managarm.c',
++	'NQ/net_none.c',
++	'common/sdl_common.c',
++	'common/cd_null.c',
++	'common/in_sdl.c',
++	'common/snd_null.c',
++	'common/vid_sdl.c'
++)
++
++cc = meson.get_compiler('c')
++
++sdl_dep = dependency('sdl2', method: 'pkg-config')
++sdl_lib = cc.find_library('SDL2')
++m_dep = cc.find_library('m', required : false)
++
++gl_dep = cc.find_library('GLESv2')
++
++includes = include_directories('include/', 'NQ/', sdl_dep.get_pkgconfig_variable('includedir') + '/SDL2')
++
++cflags = [
++	'-DTYR_VERSION=0.65',
++	'-DTYR_VERSION_TIME=0LL',
++	'-DNQ_HACK',
++	'-DELF',
++]
++
++nqsw_exe = executable('tyr-quake',
++	common_files, client_files, server_files, software_renderer_files, system_files, nq_client_files,
++	include_directories: [includes],
++	dependencies: [sdl_lib, m_dep],
++	c_args: cflags,
++	install: true
++)
+-- 
+2.24.0
+
