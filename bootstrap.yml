@@ -1341,6 +1341,8 @@ packages:
       url: 'ftp://ftp.invisible-island.net/ncurses/ncurses.tar.gz'
       format: 'tar.gz'
       extract_path: 'ncurses-6.1'
+      tools_required:
+        - host-automake-v1.11
       regenerate:
         - args: ['cp',
             '@BUILD_ROOT@/tools/host-automake-v1.11/share/automake-1.11/config.sub',
