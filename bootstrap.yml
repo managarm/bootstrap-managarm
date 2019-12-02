@@ -1793,6 +1793,7 @@ packages:
       tag: 'v0.65'
     tools_required:
       - system-gcc
+      - host-pkg-config
     pkgs_required:
       - sdl2
     configure:
