@@ -1,253 +1,198 @@
-From 0a6d81c3d7f5baf27861a8ef17faa461394393f5 Mon Sep 17 00:00:00 2001
+From 865ab2cca8c80d9346e5c950732b496c7b735f3a Mon Sep 17 00:00:00 2001
 From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
-Date: Wed, 13 Dec 2017 16:35:26 +0100
+Date: Fri, 31 May 2019 20:28:26 +0200
 Subject: [PATCH] Managarm-specific changes
 
 ---
- configure.ac                                          | 6 +++---
- src/gallium/auxiliary/hud/hud_context.c               | 2 ++
- src/gallium/auxiliary/os/os_misc.c                    | 4 ++--
- src/gallium/auxiliary/os/os_process.c                 | 7 ++++---
- src/gallium/auxiliary/os/os_thread.h                  | 2 +-
- src/gallium/auxiliary/os/os_time.c                    | 4 ++--
- src/gallium/auxiliary/pipebuffer/pb_buffer_fenced.c   | 4 ++--
- src/gallium/auxiliary/util/u_cpu_detect.c             | 2 +-
- src/gallium/auxiliary/util/u_network.c                | 8 +++++---
- src/gallium/auxiliary/util/u_network.h                | 2 +-
- src/gallium/drivers/ddebug/dd_draw.c                  | 2 +-
- src/gallium/include/pipe/p_config.h                   | 9 +++++++--
- src/gallium/winsys/svga/drm/pb_buffer_simple_fenced.c | 4 ++--
- src/util/debug.c                                      | 1 +
- 14 files changed, 34 insertions(+), 23 deletions(-)
+ include/drm-uapi/drm.h                 | 94 ++--------------------------------
+ meson.build                            |  2 +-
+ src/gallium/auxiliary/util/u_network.c |  1 +
+ src/gallium/include/pipe/p_config.h    |  9 +++-
+ src/loader/loader.c                    |  1 +
+ src/util/debug.c                       |  1 +
+ src/util/os_misc.c                     |  4 +-
+ src/util/os_time.c                     |  4 +-
+ 8 files changed, 18 insertions(+), 98 deletions(-)
 
-diff --git a/configure.ac b/configure.ac
-index f4cc9989f6..495ed085c7 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -747,14 +747,14 @@ if test "x$enable_asm" = xyes; then
-     case "$host_cpu" in
-     i?86)
-         case "$host_os" in
--        linux* | *freebsd* | dragonfly* | *netbsd* | openbsd* | gnu*)
-+        linux* | *freebsd* | dragonfly* | *netbsd* | openbsd* | managarm* | gnu*)
-             asm_arch=x86
-             ;;
-         esac
-         ;;
-     x86_64|amd64)
-         case "$host_os" in
--        linux* | *freebsd* | dragonfly* | *netbsd* | openbsd*)
-+        linux* | *freebsd* | dragonfly* | *netbsd* | openbsd* | managarm*)
-             asm_arch=x86_64
-             ;;
-         esac
-@@ -846,7 +846,7 @@ PTHREAD_LIBS="$PTHREAD_LIBS -pthread"
- dnl pthread-stubs is mandatory on BSD platforms, due to the nature of the
- dnl project. Even then there's a notable issue as described in the project README
- case "$host_os" in
--linux* | cygwin* | darwin* | solaris* | *-gnu* | gnu*)
-+linux* | cygwin* | darwin* | solaris* | *-gnu* | gnu* | managarm*)
-     pthread_stubs_possible="no"
-     ;;
- * )
-diff --git a/src/gallium/auxiliary/hud/hud_context.c b/src/gallium/auxiliary/hud/hud_context.c
-index f492c81fe6..a3e25018dc 100644
---- a/src/gallium/auxiliary/hud/hud_context.c
-+++ b/src/gallium/auxiliary/hud/hud_context.c
-@@ -33,6 +33,8 @@
-  * Set GALLIUM_HUD=help for more info.
-  */
+diff --git a/include/drm-uapi/drm.h b/include/drm-uapi/drm.h
+index f0bd91d..4ab071c 100644
+--- a/include/drm-uapi/drm.h
++++ b/include/drm-uapi/drm.h
+@@ -36,10 +36,11 @@
+ #ifndef _DRM_H_
+ #define _DRM_H_
  
-+#include <unistd.h>
-+
- #include <inttypes.h>
- #include <signal.h>
- #include <stdio.h>
-diff --git a/src/gallium/auxiliary/os/os_misc.c b/src/gallium/auxiliary/os/os_misc.c
-index 09d4400e08..6b9e0fabdc 100644
---- a/src/gallium/auxiliary/os/os_misc.c
-+++ b/src/gallium/auxiliary/os/os_misc.c
-@@ -47,7 +47,7 @@
+-#if   defined(__linux__)
++#if   defined(__linux__) || defined(__managarm__)
+ 
++#include <sys/ioctl.h>
+ #include <linux/types.h>
+-#include <asm/ioctl.h>
++//#include <asm/ioctl.h>
+ typedef unsigned int drm_handle_t;
+ 
+ #else /* One of the BSDs */
+@@ -642,7 +643,6 @@ struct drm_gem_open {
+ #define DRM_CAP_ADDFB2_MODIFIERS	0x10
+ #define DRM_CAP_PAGE_FLIP_TARGET	0x11
+ #define DRM_CAP_CRTC_IN_VBLANK_EVENT	0x12
+-#define DRM_CAP_SYNCOBJ		0x13
+ 
+ /** DRM_IOCTL_GET_CAP ioctl argument type */
+ struct drm_get_cap {
+@@ -692,67 +692,6 @@ struct drm_prime_handle {
+ 	__s32 fd;
+ };
+ 
+-struct drm_syncobj_create {
+-	__u32 handle;
+-#define DRM_SYNCOBJ_CREATE_SIGNALED (1 << 0)
+-	__u32 flags;
+-};
+-
+-struct drm_syncobj_destroy {
+-	__u32 handle;
+-	__u32 pad;
+-};
+-
+-#define DRM_SYNCOBJ_FD_TO_HANDLE_FLAGS_IMPORT_SYNC_FILE (1 << 0)
+-#define DRM_SYNCOBJ_HANDLE_TO_FD_FLAGS_EXPORT_SYNC_FILE (1 << 0)
+-struct drm_syncobj_handle {
+-	__u32 handle;
+-	__u32 flags;
+-
+-	__s32 fd;
+-	__u32 pad;
+-};
+-
+-#define DRM_SYNCOBJ_WAIT_FLAGS_WAIT_ALL (1 << 0)
+-#define DRM_SYNCOBJ_WAIT_FLAGS_WAIT_FOR_SUBMIT (1 << 1)
+-struct drm_syncobj_wait {
+-	__u64 handles;
+-	/* absolute timeout */
+-	__s64 timeout_nsec;
+-	__u32 count_handles;
+-	__u32 flags;
+-	__u32 first_signaled; /* only valid when not waiting all */
+-	__u32 pad;
+-};
+-
+-struct drm_syncobj_array {
+-	__u64 handles;
+-	__u32 count_handles;
+-	__u32 pad;
+-};
+-
+-/* Query current scanout sequence number */
+-struct drm_crtc_get_sequence {
+-	__u32 crtc_id;		/* requested crtc_id */
+-	__u32 active;		/* return: crtc output is active */
+-	__u64 sequence;		/* return: most recent vblank sequence */
+-	__s64 sequence_ns;	/* return: most recent time of first pixel out */
+-};
+-
+-/* Queue event to be delivered at specified sequence. Time stamp marks
+- * when the first pixel of the refresh cycle leaves the display engine
+- * for the display
+- */
+-#define DRM_CRTC_SEQUENCE_RELATIVE		0x00000001	/* sequence is relative to current */
+-#define DRM_CRTC_SEQUENCE_NEXT_ON_MISS		0x00000002	/* Use next sequence if we've missed */
+-
+-struct drm_crtc_queue_sequence {
+-	__u32 crtc_id;
+-	__u32 flags;
+-	__u64 sequence;		/* on input, target sequence. on output, actual sequence */
+-	__u64 user_data;	/* user data passed to event */
+-};
+-
+ #if defined(__cplusplus)
+ }
  #endif
+@@ -835,9 +774,6 @@ extern "C" {
  
+ #define DRM_IOCTL_WAIT_VBLANK		DRM_IOWR(0x3a, union drm_wait_vblank)
  
--#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_CYGWIN) || defined(PIPE_OS_SOLARIS)
-+#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_MANAGARM) || defined(PIPE_OS_CYGWIN) || defined(PIPE_OS_SOLARIS)
- #  include <unistd.h>
- #elif defined(PIPE_OS_APPLE) || defined(PIPE_OS_BSD)
- #  include <sys/sysctl.h>
-@@ -124,7 +124,7 @@ os_get_option(const char *name)
- bool
- os_get_total_physical_memory(uint64_t *size)
- {
--#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_CYGWIN) || defined(PIPE_OS_SOLARIS)
-+#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_MANAGARM) || defined(PIPE_OS_CYGWIN) || defined(PIPE_OS_SOLARIS)
-    const long phys_pages = sysconf(_SC_PHYS_PAGES);
-    const long page_size = sysconf(_SC_PAGE_SIZE);
+-#define DRM_IOCTL_CRTC_GET_SEQUENCE	DRM_IOWR(0x3b, struct drm_crtc_get_sequence)
+-#define DRM_IOCTL_CRTC_QUEUE_SEQUENCE	DRM_IOWR(0x3c, struct drm_crtc_queue_sequence)
+-
+ #define DRM_IOCTL_UPDATE_DRAW		DRM_IOW(0x3f, struct drm_update_draw)
  
-diff --git a/src/gallium/auxiliary/os/os_process.c b/src/gallium/auxiliary/os/os_process.c
-index 6622b9b2bc..1a86a9fb00 100644
---- a/src/gallium/auxiliary/os/os_process.c
-+++ b/src/gallium/auxiliary/os/os_process.c
-@@ -43,7 +43,7 @@
- #warning unexpected platform in os_process.c
- #endif
+ #define DRM_IOCTL_MODE_GETRESOURCES	DRM_IOWR(0xA0, struct drm_mode_card_res)
+@@ -874,19 +810,6 @@ extern "C" {
+ #define DRM_IOCTL_MODE_CREATEPROPBLOB	DRM_IOWR(0xBD, struct drm_mode_create_blob)
+ #define DRM_IOCTL_MODE_DESTROYPROPBLOB	DRM_IOWR(0xBE, struct drm_mode_destroy_blob)
  
--#if defined(PIPE_OS_LINUX)
-+#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_MANAGARM)
- #  include <fcntl.h>
- #endif
+-#define DRM_IOCTL_SYNCOBJ_CREATE	DRM_IOWR(0xBF, struct drm_syncobj_create)
+-#define DRM_IOCTL_SYNCOBJ_DESTROY	DRM_IOWR(0xC0, struct drm_syncobj_destroy)
+-#define DRM_IOCTL_SYNCOBJ_HANDLE_TO_FD	DRM_IOWR(0xC1, struct drm_syncobj_handle)
+-#define DRM_IOCTL_SYNCOBJ_FD_TO_HANDLE	DRM_IOWR(0xC2, struct drm_syncobj_handle)
+-#define DRM_IOCTL_SYNCOBJ_WAIT		DRM_IOWR(0xC3, struct drm_syncobj_wait)
+-#define DRM_IOCTL_SYNCOBJ_RESET		DRM_IOWR(0xC4, struct drm_syncobj_array)
+-#define DRM_IOCTL_SYNCOBJ_SIGNAL	DRM_IOWR(0xC5, struct drm_syncobj_array)
+-
+-#define DRM_IOCTL_MODE_CREATE_LEASE	DRM_IOWR(0xC6, struct drm_mode_create_lease)
+-#define DRM_IOCTL_MODE_LIST_LESSEES	DRM_IOWR(0xC7, struct drm_mode_list_lessees)
+-#define DRM_IOCTL_MODE_GET_LEASE	DRM_IOWR(0xC8, struct drm_mode_get_lease)
+-#define DRM_IOCTL_MODE_REVOKE_LEASE	DRM_IOWR(0xC9, struct drm_mode_revoke_lease)
+-
+ /**
+  * Device specific ioctls should only be in their respective headers
+  * The device specific ioctl range is from 0x40 to 0x9f.
+@@ -917,7 +840,6 @@ struct drm_event {
  
-@@ -132,9 +132,10 @@ os_get_command_line(char *cmdline, size_t size)
-       cmdline[size - 1] = 0;
-       return TRUE;
-    }
--#elif defined(PIPE_OS_LINUX)
-+#elif defined(PIPE_OS_LINUX) || defined(PIPE_OS_MANAGARM) 
-    int f = open("/proc/self/cmdline", O_RDONLY);
--   if (f) {
-+   // change the managarm patch but this is a bug in mesa: if(f) -> if(f >= 0)
-+   if (f >= 0) {
-       const int n = read(f, cmdline, size - 1);
-       int i;
-       assert(n < size);
-diff --git a/src/gallium/auxiliary/os/os_thread.h b/src/gallium/auxiliary/os/os_thread.h
-index b6e0698da6..6471584041 100644
---- a/src/gallium/auxiliary/os/os_thread.h
-+++ b/src/gallium/auxiliary/os/os_thread.h
-@@ -75,7 +75,7 @@ __pipe_mutex_assert_locked(mtx_t *mutex)
-  * pipe_barrier
-  */
+ #define DRM_EVENT_VBLANK 0x01
+ #define DRM_EVENT_FLIP_COMPLETE 0x02
+-#define DRM_EVENT_CRTC_SEQUENCE	0x03
  
--#if (defined(PIPE_OS_LINUX) || defined(PIPE_OS_BSD) || defined(PIPE_OS_SOLARIS) || defined(PIPE_OS_HURD)) && !defined(PIPE_OS_ANDROID)
-+#if (defined(PIPE_OS_LINUX) || defined(PIPE_OS_MANAGARM) || defined(PIPE_OS_BSD) || defined(PIPE_OS_SOLARIS) || defined(PIPE_OS_HURD)) && !defined(PIPE_OS_ANDROID)
+ struct drm_event_vblank {
+ 	struct drm_event base;
+@@ -928,16 +850,6 @@ struct drm_event_vblank {
+ 	__u32 crtc_id; /* 0 on older kernels that do not support this */
+ };
  
- typedef pthread_barrier_t pipe_barrier;
+-/* Event delivered at sequence. Time stamp marks when the first pixel
+- * of the refresh cycle leaves the display engine for the display
+- */
+-struct drm_event_crtc_sequence {
+-	struct drm_event	base;
+-	__u64			user_data;
+-	__s64			time_ns;
+-	__u64			sequence;
+-};
+-
+ /* typedef area */
+ typedef struct drm_clip_rect drm_clip_rect_t;
+ typedef struct drm_drawable_info drm_drawable_info_t;
+diff --git a/meson.build b/meson.build
+index 5286b91..91d9796 100644
+--- a/meson.build
++++ b/meson.build
+@@ -89,7 +89,7 @@ if (with_gles1 or with_gles2) and not with_opengl
+   error('building OpenGL ES without OpenGL is not supported.')
+ endif
  
-diff --git a/src/gallium/auxiliary/os/os_time.c b/src/gallium/auxiliary/os/os_time.c
-index e169139034..d032de4414 100644
---- a/src/gallium/auxiliary/os/os_time.c
-+++ b/src/gallium/auxiliary/os/os_time.c
-@@ -53,7 +53,7 @@
- int64_t
- os_time_get_nano(void)
- {
--#if defined(PIPE_OS_LINUX)
-+#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_MANAGARM)
+-system_has_kms_drm = ['openbsd', 'netbsd', 'freebsd', 'dragonfly', 'linux'].contains(host_machine.system())
++system_has_kms_drm = ['openbsd', 'netbsd', 'freebsd', 'dragonfly', 'linux', 'managarm'].contains(host_machine.system())
  
-    struct timespec tv;
-    clock_gettime(CLOCK_MONOTONIC, &tv);
-@@ -86,7 +86,7 @@ os_time_get_nano(void)
- void
- os_time_sleep(int64_t usecs)
- {
--#if defined(PIPE_OS_LINUX)
-+#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_MANAGARM)
-    struct timespec time;
-    time.tv_sec = usecs / 1000000;
-    time.tv_nsec = (usecs % 1000000) * 1000;
-diff --git a/src/gallium/auxiliary/pipebuffer/pb_buffer_fenced.c b/src/gallium/auxiliary/pipebuffer/pb_buffer_fenced.c
-index 7421741c17..5c48ca8711 100644
---- a/src/gallium/auxiliary/pipebuffer/pb_buffer_fenced.c
-+++ b/src/gallium/auxiliary/pipebuffer/pb_buffer_fenced.c
-@@ -36,7 +36,7 @@
- 
- #include "pipe/p_config.h"
- 
--#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_BSD) || defined(PIPE_OS_SOLARIS)
-+#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_MANAGARM) || defined(PIPE_OS_BSD) || defined(PIPE_OS_SOLARIS)
- #include <unistd.h>
- #include <sched.h>
- #endif
-@@ -979,7 +979,7 @@ fenced_bufmgr_destroy(struct pb_manager *mgr)
-    /* Wait on outstanding fences. */
-    while (fenced_mgr->num_fenced) {
-       mtx_unlock(&fenced_mgr->mutex);
--#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_BSD) || defined(PIPE_OS_SOLARIS)
-+#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_MANAGARM) || defined(PIPE_OS_BSD) || defined(PIPE_OS_SOLARIS)
-       sched_yield();
- #endif
-       mtx_lock(&fenced_mgr->mutex);
-diff --git a/src/gallium/auxiliary/util/u_cpu_detect.c b/src/gallium/auxiliary/util/u_cpu_detect.c
-index 845fc6b34d..26e7ce5784 100644
---- a/src/gallium/auxiliary/util/u_cpu_detect.c
-+++ b/src/gallium/auxiliary/util/u_cpu_detect.c
-@@ -57,7 +57,7 @@
- #include <sys/sysctl.h>
- #endif
- 
--#if defined(PIPE_OS_LINUX)
-+#if defined(PIPE_OS_LINUX) 
- #include <signal.h>
- #endif
- 
+ _drivers = get_option('dri-drivers')
+ if _drivers.contains('auto')
 diff --git a/src/gallium/auxiliary/util/u_network.c b/src/gallium/auxiliary/util/u_network.c
-index 45b3691f90..a5d2aaa383 100644
+index 89395f5..2a520c1 100644
 --- a/src/gallium/auxiliary/util/u_network.c
 +++ b/src/gallium/auxiliary/util/u_network.c
-@@ -3,10 +3,12 @@
- #include "util/u_network.h"
- #include "util/u_debug.h"
- 
-+#include <arpa/inet.h>
-+
- #if defined(PIPE_SUBSYSTEM_WINDOWS_USER)
- #  include <winsock2.h>
+@@ -10,6 +10,7 @@
  #  include <windows.h>
--#elif defined(PIPE_OS_LINUX) || defined(PIPE_OS_HAIKU) || \
-+#elif defined(PIPE_OS_LINUX) || defined(PIPE_OS_MANAGARM) || defined(PIPE_OS_HAIKU) || \
-    defined(PIPE_OS_APPLE) || defined(PIPE_OS_CYGWIN) || defined(PIPE_OS_SOLARIS)
+ #  include <ws2tcpip.h>
+ #elif defined(PIPE_OS_UNIX)
++#  include <arpa/inet.h>
  #  include <sys/socket.h>
  #  include <netinet/in.h>
-@@ -55,7 +57,7 @@ u_socket_close(int s)
-    if (s < 0)
-       return;
- 
--#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_HAIKU) \
-+#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_MANAGARM) || defined(PIPE_OS_HAIKU) \
-     || defined(PIPE_OS_APPLE) || defined(PIPE_OS_SOLARIS)
-    shutdown(s, SHUT_RDWR);
-    close(s);
-@@ -171,7 +173,7 @@ u_socket_listen_on_port(uint16_t portnum)
- void
- u_socket_block(int s, boolean block)
- {
--#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_HAIKU) \
-+#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_MANAGARM) || defined(PIPE_OS_HAIKU) \
-     || defined(PIPE_OS_APPLE) || defined(PIPE_OS_SOLARIS)
-    int old = fcntl(s, F_GETFL, 0);
-    if (old == -1)
-diff --git a/src/gallium/auxiliary/util/u_network.h b/src/gallium/auxiliary/util/u_network.h
-index 61fe9a3c60..2749d5ca5b 100644
---- a/src/gallium/auxiliary/util/u_network.h
-+++ b/src/gallium/auxiliary/util/u_network.h
-@@ -6,7 +6,7 @@
- 
- #if defined(PIPE_SUBSYSTEM_WINDOWS_USER)
- #  define PIPE_HAVE_SOCKETS
--#elif defined(PIPE_OS_LINUX) || defined(PIPE_OS_HAIKU) || \
-+#elif defined(PIPE_OS_LINUX) || defined(PIPE_OS_MANAGARM) || defined(PIPE_OS_HAIKU) || \
-     defined(PIPE_OS_APPLE) || defined(PIPE_OS_SOLARIS)
- #  define PIPE_HAVE_SOCKETS
- #endif
-diff --git a/src/gallium/drivers/ddebug/dd_draw.c b/src/gallium/drivers/ddebug/dd_draw.c
-index 6e96c7247a..4600bd56f0 100644
---- a/src/gallium/drivers/ddebug/dd_draw.c
-+++ b/src/gallium/drivers/ddebug/dd_draw.c
-@@ -975,7 +975,7 @@ dd_thread_pipelined_hang_detect(void *input)
- static char *
- dd_get_driver_shader_log(struct dd_context *dctx)
- {
--#if defined(PIPE_OS_LINUX)
-+#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_MANAGARM)
-    FILE *f;
-    char *buf;
-    int written_bytes;
+ #  include <unistd.h>
 diff --git a/src/gallium/include/pipe/p_config.h b/src/gallium/include/pipe/p_config.h
-index 98c433f024..3a94e58c94 100644
+index 3fa43ed..0afedf9 100644
 --- a/src/gallium/include/pipe/p_config.h
 +++ b/src/gallium/include/pipe/p_config.h
-@@ -151,6 +151,11 @@
+@@ -208,6 +208,11 @@
  #define PIPE_OS_UNIX
  #endif
  
@@ -256,55 +201,89 @@ index 98c433f024..3a94e58c94 100644
 +#define PIPE_OS_UNIX
 +#endif
 +
- /*
-  * Android defines __linux__ so PIPE_OS_LINUX and PIPE_OS_UNIX will also be
-  * defined.
-@@ -218,9 +223,9 @@
+ #if defined(__CYGWIN__)
+ #define PIPE_OS_CYGWIN
+ #define PIPE_OS_UNIX
+@@ -219,9 +224,9 @@
   * NOTE: There is no way to auto-detect most of these.
   */
  
 -#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_BSD) || defined(PIPE_OS_SOLARIS)
-+#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_MANAGARM) || defined(PIPE_OS_BSD) || defined(PIPE_OS_SOLARIS)
++#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_BSD) || defined(PIPE_OS_SOLARIS) || defined(PIPE_OS_MANAGARM)
  #define PIPE_SUBSYSTEM_DRI
 -#endif /* PIPE_OS_LINUX || PIPE_OS_BSD || PIPE_OS_SOLARIS */
-+#endif /* PIPE_OS_LINUX || PIPE_OS_MANAGARM || PIPE_OS_BSD || PIPE_OS_SOLARIS */
++#endif /* PIPE_OS_LINUX || PIPE_OS_BSD || PIPE_OS_SOLARIS || defined(PIPE_OS_MANAGARM) */
  
  #if defined(PIPE_OS_WINDOWS)
  #if defined(PIPE_SUBSYSTEM_WINDOWS_USER)
-diff --git a/src/gallium/winsys/svga/drm/pb_buffer_simple_fenced.c b/src/gallium/winsys/svga/drm/pb_buffer_simple_fenced.c
-index f7211c29ac..db120d8069 100644
---- a/src/gallium/winsys/svga/drm/pb_buffer_simple_fenced.c
-+++ b/src/gallium/winsys/svga/drm/pb_buffer_simple_fenced.c
-@@ -36,7 +36,7 @@
- 
- #include "pipe/p_config.h"
- 
--#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_BSD) || defined(PIPE_OS_SOLARIS)
-+#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_MANAGARM) || defined(PIPE_OS_BSD) || defined(PIPE_OS_SOLARIS)
- #include <unistd.h>
- #include <sched.h>
- #endif
-@@ -796,7 +796,7 @@ fenced_bufmgr_destroy(struct pb_manager *mgr)
-    /* Wait on outstanding fences */
-    while (fenced_mgr->num_fenced) {
-       mtx_unlock(&fenced_mgr->mutex);
--#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_BSD) || defined(PIPE_OS_SOLARIS)
-+#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_MANAGARM) || defined(PIPE_OS_BSD) || defined(PIPE_OS_SOLARIS)
-       sched_yield();
- #endif
-       mtx_lock(&fenced_mgr->mutex);
+diff --git a/src/loader/loader.c b/src/loader/loader.c
+index 0f799c1..05da50d 100644
+--- a/src/loader/loader.c
++++ b/src/loader/loader.c
+@@ -29,6 +29,7 @@
+ #include <dlfcn.h>
+ #include <errno.h>
+ #include <fcntl.h>
++#include <limits.h>
+ #include <sys/stat.h>
+ #include <stdarg.h>
+ #include <stdio.h>
 diff --git a/src/util/debug.c b/src/util/debug.c
-index 98b1853325..dbf168b8cb 100644
+index 09de1a8..3a54c56 100644
 --- a/src/util/debug.c
 +++ b/src/util/debug.c
-@@ -22,6 +22,7 @@
-  */
+@@ -23,6 +23,7 @@
  
+ #include <errno.h>
  #include <string.h>
 +#include <strings.h>
  #include "main/macros.h"
  #include "debug.h"
  
+diff --git a/src/util/os_misc.c b/src/util/os_misc.c
+index 09d4400..f95e348 100644
+--- a/src/util/os_misc.c
++++ b/src/util/os_misc.c
+@@ -47,7 +47,7 @@
+ #endif
+ 
+ 
+-#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_CYGWIN) || defined(PIPE_OS_SOLARIS)
++#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_CYGWIN) || defined(PIPE_OS_SOLARIS) || defined(PIPE_OS_MANAGARM)
+ #  include <unistd.h>
+ #elif defined(PIPE_OS_APPLE) || defined(PIPE_OS_BSD)
+ #  include <sys/sysctl.h>
+@@ -124,7 +124,7 @@ os_get_option(const char *name)
+ bool
+ os_get_total_physical_memory(uint64_t *size)
+ {
+-#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_CYGWIN) || defined(PIPE_OS_SOLARIS)
++#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_CYGWIN) || defined(PIPE_OS_SOLARIS) || defined(PIPE_OS_MANAGARM)
+    const long phys_pages = sysconf(_SC_PHYS_PAGES);
+    const long page_size = sysconf(_SC_PAGE_SIZE);
+ 
+diff --git a/src/util/os_time.c b/src/util/os_time.c
+index ac488b2..83730aa 100644
+--- a/src/util/os_time.c
++++ b/src/util/os_time.c
+@@ -55,7 +55,7 @@
+ int64_t
+ os_time_get_nano(void)
+ {
+-#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_BSD)
++#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_BSD) || defined(PIPE_OS_MANAGARM)
+ 
+    struct timespec tv;
+    clock_gettime(CLOCK_MONOTONIC, &tv);
+@@ -95,7 +95,7 @@ os_time_get_nano(void)
+ void
+ os_time_sleep(int64_t usecs)
+ {
+-#if defined(PIPE_OS_LINUX)
++#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_MANAGARM)
+    struct timespec time;
+    time.tv_sec = usecs / 1000000;
+    time.tv_nsec = (usecs % 1000000) * 1000;
 -- 
 2.11.0
 
