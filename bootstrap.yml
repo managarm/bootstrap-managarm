@@ -1485,11 +1485,10 @@ packages:
           PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
     build:
       - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'install', 'V=1']
+      - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
-      - args: ['cp', '@THIS_BUILD_DIR@/.libs/libwayland-cursor.so.0.0.0', '@THIS_COLLECT_DIR@/usr/lib/libwayland-cursor.so.0.0.0']
 
   - name: wayland-protocols
     source:
