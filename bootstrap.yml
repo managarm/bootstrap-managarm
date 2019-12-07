@@ -1451,7 +1451,7 @@ packages:
     source:
       subdir: 'ports'
       git: 'http://github.com/wayland-project/wayland.git'
-      tag: '1.14.0'
+      tag: '1.17.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1494,7 +1494,7 @@ packages:
     source:
       subdir: 'ports'
       git: 'http://github.com/wayland-project/wayland-protocols.git'
-      tag: '1.13'
+      tag: '1.18'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
