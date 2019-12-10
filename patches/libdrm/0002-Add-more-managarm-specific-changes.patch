@@ -1,0 +1,134 @@
+From aff8fca2a694871322affc8a582f41a00607e2df Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Kacper=20S=C5=82omi=C5=84ski?=
+ <kacper.slominski72@gmail.com>
+Date: Tue, 10 Dec 2019 22:41:43 +0100
+Subject: [PATCH libdrm] Add more managarm-specific changes
+
+---
+ xf86drm.c | 26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
+
+diff --git a/xf86drm.c b/xf86drm.c
+index 728ac78..6ee0068 100644
+--- a/xf86drm.c
++++ b/xf86drm.c
+@@ -2785,7 +2785,7 @@ int drmPrimeFDToHandle(int fd, int prime_fd, uint32_t *handle)
+ 
+ static char *drmGetMinorNameForFD(int fd, int type)
+ {
+-#ifdef __linux__
++#if defined(__linux__) || defined(__managarm__)
+     DIR *sysdir;
+     struct dirent *pent, *ent;
+     struct stat sbuf;
+@@ -2892,7 +2892,7 @@ char *drmGetRenderDeviceNameFromFd(int fd)
+     return drmGetMinorNameForFD(fd, DRM_NODE_RENDER);
+ }
+ 
+-#ifdef __linux__
++#if defined(__linux__) || defined(__managarm__)
+ static char * DRM_PRINTFLIKE(2, 3)
+ sysfs_uevent_get(const char *path, const char *fmt, ...)
+ {
+@@ -2938,7 +2938,7 @@ sysfs_uevent_get(const char *path, const char *fmt, ...)
+ 
+ static int drmParseSubsystemType(int maj, int min)
+ {
+-#ifdef __linux__
++#if defined(__linux__) || defined(__managarm__)
+     char path[PATH_MAX + 1];
+     char link[PATH_MAX + 1] = "";
+     char *name;
+@@ -2976,7 +2976,7 @@ static int drmParseSubsystemType(int maj, int min)
+ 
+ static int drmParsePciBusInfo(int maj, int min, drmPciBusInfoPtr info)
+ {
+-#ifdef __linux__
++#if defined(__linux__) || defined(__managarm__)
+     unsigned int domain, bus, dev, func;
+     char path[PATH_MAX + 1], *value;
+     int num;
+@@ -3083,7 +3083,7 @@ static int drmGetMaxNodeName(void)
+            3 /* length of the node number */;
+ }
+ 
+-#ifdef __linux__
++#if defined(__linux__) || defined(__managarm__)
+ static int parse_separate_sysfs_files(int maj, int min,
+                                       drmPciDeviceInfoPtr device,
+                                       bool ignore_revision)
+@@ -3155,7 +3155,7 @@ static int drmParsePciDeviceInfo(int maj, int min,
+                                  drmPciDeviceInfoPtr device,
+                                  uint32_t flags)
+ {
+-#ifdef __linux__
++#if defined(__linux__) || defined(__managarm__)
+     if (!(flags & DRM_DEVICE_GET_PCI_REVISION))
+         return parse_separate_sysfs_files(maj, min, device, true);
+ 
+@@ -3339,7 +3339,7 @@ free_device:
+ 
+ static int drmParseUsbBusInfo(int maj, int min, drmUsbBusInfoPtr info)
+ {
+-#ifdef __linux__
++#if defined(__linux__) || defined(__managarm__)
+     char path[PATH_MAX + 1], *value;
+     unsigned int bus, dev;
+     int ret;
+@@ -3378,7 +3378,7 @@ static int drmParseUsbBusInfo(int maj, int min, drmUsbBusInfoPtr info)
+ 
+ static int drmParseUsbDeviceInfo(int maj, int min, drmUsbDeviceInfoPtr info)
+ {
+-#ifdef __linux__
++#if defined(__linux__) || defined(__managarm__)
+     char path[PATH_MAX + 1], *value;
+     unsigned int vendor, product;
+     int ret;
+@@ -3446,7 +3446,7 @@ free_device:
+ 
+ static int drmParsePlatformBusInfo(int maj, int min, drmPlatformBusInfoPtr info)
+ {
+-#ifdef __linux__
++#if defined(__linux__) || defined(__managarm__)
+     char path[PATH_MAX + 1], *name;
+ 
+     snprintf(path, sizeof(path), "/sys/dev/char/%d:%d/device", maj, min);
+@@ -3469,7 +3469,7 @@ static int drmParsePlatformBusInfo(int maj, int min, drmPlatformBusInfoPtr info)
+ static int drmParsePlatformDeviceInfo(int maj, int min,
+                                       drmPlatformDeviceInfoPtr info)
+ {
+-#ifdef __linux__
++#if defined(__linux__) || defined(__managarm__)
+     char path[PATH_MAX + 1], *value;
+     unsigned int count, i;
+     int err;
+@@ -3553,7 +3553,7 @@ free_device:
+ 
+ static int drmParseHost1xBusInfo(int maj, int min, drmHost1xBusInfoPtr info)
+ {
+-#ifdef __linux__
++#if defined(__linux__) || defined(__managarm__)
+     char path[PATH_MAX + 1], *name;
+ 
+     snprintf(path, sizeof(path), "/sys/dev/char/%d:%d/device", maj, min);
+@@ -3576,7 +3576,7 @@ static int drmParseHost1xBusInfo(int maj, int min, drmHost1xBusInfoPtr info)
+ static int drmParseHost1xDeviceInfo(int maj, int min,
+                                     drmHost1xDeviceInfoPtr info)
+ {
+-#ifdef __linux__
++#if defined(__linux__) || defined(__managarm__)
+     char path[PATH_MAX + 1], *value;
+     unsigned int count, i;
+     int err;
+@@ -4077,7 +4077,7 @@ int drmGetDevices(drmDevicePtr devices[], int max_devices)
+ 
+ char *drmGetDeviceNameFromFd2(int fd)
+ {
+-#ifdef __linux__
++#if defined(__linux__) || defined(__managarm__)
+     struct stat sbuf;
+     char path[PATH_MAX + 1], *value;
+     unsigned int maj, min;
+-- 
+2.24.0
+
