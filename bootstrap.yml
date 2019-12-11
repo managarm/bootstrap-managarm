@@ -771,7 +771,7 @@ packages:
   - name: libasync
     source:
       subdir: 'ports'
-      git: 'http://github.com/avdgrinten/libasync.git'
+      git: 'http://github.com/managarm/libasync.git'
       branch: 'master'
     tools_required:
       - system-gcc
