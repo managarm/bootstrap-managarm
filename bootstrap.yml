@@ -560,6 +560,7 @@ packages:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
+        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
         environ:
           # freetype-config does not support cross-compilation.
           FREETYPE_CONFIG: 'no'
@@ -731,6 +732,7 @@ packages:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
+        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
         - '--disable-blkid'
         - '--disable-selinux'
         - '--disable-kmod'
@@ -813,6 +815,7 @@ packages:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
+        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
         - '--disable-intel'
         - '--disable-vmwgfx'
         - '--disable-radeon'
@@ -849,6 +852,7 @@ packages:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
+        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
@@ -878,6 +882,7 @@ packages:
         - '@THIS_SOURCE_DIR@/expat/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
+        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
         # We disable xmlwf to avoid building its documentation.
         - '--without-xmlwf'
     build:
@@ -905,6 +910,7 @@ packages:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
+        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
@@ -968,6 +974,7 @@ packages:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
+        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
@@ -1023,6 +1030,7 @@ packages:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
+        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
         - '--disable-x11'
     build:
       - args: ['make', '-j@PARALLELISM@']
@@ -1274,6 +1282,7 @@ packages:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
+        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
@@ -1387,6 +1396,7 @@ packages:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
+        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
@@ -1435,6 +1445,7 @@ packages:
         - '--host=x86_64-managarm'
         - '--build=x86_64-linux-gnu'
         - '--prefix=/usr'
+        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
         - '--disable-ipv6'
         environ:
           CONFIG_SITE: '@SOURCE_ROOT@/scripts/python-config-site'
@@ -1629,6 +1640,7 @@ packages:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
+        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
@@ -1664,6 +1676,7 @@ packages:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
+        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
         - '--with-video=drm2d'
         - '--with-renderers='
         - '--with-fonts=unifont'

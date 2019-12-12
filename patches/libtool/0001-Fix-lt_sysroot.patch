@@ -1,0 +1,26 @@
+From b5f723d2e4170e18d6ad20898a335bf270818273 Mon Sep 17 00:00:00 2001
+From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
+Date: Thu, 12 Dec 2019 20:40:47 +0100
+Subject: [PATCH 1/2] Fix $lt_sysroot
+
+Inspired by a similar patch in openembedded.
+---
+ build-aux/ltmain.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/build-aux/ltmain.in b/build-aux/ltmain.in
+index 46a0bb5..f04a268 100644
+--- a/build-aux/ltmain.in
++++ b/build-aux/ltmain.in
+@@ -6442,7 +6442,7 @@ func_mode_link ()
+ 	      fi
+ 	    else
+ 	      # We cannot seem to hardcode it, guess we'll fake it.
+-	      add_dir=-L$libdir
++	      add_dir=-L$lt_sysroot$libdir
+ 	      # Try looking first in the location we're being installed to.
+ 	      if test -n "$inst_prefix_dir"; then
+ 		case $libdir in
+-- 
+2.20.1
+
