@@ -1174,9 +1174,6 @@ packages:
       git: 'https://gitlab.freedesktop.org/mesa/mesa.git'
       tag: 'mesa-19.0.5'
       tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
-        - host-libtool
         - host-pkg-config
     tools_required:
       - host-pkg-config
@@ -1192,9 +1189,9 @@ packages:
         - '@SOURCE_ROOT@/scripts/meson.cross-file'
         - '--prefix=/usr'
         - '--libdir=lib'
-        #- '--buildtype=debugoptimized'
         # The debug build type enables some additional output from Mesa.
-        - '--buildtype=debug'
+        - '--buildtype=debugoptimized'
+        #- '--buildtype=debug'
         - '-Dglx=disabled'
         - '-Dplatforms=drm,surfaceless'
         # The Gallium swrast driver seems to be preferred over dri-swrast.
@@ -1202,11 +1199,8 @@ packages:
         - '-Dgallium-drivers=swrast'
         - '-Dvulkan-drivers='
         # Force Mesa to build with LLVM.
-        #- '-Dllvm=true'
+        - '-Dllvm=false'
         - '@THIS_SOURCE_DIR@'
-        environ:
-          PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
-          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
     build:
       - args: ['ninja']
       - args: ['ninja', 'install']
