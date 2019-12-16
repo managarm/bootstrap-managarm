@@ -473,7 +473,6 @@ tools:
       - host-autoconf-v2.69
       - host-automake-v1.15
       - host-libtool
-      - host-pkg-config
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
