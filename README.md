@@ -4,25 +4,64 @@ Building a managarm distribution from source
 
 This repository contains patches and build script to build a [managarm](https://github.com/managarm/managarm) kernel and userspace.
 
-## Prerequisites
+## Build environment
+
+Since it is almost impossible to make sure all build environments will play nice with
+the build system, at the moment it is recommended to setup a build environment with Docker
+using the provided Dockerfile.
+
+Make sure that you have enough disk space. As managarm builds a lot of large external packages
+(like GCC, binutils, coreutils and the Wayland stack), about 20 - 30 GiB are required.
+
+### Creating Docker image and container
+
+This step is not needed if you don't want to use a Docker container, if so skip to the next paragraph.
+
+1.  Install Docker (duh) and make sure it is working properly by running `docker run hello-world`
+    and making sure the output shows:
+    ```
+    Hello from Docker!
+    This message shows that your installation appears to be working correctly.
+    ```
+1.  The following step will create a directory (managarm) in your home directory which will
+    be used for storing the source and build directories in order to be able to access them
+    at a known location from within the container:
+    ```bash
+    mkdir ~/managarm && cd ~/managarm
+    git clone https://github.com/managarm/bootstrap-managarm.git src
+    cd src
+    docker build -t managarm_buildenv .
+    ```
+1.  Start a container:
+    ```bash
+    docker run -v $(realpath ~/managarm):/home/managarm_buildenv -it managarm_buildenv
+    ```
+
+You are now running a `bash` shell within a Docker container with all the build dependencies
+already installed.
+Inside the home directory (`ls`) there should be a `src` directory (this repo) which is shared
+with the host. If this is not the case go back and make sure you followed the steps properly.
+
+You can now create a `build` directory (`mkdir build`) and proceed to the Building paragraph.
+
+### Installing dependencies manually
+
+If you created a Docker image in the previous step, skip this paragraph.
 
 1.  Certain programs are required to build managarm;
     here we list the corresponding Debian packages:
-    `autopoint`, `bison`, `curl`, `flex`, `gettext`, `git`, `gperf`, `help2man`, `libexpat1-dev`, `m4`, `make`, `mercurial`, `ninja-build`, `pkg-config`, `python3-mako` (host dependency of Mesa), `python3-protobuf`, `python3-yaml`, `rsync`, `texinfo`, `unzip`,
-	`wget`, `xsltproc`, `xz-utils`.
-    Furthermore, `meson` is required. There is a Debian package, but as of Debian Stretch, a newer version is required.
-    Install it from pip using `pip3 install meson`.
-1.  The [xbstrap](https://github.com/managarm/xbstrap) tool is required to build managarm. Install it from pip.
-1.  Make sure that you have enough disk space. As managarm builds a lot of large external packages
-    (like GCC, binutils, coreutils and the Wayland stack), about 20 - 30 GiB are required.
+    `build-essential`, `pkg-config`, `autopoint`, `bison`, `curl`, `flex`, `gettext`, `git`, `gperf`, `help2man`, `m4`, `mercurial`, `ninja-build`, `python3-mako`, `python3-protobuf`, `python3-yaml`, `texinfo`, `unzip`, `wget`, `xsltproc`, `xz-utils`, `libexpat1-dev`, `rsync`, `python3-pip`.
+1.  `meson` is required. There is a Debian package, but as of Debian Stretch, a newer version is required.
+    Install it from pip: `pip3 install meson`.
+1.  The [xbstrap](https://github.com/managarm/xbstrap) tool is required to build managarm. Install it from pip: `pip3 install xbstrap`.
+1.  Clone this repo into a `src` directory and create an empty `build` directory:
+    ```bash
+    git clone https://github.com/managarm/bootstrap-managarm.git src
+    mkdir build
+    ```
 
 ## Building
 
-1.  Clone this repository into a `src` directory and create a `build` directory
-    (perferably at the same level; the actual names do not matter).
-    Thus, your directory structure should look like this:<br>
-    `src/`: This repository.<br>
-    `build/`: An empty directory.
 1.  Change into the build directory
     ```
     cd build/
@@ -36,14 +75,6 @@ This repository contains patches and build script to build a [managarm](https://
     xbstrap install --all
     ```
     Note that this command can take multiple hours, depending on your machine.
-
-Altogether, those commands are:
-```
-git clone https://github.com/managarm/bootstrap-managarm.git src/
-mkdir build/ && cd build/
-xbstrap init ../src
-xbstrap install --all
-```
 
 ## Creating Images
 
