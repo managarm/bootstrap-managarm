@@ -8,7 +8,7 @@ This repository contains patches and build script to build a [managarm](https://
 
 1.  Certain programs are required to build managarm;
     here we list the corresponding Debian packages:
-    `autopoint`, `bison`, `curl`, `flex`, `gettext`, `git`, `gperf`, `help2man`, `libexpat1-dev`, `m4`, `make`, `mercurial`, `ninja-build`, `pkg-config`, `python3-mako` (host dependency of Mesa), `python3-protobuf`, `python3-yaml`, `texinfo`, `unzip`,
+    `autopoint`, `bison`, `curl`, `flex`, `gettext`, `git`, `gperf`, `help2man`, `libexpat1-dev`, `m4`, `make`, `mercurial`, `ninja-build`, `pkg-config`, `python3-mako` (host dependency of Mesa), `python3-protobuf`, `python3-yaml`, `rsync`, `texinfo`, `unzip`,
 	`wget`, `xsltproc`, `xz-utils`.
     Furthermore, `meson` is required. There is a Debian package, but as of Debian Stretch, a newer version is required.
     Install it from pip using `pip3 install meson`.
