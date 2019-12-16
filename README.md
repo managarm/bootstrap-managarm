@@ -34,15 +34,22 @@ This step is not needed if you don't want to use a Docker container, if so skip 
     ```
 1.  Start a container:
     ```bash
-    docker run -v $(realpath ~/managarm):/home/managarm_buildenv -it managarm_buildenv
+    docker run -v $(realpath ~/managarm):/home/managarm_buildenv/managarm -it managarm_buildenv
     ```
 
 You are now running a `bash` shell within a Docker container with all the build dependencies
 already installed.
-Inside the home directory (`ls`) there should be a `src` directory (this repo) which is shared
-with the host. If this is not the case go back and make sure you followed the steps properly.
+Inside the home directory (`ls`) there should be a `managarm` directory shared with the host
+containing a `src` directory (this repo).
+If this is not the case go back and make sure you followed the steps properly.
 
-You can now create a `build` directory (`mkdir build`) and proceed to the Building paragraph.
+Create a `build` directory inside the `managarm` directory:
+```bash
+cd managarm
+mkdir build
+```
+
+Now proceed to the Building paragraph.
 
 ### Installing dependencies manually
 
