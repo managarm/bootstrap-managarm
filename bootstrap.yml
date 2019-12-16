@@ -1533,6 +1533,7 @@ packages:
             'NOCONFIGURE': 'yes'
     tools_required:
       - system-gcc
+      - wayland-scanner
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
