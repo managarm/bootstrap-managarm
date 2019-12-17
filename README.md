@@ -62,7 +62,7 @@ Now proceed to the Building paragraph.
 
 1.  Certain programs are required to build managarm;
     here we list the corresponding Debian packages:
-    `build-essential`, `pkg-config`, `autopoint`, `bison`, `curl`, `flex`, `gettext`, `git`, `gperf`, `help2man`, `m4`, `mercurial`, `ninja-build`, `python3-mako`, `python3-protobuf`, `python3-yaml`, `texinfo`, `unzip`, `wget`, `xsltproc`, `xz-utils`, `libexpat1-dev`, `rsync`, `python3-pip`.
+    `build-essential`, `pkg-config`, `autopoint`, `bison`, `curl`, `flex`, `gettext`, `git`, `gperf`, `help2man`, `m4`, `mercurial`, `ninja-build`, `python3-mako`, `python3-protobuf`, `python3-yaml`, `texinfo`, `unzip`, `wget`, `xsltproc`, `xz-utils`, `libexpat1-dev`, `rsync`, `libwayland-dev`, `python3-pip`.
 1.  `meson` is required. There is a Debian package, but as of Debian Stretch, a newer version is required.
     Install it from pip: `pip3 install meson`.
 1.  The [xbstrap](https://github.com/managarm/xbstrap) tool is required to build managarm. Install it from pip: `pip3 install xbstrap`.
@@ -88,13 +88,27 @@ Now proceed to the Building paragraph.
 *Note: if using a Docker container the following commands are meant to be ran* **_outside_**
 *the Docker container, in the `build` directory on the host.*
 *Adding to the aforementioned commands, one would `exit` from the container once*
-*the build finishes and proceed as follows.*
+*the build finishes, enter the `build` directory, and proceed as follows.*
 
 After managarm's packages have been built, building a HDD image of the system
 is straightforward. The [image_create.sh](https://gitlab.com/qookei/image_create) script
-can be used to create an empty HDD image. This repository contains a `mkimage` script
+can be used to create an empty HDD image.
+
+Download the `image_create.sh` script and mark it executable:
+```bash
+wget 'https://gitlab.com/qookei/image_create/raw/master/image_create.sh'
+chmod +x image_create.sh
+```
+
+This repository contains a `mkimage` script
 to copy the system onto the image. Note that `mkimage` requires `libguestfs`
-to be able to create an image without requiring root access.
+and `rsync` to be able to create an image without requiring root access and synchronise it.
+
+After installing `libguestfs` it might be necessary to run the following:
+```bash
+sudo install -d /usr/lib/guestfs
+sudo update-libguestfs-appliance
+```
 
 Hence, running the following commands in the build directory
 should produce a working image and launch it using QEMU:
@@ -104,7 +118,7 @@ should produce a working image and launch it using QEMU:
 ../src/scripts/prepare-sysroot
 
 # Create a HDD image file called 'image' and copy the system onto it.
-image_create.sh image 2GiB ext2 gpt
+./image_create.sh image 2GiB ext2 gpt
 ../src/scripts/mkimage
 
 # To launch the image using QEMU, you can run:
