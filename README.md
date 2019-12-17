@@ -84,9 +84,9 @@ Now proceed to the Building paragraph.
 ## Creating Images
 
 *Note: if using a Docker container the following commands are meant to be ran* **_outside_**
-*      the Docker container, in the `build` directory on the host.*
-*      Adding to the aforementioned commands, one would `exit` from the container once*
-*      the build finishes and proceed as follows.*
+*the Docker container, in the `build` directory on the host.*
+*Adding to the aforementioned commands, one would `exit` from the container once*
+*the build finishes and proceed as follows.*
 
 After managarm's packages have been built, building a HDD image of the system
 is straightforward. The [image_create.sh](https://gitlab.com/qookei/image_create) script
