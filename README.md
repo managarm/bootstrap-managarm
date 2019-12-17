@@ -15,7 +15,7 @@ Make sure that you have enough disk space. As managarm builds a lot of large ext
 
 ### Creating Docker image and container
 
-This step is not needed if you don't want to use a Docker container, if so skip to the next paragraph.
+*Note: this step is not needed if you don't want to use a Docker container, if so skip to the next paragraph.*
 
 1.  Install Docker (duh) and make sure it is working properly by running `docker run hello-world`
     and making sure the output shows:
@@ -23,18 +23,17 @@ This step is not needed if you don't want to use a Docker container, if so skip 
     Hello from Docker!
     This message shows that your installation appears to be working correctly.
     ```
-1.  The following step will create a directory (managarm) in your home directory which will
-    be used for storing the source and build directories in order to be able to access them
-    at a known location from within the container:
+1.  The following step will create a directory ($MANAGARM_DIR) which will be used for storing the source
+    and build directories in order to be able to access them at a known location from within the container:
     ```bash
-    mkdir ~/managarm && cd ~/managarm
+    export MANAGARM_DIR="$HOME/managarm" # In this example we are using $HOME/managarm, but it can be any directory
+    mkdir "$MANAGARM_DIR" && cd "$MANAGARM_DIR"
     git clone https://github.com/managarm/bootstrap-managarm.git src
-    cd src
-    docker build -t managarm_buildenv .
+    docker build -t managarm_buildenv src/docker
     ```
 1.  Start a container:
     ```bash
-    docker run -v $(realpath ~/managarm):/home/managarm_buildenv/managarm -it managarm_buildenv
+    docker run -v $(realpath "$MANAGARM_DIR"):/home/managarm_buildenv/managarm -it managarm_buildenv
     ```
 
 You are now running a `bash` shell within a Docker container with all the build dependencies
@@ -43,17 +42,15 @@ Inside the home directory (`ls`) there should be a `managarm` directory shared w
 containing a `src` directory (this repo).
 If this is not the case go back and make sure you followed the steps properly.
 
-Create a `build` directory inside the `managarm` directory:
+Switch to the `managarm` directory:
 ```bash
 cd managarm
-mkdir build
 ```
-
 Now proceed to the Building paragraph.
 
 ### Installing dependencies manually
 
-If you created a Docker image in the previous step, skip this paragraph.
+*Note: if you created a Docker image in the previous step, skip this paragraph.*
 
 1.  Certain programs are required to build managarm;
     here we list the corresponding Debian packages:
@@ -61,17 +58,18 @@ If you created a Docker image in the previous step, skip this paragraph.
 1.  `meson` is required. There is a Debian package, but as of Debian Stretch, a newer version is required.
     Install it from pip: `pip3 install meson`.
 1.  The [xbstrap](https://github.com/managarm/xbstrap) tool is required to build managarm. Install it from pip: `pip3 install xbstrap`.
-1.  Clone this repo into a `src` directory and create an empty `build` directory:
+1.  Create a `managarm` directory and clone this repo into a `src` subdirectory:
     ```bash
+    export MANAGARM_DIR="$HOME/managarm" # In this example we are using $HOME/managarm, but it can be any directory
+    mkdir "$MANAGARM_DIR" && cd "$MANAGARM_DIR"
     git clone https://github.com/managarm/bootstrap-managarm.git src
-    mkdir build
     ```
 
 ## Building
 
-1.  Change into the build directory
+1.  Create and change into a `build` directory
     ```
-    cd build/
+    mkdir build && cd build
     ```
 1.  Initialize the build directory with
     ```
@@ -84,6 +82,11 @@ If you created a Docker image in the previous step, skip this paragraph.
     Note that this command can take multiple hours, depending on your machine.
 
 ## Creating Images
+
+*Note: if using a Docker container the following commands are meant to be ran* **_outside_**
+*      the Docker container, in the `build` directory on the host.*
+*      Adding to the aforementioned commands, one would `exit` from the container once*
+*      the build finishes and proceed as follows.*
 
 After managarm's packages have been built, building a HDD image of the system
 is straightforward. The [image_create.sh](https://gitlab.com/qookei/image_create) script
