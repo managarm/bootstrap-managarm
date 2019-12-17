@@ -1,6 +1,5 @@
 
-Building a managarm distribution from source
--------------
+# Building a managarm distribution from source
 
 This repository contains patches and build script to build a [managarm](https://github.com/managarm/managarm) kernel and userspace.
 
@@ -13,6 +12,19 @@ using the provided Dockerfile.
 Make sure that you have enough disk space. As managarm builds a lot of large external packages
 (like GCC, binutils, coreutils and the Wayland stack), about 20 - 30 GiB are required.
 
+### Preparations
+
+First and foremost we will create a directory (`$MANAGARM_DIR`) which will be used for storing the source
+and build directories.
+```bash
+export MANAGARM_DIR="$HOME/managarm" # In this example we are using $HOME/managarm, but it can be any directory
+mkdir -p "$MANAGARM_DIR" && cd "$MANAGARM_DIR"
+```
+Then clone this repository into a `src` directory:
+```bash
+git clone https://github.com/managarm/bootstrap-managarm.git src
+```
+
 ### Creating Docker image and container
 
 *Note: this step is not needed if you don't want to use a Docker container, if so skip to the next paragraph.*
@@ -23,12 +35,8 @@ Make sure that you have enough disk space. As managarm builds a lot of large ext
     Hello from Docker!
     This message shows that your installation appears to be working correctly.
     ```
-1.  The following step will create a directory ($MANAGARM_DIR) which will be used for storing the source
-    and build directories in order to be able to access them at a known location from within the container:
+1.  Create a Docker image from the provided Dockerfile:
     ```bash
-    export MANAGARM_DIR="$HOME/managarm" # In this example we are using $HOME/managarm, but it can be any directory
-    mkdir "$MANAGARM_DIR" && cd "$MANAGARM_DIR"
-    git clone https://github.com/managarm/bootstrap-managarm.git src
     docker build -t managarm_buildenv src/docker
     ```
 1.  Start a container:
@@ -58,25 +66,19 @@ Now proceed to the Building paragraph.
 1.  `meson` is required. There is a Debian package, but as of Debian Stretch, a newer version is required.
     Install it from pip: `pip3 install meson`.
 1.  The [xbstrap](https://github.com/managarm/xbstrap) tool is required to build managarm. Install it from pip: `pip3 install xbstrap`.
-1.  Create a `managarm` directory and clone this repo into a `src` subdirectory:
-    ```bash
-    export MANAGARM_DIR="$HOME/managarm" # In this example we are using $HOME/managarm, but it can be any directory
-    mkdir "$MANAGARM_DIR" && cd "$MANAGARM_DIR"
-    git clone https://github.com/managarm/bootstrap-managarm.git src
-    ```
 
 ## Building
 
 1.  Create and change into a `build` directory
-    ```
+    ```bash
     mkdir build && cd build
     ```
 1.  Initialize the build directory with
-    ```
+    ```bash
     xbstrap init ../src
     ```
 1.  Start the build using
-    ```
+    ```bash
     xbstrap install --all
     ```
     Note that this command can take multiple hours, depending on your machine.
@@ -96,7 +98,7 @@ to be able to create an image without requiring root access.
 
 Hence, running the following commands in the build directory
 should produce a working image and launch it using QEMU:
-```
+```bash
 # Copy some files (e.g., the timezone configuration) from the host to system-root/.
 # It is sufficient to run this once.
 ../src/scripts/prepare-sysroot
