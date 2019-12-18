@@ -1215,6 +1215,7 @@ packages:
     pkgs_required:
       - libdrm
       - wayland
+      - wayland-protocols
       - zlib
     configure:
       - args:
