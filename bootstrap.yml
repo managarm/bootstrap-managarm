@@ -42,7 +42,7 @@ sources:
 
   - name: protobuf
     subdir: 'ports'
-    git: 'http://github.com/google/protobuf.git'
+    git: 'https://github.com/google/protobuf.git'
     tag: 'v3.1.0'
     tools_required:
       - host-autoconf-v2.69
@@ -69,7 +69,7 @@ sources:
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/libsmarter', '@THIS_SOURCE_DIR@/subprojects/libsmarter']
 
   - name: mlibc
-    git: 'http://github.com/managarm/mlibc.git'
+    git: 'https://github.com/managarm/mlibc.git'
     branch: 'master'
     sources_required:
       - cxxshim
@@ -83,7 +83,7 @@ sources:
 
   - name: wayland
     subdir: 'ports'
-    git: 'http://github.com/wayland-project/wayland.git'
+    git: 'https://github.com/wayland-project/wayland.git'
     tag: '1.17.0'
     tools_required:
       - host-autoconf-v2.69
@@ -135,7 +135,7 @@ tools:
     source:
       name: automake-v1.11
       subdir: 'ports'
-      git: 'http://git.savannah.gnu.org/r/automake.git'
+      git: 'https://git.savannah.gnu.org/r/automake.git'
       tag: 'v1.11.6'
       tools_required:
         - host-autoconf-v2.69
@@ -159,7 +159,7 @@ tools:
     source:
         name: automake-v1.15
         subdir: 'ports'
-        git: 'http://git.savannah.gnu.org/r/automake.git'
+        git: 'https://git.savannah.gnu.org/r/automake.git'
         tag: 'v1.15.1'
         tools_required:
           - host-autoconf-v2.69
@@ -211,7 +211,7 @@ tools:
     source:
       name: libtool
       subdir: 'ports'
-      git: 'http://git.savannah.gnu.org/r/libtool.git'
+      git: 'https://git.savannah.gnu.org/r/libtool.git'
       tag: 'v2.4.5'
       tools_required:
         - host-autoconf-v2.69
@@ -498,7 +498,7 @@ packages:
   - name: bash
     source:
       subdir: 'ports'
-      git: 'git://git.savannah.gnu.org/bash.git'
+      git: 'https://git.savannah.gnu.org/r/bash.git'
       tag: 'bash-4.4'
       tools_required:
         - host-autoconf-v2.69
@@ -548,12 +548,12 @@ packages:
   - name: boost
     source:
       subdir: 'ports'
-      git: 'http://github.com/boostorg/boost.git'
+      git: 'https://github.com/boostorg/boost.git'
       tag: 'boost-1.62.0'
       regenerate:
         - args: |
             if ! git -C '@THIS_SOURCE_DIR@' remote | grep -q origin; then
-              git -C '@THIS_SOURCE_DIR@' remote add origin http://github.com/boostorg/boost.git
+              git -C '@THIS_SOURCE_DIR@' remote add origin https://github.com/boostorg/boost.git
             fi
         - args: ['git', '-C', '@THIS_SOURCE_DIR@', 'submodule', 'update', '--init']
         - args: ['./bootstrap.sh']
@@ -609,7 +609,7 @@ packages:
   - name: fafnir
     source:
       subdir: 'ports'
-      git: 'http://github.com/managarm/fafnir.git'
+      git: 'https://github.com/managarm/fafnir.git'
       branch: 'master'
     tools_required:
       - system-gcc
@@ -640,7 +640,7 @@ packages:
   - name: frigg
     source:
       subdir: 'ports'
-      git: 'http://github.com/managarm/frigg.git'
+      git: 'https://github.com/managarm/frigg.git'
       branch: 'master'
     tools_required:
       - system-gcc
@@ -691,7 +691,7 @@ packages:
   - name: libcofiber
     source:
       subdir: 'ports'
-      git: 'http://github.com/avdgrinten/libcofiber.git'
+      git: 'https://github.com/avdgrinten/libcofiber.git'
       branch: 'master'
     tools_required:
       - system-gcc
@@ -712,7 +712,7 @@ packages:
   - name: coreutils
     source:
       subdir: 'ports'
-      git: 'git://git.savannah.gnu.org/coreutils.git'
+      git: 'https://git.savannah.gnu.org/r/coreutils.git'
       tag: 'v8.30'
       tools_required:
         - host-autoconf-v2.69
@@ -782,7 +782,7 @@ packages:
   - name: lewis
     source:
       subdir: 'ports'
-      git: 'http://github.com/managarm/lewis.git'
+      git: 'https://github.com/managarm/lewis.git'
       branch: 'master'
     tools_required:
       - system-gcc
@@ -806,7 +806,7 @@ packages:
   - name: libasync
     source:
       subdir: 'ports'
-      git: 'http://github.com/managarm/libasync.git'
+      git: 'https://github.com/managarm/libasync.git'
       branch: 'master'
     tools_required:
       - system-gcc
@@ -928,7 +928,7 @@ packages:
   - name: libffi
     source:
       subdir: 'ports'
-      git: 'http://github.com/libffi/libffi.git'
+      git: 'https://github.com/libffi/libffi.git'
       tag: 'v3.2.1'
       tools_required:
         - host-autoconf-v2.69
@@ -989,7 +989,7 @@ packages:
   - name: libpng
     source:
       subdir: 'ports'
-      git: 'http://git.code.sf.net/p/libpng/code'
+      git: 'https://git.code.sf.net/p/libpng/code'
       tag: 'v1.6.34'
       tools_required:
         - host-autoconf-v2.69
@@ -1018,7 +1018,7 @@ packages:
   - name: libsmarter
     source:
       subdir: 'ports'
-      git: 'http://github.com/avdgrinten/libsmarter.git'
+      git: 'https://github.com/avdgrinten/libsmarter.git'
       branch: 'master'
     tools_required:
       - system-gcc
@@ -1040,7 +1040,7 @@ packages:
   - name: libxkbcommon
     source:
       subdir: 'ports'
-      git: 'http://github.com/xkbcommon/libxkbcommon.git'
+      git: 'https://github.com/xkbcommon/libxkbcommon.git'
       tag: 'xkbcommon-0.8.0'
     tools_required:
       - host-pkg-config
@@ -1099,7 +1099,7 @@ packages:
   - name: kmscube
     source:
       subdir: 'ports'
-      git: 'http://gitlab.freedesktop.org/mesa/kmscube.git'
+      git: 'https://gitlab.freedesktop.org/mesa/kmscube.git'
       branch: 'master'
       tools_required:
         - host-autoconf-v2.69
@@ -1290,7 +1290,7 @@ packages:
   - name: mtdev
     source:
       subdir: 'ports'
-      git: 'http://bitmath.org/git/mtdev.git'
+      git: 'https://bitmath.org/git/mtdev.git'
       disable_shallow_fetch: true
       tag: 'v1.1.5'
       tools_required:
@@ -1317,7 +1317,7 @@ packages:
   - name: nano
     source:
       subdir: 'ports'
-      git: 'git://git.savannah.gnu.org/nano.git'
+      git: 'https://git.savannah.gnu.org/r/nano.git'
       tag: 'v2.9.8'
       tools_required:
         - host-autoconf-v2.69
@@ -1374,7 +1374,7 @@ packages:
   - name: ncurses
     source:
       subdir: 'ports'
-      url: 'ftp://ftp.invisible-island.net/ncurses/ncurses.tar.gz'
+      url: 'https://invisible-mirror.net/archives/ncurses/ncurses.tar.gz'
       format: 'tar.gz'
       extract_path: 'ncurses-6.1'
       tools_required:
@@ -1516,7 +1516,7 @@ packages:
   - name: wayland-protocols
     source:
       subdir: 'ports'
-      git: 'http://github.com/wayland-project/wayland-protocols.git'
+      git: 'https://github.com/wayland-project/wayland-protocols.git'
       tag: '1.18'
       tools_required:
         - host-autoconf-v2.69
@@ -1544,7 +1544,7 @@ packages:
   - name: weston
     source:
       subdir: 'ports'
-      git: 'http://github.com/wayland-project/weston.git'
+      git: 'https://github.com/wayland-project/weston.git'
       tag: '4.0.0'
       tools_required:
         - host-autoconf-v2.69
@@ -1613,7 +1613,7 @@ packages:
   - name: zlib
     source:
       subdir: 'ports'
-      git: 'http://github.com/madler/zlib.git'
+      git: 'https://github.com/madler/zlib.git'
       tag: 'v1.2.11'
     tools_required:
       - system-gcc
@@ -1757,7 +1757,7 @@ packages:
   - name: sdl2
     source:
       subdir: 'ports'
-      hg: 'http://hg.libsdl.org/SDL'
+      hg: 'https://hg.libsdl.org/SDL'
       tag: 'release-2.0.10'
     tools_required:
       - system-gcc
