@@ -1763,10 +1763,13 @@ packages:
       - system-gcc
       - host-cmake
       - host-pkg-config
+      - wayland-scanner
     pkgs_required:
       - libdrm
       - eudev
       - mesa
+      - wayland
+      - wayland-protocols
     configure:
       - args:
         - 'cmake'
