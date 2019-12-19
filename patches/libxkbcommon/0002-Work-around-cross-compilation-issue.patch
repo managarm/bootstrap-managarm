@@ -1,0 +1,25 @@
+From 87429907af12a486bd6ccd51bfbaa8330e5f63b0 Mon Sep 17 00:00:00 2001
+From: mintsuki <mintsuki@protonmail.com>
+Date: Thu, 19 Dec 2019 09:47:47 +0100
+Subject: [PATCH] Work around cross compilation issue
+
+---
+ meson.build        | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/meson.build b/meson.build
+index 5681e6f..d7a4fd0 100644
+--- a/meson.build
++++ b/meson.build
+@@ -389,7 +389,7 @@ if get_option('enable-wayland')
+ You can disable the Wayland demo programs with -Denable-wayland=false.''')
+     endif
+ 
+-    wayland_scanner = find_program(wayland_scanner_dep.get_pkgconfig_variable('wayland_scanner'))
++    wayland_scanner = find_program('wayland-scanner')
+     wayland_scanner_code_gen = generator(
+         wayland_scanner,
+         output: '@BASENAME@-protocol.c',
+-- 
+2.24.1
+

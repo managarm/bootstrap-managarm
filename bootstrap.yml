@@ -1042,32 +1042,27 @@ packages:
       subdir: 'ports'
       git: 'http://github.com/xkbcommon/libxkbcommon.git'
       tag: 'xkbcommon-0.8.0'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
-        - host-libtool
-        - host-pkg-config
-        - host-xorg-macros
-      regenerate:
-        - args: ['./autogen.sh']
-          environ:
-            'NOCONFIGURE': 'yes'
     tools_required:
-      - host-autoconf-v2.69
-      - host-automake-v1.15
-      - host-libtool
       - host-pkg-config
       - system-gcc
+      - wayland-scanner
+    pkgs_required:
+      - wayland
+      - wayland-protocols
     configure:
       - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - 'meson'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson.cross-file'
         - '--prefix=/usr'
-        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
-        - '--disable-x11'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '-Denable-x11=false'
+        - '-Denable-docs=false'
+        - '@THIS_SOURCE_DIR@'
     build:
-      - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'install']
+      - args: ['ninja']
+      - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
