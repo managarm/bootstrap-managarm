@@ -1678,6 +1678,7 @@ packages:
     tools_required:
       - system-gcc
       - host-pkg-config
+      - host-autoconf-v2.69
       - host-automake-v1.15
     pkgs_required:
       - libxkbcommon
