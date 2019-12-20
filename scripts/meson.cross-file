@@ -5,6 +5,7 @@ cpp = 'x86_64-managarm-g++'
 ar = 'x86_64-managarm-ar'
 strip = 'x86_64-managarm-strip'
 pkgconfig = 'pkg-config'
+# sed adds binaries here.
 
 [host_machine]
 system = 'managarm'

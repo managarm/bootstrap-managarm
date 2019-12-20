@@ -1209,14 +1209,21 @@ packages:
       - wayland-scanner
     pkgs_required:
       - libdrm
+      - llvm
       - wayland
       - wayland-protocols
       - zlib
     configure:
+      - args: ['cp', '@SOURCE_ROOT@/scripts/meson.cross-file', '.']
+      - args:
+        - 'sed'
+        - '-i'
+        - "/^# sed adds binaries here.$/a llvm-config = '@SOURCE_ROOT@/scripts/cross-llvm-config'"
+        - 'meson.cross-file'
       - args:
         - 'meson'
         - '--cross-file'
-        - '@SOURCE_ROOT@/scripts/meson.cross-file'
+        - 'meson.cross-file'
         - '--prefix=/usr'
         - '--libdir=lib'
         # The debug build type enables some additional output from Mesa.
@@ -1229,7 +1236,7 @@ packages:
         - '-Dgallium-drivers=swrast'
         - '-Dvulkan-drivers='
         # Force Mesa to build with LLVM.
-        - '-Dllvm=false'
+        - '-Dllvm=true'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
