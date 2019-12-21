@@ -76,7 +76,7 @@ install system-root/usr/lib/managarm/server/*.bin initrd/managarm/server/
 # -----------------------------------------------------------------------------
 
 mkdir -p $dir/boot/managarm
-install -s system-root/usr/managarm/bin/eir $dir/boot/managarm/
+install -s system-root/usr/managarm/bin/eir-mb1 $dir/boot/managarm/
 install -s system-root/usr/managarm/bin/thor $dir/boot/managarm/
 cp initrd.cpio $dir/boot/managarm/
 
