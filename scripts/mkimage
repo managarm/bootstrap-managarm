@@ -36,7 +36,6 @@ install -s tools/system-gcc/x86_64-managarm/lib64/libstdc++.so.6 initrd/lib/
 install -s system-root/usr/lib/liblewis.so initrd/lib/
 install -s system-root/usr/lib/libz.so.1 initrd/lib/
 install -s system-root/usr/lib/libprotobuf-lite.so.11 initrd/lib/
-install -s system-root/usr/lib/libcofiber.so initrd/lib/
 install -s system-root/usr/lib/libvirtio_core.so initrd/lib/
 install -s system-root/usr/lib/libarch.so initrd/lib/
 install -s system-root/usr/lib/libfs_protocol.so initrd/lib/
