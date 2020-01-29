@@ -688,27 +688,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
-  - name: libcofiber
-    source:
-      subdir: 'ports'
-      git: 'https://github.com/avdgrinten/libcofiber.git'
-      branch: 'master'
-    tools_required:
-      - system-gcc
-    configure: []
-    build:
-      - args:
-        - 'make'
-        - '-f'
-        - '@THIS_SOURCE_DIR@/library.makefile'
-        - 'S=@THIS_SOURCE_DIR@'
-        - 'DESTDIR=@THIS_COLLECT_DIR@'
-        - 'prefix=/usr/'
-        - 'CXX=x86_64-managarm-g++'
-        - 'LD=x86_64-managarm-ld'
-        - 'AS=x86_64-managarm-as'
-        - 'install'
-
   - name: coreutils
     source:
       subdir: 'ports'
@@ -1170,7 +1149,6 @@ packages:
       - fafnir
       - lewis
       - libasync
-      - libcofiber
       - libdrm
       - libsmarter
       - protobuf
