@@ -1047,7 +1047,6 @@ packages:
         quiet: true
 
   - name: llvm
-    default: false
     from_source: llvm
     tools_required:
       - host-cmake
