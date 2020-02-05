@@ -22,7 +22,7 @@ sources:
   - name: llvm
     subdir: 'ports'
     git: 'https://github.com/llvm/llvm-project'
-    tag: 'llvmorg-8.0.0'
+    tag: 'llvmorg-9.0.0'
 
   - name: gcc
     subdir: 'ports'
@@ -1051,6 +1051,8 @@ packages:
     tools_required:
       - host-cmake
       - system-gcc
+    pkgs_required:
+      - zlib
     configure:
       - args:
         - 'cmake'
