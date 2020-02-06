@@ -1114,6 +1114,7 @@ packages:
     sources_required:
       - frigg
     tools_required:
+      - host-llvm-toolchain
       - host-managarm-tools
       - host-protoc
       - kernel-gcc
@@ -1122,9 +1123,12 @@ packages:
       - cxxshim
       - frigg
     configure:
+      - args: |
+          sed -e 's|_BUILD_ROOT_|@BUILD_ROOT@|' @SOURCE_ROOT@/scripts/meson-kernel.cross-file \
+              > ./meson-custom.cross-file
       - args:
         - 'meson'
-        - '--cross-file=@SOURCE_ROOT@/scripts/meson-kernel.cross-file'
+        - '--cross-file=./meson-custom.cross-file'
         - '--prefix=/usr/managarm'
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
