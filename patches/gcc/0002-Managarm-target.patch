@@ -1,17 +1,17 @@
-From bf878ca7a836ff64421193d98fbf7621d4ef78e8 Mon Sep 17 00:00:00 2001
+From 044cfc7d2c8d8efc93c6e50d7543b1dc9e165a63 Mon Sep 17 00:00:00 2001
 From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
 Date: Wed, 29 Jun 2016 09:28:28 +0000
-Subject: [PATCH 3/3] Managarm target
+Subject: [PATCH 2/2] Managarm target
 
 TODO: Use libtoolize instead of modifying in-tree libtool?
 ---
  config.sub                   |  9 +++++++--
  fixincludes/mkfixinc.sh      |  1 +
- gcc/config.gcc               | 37 +++++++++++++++++++++++++++++++++++++
+ gcc/config.gcc               | 37 ++++++++++++++++++++++++++++++++++++
  gcc/config/i386/t-managarm64 |  5 +++++
  gcc/config/managarm-kernel.h | 10 ++++++++++
  gcc/config/managarm-system.h |  4 ++++
- gcc/config/managarm.h        | 22 ++++++++++++++++++++++
+ gcc/config/managarm.h        | 22 +++++++++++++++++++++
  libgcc/config.host           |  9 +++++++++
  libstdc++-v3/crossconfig.m4  |  7 +++++++
  libtool.m4                   | 14 ++++++++++++++
@@ -22,7 +22,7 @@ TODO: Use libtoolize instead of modifying in-tree libtool?
  create mode 100644 gcc/config/managarm.h
 
 diff --git a/config.sub b/config.sub
-index 75bb6a3135b..64c314c39d8 100755
+index 75bb6a313..64c314c39 100755
 --- a/config.sub
 +++ b/config.sub
 @@ -133,7 +133,8 @@ case $1 in
@@ -56,7 +56,7 @@ index 75bb6a3135b..64c314c39d8 100755
  		os=`echo "$os" | sed -e 's|mac|macos|'`
  		;;
 diff --git a/fixincludes/mkfixinc.sh b/fixincludes/mkfixinc.sh
-index 0f9648608e9..5d34be85105 100755
+index 0f9648608..5d34be851 100755
 --- a/fixincludes/mkfixinc.sh
 +++ b/fixincludes/mkfixinc.sh
 @@ -12,6 +12,7 @@ target=fixinc.sh
@@ -68,7 +68,7 @@ index 0f9648608e9..5d34be85105 100755
      x86_64-*-mingw32* | \
      powerpc-*-eabisim* | \
 diff --git a/gcc/config.gcc b/gcc/config.gcc
-index 09fb9ecd2cd..e72fe37f419 100644
+index ddd3b8f4d..9701267b9 100644
 --- a/gcc/config.gcc
 +++ b/gcc/config.gcc
 @@ -836,6 +836,25 @@ case ${target} in
@@ -97,7 +97,7 @@ index 09fb9ecd2cd..e72fe37f419 100644
  *-*-netbsd*)
    tm_p_file="${tm_p_file} netbsd-protos.h"
    tmake_file="t-netbsd t-slibgcc"
-@@ -1771,6 +1790,24 @@ x86_64-*-linux* | x86_64-*-kfreebsd*-gnu)
+@@ -1780,6 +1799,24 @@ x86_64-*-linux* | x86_64-*-kfreebsd*-gnu)
  	done
  	TM_MULTILIB_CONFIG=`echo $TM_MULTILIB_CONFIG | sed 's/^,//'`
  	;;
@@ -124,7 +124,7 @@ index 09fb9ecd2cd..e72fe37f419 100644
  	tm_file="dbxcoff.h ${tm_file} i386/unix.h i386/bsd.h i386/gas.h i386/djgpp.h i386/djgpp-stdint.h"
 diff --git a/gcc/config/i386/t-managarm64 b/gcc/config/i386/t-managarm64
 new file mode 100644
-index 00000000000..6c26cde10ac
+index 000000000..6c26cde10
 --- /dev/null
 +++ b/gcc/config/i386/t-managarm64
 @@ -0,0 +1,5 @@
@@ -135,7 +135,7 @@ index 00000000000..6c26cde10ac
 +
 diff --git a/gcc/config/managarm-kernel.h b/gcc/config/managarm-kernel.h
 new file mode 100644
-index 00000000000..62bce675a0a
+index 000000000..62bce675a
 --- /dev/null
 +++ b/gcc/config/managarm-kernel.h
 @@ -0,0 +1,10 @@
@@ -151,7 +151,7 @@ index 00000000000..62bce675a0a
 +
 diff --git a/gcc/config/managarm-system.h b/gcc/config/managarm-system.h
 new file mode 100644
-index 00000000000..8a032c995e0
+index 000000000..8a032c995
 --- /dev/null
 +++ b/gcc/config/managarm-system.h
 @@ -0,0 +1,4 @@
@@ -161,7 +161,7 @@ index 00000000000..8a032c995e0
 +
 diff --git a/gcc/config/managarm.h b/gcc/config/managarm.h
 new file mode 100644
-index 00000000000..ef22eeadd15
+index 000000000..ef22eeadd
 --- /dev/null
 +++ b/gcc/config/managarm.h
 @@ -0,0 +1,22 @@
@@ -188,7 +188,7 @@ index 00000000000..ef22eeadd15
 +	} while(0);
 +
 diff --git a/libgcc/config.host b/libgcc/config.host
-index 91abc84da03..9d561a4a7bc 100644
+index 91abc84da..9d561a4a7 100644
 --- a/libgcc/config.host
 +++ b/libgcc/config.host
 @@ -252,6 +252,11 @@ case ${host} in
@@ -215,7 +215,7 @@ index 91abc84da03..9d561a4a7bc 100644
  	extra_parts="$extra_parts crtprec32.o crtprec64.o crtprec80.o crtfastmath.o"
  	tmake_file="${tmake_file} i386/t-crtpc t-crtfm i386/t-crtstuff t-dfprules"
 diff --git a/libstdc++-v3/crossconfig.m4 b/libstdc++-v3/crossconfig.m4
-index 344eec09d8e..9fe971a39f0 100644
+index 344eec09d..9fe971a39 100644
 --- a/libstdc++-v3/crossconfig.m4
 +++ b/libstdc++-v3/crossconfig.m4
 @@ -200,6 +200,13 @@ case "${host}" in
@@ -233,7 +233,7 @@ index 344eec09d8e..9fe971a39f0 100644
      GLIBCXX_CHECK_LINKER_FEATURES
      GLIBCXX_CHECK_MATH_SUPPORT
 diff --git a/libtool.m4 b/libtool.m4
-index 8966762881f..ace9a37a1d0 100644
+index 896676288..ace9a37a1 100644
 --- a/libtool.m4
 +++ b/libtool.m4
 @@ -2494,6 +2494,16 @@ linux* | k*bsd*-gnu | kopensolaris*-gnu)
@@ -265,5 +265,5 @@ index 8966762881f..ace9a37a1d0 100644
    if echo __ELF__ | $CC -E - | $GREP __ELF__ > /dev/null; then
      lt_cv_deplibs_check_method='match_pattern /lib[[^/]]+(\.so\.[[0-9]]+\.[[0-9]]+|_pic\.a)$'
 -- 
-2.11.0
+2.20.1
 
