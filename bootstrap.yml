@@ -1364,7 +1364,7 @@ packages:
   - name: ncurses
     source:
       subdir: 'ports'
-      url: 'https://invisible-mirror.net/archives/ncurses/ncurses.tar.gz'
+      url: 'https://ftp.gnu.org/pub/gnu/ncurses/ncurses-6.1.tar.gz'
       format: 'tar.gz'
       extract_path: 'ncurses-6.1'
       tools_required:
