@@ -594,6 +594,7 @@ packages:
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
         - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
+        - '--disable-xlib'
         environ:
           # freetype-config does not support cross-compilation.
           FREETYPE_CONFIG: 'no'
