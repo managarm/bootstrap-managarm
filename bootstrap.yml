@@ -1847,6 +1847,11 @@ packages:
       - system-gcc
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+      - args:
+        - 'sed'
+        - '-i'
+        - 's|^#define LUA_ROOT "/usr/local/"$|#define LUA_ROOT "/usr/"|'
+        - 'src/luaconf.h'
     build:
       - args:
         - 'make'
@@ -1855,5 +1860,5 @@ packages:
         - 'AR=x86_64-managarm-ar rcu'
         - 'RANLIB=x86_64-managarm-ranlib'
         - '-j@PARALLELISM@'
-      - args: ['make', 'install', 'INSTALL_TOP=@THIS_COLLECT_DIR@']
+      - args: ['make', 'install', 'INSTALL_TOP=@THIS_COLLECT_DIR@/usr']
         quiet: true
