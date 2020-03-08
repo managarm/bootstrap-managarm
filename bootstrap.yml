@@ -1082,6 +1082,7 @@ packages:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/mesa/kmscube.git'
       branch: 'master'
+      commit: b235bae4c674b6ef4ac15a40b46000876bee9425
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
