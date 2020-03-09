@@ -1,5 +1,4 @@
 node {
-    cleanWs()
     dir('src') { checkout scm }
     def userId = sh(returnStdout: true, script: 'id -u').trim()
     docker.build('managarm_buildenv', "--build-arg USER=${userId} src/docker/")
@@ -10,11 +9,8 @@ node {
                 set -xe
                 pip3 install --user --upgrade xbstrap
                 $HOME/.local/bin/xbstrap init ../src || true
-                $HOME/.local/bin/xbstrap install --all
+                $HOME/.local/bin/xbstrap install --all -cu --hard-reset
                 '''
-            }
-            stage('Archive packages') {
-                sh '$HOME/.local/bin/xbstrap archive --all'
             }
         }
         stage('Make docs') {
@@ -27,23 +23,5 @@ node {
                 '''
             }
         }
-    }
-
-    stage('Make image') {
-        dir('build') {
-            sh '''#!/bin/sh
-            set -xe
-            xzcat /var/local/image-2gib.xz > image
-            ../src/scripts/prepare-sysroot
-            ../src/scripts/mkimage
-            xz --fast image
-            '''
-        }
-    }
-
-    stage('Collect results') {
-        sh 'rsync -av --delete docs/hel/doc/html/ /var/www/docs'
-        sh 'rsync -av --delete build/packages/*.tar.gz build/image.xz /var/www/pkgs/nightly'
-        archiveArtifacts 'build/packages/*.tar.gz,build/image.xz'
     }
 }
