@@ -7,9 +7,8 @@ node {
             stage('Build system') {
                 sh '''#!/bin/sh
                 set -xe
-                pip3 install --user --upgrade xbstrap
-                $HOME/.local/bin/xbstrap init ../src || true
-                $HOME/.local/bin/xbstrap install --all -cu --hard-reset
+                xbstrap init ../src || true
+                xbstrap install --all -cu --hard-reset
                 '''
             }
         }

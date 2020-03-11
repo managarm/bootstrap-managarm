@@ -8,13 +8,12 @@ node {
             stage('Build system') {
                 sh '''#!/bin/sh
                 set -xe
-                pip3 install --user --upgrade xbstrap
-                $HOME/.local/bin/xbstrap init ../src || true
-                $HOME/.local/bin/xbstrap install --all
+                xbstrap init ../src || true
+                xbstrap install --all
                 '''
             }
             stage('Archive packages') {
-                sh '$HOME/.local/bin/xbstrap archive --all'
+                sh 'xbstrap archive --all'
             }
         }
         stage('Make docs') {
