@@ -976,7 +976,7 @@ packages:
         - host-automake-v1.15
         - host-libtool
       regenerate:
-        - args: ['git', 'clean', '-xf', '-e', 'xbstrap.*']
+        - args: ['git', 'clean', '-xf', '-e', '*.xbstrap']
         - args: ['./autogen.sh']
     tools_required:
       - system-gcc
