@@ -1316,6 +1316,12 @@ packages:
         - host-automake-v1.15
         - host-pkg-config
       regenerate:
+        - args: |
+              if ! [ -d gnulib ]; then
+                  git clone git://git.sv.gnu.org/gnulib.git gnulib
+              else
+                  git -C gnulib pull --unshallow || true
+              fi
         - args: ['./autogen.sh']
     tools_required:
       - host-pkg-config
