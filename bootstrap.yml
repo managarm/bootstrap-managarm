@@ -1928,3 +1928,32 @@ packages:
       - args: 'cat @THIS_BUILD_DIR@/src/uw_tmp.h1 > @THIS_BUILD_DIR@/src/uw_tmp.h'
       - args: ['make', '-j@PARALLELISM@', '-C', 'src']
       - args: 'install -Dt @THIS_COLLECT_DIR@/bin $(sed s,^,src/, @THIS_BUILD_DIR@/package/commands)'
+
+  - name: tar
+    default: false
+    source:
+      subdir: ports
+      git: 'https://git.savannah.gnu.org/git/tar.git'
+      tag: 'release_1_32'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+      regenerate:
+        - args: ['./bootstrap']
+        - args: ['cp',
+            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
+            '@THIS_SOURCE_DIR@/build-aux/']
+    tools_required:
+      - system-gcc
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--disable-nls'
+      - args: 'sed -i s/-Werror//g @THIS_BUILD_DIR@/src/Makefile'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
