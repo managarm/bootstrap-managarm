@@ -1,0 +1,31 @@
+From 6b1f02df5dbc081fcc56421193b53db0ee646f9d Mon Sep 17 00:00:00 2001
+From: Arsen <arsen@managarm.org>
+Date: Wed, 8 Apr 2020 15:54:12 +0200
+Subject: [PATCH] runit.c: add sys/select.h include
+
+runit.c seems to rely on a transitive dependency between sys/types.h and
+sys/select.h that exists on some systems such as Linux.
+When we tried porting runit to managarm we ran into an issue related to
+it, where fd_set and timeval weren't declared at time of use in runit.c.
+Consulting the Open Group's POSIX specification, it shows that
+sys/types.h does not need to specify either of the two, and that they
+are in sys/select.h. This patch corrects the include.
+---
+ src/runit.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/runit.c b/src/runit.c
+index 48620b3..976495b 100644
+--- a/src/runit.c
++++ b/src/runit.c
+@@ -2,6 +2,7 @@
+ #include <sys/reboot.h>
+ #include <sys/ioctl.h>
+ #include <sys/stat.h>
++#include <sys/select.h>
+ #include <signal.h>
+ #include <unistd.h>
+ #include <fcntl.h>
+-- 
+2.24.1
+
