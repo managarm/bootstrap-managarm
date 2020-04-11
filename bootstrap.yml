@@ -2061,3 +2061,20 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+
+tasks:
+  - name: make-image
+    pkgs_required:
+      - managarm-kernel
+      - managarm-system
+    args:
+      - '@SOURCE_ROOT@/scripts/mkimage'
+    workdir: '@BUILD_ROOT@'
+
+  - name: qemu
+    tasks_required:
+      - task: make-image
+        order_only: true
+    args:
+      - '@SOURCE_ROOT@/scripts/run-qemu'
+    workdir: '@BUILD_ROOT@'
