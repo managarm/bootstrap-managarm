@@ -783,7 +783,6 @@ packages:
         quiet: true
 
   - name: libarchive
-    default: false
     source:
       subdir: 'ports'
       git: 'https://github.com/libarchive/libarchive.git'
