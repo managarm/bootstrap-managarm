@@ -2119,6 +2119,20 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: sl
+    source:
+      subdir: ports
+      git: 'https://github.com/mtoyoda/sl.git'
+      branch: 'master'
+    tools_required:
+      - system-gcc
+    configure:
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+    build:
+      - args: ['make', 'CC=x86_64-managarm-gcc', '-j@PARALLELISM@']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/bin']
+      - args: ['cp', '@THIS_BUILD_DIR@/sl', '@THIS_COLLECT_DIR@/usr/bin']
+
 tasks:
   - name: make-image
     pkgs_required:
