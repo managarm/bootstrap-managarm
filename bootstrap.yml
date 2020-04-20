@@ -2131,16 +2131,22 @@ packages:
     build:
       - args: ['make', 'CC=x86_64-managarm-gcc', '-j@PARALLELISM@']
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/bin']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/share/man/man1']
       - args: ['cp', '@THIS_BUILD_DIR@/sl', '@THIS_COLLECT_DIR@/usr/bin']
+      - args: ['cp', '@THIS_BUILD_DIR@/sl.1', '@THIS_COLLECT_DIR@/usr/share/man/man1']
 
   - name: libpipeline
     default: false
     source:
       subdir: ports
-      url: 'http://download.savannah.gnu.org/releases/libpipeline/libpipeline-1.5.2.tar.gz'
-      format: 'tar.gz'
-      extract_path: 'libpipeline-1.5.2'
+      git: 'https://git.savannah.gnu.org/git/libpipeline.git'
+      tag: '1.5.2'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-pkg-config
       regenerate:
+        - args: ['./bootstrap']
         - args: ['cp',
             '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
             '@THIS_SOURCE_DIR@/build-aux/']
@@ -2161,13 +2167,14 @@ packages:
     default: false
     source:
       subdir: ports
-      url: 'http://ftp.gnu.org/gnu/gdbm/gdbm-1.18.1.tar.gz'
-      format: 'tar.gz'
-      extract_path: 'gdbm-1.18.1'
+      git: 'https://git.savannah.gnu.org/git/gdbm.git'
+      tag: 'v1.18.1'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
       regenerate:
-        - args: ['cp',
-            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
-            '@THIS_SOURCE_DIR@/build-aux/']
+        - args: ['./bootstrap']
     tools_required:
       - system-gcc
     configure:
@@ -2189,10 +2196,14 @@ packages:
     default: false
     source:
       subdir: ports
-      url: 'http://download.savannah.gnu.org/releases/man-db/man-db-2.9.0.tar.xz'
-      format: 'tar.xz'
-      extract_path: 'man-db-2.9.0'
+      git: 'https://git.savannah.gnu.org/git/man-db.git'
+      tag: '2.9.1'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-pkg-config
       regenerate:
+        - args: ['./bootstrap']
         - args: ['cp',
             '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
             '@THIS_SOURCE_DIR@/build-aux/']
