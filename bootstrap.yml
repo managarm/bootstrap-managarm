@@ -2130,7 +2130,104 @@ packages:
     build:
       - args: ['make', 'CC=x86_64-managarm-gcc', '-j@PARALLELISM@']
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/bin']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/share/man/man1']
       - args: ['cp', '@THIS_BUILD_DIR@/sl', '@THIS_COLLECT_DIR@/usr/bin']
+      - args: ['cp', '@THIS_BUILD_DIR@/sl.1', '@THIS_COLLECT_DIR@/usr/share/man/man1']
+
+  - name: libpipeline
+    default: false
+    source:
+      subdir: ports
+      git: 'https://git.savannah.gnu.org/git/libpipeline.git'
+      tag: '1.5.2'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-pkg-config
+      regenerate:
+        - args: ['./bootstrap']
+        - args: ['cp',
+            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
+            '@THIS_SOURCE_DIR@/build-aux/']
+    tools_required:
+      - system-gcc
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: gdbm
+    default: false
+    source:
+      subdir: ports
+      git: 'https://git.savannah.gnu.org/git/gdbm.git'
+      tag: 'v1.18.1'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+      regenerate:
+        - args: ['./bootstrap']
+    tools_required:
+      - system-gcc
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--disable-nls'
+        - '--disable-static'
+        - '--enable-libgdbm-compat'
+        - '--without-readline'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: man-db
+    default: false
+    source:
+      subdir: ports
+      git: 'https://git.savannah.gnu.org/git/man-db.git'
+      tag: '2.9.1'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-pkg-config
+      regenerate:
+        - args: ['./bootstrap']
+        - args: ['cp',
+            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
+            '@THIS_SOURCE_DIR@/build-aux/']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - libpipeline
+      - gdbm
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--disable-nls'
+        - '--docdir=/usr/share/doc/man-db-2.9.0'
+        - '--sysconfdir=/etc'
+        - '--disable-setuid'
+        - '--with-systemdtmpfilesdir='
+        - '--with-systemdsystemunitdir='
+        - '--disable-manual'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
 
 tasks:
   - name: make-image
