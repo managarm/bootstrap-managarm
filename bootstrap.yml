@@ -2125,6 +2125,8 @@ packages:
       branch: 'master'
     tools_required:
       - system-gcc
+    pkgs_required:
+      - ncurses
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
