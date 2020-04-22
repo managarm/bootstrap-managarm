@@ -2216,11 +2216,11 @@ packages:
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
         - '--with-doc=no'
+        environ:
+          PAGE: 'A4'
       - args: 'sed -i s/"_GL_MATH_CXX_REAL_FLOATING_DECL_1 (signbit)"//g @THIS_SOURCE_DIR@/lib/math.in.h'
       - args: 'sed -i s/"_GL_MATH_CXX_REAL_FLOATING_DECL_2 (signbit)"//g @THIS_SOURCE_DIR@/lib/math.in.h'
       - args: 'sed -i s/"#   undef signbit"//g @THIS_SOURCE_DIR@/lib/math.in.h'
-        environ:
-          PAGE: 'A4'
     build:
       - args: ['make', '-j1']
       - args: ['make', 'install']
