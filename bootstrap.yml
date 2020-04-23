@@ -2146,6 +2146,7 @@ packages:
         - host-autoconf-v2.69
         - host-automake-v1.15
         - host-pkg-config
+        - host-libtool
       regenerate:
         - args: ['./bootstrap']
         - args: ['cp',
@@ -2203,6 +2204,7 @@ packages:
         - host-autoconf-v2.69
         - host-automake-v1.15
         - host-pkg-config
+        - host-libtool
       regenerate:
         - args: ['./bootstrap']
         - args: ['cp',
@@ -2223,6 +2225,8 @@ packages:
       - args: 'sed -i s/"#   undef signbit"//g @THIS_SOURCE_DIR@/lib/math.in.h'
     build:
       - args: ['make', '-j1']
+        environ:
+          xpmtoppm: '/usr/bin/true'
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
@@ -2258,6 +2262,7 @@ packages:
         - host-autoconf-v2.69
         - host-automake-v1.15
         - host-pkg-config
+        - host-libtool
       regenerate:
         - args: ['./bootstrap']
         - args: ['cp',
@@ -2298,6 +2303,7 @@ packages:
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
+        - host-libtool
       regenerate:
         - args: ['autoreconf', '-f', '-i']
     tools_required:
