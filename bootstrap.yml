@@ -2327,6 +2327,64 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: xz-utils
+    default: false
+    source:
+      subdir: ports
+      git: 'https://git.tukaani.org/xz.git'
+      branch: 'v5.2'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+      regenerate:
+        - args: ['./autogen.sh', '--no-po4a']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - zlib
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--disable-static'
+        - '--disable-nls'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: gawk
+    default: false
+    source:
+      subdir: ports
+      git: 'https://git.savannah.gnu.org/git/gawk.git'
+      tag: 'gawk-4.2.1'
+      tools_required:
+        - host-automake-v1.15
+      regenerate:
+        - args: sed -i 's/extras//' @THIS_SOURCE_DIR@/Makefile.in
+        - args: ['cp',
+            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
+            '@THIS_SOURCE_DIR@/']
+    tools_required:
+      - system-gcc
+      - host-automake-v1.15
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--disable-nls'
+        - '--disable-extensions'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
 tasks:
   - name: make-image
     pkgs_required:
