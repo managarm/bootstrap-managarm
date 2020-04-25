@@ -2381,6 +2381,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: pcre
+    default: false
     source:
       subdir: ports
       url: 'https://ftp.pcre.org/pub/pcre/pcre-8.44.tar.gz'
@@ -2415,6 +2416,7 @@ packages:
       - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
 
   - name: glib
+    default: false
     source:
       subdir: ports
       git: 'https://gitlab.gnome.org/GNOME/glib'
