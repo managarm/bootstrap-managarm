@@ -521,6 +521,7 @@ packages:
       - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
         quiet: true
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/root/']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc/']
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/.bashrc', '@THIS_COLLECT_DIR@/root']
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/profile', '@THIS_COLLECT_DIR@/etc']
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/bash.bashrc', '@THIS_COLLECT_DIR@/etc']
