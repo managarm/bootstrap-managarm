@@ -2414,6 +2414,36 @@ packages:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
 
+  - name: glib
+    source:
+      subdir: ports
+      git: 'https://gitlab.gnome.org/GNOME/glib'
+      tag: '2.59.2'
+    tools_required:
+      - system-gcc
+      - host-libtool
+      - host-pkg-config
+    pkgs_required:
+      - pcre
+    configure:
+      - args:
+        - 'meson'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '-Dxattr=false'
+        - '@THIS_SOURCE_DIR@'
+        environ:
+          PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
+          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          - DESTDIR: '@THIS_COLLECT_DIR@'
+
 tasks:
   - name: make-image
     pkgs_required:

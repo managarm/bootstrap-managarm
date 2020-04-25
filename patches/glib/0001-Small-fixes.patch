@@ -1,0 +1,160 @@
+From e3257b91e4920fbf4753452aa05d5b9941024c8e Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Sun, 26 Apr 2020 01:05:06 +0200
+Subject: [PATCH] Small fixes
+
+---
+ gio/gnetworking.h.in       |  2 ++
+ gio/gsocket.c              | 33 +++++++++++++++++++++++++++++++++
+ gio/gthreadedresolver.c    |  7 +++++--
+ gio/meson.build            |  4 ++--
+ gio/xdgmime/xdgmimecache.c |  2 +-
+ glib/glib-init.c           |  1 +
+ glib/gstrfuncs.c           |  1 +
+ 7 files changed, 45 insertions(+), 5 deletions(-)
+
+diff --git a/gio/gnetworking.h.in b/gio/gnetworking.h.in
+index f9582b9..c3a5024 100644
+--- a/gio/gnetworking.h.in
++++ b/gio/gnetworking.h.in
+@@ -47,7 +47,9 @@
+ #include <net/if.h>
+ 
+ #include <arpa/inet.h>
++#if __has_include(<arpa/nameser.h>)
+ #include <arpa/nameser.h>
++#endif
+ @NAMESER_COMPAT_INCLUDE@
+ 
+ #ifndef T_SRV
+diff --git a/gio/gsocket.c b/gio/gsocket.c
+index 66073af..9c2dbd8 100644
+--- a/gio/gsocket.c
++++ b/gio/gsocket.c
+@@ -81,6 +81,39 @@
+ #include "gwin32networking.h"
+ #endif
+ 
++#if defined(__managarm__)
++#ifndef IP_TTL
++#define IP_TTL 0
++#endif
++#ifndef IP_MULTICAST_LOOP
++#define IP_MULTICAST_LOOP 0
++#endif
++#ifndef IP_MULTICAST_TTL
++#define IP_MULTICAST_TTL 0
++#endif
++#if !defined(IP_ADD_MEMBERSHIP) && !defined(IP_DROP_MEMBERSHIP) && !defined(HAVE_IP_MREQN)
++struct ip_mreq
++{
++	struct in_addr imr_multiaddr;
++	struct in_addr imr_interface;
++};
++#endif
++#ifndef IP_ADD_MEMBERSHIP
++#define IP_ADD_MEMBERSHIP 0
++#endif
++#ifndef IP_DROP_MEMBERSHIP
++#define IP_DROP_MEMBERSHIP 0
++#endif
++#ifndef SO_NREAD
++#define SO_NREAD 0
++#endif
++#ifndef CMSG_DATA
++#define CMSG_DATA(x) ((unsigned char*) x)
++#define CMSG_FIRSTHDR(x) ((struct cmsghdr *) NULL)
++#define CMSG_NXTHDR(x, y) ((struct cmsghdr *) NULL)
++#endif
++#endif
++
+ /**
+  * SECTION:gsocket
+  * @short_description: Low-level socket object
+diff --git a/gio/gthreadedresolver.c b/gio/gthreadedresolver.c
+index 7691b91..cfae1e1 100644
+--- a/gio/gthreadedresolver.c
++++ b/gio/gthreadedresolver.c
+@@ -389,7 +389,7 @@ lookup_by_address_finish (GResolver     *resolver,
+ 
+ #if defined(G_OS_UNIX)
+ 
+-#if defined __BIONIC__ && !defined BIND_4_COMPAT
++#if (defined(__BIONIC__) || defined(__managarm__)) && !defined BIND_4_COMPAT
+ /* Copy from bionic/libc/private/arpa_nameser_compat.h
+  * and bionic/libc/private/arpa_nameser.h */
+ typedef struct {
+@@ -924,7 +924,10 @@ free_records (GList *records)
+ }
+ 
+ #if defined(G_OS_UNIX)
+-#ifdef __BIONIC__
++#if defined(__BIONIC__) || defined(__managarm__)
++#if defined(__managarm__)
++static int h_errno;
++#endif
+ #ifndef C_IN
+ #define C_IN 1
+ #endif
+diff --git a/gio/meson.build b/gio/meson.build
+index 3535788..2afcba5 100644
+--- a/gio/meson.build
++++ b/gio/meson.build
+@@ -32,7 +32,7 @@ elif not host_system.contains('android')
+                    name : 'arpa/nameser_compat.h needed for C_IN')
+       gnetworking_h_nameser_compat_include = '#include <arpa/nameser_compat.h>'
+     else
+-      error('Could not find required includes for ARPA C_IN')
++      warning('Could not find required includes for ARPA C_IN')
+     endif
+   endif
+ endif
+@@ -57,7 +57,7 @@ if host_system != 'windows'
+       network_libs += [ cc.find_library('bind') ]
+       network_args += [ '-lbind' ]
+     else
+-      error('Could not find res_query()')
++      warning('Could not find res_query()')
+     endif
+   endif
+ 
+diff --git a/gio/xdgmime/xdgmimecache.c b/gio/xdgmime/xdgmimecache.c
+index 769b578..9b8bd11 100644
+--- a/gio/xdgmime/xdgmimecache.c
++++ b/gio/xdgmime/xdgmimecache.c
+@@ -34,7 +34,7 @@
+ #include <fnmatch.h>
+ #include <assert.h>
+ 
+-#include <netinet/in.h> /* for ntohl/ntohs */
++#include <arpa/inet.h> /* for ntohl/ntohs */
+ 
+ #ifdef HAVE_MMAP
+ #include <sys/mman.h>
+diff --git a/glib/glib-init.c b/glib/glib-init.c
+index ed800dc..df69dff 100644
+--- a/glib/glib-init.c
++++ b/glib/glib-init.c
+@@ -27,6 +27,7 @@
+ #include "gmem.h"       /* for g_mem_gc_friendly */
+ 
+ #include <string.h>
++#include <strings.h>
+ #include <stdlib.h>
+ #include <stdio.h>
+ #include <ctype.h>
+diff --git a/glib/gstrfuncs.c b/glib/gstrfuncs.c
+index a37ef89..39e9288 100644
+--- a/glib/gstrfuncs.c
++++ b/glib/gstrfuncs.c
+@@ -33,6 +33,7 @@
+ #include <stdlib.h>
+ #include <locale.h>
+ #include <string.h>
++#include <strings.h>
+ #include <locale.h>
+ #include <errno.h>
+ #include <ctype.h>              /* For tolower() */
+-- 
+2.26.1
+
