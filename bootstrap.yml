@@ -1979,7 +1979,6 @@ packages:
       - args: 'install -Dt @THIS_COLLECT_DIR@/bin $(sed s,^,src/, @THIS_BUILD_DIR@/package/commands)'
 
   - name: tar
-    default: false
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/tar.git'
@@ -2008,7 +2007,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: gzip
-    default: false
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/gzip.git'
@@ -2036,7 +2034,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: grep
-    default: false
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/grep.git'
@@ -2093,7 +2090,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: diffutils
-    default: false
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/diffutils.git'
@@ -2236,7 +2232,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: less
-    default: false
     source:
       subdir: ports
       url: 'http://www.greenwoodsoftware.com/less/less-551.tar.gz'
@@ -2299,7 +2294,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: file
-    default: false
     source:
       subdir: ports
       git: 'https://github.com/file/file.git'
