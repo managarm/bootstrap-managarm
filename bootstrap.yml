@@ -2295,6 +2295,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: file
+    default: true
     source:
       subdir: ports
       git: 'https://github.com/file/file.git'
