@@ -22,7 +22,7 @@ sources:
   - name: llvm
     subdir: 'ports'
     git: 'https://github.com/llvm/llvm-project'
-    tag: 'llvmorg-9.0.0'
+    tag: 'llvmorg-10.0.0'
 
   - name: gcc
     subdir: 'ports'
