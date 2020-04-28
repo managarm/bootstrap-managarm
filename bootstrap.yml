@@ -1235,7 +1235,7 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/mesa/mesa.git'
-      tag: 'mesa-19.0.5'
+      tag: 'mesa-20.0.5'
       tools_required:
         - host-pkg-config
     tools_required:

@@ -1,21 +1,23 @@
-From 865ab2cca8c80d9346e5c950732b496c7b735f3a Mon Sep 17 00:00:00 2001
+From 4df7af05ec1a130d10b13e96e3155999376a56e5 Mon Sep 17 00:00:00 2001
 From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
 Date: Fri, 31 May 2019 20:28:26 +0200
 Subject: [PATCH] Managarm-specific changes
 
 ---
- include/drm-uapi/drm.h                 | 94 ++--------------------------------
- meson.build                            |  2 +-
- src/gallium/auxiliary/util/u_network.c |  1 +
- src/gallium/include/pipe/p_config.h    |  9 +++-
- src/loader/loader.c                    |  1 +
- src/util/debug.c                       |  1 +
- src/util/os_misc.c                     |  4 +-
- src/util/os_time.c                     |  4 +-
- 8 files changed, 18 insertions(+), 98 deletions(-)
+ include/drm-uapi/drm.h                 | 5 +++--
+ meson.build                            | 2 +-
+ src/gallium/auxiliary/util/u_network.c | 1 +
+ src/gallium/include/pipe/p_config.h    | 4 ++++
+ src/loader/loader.c                    | 1 +
+ src/util/debug.c                       | 1 +
+ src/util/detect_os.h                   | 8 ++++++++
+ src/util/os_misc.c                     | 4 ++--
+ src/util/os_time.c                     | 4 ++--
+ src/util/u_thread.h                    | 2 +-
+ 10 files changed, 24 insertions(+), 8 deletions(-)
 
 diff --git a/include/drm-uapi/drm.h b/include/drm-uapi/drm.h
-index f0bd91d..4ab071c 100644
+index 438abde..7d0b8ea 100644
 --- a/include/drm-uapi/drm.h
 +++ b/include/drm-uapi/drm.h
 @@ -36,10 +36,11 @@
@@ -32,152 +34,21 @@ index f0bd91d..4ab071c 100644
  typedef unsigned int drm_handle_t;
  
  #else /* One of the BSDs */
-@@ -642,7 +643,6 @@ struct drm_gem_open {
- #define DRM_CAP_ADDFB2_MODIFIERS	0x10
- #define DRM_CAP_PAGE_FLIP_TARGET	0x11
- #define DRM_CAP_CRTC_IN_VBLANK_EVENT	0x12
--#define DRM_CAP_SYNCOBJ		0x13
- 
- /** DRM_IOCTL_GET_CAP ioctl argument type */
- struct drm_get_cap {
-@@ -692,67 +692,6 @@ struct drm_prime_handle {
- 	__s32 fd;
- };
- 
--struct drm_syncobj_create {
--	__u32 handle;
--#define DRM_SYNCOBJ_CREATE_SIGNALED (1 << 0)
--	__u32 flags;
--};
--
--struct drm_syncobj_destroy {
--	__u32 handle;
--	__u32 pad;
--};
--
--#define DRM_SYNCOBJ_FD_TO_HANDLE_FLAGS_IMPORT_SYNC_FILE (1 << 0)
--#define DRM_SYNCOBJ_HANDLE_TO_FD_FLAGS_EXPORT_SYNC_FILE (1 << 0)
--struct drm_syncobj_handle {
--	__u32 handle;
--	__u32 flags;
--
--	__s32 fd;
--	__u32 pad;
--};
--
--#define DRM_SYNCOBJ_WAIT_FLAGS_WAIT_ALL (1 << 0)
--#define DRM_SYNCOBJ_WAIT_FLAGS_WAIT_FOR_SUBMIT (1 << 1)
--struct drm_syncobj_wait {
--	__u64 handles;
--	/* absolute timeout */
--	__s64 timeout_nsec;
--	__u32 count_handles;
--	__u32 flags;
--	__u32 first_signaled; /* only valid when not waiting all */
--	__u32 pad;
--};
--
--struct drm_syncobj_array {
--	__u64 handles;
--	__u32 count_handles;
--	__u32 pad;
--};
--
--/* Query current scanout sequence number */
--struct drm_crtc_get_sequence {
--	__u32 crtc_id;		/* requested crtc_id */
--	__u32 active;		/* return: crtc output is active */
--	__u64 sequence;		/* return: most recent vblank sequence */
--	__s64 sequence_ns;	/* return: most recent time of first pixel out */
--};
--
--/* Queue event to be delivered at specified sequence. Time stamp marks
-- * when the first pixel of the refresh cycle leaves the display engine
-- * for the display
-- */
--#define DRM_CRTC_SEQUENCE_RELATIVE		0x00000001	/* sequence is relative to current */
--#define DRM_CRTC_SEQUENCE_NEXT_ON_MISS		0x00000002	/* Use next sequence if we've missed */
--
--struct drm_crtc_queue_sequence {
--	__u32 crtc_id;
--	__u32 flags;
--	__u64 sequence;		/* on input, target sequence. on output, actual sequence */
--	__u64 user_data;	/* user data passed to event */
--};
--
- #if defined(__cplusplus)
- }
- #endif
-@@ -835,9 +774,6 @@ extern "C" {
- 
- #define DRM_IOCTL_WAIT_VBLANK		DRM_IOWR(0x3a, union drm_wait_vblank)
- 
--#define DRM_IOCTL_CRTC_GET_SEQUENCE	DRM_IOWR(0x3b, struct drm_crtc_get_sequence)
--#define DRM_IOCTL_CRTC_QUEUE_SEQUENCE	DRM_IOWR(0x3c, struct drm_crtc_queue_sequence)
--
- #define DRM_IOCTL_UPDATE_DRAW		DRM_IOW(0x3f, struct drm_update_draw)
- 
- #define DRM_IOCTL_MODE_GETRESOURCES	DRM_IOWR(0xA0, struct drm_mode_card_res)
-@@ -874,19 +810,6 @@ extern "C" {
- #define DRM_IOCTL_MODE_CREATEPROPBLOB	DRM_IOWR(0xBD, struct drm_mode_create_blob)
- #define DRM_IOCTL_MODE_DESTROYPROPBLOB	DRM_IOWR(0xBE, struct drm_mode_destroy_blob)
- 
--#define DRM_IOCTL_SYNCOBJ_CREATE	DRM_IOWR(0xBF, struct drm_syncobj_create)
--#define DRM_IOCTL_SYNCOBJ_DESTROY	DRM_IOWR(0xC0, struct drm_syncobj_destroy)
--#define DRM_IOCTL_SYNCOBJ_HANDLE_TO_FD	DRM_IOWR(0xC1, struct drm_syncobj_handle)
--#define DRM_IOCTL_SYNCOBJ_FD_TO_HANDLE	DRM_IOWR(0xC2, struct drm_syncobj_handle)
--#define DRM_IOCTL_SYNCOBJ_WAIT		DRM_IOWR(0xC3, struct drm_syncobj_wait)
--#define DRM_IOCTL_SYNCOBJ_RESET		DRM_IOWR(0xC4, struct drm_syncobj_array)
--#define DRM_IOCTL_SYNCOBJ_SIGNAL	DRM_IOWR(0xC5, struct drm_syncobj_array)
--
--#define DRM_IOCTL_MODE_CREATE_LEASE	DRM_IOWR(0xC6, struct drm_mode_create_lease)
--#define DRM_IOCTL_MODE_LIST_LESSEES	DRM_IOWR(0xC7, struct drm_mode_list_lessees)
--#define DRM_IOCTL_MODE_GET_LEASE	DRM_IOWR(0xC8, struct drm_mode_get_lease)
--#define DRM_IOCTL_MODE_REVOKE_LEASE	DRM_IOWR(0xC9, struct drm_mode_revoke_lease)
--
- /**
-  * Device specific ioctls should only be in their respective headers
-  * The device specific ioctl range is from 0x40 to 0x9f.
-@@ -917,7 +840,6 @@ struct drm_event {
- 
- #define DRM_EVENT_VBLANK 0x01
- #define DRM_EVENT_FLIP_COMPLETE 0x02
--#define DRM_EVENT_CRTC_SEQUENCE	0x03
- 
- struct drm_event_vblank {
- 	struct drm_event base;
-@@ -928,16 +850,6 @@ struct drm_event_vblank {
- 	__u32 crtc_id; /* 0 on older kernels that do not support this */
- };
- 
--/* Event delivered at sequence. Time stamp marks when the first pixel
-- * of the refresh cycle leaves the display engine for the display
-- */
--struct drm_event_crtc_sequence {
--	struct drm_event	base;
--	__u64			user_data;
--	__s64			time_ns;
--	__u64			sequence;
--};
--
- /* typedef area */
- typedef struct drm_clip_rect drm_clip_rect_t;
- typedef struct drm_drawable_info drm_drawable_info_t;
 diff --git a/meson.build b/meson.build
-index 5286b91..91d9796 100644
+index c48945b..cbf7aab 100644
 --- a/meson.build
 +++ b/meson.build
-@@ -89,7 +89,7 @@ if (with_gles1 or with_gles2) and not with_opengl
-   error('building OpenGL ES without OpenGL is not supported.')
- endif
+@@ -128,7 +128,7 @@ with_any_opengl = with_opengl or with_gles1 or with_gles2
+ # Only build shared_glapi if at least one OpenGL API is enabled
+ with_shared_glapi = with_shared_glapi and with_any_opengl
  
--system_has_kms_drm = ['openbsd', 'netbsd', 'freebsd', 'dragonfly', 'linux'].contains(host_machine.system())
-+system_has_kms_drm = ['openbsd', 'netbsd', 'freebsd', 'dragonfly', 'linux', 'managarm'].contains(host_machine.system())
+-system_has_kms_drm = ['openbsd', 'netbsd', 'freebsd', 'gnu/kfreebsd', 'dragonfly', 'linux', 'sunos'].contains(host_machine.system())
++system_has_kms_drm = ['openbsd', 'netbsd', 'freebsd', 'gnu/kfreebsd', 'dragonfly', 'linux', 'managarm', 'sunos'].contains(host_machine.system())
  
- _drivers = get_option('dri-drivers')
- if _drivers.contains('auto')
+ dri_drivers = get_option('dri-drivers')
+ if dri_drivers.contains('auto')
 diff --git a/src/gallium/auxiliary/util/u_network.c b/src/gallium/auxiliary/util/u_network.c
-index 89395f5..2a520c1 100644
+index 31139f2..20e6e29 100644
 --- a/src/gallium/auxiliary/util/u_network.c
 +++ b/src/gallium/auxiliary/util/u_network.c
 @@ -10,6 +10,7 @@
@@ -189,35 +60,22 @@ index 89395f5..2a520c1 100644
  #  include <netinet/in.h>
  #  include <unistd.h>
 diff --git a/src/gallium/include/pipe/p_config.h b/src/gallium/include/pipe/p_config.h
-index 3fa43ed..0afedf9 100644
+index 2c1698d..de4bc45 100644
 --- a/src/gallium/include/pipe/p_config.h
 +++ b/src/gallium/include/pipe/p_config.h
-@@ -208,6 +208,11 @@
- #define PIPE_OS_UNIX
+@@ -185,6 +185,10 @@
+ #define PIPE_OS_HAIKU
  #endif
  
-+#if defined(__managarm__)
++#if DETECT_OS_MANAGARM
 +#define PIPE_OS_MANAGARM
-+#define PIPE_OS_UNIX
 +#endif
 +
- #if defined(__CYGWIN__)
+ #if DETECT_OS_CYGWIN
  #define PIPE_OS_CYGWIN
- #define PIPE_OS_UNIX
-@@ -219,9 +224,9 @@
-  * NOTE: There is no way to auto-detect most of these.
-  */
- 
--#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_BSD) || defined(PIPE_OS_SOLARIS)
-+#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_BSD) || defined(PIPE_OS_SOLARIS) || defined(PIPE_OS_MANAGARM)
- #define PIPE_SUBSYSTEM_DRI
--#endif /* PIPE_OS_LINUX || PIPE_OS_BSD || PIPE_OS_SOLARIS */
-+#endif /* PIPE_OS_LINUX || PIPE_OS_BSD || PIPE_OS_SOLARIS || defined(PIPE_OS_MANAGARM) */
- 
- #if defined(PIPE_OS_WINDOWS)
- #if defined(PIPE_SUBSYSTEM_WINDOWS_USER)
+ #endif
 diff --git a/src/loader/loader.c b/src/loader/loader.c
-index 0f799c1..05da50d 100644
+index c896fdc..d67b6c7 100644
 --- a/src/loader/loader.c
 +++ b/src/loader/loader.c
 @@ -29,6 +29,7 @@
@@ -229,7 +87,7 @@ index 0f799c1..05da50d 100644
  #include <stdarg.h>
  #include <stdio.h>
 diff --git a/src/util/debug.c b/src/util/debug.c
-index 09de1a8..3a54c56 100644
+index 7079c61..f277531 100644
 --- a/src/util/debug.c
 +++ b/src/util/debug.c
 @@ -23,6 +23,7 @@
@@ -239,51 +97,89 @@ index 09de1a8..3a54c56 100644
 +#include <strings.h>
  #include "main/macros.h"
  #include "debug.h"
- 
-diff --git a/src/util/os_misc.c b/src/util/os_misc.c
-index 09d4400..f95e348 100644
---- a/src/util/os_misc.c
-+++ b/src/util/os_misc.c
-@@ -47,7 +47,7 @@
+ #include "u_string.h"
+diff --git a/src/util/detect_os.h b/src/util/detect_os.h
+index 6506948..469b502 100644
+--- a/src/util/detect_os.h
++++ b/src/util/detect_os.h
+@@ -81,6 +81,11 @@
+ #define DETECT_OS_UNIX 1
  #endif
  
++#if defined(__managarm__)
++#define DETECT_OS_MANAGARM 1
++#define DETECT_OS_UNIX 1
++#endif
++
  
--#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_CYGWIN) || defined(PIPE_OS_SOLARIS)
-+#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_CYGWIN) || defined(PIPE_OS_SOLARIS) || defined(PIPE_OS_MANAGARM)
+ /*
+  * Make sure DETECT_OS_* are always defined, so that they can be used with #if
+@@ -127,5 +132,8 @@
+ #ifndef DETECT_OS_WINDOWS
+ #define DETECT_OS_WINDOWS 0
+ #endif
++#ifndef DETECT_OS_MANAGARM
++#define DETECT_OS_MANAGARM 0
++#endif
+ 
+ #endif /* DETECT_OS_H */
+diff --git a/src/util/os_misc.c b/src/util/os_misc.c
+index e689473..224f275 100644
+--- a/src/util/os_misc.c
++++ b/src/util/os_misc.c
+@@ -52,7 +52,7 @@
+ #  define LOG_TAG "MESA"
  #  include <unistd.h>
- #elif defined(PIPE_OS_APPLE) || defined(PIPE_OS_BSD)
+ #  include <log/log.h>
+-#elif DETECT_OS_LINUX || DETECT_OS_CYGWIN || DETECT_OS_SOLARIS || DETECT_OS_HURD
++#elif DETECT_OS_LINUX || DETECT_OS_CYGWIN || DETECT_OS_SOLARIS || DETECT_OS_HURD || DETECT_OS_MANAGARM
+ #  include <unistd.h>
+ #elif DETECT_OS_APPLE || DETECT_OS_BSD
  #  include <sys/sysctl.h>
-@@ -124,7 +124,7 @@ os_get_option(const char *name)
+@@ -132,7 +132,7 @@ os_get_option(const char *name)
  bool
  os_get_total_physical_memory(uint64_t *size)
  {
--#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_CYGWIN) || defined(PIPE_OS_SOLARIS)
-+#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_CYGWIN) || defined(PIPE_OS_SOLARIS) || defined(PIPE_OS_MANAGARM)
+-#if DETECT_OS_LINUX || DETECT_OS_CYGWIN || DETECT_OS_SOLARIS || DETECT_OS_HURD
++#if DETECT_OS_LINUX || DETECT_OS_CYGWIN || DETECT_OS_SOLARIS || DETECT_OS_HURD || DETECT_OS_MANAGARM
     const long phys_pages = sysconf(_SC_PHYS_PAGES);
     const long page_size = sysconf(_SC_PAGE_SIZE);
  
 diff --git a/src/util/os_time.c b/src/util/os_time.c
-index ac488b2..83730aa 100644
+index 92fc363..b518a94 100644
 --- a/src/util/os_time.c
 +++ b/src/util/os_time.c
-@@ -55,7 +55,7 @@
+@@ -53,7 +53,7 @@
  int64_t
  os_time_get_nano(void)
  {
--#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_BSD)
-+#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_BSD) || defined(PIPE_OS_MANAGARM)
+-#if DETECT_OS_LINUX || DETECT_OS_BSD
++#if DETECT_OS_LINUX || DETECT_OS_BSD || DETECT_OS_MANAGARM
  
     struct timespec tv;
     clock_gettime(CLOCK_MONOTONIC, &tv);
-@@ -95,7 +95,7 @@ os_time_get_nano(void)
+@@ -93,7 +93,7 @@ os_time_get_nano(void)
  void
  os_time_sleep(int64_t usecs)
  {
--#if defined(PIPE_OS_LINUX)
-+#if defined(PIPE_OS_LINUX) || defined(PIPE_OS_MANAGARM)
+-#if DETECT_OS_LINUX
++#if DETECT_OS_LINUX || DETECT_OS_MANAGARM
     struct timespec time;
     time.tv_sec = usecs / 1000000;
     time.tv_nsec = (usecs % 1000000) * 1000;
+diff --git a/src/util/u_thread.h b/src/util/u_thread.h
+index 1f2a104..53fd35a 100644
+--- a/src/util/u_thread.h
++++ b/src/util/u_thread.h
+@@ -155,7 +155,7 @@ util_get_L3_for_pinned_thread(thrd_t thread, unsigned cores_per_L3)
+ static inline int64_t
+ u_thread_get_time_nano(thrd_t thread)
+ {
+-#if defined(HAVE_PTHREAD) && !defined(__APPLE__) && !defined(__HAIKU__)
++#if defined(HAVE_PTHREAD) && !defined(__APPLE__) && !defined(__HAIKU__) && !defined(__managarm__)
+    struct timespec ts;
+    clockid_t cid;
+ 
 -- 
-2.11.0
+2.20.1
 
