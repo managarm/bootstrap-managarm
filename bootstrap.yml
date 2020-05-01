@@ -1498,7 +1498,6 @@ packages:
         quiet: true
 
   - name: python
-    default: false
     source:
       subdir: 'ports'
       git: 'https://github.com/python/cpython.git'
