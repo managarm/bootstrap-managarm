@@ -107,6 +107,17 @@ sources:
     regenerate:
       - args: ['autoreconf', '-f', '-i']
 
+  - name: file
+    subdir: ports
+    git: 'https://github.com/file/file.git'
+    tag: 'FILE5_38'
+    tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.15
+      - host-libtool
+    regenerate:
+      - args: ['autoreconf', '-f', '-i']
+
 tools:
   - name: host-autoconf-v2.64
     source:
@@ -500,6 +511,17 @@ tools:
 
   - name: host-python
     from_source: python
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--prefix=@PREFIX@'
+    compile:
+      - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'install']
+
+  - name: host-file
+    from_source: file
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -2323,18 +2345,10 @@ packages:
 
   - name: file
     default: false
-    source:
-      subdir: ports
-      git: 'https://github.com/file/file.git'
-      tag: 'FILE5_38'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
-        - host-libtool
-      regenerate:
-        - args: ['autoreconf', '-f', '-i']
+    from_source: file
     tools_required:
       - system-gcc
+      - host-file
     pkgs_required:
       - zlib
     configure:
