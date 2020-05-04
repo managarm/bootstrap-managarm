@@ -95,6 +95,29 @@ sources:
         environ:
           'NOCONFIGURE': 'yes'
 
+  - name: 'python'
+    subdir: 'ports'
+    git: 'https://github.com/python/cpython.git'
+    tag: 'v3.8.2'
+    tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.15
+      - host-libtool
+      - host-pkg-config
+    regenerate:
+      - args: ['autoreconf', '-f', '-i']
+
+  - name: file
+    subdir: ports
+    git: 'https://github.com/file/file.git'
+    tag: 'FILE5_38'
+    tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.15
+      - host-libtool
+    regenerate:
+      - args: ['autoreconf', '-f', '-i']
+
 tools:
   - name: host-autoconf-v2.64
     source:
@@ -485,6 +508,28 @@ tools:
     install:
       - args: ['make', 'install']
         quiet: true
+
+  - name: host-python
+    from_source: python
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--prefix=@PREFIX@'
+    compile:
+      - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'install']
+
+  - name: host-file
+    from_source: file
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--prefix=@PREFIX@'
+    compile:
+      - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'install']
 
 packages:
   - name: acpica
@@ -1498,19 +1543,10 @@ packages:
         quiet: true
 
   - name: python
-    source:
-      subdir: 'ports'
-      git: 'https://github.com/python/cpython.git'
-      tag: 'v3.8.2'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
-        - host-libtool
-        - host-pkg-config
-      regenerate:
-        - args: ['autoreconf', '-f', '-i']
+    from_source: python
     tools_required:
       - host-pkg-config
+      - host-python
       - system-gcc
     pkgs_required:
       - zlib
@@ -2309,18 +2345,10 @@ packages:
 
   - name: file
     default: false
-    source:
-      subdir: ports
-      git: 'https://github.com/file/file.git'
-      tag: 'FILE5_38'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
-        - host-libtool
-      regenerate:
-        - args: ['autoreconf', '-f', '-i']
+    from_source: file
     tools_required:
       - system-gcc
+      - host-file
     pkgs_required:
       - zlib
     configure:
@@ -2460,6 +2488,57 @@ packages:
     build:
       - args: ['ninja']
       - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: desktop-file-utils
+    default: false
+    source:
+      subdir: ports
+      git: 'https://gitlab.freedesktop.org/xdg/desktop-file-utils.git'
+      tag: '0.24'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.11
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
+    tools_required:
+      - system-gcc
+      - host-libtool
+      - host-pkg-config
+    pkgs_required:
+      - glib
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: which
+    source:
+      subdir: ports
+      url: 'https://ftp.gnu.org/gnu/which/which-2.21.tar.gz'
+      format: 'tar.gz'
+      extract_path: 'which-2.21'
+    tools_required:
+      - system-gcc
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
