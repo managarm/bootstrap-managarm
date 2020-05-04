@@ -95,6 +95,18 @@ sources:
         environ:
           'NOCONFIGURE': 'yes'
 
+  - name: 'python'
+    subdir: 'ports'
+    git: 'https://github.com/python/cpython.git'
+    tag: 'v3.8.2'
+    tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.15
+      - host-libtool
+      - host-pkg-config
+    regenerate:
+      - args: ['autoreconf', '-f', '-i']
+
 tools:
   - name: host-autoconf-v2.64
     source:
@@ -485,6 +497,17 @@ tools:
     install:
       - args: ['make', 'install']
         quiet: true
+
+  - name: host-python
+    from_source: python
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--prefix=@PREFIX@'
+    compile:
+      - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'install']
 
 packages:
   - name: acpica
@@ -1498,19 +1521,10 @@ packages:
         quiet: true
 
   - name: python
-    source:
-      subdir: 'ports'
-      git: 'https://github.com/python/cpython.git'
-      tag: 'v3.8.2'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
-        - host-libtool
-        - host-pkg-config
-      regenerate:
-        - args: ['autoreconf', '-f', '-i']
+    from_source: python
     tools_required:
       - host-pkg-config
+      - host-python
       - system-gcc
     pkgs_required:
       - zlib
