@@ -1,0 +1,39 @@
+From 5b466b2132b4dfaf3e76eb2da726c164c5f92b8f Mon Sep 17 00:00:00 2001
+From: Dennisbonke <admin@dennisbonke.com>
+Date: Thu, 7 May 2020 11:00:57 +0200
+Subject: [PATCH] Various fixes for managarm support
+
+---
+ crypto/compat/arc4random.h      | 2 +-
+ include/compat/machine/endian.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/crypto/compat/arc4random.h b/crypto/compat/arc4random.h
+index 762aec2..e7a0457 100644
+--- a/crypto/compat/arc4random.h
++++ b/crypto/compat/arc4random.h
+@@ -12,7 +12,7 @@
+ #elif defined(__hpux)
+ #include "arc4random_hpux.h"
+ 
+-#elif defined(__linux__)
++#elif defined(__linux__) || defined(__managarm__)
+ #include "arc4random_linux.h"
+ 
+ #elif defined(__NetBSD__)
+diff --git a/include/compat/machine/endian.h b/include/compat/machine/endian.h
+index 5ec39af..c8d2496 100644
+--- a/include/compat/machine/endian.h
++++ b/include/compat/machine/endian.h
+@@ -21,7 +21,7 @@
+ #define BYTE_ORDER BIG_ENDIAN
+ #endif
+ 
+-#elif defined(__linux__)
++#elif defined(__linux__) || defined(__managarm__)
+ #include <endian.h>
+ 
+ #elif defined(__sun) || defined(_AIX) || defined(__hpux)
+-- 
+2.26.2
+
