@@ -95,6 +95,19 @@ sources:
         environ:
           'NOCONFIGURE': 'yes'
 
+  - name: 'pkg-config'
+    subdir: 'ports'
+    git: 'https://gitlab.freedesktop.org/pkg-config/pkg-config.git'
+    tag: 'pkg-config-0.29.2'
+    tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.11
+      - host-libtool
+    regenerate:
+      - args: ['./autogen.sh']
+        environ:
+          'NOCONFIGURE': 'yes'
+
   - name: 'python'
     subdir: 'ports'
     git: 'https://github.com/python/cpython.git'
@@ -285,19 +298,7 @@ tools:
   # The easiest way to ensure that they are available is to just install pkg-config.
   - name: host-pkg-config
     exports_aclocal: true
-    source:
-      name: 'pkg-config'
-      subdir: 'ports'
-      git: 'https://gitlab.freedesktop.org/pkg-config/pkg-config.git'
-      tag: 'pkg-config-0.29.2'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.11
-        - host-libtool
-      regenerate:
-        - args: ['./autogen.sh']
-          environ:
-            'NOCONFIGURE': 'yes'
+    from_source: pkg-config
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1066,11 +1067,12 @@ packages:
         quiet: true
 
   - name: libressl
-    default: false
     source:
       subdir: 'ports'
       git: 'https://github.com/libressl-portable/portable.git'
       tag: 'v3.0.2'
+      regenerate:
+        - args: ['./update.sh']
     tools_required:
       - host-cmake
       - system-gcc
@@ -1080,6 +1082,8 @@ packages:
         - '-GNinja'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain.txt'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DLIBRESSL_APPS=OFF'
+        - '-DBUILD_SHARED_LIBS=ON'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -1552,6 +1556,7 @@ packages:
       - zlib
       - libexpat
       - libffi
+      - libressl
       - ncurses
     configure:
       - args:
@@ -2098,12 +2103,13 @@ packages:
             '@THIS_SOURCE_DIR@/build-aux/']
     tools_required:
       - system-gcc
+    pkgs_required:
+      - pcre
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
-        - '--disable-perl-regexp' # Explicitly disable pcre support to suppres a warning in configure
         - '--disable-nls'
       - args: 'sed -i s/-Werror//g @THIS_BUILD_DIR@/lib/Makefile'
     build:
@@ -2344,7 +2350,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: file
-    default: false
     from_source: file
     tools_required:
       - system-gcc
@@ -2423,7 +2428,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: pcre
-    default: false
     source:
       subdir: ports
       url: 'https://ftp.pcre.org/pub/pcre/pcre-8.44.tar.gz'
@@ -2458,7 +2462,6 @@ packages:
       - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
 
   - name: glib
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.gnome.org/GNOME/glib'
@@ -2491,8 +2494,26 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
-  - name: desktop-file-utils
+  - name: pkg-config
+    from_source: pkg-config
     default: false
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - glib
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--disable-static'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: desktop-file-utils
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xdg/desktop-file-utils.git'
@@ -2536,6 +2557,101 @@ packages:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: libxml
+    source:
+      subdir: ports
+      git: 'https://gitlab.gnome.org/GNOME/libxml2.git'
+      tag: 'v2.9.10'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.11
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
+    tools_required:
+      - system-gcc
+      - host-python
+    pkgs_required:
+      - zlib
+      - python
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--with-python=@SYSROOT_DIR@/usr/bin/python3.8'
+        - '--disable-static'
+        - '--with-threads'
+        - '--disable-ipv6'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: itstool
+    default: false
+    source:
+      subdir: ports
+      url: 'http://files.itstool.org/itstool/itstool-2.0.6.tar.bz2'
+      format: 'tar.bz2'
+      extract_path: 'itstool-2.0.6'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - libxml
+      - python
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        environ:  
+          'PYTHON': '/usr/bin/python3'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: shared-mime-info
+    default: false
+    source:
+      subdir: ports
+      git: 'https://gitlab.freedesktop.org/xdg/shared-mime-info.git'
+      tag: 'Release-1-15'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.11
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
+    tools_required:
+      - system-gcc
+      - host-python
+    pkgs_required:
+      - glib
+      - itstool
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--disable-update-mimedb'
+        environ:  
+          'ITSTOOL': '/usr/bin/itstool'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']

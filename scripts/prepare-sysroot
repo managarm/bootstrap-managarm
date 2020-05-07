@@ -13,6 +13,7 @@ mkdir -p system-root/usr/share/X11
 
 # Create some symlinks that are currently required.
 ln -sf /usr/bin/bash system-root/bin/bash
+ln -sf /usr/bin/bash system-root/bin/sh
 ln -sf /usr/lib/ld.so system-root/lib/ld-init.so
 
 # Copy stuff from the host system.
