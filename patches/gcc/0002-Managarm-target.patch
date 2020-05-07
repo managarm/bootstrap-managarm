@@ -71,7 +71,7 @@ diff --git a/gcc/config.gcc b/gcc/config.gcc
 index ddd3b8f4d..9701267b9 100644
 --- a/gcc/config.gcc
 +++ b/gcc/config.gcc
-@@ -836,6 +836,25 @@ case ${target} in
+@@ -836,6 +836,29 @@ case ${target} in
    target_has_targetcm=yes
    target_has_targetdm=yes
    ;;
@@ -87,6 +87,10 @@ index ddd3b8f4d..9701267b9 100644
 +    tmake_file="${tmake_file} t-slibgcc"
 +    thread_file='posix'
 +    ;;
++  *-managarm-pc*)
++    tmake_file="${tmake_file} t-slibgcc"
++    thread_file='posix'
++    ;; 
 +  *-managarm-kernel*)
 +    ;;
 +  *)
