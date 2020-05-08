@@ -2412,7 +2412,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: gawk
-    default: false
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/gawk.git'

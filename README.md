@@ -118,7 +118,7 @@ should produce a working image and launch it using QEMU:
 ../src/scripts/prepare-sysroot
 
 # Create a HDD image file called 'image' and copy the system onto it.
-./image_create.sh image 2GiB ext2 gpt
+./image_create.sh image 4GiB ext2 gpt
 ../src/scripts/mkimage
 
 # To launch the image using QEMU, you can run:
