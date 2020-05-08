@@ -2550,6 +2550,8 @@ packages:
         - args: ['autoreconf']
     tools_required:
       - system-gcc
+      - host-autoconf-v2.69
+      - host-automake-v1.15
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
