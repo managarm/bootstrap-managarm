@@ -2839,7 +2839,8 @@ packages:
       - libressl
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
-      - '@THIS_SOURCE_DIR@/configure'
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
     build:
