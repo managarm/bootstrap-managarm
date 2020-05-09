@@ -2686,6 +2686,7 @@ packages:
         - host-libtool
         - host-pkg-config
       regenerate:
+        # The first sed removes the doc and man dirs from the makefile in gettext-runtime, the second sed does the same for gettext-tools
         - args: 'sed -i s/"SUBDIRS = doc intl intl-java intl-csharp gnulib-lib \$(SUBDIR_libasprintf)\ src po man m4 tests"/"SUBDIRS = intl intl-java intl-csharp gnulib-lib \$(SUBDIR_libasprintf)\ src po m4 tests"/ @THIS_SOURCE_DIR@/gettext-runtime/Makefile.am'
         - args: 'sed -i s/"SUBDIRS = intl gnulib-lib libgrep src libgettextpo po its projects styles emacs misc man m4 tests system-tests gnulib-tests examples doc"/"SUBDIRS = intl gnulib-lib libgrep src libgettextpo po its projects styles emacs misc m4 tests system-tests gnulib-tests examples"/ @THIS_SOURCE_DIR@/gettext-tools/Makefile.am'
         - args: ['./gitsub.sh', 'pull']
@@ -2881,6 +2882,7 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/var/lib/locate']
 
   - name: bzip2
     default: false
@@ -2893,8 +2895,10 @@ packages:
       - system-gcc
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+      # Remove the test directory from the Makefile, as it tries to run (and fail on) the tests
       - args: 'sed -i s/"all: libbz2.a bzip2 bzip2recover test"/"all: libbz2.a bzip2 bzip2recover"/ @THIS_BUILD_DIR@/Makefile'
     build:
+      # Building Makefile-libbz2_so first makes all programs link agains libbz2.so
       - args: ['make', 'CC=x86_64-managarm-gcc', 'CFLAGS=-fPIC', '-f', 'Makefile-libbz2_so']
       - args: ['make', 'clean']
       - args: ['make', 'CC=x86_64-managarm-gcc', 'CFLAGS=-fPIC', '-j@PARALLELISM@']
