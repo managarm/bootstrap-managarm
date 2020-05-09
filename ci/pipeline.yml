@@ -1,0 +1,7 @@
+jobs:
+  - name: system-toolchain
+    tools:
+      - system-gcc
+    packages:
+      - mlibc
+      - mlibc-headers

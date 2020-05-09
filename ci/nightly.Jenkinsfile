@@ -5,15 +5,30 @@ node {
     docker.build('managarm_buildenv', "--build-arg USER=${userId} src/docker/")
           .inside {
         dir('build') {
-            stage('Build system') {
+            sh 'cp ../src/ci/pipeline.yml .'
+            sh 'xbstrap init ../src || true'
+            jobs = sh(returnStdout: true, script: 'xbstrap-pipeline compute-graph --linear').split('\n')
+            any_failures = false
+            for(job in jobs) {
+                try {
+                    stage(job) {
+                        sh('xbstrap-pipeline run-job --keep-going ' + job)
+                    }
+                } catch(e) {
+                    any_failures = true
+                }
+            }
+            if(any_failures)
+                sh 'exit 1' // Raise some error.
+            stage('Archive packages') {
                 sh '''#!/bin/sh
                 set -xe
-                xbstrap init ../src || true
-                xbstrap install --all
+                for pkg in `xbstrap list-pkgs`; do
+                    if [ -d packages/$pkg ]; then
+                        xbstrap archive $pkg
+                    fi
+                done
                 '''
-            }
-            stage('Archive packages') {
-                sh 'xbstrap archive --all'
             }
         }
         stage('Make docs') {
