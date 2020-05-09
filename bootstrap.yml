@@ -2768,6 +2768,32 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: xbps
+    # Disabled due to linking issues with libressl.
+    default: false
+    source:
+      subdir: ports
+      git: 'https://github.com/void-linux/xbps.git'
+      tag: '0.59.1'
+      tools_required:
+        - host-pkg-config
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - libarchive
+      - libressl
+    configure:
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
 tasks:
   - name: make-image
     pkgs_required:
