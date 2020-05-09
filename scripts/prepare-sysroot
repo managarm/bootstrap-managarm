@@ -10,6 +10,9 @@ mkdir -p system-root/root
 mkdir -p system-root/usr
 mkdir -p system-root/usr/share
 mkdir -p system-root/usr/share/X11
+mkdir -p system-root/var
+mkdir -p system-root/var/lib
+mkdir -p system-root/var/lib/locate
 
 # Create some symlinks that are currently required.
 ln -sf /usr/bin/bash system-root/bin/bash

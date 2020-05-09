@@ -81,7 +81,7 @@ install -s system-root/usr/managarm/bin/thor $dir/boot/managarm/
 cp initrd.cpio $dir/boot/managarm/
 
 # Copy the sysroot.
-mkdir -p $dir/bin $dir/lib $dir/root $dir/usr/bin $dir/usr/lib
+mkdir -p $dir/bin $dir/lib $dir/root $dir/usr/bin $dir/usr/lib $dir/var
 mkdir -p $dir/dev $dir/proc $dir/run $dir/sys $dir/tmp $dir/boot/grub
 rsync -a --delete system-root/bin/ $dir/bin
 rsync -a --delete system-root/lib/ $dir/lib
@@ -91,6 +91,7 @@ cp $scriptdir/grub.cfg $dir/boot/grub/
 cp $scriptdir/qloader2.cfg $dir/boot/
 rsync -a --delete system-root/usr/ $dir/usr
 rsync -a --delete system-root/etc/ $dir/etc
+rsync -a --delete system-root/var/ $dir/var
 cp tools/system-gcc/x86_64-managarm/lib64/libgcc_s.so.1 $dir/usr/lib
 cp tools/system-gcc/x86_64-managarm/lib64/libstdc++.so.6 $dir/usr/lib
 echo " done"
