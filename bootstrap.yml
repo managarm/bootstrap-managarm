@@ -2499,6 +2499,10 @@ packages:
         - '--enable-shared=yes'
         - '--docdir=/usr/share/doc/mpfr-4.0.2'
         - '--with-pic'
+        environ:
+            # MPFR's configuration script misdetects cross-compilations. Hence,
+            # set one of its internal variables to force it into the cross compilation path.
+            'user_redefine_cc': 'yes'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
