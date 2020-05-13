@@ -60,6 +60,7 @@ install -s system-root/usr/bin/xhci initrd/sbin/
 install -s system-root/usr/bin/block-ata initrd/sbin/
 install -s system-root/usr/bin/storage initrd/sbin/
 install -s system-root/usr/bin/virtio-block initrd/sbin/
+install -s system-root/usr/bin/virtio-console initrd/sbin/
 
 # Essential utilities.
 install -s system-root/usr/bin/runsvr initrd/bin/
