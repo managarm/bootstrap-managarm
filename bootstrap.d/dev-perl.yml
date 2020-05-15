@@ -1,0 +1,44 @@
+packages:
+  - name: perl
+    default: false
+    source:
+      subdir: ports
+      git: 'https://github.com/Perl/perl5.git'
+      tag: 'v5.30.2'
+      regenerate:
+        # Download and extract cross-perl over the perl source dir
+        - args: ['wget', 'https://github.com/Dennisbonke/perl-cross/releases/download/v1.3.3-managarm/perl-cross-1.3.3-managarm.tar.gz']
+        - args: ['tar', '-C', '@THIS_SOURCE_DIR@', '--strip=1', '-xvf', '@THIS_SOURCE_DIR@/perl-cross-1.3.3-managarm.tar.gz']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - zlib
+      - bzip2
+    configure:
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+      - args:
+        - './configure'
+        - '--mode=cross'
+        - '--target=x86_64-managarm'
+        - '--targetarch=x86_64-managarm'
+        - '--target-tools-prefix=x86_64-managarm-'
+        - '--prefix=/usr'
+        - '-Dusethreads'
+        - '-Dvendorprefix=/usr'
+        - '-Dman1dir=/usr/share/man/man1'
+        - '-Dman3dir=/usr/share/man/man3'
+        - '-Dpager="/usr/bin/less -isR"'
+        - '--sysroot=@SYSROOT_DIR@'
+        environ:
+          BUILD_ZLIB: 'False'
+          BUILD_BZIP2: '0'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+        environ:
+          BUILD_ZLIB: 'False'
+          BUILD_BZIP2: '0'
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+          BUILD_ZLIB: 'False'
+          BUILD_BZIP2: '0'
