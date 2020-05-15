@@ -52,14 +52,12 @@ sources:
     git: 'https://github.com/managarm/managarm.git'
     branch: 'master'
     sources_required:
-      - acpica
       - cxxshim
       - frigg
       - lai
       - libsmarter
     regenerate:
       - args: ['mkdir', '-p', '@THIS_SOURCE_DIR@/subprojects']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/acpica', '@THIS_SOURCE_DIR@/subprojects/acpica']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cxxshim', '@THIS_SOURCE_DIR@/subprojects/cxxshim']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/frigg', '@THIS_SOURCE_DIR@/subprojects/frigg']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/lai', '@THIS_SOURCE_DIR@/subprojects/lai']
@@ -540,14 +538,6 @@ tools:
       - args: ['make', 'install']
 
 packages:
-  - name: acpica
-    source:
-      subdir: 'ports'
-      git: 'https://github.com/acpica/acpica.git'
-      tag: 'R09_30_16'
-    configure: []
-    build: []
-
   - name: bash
     source:
       subdir: 'ports'
@@ -1234,7 +1224,6 @@ packages:
       - host-protoc
       - kernel-gcc
     pkgs_required:
-      - acpica
       - cxxshim
       - frigg
     configure:
