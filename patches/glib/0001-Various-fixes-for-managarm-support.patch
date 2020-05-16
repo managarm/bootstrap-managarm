@@ -58,18 +58,6 @@ index a6dd35c..c490777 100644
  /* Copy from bionic/libc/private/arpa_nameser_compat.h
   * and bionic/libc/private/arpa_nameser.h */
  typedef struct {
-@@ -906,7 +906,10 @@ free_records (GList *records)
- }
- 
- #if defined(G_OS_UNIX)
--#ifdef __BIONIC__
-+#if defined(__BIONIC__) || defined(__managarm__)
-+#if defined(__managarm__)
-+static int h_errno;
-+#endif
- #ifndef C_IN
- #define C_IN 1
- #endif
 diff --git a/gio/meson.build b/gio/meson.build
 index d7f4f3f..118a386 100644
 --- a/gio/meson.build
