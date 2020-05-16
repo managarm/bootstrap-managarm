@@ -4,7 +4,6 @@ packages:
       subdir: 'ports'
       git: 'https://github.com/arsv/perl-cross.git'
       tag: '1.3.3'
-      extract_path: 'perl-cross-1.3.3-managarm'
       sources_required:
         - perl
       regenerate:
