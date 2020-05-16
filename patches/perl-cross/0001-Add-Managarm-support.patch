@@ -1,0 +1,71 @@
+From 6c5ad24f49508737a13b9cf8ec2dbfef5beb1ec0 Mon Sep 17 00:00:00 2001
+From: Dennisbonke <admin@dennisbonke.com>
+Date: Sat, 16 May 2020 15:23:25 +0200
+Subject: [PATCH] Add Managarm support
+
+Signed-off-by: Dennisbonke <admin@dennisbonke.com>
+---
+ cnf/config.sub        |  2 +-
+ cnf/configure_tool.sh |  4 ++++
+ cnf/hints/managarm    | 21 +++++++++++++++++++++
+ 3 files changed, 26 insertions(+), 1 deletion(-)
+ create mode 100644 cnf/hints/managarm
+
+diff --git a/cnf/config.sub b/cnf/config.sub
+index a318a46..9a28cbd 100755
+--- a/cnf/config.sub
++++ b/cnf/config.sub
+@@ -1366,7 +1366,7 @@ case $os in
+ 	     | skyos* | haiku* | rdos* | toppers* | drops* | es* \
+ 	     | onefs* | tirtos* | phoenix* | fuchsia* | redox* | bme* \
+ 	     | midnightbsd* | amdhsa* | unleashed* | emscripten* | wasi* \
+-	     | nsk* | powerunix)
++	     | nsk* | powerunix | managarm*)
+ 	# Remember, each alternative MUST END IN *, to match a version number.
+ 		;;
+ 	qnx*)
+diff --git a/cnf/configure_tool.sh b/cnf/configure_tool.sh
+index 32201c0..dca8110 100644
+--- a/cnf/configure_tool.sh
++++ b/cnf/configure_tool.sh
+@@ -266,6 +266,10 @@ if not hinted 'osname'; then
+ 			define osname "bsd"
+ 			result "BSD"
+ 			;;
++		*-managarm*)
++			define osname "managarm"
++			result "Managarm"
++			;;
+ 		*)
+ 			result "no"
+ 			;;
+diff --git a/cnf/hints/managarm b/cnf/hints/managarm
+new file mode 100644
+index 0000000..5750100
+--- /dev/null
++++ b/cnf/hints/managarm
+@@ -0,0 +1,21 @@
++# Managarm syscalls
++d_voidsig='define'
++d_nanosleep='define'
++d_clock_gettime='define'
++d_clock_getres='define'
++d_clock_nanosleep='define'
++d_clock='define'
++
++# From the original linux.sh
++usemallocwrap='define'
++
++# libraries to test
++libswanted='m crypt pthread nm ndbm gdbm dbm db dl gdbm_compat'
++
++d_procselfexe='define'
++procselfexe='"/proc/self/exe"'
++
++st_ino_sign=1
++st_ino_size=8
++
++d_fcntl_can_lock='define'
+-- 
+2.26.2
+
