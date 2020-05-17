@@ -22,6 +22,16 @@ sources:
     git: 'https://github.com/qword-os/lai.git'
     branch: 'master'
 
+  - name: libarch
+    subdir: 'ports'
+    git: 'https://github.com/managarm/libarch.git'
+    branch: 'master'
+    sources_required:
+      - managarm
+    regenerate:
+      - args: ['mkdir', '-p', '@THIS_SOURCE_DIR@/subprojects']
+      - args: ['ln', '-sf', '@SOURCE_ROOT@/managarm', '@THIS_SOURCE_DIR@/subprojects/managarm']
+
   - name: llvm
     subdir: 'ports'
     git: 'https://github.com/llvm/llvm-project'
@@ -58,12 +68,14 @@ sources:
       - cxxshim
       - frigg
       - lai
+      - libarch
       - libsmarter
     regenerate:
       - args: ['mkdir', '-p', '@THIS_SOURCE_DIR@/subprojects']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cxxshim', '@THIS_SOURCE_DIR@/subprojects/cxxshim']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/frigg', '@THIS_SOURCE_DIR@/subprojects/frigg']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/lai', '@THIS_SOURCE_DIR@/subprojects/lai']
+      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/libarch', '@THIS_SOURCE_DIR@/subprojects/libarch']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/libsmarter', '@THIS_SOURCE_DIR@/subprojects/libsmarter']
 
   - name: mlibc
