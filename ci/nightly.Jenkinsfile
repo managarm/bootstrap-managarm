@@ -20,6 +20,11 @@ node {
             }
             if(any_failures)
                 sh 'exit 1' // Raise some error.
+
+            stage('Install packages') {
+                sh 'xbstrap install --all --only-wanted --keep-going'
+            }
+
             stage('Archive packages') {
                 sh '''#!/bin/sh
                 set -xe
