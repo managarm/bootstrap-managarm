@@ -26,11 +26,6 @@ sources:
     subdir: 'ports'
     git: 'https://github.com/managarm/libarch.git'
     branch: 'master'
-    sources_required:
-      - managarm
-    regenerate:
-      - args: ['mkdir', '-p', '@THIS_SOURCE_DIR@/subprojects']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/managarm', '@THIS_SOURCE_DIR@/subprojects/managarm']
 
   - name: llvm
     subdir: 'ports'
@@ -77,6 +72,8 @@ sources:
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/lai', '@THIS_SOURCE_DIR@/subprojects/lai']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/libarch', '@THIS_SOURCE_DIR@/subprojects/libarch']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/libsmarter', '@THIS_SOURCE_DIR@/subprojects/libsmarter']
+      - args: ['mkdir', '-p', '@SOURCE_ROOT@/ports/libarch/subprojects']
+      - args: ['ln', '-sf', '@SOURCE_ROOT@/managarm', '@SOURCE_ROOT@/ports/libarch/subprojects/managarm']
 
   - name: mlibc
     git: 'https://github.com/managarm/mlibc.git'
