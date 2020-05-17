@@ -1,0 +1,32 @@
+packages:
+  - name: socat
+    default: false
+    source:
+      subdir: 'ports'
+      url: 'http://www.dest-unreach.org/socat/download/socat-1.7.3.4.tar.gz'
+      format: 'tar.gz'
+      extract_path: 'socat-1.7.3.4'
+    tools_required:
+      - host-pkg-config
+      - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: x86_64-managarm
+    pkgs_required:
+      - readline
+      - libressl
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--disable-ip6'
+        - '--disable-sctp'
+        - '--disable-system'
+        - '--disable-socks4'
+        - '--disable-socks4a'
+        - '--disable-tun'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'

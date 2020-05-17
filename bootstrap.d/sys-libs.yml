@@ -1,6 +1,5 @@
 packages:
   - name: readline
-    default: false
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/readline.git'
@@ -25,3 +24,5 @@ packages:
       - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['ln', '-sv', '@THIS_COLLECT_DIR@/usr/lib/libreadline.so.8', '@THIS_COLLECT_DIR@/usr/lib/libreadline.so']
+      - args: ['ln', '-sv', '@THIS_COLLECT_DIR@/usr/lib/libhistory.so.8', '@THIS_COLLECT_DIR@/usr/lib/libhistory.so']
