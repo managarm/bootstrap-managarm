@@ -3,9 +3,14 @@ packages:
     default: false
     source:
       subdir: 'ports'
-      url: 'http://www.dest-unreach.org/socat/download/socat-1.7.3.4.tar.gz'
-      format: 'tar.gz'
-      extract_path: 'socat-1.7.3.4'
+      git: 'git://repo.or.cz/socat.git'
+      tag: 'tag-1.7.3.4'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+      regenerate:
+        - args: ['autoconf']
     tools_required:
       - host-pkg-config
       - system-gcc
