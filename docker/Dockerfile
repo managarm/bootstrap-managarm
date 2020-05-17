@@ -14,10 +14,12 @@ RUN apt-get update \
 		gperf \
 		help2man \
 		itstool \
+		libarchive-dev \
 		libexpat1-dev \
 		libgmp-dev \
 		libmpc-dev \
 		libmpfr-dev \
+		libssl-dev \
 		m4 \
 		mercurial \
 		netpbm \
@@ -38,6 +40,13 @@ RUN apt-get update \
 
 RUN pip3 install meson \
 	&& pip3 install xbstrap
+
+# Install xbps from source (there is no Debian package).
+RUN cd /root/ \
+	&& wget https://github.com/void-linux/xbps/archive/0.59.1.tar.gz \
+	&& tar -xzf 0.59.1.tar.gz \
+	&& cd xbps-0.59.1/ \
+	&& ./configure --enable-rpath && make && make install
 
 RUN useradd -ms /bin/bash managarm_buildenv -u $USER
 USER managarm_buildenv
