@@ -1,0 +1,48 @@
+From db834d923a7aaf6b600fc3e8062f4e5734728842 Mon Sep 17 00:00:00 2001
+From: Dennisbonke <admin@dennisbonke.com>
+Date: Mon, 18 May 2020 13:27:09 +0200
+Subject: [PATCH] Add managarm support
+
+Signed-off-by: Dennisbonke <admin@dennisbonke.com>
+---
+ src/syslog.h  | 2 ++
+ src/syslogd.c | 4 ++++
+ 2 files changed, 6 insertions(+)
+
+diff --git a/src/syslog.h b/src/syslog.h
+index 120a18f..359a5d3 100644
+--- a/src/syslog.h
++++ b/src/syslog.h
+@@ -34,7 +34,9 @@
+ #ifndef _SYS_SYSLOG_H_ /* From NetBSD, for co-existance with C-library header */
+ #define _SYS_SYSLOG_H_
+ 
++#if __has_include(<features.h>)
+ #include <features.h>
++#endif
+ #include <stdarg.h>
+ 
+ /*
+diff --git a/src/syslogd.c b/src/syslogd.c
+index d5270bb..524a84c 100644
+--- a/src/syslogd.c
++++ b/src/syslogd.c
+@@ -78,11 +78,15 @@ static char sccsid[] __attribute__((unused)) =
+ #include <sys/wait.h>
+ 
+ #include <arpa/inet.h>
++#if __has_include(<arpa/nameser.h>)
+ #include <arpa/nameser.h>
++#endif
+ #include <netdb.h>
+ #include <netinet/in.h>
+ #include <resolv.h>
++#if __has_include(<syscall.h>)
+ #include <syscall.h>
++#endif
+ #include <paths.h>
+ 
+ #define SYSLOG_NAMES
+-- 
+2.26.2
+

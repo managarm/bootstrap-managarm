@@ -1,4 +1,5 @@
 imports:
+  - file: ../src/bootstrap.d/app-admin.yml
   - file: ../src/bootstrap.d/dev-perl.yml
   - file: ../src/bootstrap.d/net-misc.yml
   - file: ../src/bootstrap.d/sys-libs.yml

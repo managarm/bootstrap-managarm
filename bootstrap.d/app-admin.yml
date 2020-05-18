@@ -1,0 +1,30 @@
+packages:
+  - name: sysklogd
+    default: false
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/troglobit/sysklogd.git'
+      tag: 'v2.1.2'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+      regenerate:
+        - args: ['./autogen.sh']
+    tools_required:
+      - system-gcc
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--sysconfdir=/etc'
+        - '--localstatedir=/run'
+        - '--disable-static'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc/syslog.d']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/syslog.conf', '@THIS_COLLECT_DIR@/etc']
