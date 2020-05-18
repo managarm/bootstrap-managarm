@@ -5,7 +5,8 @@ node {
     docker.build('managarm_buildenv', "--build-arg USER=${userId} src/docker/")
           .inside {
         dir('build') {
-            sh 'cp ../src/ci/{bootstrap-site,pipeline}.yml .'
+            sh 'cp ../src/ci/bootstrap-site.yml .'
+            sh 'cp ../src/ci/pipeline.yml .'
             sh 'xbstrap init ../src || true'
             jobs = sh(returnStdout: true, script: 'xbstrap-pipeline compute-graph --linear').split('\n')
             any_failures = false
