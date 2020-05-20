@@ -1,0 +1,37 @@
+packages:
+  - name: socat
+    default: false
+    source:
+      subdir: 'ports'
+      git: 'git://repo.or.cz/socat.git'
+      tag: 'tag-1.7.3.4'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+      regenerate:
+        - args: ['autoconf']
+    tools_required:
+      - host-pkg-config
+      - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: x86_64-managarm
+    pkgs_required:
+      - readline
+      - libressl
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--disable-ip6'
+        - '--disable-sctp'
+        - '--disable-system'
+        - '--disable-socks4'
+        - '--disable-socks4a'
+        - '--disable-tun'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
