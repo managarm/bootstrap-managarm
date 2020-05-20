@@ -1,0 +1,104 @@
+packages:
+  - name: bzip2
+    default: false
+    source:
+      subdir: ports
+      url: 'https://www.sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz'
+      format: 'tar.gz'
+      extract_path: 'bzip2-1.0.8'
+    tools_required:
+      - system-gcc
+    configure:
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+      # Remove the test directory from the Makefile, as it tries to run (and fail on) the tests
+      - args: 'sed -i s/"all: libbz2.a bzip2 bzip2recover test"/"all: libbz2.a bzip2 bzip2recover"/ @THIS_BUILD_DIR@/Makefile'
+    build:
+      # Building Makefile-libbz2_so first makes all programs link agains libbz2.so
+      - args: ['make', 'CC=x86_64-managarm-gcc', 'CFLAGS=-fPIC', '-f', 'Makefile-libbz2_so']
+      - args: ['make', 'clean']
+      - args: ['make', 'CC=x86_64-managarm-gcc', 'CFLAGS=-fPIC', '-j@PARALLELISM@']
+      - args: ['make', 'PREFIX=@THIS_COLLECT_DIR@/usr', 'install']
+
+  - name: xz-utils
+    default: false
+    source:
+      subdir: ports
+      git: 'https://git.tukaani.org/xz.git'
+      branch: 'v5.2'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+      regenerate:
+        - args: ['./autogen.sh', '--no-po4a']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - zlib
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--disable-static'
+        - '--disable-nls'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: tar
+    source:
+      subdir: ports
+      git: 'https://git.savannah.gnu.org/git/tar.git'
+      tag: 'release_1_32'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+      regenerate:
+        - args: ['./bootstrap']
+        - args: ['cp',
+            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
+            '@THIS_SOURCE_DIR@/build-aux/']
+    tools_required:
+      - system-gcc
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--disable-nls'
+      - args: 'sed -i s/-Werror//g @THIS_BUILD_DIR@/src/Makefile'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: gzip
+    source:
+      subdir: ports
+      git: 'https://git.savannah.gnu.org/git/gzip.git'
+      tag: 'v1.10'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+      regenerate:
+        - args: ['./bootstrap']
+        - args: ['cp',
+            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
+            '@THIS_SOURCE_DIR@/build-aux/']
+    tools_required:
+      - system-gcc
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+      - args: 'sed -i s/-Werror//g @THIS_BUILD_DIR@/lib/Makefile'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'

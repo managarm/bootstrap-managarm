@@ -1,0 +1,35 @@
+packages:
+  - name: shared-mime-info
+    default: false
+    source:
+      subdir: ports
+      git: 'https://gitlab.freedesktop.org/xdg/shared-mime-info.git'
+      tag: 'Release-1-15'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.11
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
+    tools_required:
+      - system-gcc
+      - host-python
+    pkgs_required:
+      - glib
+      - itstool
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--disable-update-mimedb'
+        environ:  
+          'ITSTOOL': '/usr/bin/itstool'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'

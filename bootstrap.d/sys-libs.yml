@@ -26,3 +26,32 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
       - args: ['ln', '-sv', '@THIS_COLLECT_DIR@/usr/lib/libreadline.so.8', '@THIS_COLLECT_DIR@/usr/lib/libreadline.so']
       - args: ['ln', '-sv', '@THIS_COLLECT_DIR@/usr/lib/libhistory.so.8', '@THIS_COLLECT_DIR@/usr/lib/libhistory.so']
+
+  - name: gdbm
+    default: false
+    source:
+      subdir: ports
+      git: 'https://git.savannah.gnu.org/git/gdbm.git'
+      tag: 'v1.18.1'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+      regenerate:
+        - args: ['./bootstrap']
+    tools_required:
+      - system-gcc
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--disable-nls'
+        - '--disable-static'
+        - '--enable-libgdbm-compat'
+        - '--without-readline'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
