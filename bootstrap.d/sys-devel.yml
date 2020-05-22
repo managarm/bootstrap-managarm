@@ -32,3 +32,57 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: gettext
+    default: false
+    source:
+      subdir: ports
+      git: 'https://git.savannah.gnu.org/git/gettext.git'
+      tag: 'v0.20.2'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        # The first sed removes the doc and man dirs from the makefile in gettext-runtime, the second sed does the same for gettext-tools
+        - args: 'sed -i s/"SUBDIRS = doc intl intl-java intl-csharp gnulib-lib \$(SUBDIR_libasprintf)\ src po man m4 tests"/"SUBDIRS = intl intl-java intl-csharp gnulib-lib \$(SUBDIR_libasprintf)\ src po m4 tests"/ @THIS_SOURCE_DIR@/gettext-runtime/Makefile.am'
+        - args: 'sed -i s/"SUBDIRS = intl gnulib-lib libgrep src libgettextpo po its projects styles emacs misc man m4 tests system-tests gnulib-tests examples doc"/"SUBDIRS = intl gnulib-lib libgrep src libgettextpo po its projects styles emacs misc m4 tests system-tests gnulib-tests examples"/ @THIS_SOURCE_DIR@/gettext-tools/Makefile.am'
+        - args: ['./gitsub.sh', 'pull']
+        - args: ['cp',
+            '@BUILD_ROOT@/tools/host-libtool/share/aclocal/libtool.m4',
+            '@THIS_SOURCE_DIR@/m4/']
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
+        - args: ['cp',
+            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
+            '@THIS_SOURCE_DIR@/build-aux/']
+        - args: ['cp',
+            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
+            '@THIS_SOURCE_DIR@/libtextstyle/build-aux/']
+    tools_required:
+      - system-gcc
+      - host-autoconf-v2.69
+      - host-automake-v1.15
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--docdir=/usr/share/doc/gettext-0.20.2'
+        - '--enable-static=no'
+        - '--enable-shared=yes'
+        - '--disable-java'
+        - '--disable-nls'
+        - '--disable-acl'
+        - '--without-emacs'
+        - '--without-git'
+        - '--without-bzip2'
+        - '--without-xz'
+        - '--disable-curses'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'

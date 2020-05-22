@@ -1,0 +1,332 @@
+sources:
+  - name: file
+    subdir: ports
+    git: 'https://github.com/file/file.git'
+    tag: 'FILE5_38'
+    tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.15
+      - host-libtool
+    regenerate:
+      - args: ['autoreconf', '-f', '-i']
+
+tools:
+  - name: host-file
+    from_source: file
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--prefix=@PREFIX@'
+    compile:
+      - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'install']
+
+packages:
+  - name: findutils
+    default: false
+    source:
+      subdir: ports
+      git: 'https://git.savannah.gnu.org/git/findutils.git'
+      tag: 'v4.7.0'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.11
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['./bootstrap']
+        - args: ['cp',
+            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
+            '@THIS_SOURCE_DIR@/build-aux/']
+    tools_required:
+      - system-gcc
+      - host-python
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--without-selinux'
+        - '--disable-nls'
+        - '--localstatedir=/var/lib/locate'
+        environ:  
+          'PYTHON': '@BUILD_ROOT@/tools/host-python/bin/python3'
+
+  - name: xbps
+    # Disabled due to linking issues with libressl.
+    default: false
+    source:
+      subdir: ports
+      git: 'https://github.com/void-linux/xbps.git'
+      tag: '0.59.1'
+      tools_required:
+        - host-pkg-config
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - libarchive
+      - libressl
+    configure:
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: gawk
+    source:
+      subdir: ports
+      git: 'https://git.savannah.gnu.org/git/gawk.git'
+      tag: 'gawk-4.2.1'
+      tools_required:
+        - host-automake-v1.15
+      regenerate:
+        - args: sed -i 's/extras//' @THIS_SOURCE_DIR@/Makefile.in
+        - args: ['cp',
+            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
+            '@THIS_SOURCE_DIR@/']
+    tools_required:
+      - system-gcc
+      - host-automake-v1.15
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--disable-nls'
+        - '--disable-extensions'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: file
+    from_source: file
+    tools_required:
+      - system-gcc
+      - host-file
+    pkgs_required:
+      - zlib
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--disable-bzlib'
+        - '--disable-xzlib'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: man-db
+    default: false
+    source:
+      subdir: ports
+      git: 'https://git.savannah.gnu.org/git/man-db.git'
+      tag: '2.9.1'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-pkg-config
+        - host-libtool
+      regenerate:
+        - args: ['./bootstrap']
+        - args: ['cp',
+            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
+            '@THIS_SOURCE_DIR@/build-aux/']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - libpipeline
+      - gdbm
+      - groff
+      - less
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--disable-nls'
+        - '--docdir=/usr/share/doc/man-db-2.9.0'
+        - '--sysconfdir=/etc'
+        - '--disable-setuid'
+        - '--with-systemdtmpfilesdir='
+        - '--with-systemdsystemunitdir='
+        - '--disable-manual'
+        - '--with-pager=/usr/bin/less'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: less
+    source:
+      subdir: ports
+      url: 'http://www.greenwoodsoftware.com/less/less-551.tar.gz'
+      format: 'tar.gz'
+      extract_path: 'less-551'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - ncurses
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--sysconfdir=/etc'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
+
+  - name: groff
+    default: false
+    source:
+      subdir: ports
+      git: 'https://git.savannah.gnu.org/git/groff.git'
+      tag: '1.22.4'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-pkg-config
+        - host-libtool
+      regenerate:
+        - args: ['./bootstrap']
+        - args: ['cp',
+            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
+            '@THIS_SOURCE_DIR@/build-aux/']
+    tools_required:
+      - system-gcc
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--with-doc=no'
+        environ:
+          PAGE: 'A4'
+      - args: 'sed -i s/"_GL_MATH_CXX_REAL_FLOATING_DECL_1 (signbit)"//g @THIS_SOURCE_DIR@/lib/math.in.h'
+      - args: 'sed -i s/"_GL_MATH_CXX_REAL_FLOATING_DECL_2 (signbit)"//g @THIS_SOURCE_DIR@/lib/math.in.h'
+      - args: 'sed -i s/"#   undef signbit"//g @THIS_SOURCE_DIR@/lib/math.in.h'
+    build:
+      - args: ['make', '-j1']
+        environ:
+          xpmtoppm: '/usr/bin/true'
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: sed
+    source:
+      subdir: ports
+      git: 'https://git.savannah.gnu.org/git/sed.git'
+      tag: 'v4.8'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+      regenerate:
+        - args: ['./bootstrap']
+        - args: ['cp',
+            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
+            '@THIS_SOURCE_DIR@/build-aux/']
+    tools_required:
+      - system-gcc
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--disable-nls'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: diffutils
+    source:
+      subdir: ports
+      git: 'https://git.savannah.gnu.org/git/diffutils.git'
+      tag: 'v3.7'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+      regenerate:
+        - args: ['./bootstrap']
+        - args: ['cp',
+            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
+            '@THIS_SOURCE_DIR@/build-aux/']
+    tools_required:
+      - system-gcc
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--disable-nls'
+      - args: 'sed -i s/-Werror//g @THIS_BUILD_DIR@/lib/Makefile'
+      - args: 'sed -i s/-Werror//g @THIS_BUILD_DIR@/src/Makefile'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: grep
+    source:
+      subdir: ports
+      git: 'https://git.savannah.gnu.org/git/grep.git'
+      tag: 'v3.4'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+      regenerate:
+        - args: ['./bootstrap']
+        - args: ['cp',
+            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
+            '@THIS_SOURCE_DIR@/build-aux/']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - pcre
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--disable-nls'
+      - args: 'sed -i s/-Werror//g @THIS_BUILD_DIR@/lib/Makefile'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: which
+    source:
+      subdir: ports
+      url: 'https://ftp.gnu.org/gnu/which/which-2.21.tar.gz'
+      format: 'tar.gz'
+      extract_path: 'which-2.21'
+    tools_required:
+      - system-gcc
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
