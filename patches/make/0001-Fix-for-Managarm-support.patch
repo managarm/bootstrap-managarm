@@ -1,0 +1,26 @@
+From 9c4456c8bbe96a6b52192cfad0c71cc5034a646c Mon Sep 17 00:00:00 2001
+From: Dennisbonke <admin@dennisbonke.com>
+Date: Wed, 20 May 2020 09:59:57 +0200
+Subject: [PATCH] Fix for Managarm support
+
+Signed-off-by: Dennisbonke <admin@dennisbonke.com>
+---
+ Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile.am b/Makefile.am
+index c88c465..670b417 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -31,7 +31,7 @@ else
+   ossrc =	posixos.c
+ endif
+ 
+-SUBDIRS =	glob config po doc $(MAYBE_W32)
++SUBDIRS =	glob config po $(MAYBE_W32)
+ 
+ bin_PROGRAMS =	make
+ include_HEADERS = gnumake.h
+-- 
+2.26.2
+

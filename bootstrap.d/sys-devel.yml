@@ -1,0 +1,34 @@
+packages:
+  - name: make
+    default: false
+    source:
+      subdir: 'ports'
+      git: 'https://git.savannah.gnu.org/git/make.git'
+      tag: '4.2'
+      tools_required:
+        - host-pkg-config
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-autoconf-archive
+        - host-libtool
+      regenerate:
+        - args: ['autoreconf', '-v', '-f', '-i']
+    tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.15
+      - host-pkg-config
+      - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: x86_64-managarm
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--disable-nls'
+        - '--without-guile'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
