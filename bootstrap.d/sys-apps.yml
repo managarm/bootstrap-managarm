@@ -85,6 +85,7 @@ packages:
       git: 'https://git.savannah.gnu.org/git/gawk.git'
       tag: 'gawk-4.2.1'
       tools_required:
+        - host-autoconf-v2.69
         - host-automake-v1.15
       regenerate:
         - args: sed -i 's/extras//' @THIS_SOURCE_DIR@/Makefile.in
@@ -93,6 +94,7 @@ packages:
             '@THIS_SOURCE_DIR@/']
     tools_required:
       - system-gcc
+      - host-autoconf-v2.69
       - host-automake-v1.15
     configure:
       - args:
