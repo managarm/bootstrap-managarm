@@ -1,0 +1,49 @@
+From 9e4fabbecc9c725760f4ebdf781755efedf03d74 Mon Sep 17 00:00:00 2001
+From: Dennisbonke <admin@dennisbonke.com>
+Date: Tue, 26 May 2020 01:29:33 +0200
+Subject: [PATCH] Add managarm support
+
+Signed-off-by: Dennisbonke <admin@dennisbonke.com>
+---
+ support/config.sub    | 2 +-
+ support/shlib-install | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/support/config.sub b/support/config.sub
+index f208558..c0c1594 100755
+--- a/support/config.sub
++++ b/support/config.sub
+@@ -1360,7 +1360,7 @@ case $os in
+ 	     | powermax* | dnix* | nx6 | nx7 | sei* | dragonfly* \
+ 	     | skyos* | haiku* | rdos* | toppers* | drops* | es* \
+ 	     | onefs* | tirtos* | phoenix* | fuchsia* | redox* | bme* \
+-	     | midnightbsd*)
++	     | midnightbsd* | managarm*)
+ 	# Remember, each alternative MUST END IN *, to match a version number.
+ 		;;
+ 	qnx*)
+diff --git a/support/shlib-install b/support/shlib-install
+index f4eea27..1123a48 100755
+--- a/support/shlib-install
++++ b/support/shlib-install
+@@ -71,7 +71,7 @@ fi
+ # Cygwin installs both a dll (which must go in $BINDIR) and an implicit
+ # link library (in $libdir)
+ case "$host_os" in
+-hpux*|darwin*|macosx*|linux*|solaris2*)
++hpux*|darwin*|macosx*|linux*|solaris2*|*managarm*)
+ 	if [ -z "$uninstall" ]; then
+ 		chmod 755 ${INSTALLDIR}/${LIBNAME}
+ 	fi ;;
+@@ -146,7 +146,7 @@ bsdi4*|*gnu*|darwin*|macosx*|netbsd*|mirbsd*)
+ 	fi
+ 	;;
+ 
+-solaris2*|aix4.[2-9]*|aix[5-9]*|osf*|irix[56]*|sysv[45]*|dgux*|interix*)
++solaris2*|aix4.[2-9]*|aix[5-9]*|osf*|irix[56]*|sysv[45]*|dgux*|interix*|*managarm*)
+ 	# libname.so -> libname.so.M
+ 	${echo} ${RM} ${INSTALLDIR}/$LINK1
+ 	if [ -z "$uninstall" ]; then
+-- 
+2.26.2
+

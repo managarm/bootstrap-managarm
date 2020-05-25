@@ -1,0 +1,34 @@
+packages:
+  - name: bash
+    source:
+      subdir: 'ports'
+      git: 'https://git.savannah.gnu.org/r/bash.git'
+      tag: 'bash-4.4'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+      regenerate:
+        # While we do not need to regenerate the configure script, we need to touch it
+        # after patching config.sub so that make does not try to regenerate it.
+        - args: ['autoconf']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - readline
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--without-bash-malloc'
+        - '--disable-nls'
+        - '--with-installed-readline'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
+        quiet: true
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/root/']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/.bashrc', '@THIS_COLLECT_DIR@/root']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/profile', '@THIS_COLLECT_DIR@/etc']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/bash.bashrc', '@THIS_COLLECT_DIR@/etc']

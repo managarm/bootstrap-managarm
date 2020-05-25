@@ -2,8 +2,9 @@ imports:
   - file: ../src/bootstrap.d/app-admin.yml
   - file: ../src/bootstrap.d/app-arch.yml
   - file: ../src/bootstrap.d/app-misc.yml
+  - file: ../src/bootstrap.d/app-shells.yml
+  - file: ../src/bootstrap.d/dev-lang.yml
   - file: ../src/bootstrap.d/dev-libs.yml
-  - file: ../src/bootstrap.d/dev-perl.yml
   - file: ../src/bootstrap.d/dev-util.yml
   - file: ../src/bootstrap.d/net-misc.yml
   - file: ../src/bootstrap.d/sys-apps.yml
@@ -112,18 +113,6 @@ sources:
       - args: ['./autogen.sh']
         environ:
           'NOCONFIGURE': 'yes'
-
-  - name: 'python'
-    subdir: 'ports'
-    git: 'https://github.com/python/cpython.git'
-    tag: 'v3.8.2'
-    tools_required:
-      - host-autoconf-v2.69
-      - host-automake-v1.15
-      - host-libtool
-      - host-pkg-config
-    regenerate:
-      - args: ['autoreconf', '-f', '-i']
 
 tools:
   - name: host-autoconf-v2.64
@@ -499,49 +488,7 @@ tools:
       - args: ['make', 'install']
         quiet: true
 
-  - name: host-python
-    from_source: python
-    configure:
-      - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--prefix=@PREFIX@'
-    compile:
-      - args: ['make', '-j@PARALLELISM@']
-    install:
-      - args: ['make', 'install']
-
 packages:
-  - name: bash
-    source:
-      subdir: 'ports'
-      git: 'https://git.savannah.gnu.org/r/bash.git'
-      tag: 'bash-4.4'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
-      regenerate:
-        # While we do not need to regenerate the configure script, we need to touch it
-        # after patching config.sub so that make does not try to regenerate it.
-        - args: ['autoconf']
-    tools_required:
-      - system-gcc
-    configure:
-      - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
-        - '--prefix=/usr'
-        - '--without-bash-malloc'
-        - '--disable-nls'
-    build:
-      - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
-        quiet: true
-      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/root/']
-      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc/']
-      - args: ['cp', '@SOURCE_ROOT@/extrafiles/.bashrc', '@THIS_COLLECT_DIR@/root']
-      - args: ['cp', '@SOURCE_ROOT@/extrafiles/profile', '@THIS_COLLECT_DIR@/etc']
-      - args: ['cp', '@SOURCE_ROOT@/extrafiles/bash.bashrc', '@THIS_COLLECT_DIR@/etc']
-
   - name: base-configuration
     from_source: managarm
     configure: []
@@ -1497,41 +1444,6 @@ packages:
         - '--prefix=/usr'
         # protobuf needs a host protoc when cross-compiling.
         - '--with-protoc=protoc'
-    build:
-      - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'install']
-        environ:
-          DESTDIR: '@THIS_COLLECT_DIR@'
-        quiet: true
-
-  - name: python
-    from_source: python
-    tools_required:
-      - host-pkg-config
-      - host-python
-      - system-gcc
-    pkgs_required:
-      - zlib
-      - libexpat
-      - libffi
-      - libressl
-      - ncurses
-    configure:
-      - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
-        - '--build=x86_64-linux-gnu'
-        - '--prefix=/usr'
-        - '--enable-shared'
-        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
-        - '--with-system-ffi'
-        - '--with-system-expat'
-        - '--disable-ipv6'
-        - '--without-ensurepip'
-        environ:
-          CONFIG_SITE: '@SOURCE_ROOT@/scripts/python-config-site'
-          PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
-          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
