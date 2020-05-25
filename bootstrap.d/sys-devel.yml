@@ -121,3 +121,62 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: bc
+    default: false
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/gavinhoward/bc.git'
+      tag: '2.7.2'
+    tools_required:
+      - system-gcc
+    configure:
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+      - args: ['./configure.sh', '-G', '-O3']
+        environ:
+          PREFIX: '/usr'
+          CC: 'x86_64-managarm-gcc'
+          CFLAGS: '-std=c99'
+          GEN_HOST: '0'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: m4
+    default: false
+    source:
+      subdir: 'ports'
+      git: 'https://git.savannah.gnu.org/git/m4.git'
+      tag: 'v1.4.18'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+      regenerate:
+        - args: |
+              if ! [ -d gnulib ]; then
+                  git clone git://git.sv.gnu.org/gnulib.git gnulib
+              else
+                  git -C gnulib pull --unshallow || true
+              fi
+        - args: ['./bootstrap']
+        - args: ['cp',
+            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
+            '@THIS_SOURCE_DIR@/build-aux/']
+    tools_required:
+      - system-gcc
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+      - args: 'sed -i s/-Werror//g @THIS_BUILD_DIR@/src/Makefile'
+      # This sed disables the building of the documentation
+      - args: 'sed -i s/"SUBDIRS = . examples lib src doc checks tests"/"SUBDIRS = . examples lib src checks tests"/ @THIS_BUILD_DIR@/Makefile'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
