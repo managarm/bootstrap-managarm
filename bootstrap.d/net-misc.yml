@@ -110,3 +110,17 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: iana-etc
+    source:
+      subdir: ports
+      url: 'http://anduin.linuxfromscratch.org/LFS/iana-etc-2.30.tar.bz2'
+      format: 'tar.bz2'
+      extract_path: 'iana-etc-2.30'
+    tools_required:
+      - system-gcc
+    configure:
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
