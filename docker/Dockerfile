@@ -31,6 +31,7 @@ RUN apt-get update \
 		python3-protobuf \
 		python3-yaml \
 		rsync \
+		subversion \
 		texinfo \
 		unzip \
 		wget \
