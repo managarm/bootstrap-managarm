@@ -332,3 +332,27 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: mini-lspci
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/qookei/mini-lspci.git'
+      branch: 'master'
+    tools_required:
+      - system-gcc
+    configure:
+      - args:
+        - 'meson'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson.cross-file'
+        - '--prefix=/usr'
+        - '--buildtype=release'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/share/hwdata/']
+      - args: ['wget', '-O', '@THIS_COLLECT_DIR@/usr/share/hwdata/pci.ids', 'https://raw.githubusercontent.com/pciutils/pciids/master/pci.ids']
