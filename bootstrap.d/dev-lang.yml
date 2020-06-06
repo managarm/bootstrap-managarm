@@ -1,0 +1,113 @@
+sources:
+  - name: 'python'
+    subdir: 'ports'
+    git: 'https://github.com/python/cpython.git'
+    tag: 'v3.8.2'
+    tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.15
+      - host-libtool
+      - host-pkg-config
+    regenerate:
+      - args: ['autoreconf', '-f', '-i']
+
+tools:
+  - name: host-python
+    from_source: python
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--prefix=@PREFIX@'
+    compile:
+      - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'install']
+
+packages:
+  - name: perl-cross
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/arsv/perl-cross.git'
+      tag: '1.3.3'
+      sources_required:
+        - perl
+      regenerate:
+        - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_SOURCE_DIR@/../perl']
+    configure: []
+    build: []
+
+  - name: perl
+    default: false
+    source:
+      subdir: ports
+      git: 'https://github.com/Perl/perl5.git'
+      tag: 'v5.30.2'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - zlib
+      - bzip2
+      - perl-cross
+    configure:
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+      - args:
+        - './configure'
+        - '--mode=cross'
+        - '--target=x86_64-managarm'
+        - '--targetarch=x86_64-managarm'
+        - '--target-tools-prefix=x86_64-managarm-'
+        - '--prefix=/usr'
+        - '-Dusethreads'
+        - '-Dvendorprefix=/usr'
+        - '-Dman1dir=/usr/share/man/man1'
+        - '-Dman3dir=/usr/share/man/man3'
+        - '-Dpager="/usr/bin/less -isR"'
+        - '--sysroot=@SYSROOT_DIR@'
+        environ:
+          BUILD_ZLIB: 'False'
+          BUILD_BZIP2: '0'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+        environ:
+          BUILD_ZLIB: 'False'
+          BUILD_BZIP2: '0'
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+          BUILD_ZLIB: 'False'
+          BUILD_BZIP2: '0'
+
+  - name: python
+    from_source: python
+    tools_required:
+      - host-pkg-config
+      - host-python
+      - system-gcc
+    pkgs_required:
+      - zlib
+      - libexpat
+      - libffi
+      - ncurses
+      - readline
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--build=x86_64-linux-gnu'
+        - '--prefix=/usr'
+        - '--enable-shared'
+        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
+        - '--with-system-ffi'
+        - '--with-system-expat'
+        - '--disable-ipv6'
+        - '--without-ensurepip'
+        environ:
+          CONFIG_SITE: '@SOURCE_ROOT@/scripts/python-config-site'
+          PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
+          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
