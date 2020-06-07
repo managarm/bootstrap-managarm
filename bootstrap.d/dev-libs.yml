@@ -70,16 +70,15 @@ packages:
   - name: pcre
     source:
       subdir: ports
-      url: 'https://ftp.pcre.org/pub/pcre/pcre-8.44.tar.gz'
-      format: 'tar.gz'
-      extract_path: 'pcre-8.44'
+      svn: 'svn://vcs.pcre.org/pcre/code/trunk'
+      rev: '1764'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
         - host-libtool
         - host-pkg-config
       regenerate:
-        - args: ['autoreconf']
+        - args: ['./autogen.sh']
     tools_required:
       - system-gcc
       - host-autoconf-v2.69
@@ -90,12 +89,11 @@ packages:
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
         - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
-        - '--enable-utf'
         - '--enable-unicode-properties'
         - '--enable-pcre8'
         - '--enable-pcre16'
         - '--enable-pcre32'
-        - 'CFLAGS=-fPIC'
+        - '--disable-static'
         environ:
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
           PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
