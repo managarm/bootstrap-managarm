@@ -36,6 +36,7 @@ args="$args -vga vmware"
 
 args="$args -debugcon stdio"
 #args="$args -serial stdio"
+args="$args -chardev file,id=virtio-trace,path=virtio-trace.bin -device virtio-serial -device virtconsole,chardev=virtio-trace"
 
 args="$args -d guest_errors"
 #args="$args -d cpu_reset"
