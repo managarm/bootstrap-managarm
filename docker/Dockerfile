@@ -50,6 +50,11 @@ RUN cd /root/ \
 	&& cd xbps-0.59.1/ \
 	&& ./configure --enable-rpath && make && make install
 
+RUN cd /root && \
+	wget -O mdbook.tar.gz https://github.com/rust-lang/mdBook/releases/download/v0.3.7/mdbook-v0.3.7-x86_64-unknown-linux-gnu.tar.gz && \
+	tar xf mdbook.tar.gz && \
+	install -D mdbook /usr/local/bin/mdbook
+
 RUN useradd -ms /bin/bash managarm_buildenv -u $USER
 USER managarm_buildenv
 WORKDIR /home/managarm_buildenv
