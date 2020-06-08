@@ -9,6 +9,7 @@ RUN apt-get update \
 		curl \
 		doxygen \
 		flex \
+		gawk \
 		gettext \
 		git \
 		gperf \
