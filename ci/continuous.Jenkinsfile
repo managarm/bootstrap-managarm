@@ -21,6 +21,9 @@ node {
                 doxygen
                 '''
             }
+            dir('build') {
+                    sh 'xbstrap runtool --build=managarm-system ninja mdbook'
+            }
         }
     }
 }

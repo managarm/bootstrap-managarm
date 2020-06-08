@@ -46,6 +46,9 @@ node {
                 doxygen
                 '''
             }
+            dir('build') {
+                    sh 'xbstrap runtool --build=managarm-system ninja mdbook'
+            }
         }
     }
 
@@ -62,7 +65,8 @@ node {
     }
 
     stage('Collect results') {
-        sh 'rsync -av --delete docs/hel/doc/html/ /var/www/docs'
+        sh 'rsync -av --delete docs/hel/doc/html/ /var/www/docs/hel-api'
+        sh 'rsync -av --delete build/pkg-builds/managarm-system/docs/ /var/www/docs/handbook'
         sh 'rsync -av --delete build/packages/*.tar.gz build/image.xz /var/www/pkgs/nightly'
         archiveArtifacts 'build/packages/*.tar.gz,build/image.xz'
     }
