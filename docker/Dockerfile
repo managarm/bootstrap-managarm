@@ -42,6 +42,7 @@ RUN apt-get update \
 
 RUN pip3 install meson \
 	&& pip3 install xbstrap
+	&& pip3 install bragi
 
 # Install xbps from source (there is no Debian package).
 RUN cd /root/ \
