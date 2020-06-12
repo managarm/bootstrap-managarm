@@ -37,6 +37,11 @@ sources:
     git: 'https://github.com/managarm/libarch.git'
     branch: 'master'
 
+  - name: bragi
+    subdir: 'ports'
+    git: 'https://github.com/managarm/bragi.git'
+    branch: 'master'
+
   - name: llvm
     subdir: 'ports'
     git: 'https://github.com/llvm/llvm-project'
@@ -76,6 +81,7 @@ sources:
       - libarch
       - libasync
       - libsmarter
+      - bragi
     regenerate:
       - args: ['mkdir', '-p', '@THIS_SOURCE_DIR@/subprojects']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cxxshim', '@THIS_SOURCE_DIR@/subprojects/cxxshim']
@@ -84,6 +90,7 @@ sources:
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/libarch', '@THIS_SOURCE_DIR@/subprojects/libarch']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/libasync', '@THIS_SOURCE_DIR@/subprojects/libasync']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/libsmarter', '@THIS_SOURCE_DIR@/subprojects/libsmarter']
+      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/bragi', '@THIS_SOURCE_DIR@/subprojects/bragi']
       - args: ['mkdir', '-p', '@SOURCE_ROOT@/ports/libarch/subprojects']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/managarm', '@SOURCE_ROOT@/ports/libarch/subprojects/managarm']
 
@@ -95,10 +102,12 @@ sources:
       - frigg
       - libdrm
       - managarm
+      - bragi
     regenerate:
       - args: ['ln', '-sf', '@SOURCE_ROOT@/managarm', '@THIS_SOURCE_DIR@/subprojects/managarm']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cxxshim', '@THIS_SOURCE_DIR@/subprojects/cxxshim']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/frigg', '@THIS_SOURCE_DIR@/subprojects/frigg']
+      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/bragi', '@THIS_SOURCE_DIR@/subprojects/bragi']
 
   - name: wayland
     subdir: 'ports'
