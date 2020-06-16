@@ -5,15 +5,16 @@ if ! [ -d system-root ]; then
 	exit 1
 fi
 
-mkdir -p system-root/{bin,lib,run,etc}
+mkdir -p system-root/{run,etc}
 mkdir -p system-root/root
 mkdir -p system-root/usr
+mkdir -p system-root/usr/lib
 mkdir -p system-root/usr/share
 mkdir -p system-root/usr/share/X11
 mkdir -p system-root/var
 
 # Create some symlinks that are currently required.
-ln -sf /usr/lib/ld.so system-root/lib/ld-init.so
+ln -sf /usr/lib/ld.so system-root/usr/lib/ld-init.so
 
 # Copy stuff from the host system.
 rsync -a /etc/localtime system-root/etc/localtime
