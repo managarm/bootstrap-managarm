@@ -3,6 +3,7 @@ imports:
   - file: bootstrap.d/app-arch.yml
   - file: bootstrap.d/app-misc.yml
   - file: bootstrap.d/app-shells.yml
+  - file: bootstrap.d/dev-db.yml
   - file: bootstrap.d/dev-lang.yml
   - file: bootstrap.d/dev-libs.yml
   - file: bootstrap.d/dev-util.yml
@@ -1386,31 +1387,6 @@ packages:
           PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
     build:
       - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'install']
-        environ:
-          DESTDIR: '@THIS_COLLECT_DIR@'
-        quiet: true
-
-  - name: nasm
-    default: false
-    source:
-      subdir: 'ports'
-      git: 'https://repo.or.cz/nasm.git'
-      tag: 'nasm-2.14.02'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
-      regenerate:
-        - args: ['./autogen.sh']
-    tools_required:
-      - system-gcc
-    configure:
-      - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
-        - '--prefix=/usr'
-    build:
-      - args: ['make']
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
