@@ -27,6 +27,11 @@ sources:
       - args: ['autoreconf']
         workdir: '@THIS_SOURCE_DIR@/ld'
 
+  - name: cralgo
+    subdir: 'ports'
+    git: 'https://github.com/managarm/cralgo.git'
+    branch: 'master'
+
   - name: lai
     subdir: 'ports'
     git: 'https://github.com/qword-os/lai.git'
@@ -75,6 +80,7 @@ sources:
     git: 'https://github.com/managarm/managarm.git'
     branch: 'master'
     sources_required:
+      - cralgo
       - cxxshim
       - frigg
       - lai
@@ -84,6 +90,7 @@ sources:
       - bragi
     regenerate:
       - args: ['mkdir', '-p', '@THIS_SOURCE_DIR@/subprojects']
+      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cralgo', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cxxshim', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/frigg', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/lai', '@THIS_SOURCE_DIR@/subprojects/']
