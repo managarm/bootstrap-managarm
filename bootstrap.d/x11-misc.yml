@@ -1,3 +1,31 @@
+sources:
+  - name: 'util-macros'
+    subdir: ports
+    git: 'https://github.com/freedesktop/xorg-macros.git'
+    tag: 'util-macros-1.19.1'
+    tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.11
+      - host-libtool
+      - host-pkg-config
+    regenerate:
+      - args: ['./autogen.sh']
+        environ:
+          'NOCONFIGURE': 'yes'
+
+tools:
+  - name: host-util-macros
+    exports_aclocal: true
+    from_source: util-macros
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--prefix=@PREFIX@'
+    compile:
+      - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'install']
+
 packages:
   - name: shared-mime-info
     default: false
@@ -28,6 +56,26 @@ packages:
         - '--disable-update-mimedb'
         environ:  
           'ITSTOOL': '/usr/bin/itstool'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: util-macros
+    default: false
+    from_source: util-macros
+    tools_required:
+      - system-gcc
+      - host-util-macros
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--sysconfdir=/etc'
+        - '--localstatedir=/var'
+        - '--disable-static'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
