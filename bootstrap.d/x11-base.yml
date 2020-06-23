@@ -1,4 +1,44 @@
 packages:
+  - name: xcb-proto
+    default: false
+    source:
+      subdir: ports
+      git: 'https://gitlab.freedesktop.org/xorg/proto/xcbproto.git'
+      tag: 'xcb-proto-1.14'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.11
+        - host-libtool
+        - host-pkg-config
+        - host-util-macros
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
+    tools_required:
+      - system-gcc
+      - host-python
+    pkgs_required:
+      - util-macros
+      - xorg-proto
+      - libxau
+      - libxdmcp
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--sysconfdir=/etc'
+        - '--localstatedir=/var'
+        - '--disable-static'
+        environ:
+          PYTHON: '@BUILD_ROOT@/tools/host-python/bin/python3.8'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: xorg-proto
     default: false
     source:
