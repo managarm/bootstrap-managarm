@@ -10,7 +10,7 @@ packages:
         - host-automake-v1.11
         - host-libtool
         - host-pkg-config
-        - host-util-macros
+        - host-xorg-macros
       regenerate:
         - args: ['./autogen.sh']
           environ:
@@ -19,7 +19,7 @@ packages:
       - system-gcc
       - host-python
     pkgs_required:
-      - util-macros
+      - xorg-util-macros
       - xorg-proto
       - libxau
       - libxdmcp
@@ -50,7 +50,7 @@ packages:
         - host-automake-v1.11
         - host-libtool
         - host-pkg-config
-        - host-util-macros
+        - host-xorg-macros
       regenerate:
         - args: ['./autogen.sh']
           environ:
@@ -58,7 +58,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
-      - util-macros
+      - xorg-util-macros
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

@@ -1,5 +1,5 @@
 sources:
-  - name: 'util-macros'
+  - name: 'xorg-util-macros'
     subdir: ports
     git: 'https://github.com/freedesktop/xorg-macros.git'
     tag: 'util-macros-1.19.1'
@@ -14,9 +14,9 @@ sources:
           'NOCONFIGURE': 'yes'
 
 tools:
-  - name: host-util-macros
+  - name: host-xorg-macros
     exports_aclocal: true
-    from_source: util-macros
+    from_source: xorg-util-macros
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -62,12 +62,12 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
-  - name: util-macros
+  - name: xorg-util-macros
     default: false
-    from_source: util-macros
+    from_source: xorg-util-macros
     tools_required:
       - system-gcc
-      - host-util-macros
+      - host-xorg-macros
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

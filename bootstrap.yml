@@ -352,29 +352,6 @@ tools:
     install:
       - args: ['make', 'install']
 
-  - name: host-xorg-macros
-    exports_aclocal: true
-    source:
-      name: xorg-macros
-      subdir: 'ports'
-      git: 'https://gitlab.freedesktop.org/xorg/util/macros.git'
-      tag: 'util-macros-1.19.1'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.11
-      regenerate:
-        - args: ['./autogen.sh']
-          environ:
-            'NOCONFIGURE': 'yes'
-    configure:
-      - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--prefix=@PREFIX@'
-    compile:
-      - args: ['make', '-j@PARALLELISM@']
-    install:
-      - args: ['make', 'install']
-
   - name: kernel-gcc
     from_source: gcc
     tools_required:
