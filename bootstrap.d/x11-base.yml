@@ -1,43 +1,16 @@
-sources:
-  - name: 'xorg-util-macros'
-    subdir: ports
-    git: 'https://github.com/freedesktop/xorg-macros.git'
-    tag: 'util-macros-1.19.1'
-    tools_required:
-      - host-autoconf-v2.69
-      - host-automake-v1.11
-      - host-libtool
-      - host-pkg-config
-    regenerate:
-      - args: ['./autogen.sh']
-        environ:
-          'NOCONFIGURE': 'yes'
-
-tools:
-  - name: host-xorg-macros
-    exports_aclocal: true
-    from_source: xorg-util-macros
-    configure:
-      - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--prefix=@PREFIX@'
-    compile:
-      - args: ['make', '-j@PARALLELISM@']
-    install:
-      - args: ['make', 'install']
-
 packages:
-  - name: shared-mime-info
+  - name: xcb-proto
     default: false
     source:
       subdir: ports
-      git: 'https://gitlab.freedesktop.org/xdg/shared-mime-info.git'
-      tag: 'Release-1-15'
+      git: 'https://gitlab.freedesktop.org/xorg/proto/xcbproto.git'
+      tag: 'xcb-proto-1.14'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
         - host-libtool
         - host-pkg-config
+        - host-xorg-macros
       regenerate:
         - args: ['./autogen.sh']
           environ:
@@ -46,28 +19,46 @@ packages:
       - system-gcc
       - host-python
     pkgs_required:
-      - glib
-      - itstool
+      - xorg-util-macros
+      - xorg-proto
+      - libxau
+      - libxdmcp
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
-        - '--disable-update-mimedb'
-        environ:  
-          'ITSTOOL': '/usr/bin/itstool'
+        - '--sysconfdir=/etc'
+        - '--localstatedir=/var'
+        - '--disable-static'
+        environ:
+          PYTHON: '@BUILD_ROOT@/tools/host-python/bin/python3.8'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
-  - name: xorg-util-macros
+  - name: xorg-proto
     default: false
-    from_source: xorg-util-macros
+    source:
+      subdir: ports
+      git: 'https://gitlab.freedesktop.org/xorg/proto/xorgproto.git'
+      tag: 'xorgproto-2020.1'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.11
+        - host-libtool
+        - host-pkg-config
+        - host-xorg-macros
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
     tools_required:
       - system-gcc
-      - host-xorg-macros
+    pkgs_required:
+      - xorg-util-macros
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

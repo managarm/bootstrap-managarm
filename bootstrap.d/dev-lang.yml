@@ -24,6 +24,26 @@ tools:
       - args: ['make', 'install']
 
 packages:
+  - name: nasm
+    source:
+      subdir: 'ports'
+      url: 'http://www.nasm.us/pub/nasm/releasebuilds/2.14.02/nasm-2.14.02.tar.xz'
+      format: 'tar.xz'
+      extract_path: 'nasm-2.14.02'
+    tools_required:
+      - system-gcc
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+
   - name: perl-cross
     source:
       subdir: 'ports'
@@ -105,6 +125,40 @@ packages:
           CONFIG_SITE: '@SOURCE_ROOT@/scripts/python-config-site'
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
           PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+
+  - name: yasm
+    default: false
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/yasm/yasm.git'
+      tag: 'v1.3.0'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+      regenerate:
+        - args: ['./autogen.sh']
+        # Disable building two tools only useful on windows
+        - args: ['sed', '-i', 's#) ytasm.*#)#', '@THIS_SOURCE_DIR@/Makefile.in']
+        - args: ['cp',
+            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
+            '@THIS_SOURCE_DIR@/config/']
+    tools_required:
+      - system-gcc
+    configure:
+      # Autogen.sh configures for the host os, distclean and reconfigure for managarm
+      - args: ['make', '-C', '@THIS_SOURCE_DIR@', 'distclean']
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--disable-nls'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']

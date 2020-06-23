@@ -1,0 +1,26 @@
+From 01cb2161d072623320409597c9031ae2d4e1c14d Mon Sep 17 00:00:00 2001
+From: Dennisbonke <admin@dennisbonke.com>
+Date: Thu, 4 Jun 2020 16:55:11 +0200
+Subject: [PATCH] Add managarm support
+
+Signed-off-by: Dennisbonke <admin@dennisbonke.com>
+---
+ include/X11/Xos_r.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/X11/Xos_r.h b/include/X11/Xos_r.h
+index f963b64..729d8ee 100644
+--- a/include/X11/Xos_r.h
++++ b/include/X11/Xos_r.h
+@@ -318,7 +318,7 @@ static __inline__ void _Xpw_copyPasswd(_Xgetpwparams p)
+   (_Xos_processUnlock), \
+   (p).pwp )
+ 
+-#elif !defined(_POSIX_THREAD_SAFE_FUNCTIONS) && !defined(__APPLE__)
++#elif !defined(_POSIX_THREAD_SAFE_FUNCTIONS) && !defined(__APPLE__) && !defined(__managarm__)
+ # define X_NEEDS_PWPARAMS
+ typedef struct {
+   struct passwd pws;
+-- 
+2.27.0
+
