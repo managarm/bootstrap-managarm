@@ -28,6 +28,46 @@ tools:
       - args: ['make', 'install']
 
 packages:
+  - name: libx11
+    default: false
+    source:
+      subdir: ports
+      git: 'https://gitlab.freedesktop.org/xorg/lib/libx11.git'
+      tag: 'libX11-1.6.9'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.11
+        - host-libtool
+        - host-pkg-config
+        - host-util-macros
+        - host-xtrans
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - util-macros
+      - xorg-proto
+      - libxcb
+      - libxtrans
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--sysconfdir=/etc'
+        - '--localstatedir=/var'
+        - '--disable-static'
+        - '--disable-ipv6'
+        - '--disable-malloc0returnsnull'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+  
   - name: libxau
     default: false
     source:
