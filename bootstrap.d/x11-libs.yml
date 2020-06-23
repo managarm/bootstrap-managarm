@@ -1,3 +1,32 @@
+sources:
+  - name: libxtrans
+    subdir: ports
+    git: 'https://gitlab.freedesktop.org/xorg/lib/libxtrans.git'
+    tag: 'xtrans-1.4.0'
+    tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.11
+      - host-libtool
+      - host-pkg-config
+      - host-util-macros
+    regenerate:
+      - args: ['./autogen.sh']
+        environ:
+          'NOCONFIGURE': 'yes'
+
+tools:
+  - name: host-xtrans
+    exports_aclocal: true
+    from_source: libxtrans
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--prefix=@PREFIX@'
+    compile:
+      - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'install']
+
 packages:
   - name: libxau
     default: false
@@ -99,6 +128,29 @@ packages:
       - util-macros
       - xorg-proto
       - libxau
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--sysconfdir=/etc'
+        - '--localstatedir=/var'
+        - '--disable-static'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: libxtrans
+    default: false
+    from_source: libxtrans
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - util-macros
+      - xorg-proto
+      - libxcb
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
