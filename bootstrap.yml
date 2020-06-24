@@ -7,6 +7,7 @@ imports:
   - file: bootstrap.d/dev-lang.yml
   - file: bootstrap.d/dev-libs.yml
   - file: bootstrap.d/dev-util.yml
+  - file: bootstrap.d/media-libs.yml
   - file: bootstrap.d/net-misc.yml
   - file: bootstrap.d/sys-apps.yml
   - file: bootstrap.d/sys-devel.yml

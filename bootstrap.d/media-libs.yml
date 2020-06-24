@@ -1,0 +1,77 @@
+packages:
+  - name: fontconfig
+    source:
+      subdir: ports
+      git: 'https://gitlab.freedesktop.org/fontconfig/fontconfig'
+      tag: '2.13.92'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
+        - args: ['rm', '-f', 'src/fcobjshash.h']
+    pkgs_required:
+      - freetype
+      - libxml
+    tools_required:
+      - system-gcc
+      - host-libtool
+      - host-pkg-config
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--sysconfdir=/etc'
+        - '--localstatedir=/var'
+        - '--disable-docs'
+        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
+        - '--enable-libxml2'
+        environ:
+          PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
+          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: freetype
+    source:
+      subdir: 'ports'
+      git: 'git://git.sv.nongnu.org/freetype/freetype2.git'
+      tag: 'VER-2-10-2'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            NOCONFIGURE: '1'
+        - args: ['cp',
+            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
+            '@THIS_SOURCE_DIR@/builds/unix/']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      # TODO: Build with harfbuzz once we have it, this does make a circular dependency
+      - bzip2
+      - libpng
+      - zlib
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--disable-static'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
