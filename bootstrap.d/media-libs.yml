@@ -13,6 +13,7 @@ packages:
         - args: ['./autogen.sh']
           environ:
             'NOCONFIGURE': 'yes'
+        # Make sure we regenerate this file
         - args: ['rm', '-f', 'src/fcobjshash.h']
     pkgs_required:
       - freetype
@@ -21,6 +22,8 @@ packages:
       - system-gcc
       - host-libtool
       - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: x86_64-managarm
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -31,9 +34,6 @@ packages:
         - '--disable-docs'
         - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
         - '--enable-libxml2'
-        environ:
-          PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
-          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']

@@ -1,0 +1,16 @@
+packages:
+  - name: dejavu
+    source:
+      subdir: ports
+      url: 'http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2'
+      format: 'tar.bz2'
+      extract_path: 'dejavu-fonts-ttf-2.37'
+    pkgs_required:
+      - freetype
+      - fontconfig
+    configure:
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/ttf', '@THIS_SOURCE_DIR@/dejavu']
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/', '@THIS_BUILD_DIR@']
+    build:
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/share/fonts/truetype/']
+      - args: ['cp', '-r', '@THIS_BUILD_DIR@/dejavu/dejavu', '@THIS_COLLECT_DIR@/usr/share/fonts/truetype/']
