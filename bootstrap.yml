@@ -7,6 +7,8 @@ imports:
   - file: bootstrap.d/dev-lang.yml
   - file: bootstrap.d/dev-libs.yml
   - file: bootstrap.d/dev-util.yml
+  - file: bootstrap.d/media-fonts.yml
+  - file: bootstrap.d/media-libs.yml
   - file: bootstrap.d/net-misc.yml
   - file: bootstrap.d/sys-apps.yml
   - file: bootstrap.d/sys-devel.yml
@@ -541,49 +543,6 @@ packages:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/include']
       - args: ['cp', '-r', '--dereference', '@THIS_SOURCE_DIR@/boost',
             '@THIS_COLLECT_DIR@/usr/include']
-
-  - name: cairo
-    source:
-      subdir: 'ports'
-      git: 'https://gitlab.freedesktop.org/cairo/cairo.git'
-      tag: '1.16.0'
-      tools_required:
-        - host-autoconf-v2.64
-        - host-automake-v1.11
-        - host-libtool
-        - host-pkg-config
-      regenerate:
-        - args: ['./autogen.sh']
-          environ:
-            'NOCONFIGURE': 'yes'
-    tools_required:
-      - system-gcc
-      - host-autoconf-v2.64
-      - host-automake-v1.11
-      - host-libtool
-      - host-pkg-config
-    pkgs_required:
-      - libpng
-      - pixman
-    configure:
-      - args:
-        # For now, we build without glesv2 backend as Weston prefers the image backend.
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
-        - '--prefix=/usr'
-        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
-        - '--disable-xlib'
-        environ:
-          # freetype-config does not support cross-compilation.
-          FREETYPE_CONFIG: 'no'
-          PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
-          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
-    build:
-      - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'install']
-        environ:
-          DESTDIR: '@THIS_COLLECT_DIR@'
-        quiet: true
 
   - name: fafnir
     source:
@@ -1511,6 +1470,7 @@ packages:
       - libxkbcommon
       - mesa
       - wayland
+      - dejavu
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
