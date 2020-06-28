@@ -1456,29 +1456,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
-  - name: xkeyboard-config
-    default: false
-    source:
-      subdir: 'ports'
-      git: 'https://gitlab.freedesktop.org/xkeyboard-config/xkeyboard-config.git'
-      tag: 'xkeyboard-config-2.23.1'
-      regenerate:
-        - args: ['./autogen.sh']
-          environ:
-            'NOCONFIGURE': 'yes'
-#    tools_required:
-#      - system-gcc
-    configure: []
-#      - args:
-#        - '@THIS_SOURCE_DIR@/configure'
-#        - '--host=x86_64-managarm'
-#        - '--prefix=/usr'
-    build: []
-#      - args: ['make', '-j@PARALLELISM@']
-#      - args: ['make', 'install']
-#        environ:
-#          DESTDIR: '@THIS_COLLECT_DIR@'
-
   - name: zlib
     source:
       subdir: 'ports'

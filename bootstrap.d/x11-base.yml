@@ -1,6 +1,5 @@
 packages:
   - name: xcb-proto
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/proto/xcbproto.git'
@@ -40,7 +39,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xorg-proto
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/proto/xorgproto.git'
@@ -79,22 +77,6 @@ packages:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/xserver.git'
       tag: 'xorg-server-1.20.8'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.11
-        - host-libtool
-        - host-pkg-config
-        - host-xorg-macros
-        - host-xorg-font-util
-        - host-xtrans
-      regenerate:
-        - args: ['./autogen.sh']
-          environ:
-            'NOCONFIGURE': 'yes'
-    tools_required:
-      - system-gcc
-      - virtual: pkgconfig-for-target
-        triple: x86_64-managarm
     pkgs_required:
       - xorg-util-macros
       - xcb-proto
@@ -116,6 +98,7 @@ packages:
       - libxext
       - nettle
       - xkbcomp
+      - mesa
     configure:
       - args:
         - 'meson'
@@ -129,8 +112,8 @@ packages:
         - '-Ddmx=false'
         - '-Dxvfb=false'
         - '-Dxkb_output_dir=/var/lib/xkb'
-        - '-Dos_vendor="The Managarm project"'
-        - '-Dvendor_name="The Managarm project"'
+        - '-Dos_vendor="The Managarm Project"'
+        - '-Dvendor_name="The Managarm Project"'
         - '-Dvendor_name_short="Managarm"'
         - '-Dsuid_wrapper=false'
         - '-Dpciaccess=false'

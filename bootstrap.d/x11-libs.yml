@@ -53,6 +53,7 @@ packages:
       - fontconfig
       - libpng
       - pixman
+      - libxcb
     configure:
       - args:
         # For now, we build without glesv2 backend as Weston prefers the image backend.
@@ -154,7 +155,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
   
   - name: libx11
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libx11.git'
@@ -194,7 +194,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxau
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxau.git'
@@ -229,7 +228,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxcb
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxcb.git'
@@ -349,7 +347,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxdmcp
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxdmcp.git'
@@ -704,7 +701,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxtrans
-    default: false
     from_source: libxtrans
     tools_required:
       - system-gcc
