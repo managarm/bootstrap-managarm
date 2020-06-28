@@ -72,3 +72,80 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: xorg-server
+    default: false
+    source:
+      subdir: ports
+      git: 'https://gitlab.freedesktop.org/xorg/xserver.git'
+      tag: 'xorg-server-1.20.8'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.11
+        - host-libtool
+        - host-pkg-config
+        - host-xorg-macros
+        - host-xorg-font-util
+        - host-xtrans
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
+    tools_required:
+      - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: x86_64-managarm
+    pkgs_required:
+      - xorg-util-macros
+      - xcb-proto
+      - xorg-proto
+      - libdrm
+      - eudev
+      - libxshmfence
+      - libx11
+      - libxxf86vm
+      - libxkbfile
+      - libxfont2
+      - libepoxy
+      - libxi
+      - libxdamage
+      - libxrender
+      - libxrandr
+      - libxcb
+      - libxfixes
+      - libxext
+      - nettle
+      - xkbcomp
+    configure:
+      - args:
+        - 'meson'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson.cross-file'
+        - '--prefix=/usr'
+        - '-Dxorg=false'
+        - '-Dxephyr=false'
+        - '-Dxwayland=true'
+        - '-Dxnest=false'
+        - '-Ddmx=false'
+        - '-Dxvfb=false'
+        - '-Dxkb_output_dir=/var/lib/xkb'
+        - '-Dos_vendor="The Managarm project"'
+        - '-Dvendor_name="The Managarm project"'
+        - '-Dvendor_name_short="Managarm"'
+        - '-Dsuid_wrapper=false'
+        - '-Dpciaccess=false'
+        - '-Ddpms=false'
+        - '-Dscreensaver=false'
+        - '-Dxres=false'
+        - '-Dxace=false'
+        - '-Dxinerama=false'
+        - '-Dxv=false'
+        - '-Dxvmc=false'
+        - '-Dsystemd_logind=false'
+        - '-Dsecure-rpc=false'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
