@@ -1,6 +1,5 @@
 packages:
   - name: xcb-proto
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/proto/xcbproto.git'
@@ -40,7 +39,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xorg-proto
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/proto/xorgproto.git'
@@ -70,5 +68,67 @@ packages:
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: xorg-server
+    default: false
+    source:
+      subdir: ports
+      git: 'https://gitlab.freedesktop.org/xorg/xserver.git'
+      tag: 'xorg-server-1.20.8'
+    pkgs_required:
+      - xorg-util-macros
+      - xcb-proto
+      - xorg-proto
+      - libdrm
+      - eudev
+      - libxshmfence
+      - libx11
+      - libxxf86vm
+      - libxkbfile
+      - libxfont2
+      - libepoxy
+      - libxi
+      - libxdamage
+      - libxrender
+      - libxrandr
+      - libxcb
+      - libxfixes
+      - libxext
+      - nettle
+      - xkbcomp
+      - mesa
+    configure:
+      - args:
+        - 'meson'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson.cross-file'
+        - '--prefix=/usr'
+        - '-Dxorg=false'
+        - '-Dxephyr=false'
+        - '-Dxwayland=true'
+        - '-Dxnest=false'
+        - '-Ddmx=false'
+        - '-Dxvfb=false'
+        - '-Dxkb_output_dir=/var/lib/xkb'
+        - '-Dos_vendor="The Managarm Project"'
+        - '-Dvendor_name="The Managarm Project"'
+        - '-Dvendor_name_short="Managarm"'
+        - '-Dsuid_wrapper=false'
+        - '-Dpciaccess=false'
+        - '-Ddpms=false'
+        - '-Dscreensaver=false'
+        - '-Dxres=false'
+        - '-Dxace=false'
+        - '-Dxinerama=false'
+        - '-Dxv=false'
+        - '-Dxvmc=false'
+        - '-Dsystemd_logind=false'
+        - '-Dsecure-rpc=false'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'

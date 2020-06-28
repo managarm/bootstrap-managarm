@@ -1,0 +1,53 @@
+From 480c028833509723343286aaee89cddaa182a1f9 Mon Sep 17 00:00:00 2001
+From: Dennisbonke <admin@dennisbonke.com>
+Date: Sun, 28 Jun 2020 18:10:06 +0200
+Subject: [PATCH] Add managarm support
+
+Signed-off-by: Dennisbonke <admin@dennisbonke.com>
+---
+ include/os.h  | 1 +
+ mi/mibitblt.c | 2 ++
+ os/access.c   | 2 +-
+ 3 files changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/include/os.h b/include/os.h
+index 2a1c29ef3..2a7fc76c5 100644
+--- a/include/os.h
++++ b/include/os.h
+@@ -51,6 +51,7 @@ SOFTWARE.
+ #include <stdarg.h>
+ #include <stdint.h>
+ #include <string.h>
++#include <strings.h>
+ #ifdef MONOTONIC_CLOCK
+ #include <time.h>
+ #endif
+diff --git a/mi/mibitblt.c b/mi/mibitblt.c
+index 43d9bd917..740c0d268 100644
+--- a/mi/mibitblt.c
++++ b/mi/mibitblt.c
+@@ -49,6 +49,8 @@ SOFTWARE.
+ #include <dix-config.h>
+ #endif
+ 
++#include <strings.h>
++
+ #include <X11/X.h>
+ #include <X11/Xprotostr.h>
+ 
+diff --git a/os/access.c b/os/access.c
+index 97246160c..7afbd3a86 100644
+--- a/os/access.c
++++ b/os/access.c
+@@ -117,7 +117,7 @@ SOFTWARE.
+ #endif
+ #endif
+ 
+-#if defined(SVR4) ||  (defined(SYSV) && defined(__i386__)) || defined(__GNU__)
++#if defined(SVR4) ||  (defined(SYSV) && defined(__i386__)) || defined(__GNU__) || defined(__managarm__)
+ #include <sys/utsname.h>
+ #endif
+ #if defined(SYSV) &&  defined(__i386__)
+-- 
+2.27.0
+

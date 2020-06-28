@@ -13,6 +13,7 @@ imports:
   - file: bootstrap.d/sys-apps.yml
   - file: bootstrap.d/sys-devel.yml
   - file: bootstrap.d/sys-libs.yml
+  - file: bootstrap.d/x11-apps.yml
   - file: bootstrap.d/x11-base.yml
   - file: bootstrap.d/x11-libs.yml
   - file: bootstrap.d/x11-misc.yml
@@ -771,44 +772,6 @@ packages:
         - 'AS=x86_64-managarm-as'
         - 'install'
 
-  - name: libdrm
-    source:
-      subdir: 'ports'
-      git: 'https://gitlab.freedesktop.org/mesa/drm'
-      tag: 'libdrm-2.4.81'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.11
-        - host-libtool
-        - host-pkg-config
-        - host-xorg-macros
-      regenerate:
-        - args: ['./autogen.sh']
-          environ:
-            'NOCONFIGURE': 'yes'
-    tools_required:
-      - system-gcc
-    configure:
-      - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
-        - '--prefix=/usr'
-        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
-        - '--disable-intel'
-        - '--disable-vmwgfx'
-        - '--disable-radeon'
-        - '--disable-amdgpu'
-        - '--disable-nouveau'
-        # We might want to build cairo with OpenGL support.
-        # Doing so would introduce a circular dependency here.
-        - '--disable-cairo-tests'
-    build:
-      - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'install']
-        environ:
-          DESTDIR: '@THIS_COLLECT_DIR@'
-        quiet: true
-
   - name: libevdev
     source:
       subdir: 'ports'
@@ -1492,29 +1455,6 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
-
-  - name: xkeyboard-config
-    default: false
-    source:
-      subdir: 'ports'
-      git: 'https://gitlab.freedesktop.org/xkeyboard-config/xkeyboard-config.git'
-      tag: 'xkeyboard-config-2.23.1'
-      regenerate:
-        - args: ['./autogen.sh']
-          environ:
-            'NOCONFIGURE': 'yes'
-#    tools_required:
-#      - system-gcc
-    configure: []
-#      - args:
-#        - '@THIS_SOURCE_DIR@/configure'
-#        - '--host=x86_64-managarm'
-#        - '--prefix=/usr'
-    build: []
-#      - args: ['make', '-j@PARALLELISM@']
-#      - args: ['make', 'install']
-#        environ:
-#          DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: zlib
     source:

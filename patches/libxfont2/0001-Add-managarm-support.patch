@@ -1,0 +1,26 @@
+From 5612c44a2c6060fd3e41e872e6731b340bcedfdb Mon Sep 17 00:00:00 2001
+From: Dennisbonke <admin@dennisbonke.com>
+Date: Fri, 26 Jun 2020 14:50:14 +0200
+Subject: [PATCH] Add managarm support
+
+Signed-off-by: Dennisbonke <admin@dennisbonke.com>
+---
+ src/fc/fslibos.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/fc/fslibos.h b/src/fc/fslibos.h
+index 1ef362d..c833fc4 100644
+--- a/src/fc/fslibos.h
++++ b/src/fc/fslibos.h
+@@ -60,7 +60,7 @@ from The Open Group.
+ #   endif
+ #  endif
+ #  ifndef OPEN_MAX
+-#   if defined(SVR4)
++#   if defined(SVR4) || defined(__managarm__)
+ #    define OPEN_MAX 256
+ #   else
+ #    include <sys/param.h>
+-- 
+2.27.0
+
