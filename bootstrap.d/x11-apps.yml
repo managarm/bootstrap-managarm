@@ -105,3 +105,110 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: xkill
+    default: false
+    source:
+      subdir: ports
+      git: 'https://gitlab.freedesktop.org/xorg/app/xkill.git'
+      tag: 'xkill-1.0.5'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.11
+        - host-libtool
+        - host-pkg-config
+        - host-xorg-macros
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - xorg-util-macros
+      - libx11
+      - libxmu
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--sysconfdir=/etc'
+        - '--localstatedir=/var'
+        - '--disable-selective-werror'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: xlsclients
+    default: false
+    source:
+      subdir: ports
+      git: 'https://gitlab.freedesktop.org/xorg/app/xlsclients.git'
+      tag: 'xlsclients-1.1.4'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.11
+        - host-libtool
+        - host-pkg-config
+        - host-xorg-macros
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - xorg-util-macros
+      - libxcb
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--sysconfdir=/etc'
+        - '--localstatedir=/var'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: xwininfo
+    default: false
+    source:
+      subdir: ports
+      git: 'https://gitlab.freedesktop.org/xorg/app/xwininfo.git'
+      tag: 'xwininfo-1.1.5'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.11
+        - host-libtool
+        - host-pkg-config
+        - host-xorg-macros
+        - host-autoconf-archive
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - xorg-util-macros
+      - libx11
+      - xcb-util
+      #- xcb-util-wm
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--sysconfdir=/etc'
+        - '--localstatedir=/var'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
