@@ -98,7 +98,7 @@ packages:
       - libxext
       - nettle
       - xkbcomp
-      - mesa
+      - pixman
     configure:
       - args:
         - 'meson'
