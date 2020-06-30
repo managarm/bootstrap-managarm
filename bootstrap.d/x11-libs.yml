@@ -187,6 +187,7 @@ packages:
         - '--disable-static'
         - '--disable-ipv6'
         - '--disable-malloc0returnsnull'
+        - '--with-keysymdefdir=@SYSROOT_DIR@/usr/include/X11'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
