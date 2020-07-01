@@ -56,7 +56,7 @@ node {
         dir('build') {
             sh '''#!/bin/sh
             set -xe
-            xzcat /var/local/image-2gib.xz > image
+            xzcat /var/local/image-4gib.xz > image
             ../src/scripts/prepare-sysroot
             ../src/scripts/mkimage
             xz --fast image
