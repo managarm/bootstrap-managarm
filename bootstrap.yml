@@ -1135,57 +1135,6 @@ packages:
           'DESTDIR': '@THIS_COLLECT_DIR@'
         quiet: true
 
-  - name: mesa
-    source:
-      subdir: 'ports'
-      git: 'https://gitlab.freedesktop.org/mesa/mesa.git'
-      tag: 'mesa-20.0.5'
-      tools_required:
-        - host-pkg-config
-    tools_required:
-      - host-pkg-config
-      - system-gcc
-      - wayland-scanner
-      - virtual: pkgconfig-for-target
-        triple: x86_64-managarm
-    pkgs_required:
-      - libdrm
-      - llvm
-      - wayland
-      - wayland-protocols
-      - zlib
-    configure:
-      - args: ['cp', '@SOURCE_ROOT@/scripts/meson.cross-file', '.']
-      - args:
-        - 'sed'
-        - '-i'
-        - "/^# sed adds binaries here.$/a llvm-config = '@SOURCE_ROOT@/scripts/cross-llvm-config'"
-        - 'meson.cross-file'
-      - args:
-        - 'meson'
-        - '--cross-file'
-        - 'meson.cross-file'
-        - '--prefix=/usr'
-        - '--libdir=lib'
-        # The debug build type enables some additional output from Mesa.
-        - '--buildtype=debugoptimized'
-        #- '--buildtype=debug'
-        - '-Dglx=disabled'
-        - '-Dplatforms=surfaceless,drm,wayland'
-        # The Gallium swrast driver seems to be preferred over dri-swrast.
-        - '-Ddri-drivers='
-        - '-Dgallium-drivers=swrast'
-        - '-Dvulkan-drivers='
-        # Force Mesa to build with LLVM.
-        - '-Dllvm=true'
-        - '@THIS_SOURCE_DIR@'
-    build:
-      - args: ['ninja']
-      - args: ['ninja', 'install']
-        environ:
-          DESTDIR: '@THIS_COLLECT_DIR@'
-        quiet: true
-
   - name: mlibc-headers
     from_source: mlibc
     tools_required:
