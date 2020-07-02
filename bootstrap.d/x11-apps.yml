@@ -20,6 +20,7 @@ packages:
     pkgs_required:
       - xorg-util-macros
       - libx11
+      - libxkbfile
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
