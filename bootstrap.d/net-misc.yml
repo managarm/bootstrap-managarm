@@ -66,7 +66,6 @@ packages:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
-        - '--disable-ipv6'
         - '--disable-nls'
         - '--with-ssl=openssl'
         - '--with-openssl'
