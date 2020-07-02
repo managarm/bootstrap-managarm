@@ -309,7 +309,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxdamage
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxdamage.git'
@@ -383,7 +382,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxext
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxext.git'
@@ -422,7 +420,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxfixes
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxfixes.git'
@@ -585,7 +582,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxrandr
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxrandr.git'
@@ -626,7 +622,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxrender
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxrender.git'
@@ -665,7 +660,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxshmfence
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxshmfence.git'
@@ -725,7 +719,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxxf86vm
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxxf86vm.git'
