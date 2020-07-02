@@ -6,6 +6,8 @@ packages:
       tag: 'readline-8.0'
     tools_required:
       - system-gcc
+    pkgs_required:
+      - ncurses
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -65,13 +67,8 @@ packages:
         - '--with-shared'
         - '--without-normal'
         - '--with-manpage-format=normal'
+        - '--with-pkg-config-libdir=/usr/lib/pkgconfig'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
         quiet: true
-      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/lib/pkgconfig']
-      - args: ['mv', '@THIS_COLLECT_DIR@/usr/lib/x86_64-linux-gnu/pkgconfig/form.pc', '@THIS_COLLECT_DIR@/usr/lib/pkgconfig']
-      - args: ['mv', '@THIS_COLLECT_DIR@/usr/lib/x86_64-linux-gnu/pkgconfig/menu.pc', '@THIS_COLLECT_DIR@/usr/lib/pkgconfig']
-      - args: ['mv', '@THIS_COLLECT_DIR@/usr/lib/x86_64-linux-gnu/pkgconfig/panel.pc', '@THIS_COLLECT_DIR@/usr/lib/pkgconfig']
-      - args: ['mv', '@THIS_COLLECT_DIR@/usr/lib/x86_64-linux-gnu/pkgconfig/ncurses.pc', '@THIS_COLLECT_DIR@/usr/lib/pkgconfig']
-      - args: ['rm', '-r', '@THIS_COLLECT_DIR@/usr/lib/x86_64-linux-gnu']
