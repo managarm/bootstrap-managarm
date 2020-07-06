@@ -941,6 +941,7 @@ packages:
       - xorg-proto
       - libx11
       - libxtrans
+      - libxext
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
