@@ -282,6 +282,8 @@ tools:
 
   - name: host-llvm-toolchain
     from_source: llvm
+    sources_required:
+      - cross-binutils
     tools_required:
       - host-cmake
       - system-gcc
@@ -300,6 +302,10 @@ tools:
 
         # clang configuration options.
         - '-DDEFAULT_SYSROOT=@SYSROOT_DIR@'
+
+        # Gold linker configuration options.
+        - '-DLLVM_BINUTILS_INCDIR=@SOURCE_ROOT@/ports/binutils/include'
+
         - '@THIS_SOURCE_DIR@/llvm'
     compile:
       - args: ['ninja']
