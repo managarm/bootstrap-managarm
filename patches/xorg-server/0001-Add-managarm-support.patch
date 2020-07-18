@@ -1,6 +1,6 @@
-From 480c028833509723343286aaee89cddaa182a1f9 Mon Sep 17 00:00:00 2001
+From ef08fb860fa9dcfca8cfaa715731b898b0c76bc7 Mon Sep 17 00:00:00 2001
 From: Dennisbonke <admin@dennisbonke.com>
-Date: Sun, 28 Jun 2020 18:10:06 +0200
+Date: Sat, 18 Jul 2020 16:19:17 +0200
 Subject: [PATCH] Add managarm support
 
 Signed-off-by: Dennisbonke <admin@dennisbonke.com>
@@ -8,7 +8,8 @@ Signed-off-by: Dennisbonke <admin@dennisbonke.com>
  include/os.h  | 1 +
  mi/mibitblt.c | 2 ++
  os/access.c   | 2 +-
- 3 files changed, 4 insertions(+), 1 deletion(-)
+ os/utils.c    | 2 +-
+ 4 files changed, 5 insertions(+), 2 deletions(-)
 
 diff --git a/include/os.h b/include/os.h
 index 2a1c29ef3..2a7fc76c5 100644
@@ -48,6 +49,19 @@ index 97246160c..7afbd3a86 100644
  #include <sys/utsname.h>
  #endif
  #if defined(SYSV) &&  defined(__i386__)
+diff --git a/os/utils.c b/os/utils.c
+index 2ba1c8013..0156b20fb 100644
+--- a/os/utils.c
++++ b/os/utils.c
+@@ -1632,7 +1632,7 @@ Pclose(void *iop)
+     }
+ #endif
+ 
+-    return pid == -1 ? -1 : pstat;
++    return pid == -1 ? -1 : !WIFEXITED(pstat) || WEXITSTATUS(pstat);
+ }
+ 
+ int
 -- 
-2.27.0
+2.28.0.rc0
 
