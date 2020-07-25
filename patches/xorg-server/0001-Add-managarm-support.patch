@@ -1,16 +1,30 @@
-From ef08fb860fa9dcfca8cfaa715731b898b0c76bc7 Mon Sep 17 00:00:00 2001
+From da0c8b76121406b220f1acb723851f09e2471b99 Mon Sep 17 00:00:00 2001
 From: Dennisbonke <admin@dennisbonke.com>
 Date: Sat, 18 Jul 2020 16:19:17 +0200
 Subject: [PATCH] Add managarm support
 
 Signed-off-by: Dennisbonke <admin@dennisbonke.com>
 ---
- include/os.h  | 1 +
- mi/mibitblt.c | 2 ++
- os/access.c   | 2 +-
- os/utils.c    | 2 +-
- 4 files changed, 5 insertions(+), 2 deletions(-)
+ include/meson.build | 2 +-
+ include/os.h        | 1 +
+ mi/mibitblt.c       | 2 ++
+ os/access.c         | 2 +-
+ os/utils.c          | 2 +-
+ 5 files changed, 6 insertions(+), 3 deletions(-)
 
+diff --git a/include/meson.build b/include/meson.build
+index ac2415327..82b093442 100644
+--- a/include/meson.build
++++ b/include/meson.build
+@@ -132,7 +132,7 @@ conf_data.set('HAVE_POSIX_FALLOCATE', cc.has_function('posix_fallocate'))
+ conf_data.set('HAVE_PORT_CREATE', cc.has_function('port_create'))
+ conf_data.set('HAVE_REALLOCARRAY', cc.has_function('reallocarray', dependencies: libbsd_dep))
+ conf_data.set('HAVE_SETEUID', cc.has_function('seteuid'))
+-conf_data.set('HAVE_SETITIMER', cc.has_function('setitimer'))
++conf_data.set('HAVE_SETITIMER', false)
+ conf_data.set('HAVE_SHMCTL64', cc.has_function('shmctl64'))
+ conf_data.set('HAVE_SIGACTION', cc.has_function('sigaction'))
+ conf_data.set('HAVE_STRCASECMP', cc.has_function('strcasecmp'))
 diff --git a/include/os.h b/include/os.h
 index 2a1c29ef3..2a7fc76c5 100644
 --- a/include/os.h
@@ -63,5 +77,5 @@ index 2ba1c8013..0156b20fb 100644
  
  int
 -- 
-2.28.0.rc0
+2.28.0.rc2
 

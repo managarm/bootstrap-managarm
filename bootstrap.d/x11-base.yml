@@ -124,7 +124,6 @@ packages:
         - '-Ddpms=false'
         - '-Dscreensaver=false'
         - '-Dxres=false'
-        - '-Dxace=false'
         - '-Dxinerama=false'
         - '-Dxv=false'
         - '-Dxvmc=false'
