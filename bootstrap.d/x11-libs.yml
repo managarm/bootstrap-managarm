@@ -113,7 +113,6 @@ packages:
         quiet: true
 
   - name: libfontenc
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libfontenc.git'
@@ -350,7 +349,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxcursor
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxcursor.git'
@@ -536,7 +534,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxfont2
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxfont.git'
@@ -585,7 +582,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxi
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxi.git'
@@ -624,7 +620,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxkbfile
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxkbfile.git'
@@ -880,7 +875,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxtst
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxtst.git'

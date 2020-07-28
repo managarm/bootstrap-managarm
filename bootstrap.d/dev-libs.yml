@@ -269,7 +269,6 @@ packages:
         quiet: true
 
   - name: nettle
-    default: false
     source:
       subdir: 'ports'
       git: 'https://git.lysator.liu.se/nettle/nettle.git'
@@ -360,12 +359,13 @@ packages:
       - mesa
       - wayland
       - dejavu
+      - libxcursor
+      - xorg-server
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
-        - '--disable-xwayland'
         - '--disable-x11-compositor'
         - '--disable-weston-launch'
         - '--disable-fbdev-compositor'

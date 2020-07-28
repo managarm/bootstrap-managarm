@@ -1,6 +1,5 @@
 packages:
   - name: xdpyinfo
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xdpyinfo.git'
@@ -73,7 +72,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
   
   - name: xkbcomp
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xkbcomp.git'

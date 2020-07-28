@@ -77,7 +77,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libepoxy
-    default: false
     source:
       subdir: 'ports'
       git: 'https://github.com/anholt/libepoxy.git'
