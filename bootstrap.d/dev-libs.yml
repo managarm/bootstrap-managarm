@@ -298,7 +298,7 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
-        quiet: true
+        #quiet: true
 
   - name: pcre
     source:
