@@ -545,6 +545,7 @@ packages:
         - host-pkg-config
         - host-xorg-macros
         - host-autoconf-archive
+        - host-xtrans
       regenerate:
         - args: ['./autogen.sh']
           environ:
@@ -604,6 +605,7 @@ packages:
       - xorg-proto
       - libx11
       - libxtrans
+      - libxext
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
