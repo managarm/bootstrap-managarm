@@ -45,7 +45,6 @@ packages:
       - args: ['cp', '-r', '@THIS_BUILD_DIR@/dejavu/dejavu', '@THIS_COLLECT_DIR@/usr/share/fonts/truetype/']
 
   - name: xorg-font-util
-    default: false
     from_source: xorg-font-util
     tools_required:
       - system-gcc
