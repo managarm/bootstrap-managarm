@@ -78,6 +78,7 @@ packages:
       tag: 'xorg-server-1.20.8'
     tools_required:
       - system-gcc
+      - wayland-scanner
       - virtual: pkgconfig-for-target
         triple: x86_64-managarm
     pkgs_required:

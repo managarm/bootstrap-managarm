@@ -21,6 +21,7 @@ RUN apt-get update \
 		libmpc-dev \
 		libmpfr-dev \
 		libssl-dev \
+		libwayland-bin \
 		m4 \
 		mercurial \
 		netpbm \
