@@ -564,6 +564,7 @@ packages:
       - fontconfig
       - bzip2
       - libfontenc
+      - zlib
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -606,6 +607,7 @@ packages:
       - libx11
       - libxtrans
       - libxext
+      - libxfixes
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

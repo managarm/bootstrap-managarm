@@ -18,6 +18,9 @@ packages:
       - system-gcc
     pkgs_required:
       - xorg-util-macros
+      - xorg-proto
+      - xcb-proto
+      - libxcb
       - libx11
       - libxext
       - libxxf86vm
