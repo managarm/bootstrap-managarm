@@ -233,7 +233,7 @@ packages:
   - name : mpfr
     source:
       subdir: 'ports'
-      url: 'https://www.mpfr.org/mpfr-4.0.2/mpfr-4.0.2.tar.xz'
+      url: 'https://ftp.gnu.org/gnu/mpfr/mpfr-4.0.2.tar.xz'
       format: 'tar.xz'
       extract_path: 'mpfr-4.0.2'
       tools_required:
