@@ -1706,3 +1706,11 @@ tasks:
     args:
       - '@SOURCE_ROOT@/scripts/run-qemu'
     workdir: '@BUILD_ROOT@'
+
+  - name: test-image
+    tasks_required:
+      - task: make-image
+        order_only: true
+    args:
+      - '@SOURCE_ROOT@/scripts/test-image.py'
+    workdir: '@BUILD_ROOT@'

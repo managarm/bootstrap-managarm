@@ -59,7 +59,7 @@ node {
             xzcat /var/local/image-4gib.xz > image
             ../src/scripts/prepare-sysroot
             ../src/scripts/mkimage
-            xz --fast image
+            xz --fast --keep image
             '''
         }
     }
@@ -69,5 +69,12 @@ node {
         sh 'rsync -av --delete build/pkg-builds/managarm-system/docs/ /var/www/docs/handbook'
         sh 'rsync -av --delete build/packages/*.tar.gz build/image.xz /var/www/pkgs/nightly'
         archiveArtifacts 'build/packages/*.tar.gz,build/image.xz'
+    }
+
+    stage('Test image') {
+        dir('build') {
+            sh '''#!/bin/sh
+            ../src/scripts/test-image.py
+        }
     }
 }
