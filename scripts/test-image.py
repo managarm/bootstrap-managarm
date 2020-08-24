@@ -7,7 +7,8 @@ import subprocess
 import sys
 import time
 
-timeout = 60
+timeout = 10 * 60
+io_timeout = 30
 
 # Some boilerplate to get SIGCHLD notification (via a file descriptor).
 (sig_poll_fd, sig_wake_fd) = os.pipe()
@@ -81,6 +82,7 @@ logfile = open('test-image.log', 'wb')
 success = False
 
 start_time = time.time()
+io_time = time.time()
 while proc_alive or debugcon_alive:
 	events = sel.select(1)
 	for key, _ in events:
@@ -100,6 +102,8 @@ while proc_alive or debugcon_alive:
 			else:
 				sel.unregister(debugcon.fileno())
 				debugcon_alive = False
+
+			io_time = time.time();
 
 	# Send ENTER to select an entry from GRUB's boot menu.
 	if not sent_enter and time.time() > start_time + 5:
@@ -121,6 +125,8 @@ while proc_alive or debugcon_alive:
 
 	# Handle the timeout.
 	if time.time() > start_time + timeout:
+		proc.terminate()
+	if time.time() > io_time + io_timeout:
 		proc.terminate()
 
 os.unlink('monitor.in')
