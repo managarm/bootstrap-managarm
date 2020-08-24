@@ -75,6 +75,7 @@ node {
         dir('build') {
             sh '''#!/bin/sh
             ../src/scripts/test-image.py
+            '''
         }
     }
 }
