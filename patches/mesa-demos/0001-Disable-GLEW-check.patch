@@ -1,0 +1,30 @@
+From 8ff022ffe33dbd3c231b5de90bd8e684f3493608 Mon Sep 17 00:00:00 2001
+From: Dennisbonke <admin@dennisbonke.com>
+Date: Mon, 24 Aug 2020 04:37:54 +0200
+Subject: [PATCH] Disable GLEW check
+
+Signed-off-by: Dennisbonke <admin@dennisbonke.com>
+---
+ configure.ac | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 0b5e9a76..d06203df 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -93,9 +93,9 @@ AC_EGREP_HEADER([glutInitContextProfile],
+ 		[])
+ 
+ dnl Check for GLEW
+-PKG_CHECK_MODULES(GLEW, [glew >= 1.5.4])
+-DEMO_CFLAGS="$DEMO_CFLAGS $GLEW_CFLAGS"
+-DEMO_LIBS="$DEMO_LIBS $GLEW_LIBS"
++dnl PKG_CHECK_MODULES(GLEW, [glew >= 1.5.4])
++dnl DEMO_CFLAGS="$DEMO_CFLAGS $GLEW_CFLAGS"
++dnl DEMO_LIBS="$DEMO_LIBS $GLEW_LIBS"
+ 
+ # LIBS was set by AC_CHECK_LIB above
+ LIBS=""
+-- 
+2.28.0
+

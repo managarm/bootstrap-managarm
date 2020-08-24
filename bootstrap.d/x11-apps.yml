@@ -1,4 +1,50 @@
 packages:
+  - name: mesa-demos
+    source:
+      subdir: ports
+      git: 'https://gitlab.freedesktop.org/mesa/demos.git'
+      tag: 'mesa-demos-8.4.0'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.11
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - glu
+      - libx11
+      - libxext
+      - mesa
+      - wayland
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--sysconfdir=/etc'
+        - '--localstatedir=/var'
+        - '--disable-static'
+        - '--disable-egl'
+        - '--disable-gles1'
+        - '--disable-gles2'
+        - '--disable-vg'
+        - '--disable-osmesa'
+        - '--disable-libdrm'
+        - '--disable-gbm'
+        - '--disable-freetype2'
+        - '--disable-rbug'
+        - '--with-glut=no'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+  
   - name: xdpyinfo
     source:
       subdir: ports
