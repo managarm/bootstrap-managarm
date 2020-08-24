@@ -136,6 +136,40 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
+  - name: libinput
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/wayland-project/libinput.git'
+      tag: '1.10.7'
+    tools_required:
+      - host-pkg-config
+      - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: x86_64-managarm
+    pkgs_required:
+      - eudev
+      - libevdev
+      - mtdev
+    configure:
+      - args:
+          - 'meson'
+          - '--cross-file'
+          - '@SOURCE_ROOT@/scripts/meson.cross-file'
+          - '--prefix=/usr'
+          - '--libdir=lib'
+          - '--buildtype=debugoptimized'
+          - '-Dlibwacom=false'
+          - '-Ddebug-gui=false'
+          - '-Dtests=false'
+          - '-Ddocumentation=false'
+          - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+
   - name: libpipeline
     default: false
     source:
@@ -300,7 +334,7 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
-        #quiet: true
+        quiet: true
 
   - name: pcre
     source:

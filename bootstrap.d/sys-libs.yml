@@ -1,26 +1,4 @@
 packages:
-  - name: readline
-    source:
-      subdir: ports
-      git: 'https://git.savannah.gnu.org/git/readline.git'
-      tag: 'readline-8.0'
-    tools_required:
-      - system-gcc
-    pkgs_required:
-      - ncurses
-    configure:
-      - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
-        - '--prefix=/usr'
-        - '--disable-static'
-        - '--enable-multibyte'
-    build:
-      - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
-        environ:
-          DESTDIR: '@THIS_COLLECT_DIR@'
-
   - name: gdbm
     default: false
     source:
@@ -49,6 +27,33 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+  
+  - name: mtdev
+    source:
+      subdir: 'ports'
+      git: 'https://bitmath.org/git/mtdev.git'
+      disable_shallow_fetch: true
+      tag: 'v1.1.6'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+      regenerate:
+        - args: ['./autogen.sh']
+    tools_required:
+      - system-gcc
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
 
   - name: ncurses
     source:
@@ -72,3 +77,25 @@ packages:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
         quiet: true
+
+  - name: readline
+    source:
+      subdir: ports
+      git: 'https://git.savannah.gnu.org/git/readline.git'
+      tag: 'readline-8.0'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - ncurses
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--disable-static'
+        - '--enable-multibyte'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
