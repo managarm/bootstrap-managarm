@@ -16,7 +16,10 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - freetype
+      - glew
       - glu
+      - libdrm
       - libx11
       - libxext
       - mesa
@@ -29,14 +32,9 @@ packages:
         - '--sysconfdir=/etc'
         - '--localstatedir=/var'
         - '--disable-static'
-        - '--disable-egl'
-        - '--disable-gles1'
-        - '--disable-gles2'
+        - '--disable-gles1' # Requires some linux header that we don't have
         - '--disable-vg'
         - '--disable-osmesa'
-        - '--disable-libdrm'
-        - '--disable-gbm'
-        - '--disable-freetype2'
         - '--disable-rbug'
         - '--with-glut=no'
     build:
@@ -44,7 +42,7 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
-  
+
   - name: xdpyinfo
     source:
       subdir: ports

@@ -76,6 +76,34 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: glew
+    source:
+      subdir: 'ports'
+      url: 'https://github.com/nigels-com/glew/releases/download/glew-2.1.0/glew-2.1.0.tgz'
+      format: 'tar.gz'
+      extract_path: 'glew-2.1.0'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - glu
+      - mesa
+    configure:
+      # These two seds lets the build system respect the GCC variable
+      - args: ['sed', '-i', 's/CC = cc/CC = $(GCC)/g', '@THIS_SOURCE_DIR@/config/Makefile.linux']
+      - args: ['sed', '-i', 's/LD = cc/LD = $(GCC)/g', '@THIS_SOURCE_DIR@/config/Makefile.linux']
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+        environ:
+          GCC: "x86_64-managarm-gcc"
+          # We don't want to install libs in /usr/lib64, so disable that (like gentoo does)
+          M_ARCH: ""
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+          GCC: "x86_64-managarm-gcc"
+          M_ARCH: ""
+
   - name: glu
     source:
       subdir: 'ports'
