@@ -121,6 +121,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - gcc
       - mesa
     configure:
       - args:
