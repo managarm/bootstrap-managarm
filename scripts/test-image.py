@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import argparse
 import os
 import selectors
 import signal
@@ -7,8 +8,13 @@ import subprocess
 import sys
 import time
 
-timeout = 10 * 60
+timeout = 20 * 60
 io_timeout = 30
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--io-timeout', action='store_true')
+
+args = parser.parse_args()
 
 # Some boilerplate to get SIGCHLD notification (via a file descriptor).
 (sig_poll_fd, sig_wake_fd) = os.pipe()
@@ -126,7 +132,7 @@ while proc_alive or debugcon_alive:
 	# Handle the timeout.
 	if time.time() > start_time + timeout:
 		proc.terminate()
-	if time.time() > io_time + io_timeout:
+	if args.io_timeout and time.time() > io_time + io_timeout:
 		proc.terminate()
 
 os.unlink('monitor.in')
