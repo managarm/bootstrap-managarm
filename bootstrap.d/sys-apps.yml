@@ -371,8 +371,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xbps
-    # Disabled due to linking issues with libressl.
-    default: false
     source:
       subdir: ports
       git: 'https://github.com/void-linux/xbps.git'
