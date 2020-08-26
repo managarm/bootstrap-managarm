@@ -322,7 +322,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/share/hwdata/']
-      - args: ['wget', '-O', '@THIS_COLLECT_DIR@/usr/share/hwdata/pci.ids', https://raw.githubusercontent.com/pciutils/pciids/master/pci.ids']
+      - args: ['wget', '-O', '@THIS_COLLECT_DIR@/usr/share/hwdata/pci.ids', 'https://raw.githubusercontent.com/pciutils/pciids/master/pci.ids']
 
   - name: sed
     source:
