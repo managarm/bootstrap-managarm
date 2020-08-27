@@ -85,7 +85,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xdriinfo
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xdriinfo.git'
@@ -103,6 +102,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mesa
       - xorg-util-macros
       - libx11
     configure:
@@ -153,7 +153,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xkill
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xkill.git'
@@ -189,7 +188,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xlsclients
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xlsclients.git'
@@ -223,7 +221,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xwininfo
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xwininfo.git'
@@ -245,7 +242,6 @@ packages:
       - xorg-util-macros
       - libx11
       - xcb-util
-      #- xcb-util-wm
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
