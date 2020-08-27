@@ -16,6 +16,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - freeglut
       - freetype
       - glew
       - glu
@@ -36,7 +37,7 @@ packages:
         - '--disable-vg'
         - '--disable-osmesa'
         - '--disable-rbug'
-        - '--with-glut=no'
+        - '--with-system-data-files'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
