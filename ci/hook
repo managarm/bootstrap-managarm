@@ -1,0 +1,5 @@
+#!/bin/sh
+set -uxe
+case "$1" in
+	prejob|pregraph) cp "$SOURCE_DIR/ci/pipeline.yml" . ;;
+esac
