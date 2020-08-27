@@ -1,3 +1,31 @@
+sources:
+  - name: bison
+    subdir: 'ports'
+    git: 'https://git.savannah.gnu.org/git/bison.git'
+    tag: 'v3.6.2'
+    tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.15
+      - host-libtool
+    regenerate:
+      - args: ['git', 'submodule', 'update', '--init']
+      - args: ['./bootstrap']
+      - args: ['cp',
+          '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
+          '@THIS_SOURCE_DIR@/build-aux/']
+
+tools:
+  - name: host-bison
+    from_source: bison
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--prefix=@PREFIX@'
+    compile:
+      - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'install']
+
 packages:
   - name: bc
     default: false
@@ -23,20 +51,7 @@ packages:
 
   - name: bison
     default: false
-    source:
-      subdir: 'ports'
-      git: 'https://git.savannah.gnu.org/git/bison.git'
-      tag: 'v3.6.2'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
-        - host-libtool
-      regenerate:
-        - args: ['git', 'submodule', 'update', '--init']
-        - args: ['./bootstrap']
-        - args: ['cp',
-            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
-            '@THIS_SOURCE_DIR@/build-aux/']
+    from_source: bison
     tools_required:
       - system-gcc
       - host-autoconf-v2.69
