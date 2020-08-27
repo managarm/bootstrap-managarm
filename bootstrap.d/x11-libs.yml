@@ -154,7 +154,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libice
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libice.git'
@@ -193,7 +192,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libsm
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libsm.git'
@@ -890,7 +888,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxt
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxt.git'
