@@ -299,7 +299,7 @@ tools:
         # Building it in debug mode produces tens of GiB of debugging info.
         - '-DCMAKE_BUILD_TYPE=Release'
         - '-DLLVM_TARGETS_TO_BUILD=X86'
-        - '-DLLVM_ENABLE_PROJECTS=clang'
+        - '-DLLVM_ENABLE_PROJECTS=clang;clang-tools-extra'
 
         # clang configuration options.
         - '-DDEFAULT_SYSROOT=@SYSROOT_DIR@'
