@@ -382,6 +382,7 @@ packages:
     pkgs_required:
       - libarchive
       - libressl
+      - zlib
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
