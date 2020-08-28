@@ -155,7 +155,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libice
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libice.git'
@@ -194,7 +193,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libsm
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libsm.git'
@@ -293,6 +291,45 @@ packages:
     pkgs_required:
       - xorg-util-macros
       - xorg-proto
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--sysconfdir=/etc'
+        - '--localstatedir=/var'
+        - '--disable-static'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: libxaw
+    source:
+      subdir: ports
+      git: 'https://gitlab.freedesktop.org/xorg/lib/libxaw.git'
+      tag: 'libXaw-1.0.13'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.11
+        - host-libtool
+        - host-pkg-config
+        - host-xorg-macros
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - xorg-util-macros
+      - xorg-proto
+      - libx11
+      - libxext
+      - libxt
+      - libxmu
+      - libxpm
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -661,7 +698,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxmu
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxmu.git'
@@ -685,6 +721,43 @@ packages:
       - xorg-proto
       - libx11
       - libxtrans
+      - libxt
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--sysconfdir=/etc'
+        - '--localstatedir=/var'
+        - '--disable-static'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: libxpm
+    source:
+      subdir: ports
+      git: 'https://gitlab.freedesktop.org/xorg/lib/libxpm.git'
+      tag: 'libXpm-3.5.13'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.11
+        - host-libtool
+        - host-pkg-config
+        - host-xorg-macros
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - xorg-util-macros
+      - xorg-proto
+      - libx11
+      - libxext
       - libxt
     configure:
       - args:
@@ -816,7 +889,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxt
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxt.git'
@@ -958,7 +1030,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xcb-util
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxcb-util.git'
@@ -971,7 +1042,7 @@ packages:
         - host-xorg-macros
         - host-autoconf-archive
       regenerate:
-        - args: ['git', 'submodule', 'update', '--init']
+        - args: ['git', 'submodule', 'upate', '--init']
         - args: ['./autogen.sh']
           environ:
             'NOCONFIGURE': 'yes'

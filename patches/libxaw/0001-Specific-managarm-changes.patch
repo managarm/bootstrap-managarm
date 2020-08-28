@@ -1,0 +1,39 @@
+From 3443eb6794078abd8621b4e1e5e21c71b11520e6 Mon Sep 17 00:00:00 2001
+From: Dennisbonke <admin@dennisbonke.com>
+Date: Sun, 26 Jul 2020 00:43:45 +0200
+Subject: [PATCH] Specific managarm changes
+
+Signed-off-by: Dennisbonke <admin@dennisbonke.com>
+---
+ src/TextAction.c | 1 +
+ src/XawI18n.h    | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/src/TextAction.c b/src/TextAction.c
+index 6363259..d1e922a 100644
+--- a/src/TextAction.c
++++ b/src/TextAction.c
+@@ -45,6 +45,7 @@ in this Software without prior written authorization from The Open Group.
+ #include <X11/Xaw/TextP.h>
+ #include <X11/Xaw/TextSrcP.h>
+ #include <X11/Xaw/XawImP.h>
++#include <sys/select.h>
+ #include "Private.h"
+ #include "XawI18n.h"
+ 
+diff --git a/src/XawI18n.h b/src/XawI18n.h
+index d50171c..93a05aa 100644
+--- a/src/XawI18n.h
++++ b/src/XawI18n.h
+@@ -38,7 +38,7 @@ in this Software without prior written authorization from The Open Group.
+ #include <wchar.h>
+ #endif
+ 
+-#if defined(AIXV3) || defined(__SCO__)
++#if defined(AIXV3) || defined(__SCO__) || defined(__managarm__)
+ #include <ctype.h>
+ #endif
+ 
+-- 
+2.28.0.rc2
+

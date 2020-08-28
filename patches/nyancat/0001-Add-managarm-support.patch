@@ -1,0 +1,26 @@
+From e0b906a500bbbb7e58687a2a0af6bd3f626608e1 Mon Sep 17 00:00:00 2001
+From: Dennisbonke <admin@dennisbonke.com>
+Date: Thu, 2 Jul 2020 10:01:43 +0200
+Subject: [PATCH] Add managarm support
+
+Signed-off-by: Dennisbonke <admin@dennisbonke.com>
+---
+ src/nyancat.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/nyancat.c b/src/nyancat.c
+index 537225c..17ddfaf 100644
+--- a/src/nyancat.c
++++ b/src/nyancat.c
+@@ -67,7 +67,7 @@
+ 
+ #include <sys/ioctl.h>
+ 
+-#ifndef TIOCGWINSZ
++#if !defined TIOCGWINSZ || defined(__managarm__)
+ #include <termios.h>
+ #endif
+ 
+-- 
+2.28.0
+
