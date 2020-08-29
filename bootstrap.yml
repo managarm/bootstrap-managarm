@@ -289,7 +289,6 @@ tools:
       - binutils
     tools_required:
       - host-cmake
-      - system-gcc
     configure:
       - args:
         - 'cmake'
