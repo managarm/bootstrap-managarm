@@ -1,6 +1,8 @@
-FROM debian:buster
+#----------------------------------------------------------------------------------------
+# "base" stage that contains all packages that we need.
+#----------------------------------------------------------------------------------------
+FROM debian:buster AS base
 
-ARG USER=1000
 RUN apt-get update \
 	&& apt-get -y install \
 		autopoint \
@@ -52,10 +54,17 @@ RUN cd /root/ \
 	&& cd xbps-0.59.1/ \
 	&& ./configure --enable-rpath && make && make install
 
+# Install mdbook.
 RUN cd /root && \
 	wget -O mdbook.tar.gz https://github.com/rust-lang/mdBook/releases/download/v0.3.7/mdbook-v0.3.7-x86_64-unknown-linux-gnu.tar.gz && \
 	tar xf mdbook.tar.gz && \
 	install -D mdbook /usr/local/bin/mdbook
+
+#----------------------------------------------------------------------------------------
+# "user" stage that also adds a user account.
+#----------------------------------------------------------------------------------------
+FROM base AS user
+ARG USER=1000
 
 RUN useradd -ms /bin/bash managarm_buildenv -u $USER
 USER managarm_buildenv
