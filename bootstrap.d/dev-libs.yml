@@ -3,6 +3,7 @@ sources:
     subdir: 'ports'
     git: 'https://github.com/unicode-org/icu.git'
     tag: 'release-67-1'
+    version: '67.1'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.15
@@ -30,6 +31,7 @@ packages:
       subdir: ports
       git: 'https://gitlab.gnome.org/GNOME/glib'
       tag: '2.59.2'
+      version: '2.59.2'
     tools_required:
       - system-gcc
       - host-libtool
@@ -63,6 +65,7 @@ packages:
       subdir: 'ports'
       hg: 'https://gmplib.org/repo/gmp-6.2/'
       tag: 'tip'
+      version: '6.2'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -117,6 +120,7 @@ packages:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/libevdev/libevdev.git'
       tag: 'libevdev-1.9.1'
+      version: '1.9.1'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -146,6 +150,7 @@ packages:
       subdir: 'ports'
       git: 'https://github.com/libexpat/libexpat.git'
       tag: 'R_2_2_9'
+      version: '2.2.9'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -178,6 +183,7 @@ packages:
       subdir: 'ports'
       git: 'https://github.com/libffi/libffi.git'
       tag: 'v3.3'
+      version: '3.3'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -208,6 +214,7 @@ packages:
       subdir: 'ports'
       git: 'https://github.com/gpg/libgcrypt.git'
       tag: 'libgcrypt-1.8.5'
+      version: '1.8.5'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -246,6 +253,7 @@ packages:
       subdir: 'ports'
       git: 'https://github.com/gpg/libgpg-error.git'
       tag: 'libgpg-error-1.37'
+      version: '1.37'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -279,6 +287,7 @@ packages:
       subdir: 'ports'
       git: 'https://github.com/wayland-project/libinput.git'
       tag: '1.10.7'
+      version: '1.10.7'
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -314,6 +323,7 @@ packages:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/libpipeline.git'
       tag: '1.5.2'
+      version: '1.5.2'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -342,6 +352,7 @@ packages:
       subdir: ports
       git: 'https://gitlab.gnome.org/GNOME/libxml2.git'
       tag: 'v2.9.10'
+      version: '2.9.10'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -377,6 +388,7 @@ packages:
       subdir: ports
       git: 'https://scm.gforge.inria.fr/anonscm/git/mpc/mpc.git'
       tag: '1.1.0'
+      version: '1.1.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -408,6 +420,7 @@ packages:
       url: 'https://ftp.gnu.org/gnu/mpfr/mpfr-4.0.2.tar.xz'
       format: 'tar.xz'
       extract_path: 'mpfr-4.0.2'
+      version: '4.0.2'
       tools_required:
         - host-autoconf-archive
         - host-autoconf-v2.69
@@ -445,6 +458,7 @@ packages:
       subdir: 'ports'
       git: 'https://git.lysator.liu.se/nettle/nettle.git'
       tag: 'nettle_3.6_release_20200429'
+      version: '3.6'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -479,6 +493,8 @@ packages:
       subdir: ports
       svn: 'svn://vcs.pcre.org/pcre/code/trunk'
       rev: '1764'
+      # Seems to be 8.44?
+      version: '8.44'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -513,6 +529,7 @@ packages:
       subdir: 'ports'
       git: 'https://github.com/wayland-project/weston.git'
       tag: '4.0.0'
+      version: '4.0.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15

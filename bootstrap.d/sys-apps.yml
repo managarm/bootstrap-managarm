@@ -3,6 +3,7 @@ sources:
     subdir: ports
     git: 'https://github.com/file/file.git'
     tag: 'FILE5_39'
+    version: '5.39'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.15
@@ -28,6 +29,7 @@ packages:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/r/coreutils.git'
       tag: 'v8.32'
+      version: '8.32'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -67,6 +69,7 @@ packages:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/diffutils.git'
       tag: 'v3.7'
+      version: '3.7'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -117,6 +120,7 @@ packages:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/findutils.git'
       tag: 'v4.7.0'
+      version: '4.7.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -146,6 +150,7 @@ packages:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/gawk.git'
       tag: 'gawk-4.2.1'
+      version: '4.2.1'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -176,6 +181,7 @@ packages:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/grep.git'
       tag: 'v3.4-almost'
+      version: '3.4'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -207,6 +213,7 @@ packages:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/groff.git'
       tag: '1.22.4'
+      version: '1.22.4'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -244,6 +251,7 @@ packages:
       url: 'http://www.greenwoodsoftware.com/less/less-551.tar.gz'
       format: 'tar.gz'
       extract_path: 'less-551'
+      version: '551'
     tools_required:
       - system-gcc
     pkgs_required:
@@ -264,6 +272,7 @@ packages:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/man-db.git'
       tag: '2.9.1'
+      version: '2.9.1'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -329,6 +338,7 @@ packages:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/sed.git'
       tag: 'v4.8'
+      version: '4.8'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -357,6 +367,7 @@ packages:
       url: 'https://ftp.gnu.org/gnu/which/which-2.21.tar.gz'
       format: 'tar.gz'
       extract_path: 'which-2.21'
+      version: '2.21'
     tools_required:
       - system-gcc
     configure:
@@ -375,6 +386,7 @@ packages:
       subdir: ports
       git: 'https://github.com/void-linux/xbps.git'
       tag: '0.59.1'
+      version: '0.59.1'
       tools_required:
         - host-pkg-config
     tools_required:

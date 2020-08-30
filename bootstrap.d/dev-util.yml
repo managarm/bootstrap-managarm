@@ -3,6 +3,7 @@ sources:
     subdir: 'ports'
     git: 'https://gitlab.freedesktop.org/pkg-config/pkg-config.git'
     tag: 'pkg-config-0.29.2'
+    version: '0.29.2'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.11
@@ -29,37 +30,12 @@ tools:
       - args: ['make', 'install']
 
 packages:
-  - name: itstool
-    default: false
-    source:
-      subdir: ports
-      url: 'http://files.itstool.org/itstool/itstool-2.0.6.tar.bz2'
-      format: 'tar.bz2'
-      extract_path: 'itstool-2.0.6'
-    tools_required:
-      - system-gcc
-      - host-python
-    pkgs_required:
-      - libxml
-      - python
-    configure:
-      - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
-        - '--prefix=/usr'
-        environ:  
-          'PYTHON': '/usr/bin/python3'
-    build:
-      - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'install']
-        environ:
-          DESTDIR: '@THIS_COLLECT_DIR@'
-
   - name: desktop-file-utils
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xdg/desktop-file-utils.git'
       tag: '0.24'
+      version: '0.24'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -80,6 +56,33 @@ packages:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+  
+  - name: itstool
+    default: false
+    source:
+      subdir: ports
+      url: 'http://files.itstool.org/itstool/itstool-2.0.6.tar.bz2'
+      format: 'tar.bz2'
+      extract_path: 'itstool-2.0.6'
+      version: '2.0.6'
+    tools_required:
+      - system-gcc
+      - host-python
+    pkgs_required:
+      - libxml
+      - python
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        environ:  
+          'PYTHON': '/usr/bin/python3'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']

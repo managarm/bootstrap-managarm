@@ -4,6 +4,7 @@ packages:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/fontconfig/fontconfig'
       tag: '2.13.92'
+      version: '2.13.92'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -46,6 +47,7 @@ packages:
       url: 'https://downloads.sourceforge.net/freeglut/freeglut-3.2.1.tar.gz'
       format: 'tar.gz'
       extract_path: 'freeglut-3.2.1'
+      version: '3.2.1'
     tools_required:
       - host-cmake
       - system-gcc
@@ -74,6 +76,7 @@ packages:
       subdir: 'ports'
       git: 'git://git.sv.nongnu.org/freetype/freetype2.git'
       tag: 'VER-2-10-2'
+      version: '2.10.2'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -111,6 +114,7 @@ packages:
       url: 'https://github.com/nigels-com/glew/releases/download/glew-2.1.0/glew-2.1.0.tgz'
       format: 'tar.gz'
       extract_path: 'glew-2.1.0'
+      version: '2.1.0'
     tools_required:
       - system-gcc
     pkgs_required:
@@ -138,6 +142,7 @@ packages:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/mesa/glu.git'
       tag: 'glu-9.0.1'
+      version: '9.0.1'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -169,6 +174,7 @@ packages:
       subdir: 'ports'
       git: 'https://github.com/anholt/libepoxy.git'
       tag: '1.5.4'
+      version: '1.5.4'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -207,6 +213,7 @@ packages:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/mesa/mesa.git'
       tag: 'mesa-20.0.5'
+      version: '20.0.5'
       tools_required:
         - host-pkg-config
     tools_required:

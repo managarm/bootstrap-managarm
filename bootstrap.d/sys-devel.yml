@@ -3,6 +3,7 @@ sources:
     subdir: 'ports'
     git: 'https://git.savannah.gnu.org/git/bison.git'
     tag: 'v3.6.2'
+    version: '3.6.2'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.15
@@ -66,6 +67,7 @@ packages:
       subdir: 'ports'
       git: 'https://github.com/gavinhoward/bc.git'
       tag: '2.7.2'
+      version: '2.7.2'
     tools_required:
       - system-gcc
     configure:
@@ -108,6 +110,7 @@ packages:
       subdir: 'ports'
       git: 'https://github.com/westes/flex.git'
       tag: 'v2.6.4'
+      version: '2.6.4'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -168,6 +171,7 @@ packages:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/m4.git'
       tag: 'v1.4.18'
+      version: '1.4.18'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -205,6 +209,7 @@ packages:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/make.git'
       tag: '4.2'
+      version: '4.2'
       tools_required:
         - host-pkg-config
         - host-autoconf-v2.69
@@ -239,6 +244,7 @@ packages:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/patch.git'
       tag: 'v2.7.6'
+      version: '2.7.6'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15

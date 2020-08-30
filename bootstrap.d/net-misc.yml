@@ -1,10 +1,62 @@
 packages:
+  - name: curl
+    default: false
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/curl/curl.git'
+      tag: 'curl-7_70_0'
+      version: '7.70.0'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-autoconf-archive
+      regenerate:
+        - args: ['./buildconf']
+    tools_required:
+      - host-pkg-config
+      - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: x86_64-managarm
+    pkgs_required:
+      - libressl
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--disable-ipv6'
+        - '--disable-static'
+        - '--with-ca-path=/etc/ssl/certs'
+        - '--enable-threaded-resolver'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: iana-etc
+    source:
+      subdir: ports
+      url: 'http://anduin.linuxfromscratch.org/LFS/iana-etc-2.30.tar.bz2'
+      format: 'tar.bz2'
+      extract_path: 'iana-etc-2.30'
+      version: '2.30'
+    tools_required:
+      - system-gcc
+    configure:
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
+
   - name: socat
     default: false
     source:
       subdir: 'ports'
       git: 'git://repo.or.cz/socat.git'
       tag: 'tag-1.7.3.4'
+      version: '1.7.3.4'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -42,6 +94,7 @@ packages:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/wget.git'
       tag: 'v1.20.3'
+      version: '1.20.3'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -74,52 +127,3 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
-
-  - name: curl
-    default: false
-    source:
-      subdir: 'ports'
-      git: 'https://github.com/curl/curl.git'
-      tag: 'curl-7_70_0'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
-        - host-libtool
-        - host-autoconf-archive
-      regenerate:
-        - args: ['./buildconf']
-    tools_required:
-      - host-pkg-config
-      - system-gcc
-      - virtual: pkgconfig-for-target
-        triple: x86_64-managarm
-    pkgs_required:
-      - libressl
-    configure:
-      - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
-        - '--prefix=/usr'
-        - '--disable-ipv6'
-        - '--disable-static'
-        - '--with-ca-path=/etc/ssl/certs'
-        - '--enable-threaded-resolver'
-    build:
-      - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'install']
-        environ:
-          DESTDIR: '@THIS_COLLECT_DIR@'
-
-  - name: iana-etc
-    source:
-      subdir: ports
-      url: 'http://anduin.linuxfromscratch.org/LFS/iana-etc-2.30.tar.bz2'
-      format: 'tar.bz2'
-      extract_path: 'iana-etc-2.30'
-    tools_required:
-      - system-gcc
-    configure:
-      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
-    build:
-      - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']

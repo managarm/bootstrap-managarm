@@ -5,6 +5,7 @@ packages:
       url: 'https://www.sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz'
       format: 'tar.gz'
       extract_path: 'bzip2-1.0.8'
+      version: '1.0.8'
     tools_required:
       - system-gcc
     configure:
@@ -27,6 +28,7 @@ packages:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/gzip.git'
       tag: 'v1.10'
+      version: '1.10'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -54,6 +56,7 @@ packages:
       subdir: 'ports'
       git: 'https://github.com/libarchive/libarchive.git'
       tag: 'v3.4.3'
+      version: '3.4.3'
     tools_required:
       - host-cmake
       - system-gcc
@@ -76,6 +79,7 @@ packages:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/tar.git'
       tag: 'release_1_32'
+      version: '1.32'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -105,6 +109,7 @@ packages:
       subdir: ports
       git: 'https://git.tukaani.org/xz.git'
       branch: 'v5.2'
+      version: '5.2'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15

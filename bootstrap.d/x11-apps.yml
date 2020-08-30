@@ -4,6 +4,7 @@ packages:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/mesa/demos.git'
       tag: 'mesa-demos-8.4.0'
+      version: '8.4.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -49,6 +50,7 @@ packages:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xclock.git'
       tag: 'xclock-1.0.9'
+      version: '1.0.9'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -89,6 +91,7 @@ packages:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xdpyinfo.git'
       tag: 'xdpyinfo-1.3.2'
+      version: '1.3.2'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -130,6 +133,7 @@ packages:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xdriinfo.git'
       tag: 'xdriinfo-1.0.6'
+      version: '1.0.6'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -164,6 +168,7 @@ packages:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xkbcomp.git'
       tag: 'xkbcomp-1.4.3'
+      version: '1.4.3'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -198,6 +203,7 @@ packages:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xkill.git'
       tag: 'xkill-1.0.5'
+      version: '1.0.5'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -233,6 +239,7 @@ packages:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xlsclients.git'
       tag: 'xlsclients-1.1.4'
+      version: '1.1.4'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -266,6 +273,7 @@ packages:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xwininfo.git'
       tag: 'xwininfo-1.1.5'
+      version: '1.1.5'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11

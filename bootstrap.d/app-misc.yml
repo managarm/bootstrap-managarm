@@ -4,6 +4,8 @@ packages:
       subdir: ports
       git: 'https://github.com/mtoyoda/sl.git'
       branch: 'master'
+      # While we build directly from master, the Makefile suggests version 5.03.
+      version: '5.03'
     tools_required:
       - system-gcc
     pkgs_required:
