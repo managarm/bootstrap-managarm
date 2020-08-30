@@ -1,6 +1,8 @@
 
 # Building a managarm distribution from source
 
+![Sanity Checks](https://github.com/managarm/bootstrap-managarm/workflows/Sanity%20Checks/badge.svg)
+
 This repository contains patches and build script to build a [managarm](https://github.com/managarm/managarm) kernel and userspace.
 
 ## Build environment
