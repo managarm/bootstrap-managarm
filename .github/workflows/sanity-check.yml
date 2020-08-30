@@ -1,0 +1,31 @@
+name: Sanity Checks
+
+on: [push, pull_request]
+
+jobs:
+    compute-graph:
+        name: Compute graph
+        runs-on: ubuntu-20.04
+        steps:
+          - name: Install prerequisites
+            # Note: the default jsonschema is too old.
+            #       xbstrap should fix this by demanding a recent version.
+            run: |
+                sudo pip3 install setuptools
+                sudo pip3 install -U jsonschema
+                sudo pip3 install xbstrap
+          - name: Prepare directories
+            run: |
+                mkdir src/
+                mkdir build/
+          - name: Checkout
+            uses: actions/checkout@v2
+            with:
+              path: src/
+          - name: Compute xbstrap-pipeline graph
+            run: |
+                cp ../src/ci/pipeline.yml .
+                echo '{"pkg_management": {"format": "xbps"}}' > bootstrap-site.yml
+                xbstrap init ../src
+                xbstrap-pipeline compute-graph --artifact
+            working-directory: build/
