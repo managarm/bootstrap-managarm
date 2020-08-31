@@ -758,6 +758,7 @@ packages:
       - xorg-util-macros
       - xorg-proto
       - libx11
+      - libxext
       - libxtrans
       - libxt
     configure:
