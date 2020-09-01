@@ -22,6 +22,7 @@ packages:
       - libice
       - libpng
       - libx11
+      - libxpm
       - zlib
     configure:
       - args:
