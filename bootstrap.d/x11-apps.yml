@@ -45,6 +45,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xclock
+    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xclock.git'
@@ -261,6 +262,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xwininfo
+    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xwininfo.git'
