@@ -45,7 +45,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xclock
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xclock.git'
@@ -56,6 +55,7 @@ packages:
         - host-libtool
         - host-pkg-config
         - host-xorg-macros
+        - host-gettext
       regenerate:
         - args: ['./autogen.sh']
           environ:
@@ -262,7 +262,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xwininfo
-    default: false
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xwininfo.git'
@@ -274,6 +273,7 @@ packages:
         - host-pkg-config
         - host-xorg-macros
         - host-autoconf-archive
+        - host-gettext
       regenerate:
         - args: ['./autogen.sh']
           environ:
