@@ -23,6 +23,7 @@ RUN apt-get update \
 		libmpc-dev \
 		libmpfr-dev \
 		libssl-dev \
+		libpng-dev \
 		libwayland-bin \
 		m4 \
 		mercurial \

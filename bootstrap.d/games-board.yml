@@ -1,6 +1,5 @@
 packages:
   - name: ace
-    default: false
     source:
       subdir: 'ports'
       url: 'http://www.delorie.com/store/ace/ace-1.4.tar.gz'
