@@ -786,8 +786,6 @@ packages:
       subdir: 'ports'
       git: 'https://github.com/avdgrinten/libsmarter.git'
       branch: 'master'
-      # Temporarily fix compilation of thor after update in libsmarter.
-      commit: '185ea02691ee59f955ce5798ed73b61f901c8a4b'
     tools_required:
       - system-gcc
     configure: []
