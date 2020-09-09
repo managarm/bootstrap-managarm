@@ -1,4 +1,10 @@
 sources:
+  - name: 'cmake'
+    subdir: 'ports'
+    git: 'https://gitlab.kitware.com/cmake/cmake.git'
+    tag: 'v3.18.0'
+    version: '3.18.0'
+
   - name: 'pkg-config'
     subdir: 'ports'
     git: 'https://gitlab.freedesktop.org/pkg-config/pkg-config.git'
@@ -14,6 +20,19 @@ sources:
           'NOCONFIGURE': 'yes'
 
 tools:
+  - name: host-cmake
+    from_source: cmake
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/bootstrap'
+        - '--prefix=@PREFIX@'
+        - '--parallel=@PARALLELISM@'
+    compile:
+      - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'install']
+      - args: ['ln', '-sf', '@SOURCE_ROOT@/scripts/managarm.cmake', '@PREFIX@/share/cmake-3.18/Modules/Platform/']
+
   # We could run an external pkg-config; however, we need the aclocal files.
   # The easiest way to ensure that they are available is to just install pkg-config.
   - name: host-pkg-config
@@ -30,6 +49,40 @@ tools:
       - args: ['make', 'install']
 
 packages:
+  - name: cmake
+    default: false
+    from_source: cmake
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - curl
+      - libarchive
+      - libexpat
+      - libressl
+      - libuv
+      - libxml
+      - xz-utils
+      - zlib
+    configure:
+      - args: ['sed', '-i', '/"lib64"/s/64//', '@THIS_SOURCE_DIR@/Modules/GNUInstallDirs.cmake']
+      - args:
+        - '@THIS_SOURCE_DIR@/bootstrap'
+        - '--prefix=/usr'
+        - '--system-libs'
+        - '--mandir=/share/man'
+        - '--no-system-jsoncpp'
+        - '--no-system-librhash'
+        - '--no-system-zstd'
+        - '--docdir=/usr/share/doc/cmake-3.18.0'
+        - '--parallel=@PARALLELISM@'
+        - '--'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain.txt'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: desktop-file-utils
     source:
       subdir: ports

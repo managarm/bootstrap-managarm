@@ -1,0 +1,207 @@
+From cb7ec2bcb3dfe33f24653edaf28ec026b97df8ec Mon Sep 17 00:00:00 2001
+From: Dennisbonke <admin@dennisbonke.com>
+Date: Thu, 17 Sep 2020 15:22:45 +0200
+Subject: [PATCH] Add Managarm support
+
+Signed-off-by: Dennisbonke <admin@dennisbonke.com>
+---
+ Makefile.am                    | 12 ++++++++++++
+ configure.ac                   |  1 +
+ include/uv/managarm.h          | 34 ++++++++++++++++++++++++++++++++++
+ include/uv/unix.h              |  2 ++
+ src/unix/linux-core.c          | 16 ++++++++++++++++
+ src/unix/random-sysctl-linux.c |  2 ++
+ 6 files changed, 67 insertions(+)
+ create mode 100644 include/uv/managarm.h
+
+diff --git a/Makefile.am b/Makefile.am
+index 46308eaa..60e05d0d 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -476,6 +476,18 @@ libuv_la_SOURCES += src/unix/linux-core.c \
+ test_run_tests_LDFLAGS += -lutil
+ endif
+ 
++if MANAGARM
++uvinclude_HEADERS += include/uv/managarm.h
++libuv_la_CFLAGS += -D_GNU_SOURCE
++libuv_la_SOURCES += src/unix/linux-core.c \
++                    src/unix/linux-inotify.c \
++                    src/unix/procfs-exepath.c \
++                    src/unix/proctitle.c \
++                    src/unix/random-getrandom.c \
++                    src/unix/random-sysctl-linux.c
++test_run_tests_LDFLAGS += -lutil
++endif
++
+ if MSYS
+ libuv_la_CFLAGS += -D_GNU_SOURCE
+ libuv_la_SOURCES += src/unix/cygwin.c \
+diff --git a/configure.ac b/configure.ac
+index 8f5c89b1..a8e271e5 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -59,6 +59,7 @@ AM_CONDITIONAL([FREEBSD],  [AS_CASE([$host_os],[*freebsd*],     [true], [false])
+ AM_CONDITIONAL([HAIKU],    [AS_CASE([$host_os],[haiku],         [true], [false])])
+ AM_CONDITIONAL([HURD],     [AS_CASE([$host_os],[gnu*],          [true], [false])])
+ AM_CONDITIONAL([LINUX],    [AS_CASE([$host_os],[linux*],        [true], [false])])
++AM_CONDITIONAL([MANAGARM], [AS_CASE([$host_os],[managarm*],     [true], [false])])
+ AM_CONDITIONAL([MSYS],     [AS_CASE([$host_os],[msys*],         [true], [false])])
+ AM_CONDITIONAL([NETBSD],   [AS_CASE([$host_os],[netbsd*],       [true], [false])])
+ AM_CONDITIONAL([OPENBSD],  [AS_CASE([$host_os],[openbsd*],      [true], [false])])
+diff --git a/include/uv/managarm.h b/include/uv/managarm.h
+new file mode 100644
+index 00000000..6f3e07e8
+--- /dev/null
++++ b/include/uv/managarm.h
+@@ -0,0 +1,34 @@
++/* Copyright Joyent, Inc. and other Node contributors. All rights reserved.
++ *
++ * Permission is hereby granted, free of charge, to any person obtaining a copy
++ * of this software and associated documentation files (the "Software"), to
++ * deal in the Software without restriction, including without limitation the
++ * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
++ * sell copies of the Software, and to permit persons to whom the Software is
++ * furnished to do so, subject to the following conditions:
++ *
++ * The above copyright notice and this permission notice shall be included in
++ * all copies or substantial portions of the Software.
++ *
++ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
++ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
++ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
++ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
++ * IN THE SOFTWARE.
++ */
++
++#ifndef UV_MANAGARM_H
++#define UV_MANAGARM_H
++
++#define UV_PLATFORM_LOOP_FIELDS                                               \
++  uv__io_t inotify_read_watcher;                                              \
++  void* inotify_watchers;                                                     \
++  int inotify_fd;                                                             \
++
++#define UV_PLATFORM_FS_EVENT_FIELDS                                           \
++  void* watchers[2];                                                          \
++  int wd;                                                                     \
++
++#endif /* UV_MANAGARM_H */
+diff --git a/include/uv/unix.h b/include/uv/unix.h
+index 3a131638..bfc5cabb 100644
+--- a/include/uv/unix.h
++++ b/include/uv/unix.h
+@@ -47,6 +47,8 @@
+ 
+ #if defined(__linux__)
+ # include "uv/linux.h"
++#elif defined (__managarm__)
++# include "uv/managarm.h"
+ #elif defined (__MVS__)
+ # include "uv/os390.h"
+ #elif defined(__PASE__)  /* __PASE__ and _AIX are both defined on IBM i */
+diff --git a/src/unix/linux-core.c b/src/unix/linux-core.c
+index 14d5f0c0..598b22c7 100644
+--- a/src/unix/linux-core.c
++++ b/src/unix/linux-core.c
+@@ -38,12 +38,16 @@
+ #include <sys/epoll.h>
+ #include <sys/param.h>
+ #include <sys/prctl.h>
++#if !defined(__managarm__)
+ #include <sys/sysinfo.h>
++#endif
+ #include <unistd.h>
+ #include <fcntl.h>
+ #include <time.h>
+ 
++#if !defined(__managarm__)
+ #define HAVE_IFADDRS_H 1
++#endif
+ 
+ #ifdef __UCLIBC__
+ # if __UCLIBC_MAJOR__ < 0 && __UCLIBC_MINOR__ < 9 && __UCLIBC_SUBLEVEL__ < 32
+@@ -904,6 +908,7 @@ static uint64_t read_cpufreq(unsigned int cpunum) {
+ 
+ 
+ static int uv__ifaddr_exclude(struct ifaddrs *ent, int exclude_type) {
++#if !defined(__managarm__)
+   if (!((ent->ifa_flags & IFF_UP) && (ent->ifa_flags & IFF_RUNNING)))
+     return 1;
+   if (ent->ifa_addr == NULL)
+@@ -915,6 +920,9 @@ static int uv__ifaddr_exclude(struct ifaddrs *ent, int exclude_type) {
+   if (ent->ifa_addr->sa_family == PF_PACKET)
+     return exclude_type;
+   return !exclude_type;
++#else
++  return 0;
++#endif
+ }
+ 
+ int uv_interface_addresses(uv_interface_address_t** addresses, int* count) {
+@@ -1073,6 +1081,7 @@ static uint64_t uv__read_proc_meminfo(const char* what) {
+ 
+ 
+ uint64_t uv_get_free_memory(void) {
++#if !defined(__managarm__)
+   struct sysinfo info;
+   uint64_t rc;
+ 
+@@ -1083,12 +1092,14 @@ uint64_t uv_get_free_memory(void) {
+ 
+   if (0 == sysinfo(&info))
+     return (uint64_t) info.freeram * info.mem_unit;
++#endif
+ 
+   return 0;
+ }
+ 
+ 
+ uint64_t uv_get_total_memory(void) {
++#if !defined(__managarm__)
+   struct sysinfo info;
+   uint64_t rc;
+ 
+@@ -1099,6 +1110,7 @@ uint64_t uv_get_total_memory(void) {
+ 
+   if (0 == sysinfo(&info))
+     return (uint64_t) info.totalram * info.mem_unit;
++#endif
+ 
+   return 0;
+ }
+@@ -1129,6 +1141,7 @@ uint64_t uv_get_constrained_memory(void) {
+ 
+ 
+ void uv_loadavg(double avg[3]) {
++#if !defined(__managarm__)
+   struct sysinfo info;
+   char buf[128];  /* Large enough to hold all of /proc/loadavg. */
+ 
+@@ -1142,4 +1155,7 @@ void uv_loadavg(double avg[3]) {
+   avg[0] = (double) info.loads[0] / 65536.0;
+   avg[1] = (double) info.loads[1] / 65536.0;
+   avg[2] = (double) info.loads[2] / 65536.0;
++#else
++  avg[0] = avg[1] = avg[2] = 0;
++#endif
+ }
+diff --git a/src/unix/random-sysctl-linux.c b/src/unix/random-sysctl-linux.c
+index 66ba8d74..c131b588 100644
+--- a/src/unix/random-sysctl-linux.c
++++ b/src/unix/random-sysctl-linux.c
+@@ -25,7 +25,9 @@
+ #include <errno.h>
+ #include <string.h>
+ 
++#if !defined(__managarm__)
+ #include <syscall.h>
++#endif
+ #include <unistd.h>
+ 
+ 
+-- 
+2.28.0
+
