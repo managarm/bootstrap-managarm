@@ -175,7 +175,7 @@ packages:
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/grep.git'
-      tag: 'v3.4'
+      tag: 'v3.4-almost'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
