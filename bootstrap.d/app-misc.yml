@@ -3,7 +3,8 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/mtoyoda/sl.git'
-      branch: 'master'
+      commit: '923e7d7ebc5c1f009755bdeb789ac25658ccce03'
+      version: '5.03'
     tools_required:
       - system-gcc
     pkgs_required:

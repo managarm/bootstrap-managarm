@@ -6,6 +6,7 @@ packages:
       url: 'https://sqlite.org/2020/sqlite-autoconf-3310100.tar.gz'
       format: 'tar.gz'
       extract_path: 'sqlite-autoconf-3310100'
+      version: '3.31.1'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15

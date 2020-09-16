@@ -3,6 +3,7 @@ sources:
     subdir: ports
     git: 'https://github.com/freedesktop/xorg-macros.git'
     tag: 'util-macros-1.19.1'
+    version: '1.19.1'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.11
@@ -33,6 +34,7 @@ packages:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xdg/shared-mime-info.git'
       tag: 'Release-1-15'
+      version: '1.15'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -68,6 +70,7 @@ packages:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/data/bitmaps.git'
       tag: 'xbitmaps-1.1.2'
+      version: '1.1.2'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -100,6 +103,7 @@ packages:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/xkeyboard-config/xkeyboard-config.git'
       tag: 'xkeyboard-config-2.30'
+      version: '2.30'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
