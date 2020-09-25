@@ -12,6 +12,7 @@ imports:
   - file: bootstrap.d/games-misc.yml
   - file: bootstrap.d/media-fonts.yml
   - file: bootstrap.d/media-libs.yml
+  - file: bootstrap.d/meta-pkgs.yml
   - file: bootstrap.d/net-misc.yml
   - file: bootstrap.d/sys-apps.yml
   - file: bootstrap.d/sys-devel.yml

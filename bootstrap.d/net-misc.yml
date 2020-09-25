@@ -89,7 +89,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: wget
-    default: false
     source:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/wget.git'

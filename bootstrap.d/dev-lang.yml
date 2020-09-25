@@ -4,6 +4,7 @@ sources:
     git: 'https://github.com/python/cpython.git'
     tag: 'v3.8.2'
     version: '3.8.2'
+    rev: '2'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.15
@@ -115,6 +116,7 @@ packages:
       - readline
       - bzip2
       - libressl
+      - xz-utils
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

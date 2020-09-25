@@ -1,0 +1,29 @@
+packages:
+  # Meta package with the bare minimum to boot kmscon and be useful
+  - name: base
+    from_source: managarm
+    pkgs_required:
+      - base-configuration
+      - managarm-kernel
+      - managarm-system
+      - kmscon
+      - bash
+      - xkeyboard-config
+      - coreutils
+      - vim
+      - nano
+      - wget
+      - xbps
+      - grep
+      - sed
+      - gawk
+      - less
+      - tar
+      - bzip2
+      - gzip
+      - which
+      - iana-etc
+      - diffutils
+      - xz-utils
+    configure: []
+    build: []
