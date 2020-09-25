@@ -27,3 +27,18 @@ packages:
       - xz-utils
     configure: []
     build: []
+
+  # Meta package with build essentials
+  - name: base-devel
+    from_source: managarm
+    pkgs_required:
+      - base
+      - binutils
+      - gcc
+      - make
+      - patch
+      - m4
+      - nasm
+      - pkg-config
+    configure: []
+    build: []

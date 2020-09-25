@@ -166,7 +166,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: m4
-    default: false
     source:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/m4.git'
@@ -204,7 +203,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: make
-    default: false
     source:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/make.git'
@@ -239,7 +237,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: patch
-    default: false
     source:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/patch.git'
