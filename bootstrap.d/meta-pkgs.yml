@@ -3,7 +3,7 @@ packages:
   - name: base
     from_source: managarm
     pkgs_required:
-      - base-configuration
+      - core-files
       - managarm-kernel
       - managarm-system
       - kmscon
