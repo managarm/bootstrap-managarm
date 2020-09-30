@@ -104,7 +104,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xz-utils
-    default: false
     source:
       subdir: ports
       git: 'https://git.tukaani.org/xz.git'

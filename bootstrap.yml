@@ -12,6 +12,7 @@ imports:
   - file: bootstrap.d/games-misc.yml
   - file: bootstrap.d/media-fonts.yml
   - file: bootstrap.d/media-libs.yml
+  - file: bootstrap.d/meta-pkgs.yml
   - file: bootstrap.d/net-misc.yml
   - file: bootstrap.d/sys-apps.yml
   - file: bootstrap.d/sys-devel.yml
@@ -512,21 +513,6 @@ tools:
         quiet: true
 
 packages:
-  - name: base-configuration
-    from_source: managarm
-    configure: []
-    build:
-      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc/']
-      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/bin']
-      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/lib']
-      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/sbin']
-      - args: ['cp', '@SOURCE_ROOT@/extrafiles/passwd', '@THIS_COLLECT_DIR@/etc']
-      - args: ['cp', '@SOURCE_ROOT@/extrafiles/group', '@THIS_COLLECT_DIR@/etc']
-      - args: ['cp', '@SOURCE_ROOT@/extrafiles/resolv.conf', '@THIS_COLLECT_DIR@/etc']
-      - args: ['ln', '-svf', 'usr/bin', '@THIS_COLLECT_DIR@/bin']
-      - args: ['ln', '-svf', 'usr/lib', '@THIS_COLLECT_DIR@/lib']
-      - args: ['ln', '-svf', 'usr/sbin', '@THIS_COLLECT_DIR@/sbin']
-
   - name: binutils
     from_source: binutils
     tools_required:
@@ -570,6 +556,21 @@ packages:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/include']
       - args: ['cp', '-r', '--dereference', '@THIS_SOURCE_DIR@/boost',
             '@THIS_COLLECT_DIR@/usr/include']
+
+  - name: core-files
+    from_source: managarm
+    configure: []
+    build:
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc/']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/bin']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/lib']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/sbin']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/passwd', '@THIS_COLLECT_DIR@/etc']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/group', '@THIS_COLLECT_DIR@/etc']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/resolv.conf', '@THIS_COLLECT_DIR@/etc']
+      - args: ['ln', '-svf', 'usr/bin', '@THIS_COLLECT_DIR@/bin']
+      - args: ['ln', '-svf', 'usr/lib', '@THIS_COLLECT_DIR@/lib']
+      - args: ['ln', '-svf', 'usr/sbin', '@THIS_COLLECT_DIR@/sbin']
 
   - name: fafnir
     source:

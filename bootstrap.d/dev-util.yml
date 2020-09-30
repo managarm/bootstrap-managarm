@@ -91,7 +91,6 @@ packages:
 
   - name: pkg-config
     from_source: pkg-config
-    default: false
     tools_required:
       - system-gcc
     pkgs_required:
