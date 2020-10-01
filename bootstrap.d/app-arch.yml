@@ -109,6 +109,7 @@ packages:
       git: 'https://git.tukaani.org/xz.git'
       branch: 'v5.2'
       version: '5.2'
+      disable_shallow_fetch: true
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15

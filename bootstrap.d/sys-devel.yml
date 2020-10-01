@@ -51,6 +51,8 @@ tools:
   - name: host-gettext
     from_source: gettext
     exports_aclocal: true
+    tools_required:
+      - host-bison
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -176,12 +178,9 @@ packages:
         - host-automake-v1.15
         - host-libtool
       regenerate:
-        - args: |
-              if ! [ -d gnulib ]; then
-                  git clone git://git.sv.gnu.org/gnulib.git gnulib
-              else
-                  git -C gnulib pull --unshallow || true
-              fi
+        # Pull a new bootstrap file that is actually competent, because the original bootstrap only checks out the last 365 days of gnulib, which ain't enough for us
+        - args: ['wget', '-O', '@THIS_SOURCE_DIR@/bootstrap', 'https://raw.githubusercontent.com/gnulib-modules/bootstrap/3ee70612fc5e54384f39669c970714217cd5c476/bootstrap']
+        - args: ['chmod', '0755', '@THIS_SOURCE_DIR@/bootstrap']
         - args: ['./bootstrap']
         - args: ['cp',
             '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
