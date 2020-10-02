@@ -280,7 +280,7 @@ tools:
     source:
       name: libtool
       subdir: 'ports'
-      git: 'https://git.savannah.gnu.org/r/libtool.git'
+      git: 'https://git.savannah.gnu.org/git/libtool.git'
       tag: 'v2.4.5'
       version: '2.4.5'
       tools_required:
