@@ -30,8 +30,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.gnome.org/GNOME/glib'
-      tag: '2.59.2'
-      version: '2.59.2'
+      tag: '2.66.1'
+      version: '2.66.1'
     tools_required:
       - system-gcc
       - host-libtool

@@ -180,8 +180,8 @@ packages:
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/grep.git'
-      tag: 'v3.4-almost'
-      version: '3.4'
+      tag: 'v3.5'
+      version: '3.5'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
