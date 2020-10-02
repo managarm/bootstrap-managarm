@@ -25,6 +25,7 @@ packages:
       - iana-etc
       - diffutils
       - xz-utils
+      - findutils
     configure: []
     build: []
 

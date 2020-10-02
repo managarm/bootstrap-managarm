@@ -115,7 +115,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: findutils
-    default: false
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/findutils.git'
@@ -144,6 +143,11 @@ packages:
         - '--localstatedir=/var/lib/locate'
         environ:  
           'PYTHON': '@BUILD_ROOT@/tools/host-python/bin/python3'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: gawk
     source:
