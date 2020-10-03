@@ -27,7 +27,7 @@ packages:
   - name: coreutils
     source:
       subdir: 'ports'
-      git: 'https://git.savannah.gnu.org/r/coreutils.git'
+      git: 'https://git.savannah.gnu.org/git/coreutils.git'
       tag: 'v8.32'
       version: '8.32'
       tools_required:
@@ -122,7 +122,7 @@ packages:
       version: '4.7.0'
       tools_required:
         - host-autoconf-v2.69
-        - host-automake-v1.11
+        - host-automake-v1.15
         - host-libtool
         - host-pkg-config
       regenerate:
