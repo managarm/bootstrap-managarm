@@ -1,24 +1,23 @@
-From 1f053ad7e7d8357bc20e2a655dec20fda66ab488 Mon Sep 17 00:00:00 2001
+From 341e9eb2c3492332d6cb10033ea5c1b08bd98b2b Mon Sep 17 00:00:00 2001
 From: Dennisbonke <admin@dennisbonke.com>
-Date: Sun, 3 May 2020 14:40:11 +0200
-Subject: [PATCH] Various fixes for managarm support
+Date: Fri, 2 Oct 2020 16:55:29 +0200
+Subject: [PATCH] Various fixes for Managarm support
 
+Signed-off-by: Dennisbonke <admin@dennisbonke.com>
 ---
- gio/gnetworking.h.in       | 2 ++
- gio/gsocket.c              | 6 ++++++
- gio/gthreadedresolver.c    | 7 +++++--
- gio/meson.build            | 4 ++--
- gio/xdgmime/xdgmimecache.c | 2 +-
- glib/glib-init.c           | 1 +
- glib/gstrfuncs.c           | 1 +
- meson.build                | 1 -
- 8 files changed, 18 insertions(+), 6 deletions(-)
+ gio/gnetworking.h.in    | 2 ++
+ gio/gthreadedresolver.c | 2 +-
+ gio/meson.build         | 4 ++--
+ glib/glib-init.c        | 1 +
+ glib/gstrfuncs.c        | 1 +
+ meson.build             | 1 -
+ 6 files changed, 7 insertions(+), 4 deletions(-)
 
 diff --git a/gio/gnetworking.h.in b/gio/gnetworking.h.in
-index f9582b9..643820b 100644
+index 2fa95ff65..1536318bc 100644
 --- a/gio/gnetworking.h.in
 +++ b/gio/gnetworking.h.in
-@@ -47,7 +47,9 @@
+@@ -43,7 +43,9 @@
  #include <net/if.h>
  
  #include <arpa/inet.h>
@@ -28,41 +27,24 @@ index f9582b9..643820b 100644
  @NAMESER_COMPAT_INCLUDE@
  
  #ifndef T_SRV
-diff --git a/gio/gsocket.c b/gio/gsocket.c
-index b1db8e6..aa4ba56 100644
---- a/gio/gsocket.c
-+++ b/gio/gsocket.c
-@@ -80,6 +80,12 @@
- #include "gwin32networking.h"
- #endif
- 
-+#if defined(__managarm__)
-+#ifndef SO_NREAD
-+#define SO_NREAD 0
-+#endif
-+#endif
-+
- /**
-  * SECTION:gsocket
-  * @short_description: Low-level socket object
 diff --git a/gio/gthreadedresolver.c b/gio/gthreadedresolver.c
-index a6dd35c..c490777 100644
+index d170c73a9..53163e50e 100644
 --- a/gio/gthreadedresolver.c
 +++ b/gio/gthreadedresolver.c
-@@ -371,7 +371,7 @@ lookup_by_address_finish (GResolver     *resolver,
+@@ -394,7 +394,7 @@ lookup_by_address_finish (GResolver     *resolver,
  
  #if defined(G_OS_UNIX)
  
 -#if defined __BIONIC__ && !defined BIND_4_COMPAT
-+#if (defined(__BIONIC__) || defined(__managarm__)) && !defined BIND_4_COMPAT
++#if (defined __BIONIC__ || defined (__managarm__)) && !defined BIND_4_COMPAT
  /* Copy from bionic/libc/private/arpa_nameser_compat.h
   * and bionic/libc/private/arpa_nameser.h */
  typedef struct {
 diff --git a/gio/meson.build b/gio/meson.build
-index d7f4f3f..118a386 100644
+index 40a9ca6d0..8d5366a51 100644
 --- a/gio/meson.build
 +++ b/gio/meson.build
-@@ -32,7 +32,7 @@ elif not host_system.contains('android')
+@@ -26,7 +26,7 @@ if host_system != 'windows' and not host_system.contains('android')
                     name : 'arpa/nameser_compat.h needed for C_IN')
        gnetworking_h_nameser_compat_include = '#include <arpa/nameser_compat.h>'
      else
@@ -71,7 +53,7 @@ index d7f4f3f..118a386 100644
      endif
    endif
  endif
-@@ -57,7 +57,7 @@ if host_system != 'windows'
+@@ -51,7 +51,7 @@ if host_system != 'windows'
        network_libs += [ cc.find_library('bind') ]
        network_args += [ '-lbind' ]
      else
@@ -80,21 +62,8 @@ index d7f4f3f..118a386 100644
      endif
    endif
  
-diff --git a/gio/xdgmime/xdgmimecache.c b/gio/xdgmime/xdgmimecache.c
-index 8010f9e..e464bc5 100644
---- a/gio/xdgmime/xdgmimecache.c
-+++ b/gio/xdgmime/xdgmimecache.c
-@@ -34,7 +34,7 @@
- #include <fnmatch.h>
- #include <assert.h>
- 
--#include <netinet/in.h> /* for ntohl/ntohs */
-+#include <arpa/inet.h> /* for ntohl/ntohs */
- 
- #ifdef HAVE_MMAP
- #include <sys/mman.h>
 diff --git a/glib/glib-init.c b/glib/glib-init.c
-index 6ffe793..5b3a290 100644
+index ed800dca1..df69dfff2 100644
 --- a/glib/glib-init.c
 +++ b/glib/glib-init.c
 @@ -27,6 +27,7 @@
@@ -106,7 +75,7 @@ index 6ffe793..5b3a290 100644
  #include <stdio.h>
  #include <ctype.h>
 diff --git a/glib/gstrfuncs.c b/glib/gstrfuncs.c
-index 756dbc5..9ec36e6 100644
+index 01f4fe3a8..4e6c7948a 100644
 --- a/glib/gstrfuncs.c
 +++ b/glib/gstrfuncs.c
 @@ -33,6 +33,7 @@
@@ -116,19 +85,19 @@ index 756dbc5..9ec36e6 100644
 +#include <strings.h>
  #include <locale.h>
  #include <errno.h>
- #include <ctype.h>              /* For tolower() */
+ #include <garray.h>
 diff --git a/meson.build b/meson.build
-index 98907ca..e0983a3 100644
+index 47f3a5cf1..4d6654d8a 100644
 --- a/meson.build
 +++ b/meson.build
-@@ -360,7 +360,6 @@ if cc.get_id() == 'gcc' or cc.get_id() == 'clang'
-     # https://wiki.gnome.org/Projects/GLib/CompilerRequirements#Function_pointer_conversions.
-     '-Wno-pedantic',
+@@ -426,7 +426,6 @@ if cc.get_id() == 'gcc' or cc.get_id() == 'clang'
+     # A zero-length format string shouldn't be considered an issue.
+     '-Wno-format-zero-length',
      '-Werror=declaration-after-statement',
 -    '-Werror=format=2',
      '-Werror=implicit-function-declaration',
      '-Werror=init-self',
      '-Werror=missing-include-dirs',
 -- 
-2.26.2
+2.28.0
 

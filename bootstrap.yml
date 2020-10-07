@@ -741,36 +741,6 @@ packages:
         - 'AS=x86_64-managarm-as'
         - 'install'
 
-  - name: libpng
-    source:
-      subdir: 'ports'
-      git: 'https://git.code.sf.net/p/libpng/code'
-      tag: 'v1.6.34'
-      version: '1.6.34'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
-        - host-libtool
-      regenerate:
-        - args: ['git', 'clean', '-xf', '-e', '*.xbstrap']
-        - args: ['./autogen.sh']
-    tools_required:
-      - system-gcc
-    pkgs_required:
-      - zlib
-    configure:
-      - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
-        - '--prefix=/usr'
-        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
-    build:
-      - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'install']
-        environ:
-          DESTDIR: '@THIS_COLLECT_DIR@'
-        quiet: true
-
   - name: libressl
     source:
       subdir: 'ports'
@@ -819,39 +789,6 @@ packages:
         - 'LD=x86_64-managarm-ld'
         - 'AS=x86_64-managarm-as'
         - 'install'
-
-  - name: libxkbcommon
-    source:
-      subdir: 'ports'
-      git: 'https://github.com/xkbcommon/libxkbcommon.git'
-      tag: 'xkbcommon-0.8.0'
-      version: '0.8.0'
-    tools_required:
-      - host-pkg-config
-      - system-gcc
-      - wayland-scanner
-      - virtual: pkgconfig-for-target
-        triple: x86_64-managarm
-    pkgs_required:
-      - wayland
-      - wayland-protocols
-    configure:
-      - args:
-        - 'meson'
-        - '--cross-file'
-        - '@SOURCE_ROOT@/scripts/meson.cross-file'
-        - '--prefix=/usr'
-        - '--libdir=lib'
-        - '--buildtype=debugoptimized'
-        - '-Denable-x11=false'
-        - '-Denable-docs=false'
-        - '@THIS_SOURCE_DIR@'
-    build:
-      - args: ['ninja']
-      - args: ['ninja', 'install']
-        environ:
-          DESTDIR: '@THIS_COLLECT_DIR@'
-        quiet: true
 
   - name: llvm
     from_source: llvm
@@ -1035,38 +972,6 @@ packages:
         quiet: true
       - args: ['ln', '-sf', 'crt0.o', '@THIS_COLLECT_DIR@/usr/lib/crt1.o']
 
-  - name: pixman
-    source:
-      subdir: 'ports'
-      git: 'https://gitlab.freedesktop.org/pixman/pixman.git'
-      tag: 'pixman-0.34.0'
-      version: '0.34.0'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
-        - host-libtool
-        - host-pkg-config
-      regenerate:
-        - args: ['./autogen.sh']
-          environ:
-            'NOCONFIGURE': 'yes'
-    tools_required:
-      - system-gcc
-    pkgs_required:
-      - libpng
-    configure:
-      - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
-        - '--prefix=/usr'
-        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
-    build:
-      - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'install']
-        environ:
-          DESTDIR: '@THIS_COLLECT_DIR@'
-        quiet: true
-
   - name: protobuf
     from_source: protobuf
     tools_required:
@@ -1110,35 +1015,6 @@ packages:
         environ:
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
           PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
-    build:
-      - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'install']
-        environ:
-          DESTDIR: '@THIS_COLLECT_DIR@'
-        quiet: true
-
-  - name: wayland-protocols
-    source:
-      subdir: 'ports'
-      git: 'https://github.com/wayland-project/wayland-protocols.git'
-      tag: '1.18'
-      version: '1.18'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
-        - host-pkg-config
-      regenerate:
-        - args: ['./autogen.sh']
-          environ:
-            'NOCONFIGURE': 'yes'
-    tools_required:
-      - system-gcc
-      - wayland-scanner
-    configure:
-      - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
-        - '--prefix=/usr'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
