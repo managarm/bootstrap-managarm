@@ -15,6 +15,7 @@ RUN apt-get update \
 		gettext \
 		git \
 		gperf \
+		gtk-doc-tools \
 		help2man \
 		itstool \
 		libarchive-dev \
