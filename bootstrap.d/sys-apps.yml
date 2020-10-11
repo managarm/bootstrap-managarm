@@ -212,7 +212,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: groff
-    default: false
+    stability_level: broken
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/groff.git'
@@ -271,7 +271,7 @@ packages:
       - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
 
   - name: man-db
-    default: false
+    stability_level: broken
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/man-db.git'

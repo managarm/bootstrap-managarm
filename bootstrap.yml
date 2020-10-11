@@ -25,6 +25,7 @@ imports:
 general:
     patch_author: The Managarm Project
     patch_email: info@managarm.org
+    everything_by_default: false
 
 repository:
   url: 'https://pkgs.managarm.org/nightly'
@@ -1280,7 +1281,7 @@ packages:
         quiet: true
 
   - name: runit
-    default: false
+    stability_level: broken
     source:
       subdir: ports
       url: 'http://smarden.org/runit/runit-2.1.2.tar.gz'

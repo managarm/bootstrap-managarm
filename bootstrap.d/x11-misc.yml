@@ -29,7 +29,7 @@ tools:
 
 packages:
   - name: shared-mime-info
-    default: false
+    stability_level: broken
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xdg/shared-mime-info.git'
@@ -65,7 +65,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xbitmaps
-    default: false
+    stability_level: broken
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/data/bitmaps.git'

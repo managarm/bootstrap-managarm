@@ -1,6 +1,6 @@
 packages:
   - name: sysklogd
-    default: false
+    stability_level: broken
     source:
       subdir: 'ports'
       git: 'https://github.com/troglobit/sysklogd.git'

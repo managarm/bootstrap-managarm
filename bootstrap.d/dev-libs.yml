@@ -94,7 +94,7 @@ packages:
         quiet: true
 
   - name: icu
-    default: false
+    stability_level: broken
     from_source: icu
     tools_required:
       - system-gcc
@@ -209,7 +209,7 @@ packages:
         quiet: true
 
   - name: libgcrypt
-    default: false
+    stability_level: broken
     source:
       subdir: 'ports'
       git: 'https://github.com/gpg/libgcrypt.git'
@@ -248,7 +248,7 @@ packages:
         quiet: true
 
   - name: libgpg-error
-    default: false
+    stability_level: broken
     source:
       subdir: 'ports'
       git: 'https://github.com/gpg/libgpg-error.git'
@@ -318,7 +318,7 @@ packages:
         quiet: true
 
   - name: libpipeline
-    default: false
+    stability_level: broken
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/libpipeline.git'

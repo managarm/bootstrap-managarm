@@ -61,7 +61,7 @@ packages:
     build: []
 
   - name: perl
-    default: false
+    stability_level: broken
     source:
       subdir: ports
       git: 'https://github.com/Perl/perl5.git'
@@ -141,7 +141,7 @@ packages:
         quiet: true
 
   - name: yasm
-    default: false
+    stability_level: broken
     source:
       subdir: 'ports'
       git: 'https://github.com/yasm/yasm.git'

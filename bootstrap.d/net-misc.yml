@@ -1,6 +1,6 @@
 packages:
   - name: curl
-    default: false
+    stability_level: broken
     source:
       subdir: 'ports'
       git: 'https://github.com/curl/curl.git'
@@ -51,7 +51,7 @@ packages:
       - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
 
   - name: socat
-    default: false
+    stability_level: broken
     source:
       subdir: 'ports'
       git: 'git://repo.or.cz/socat.git'
