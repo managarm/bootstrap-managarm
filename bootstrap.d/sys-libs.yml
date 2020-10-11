@@ -1,6 +1,5 @@
 packages:
   - name: gdbm
-    stability_level: broken
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/gdbm.git'

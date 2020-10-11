@@ -559,6 +559,7 @@ packages:
             '@THIS_COLLECT_DIR@/usr/include']
 
   - name: core-files
+    default: true
     from_source: managarm
     configure: []
     build:
@@ -856,6 +857,7 @@ packages:
         quiet: true
 
   - name: managarm-kernel
+    default: true
     from_source: managarm
     sources_required:
       - frigg
@@ -887,6 +889,7 @@ packages:
         quiet: true
 
   - name: managarm-system
+    default: true
     from_source: managarm
     tools_required:
       - host-llvm-toolchain
@@ -1077,6 +1080,7 @@ packages:
         quiet: true
 
   - name: kmscon
+    default: true
     source:
       subdir: 'ports'
       git: 'https://github.com/dvdhrm/kmscon.git'

@@ -36,6 +36,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: iana-etc
+    default: true
     source:
       subdir: ports
       url: 'http://anduin.linuxfromscratch.org/LFS/iana-etc-2.30.tar.bz2'
