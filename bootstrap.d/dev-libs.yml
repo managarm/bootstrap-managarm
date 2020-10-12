@@ -94,7 +94,6 @@ packages:
         quiet: true
 
   - name: icu
-    stability_level: broken
     from_source: icu
     tools_required:
       - system-gcc
