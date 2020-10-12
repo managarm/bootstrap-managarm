@@ -46,6 +46,7 @@ packages:
       git: 'https://github.com/vim/vim.git'
       tag: 'v8.1.1802'
       version: '8.1.1802'
+      rev: '2'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -74,7 +75,10 @@ packages:
         - '--disable-sysmouse'
         - '--disable-nls'
         - '--with-tlib=ncurses'
+        - '--enable-gui=no'
         environ:
+          ac_cv_small_wchar_t: 'no'
+          ac_cv_func_sigsetjmp: 'no'
           vim_cv_toupper_broken: 'no'
           vim_cv_terminfo: 'yes'
           vim_cv_tgetent: 'zero'
@@ -83,6 +87,8 @@ packages:
           vim_cv_getcwd_broken: 'no'
           vim_cv_stat_ignores_slash: 'no'
           vim_cv_memmove_handles_overlap: 'yes'
+          vim_cv_bcopy_handles_overlap: 'yes'
+          vim_cv_memcpy_handles_overlap: 'yes'
         workdir: '@THIS_BUILD_DIR@/src/'
     build:
       - args: ['make', '-j@PARALLELISM@']
