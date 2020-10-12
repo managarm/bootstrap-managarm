@@ -64,7 +64,6 @@ tools:
 
 packages:
   - name: bc
-    stability_level: broken
     source:
       subdir: 'ports'
       git: 'https://github.com/gavinhoward/bc.git'
