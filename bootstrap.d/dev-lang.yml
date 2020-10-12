@@ -142,7 +142,6 @@ packages:
         quiet: true
 
   - name: yasm
-    stability_level: broken
     source:
       subdir: 'ports'
       git: 'https://github.com/yasm/yasm.git'
@@ -159,11 +158,11 @@ packages:
         - args: ['cp',
             '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
             '@THIS_SOURCE_DIR@/config/']
+        # Autogen.sh configures for the host os, distclean and reconfigure for managarm
+        - args: ['make', '-C', '@THIS_SOURCE_DIR@', 'distclean']
     tools_required:
       - system-gcc
     configure:
-      # Autogen.sh configures for the host os, distclean and reconfigure for managarm
-      - args: ['make', '-C', '@THIS_SOURCE_DIR@', 'distclean']
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
