@@ -65,7 +65,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xbitmaps
-    stability_level: broken
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/data/bitmaps.git'
