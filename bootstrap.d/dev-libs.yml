@@ -247,7 +247,6 @@ packages:
         quiet: true
 
   - name: libgpg-error
-    stability_level: broken
     source:
       subdir: 'ports'
       git: 'https://github.com/gpg/libgpg-error.git'
@@ -259,9 +258,7 @@ packages:
         - host-libtool
       regenerate:
         - args: ['./autogen.sh']
-        - args: ['cp',
-            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
-            '@THIS_SOURCE_DIR@/build-aux/']
+        - args: ['autoreconf', '-f', '-v', '-i']
     tools_required:
       - system-gcc
     configure:
