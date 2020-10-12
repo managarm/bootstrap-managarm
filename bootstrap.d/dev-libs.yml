@@ -314,7 +314,6 @@ packages:
         quiet: true
 
   - name: libpipeline
-    stability_level: broken
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/libpipeline.git'
