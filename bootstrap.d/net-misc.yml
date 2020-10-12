@@ -52,7 +52,6 @@ packages:
       - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
 
   - name: socat
-    stability_level: broken
     source:
       subdir: 'ports'
       git: 'git://repo.or.cz/socat.git'
@@ -70,6 +69,7 @@ packages:
       - virtual: pkgconfig-for-target
         triple: x86_64-managarm
     pkgs_required:
+      - ncurses
       - readline
       - libressl
     configure:
