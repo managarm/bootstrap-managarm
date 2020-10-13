@@ -563,16 +563,30 @@ packages:
     from_source: managarm
     configure: []
     build:
+      # Create initial directories in the system root
+      - args: ['mkdir', '-p', '@SYSROOT_DIR@/bin']
+      - args: ['mkdir', '-p', '@SYSROOT_DIR@/etc']
+      - args: ['mkdir', '-p', '@SYSROOT_DIR@/lib']
+      - args: ['mkdir', '-p', '@SYSROOT_DIR@/run']
+      - args: ['mkdir', '-p', '@SYSROOT_DIR@/root']
+      - args: ['mkdir', '-p', '@SYSROOT_DIR@/usr']
+      - args: ['mkdir', '-p', '@SYSROOT_DIR@/usr/share']
+      - args: ['mkdir', '-p', '@SYSROOT_DIR@/var']
+      # Create directories used to install files into
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc/']
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/bin']
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/lib']
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/sbin']
+      # Install a default passwd, group and resolv.conf
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/passwd', '@THIS_COLLECT_DIR@/etc']
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/group', '@THIS_COLLECT_DIR@/etc']
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/resolv.conf', '@THIS_COLLECT_DIR@/etc']
+      # Link /bin, /lib and /sbin to their /usr counterparts
       - args: ['ln', '-svf', 'usr/bin', '@THIS_COLLECT_DIR@/bin']
       - args: ['ln', '-svf', 'usr/lib', '@THIS_COLLECT_DIR@/lib']
       - args: ['ln', '-svf', 'usr/sbin', '@THIS_COLLECT_DIR@/sbin']
+      # Create a compatibility symlink for ld.so
+      - args: ['ln', '-svf', '/usr/lib/ld.so', '@SYSROOT_DIR@/lib/ld-init.so']
 
   - name: fafnir
     source:

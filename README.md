@@ -115,10 +115,6 @@ sudo update-libguestfs-appliance
 Hence, running the following commands in the build directory
 should produce a working image and launch it using QEMU:
 ```bash
-# Copy some files (e.g., the timezone configuration) from the host to system-root/.
-# It is sufficient to run this once.
-../src/scripts/prepare-sysroot
-
 # Create a HDD image file called 'image' and copy the system onto it.
 ./image_create.sh image 4GiB ext2 gpt
 ../src/scripts/mkimage
