@@ -1,6 +1,5 @@
 packages:
   - name: sqlite
-    default: false
     source:
       subdir: 'ports'
       url: 'https://sqlite.org/2020/sqlite-autoconf-3310100.tar.gz'

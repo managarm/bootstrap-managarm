@@ -1,6 +1,6 @@
 packages:
   - name: curl
-    default: false
+    stability_level: broken
     source:
       subdir: 'ports'
       git: 'https://github.com/curl/curl.git'
@@ -36,6 +36,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: iana-etc
+    default: true
     source:
       subdir: ports
       url: 'http://anduin.linuxfromscratch.org/LFS/iana-etc-2.30.tar.bz2'
@@ -51,7 +52,6 @@ packages:
       - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
 
   - name: socat
-    default: false
     source:
       subdir: 'ports'
       git: 'git://repo.or.cz/socat.git'
@@ -69,6 +69,7 @@ packages:
       - virtual: pkgconfig-for-target
         triple: x86_64-managarm
     pkgs_required:
+      - ncurses
       - readline
       - libressl
     configure:

@@ -63,7 +63,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
   
   - name: itstool
-    default: false
+    stability_level: broken
     source:
       subdir: ports
       url: 'http://files.itstool.org/itstool/itstool-2.0.6.tar.bz2'

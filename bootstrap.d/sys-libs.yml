@@ -1,6 +1,5 @@
 packages:
   - name: gdbm
-    default: false
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/gdbm.git'

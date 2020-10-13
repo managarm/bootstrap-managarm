@@ -25,6 +25,7 @@ imports:
 general:
     patch_author: The Managarm Project
     patch_email: info@managarm.org
+    everything_by_default: false
 
 repository:
   url: 'https://pkgs.managarm.org/nightly'
@@ -558,6 +559,7 @@ packages:
             '@THIS_COLLECT_DIR@/usr/include']
 
   - name: core-files
+    default: true
     from_source: managarm
     configure: []
     build:
@@ -855,6 +857,7 @@ packages:
         quiet: true
 
   - name: managarm-kernel
+    default: true
     from_source: managarm
     sources_required:
       - frigg
@@ -886,6 +889,7 @@ packages:
         quiet: true
 
   - name: managarm-system
+    default: true
     from_source: managarm
     tools_required:
       - host-llvm-toolchain
@@ -1076,6 +1080,7 @@ packages:
         quiet: true
 
   - name: kmscon
+    default: true
     source:
       subdir: 'ports'
       git: 'https://github.com/dvdhrm/kmscon.git'
@@ -1280,7 +1285,7 @@ packages:
         quiet: true
 
   - name: runit
-    default: false
+    stability_level: broken
     source:
       subdir: ports
       url: 'http://smarden.org/runit/runit-2.1.2.tar.gz'

@@ -64,7 +64,6 @@ tools:
 
 packages:
   - name: bc
-    default: false
     source:
       subdir: 'ports'
       git: 'https://github.com/gavinhoward/bc.git'
@@ -87,7 +86,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: bison
-    default: false
+    stability_level: broken
     from_source: bison
     tools_required:
       - system-gcc
@@ -107,7 +106,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: flex
-    default: false
+    stability_level: broken
     source:
       subdir: 'ports'
       git: 'https://github.com/westes/flex.git'
@@ -140,7 +139,7 @@ packages:
 
   - name: gettext
     from_source: gettext
-    default: false
+    stability_level: broken
     tools_required:
       - system-gcc
       - host-autoconf-v2.69

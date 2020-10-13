@@ -94,7 +94,6 @@ packages:
         quiet: true
 
   - name: icu
-    default: false
     from_source: icu
     tools_required:
       - system-gcc
@@ -209,7 +208,7 @@ packages:
         quiet: true
 
   - name: libgcrypt
-    default: false
+    stability_level: broken
     source:
       subdir: 'ports'
       git: 'https://github.com/gpg/libgcrypt.git'
@@ -248,7 +247,6 @@ packages:
         quiet: true
 
   - name: libgpg-error
-    default: false
     source:
       subdir: 'ports'
       git: 'https://github.com/gpg/libgpg-error.git'
@@ -260,9 +258,7 @@ packages:
         - host-libtool
       regenerate:
         - args: ['./autogen.sh']
-        - args: ['cp',
-            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
-            '@THIS_SOURCE_DIR@/build-aux/']
+        - args: ['autoreconf', '-f', '-v', '-i']
     tools_required:
       - system-gcc
     configure:
@@ -318,7 +314,6 @@ packages:
         quiet: true
 
   - name: libpipeline
-    default: false
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/libpipeline.git'
