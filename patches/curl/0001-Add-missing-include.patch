@@ -1,0 +1,25 @@
+From 69cd27e6f4c382b1bc28a8a7690c66b2907688f7 Mon Sep 17 00:00:00 2001
+From: Dennisbonke <admin@dennisbonke.com>
+Date: Fri, 25 Sep 2020 20:37:58 +0200
+Subject: [PATCH] Add missing include
+
+Signed-off-by: Dennisbonke <admin@dennisbonke.com>
+---
+ lib/curl_setup.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/lib/curl_setup.h b/lib/curl_setup.h
+index 56e6db83c..bcd296a13 100644
+--- a/lib/curl_setup.h
++++ b/lib/curl_setup.h
+@@ -155,6 +155,7 @@
+ /* ================================================================ */
+ 
+ #include <curl/curl.h>
++#include <sys/select.h>
+ 
+ #define CURL_SIZEOF_CURL_OFF_T SIZEOF_CURL_OFF_T
+ 
+-- 
+2.28.0
+

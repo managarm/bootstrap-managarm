@@ -5,3 +5,9 @@ jobs:
     packages:
       - mlibc
       - mlibc-headers
+
+  - name: icu
+    tools:
+      - host-icu
+    packages:
+      - icu

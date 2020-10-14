@@ -15,6 +15,7 @@ RUN apt-get update \
 		gettext \
 		git \
 		gperf \
+		groff \
 		gtk-doc-tools \
 		help2man \
 		itstool \

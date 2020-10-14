@@ -1151,6 +1151,7 @@ packages:
       - libx11
       - libxtrans
       - libxext
+      - harfbuzz
     configure:
       - args:
         - 'meson'

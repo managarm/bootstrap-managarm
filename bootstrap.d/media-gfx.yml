@@ -9,6 +9,8 @@ packages:
       - system-gcc
       - host-python
       - host-cmake
+    pkgs_required:
+      - gcc
     configure:
       - args:
         - 'cmake'
