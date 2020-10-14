@@ -61,7 +61,6 @@ packages:
     build: []
 
   - name: perl
-    stability_level: broken
     source:
       subdir: ports
       git: 'https://github.com/Perl/perl5.git'
@@ -76,7 +75,7 @@ packages:
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
-        - './configure'
+        - '@THIS_BUILD_DIR@//configure'
         - '--mode=cross'
         - '--target=x86_64-managarm'
         - '--targetarch=x86_64-managarm'
