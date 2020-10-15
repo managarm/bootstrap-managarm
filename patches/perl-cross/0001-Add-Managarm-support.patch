@@ -1,4 +1,4 @@
-From 6c5ad24f49508737a13b9cf8ec2dbfef5beb1ec0 Mon Sep 17 00:00:00 2001
+From 8cd17a47aee8a1d23e69a071fbc67645a791c090 Mon Sep 17 00:00:00 2001
 From: Dennisbonke <admin@dennisbonke.com>
 Date: Sat, 16 May 2020 15:23:25 +0200
 Subject: [PATCH] Add Managarm support
@@ -7,8 +7,8 @@ Signed-off-by: Dennisbonke <admin@dennisbonke.com>
 ---
  cnf/config.sub        |  2 +-
  cnf/configure_tool.sh |  4 ++++
- cnf/hints/managarm    | 21 +++++++++++++++++++++
- 3 files changed, 26 insertions(+), 1 deletion(-)
+ cnf/hints/managarm    | 27 +++++++++++++++++++++++++++
+ 3 files changed, 32 insertions(+), 1 deletion(-)
  create mode 100644 cnf/hints/managarm
 
 diff --git a/cnf/config.sub b/cnf/config.sub
@@ -41,10 +41,10 @@ index 32201c0..dca8110 100644
  			;;
 diff --git a/cnf/hints/managarm b/cnf/hints/managarm
 new file mode 100644
-index 0000000..5750100
+index 0000000..138c5d0
 --- /dev/null
 +++ b/cnf/hints/managarm
-@@ -0,0 +1,21 @@
+@@ -0,0 +1,27 @@
 +# Managarm syscalls
 +d_voidsig='define'
 +d_nanosleep='define'
@@ -66,6 +66,12 @@ index 0000000..5750100
 +st_ino_size=8
 +
 +d_fcntl_can_lock='define'
++
++# Define as missing to disable locale bullshit
++d_setlocale='undef'
++
++# Currently bugged with perl, so we say we don't have this and siglongjmp
++d_sigsetjmp='undef'
 -- 
-2.26.2
+2.28.0
 

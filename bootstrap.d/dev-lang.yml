@@ -75,13 +75,14 @@ packages:
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
-        - '@THIS_BUILD_DIR@//configure'
+        - '@THIS_BUILD_DIR@/configure'
         - '--mode=cross'
         - '--target=x86_64-managarm'
         - '--targetarch=x86_64-managarm'
         - '--target-tools-prefix=x86_64-managarm-'
         - '--prefix=/usr'
-        - '-Dusethreads'
+        # Disabled threading functionality for now
+        #- '-Dusethreads'
         - '-Dvendorprefix=/usr'
         - '-Dman1dir=/usr/share/man/man1'
         - '-Dman3dir=/usr/share/man/man3'
