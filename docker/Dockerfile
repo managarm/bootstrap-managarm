@@ -21,6 +21,7 @@ RUN apt-get update \
 		itstool \
 		libarchive-dev \
 		libexpat1-dev \
+		libglib2.0-dev-bin \
 		libgmp-dev \
 		libmpc-dev \
 		libmpfr-dev \
