@@ -318,6 +318,8 @@ packages:
       subdir: 'ports'
       git: 'https://github.com/qookei/mini-lspci.git'
       branch: 'master'
+      regenerate:
+        - args: ['wget', '-O', '@THIS_SOURCE_DIR@/pci.ids', 'https://raw.githubusercontent.com/pciutils/pciids/master/pci.ids']
     tools_required:
       - system-gcc
     configure:
@@ -335,7 +337,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/share/hwdata/']
-      - args: ['wget', '-O', '@THIS_COLLECT_DIR@/usr/share/hwdata/pci.ids', 'https://raw.githubusercontent.com/pciutils/pciids/master/pci.ids']
+      - args: ['cp', '-f', '@THIS_SOURCE_DIR@/pci.ids', '@THIS_COLLECT_DIR@/usr/share/hwdata/pci.ids']
 
   - name: sed
     source:
