@@ -49,6 +49,11 @@ sources:
     git: 'https://github.com/managarm/cralgo.git'
     branch: 'master'
 
+  - name: cxxshim
+    subdir: 'ports'
+    git: 'https://github.com/managarm/cxxshim.git'
+    branch: 'master'
+
   - name: lai
     subdir: 'ports'
     git: 'https://github.com/qword-os/lai.git'
@@ -612,14 +617,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
-  - name: cxxshim
-    source:
-      subdir: 'ports'
-      git: 'https://github.com/managarm/cxxshim.git'
-      branch: 'master'
-    configure: []
-    build: []
-
   - name: frigg
     source:
       subdir: 'ports'
@@ -882,7 +879,6 @@ packages:
       - host-protoc
       - kernel-gcc
     pkgs_required:
-      - cxxshim
       - frigg
     configure:
       - args: |
