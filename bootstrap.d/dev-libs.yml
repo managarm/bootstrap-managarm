@@ -77,11 +77,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: glib
-    source:
-      subdir: ports
-      git: 'https://gitlab.gnome.org/GNOME/glib'
-      tag: '2.66.1'
-      version: '2.66.1'
+    from_source: glib
     tools_required:
       - system-gcc
       - host-libtool
