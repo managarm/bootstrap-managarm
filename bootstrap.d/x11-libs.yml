@@ -35,6 +35,7 @@ packages:
       git: 'https://gitlab.freedesktop.org/cairo/cairo.git'
       tag: '1.16.0'
       version: '1.16.0'
+      rev: '2'
       tools_required:
         - host-autoconf-v2.64
         - host-automake-v1.11
@@ -56,6 +57,7 @@ packages:
       - libpng
       - pixman
       - libxcb
+      - libx11
     configure:
       - args:
         # For now, we build without glesv2 backend as Weston prefers the image backend.
@@ -63,7 +65,6 @@ packages:
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
         - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
-        - '--disable-xlib'
         environ:
           # freetype-config does not support cross-compilation.
           FREETYPE_CONFIG: 'no'
@@ -1139,6 +1140,7 @@ packages:
     tools_required:
       - host-pkg-config
       - system-gcc
+      - host-glib
       - virtual: pkgconfig-for-target
         triple: x86_64-managarm
     pkgs_required:
@@ -1152,6 +1154,7 @@ packages:
       - libxtrans
       - libxext
       - harfbuzz
+      - libxft
     configure:
       - args:
         - 'meson'

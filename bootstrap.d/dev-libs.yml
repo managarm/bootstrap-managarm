@@ -1,4 +1,10 @@
 sources:
+  - name: glib
+    subdir: ports
+    git: 'https://gitlab.gnome.org/GNOME/glib'
+    tag: '2.66.1'
+    version: '2.66.1'
+
   - name: icu
     subdir: 'ports'
     git: 'https://github.com/unicode-org/icu.git'
@@ -14,6 +20,19 @@ sources:
           '@THIS_SOURCE_DIR@/icu4c/source']
 
 tools:
+  - name: host-glib
+    exports_aclocal: true
+    from_source: glib
+    configure:
+      - args:
+        - 'meson'
+        - '--prefix=@PREFIX@'
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
+
   - name: host-icu
     from_source: icu
     configure:
