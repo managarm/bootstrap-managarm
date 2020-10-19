@@ -58,6 +58,7 @@ packages:
       - pixman
       - libxcb
       - libx11
+      - libxext
     configure:
       - args:
         # For now, we build without glesv2 backend as Weston prefers the image backend.
