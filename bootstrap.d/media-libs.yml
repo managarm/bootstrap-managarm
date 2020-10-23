@@ -186,6 +186,7 @@ packages:
     tools_required:
       - system-gcc
       - host-pkg-config
+      - host-autoconf-v2.69
       - virtual: pkgconfig-for-target
         triple: x86_64-managarm
     pkgs_required:

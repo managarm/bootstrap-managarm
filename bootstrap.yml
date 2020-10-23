@@ -569,17 +569,13 @@ packages:
     from_source: managarm
     configure: []
     build:
-      # Create initial directories in the system root
-      - args: ['mkdir', '-p', '@SYSROOT_DIR@/bin']
-      - args: ['mkdir', '-p', '@SYSROOT_DIR@/etc']
-      - args: ['mkdir', '-p', '@SYSROOT_DIR@/lib']
-      - args: ['mkdir', '-p', '@SYSROOT_DIR@/run']
-      - args: ['mkdir', '-p', '@SYSROOT_DIR@/root']
-      - args: ['mkdir', '-p', '@SYSROOT_DIR@/usr']
-      - args: ['mkdir', '-p', '@SYSROOT_DIR@/usr/share']
-      - args: ['mkdir', '-p', '@SYSROOT_DIR@/var']
-      # Create directories used to install files into
-      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc/']
+      # Create initial directories
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/run']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/root']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/share']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/var']
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/bin']
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/lib']
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/sbin']
@@ -592,7 +588,7 @@ packages:
       - args: ['ln', '-svf', 'usr/lib', '@THIS_COLLECT_DIR@/lib']
       - args: ['ln', '-svf', 'usr/sbin', '@THIS_COLLECT_DIR@/sbin']
       # Create a compatibility symlink for ld.so
-      - args: ['ln', '-svf', '/usr/lib/ld.so', '@SYSROOT_DIR@/lib/ld-init.so']
+      - args: ['ln', '-svf', '/usr/lib/ld.so', '@THIS_COLLECT_DIR@/lib/ld-init.so']
 
   - name: fafnir
     source:
