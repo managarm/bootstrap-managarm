@@ -1,7 +1,7 @@
-From 044cfc7d2c8d8efc93c6e50d7543b1dc9e165a63 Mon Sep 17 00:00:00 2001
+From e8bb2ed1b234b2fabd6fc0773c6a2da5c165268b Mon Sep 17 00:00:00 2001
 From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
 Date: Wed, 29 Jun 2016 09:28:28 +0000
-Subject: [PATCH 2/2] Managarm target
+Subject: [PATCH] Managarm target
 
 TODO: Use libtoolize instead of modifying in-tree libtool?
 ---
@@ -22,7 +22,7 @@ TODO: Use libtoolize instead of modifying in-tree libtool?
  create mode 100644 gcc/config/managarm.h
 
 diff --git a/config.sub b/config.sub
-index 75bb6a313..64c314c39 100755
+index a318a468685..63c528a1b00 100755
 --- a/config.sub
 +++ b/config.sub
 @@ -133,7 +133,8 @@ case $1 in
@@ -35,17 +35,17 @@ index 75bb6a313..64c314c39 100755
  			| netbsd*-eabi* | kopensolaris*-gnu* | cloudabi*-eabi* \
  			| storm-chaos* | os2-emx* | rtmk-nova*)
  				basic_machine=$field1
-@@ -1363,7 +1364,8 @@ case $os in
- 	     | powermax* | dnix* | nx6 | nx7 | sei* | dragonfly* \
+@@ -1366,7 +1367,8 @@ case $os in
  	     | skyos* | haiku* | rdos* | toppers* | drops* | es* \
  	     | onefs* | tirtos* | phoenix* | fuchsia* | redox* | bme* \
--	     | midnightbsd* | amdhsa* | unleashed* | emscripten*)
-+	     | midnightbsd* | amdhsa* | unleashed* | emscripten* \
+ 	     | midnightbsd* | amdhsa* | unleashed* | emscripten* | wasi* \
+-	     | nsk* | powerunix)
++	     | nsk* | powerunix \
 +	     | managarm-kernel* | managarm-system*)
  	# Remember, each alternative MUST END IN *, to match a version number.
  		;;
  	qnx*)
-@@ -1402,6 +1404,9 @@ case $os in
+@@ -1405,6 +1407,9 @@ case $os in
  	lynx*)
  		os=lynxos
  		;;
@@ -56,7 +56,7 @@ index 75bb6a313..64c314c39 100755
  		os=`echo "$os" | sed -e 's|mac|macos|'`
  		;;
 diff --git a/fixincludes/mkfixinc.sh b/fixincludes/mkfixinc.sh
-index 0f9648608..5d34be851 100755
+index df90720b716..f8c5be528ca 100755
 --- a/fixincludes/mkfixinc.sh
 +++ b/fixincludes/mkfixinc.sh
 @@ -12,6 +12,7 @@ target=fixinc.sh
@@ -68,10 +68,10 @@ index 0f9648608..5d34be851 100755
      x86_64-*-mingw32* | \
      powerpc-*-eabisim* | \
 diff --git a/gcc/config.gcc b/gcc/config.gcc
-index ddd3b8f4d..9701267b9 100644
+index 6a349965c0a..d1185493cb1 100644
 --- a/gcc/config.gcc
 +++ b/gcc/config.gcc
-@@ -836,6 +836,29 @@ case ${target} in
+@@ -836,6 +836,25 @@ case ${target} in
    target_has_targetcm=yes
    target_has_targetdm=yes
    ;;
@@ -87,10 +87,6 @@ index ddd3b8f4d..9701267b9 100644
 +    tmake_file="${tmake_file} t-slibgcc"
 +    thread_file='posix'
 +    ;;
-+  *-managarm-pc*)
-+    tmake_file="${tmake_file} t-slibgcc"
-+    thread_file='posix'
-+    ;; 
 +  *-managarm-kernel*)
 +    ;;
 +  *)
@@ -101,7 +97,7 @@ index ddd3b8f4d..9701267b9 100644
  *-*-netbsd*)
    tm_p_file="${tm_p_file} netbsd-protos.h"
    tmake_file="t-netbsd t-slibgcc"
-@@ -1780,6 +1799,24 @@ x86_64-*-linux* | x86_64-*-kfreebsd*-gnu)
+@@ -2009,6 +2028,24 @@ x86_64-*-linux* | x86_64-*-kfreebsd*-gnu)
  	done
  	TM_MULTILIB_CONFIG=`echo $TM_MULTILIB_CONFIG | sed 's/^,//'`
  	;;
@@ -128,7 +124,7 @@ index ddd3b8f4d..9701267b9 100644
  	tm_file="dbxcoff.h ${tm_file} i386/unix.h i386/bsd.h i386/gas.h i386/djgpp.h i386/djgpp-stdint.h"
 diff --git a/gcc/config/i386/t-managarm64 b/gcc/config/i386/t-managarm64
 new file mode 100644
-index 000000000..6c26cde10
+index 00000000000..6c26cde10ac
 --- /dev/null
 +++ b/gcc/config/i386/t-managarm64
 @@ -0,0 +1,5 @@
@@ -139,7 +135,7 @@ index 000000000..6c26cde10
 +
 diff --git a/gcc/config/managarm-kernel.h b/gcc/config/managarm-kernel.h
 new file mode 100644
-index 000000000..62bce675a
+index 00000000000..62bce675a0a
 --- /dev/null
 +++ b/gcc/config/managarm-kernel.h
 @@ -0,0 +1,10 @@
@@ -155,7 +151,7 @@ index 000000000..62bce675a
 +
 diff --git a/gcc/config/managarm-system.h b/gcc/config/managarm-system.h
 new file mode 100644
-index 000000000..8a032c995
+index 00000000000..8a032c995e0
 --- /dev/null
 +++ b/gcc/config/managarm-system.h
 @@ -0,0 +1,4 @@
@@ -165,7 +161,7 @@ index 000000000..8a032c995
 +
 diff --git a/gcc/config/managarm.h b/gcc/config/managarm.h
 new file mode 100644
-index 000000000..ef22eeadd
+index 00000000000..8924e090ab9
 --- /dev/null
 +++ b/gcc/config/managarm.h
 @@ -0,0 +1,22 @@
@@ -177,9 +173,9 @@ index 000000000..ef22eeadd
 +#define GNU_USER_LINK_EMULATION64 "elf_x86_64"
 +#define GNU_USER_LINK_EMULATIONX32 "elf32_x86_64"
 +
-+#define GNU_USER_DYNAMIC_LINKER32 "/lib/i386-managarm/rtdl.so"
-+#define GNU_USER_DYNAMIC_LINKER64 "/lib/x86_64-managarm/rtdl.so"
-+#define GNU_USER_DYNAMIC_LINKERX32 "/lib/x86_64-managarm-x32/rtdl.so"
++#define GNU_USER_DYNAMIC_LINKER32 "/lib/i386-managarm/ld.so"
++#define GNU_USER_DYNAMIC_LINKER64 "/lib/x86_64-managarm/ld.so"
++#define GNU_USER_DYNAMIC_LINKERX32 "/lib/x86_64-managarm-x32/ld.so"
 +
 +#undef TARGET_OS_CPP_BUILTINS
 +#define TARGET_OS_CPP_BUILTINS() \
@@ -192,10 +188,10 @@ index 000000000..ef22eeadd
 +	} while(0);
 +
 diff --git a/libgcc/config.host b/libgcc/config.host
-index 91abc84da..9d561a4a7 100644
+index c529cc40f0c..32477f6ce0c 100644
 --- a/libgcc/config.host
 +++ b/libgcc/config.host
-@@ -252,6 +252,11 @@ case ${host} in
+@@ -255,6 +255,11 @@ case ${host} in
      extra_parts="$extra_parts vtv_start.o vtv_end.o vtv_start_preinit.o vtv_end_preinit.o"
    fi
    ;;
@@ -207,7 +203,7 @@ index 91abc84da..9d561a4a7 100644
  *-*-lynxos*)
    tmake_file="$tmake_file t-lynx $cpu_type/t-crtstuff t-crtstuff-pic t-libgcc-pic"
    extra_parts="crtbegin.o crtbeginS.o crtend.o crtendS.o"
-@@ -686,6 +691,10 @@ x86_64-*-linux*)
+@@ -760,6 +765,10 @@ x86_64-*-linux*)
  	tm_file="${tm_file} i386/elf-lib.h"
  	md_unwind_header=i386/linux-unwind.h
  	;;
@@ -219,10 +215,10 @@ index 91abc84da..9d561a4a7 100644
  	extra_parts="$extra_parts crtprec32.o crtprec64.o crtprec80.o crtfastmath.o"
  	tmake_file="${tmake_file} i386/t-crtpc t-crtfm i386/t-crtstuff t-dfprules"
 diff --git a/libstdc++-v3/crossconfig.m4 b/libstdc++-v3/crossconfig.m4
-index 344eec09d..9fe971a39 100644
+index fe182883536..0d7aa56e566 100644
 --- a/libstdc++-v3/crossconfig.m4
 +++ b/libstdc++-v3/crossconfig.m4
-@@ -200,6 +200,13 @@ case "${host}" in
+@@ -192,6 +192,13 @@ case "${host}" in
      AC_CHECK_FUNCS(sockatmark)
      AM_ICONV
      ;;
@@ -237,10 +233,10 @@ index 344eec09d..9fe971a39 100644
      GLIBCXX_CHECK_LINKER_FEATURES
      GLIBCXX_CHECK_MATH_SUPPORT
 diff --git a/libtool.m4 b/libtool.m4
-index 896676288..ace9a37a1 100644
+index e194e899fcf..8cf6c12fbe1 100644
 --- a/libtool.m4
 +++ b/libtool.m4
-@@ -2494,6 +2494,16 @@ linux* | k*bsd*-gnu | kopensolaris*-gnu)
+@@ -2499,6 +2499,16 @@ linux* | k*bsd*-gnu | kopensolaris*-gnu | uclinuxfdpiceabi)
    dynamic_linker='GNU/Linux ld.so'
    ;;
  
@@ -257,7 +253,7 @@ index 896676288..ace9a37a1 100644
  netbsd*)
    version_type=sunos
    need_lib_prefix=no
-@@ -3093,6 +3103,10 @@ linux* | k*bsd*-gnu | kopensolaris*-gnu)
+@@ -3098,6 +3108,10 @@ linux* | k*bsd*-gnu | kopensolaris*-gnu | uclinuxfdpiceabi)
    lt_cv_deplibs_check_method=pass_all
    ;;
  
