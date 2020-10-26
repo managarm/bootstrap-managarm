@@ -1,0 +1,43 @@
+From f463b6c568513cac99735bd316672dd2a2f423be Mon Sep 17 00:00:00 2001
+From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
+Date: Sun, 23 Jun 2019 22:12:09 +0200
+Subject: [PATCH 1/2] Fix libstdc++ in freestanding mode
+
+---
+ libstdc++-v3/include/bits/c++config | 2 +-
+ libstdc++-v3/libsupc++/new_opa.cc   | 6 ++++++
+ 2 files changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/libstdc++-v3/include/bits/c++config b/libstdc++-v3/include/bits/c++config
+index 7a7e78819..a59f318c6 100644
+--- a/libstdc++-v3/include/bits/c++config
++++ b/libstdc++-v3/include/bits/c++config
+@@ -667,7 +667,7 @@ namespace std
+ 
+ // PSTL configuration
+ 
+-#if __cplusplus >= 201703L
++#if __cplusplus >= 201703L && __has_include(<pstl/pstl_config.h>)
+ // Preserved here so we have some idea which version of upstream we've pulled in
+ // #define PSTL_VERSION 104
+ // #define PSTL_VERSION_MAJOR (PSTL_VERSION/100)
+diff --git a/libstdc++-v3/libsupc++/new_opa.cc b/libstdc++-v3/libsupc++/new_opa.cc
+index 0303ecde6..1a566f4d1 100644
+--- a/libstdc++-v3/libsupc++/new_opa.cc
++++ b/libstdc++-v3/libsupc++/new_opa.cc
+@@ -40,6 +40,12 @@ extern "C" void *memalign(std::size_t boundary, std::size_t size);
+ # endif
+ #endif
+ 
++#if !_GLIBCXX_HAVE_ALIGNED_ALLOC && !_GLIBCXX_HAVE__ALIGNED_MALLOC \
++  && !_GLIBCXX_HAVE_POSIX_MEMALIGN && !_GLIBCXX_HAVE_MEMALIGN \
++  && !_GLIBCXX_HOSTED
++extern "C" void *malloc(std::size_t size);
++#endif
++
+ using std::new_handler;
+ using std::bad_alloc;
+ 
+-- 
+2.20.1
+
