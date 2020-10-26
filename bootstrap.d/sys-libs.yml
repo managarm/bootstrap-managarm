@@ -5,6 +5,7 @@ packages:
       git: 'https://git.savannah.gnu.org/git/gdbm.git'
       tag: 'v1.18.1'
       version: '1.18.1'
+      rev: '2'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
