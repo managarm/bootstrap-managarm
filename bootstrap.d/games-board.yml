@@ -7,6 +7,7 @@ packages:
       extract_path: 'ace-1.4'
       patch-path-strip: 1
       version: '1.4'
+      rev: '2'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
