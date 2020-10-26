@@ -855,6 +855,7 @@ packages:
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
         environ:
+          CFLAGS: '-O0 -g -Wall -Wextra -std=c99 -fcommon'
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
           PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
     build:
