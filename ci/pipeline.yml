@@ -11,3 +11,7 @@ jobs:
       - host-icu
     packages:
       - icu
+
+  - name: image
+    tasks:
+      - make-image
