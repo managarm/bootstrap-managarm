@@ -252,10 +252,10 @@ packages:
   - name: less
     source:
       subdir: ports
-      url: 'http://www.greenwoodsoftware.com/less/less-551.tar.gz'
+      url: 'http://www.greenwoodsoftware.com/less/less-563.tar.gz'
       format: 'tar.gz'
-      extract_path: 'less-551'
-      version: '551'
+      extract_path: 'less-563'
+      version: '563'
     tools_required:
       - system-gcc
     pkgs_required:
