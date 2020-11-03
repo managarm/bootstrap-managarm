@@ -4,7 +4,6 @@ set -uxe
 
 scriptdir="$(dirname "$0")"
 
-mntlocal=
 if [ -n "${1:-}" ]; then
 	if [ ! -e "$1" ]; then
 		echo "Directory $dir does not exist"
@@ -18,7 +17,6 @@ else
 	echo "Mounting image to $dir"
 	"$scriptdir/mount"
 	trap '"$scriptdir/umount"' EXIT
-	mntlocal=yes
 fi
 
 # -----------------------------------------------------------------------------
@@ -99,8 +97,3 @@ rsync -a --delete system-root/var/ "$dir/var"
 cp tools/system-gcc/x86_64-managarm/lib64/libgcc_s.so.1 "$dir/usr/lib"
 cp tools/system-gcc/x86_64-managarm/lib64/libstdc++.so.6 "$dir/usr/lib"
 echo " done"
-
-if [ -n "$mntlocal" ]; then
-	"$scriptdir/umount"
-fi
-
