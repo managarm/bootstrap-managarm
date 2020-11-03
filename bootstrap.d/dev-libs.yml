@@ -458,10 +458,10 @@ packages:
   - name : mpfr
     source:
       subdir: 'ports'
-      url: 'https://ftp.gnu.org/gnu/mpfr/mpfr-4.0.2.tar.xz'
+      url: 'https://ftp.gnu.org/gnu/mpfr/mpfr-4.1.0.tar.xz'
       format: 'tar.xz'
-      extract_path: 'mpfr-4.0.2'
-      version: '4.0.2'
+      extract_path: 'mpfr-4.1.0'
+      version: '4.1.0'
       tools_required:
         - host-autoconf-archive
         - host-autoconf-v2.69
