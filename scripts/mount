@@ -1,9 +1,10 @@
 #!/bin/bash
+set -uxe
 
-if [ -n "$USE_LOOPBACK" ];
+if [ -n "${USE_LOOPBACK:-}" ];
 then
 	losetup -Pf --show image > loopback_dev
-	mount $(<loopback_dev)p2 mountpoint/
+	mount "$(cat loopback_dev)"p2 mountpoint/
 else
 	guestmount --pid-file guestfs.pid -a image -m /dev/sda2 mountpoint/
 fi
