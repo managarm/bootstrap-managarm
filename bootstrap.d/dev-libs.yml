@@ -8,8 +8,8 @@ sources:
   - name: icu
     subdir: 'ports'
     git: 'https://github.com/unicode-org/icu.git'
-    tag: 'release-67-1'
-    version: '67.1'
+    tag: 'release-68-1'
+    version: '68.1'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.15
