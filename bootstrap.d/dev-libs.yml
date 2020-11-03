@@ -427,9 +427,9 @@ packages:
   - name : mpc
     source:
       subdir: ports
-      git: 'https://scm.gforge.inria.fr/anonscm/git/mpc/mpc.git'
-      tag: '1.1.0'
-      version: '1.1.0'
+      git: 'https://gitlab.inria.fr/mpc/mpc.git'
+      tag: '1.2.1'
+      version: '1.2.1'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
