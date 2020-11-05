@@ -362,24 +362,6 @@ tools:
             ln -sf $(basename $f) @PREFIX@/bin/$tf
           done
 
-  - name: host-cmake
-    source:
-      name: 'cmake'
-      subdir: 'ports'
-      git: 'https://gitlab.kitware.com/cmake/cmake.git'
-      tag: 'v3.14.5'
-      version: '3.14.5'
-    configure:
-      - args:
-        - '@THIS_SOURCE_DIR@/bootstrap'
-        - '--prefix=@PREFIX@'
-        - '--parallel=@PARALLELISM@'
-    compile:
-      - args: ['make', '-j@PARALLELISM@']
-    install:
-      - args: ['make', 'install']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/scripts/managarm.cmake', '@PREFIX@/share/cmake-3.14/Modules/Platform/']
-
   - name: host-protoc
     exports_shared_libs: true
     from_source: protobuf
