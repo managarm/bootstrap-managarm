@@ -2,14 +2,14 @@ sources:
   - name: glib
     subdir: ports
     git: 'https://gitlab.gnome.org/GNOME/glib'
-    tag: '2.66.1'
-    version: '2.66.1'
+    tag: '2.66.2'
+    version: '2.66.2'
 
   - name: icu
     subdir: 'ports'
     git: 'https://github.com/unicode-org/icu.git'
-    tag: 'release-67-1'
-    version: '67.1'
+    tag: 'release-68-1'
+    version: '68.1'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.15
@@ -427,9 +427,9 @@ packages:
   - name : mpc
     source:
       subdir: ports
-      git: 'https://scm.gforge.inria.fr/anonscm/git/mpc/mpc.git'
-      tag: '1.1.0'
-      version: '1.1.0'
+      git: 'https://gitlab.inria.fr/mpc/mpc.git'
+      tag: '1.2.1'
+      version: '1.2.1'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -458,10 +458,10 @@ packages:
   - name : mpfr
     source:
       subdir: 'ports'
-      url: 'https://ftp.gnu.org/gnu/mpfr/mpfr-4.0.2.tar.xz'
+      url: 'https://ftp.gnu.org/gnu/mpfr/mpfr-4.1.0.tar.xz'
       format: 'tar.xz'
-      extract_path: 'mpfr-4.0.2'
-      version: '4.0.2'
+      extract_path: 'mpfr-4.1.0'
+      version: '4.1.0'
       tools_required:
         - host-autoconf-archive
         - host-autoconf-v2.69
