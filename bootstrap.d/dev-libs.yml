@@ -389,7 +389,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libuv
-    default: false
     source:
       subdir: ports
       git: 'https://github.com/libuv/libuv.git'
