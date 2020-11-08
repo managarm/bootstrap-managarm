@@ -1301,7 +1301,7 @@ packages:
 
       
 tasks:
-  - name: make-useful-image
+  - name: useful-image-dependencies
     pkgs_required:
       - base
       - gui
@@ -1314,7 +1314,7 @@ tasks:
       - managarm-kernel
       - managarm-system
     tasks_required:
-      - task: make-useful-image
+      - task: useful-image-dependencies
         order_only: true
     args:
       - '@SOURCE_ROOT@/scripts/mkimage'
