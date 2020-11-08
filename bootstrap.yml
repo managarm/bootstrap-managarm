@@ -1301,10 +1301,21 @@ packages:
 
       
 tasks:
+  - name: useful-image-dependencies
+    pkgs_required:
+      - base
+      - gui
+    tools_required:
+      - system-gcc
+    args: []
+
   - name: make-image
     pkgs_required:
       - managarm-kernel
       - managarm-system
+    tasks_required:
+      - task: useful-image-dependencies
+        order_only: true
     args:
       - '@SOURCE_ROOT@/scripts/mkimage'
     workdir: '@BUILD_ROOT@'

@@ -14,4 +14,5 @@ jobs:
 
   - name: image
     tasks:
+      - useful-image-dependencies
       - make-image
