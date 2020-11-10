@@ -1307,7 +1307,7 @@ tasks:
       - gui
     tools_required:
       - system-gcc
-    args: ['/usr/bin/true']
+    args: ''
 
   - name: make-image
     pkgs_required:
