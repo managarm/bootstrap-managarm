@@ -1320,6 +1320,15 @@ tasks:
       - '@SOURCE_ROOT@/scripts/mkimage'
     workdir: '@BUILD_ROOT@'
 
+  - name: xz-image
+    tasks_required:
+      - task: make-image
+        order_only: true
+    artifact_files:
+      - name: image.xz
+        path: '@BUILD_ROOT@'
+    args: ['xz', '--fast', '--keep', '@BUILD_ROOT@/image']
+
   - name: qemu
     tasks_required:
       - task: make-image

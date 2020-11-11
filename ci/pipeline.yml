@@ -16,3 +16,4 @@ jobs:
     tasks:
       - useful-image-dependencies
       - make-image
+      - xz-image
