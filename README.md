@@ -93,12 +93,12 @@ Now proceed to the Building paragraph.
 *the build finishes, enter the `build` directory, and proceed as follows.*
 
 After managarm's packages have been built, building a HDD image of the system
-is straightforward. The [image_create.sh](https://gitlab.com/qookei/image_create) script
+is straightforward. The [image_create.sh](https://github.com/qookei/image_create) script
 can be used to create an empty HDD image.
 
 Download the `image_create.sh` script and mark it executable:
 ```bash
-wget 'https://gitlab.com/qookei/image_create/raw/master/image_create.sh'
+wget 'https://raw.githubusercontent.com/qookei/image_create/master/image_create.sh'
 chmod +x image_create.sh
 ```
 
