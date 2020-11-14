@@ -96,6 +96,7 @@ packages:
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
         - '--disable-nls'
+      - args: 'sed -i s/-Werror//g @THIS_BUILD_DIR@/lib/Makefile'
       - args: 'sed -i s/-Werror//g @THIS_BUILD_DIR@/src/Makefile'
     build:
       - args: ['make', '-j@PARALLELISM@']

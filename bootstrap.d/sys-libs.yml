@@ -5,6 +5,7 @@ packages:
       git: 'https://git.savannah.gnu.org/git/gdbm.git'
       tag: 'v1.18.1'
       version: '1.18.1'
+      rev: '2'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -107,9 +108,9 @@ packages:
     default: true
     source:
       subdir: 'ports'
-      url: 'https://data.iana.org/time-zones/releases/tzdata2020a.tar.gz'
+      url: 'https://data.iana.org/time-zones/releases/tzdata2020d.tar.gz'
       format: 'tar.gz'
-      version: '2020a'
+      version: '2020d'
     tools_required:
       - system-gcc
     configure:
@@ -148,12 +149,6 @@ packages:
       - args: ['/usr/sbin/zic', '-L', '/dev/null', '-d', '@THIS_COLLECT_DIR@/usr/share/zoneinfo', '@THIS_BUILD_DIR@/backward']
       - args: ['/usr/sbin/zic', '-L', '/dev/null', '-d', '@THIS_COLLECT_DIR@/usr/share/zoneinfo/posix', '@THIS_BUILD_DIR@/backward']
       - args: ['/usr/sbin/zic', '-L', '@THIS_SOURCE_DIR@/leapseconds', '-d', '@THIS_COLLECT_DIR@/usr/share/zoneinfo/right', '@THIS_BUILD_DIR@/backward']
-      - args: ['/usr/sbin/zic', '-L', '/dev/null', '-d', '@THIS_COLLECT_DIR@/usr/share/zoneinfo', '@THIS_BUILD_DIR@/pacificnew']
-      - args: ['/usr/sbin/zic', '-L', '/dev/null', '-d', '@THIS_COLLECT_DIR@/usr/share/zoneinfo/posix', '@THIS_BUILD_DIR@/pacificnew']
-      - args: ['/usr/sbin/zic', '-L', '@THIS_SOURCE_DIR@/leapseconds', '-d', '@THIS_COLLECT_DIR@/usr/share/zoneinfo/right', '@THIS_BUILD_DIR@/pacificnew']
-      - args: ['/usr/sbin/zic', '-L', '/dev/null', '-d', '@THIS_COLLECT_DIR@/usr/share/zoneinfo', '@THIS_BUILD_DIR@/systemv']
-      - args: ['/usr/sbin/zic', '-L', '/dev/null', '-d', '@THIS_COLLECT_DIR@/usr/share/zoneinfo/posix', '@THIS_BUILD_DIR@/systemv']
-      - args: ['/usr/sbin/zic', '-L', '@THIS_SOURCE_DIR@/leapseconds', '-d', '@THIS_COLLECT_DIR@/usr/share/zoneinfo/right', '@THIS_BUILD_DIR@/systemv']
       # Copy some needed files to their location
       - args: ['cp', '@THIS_BUILD_DIR@/zone.tab', '@THIS_BUILD_DIR@/zone1970.tab', '@THIS_BUILD_DIR@/iso3166.tab', '@THIS_COLLECT_DIR@/usr/share/zoneinfo']
       # Create the posixrules file, POSIX requires daylight saving rules to be in accordance with US rules, thus use New York

@@ -44,10 +44,10 @@ packages:
   - name: freeglut
     source:
       subdir: 'ports'
-      url: 'https://downloads.sourceforge.net/freeglut/freeglut-3.2.1.tar.gz'
-      format: 'tar.gz'
-      extract_path: 'freeglut-3.2.1'
+      git: 'https://github.com/dcnieho/FreeGLUT.git'
+      tag: 'FG_3_2_1'
       version: '3.2.1'
+      rev: '2'
     tools_required:
       - host-cmake
       - system-gcc

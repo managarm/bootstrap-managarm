@@ -1,5 +1,13 @@
 #!/bin/sh
 set -uxe
 case "$1" in
-	prejob|pregraph) cp "$SOURCE_DIR/ci/pipeline.yml" . ;;
+	pregraph)
+		cp "$SOURCE_DIR/ci/pipeline.yml" .
+		;;
+	prejob)
+		cp "$SOURCE_DIR/ci/pipeline.yml" .
+		if [ "${XBBS_JOB:-}" = "batch:image" ]; then
+			xzcat /var/local/image-4gib.xz > image
+		fi
+		;;
 esac

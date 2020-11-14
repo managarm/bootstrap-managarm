@@ -362,24 +362,6 @@ tools:
             ln -sf $(basename $f) @PREFIX@/bin/$tf
           done
 
-  - name: host-cmake
-    source:
-      name: 'cmake'
-      subdir: 'ports'
-      git: 'https://gitlab.kitware.com/cmake/cmake.git'
-      tag: 'v3.14.5'
-      version: '3.14.5'
-    configure:
-      - args:
-        - '@THIS_SOURCE_DIR@/bootstrap'
-        - '--prefix=@PREFIX@'
-        - '--parallel=@PARALLELISM@'
-    compile:
-      - args: ['make', '-j@PARALLELISM@']
-    install:
-      - args: ['make', 'install']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/scripts/managarm.cmake', '@PREFIX@/share/cmake-3.14/Modules/Platform/']
-
   - name: host-protoc
     exports_shared_libs: true
     from_source: protobuf
@@ -855,6 +837,7 @@ packages:
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
         environ:
+          CFLAGS: '-O0 -g -Wall -Wextra -std=c99 -fcommon'
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
           PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
     build:
@@ -1318,13 +1301,33 @@ packages:
 
       
 tasks:
+  - name: useful-image-dependencies
+    pkgs_required:
+      - base
+      - gui
+    tools_required:
+      - system-gcc
+    args: ''
+
   - name: make-image
     pkgs_required:
       - managarm-kernel
       - managarm-system
+    tasks_required:
+      - task: useful-image-dependencies
+        order_only: true
     args:
       - '@SOURCE_ROOT@/scripts/mkimage'
     workdir: '@BUILD_ROOT@'
+
+  - name: xz-image
+    tasks_required:
+      - task: make-image
+        order_only: true
+    artifact_files:
+      - name: image.xz
+        path: '@BUILD_ROOT@'
+    args: ['xz', '--fast', '--keep', '@BUILD_ROOT@/image']
 
   - name: qemu
     tasks_required:

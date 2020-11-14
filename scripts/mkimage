@@ -1,11 +1,10 @@
 #!/bin/bash
 
-set -e
+set -uxe
 
-scriptdir=$(dirname $0)
+scriptdir="$(dirname "$0")"
 
-mntlocal=
-if [ -n "$1" ]; then
+if [ -n "${1:-}" ]; then
 	if [ ! -e "$1" ]; then
 		echo "Directory $dir does not exist"
 		exit 1
@@ -14,10 +13,10 @@ if [ -n "$1" ]; then
 	echo "Copying to existing directory $dir"
 else
 	mkdir -p mountpoint/
-	dir=$(realpath mountpoint/)
+	dir="$(realpath mountpoint/)"
 	echo "Mounting image to $dir"
-	$scriptdir/mount
-	mntlocal=yes
+	"$scriptdir/mount"
+	trap '"$scriptdir/umount"' EXIT
 fi
 
 # -----------------------------------------------------------------------------
@@ -69,36 +68,32 @@ install -s system-root/usr/bin/runsvr initrd/bin/
 install system-root/usr/lib/managarm/server/*.bin initrd/managarm/server/
 
 # Actually build the initrd.
-(cd initrd/ && find * | cpio -o --format newc > ../initrd.cpio)
+(cd initrd/ && find . | cpio -o --format newc > ../initrd.cpio)
 
 # -----------------------------------------------------------------------------
 # Copy files to the image.
 # -----------------------------------------------------------------------------
 
-mkdir -p $dir/boot/managarm
-install -s system-root/usr/managarm/bin/eir-stivale $dir/boot/managarm/
-install -s system-root/usr/managarm/bin/eir-mb1 $dir/boot/managarm/
-install -s system-root/usr/managarm/bin/thor $dir/boot/managarm/
-cp initrd.cpio $dir/boot/managarm/
+mkdir -p "$dir/boot/managarm"
+install -s system-root/usr/managarm/bin/eir-stivale "$dir/boot/managarm/"
+install -s system-root/usr/managarm/bin/eir-mb1 "$dir/boot/managarm/"
+install -s system-root/usr/managarm/bin/thor "$dir/boot/managarm/"
+cp initrd.cpio "$dir/boot/managarm/"
 
 # Copy the sysroot.
-mkdir -p $dir/root $dir/usr/bin $dir/usr/lib $dir/var
-mkdir -p $dir/dev $dir/proc $dir/run $dir/sys $dir/tmp $dir/boot/grub
-rsync -a --delete system-root/bin $dir/bin
-rsync -a --delete system-root/lib $dir/lib
-rsync -a --delete system-root/sbin $dir/sbin
-rsync -a --delete system-root/root/ $dir/root
+mkdir -p "$dir/root" "$dir/usr/bin" "$dir/usr/lib" "$dir/var" \
+	"$dir/dev" "$dir/proc" "$dir/run" "$dir/sys" "$dir/tmp" \
+	"$dir/boot/grub"
+rsync -a --delete system-root/bin "$dir/bin"
+rsync -a --delete system-root/lib "$dir/lib"
+rsync -a --delete system-root/sbin "$dir/sbin"
+rsync -a --delete system-root/root/ "$dir/root"
 echo -n "Updating image via rsync..."
-cp $scriptdir/grub.cfg $dir/boot/grub/
-cp $scriptdir/qloader2.cfg $dir/boot/
-rsync -a --delete system-root/usr/ $dir/usr
-rsync -a --delete system-root/etc/ $dir/etc
-rsync -a --delete system-root/var/ $dir/var
-cp tools/system-gcc/x86_64-managarm/lib64/libgcc_s.so.1 $dir/usr/lib
-cp tools/system-gcc/x86_64-managarm/lib64/libstdc++.so.6 $dir/usr/lib
+cp "$scriptdir/grub.cfg" "$dir/boot/grub/"
+cp "$scriptdir/limine.cfg" "$dir/boot/"
+rsync -a --delete system-root/usr/ "$dir/usr"
+rsync -a --delete system-root/etc/ "$dir/etc"
+rsync -a --delete system-root/var/ "$dir/var"
+cp tools/system-gcc/x86_64-managarm/lib64/libgcc_s.so.1 "$dir/usr/lib"
+cp tools/system-gcc/x86_64-managarm/lib64/libstdc++.so.6 "$dir/usr/lib"
 echo " done"
-
-if ! [ -z $mntlocal ]; then
-	$scriptdir/umount
-fi
-

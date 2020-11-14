@@ -1,6 +1,5 @@
 packages:
   - name: curl
-    stability_level: broken
     source:
       subdir: 'ports'
       git: 'https://github.com/curl/curl.git'

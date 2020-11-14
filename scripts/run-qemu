@@ -42,5 +42,6 @@ args="$args -d guest_errors"
 #args="$args -d cpu_reset"
 #args="$args -d int"
 
-$QEMU $QFLAGS $args
+# shellcheck disable=SC2086
+"$QEMU" $QFLAGS $args
 
