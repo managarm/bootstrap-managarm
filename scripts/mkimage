@@ -68,7 +68,7 @@ install -s system-root/usr/bin/runsvr initrd/bin/
 install system-root/usr/lib/managarm/server/*.bin initrd/managarm/server/
 
 # Actually build the initrd.
-(cd initrd/ && find . | cpio -o --format newc > ../initrd.cpio)
+(cd initrd/ && find . -mindepth 1 | cpio -o --format newc > ../initrd.cpio)
 
 # -----------------------------------------------------------------------------
 # Copy files to the image.
