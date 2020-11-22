@@ -890,6 +890,9 @@ packages:
     pkgs_required:
       - eudev
       - fafnir
+      # This should not be necessary (due to the source dep),
+      # but libarch and managarm-system do not correctly declare all deps in their meson.build.
+      - frigg
       - lewis
       - libasync
       - libdrm
