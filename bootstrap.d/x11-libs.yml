@@ -243,11 +243,11 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libx11.git'
-      tag: 'libX11-1.6.9'
-      version: '1.6.9'
+      tag: 'libX11-1.7.0'
+      version: '1.7.0'
       tools_required:
         - host-autoconf-v2.69
-        - host-automake-v1.11
+        - host-automake-v1.15
         - host-libtool
         - host-pkg-config
         - host-xorg-macros
@@ -723,8 +723,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/xkbcommon/libxkbcommon.git'
-      tag: 'xkbcommon-1.0.1'
-      version: '1.0.1'
+      tag: 'xkbcommon-1.0.2'
+      version: '1.0.2'
     tools_required:
       - host-pkg-config
       - system-gcc

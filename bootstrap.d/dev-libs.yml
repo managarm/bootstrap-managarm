@@ -420,6 +420,7 @@ packages:
       git: 'https://gitlab.gnome.org/GNOME/libxml2.git'
       tag: 'v2.9.10'
       version: '2.9.10'
+      rev: '2'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
