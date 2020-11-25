@@ -1,0 +1,26 @@
+From 0ea955160b8d3929df05e37d59ceb605d5a7b61d Mon Sep 17 00:00:00 2001
+From: Dennisbonke <admin@dennisbonke.com>
+Date: Wed, 25 Nov 2020 00:58:05 +0100
+Subject: [PATCH] Add managarm support.
+
+Signed-off-by: Dennisbonke <admin@dennisbonke.com>
+---
+ xprop.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/xprop.c b/xprop.c
+index 8d60089..261094c 100644
+--- a/xprop.c
++++ b/xprop.c
+@@ -56,6 +56,8 @@ from The Open Group.
+ 
+ #include "dsimple.h"
+ 
++#include <termios.h>
++
+ #define MAXSTR 500000
+ #define MAXELEMENTS 64
+ 
+-- 
+2.29.2
+
