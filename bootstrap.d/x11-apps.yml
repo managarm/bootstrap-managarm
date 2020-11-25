@@ -302,6 +302,42 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: xset
+    source:
+      subdir: ports
+      git: 'https://gitlab.freedesktop.org/xorg/app/xset.git'
+      tag: 'xset-1.2.4'
+      version: '1.2.4'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+        - host-xorg-macros
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - xorg-util-macros
+      - libxmu
+      - libx11
+      - libxext
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--sysconfdir=/etc'
+        - '--localstatedir=/var'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: xwininfo
     source:
       subdir: ports
