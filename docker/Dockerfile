@@ -26,6 +26,7 @@ RUN apt-get update \
 		libmpc-dev \
 		libmpfr-dev \
 		libssl-dev \
+		libtasn1-bin \
 		libpng-dev \
 		libwayland-bin \
 		m4 \
