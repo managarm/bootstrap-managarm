@@ -1,6 +1,7 @@
 imports:
   - file: bootstrap.d/app-admin.yml
   - file: bootstrap.d/app-arch.yml
+  - file: bootstrap.d/app-crypt.yml
   - file: bootstrap.d/app-editors.yml
   - file: bootstrap.d/app-misc.yml
   - file: bootstrap.d/app-shells.yml
