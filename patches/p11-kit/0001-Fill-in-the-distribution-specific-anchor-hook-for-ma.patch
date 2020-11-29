@@ -1,0 +1,41 @@
+From 87ee771ea8fbded06ce575ab3ab59d52f1a0ce4b Mon Sep 17 00:00:00 2001
+From: Dennisbonke <admin@dennisbonke.com>
+Date: Sat, 28 Nov 2020 01:40:57 +0100
+Subject: [PATCH 1/3] Fill in the distribution specific anchor hook for
+ managarm. This code is from Beyond Linux From Scratch, licensed under the MIT license.
+ The original page which has this code can be found here:
+ http://www.linuxfromscratch.org/blfs/view/stable/postlfs/p11-kit.html
+
+Signed-off-by: Dennisbonke <admin@dennisbonke.com>
+---
+ trust/trust-extract-compat.in | 16 ++++------------
+ 1 file changed, 4 insertions(+), 12 deletions(-)
+
+diff --git a/trust/trust-extract-compat.in b/trust/trust-extract-compat.in
+index b1b7a08..34051b3 100755
+--- a/trust/trust-extract-compat.in
++++ b/trust/trust-extract-compat.in
+@@ -17,16 +17,8 @@ if [ "$uid" != 0 ]; then
+         exit 0
+ fi
+ 
+-echo "trust: the placeholder extract-compat command has not been customized by your distribution." >&2
++# Copy existing anchor modifications to /etc/ssl/local
++/usr/libexec/make-ca/copy-trust-modifications
+ 
+-# You can use commands like this to extract data from trust modules
+-# into appropriate locations for your distribution.
+-#
+-# trust extract --format=openssl-bundle --filter=ca-anchors \
+-# 	--overwrite /tmp/openssl-bundle.pem
+-# trust extract --format=pem-bundle --filter=ca-anchors --overwrite \
+-# 	--purpose server-auth /tmp/server-auth-bundle.pem
+-# trust extract --format=java-cacerts --filter=ca-anchors --overwrite \
+-# 	--purpose server-auth /tmp/cacerts
+-
+-exit 1
++# Generate a new trust store
++/usr/sbin/make-ca -f -g
+-- 
+2.29.2
+

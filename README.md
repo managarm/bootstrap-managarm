@@ -64,7 +64,7 @@ Now proceed to the Building paragraph.
 
 1.  Certain programs are required to build managarm;
     here we list the corresponding Debian packages:
-    `build-essential`, `pkg-config`, `autopoint`, `bison`, `curl`, `flex`, `gettext`, `git`, `gperf`, `help2man`, `m4`, `mercurial`, `ninja-build`, `python3-mako`, `python3-yaml`, `texinfo`, `unzip`, `wget`, `xsltproc`, `xz-utils`, `libexpat1-dev`, `rsync`, `python3-pip`, `python3-libxml2`, `netpbm`, `itstool`, `zlib1g-dev`, `libgmp-dev`, `libmpfr-dev`, `libmpc-dev`, `subversion`, `gawk`, `libwayland-bin`, `libpng-dev`, `gtk-doc-tools`, `groff`, `libglib2.0-dev-bin`, `ragel`.
+    `build-essential`, `pkg-config`, `autopoint`, `bison`, `curl`, `flex`, `gettext`, `git`, `gperf`, `help2man`, `m4`, `mercurial`, `ninja-build`, `python3-mako`, `python3-yaml`, `texinfo`, `unzip`, `wget`, `xsltproc`, `xz-utils`, `libexpat1-dev`, `rsync`, `python3-pip`, `python3-libxml2`, `netpbm`, `itstool`, `zlib1g-dev`, `libgmp-dev`, `libmpfr-dev`, `libmpc-dev`, `subversion`, `gawk`, `libwayland-bin`, `libpng-dev`, `gtk-doc-tools`, `groff`, `libglib2.0-dev-bin`, `ragel`, `libtasn1-bin`.
 1.  `meson` is required. There is a Debian package, but as of Debian Stretch, a newer version is required.
     Install it from pip: `pip3 install meson`
 1.  `protobuf` is also required. There is a Debian package, but a newer version is required.

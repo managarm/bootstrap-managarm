@@ -1,0 +1,26 @@
+From 5853afc28df839a47e9068f3abd630ced1480bbe Mon Sep 17 00:00:00 2001
+From: Dennisbonke <admin@dennisbonke.com>
+Date: Sat, 28 Nov 2020 02:54:04 +0100
+Subject: [PATCH 3/3] Fix build failure
+
+Signed-off-by: Dennisbonke <admin@dennisbonke.com>
+---
+ common/unix-peer.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/common/unix-peer.c b/common/unix-peer.c
+index 7fe2eea..b060c53 100644
+--- a/common/unix-peer.c
++++ b/common/unix-peer.c
+@@ -41,7 +41,7 @@
+ #include <sys/socket.h>
+ #include <sys/un.h>
+ #include <sys/uio.h>
+-#include <sys/errno.h>
++#include <errno.h>
+ 
+ #ifdef HAVE_UCRED_H
+ #  include <ucred.h>
+-- 
+2.29.2
+

@@ -388,12 +388,43 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: libtasn
+    source:
+      subdir: ports
+      git: 'https://gitlab.com/gnutls/libtasn1.git'
+      tag: 'libtasn1_4_16_0'
+      version: '4.16.0'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-pkg-config
+        - host-libtool
+      regenerate:
+        - args: ['./bootstrap']
+        - args: ['cp',
+            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
+            '@THIS_SOURCE_DIR@/build-aux/']
+    tools_required:
+      - system-gcc
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--disable-static'
+        - '--disable-doc'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: libuv
     source:
       subdir: ports
       git: 'https://github.com/libuv/libuv.git'
       tag: 'v1.39.0'
-      version: 'v1.39.0'
+      version: '1.39.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15

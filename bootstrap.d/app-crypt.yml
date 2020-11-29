@@ -1,0 +1,37 @@
+packages:
+  - name: p11-kit
+    source:
+      subdir: ports
+      git: 'https://github.com/p11-glue/p11-kit.git'
+      tag: '0.23.21'
+      version: '0.23.21'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-pkg-config
+        - host-libtool
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            NOCONFIGURE: 'yes'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - libffi
+      - libtasn
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--sysconfdir=/etc'
+        - '--with-trust-paths=/etc/pki/anchors'
+        - '--without-systemd'
+        - '--disable-doc-html'
+        - '--disable-nls'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['ln', '-sfv', '/usr/libexec/p11-kit/trust-extract-compat', '@THIS_COLLECT_DIR@/usr/bin/update-ca-certificates']
