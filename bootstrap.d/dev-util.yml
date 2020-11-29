@@ -84,6 +84,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: desktop-file-utils
+    stability_level: unstable
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xdg/desktop-file-utils.git'
