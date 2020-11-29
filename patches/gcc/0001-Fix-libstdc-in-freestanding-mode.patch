@@ -1,4 +1,4 @@
-From f463b6c568513cac99735bd316672dd2a2f423be Mon Sep 17 00:00:00 2001
+From b3ce275f7d669db052849658667fccc0769590b9 Mon Sep 17 00:00:00 2001
 From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
 Date: Sun, 23 Jun 2019 22:12:09 +0200
 Subject: [PATCH 1/2] Fix libstdc++ in freestanding mode
@@ -39,5 +39,5 @@ index 0303ecde6..1a566f4d1 100644
  using std::bad_alloc;
  
 -- 
-2.20.1
+2.29.2
 
