@@ -1,0 +1,26 @@
+From eda0701a10f3dbb50b06461eea2b5aef3657884d Mon Sep 17 00:00:00 2001
+From: Dennisbonke <admin@dennisbonke.com>
+Date: Mon, 30 Nov 2020 11:42:03 +0100
+Subject: [PATCH] Remove test directory as that can't be cross-compiled
+
+Signed-off-by: Dennisbonke <admin@dennisbonke.com>
+---
+ Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile.am b/Makefile.am
+index 6c068fe..142c29f 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -28,7 +28,7 @@ EXTRA_DIST = windows/asn1-parser/asn1-parser.vcproj			\
+ 	CONTRIBUTING.md cfg.mk maint.mk AUTHORS NEWS ChangeLog		\
+ 	THANKS LICENSE
+ 
+-SUBDIRS = lib src fuzz tests
++SUBDIRS = lib src fuzz
+ 
+ if ENABLE_DOC
+ SUBDIRS += doc examples
+-- 
+2.29.2
+
