@@ -84,10 +84,11 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: desktop-file-utils
-    stability_level: unstable
     source:
       subdir: ports
-      git: 'https://gitlab.freedesktop.org/xdg/desktop-file-utils.git'
+      # Freedesktop broke their gitlab, so we use a github mirror
+      git: 'https://github.com/freedesktop/xdg-desktop-file-utils.git'
+      #git: 'https://gitlab.freedesktop.org/xdg/desktop-file-utils.git'
       tag: '0.24'
       version: '0.24'
       tools_required:
