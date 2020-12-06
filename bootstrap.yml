@@ -32,6 +32,10 @@ general:
 repository:
   url: 'https://pkgs.managarm.org/nightly'
 
+declare_options:
+  - name: arch-triple
+    default: x86_64-managarm
+
 sources:
   - name: binutils
     subdir: 'ports'
@@ -323,7 +327,7 @@ tools:
         # We really have to build LLVM in Release mode.
         # Building it in debug mode produces tens of GiB of debugging info.
         - '-DCMAKE_BUILD_TYPE=Release'
-        - '-DLLVM_TARGETS_TO_BUILD=X86'
+        - '-DLLVM_TARGETS_TO_BUILD=X86;AArch64'
         - '-DLLVM_ENABLE_PROJECTS=clang;clang-tools-extra'
 
         # clang configuration options.
@@ -347,7 +351,7 @@ tools:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--prefix=@PREFIX@'
-        - '--target=x86_64-managarm'
+        - '--target=@OPTION:arch-triple@'
         - '--with-sysroot=@SYSROOT_DIR@'
         # On recent compilers, binutils 2.26 causes implicit-fallthrough warnings, among others.
         - '--disable-werror'
@@ -358,8 +362,8 @@ tools:
     install:
       - args: ['make', 'install-binutils', 'install-gas', 'install-ld']
       - args: |
-          for f in @PREFIX@/bin/x86_64-managarm-*; do
-            tf=$(basename $f | sed 's/x86_64-managarm/x86_64-managarm-kernel/')
+          for f in @PREFIX@/bin/@OPTION:arch-triple@-*; do
+            tf=$(basename $f | sed 's/@OPTION:arch-triple@/@OPTION:arch-triple@-kernel/')
             ln -sf $(basename $f) @PREFIX@/bin/$tf
           done
 
@@ -386,7 +390,7 @@ tools:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--prefix=@PREFIX@'
-        - '--target=x86_64-managarm-kernel'
+        - '--target=@OPTION:arch-triple@-kernel'
         - '--with-sysroot=@BUILD_ROOT@/kernel-root'
         - '--enable-languages=c,c++'
         - '--disable-shared'
@@ -408,11 +412,11 @@ tools:
           - args: ['make', 'install-gcc']
           # GCC does *not* look for target-prefixed LD/AS.
           # Instead, it searches a list of prefix directories. Link AS/LD to make it happy.
-          - args: ['mkdir', '-p', '@PREFIX@/x86_64-managarm-kernel/bin']
-          - args: ['ln', '-sf', '../../../cross-binutils/x86_64-managarm/bin/as',
-                               '@PREFIX@/x86_64-managarm-kernel/bin/as']
-          - args: ['ln', '-sf', '../../../cross-binutils/x86_64-managarm/bin/ld',
-                               '@PREFIX@/x86_64-managarm-kernel/bin/ld']
+          - args: ['mkdir', '-p', '@PREFIX@/@OPTION:arch-triple@-kernel/bin']
+          - args: ['ln', '-sf', '../../../cross-binutils/@OPTION:arch-triple@/bin/as',
+                               '@PREFIX@/@OPTION:arch-triple@-kernel/bin/as']
+          - args: ['ln', '-sf', '../../../cross-binutils/@OPTION:arch-triple@/bin/ld',
+                               '@PREFIX@/@OPTION:arch-triple@-kernel/bin/ld']
       - name: libgcc
         tools_required:
           - tool: kernel-gcc
@@ -439,7 +443,7 @@ tools:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--prefix=@PREFIX@'
-        - '--target=x86_64-managarm'
+        - '--target=@OPTION:arch-triple@'
         - '--with-sysroot=@SYSROOT_DIR@'
         - '--enable-languages=c,c++'
         - '--disable-multilib'
@@ -459,11 +463,11 @@ tools:
           - args: ['make', 'install-gcc']
           # GCC does *not* look for target-prefixed LD/AS.
           # Instead, it searches a list of prefix directories. Link AS/LD to make it happy.
-          - args: ['mkdir', '-p', '@PREFIX@/x86_64-managarm/bin']
-          - args: ['ln', '-sf', '../../../cross-binutils/x86_64-managarm/bin/as',
-                               '@PREFIX@/x86_64-managarm/bin/as']
-          - args: ['ln', '-sf', '../../../cross-binutils/x86_64-managarm/bin/ld',
-                               '@PREFIX@/x86_64-managarm/bin/ld']
+          - args: ['mkdir', '-p', '@PREFIX@/@OPTION:arch-triple@/bin']
+          - args: ['ln', '-sf', '../../../cross-binutils/@OPTION:arch-triple@/bin/as',
+                               '@PREFIX@/@OPTION:arch-triple@/bin/as']
+          - args: ['ln', '-sf', '../../../cross-binutils/@OPTION:arch-triple@/bin/ld',
+                               '@PREFIX@/@OPTION:arch-triple@/bin/ld']
       - name: libgcc
         tools_required:
           - tool: system-gcc
@@ -584,7 +588,7 @@ packages:
       - args:
         - 'meson'
         - '--cross-file'
-        - '@SOURCE_ROOT@/scripts/meson.cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
@@ -607,7 +611,7 @@ packages:
       - args:
         - 'meson'
         - '--cross-file'
-        - '@SOURCE_ROOT@/scripts/meson.cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
@@ -699,7 +703,7 @@ packages:
       - args:
         - 'meson'
         - '--cross-file'
-        - '@SOURCE_ROOT@/scripts/meson.cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
@@ -749,7 +753,7 @@ packages:
       - args:
         - 'cmake'
         - '-GNinja'
-        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain.txt'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DLIBRESSL_APPS=OFF'
         - '-DBUILD_SHARED_LIBS=ON'
@@ -794,7 +798,7 @@ packages:
       - args:
         - 'cmake'
         - '-GNinja'
-        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain.txt'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         # We really have to build LLVM in Release mode.
         # Building it in debug mode produces tens of GiB of debugging info.
@@ -862,7 +866,7 @@ packages:
       - frigg
     configure:
       - args: |
-          sed -e 's|_BUILD_ROOT_|@BUILD_ROOT@|' @SOURCE_ROOT@/scripts/meson-kernel.cross-file \
+          sed -e 's|_BUILD_ROOT_|@BUILD_ROOT@|' @SOURCE_ROOT@/scripts/meson-kernel-@OPTION:arch-triple@.cross-file \
               > ./meson-custom.cross-file
       - args:
         - 'meson'
@@ -931,7 +935,7 @@ packages:
       - args:
         - 'meson'
         - '--cross-file'
-        - '@SOURCE_ROOT@/scripts/meson.cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
         - '@THIS_SOURCE_DIR@'
         - '-Dheaders_only=true'
@@ -956,7 +960,7 @@ packages:
       - args:
         - 'meson'
         - '--cross-file'
-        - '@SOURCE_ROOT@/scripts/meson.cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
@@ -1140,7 +1144,7 @@ packages:
       - args:
         - 'cmake'
         - '-GNinja'
-        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain.txt'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DALTIVEC=OFF'
         - '-DDISKAUDIO=OFF'
@@ -1203,7 +1207,7 @@ packages:
       - args:
         - 'meson'
         - '--cross-file'
-        - '@SOURCE_ROOT@/scripts/meson.cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
