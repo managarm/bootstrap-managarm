@@ -271,12 +271,12 @@ packages:
       - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
 
   - name: man-db
-    stability_level: broken
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/man-db.git'
       tag: '2.9.1'
       version: '2.9.1'
+      rev: '2'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -294,13 +294,14 @@ packages:
       - gdbm
       - groff
       - less
+      - libiconv
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
         - '--disable-nls'
-        - '--docdir=/usr/share/doc/man-db-2.9.0'
+        - '--docdir=/usr/share/doc/man-db-2.9.1'
         - '--sysconfdir=/etc'
         - '--disable-setuid'
         - '--with-systemdtmpfilesdir='
@@ -312,6 +313,22 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: man-pages-posix
+    source:
+      subdir: ports
+      url: 'https://mirrors.edge.kernel.org/pub/linux/docs/man-pages/man-pages-posix/man-pages-posix-2017-a.tar.gz'
+      format: 'tar.gz'
+      extract_path: 'man-pages-posix-2017'
+      version: '2017a'
+    tools_required:
+      - system-gcc
+    configure: []
+    build:
+      - args: ['mkdir', '-pv', '@THIS_COLLECT_DIR@/usr/share/man']
+      - args: ['cp', '-rv', '@THIS_SOURCE_DIR@/man0p', '@THIS_COLLECT_DIR@/usr/share/man/']
+      - args: ['cp', '-rv', '@THIS_SOURCE_DIR@/man1p', '@THIS_COLLECT_DIR@/usr/share/man/']
+      - args: ['cp', '-rv', '@THIS_SOURCE_DIR@/man3p', '@THIS_COLLECT_DIR@/usr/share/man/']
 
   - name: mini-lspci
     source:
