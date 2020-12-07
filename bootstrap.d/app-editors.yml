@@ -46,12 +46,14 @@ packages:
       git: 'https://github.com/vim/vim.git'
       tag: 'v8.2.0814'
       version: '8.2.0814'
+      rev: '2'
     tools_required:
       - system-gcc
       - host-pkg-config
       - host-automake-v1.15
     pkgs_required:
       - ncurses
+      - libiconv
     configure:
       # vim does not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead

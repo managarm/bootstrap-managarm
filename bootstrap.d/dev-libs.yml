@@ -4,6 +4,7 @@ sources:
     git: 'https://gitlab.gnome.org/GNOME/glib'
     tag: '2.66.2'
     version: '2.66.2'
+    rev: '2'
 
   - name: icu
     subdir: 'ports'
@@ -87,6 +88,7 @@ packages:
     pkgs_required:
       - pcre
       - libffi
+      - zlib
     configure:
       - args:
         - 'meson'
