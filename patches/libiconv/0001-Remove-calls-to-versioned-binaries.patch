@@ -1,0 +1,50 @@
+From 1e0451005e0f150330390f5440ac52790c1cd502 Mon Sep 17 00:00:00 2001
+From: Dennisbonke <admin@dennisbonke.com>
+Date: Mon, 7 Dec 2020 16:32:04 +0100
+Subject: [PATCH] Remove calls to versioned binaries
+
+Signed-off-by: Dennisbonke <admin@dennisbonke.com>
+---
+ Makefile.devel            | 8 ++++----
+ libcharset/Makefile.devel | 6 +++---
+ 2 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/Makefile.devel b/Makefile.devel
+index 2a5e101..a179aaf 100644
+--- a/Makefile.devel
++++ b/Makefile.devel
+@@ -4,10 +4,10 @@
+ 
+ SHELL = /bin/sh
+ MAKE = make
+-AUTOCONF = autoconf-2.69
+-AUTOHEADER = autoheader-2.69
+-AUTOMAKE = automake-1.16
+-ACLOCAL = aclocal-1.16
++AUTOCONF = autoconf
++AUTOHEADER = autoheader
++AUTOMAKE = automake
++ACLOCAL = aclocal
+ GPERF = gperf
+ CC = gcc -Wall
+ CFLAGS = -O
+diff --git a/libcharset/Makefile.devel b/libcharset/Makefile.devel
+index 04f4c7a..3e0e2ca 100644
+--- a/libcharset/Makefile.devel
++++ b/libcharset/Makefile.devel
+@@ -3,9 +3,9 @@
+ 
+ SHELL = /bin/sh
+ MAKE = make
+-AUTOCONF = autoconf-2.69
+-AUTOHEADER = autoheader-2.69
+-ACLOCAL = aclocal-1.16
++AUTOCONF = autoconf
++AUTOHEADER = autoheader
++ACLOCAL = aclocal
+ CP = cp
+ RM = rm -f
+ 
+-- 
+2.29.2
+
