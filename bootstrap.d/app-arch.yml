@@ -57,9 +57,17 @@ packages:
       git: 'https://github.com/libarchive/libarchive.git'
       tag: 'v3.4.3'
       version: '3.4.3'
+      rev: '2'
     tools_required:
       - host-cmake
       - system-gcc
+    pkgs_required:
+      - libressl
+      - zlib
+      - xz-utils
+      - libiconv
+      - libexpat
+      - libxml
     configure:
       - args:
         - 'cmake'

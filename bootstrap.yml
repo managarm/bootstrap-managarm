@@ -289,8 +289,8 @@ tools:
       name: libtool
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/libtool.git'
-      tag: 'v2.4.5'
-      version: '2.4.5'
+      tag: 'v2.4.6'
+      version: '2.4.6'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1125,6 +1125,7 @@ packages:
       hg: 'https://hg.libsdl.org/SDL'
       tag: 'release-2.0.10'
       version: '2.0.10'
+      rev: '2'
     tools_required:
       - system-gcc
       - host-cmake
@@ -1136,6 +1137,7 @@ packages:
       - mesa
       - wayland
       - wayland-protocols
+      - libiconv
     configure:
       - args:
         - 'cmake'
