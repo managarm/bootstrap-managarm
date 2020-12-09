@@ -1,0 +1,27 @@
+[binaries]
+c = 'clang'
+cpp = 'clang++'
+strip = 'aarch64-none-elf-strip'
+objcopy = 'aarch64-none-elf-objcopy'
+pkgconfig = 'pkgconfig'
+
+[properties]
+needs_exe_wrapper = true
+
+cpp_args = [
+	'-target', 'aarch64-managarm-kernel',
+	'-gcc-toolchain', '_BUILD_ROOT_/tools/kernel-gcc']
+
+c_args = [
+	'-target', 'aarch64-managarm-kernel',
+	'-gcc-toolchain', '_BUILD_ROOT_/tools/kernel-gcc']
+
+cpp_link_args = [
+	'-target', 'aarch64-managarm-kernel',
+	'-gcc-toolchain', '_BUILD_ROOT_/tools/kernel-gcc']
+
+[host_machine]
+system = 'managarm'
+cpu_family = 'aarch64'
+cpu = 'cortex-a72'
+endian = 'little'

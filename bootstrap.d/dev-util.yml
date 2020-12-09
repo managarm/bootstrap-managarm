@@ -76,7 +76,7 @@ packages:
         - '--docdir=/usr/share/doc/cmake-3.18.0'
         - '--parallel=@PARALLELISM@'
         - '--'
-        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain.txt'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
