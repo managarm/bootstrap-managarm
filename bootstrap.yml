@@ -939,6 +939,7 @@ packages:
         - '--prefix=/usr'
         - '@THIS_SOURCE_DIR@'
         - '-Dheaders_only=true'
+        - '-Ddisable_iconv_option=true'
     build:
       - args: ['ninja']
       - args: ['ninja', 'install']
@@ -965,6 +966,7 @@ packages:
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
         - '-Dmlibc_no_headers=true'
+        - '-Ddisable_iconv_option=true'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
