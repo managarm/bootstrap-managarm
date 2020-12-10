@@ -212,7 +212,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: groff
-    stability_level: broken
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/groff.git'
