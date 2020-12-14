@@ -11,6 +11,7 @@ jobs:
             # Note: the default jsonschema is too old.
             #       xbstrap should fix this by demanding a recent version.
             run: |
+                sudo apt-get install jq
                 sudo pip3 install setuptools
                 sudo pip3 install -U jsonschema
                 sudo pip3 install xbstrap
@@ -27,5 +28,7 @@ jobs:
                 cp ../src/ci/pipeline.yml .
                 echo '{"pkg_management": {"format": "xbps"}}' > bootstrap-site.yml
                 xbstrap init ../src
+                xbstrap rolling-versions fetch
+                xbstrap rolling-versions determine --json | jq '{"commits":map_values({"rolling_id":.})}' > ../src/bootstrap-commits.yml
                 xbstrap-pipeline compute-graph --artifact
             working-directory: build/
