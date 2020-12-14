@@ -53,26 +53,36 @@ sources:
     subdir: 'ports'
     git: 'https://github.com/managarm/cralgo.git'
     branch: 'master'
+    rolling_version: true
+    version: '0.0pl@ROLLING_ID@'
 
   - name: cxxshim
     subdir: 'ports'
     git: 'https://github.com/managarm/cxxshim.git'
     branch: 'master'
+    rolling_version: true
+    version: '0.0pl@ROLLING_ID@'
 
   - name: lai
     subdir: 'ports'
     git: 'https://github.com/qword-os/lai.git'
     branch: 'master'
+    rolling_version: true
+    version: '0.0pl@ROLLING_ID@'
 
   - name: libarch
     subdir: 'ports'
     git: 'https://github.com/managarm/libarch.git'
     branch: 'master'
+    rolling_version: true
+    version: '0.0pl@ROLLING_ID@'
 
   - name: bragi
     subdir: 'ports'
     git: 'https://github.com/managarm/bragi.git'
     branch: 'master'
+    rolling_version: true
+    version: '0.0pl@ROLLING_ID@'
 
   - name: llvm
     subdir: 'ports'
@@ -109,6 +119,8 @@ sources:
   - name: managarm
     git: 'https://github.com/managarm/managarm.git'
     branch: 'master'
+    rolling_version: true
+    version: '0.0pl@ROLLING_ID@'
     sources_required:
       - cralgo
       - cxxshim
@@ -134,6 +146,8 @@ sources:
   - name: mlibc
     git: 'https://github.com/managarm/mlibc.git'
     branch: 'master'
+    rolling_version: true
+    version: '0.0pl@ROLLING_ID@'
     sources_required:
       - cxxshim
       - frigg
@@ -694,6 +708,8 @@ packages:
 
   - name: lewis
     source:
+      rolling_version: true
+      version: '0.0pl@ROLLING_ID@'
       subdir: 'ports'
       git: 'https://github.com/managarm/lewis.git'
       branch: 'master'
