@@ -46,7 +46,7 @@ packages:
       git: 'https://github.com/vim/vim.git'
       tag: 'v8.2.0814'
       version: '8.2.0814'
-      rev: '2'
+      revision: '2'
     tools_required:
       - system-gcc
       - host-pkg-config

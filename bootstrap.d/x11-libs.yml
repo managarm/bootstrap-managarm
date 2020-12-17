@@ -35,7 +35,7 @@ packages:
       git: 'https://gitlab.freedesktop.org/cairo/cairo.git'
       tag: '1.16.0'
       version: '1.16.0'
-      rev: '2'
+      revision: '2'
       tools_required:
         - host-autoconf-v2.64
         - host-automake-v1.11

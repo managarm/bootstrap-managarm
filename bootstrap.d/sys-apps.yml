@@ -275,7 +275,7 @@ packages:
       git: 'https://git.savannah.gnu.org/git/man-db.git'
       tag: '2.9.1'
       version: '2.9.1'
-      rev: '2'
+      revision: '2'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
