@@ -1147,7 +1147,6 @@ packages:
       hg: 'https://hg.libsdl.org/SDL'
       tag: 'release-2.0.10'
       version: '2.0.10'
-      revision: '2'
     tools_required:
       - system-gcc
       - host-cmake
@@ -1160,6 +1159,7 @@ packages:
       - wayland
       - wayland-protocols
       - libiconv
+    revision: '2'
     configure:
       - args:
         - 'cmake'

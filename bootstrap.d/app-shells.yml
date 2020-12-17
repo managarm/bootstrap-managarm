@@ -6,7 +6,6 @@ packages:
       git: 'https://git.savannah.gnu.org/git/bash.git'
       tag: 'bash-4.4'
       version: '4.4'
-      revision: '2'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -19,6 +18,7 @@ packages:
     pkgs_required:
       - readline
       - libiconv
+    revision: '2'
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

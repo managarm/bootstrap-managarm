@@ -7,7 +7,6 @@ packages:
       extract_path: 'ace-1.4'
       patch-path-strip: 1
       version: '1.4'
-      revision: '2'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -26,6 +25,7 @@ packages:
       - libx11
       - libxpm
       - zlib
+    revision: '2'
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

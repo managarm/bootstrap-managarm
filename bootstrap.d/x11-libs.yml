@@ -35,7 +35,6 @@ packages:
       git: 'https://gitlab.freedesktop.org/cairo/cairo.git'
       tag: '1.16.0'
       version: '1.16.0'
-      revision: '2'
       tools_required:
         - host-autoconf-v2.64
         - host-automake-v1.11
@@ -59,6 +58,7 @@ packages:
       - libxcb
       - libx11
       - libxext
+    revision: '2'
     configure:
       - args:
         # For now, we build without glesv2 backend as Weston prefers the image backend.

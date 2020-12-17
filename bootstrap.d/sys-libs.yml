@@ -5,7 +5,6 @@ packages:
       git: 'https://git.savannah.gnu.org/git/gdbm.git'
       tag: 'v1.18.1'
       version: '1.18.1'
-      revision: '2'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -14,6 +13,7 @@ packages:
         - args: ['./bootstrap']
     tools_required:
       - system-gcc
+    revision: '2'
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

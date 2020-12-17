@@ -57,7 +57,6 @@ packages:
       git: 'https://github.com/libarchive/libarchive.git'
       tag: 'v3.4.3'
       version: '3.4.3'
-      revision: '2'
     tools_required:
       - host-cmake
       - system-gcc
@@ -68,6 +67,7 @@ packages:
       - libiconv
       - libexpat
       - libxml
+    revision: '2'
     configure:
       - args:
         - 'cmake'
