@@ -1159,7 +1159,7 @@ packages:
       - wayland
       - wayland-protocols
       - libiconv
-    revision: '2'
+    revision: 2
     configure:
       - args:
         - 'cmake'

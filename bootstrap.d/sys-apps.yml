@@ -293,7 +293,7 @@ packages:
       - groff
       - less
       - libiconv
-    revision: '2'
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

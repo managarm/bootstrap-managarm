@@ -112,7 +112,7 @@ packages:
       - libressl
       - xz-utils
       - gdbm
-    revision: '3'
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

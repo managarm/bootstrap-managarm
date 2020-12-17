@@ -53,7 +53,7 @@ packages:
     pkgs_required:
       - ncurses
       - libiconv
-    revision: '2'
+    revision: 2
     configure:
       # vim does not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead

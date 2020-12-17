@@ -89,7 +89,7 @@ packages:
       - libffi
       - zlib
       - libiconv
-    revision: '4'
+    revision: 4
     configure:
       - args:
         - 'meson'
@@ -534,7 +534,7 @@ packages:
       - zlib
       - python
       - libiconv
-    revision: '3'
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
