@@ -29,7 +29,6 @@ tools:
 
 packages:
   - name: shared-mime-info
-    stability_level: broken
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xdg/shared-mime-info.git'
@@ -49,6 +48,7 @@ packages:
       - host-python
     pkgs_required:
       - glib
+      - libxml
       - itstool
     configure:
       - args:
