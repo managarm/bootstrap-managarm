@@ -78,6 +78,39 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
+  - name: gdk-pixbuf
+    source:
+      subdir: ports
+      git: 'https://gitlab.gnome.org/GNOME/gdk-pixbuf.git'
+      tag: '2.40.0'
+      version: '2.40.0'
+    tools_required:
+      - system-gcc
+      - host-libtool
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: x86_64-managarm
+    pkgs_required:
+      - glib
+      - libjpeg-turbo
+      - libpng
+      - shared-mime-info
+      - libx11
+    configure:
+      - args:
+        - 'meson'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson.cross-file'
+        - '--prefix=/usr'
+        - '-Dgir=false'
+        - '-Dman=false'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: libdrm
     source:
       subdir: 'ports'
