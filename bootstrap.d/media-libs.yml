@@ -252,6 +252,38 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
+  - name: libjpeg-turbo
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/libjpeg-turbo/libjpeg-turbo.git'
+      tag: '2.0.5'
+      version: '2.0.5'
+    tools_required:
+      - host-pkg-config
+      - system-gcc
+      - host-cmake
+      - virtual: pkgconfig-for-target
+        triple: x86_64-managarm
+    configure:
+      - args:
+        - 'cmake'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain.txt'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_BUILD_TYPE=RELEASE'
+        - '-DENABLE_STATIC=FALSE'
+        - '-DCMAKE_INSTALL_DOCDIR=/usr/share/doc/libjpeg-turbo-2.0.5'
+        - '-DCMAKE_INSTALL_DEFAULT_LIBDIR=lib'
+        - '-DWITH_JPEG8=ON'
+        # HACK!! Hardcoding this makes it non-portable
+        - '-DCMAKE_SYSTEM_PROCESSOR=amd64'
+        - '@THIS_SOURCE_DIR@/'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+
   - name: libpng
     source:
       subdir: 'ports'
