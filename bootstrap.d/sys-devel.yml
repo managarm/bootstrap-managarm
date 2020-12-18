@@ -186,6 +186,7 @@ packages:
             '@THIS_SOURCE_DIR@/build-aux/']
     tools_required:
       - system-gcc
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -199,6 +200,7 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['rm', '-r', '@THIS_COLLECT_DIR@/usr/lib']
 
   - name: make
     source:
@@ -258,6 +260,7 @@ packages:
         triple: x86_64-managarm
     pkgs_required:
       - diffutils
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -268,3 +271,4 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['rm', '-r', '@THIS_COLLECT_DIR@/usr/lib']
