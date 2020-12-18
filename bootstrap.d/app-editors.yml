@@ -3,8 +3,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/nano.git'
-      tag: 'v5.2'
-      version: '5.2'
+      tag: 'v5.4'
+      version: '5.4'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -27,6 +27,7 @@ packages:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
+        - '--sysconfdir=/etc'
         - 'CFLAGS=-DSLOW_BUT_NO_HACKS'
         environ:
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'

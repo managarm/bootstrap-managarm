@@ -55,8 +55,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/libarchive/libarchive.git'
-      tag: 'v3.4.3'
-      version: '3.4.3'
+      tag: 'v3.5.0'
+      version: '3.5.0'
     tools_required:
       - host-cmake
       - system-gcc
@@ -67,7 +67,6 @@ packages:
       - libiconv
       - libexpat
       - libxml
-    revision: 2
     configure:
       - args:
         - 'cmake'
