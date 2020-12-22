@@ -286,8 +286,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/mesa/mesa.git'
-      tag: 'mesa-20.0.5'
-      version: '20.0.5'
+      tag: 'mesa-20.3.1'
+      version: '20.3.1'
       tools_required:
         - host-pkg-config
     revision: 2
@@ -328,7 +328,7 @@ packages:
         - '--buildtype=debugoptimized'
         #- '--buildtype=debug'
         - '-Dglx=dri'
-        - '-Dplatforms=surfaceless,drm,wayland,x11'
+        - '-Dplatforms=wayland,x11'
         # The Gallium swrast driver seems to be preferred over dri-swrast.
         - '-Ddri-drivers='
         - '-Dgallium-drivers=swrast'
