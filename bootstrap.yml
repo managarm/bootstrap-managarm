@@ -738,6 +738,8 @@ packages:
       subdir: 'ports'
       git: 'https://github.com/managarm/libasync.git'
       branch: 'master'
+      rolling_version: true
+      version: '0.0pl@ROLLING_ID@'
     tools_required:
       - system-gcc
     pkgs_required:
