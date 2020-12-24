@@ -30,7 +30,9 @@ general:
     everything_by_default: false
 
 repository:
-  url: 'https://pkgs.managarm.org/nightly'
+    url: 'https://pkgs.managarm.org/nightly'
+repositories:
+    xbps: 'https://ci.managarm.org/repos/packages/managarm/rolling'
 
 declare_options:
   - name: arch-triple
