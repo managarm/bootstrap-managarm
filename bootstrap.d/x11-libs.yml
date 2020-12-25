@@ -729,8 +729,11 @@ packages:
       - host-pkg-config
       - system-gcc
       - wayland-scanner
+      - virtual: pkgconfig-for-host
+        program_name: host-pkg-config
       - virtual: pkgconfig-for-target
         triple: x86_64-managarm
+    revision: 2
     pkgs_required:
       - wayland
       - wayland-protocols
@@ -740,6 +743,8 @@ packages:
     configure:
       - args:
         - 'meson'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
