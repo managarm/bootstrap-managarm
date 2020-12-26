@@ -335,7 +335,7 @@ packages:
       git: 'https://github.com/qookei/mini-lspci.git'
       branch: 'master'
       rolling_version: true
-      version: '0.0-git@ROLLING_ID@'
+      version: '0.0_git@ROLLING_ID@'
       regenerate:
         - args: ['wget', '-O', '@THIS_SOURCE_DIR@/pci.ids', 'https://raw.githubusercontent.com/pciutils/pciids/master/pci.ids']
     tools_required:
