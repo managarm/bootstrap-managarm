@@ -290,6 +290,7 @@ packages:
       version: '20.0.5'
       tools_required:
         - host-pkg-config
+    revision: 2
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -311,7 +312,7 @@ packages:
       - libxext
       - libxcb
     configure:
-      - args: ['cp', '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file', '.']
+      - args: ['cp', '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file', 'meson.cross-file']
       - args:
         - 'sed'
         - '-i'
