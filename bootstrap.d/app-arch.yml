@@ -55,8 +55,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/libarchive/libarchive.git'
-      tag: 'v3.5.0'
-      version: '3.5.0'
+      tag: 'v3.5.1'
+      version: '3.5.1'
     tools_required:
       - host-cmake
       - system-gcc
