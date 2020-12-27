@@ -297,9 +297,9 @@ packages:
   - name: libgpg-error
     source:
       subdir: 'ports'
-      git: 'https://github.com/gpg/libgpg-error.git'
-      tag: 'libgpg-error-1.37'
-      version: '1.37'
+      git: 'https://dev.gnupg.org/source/libgpg-error.git'
+      tag: 'libgpg-error-1.41'
+      version: '1.41'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
