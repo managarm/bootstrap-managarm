@@ -1,4 +1,4 @@
-From 9b9936697180da622f49094ef442b485d49ef9d0 Mon Sep 17 00:00:00 2001
+From 06bd005dbda6eba528d74a5dde96b1eb09644d67 Mon Sep 17 00:00:00 2001
 From: Dennisbonke <admin@dennisbonke.com>
 Date: Tue, 22 Dec 2020 23:02:13 +0100
 Subject: [PATCH] Add managarm support
@@ -6,14 +6,14 @@ Subject: [PATCH] Add managarm support
 Signed-off-by: Dennisbonke <admin@dennisbonke.com>
 ---
  include/drm-uapi/drm.h                    | 5 +++--
- meson.build                               | 7 ++++---
+ meson.build                               | 2 +-
  src/gallium/drivers/llvmpipe/lp_texture.c | 1 -
  src/util/debug.c                          | 1 +
  src/util/detect_os.h                      | 8 ++++++++
  src/util/os_misc.c                        | 4 ++--
  src/util/os_time.c                        | 4 ++--
  src/util/u_thread.h                       | 4 ++--
- 8 files changed, 22 insertions(+), 12 deletions(-)
+ 8 files changed, 19 insertions(+), 10 deletions(-)
 
 diff --git a/include/drm-uapi/drm.h b/include/drm-uapi/drm.h
 index c7fd2a35fd7..4a231e0651e 100644
@@ -34,7 +34,7 @@ index c7fd2a35fd7..4a231e0651e 100644
  
  #else /* One of the BSDs */
 diff --git a/meson.build b/meson.build
-index c2843a30766..6df92fd1e43 100644
+index c2843a30766..61e926e9178 100644
 --- a/meson.build
 +++ b/meson.build
 @@ -153,7 +153,7 @@ with_any_opengl = with_opengl or with_gles1 or with_gles2
@@ -46,18 +46,6 @@ index c2843a30766..6df92fd1e43 100644
  
  dri_drivers = get_option('dri-drivers')
  if dri_drivers.contains('auto')
-@@ -1693,8 +1693,9 @@ endif
- # TODO: symbol mangling
- 
- if with_platform_wayland
--  dep_wl_scanner = dependency('wayland-scanner', native: true)
--  prog_wl_scanner = find_program(dep_wl_scanner.get_pkgconfig_variable('wayland_scanner'))
-+  # We assume that we find the same version of wayland-scanner on build system and target.
-+  dep_wl_scanner = dependency('wayland-scanner')
-+  prog_wl_scanner = find_program('wayland-scanner')
-   if dep_wl_scanner.version().version_compare('>= 1.15')
-     wl_scanner_arg = 'private-code'
-   else
 diff --git a/src/gallium/drivers/llvmpipe/lp_texture.c b/src/gallium/drivers/llvmpipe/lp_texture.c
 index 2bf223d66f9..79b1575e0a7 100644
 --- a/src/gallium/drivers/llvmpipe/lp_texture.c

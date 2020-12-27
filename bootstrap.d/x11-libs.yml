@@ -733,7 +733,6 @@ packages:
         program_name: host-pkg-config
       - virtual: pkgconfig-for-target
         triple: x86_64-managarm
-    revision: 2
     pkgs_required:
       - wayland
       - wayland-protocols
@@ -751,7 +750,6 @@ packages:
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
         - '-Denable-docs=false'
-        - '-Denable-wayland=false'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
