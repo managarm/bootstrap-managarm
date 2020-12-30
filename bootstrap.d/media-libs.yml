@@ -174,8 +174,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/harfbuzz/harfbuzz.git'
-      tag: '2.7.3'
-      version: '2.7.3'
+      tag: '2.7.4'
+      version: '2.7.4'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
