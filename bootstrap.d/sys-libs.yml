@@ -107,9 +107,9 @@ packages:
     default: true
     source:
       subdir: 'ports'
-      url: 'https://data.iana.org/time-zones/releases/tzdata2020e.tar.gz'
+      url: 'https://data.iana.org/time-zones/releases/tzdata2020f.tar.gz'
       format: 'tar.gz'
-      version: '2020e'
+      version: '2020f'
     tools_required:
       - system-gcc
     configure:
