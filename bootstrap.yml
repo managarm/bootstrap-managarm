@@ -281,27 +281,20 @@ tools:
     tools_required:
       - tool: host-protoc
         recursive: true
+      - virtual: pkgconfig-for-host
+        program_name: host-pkg-config
     configure:
       - args:
         - 'meson'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
         - '--prefix=@PREFIX@'
         - '-Dbuild_tools=true'
         - '@THIS_SOURCE_DIR@'
-        environ:
-          # This can be seen as a hack -- remove it.
-          'LIBRARY_PATH': '@BUILD_ROOT@/tools/host-protoc/lib'
     compile:
       - args: ['ninja']
-        environ:
-          # This can be seen as a hack -- remove it.
-          'CPATH': '@BUILD_ROOT@/tools/host-protoc/include'
-          'LIBRARY_PATH': '@BUILD_ROOT@/tools/host-protoc/lib'
     install:
       - args: ['ninja', 'install']
-        environ:
-          # This can be seen as a hack -- remove it.
-          'CPATH': '@BUILD_ROOT@/tools/host-protoc/include'
-          'LIBRARY_PATH': '@BUILD_ROOT@/tools/host-protoc/lib'
 
   - name: host-libtool
     exports_aclocal: true
