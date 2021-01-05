@@ -1,0 +1,56 @@
+From 4682febf9d07f930238f5a29e762e949eec327eb Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Arsen=20Arsenovi=C4=87?= <arsen@aarsen.me>
+Date: Mon, 4 Jan 2021 14:42:36 +0100
+Subject: [PATCH] managarm: add protoc.pc
+
+---
+ Makefile.am  |  2 +-
+ configure.ac |  2 +-
+ protoc.pc.in | 11 +++++++++++
+ 3 files changed, 13 insertions(+), 2 deletions(-)
+ create mode 100644 protoc.pc.in
+
+diff --git a/Makefile.am b/Makefile.am
+index 83f1043..cc2e74b 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -46,7 +46,7 @@ clean-local:
+ 	fi
+ 
+ pkgconfigdir = $(libdir)/pkgconfig
+-pkgconfig_DATA = protobuf.pc protobuf-lite.pc
++pkgconfig_DATA = protobuf.pc protobuf-lite.pc protoc.pc
+ 
+ csharp_EXTRA_DIST=                                                           \
+   csharp/.gitignore                                                          \
+diff --git a/configure.ac b/configure.ac
+index 896f347..d682c90 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -185,5 +185,5 @@ export CFLAGS
+ export CXXFLAGS
+ AC_CONFIG_SUBDIRS([gmock])
+ 
+-AC_CONFIG_FILES([Makefile src/Makefile benchmarks/Makefile conformance/Makefile protobuf.pc protobuf-lite.pc])
++AC_CONFIG_FILES([Makefile src/Makefile benchmarks/Makefile conformance/Makefile protobuf.pc protoc.pc protobuf-lite.pc])
+ AC_OUTPUT
+diff --git a/protoc.pc.in b/protoc.pc.in
+new file mode 100644
+index 0000000..7ae3560
+--- /dev/null
++++ b/protoc.pc.in
+@@ -0,0 +1,11 @@
++prefix=@prefix@
++exec_prefix=@exec_prefix@
++libdir=@libdir@
++includedir=@includedir@
++
++Name: Protobuf Compiler
++Description: libprotoc.so
++Version: @VERSION@
++Libs: -L${libdir} -lprotoc @PTHREAD_CFLAGS@ @PTHREAD_LIBS@
++Libs.private: @LIBS@
++Cflags: -I${includedir} @PTHREAD_CFLAGS@
+-- 
+2.26.2
+
