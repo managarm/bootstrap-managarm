@@ -174,8 +174,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/harfbuzz/harfbuzz.git'
-      tag: '2.7.2'
-      version: '2.7.2'
+      tag: '2.7.4'
+      version: '2.7.4'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -286,17 +286,18 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/mesa/mesa.git'
-      tag: 'mesa-20.0.5'
-      version: '20.0.5'
+      tag: 'mesa-20.3.1'
+      version: '20.3.1'
       tools_required:
         - host-pkg-config
-    revision: 2
     tools_required:
       - host-pkg-config
       - system-gcc
       - wayland-scanner
       - virtual: pkgconfig-for-target
         triple: x86_64-managarm
+      - virtual: pkgconfig-for-host
+        program_name: host-pkg-config
     pkgs_required:
       - libdrm
       - llvm
@@ -320,6 +321,8 @@ packages:
         - 'meson.cross-file'
       - args:
         - 'meson'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
         - '--cross-file'
         - 'meson.cross-file'
         - '--prefix=/usr'
@@ -328,7 +331,7 @@ packages:
         - '--buildtype=debugoptimized'
         #- '--buildtype=debug'
         - '-Dglx=dri'
-        - '-Dplatforms=surfaceless,drm,wayland,x11'
+        - '-Dplatforms=wayland,x11'
         # The Gallium swrast driver seems to be preferred over dri-swrast.
         - '-Ddri-drivers='
         - '-Dgallium-drivers=swrast'

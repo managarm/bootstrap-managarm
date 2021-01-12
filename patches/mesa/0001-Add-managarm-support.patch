@@ -1,23 +1,22 @@
-From 4df7af05ec1a130d10b13e96e3155999376a56e5 Mon Sep 17 00:00:00 2001
-From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
-Date: Fri, 31 May 2019 20:28:26 +0200
-Subject: [PATCH 1/2] Managarm-specific changes
+From 06bd005dbda6eba528d74a5dde96b1eb09644d67 Mon Sep 17 00:00:00 2001
+From: Dennisbonke <admin@dennisbonke.com>
+Date: Tue, 22 Dec 2020 23:02:13 +0100
+Subject: [PATCH] Add managarm support
 
+Signed-off-by: Dennisbonke <admin@dennisbonke.com>
 ---
- include/drm-uapi/drm.h                 | 5 +++--
- meson.build                            | 2 +-
- src/gallium/auxiliary/util/u_network.c | 1 +
- src/gallium/include/pipe/p_config.h    | 4 ++++
- src/loader/loader.c                    | 1 +
- src/util/debug.c                       | 1 +
- src/util/detect_os.h                   | 8 ++++++++
- src/util/os_misc.c                     | 4 ++--
- src/util/os_time.c                     | 4 ++--
- src/util/u_thread.h                    | 2 +-
- 10 files changed, 24 insertions(+), 8 deletions(-)
+ include/drm-uapi/drm.h                    | 5 +++--
+ meson.build                               | 2 +-
+ src/gallium/drivers/llvmpipe/lp_texture.c | 1 -
+ src/util/debug.c                          | 1 +
+ src/util/detect_os.h                      | 8 ++++++++
+ src/util/os_misc.c                        | 4 ++--
+ src/util/os_time.c                        | 4 ++--
+ src/util/u_thread.h                       | 4 ++--
+ 8 files changed, 19 insertions(+), 10 deletions(-)
 
 diff --git a/include/drm-uapi/drm.h b/include/drm-uapi/drm.h
-index 438abde..7d0b8ea 100644
+index c7fd2a35fd7..4a231e0651e 100644
 --- a/include/drm-uapi/drm.h
 +++ b/include/drm-uapi/drm.h
 @@ -36,10 +36,11 @@
@@ -35,10 +34,10 @@ index 438abde..7d0b8ea 100644
  
  #else /* One of the BSDs */
 diff --git a/meson.build b/meson.build
-index c48945b..cbf7aab 100644
+index c2843a30766..61e926e9178 100644
 --- a/meson.build
 +++ b/meson.build
-@@ -128,7 +128,7 @@ with_any_opengl = with_opengl or with_gles1 or with_gles2
+@@ -153,7 +153,7 @@ with_any_opengl = with_opengl or with_gles1 or with_gles2
  # Only build shared_glapi if at least one OpenGL API is enabled
  with_shared_glapi = with_shared_glapi and with_any_opengl
  
@@ -47,47 +46,20 @@ index c48945b..cbf7aab 100644
  
  dri_drivers = get_option('dri-drivers')
  if dri_drivers.contains('auto')
-diff --git a/src/gallium/auxiliary/util/u_network.c b/src/gallium/auxiliary/util/u_network.c
-index 31139f2..20e6e29 100644
---- a/src/gallium/auxiliary/util/u_network.c
-+++ b/src/gallium/auxiliary/util/u_network.c
-@@ -10,6 +10,7 @@
- #  include <windows.h>
- #  include <ws2tcpip.h>
- #elif defined(PIPE_OS_UNIX)
-+#  include <arpa/inet.h>
- #  include <sys/socket.h>
- #  include <netinet/in.h>
- #  include <unistd.h>
-diff --git a/src/gallium/include/pipe/p_config.h b/src/gallium/include/pipe/p_config.h
-index 2c1698d..de4bc45 100644
---- a/src/gallium/include/pipe/p_config.h
-+++ b/src/gallium/include/pipe/p_config.h
-@@ -185,6 +185,10 @@
- #define PIPE_OS_HAIKU
- #endif
- 
-+#if DETECT_OS_MANAGARM
-+#define PIPE_OS_MANAGARM
-+#endif
-+
- #if DETECT_OS_CYGWIN
- #define PIPE_OS_CYGWIN
- #endif
-diff --git a/src/loader/loader.c b/src/loader/loader.c
-index c896fdc..d67b6c7 100644
---- a/src/loader/loader.c
-+++ b/src/loader/loader.c
-@@ -29,6 +29,7 @@
- #include <dlfcn.h>
- #include <errno.h>
- #include <fcntl.h>
-+#include <limits.h>
- #include <sys/stat.h>
- #include <stdarg.h>
- #include <stdio.h>
+diff --git a/src/gallium/drivers/llvmpipe/lp_texture.c b/src/gallium/drivers/llvmpipe/lp_texture.c
+index 2bf223d66f9..79b1575e0a7 100644
+--- a/src/gallium/drivers/llvmpipe/lp_texture.c
++++ b/src/gallium/drivers/llvmpipe/lp_texture.c
+@@ -929,7 +929,6 @@ llvmpipe_resource_get_param(struct pipe_screen *screen,
+    default:
+       break;
+    }
+-   assert(0);
+    *value = 0;
+    return false;
+ }
 diff --git a/src/util/debug.c b/src/util/debug.c
-index 7079c61..f277531 100644
+index 89ae6131074..fbf45f4ba78 100644
 --- a/src/util/debug.c
 +++ b/src/util/debug.c
 @@ -23,6 +23,7 @@
@@ -95,11 +67,11 @@ index 7079c61..f277531 100644
  #include <errno.h>
  #include <string.h>
 +#include <strings.h>
- #include "main/macros.h"
  #include "debug.h"
  #include "u_string.h"
+ 
 diff --git a/src/util/detect_os.h b/src/util/detect_os.h
-index 6506948..469b502 100644
+index 6506948e035..469b502bbd9 100644
 --- a/src/util/detect_os.h
 +++ b/src/util/detect_os.h
 @@ -81,6 +81,11 @@
@@ -124,19 +96,19 @@ index 6506948..469b502 100644
  
  #endif /* DETECT_OS_H */
 diff --git a/src/util/os_misc.c b/src/util/os_misc.c
-index e689473..224f275 100644
+index e5a780b4035..39b1847947a 100644
 --- a/src/util/os_misc.c
 +++ b/src/util/os_misc.c
-@@ -52,7 +52,7 @@
+@@ -56,7 +56,7 @@
  #  define LOG_TAG "MESA"
  #  include <unistd.h>
  #  include <log/log.h>
 -#elif DETECT_OS_LINUX || DETECT_OS_CYGWIN || DETECT_OS_SOLARIS || DETECT_OS_HURD
 +#elif DETECT_OS_LINUX || DETECT_OS_CYGWIN || DETECT_OS_SOLARIS || DETECT_OS_HURD || DETECT_OS_MANAGARM
  #  include <unistd.h>
- #elif DETECT_OS_APPLE || DETECT_OS_BSD
- #  include <sys/sysctl.h>
-@@ -132,7 +132,7 @@ os_get_option(const char *name)
+ #elif DETECT_OS_OPENBSD || DETECT_OS_FREEBSD
+ #  include <sys/resource.h>
+@@ -139,7 +139,7 @@ os_get_option(const char *name)
  bool
  os_get_total_physical_memory(uint64_t *size)
  {
@@ -146,7 +118,7 @@ index e689473..224f275 100644
     const long page_size = sysconf(_SC_PAGE_SIZE);
  
 diff --git a/src/util/os_time.c b/src/util/os_time.c
-index 92fc363..b518a94 100644
+index 92fc3638ddb..b518a94672f 100644
 --- a/src/util/os_time.c
 +++ b/src/util/os_time.c
 @@ -53,7 +53,7 @@
@@ -168,12 +140,21 @@ index 92fc363..b518a94 100644
     time.tv_sec = usecs / 1000000;
     time.tv_nsec = (usecs % 1000000) * 1000;
 diff --git a/src/util/u_thread.h b/src/util/u_thread.h
-index 1f2a104..53fd35a 100644
+index bdfb05e158c..ffcb4d7f16a 100644
 --- a/src/util/u_thread.h
 +++ b/src/util/u_thread.h
-@@ -155,7 +155,7 @@ util_get_L3_for_pinned_thread(thrd_t thread, unsigned cores_per_L3)
+@@ -103,7 +103,7 @@ static inline thrd_t u_thread_create(int (*routine)(void *), void *param)
+ static inline void u_thread_setname( const char *name )
+ {
+ #if defined(HAVE_PTHREAD)
+-#if DETECT_OS_LINUX || DETECT_OS_CYGWIN || DETECT_OS_SOLARIS
++#if DETECT_OS_LINUX || DETECT_OS_CYGWIN || DETECT_OS_SOLARIS || DETECT_OS_MANAGARM
+    pthread_setname_np(pthread_self(), name);
+ #elif DETECT_OS_FREEBSD || DETECT_OS_OPENBSD
+    pthread_set_name_np(pthread_self(), name);
+@@ -208,7 +208,7 @@ util_set_current_thread_affinity(const uint32_t *mask,
  static inline int64_t
- u_thread_get_time_nano(thrd_t thread)
+ util_thread_get_time_nano(thrd_t thread)
  {
 -#if defined(HAVE_PTHREAD) && !defined(__APPLE__) && !defined(__HAIKU__)
 +#if defined(HAVE_PTHREAD) && !defined(__APPLE__) && !defined(__HAIKU__) && !defined(__managarm__)
@@ -181,5 +162,5 @@ index 1f2a104..53fd35a 100644
     clockid_t cid;
  
 -- 
-2.20.1
+2.29.2
 

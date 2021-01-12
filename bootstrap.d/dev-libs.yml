@@ -2,14 +2,14 @@ sources:
   - name: glib
     subdir: ports
     git: 'https://gitlab.gnome.org/GNOME/glib'
-    tag: '2.66.2'
-    version: '2.66.2'
+    tag: '2.66.4'
+    version: '2.66.4'
 
   - name: icu
     subdir: 'ports'
     git: 'https://github.com/unicode-org/icu.git'
-    tag: 'release-68-1'
-    version: '68.1'
+    tag: 'release-68-2'
+    version: '68.2'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.15
@@ -89,7 +89,6 @@ packages:
       - libffi
       - zlib
       - libiconv
-    revision: 4
     configure:
       - args:
         - 'meson'
@@ -298,9 +297,9 @@ packages:
   - name: libgpg-error
     source:
       subdir: 'ports'
-      git: 'https://github.com/gpg/libgpg-error.git'
-      tag: 'libgpg-error-1.37'
-      version: '1.37'
+      git: 'https://dev.gnupg.org/source/libgpg-error.git'
+      tag: 'libgpg-error-1.41'
+      version: '1.41'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15

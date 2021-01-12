@@ -1,0 +1,32 @@
+From 182f7287de576b250e05450821c9ff2b3f530c93 Mon Sep 17 00:00:00 2001
+From: Dennisbonke <admin@dennisbonke.com>
+Date: Sun, 27 Dec 2020 21:21:40 +0100
+Subject: [PATCH] Patch out a broken operation during cross compilation
+
+Signed-off-by: Dennisbonke <admin@dennisbonke.com>
+---
+ src/Makefile.am | 8 --------
+ 1 file changed, 8 deletions(-)
+
+diff --git a/src/Makefile.am b/src/Makefile.am
+index fc3acc3..7213c6b 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -347,14 +347,6 @@ gpgrt.h: gpg-error.h
+ 	cp gpg-error.h gpgrt.h
+ 
+ gpg-error-config: gpgrt-config gpg-error-config-old
+-	@echo $(ECHO_N) "Confirm gpg-error-config works... $(ECHO_C)"
+-	@if ./gpg-error-config-test.sh --old-new; then \
+-	  echo "good";                                         \
+-	else                                                   \
+-	  echo "no";                                           \
+-	  echo "***  Please report to <https://bugs.gnupg.org> with gpg-error-config-test.log"; \
+-	  exit 1; \
+-	fi
+ 	cp gpg-error-config-old $@
+ 
+ install-data-local:
+-- 
+2.30.0
+
