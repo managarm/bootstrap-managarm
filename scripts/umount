@@ -5,6 +5,15 @@ set -uxe
 if [ -n "${USE_LOOPBACK:-}" ]; then
 	umount mountpoint/
 	losetup -d "$(cat loopback_dev)"
+elif [ -n "${USE_DOCKER:-}" ]; then
+    docker exec -i -u root:root managarm_mount bash -c "
+        set -ex
+        sync
+        umount /devtmpfs
+        umount /mnt
+        losetup -d \$(cat loopback_dev)
+    "
+    docker stop -t 0 managarm_mount
 else
 	set -e
 
