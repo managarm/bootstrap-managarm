@@ -5,6 +5,31 @@ if [ -n "${USE_LOOPBACK:-}" ];
 then
 	losetup -Pf --show image > loopback_dev
 	mount "$(cat loopback_dev)"p2 mountpoint/
+elif [ -n "${USE_DOCKER:-}" ];
+then
+    rm -f "$scriptdir"/mount_ready
+    docker run --privileged=true --rm \
+        --name=managarm_mount \
+        -v "$(realpath system-root)":/stuff/system-root:ro \
+        -v "$(realpath initrd.cpio)":/stuff/initrd.cpio:ro \
+        -v "$(realpath tools)":/stuff/tools:ro \
+        -v "$scriptdir":/stuff/scripts:rw \
+        -v "$(realpath image)":/stuff/image:rw \
+        -w /stuff \
+        -u root:root \
+        -d managarm_buildenv bash -c "
+            set -ex
+            losetup -Pf --show image > loopback_dev
+            mkdir /devtmpfs
+            mount -t devtmpfs devtmpfs /devtmpfs
+            mount \$(cat loopback_dev | sed 's/dev/devtmpfs/')p2 /mnt
+            touch /stuff/scripts/mount_ready
+            tail -f /dev/null
+        "
+    set +x
+    while [ ! -e "$scriptdir"/mount_ready ]; do true; done
+    set -x
+    rm -f "$scriptdir"/mount_ready
 else
 	guestmount --pid-file guestfs.pid -a image -m /dev/sda2 mountpoint/
 fi

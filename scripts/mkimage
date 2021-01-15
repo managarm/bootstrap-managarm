@@ -2,22 +2,7 @@
 
 set -uxe
 
-scriptdir="$(dirname "$0")"
-
-if [ -n "${1:-}" ]; then
-	if [ ! -e "$1" ]; then
-		echo "Directory $dir does not exist"
-		exit 1
-	fi
-	dir="$1"
-	echo "Copying to existing directory $dir"
-else
-	mkdir -p mountpoint/
-	dir="$(realpath mountpoint/)"
-	echo "Mounting image to $dir"
-	"$scriptdir/mount"
-	trap '"$scriptdir/umount"' EXIT
-fi
+export scriptdir="$(realpath $(dirname "$0"))"
 
 # -----------------------------------------------------------------------------
 # Build the initrd.
@@ -71,8 +56,39 @@ install system-root/usr/lib/managarm/server/*.bin initrd/managarm/server/
 (cd initrd/ && find . -mindepth 1 | cpio -o --format newc > ../initrd.cpio)
 
 # -----------------------------------------------------------------------------
+# Mount the image.
+# -----------------------------------------------------------------------------
+
+if [ -n "${1:-}" ]; then
+	if [ ! -e "$1" ]; then
+		echo "Directory $dir does not exist"
+		exit 1
+	fi
+	dir="$1"
+	echo "Copying to existing directory $dir"
+else
+	mkdir -p mountpoint/
+	dir="$(realpath mountpoint/)"
+	echo "Mounting image to $dir"
+	"$scriptdir/mount"
+	trap "$scriptdir/umount" EXIT
+fi
+
+# -----------------------------------------------------------------------------
 # Copy files to the image.
 # -----------------------------------------------------------------------------
+
+if [ -n "${USE_DOCKER:-}" ]; then
+    scriptdir=/stuff/scripts
+    dir=/mnt
+    comm="docker exec -i -u root:root managarm_mount bash"
+else
+    comm="bash"
+fi
+
+cat <<EOF | $comm
+
+set -ex
 
 mkdir -p "$dir/boot/managarm"
 install -s system-root/usr/managarm/bin/eir-stivale "$dir/boot/managarm/"
@@ -96,4 +112,7 @@ rsync -a --delete system-root/etc/ "$dir/etc"
 rsync -a --delete system-root/var/ "$dir/var"
 cp tools/system-gcc/x86_64-managarm/lib64/libgcc_s.so.1 "$dir/usr/lib"
 cp tools/system-gcc/x86_64-managarm/lib64/libstdc++.so.6 "$dir/usr/lib"
+
+EOF
+
 echo " done"
