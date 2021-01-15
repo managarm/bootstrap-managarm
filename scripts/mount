@@ -26,7 +26,9 @@ then
             touch /stuff/scripts/mount_ready
             tail -f /dev/null
         "
+    set +x
     while [ ! -e "$scriptdir"/mount_ready ]; do true; done
+    set -x
     rm -f "$scriptdir"/mount_ready
 else
 	guestmount --pid-file guestfs.pid -a image -m /dev/sda2 mountpoint/
