@@ -18,7 +18,7 @@ packages:
     pkgs_required:
       - readline
       - libiconv
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -26,7 +26,7 @@ packages:
         - '--prefix=/usr'
         - '--without-bash-malloc'
         - '--disable-nls'
-        - '--with-installed-readline'
+        - '--with-installed-readline=$SYSROOT_DIR$/usr'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
