@@ -67,6 +67,8 @@ packages:
       - libiconv
       - libexpat
       - libxml
+      - zstd
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -140,3 +142,26 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: zstd
+    source:
+      subdir: ports
+      git: 'https://github.com/facebook/zstd.git'
+      tag: 'v1.4.8'
+      version: '1.4.8'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - zlib
+      - xz-utils
+    configure:
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+        environ:
+          CC: 'x86_64-managarm-gcc'
+          CXX: 'x86_64-managarm-g++'
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+          PREFIX: '/usr'
