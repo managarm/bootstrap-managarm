@@ -1,14 +1,13 @@
-
-# Building a managarm distribution from source
+# Managarm: Distribution Build Scripts
 
 ![Sanity Checks](https://github.com/managarm/bootstrap-managarm/workflows/Sanity%20Checks/badge.svg)
 
-This repository contains patches and build script to build a [managarm](https://github.com/managarm/managarm) kernel and userspace.
+This repository contains patches and build script to build a [Managarm](https://github.com/managarm/managarm) kernel and userspace.
 
-## Build environment
+## Building a Managarm Distribution from Source
 
 Since it is almost impossible to make sure all build environments will play nice with
-the build system, at the moment it is recommended to setup a build environment with Docker
+the build system, **we strongly recommended to set up a build environment in a container**,
 using the provided Dockerfile.
 
 Make sure that you have enough disk space. As managarm builds a lot of large external packages
@@ -16,51 +15,45 @@ Make sure that you have enough disk space. As managarm builds a lot of large ext
 
 ### Preparations
 
-First and foremost we will create a directory (`$MANAGARM_DIR`) which will be used for storing the source
-and build directories.
-```bash
-export MANAGARM_DIR="$HOME/managarm" # In this example we are using $HOME/managarm, but it can be any directory
-mkdir -p "$MANAGARM_DIR" && cd "$MANAGARM_DIR"
-```
-Then clone this repository into a `src` directory:
-```bash
-git clone https://github.com/managarm/bootstrap-managarm.git src
-```
+1.  First and foremost we will create a directory (`$MANAGARM_DIR`) which will be used for storing the source
+    and build directories.
+    ```bash
+    export MANAGARM_DIR="$HOME/managarm" # In this example we are using $HOME/managarm, but it can be any directory
+    mkdir -p "$MANAGARM_DIR" && cd "$MANAGARM_DIR"
+    ```
+1.  The `xbstrap` build system is required on the host (whether you build in a container or not).
+    `xbstrap` can be installed via pip3: `pip3 install xbstrap`.
+1.  Clone this repository into a `src` directory and create a `build` directory:
+    ```bash
+    git clone https://github.com/managarm/bootstrap-managarm.git src
+    mkdir build
+    ```
 
-### Creating Docker image and container
+### Alternative I: setting up a container (recommended)
 
 *Note: this step is not needed if you don't want to use a Docker container, if so skip to the next paragraph.*
 
-1.  Install Docker (duh) and make sure it is working properly by running `docker run hello-world`
-    and making sure the output shows:
-    ```
-    Hello from Docker!
-    This message shows that your installation appears to be working correctly.
-    ```
-1.  Create a Docker image from the provided Dockerfile:
+1.  A working `docker` installation is required to perform a containerized build.
+1.  Build a Docker image from the provided Dockerfile:
     ```bash
-    docker build -t managarm_buildenv src/docker
+    docker build -t managarm-buildc --build_arg=USER=$(id -u) src/docker
     ```
-1.  Start a container:
-    ```bash
-    docker run -v $(realpath "$MANAGARM_DIR"):/home/managarm_buildenv/managarm -it managarm_buildenv
+1.  Change into the `build` directory and create a `bootstrap-site.yml` file containing:
+    ```yml
+    container:
+        runtime: docker
+        image: managarm-buildc
+        src_mount: /var/bootstrap-managarm/src
+        build_mount: /var/bootstrap-managarm/build
+        allow_containerless: true
     ```
+    This `bootstrap-site.yml` will instruct our build system to invoke the build scripts within your container image.
 
-You are now running a `bash` shell within a Docker container with all the build dependencies
-already installed.
-Inside the home directory (`ls`) there should be a `managarm` directory shared with the host
-containing a `src` directory (this repo).
-If this is not the case go back and make sure you followed the steps properly.
-
-Switch to the `managarm` directory:
-```bash
-cd managarm
-```
 Now proceed to the Building paragraph.
 
-### Installing dependencies manually
+### Alternative II: installing dependencies on the host system
 
-*Note: if you created a Docker image in the previous step, skip this paragraph.*
+*Note: if you built a Docker image in the previous step, skip this paragraph.*
 
 1.  Certain programs are required to build managarm;
     here we list the corresponding Debian packages:
@@ -69,18 +62,15 @@ Now proceed to the Building paragraph.
     Install it from pip: `pip3 install meson`
 1.  `protobuf` is also required. There is a Debian package, but a newer version is required.
     Install it from pip: `pip3 install protobuf`
-1.  The [xbstrap](https://github.com/managarm/xbstrap) and [bragi](https://github.com/managarm/bragi) tools are required to build managarm. Install them via pip: `pip3 install bragi xbstrap`.
+1.  [bragi](https://github.com/managarm/bragi) is required to build managarm. It can be insalled via pip: `pip3 install bragi`.
 1.  For managarm kernel documentation you may also want `mdbook`. This requires `rust` & `cargo` to be installed.
     Install it using cargo: `cargo install --git https://github.com/rust-lang/mdBook.git mdbook`
 
-## Building
+### Building
 
-1.  Create and change into a `build` directory
-    ```bash
-    mkdir build && cd build
-    ```
 1.  Initialize the build directory with
     ```bash
+    cd build
     xbstrap init ../src
     ```
 1.  Start the build using
