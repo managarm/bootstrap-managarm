@@ -1345,6 +1345,7 @@ tasks:
     args:
       - '@SOURCE_ROOT@/scripts/mkimage'
     workdir: '@BUILD_ROOT@'
+    containerless: true
 
   - name: xz-image
     tasks_required:
@@ -1354,6 +1355,7 @@ tasks:
       - name: image.xz
         path: '@BUILD_ROOT@'
     args: ['xz', '--fast', '--keep', '@BUILD_ROOT@/image']
+    containerless: true
 
   - name: qemu
     tasks_required:
@@ -1362,6 +1364,7 @@ tasks:
     args:
       - '@SOURCE_ROOT@/scripts/run-qemu'
     workdir: '@BUILD_ROOT@'
+    containerless: true
 
   - name: test-image
     tasks_required:
@@ -1370,3 +1373,4 @@ tasks:
     args:
       - '@SOURCE_ROOT@/scripts/test-image.py'
     workdir: '@BUILD_ROOT@'
+    containerless: true
