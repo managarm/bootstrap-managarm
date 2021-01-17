@@ -36,13 +36,13 @@ Make sure that you have enough disk space. As managarm builds a lot of large ext
 1.  A working `docker` installation is required to perform a containerized build.
 1.  Build a Docker image from the provided Dockerfile:
     ```bash
-    docker build -t managarm-buildc --build_arg=USER=$(id -u) src/docker
+    docker build -t managarm-buildenv --build_arg=USER=$(id -u) src/docker
     ```
 1.  Change into the `build` directory and create a `bootstrap-site.yml` file containing:
     ```yml
     container:
         runtime: docker
-        image: managarm-buildc
+        image: managarm-buildenv
         src_mount: /var/bootstrap-managarm/src
         build_mount: /var/bootstrap-managarm/build
         allow_containerless: true
@@ -81,10 +81,7 @@ Now proceed to the Building paragraph.
 
 ## Creating Images
 
-*Note: if using a Docker container the following commands are meant to be ran* **_outside_**
-*the Docker container, in the `build` directory on the host.*
-*Adding to the aforementioned commands, one would `exit` from the container once*
-*the build finishes, enter the `build` directory, and proceed as follows.*
+*Note: these commands are meant to be ran in the `build` directory.*
 
 After managarm's packages have been built, building a HDD image of the system
 is straightforward. The [image_create.sh](https://github.com/qookei/image_create) script
@@ -96,22 +93,33 @@ wget 'https://raw.githubusercontent.com/qookei/image_create/master/image_create.
 chmod +x image_create.sh
 ```
 
-This repository contains a `mkimage` script
-to copy the system onto the image. Note that `mkimage` requires `libguestfs`
-and `rsync` to be able to create an image without requiring root access and synchronise it.
+This repository contains a `mkimage` script to copy the system onto the image.
 
+This script can use 3 different methods to copy files onto the image:
+1. Using libguestfs (the default method).
+2. Using a classic loopback and mount (requires root privileges). This is the safe fallback method most guaranteed to work.
+3. Via Docker container. This is handy in case the user is in the `docker` group since it does not require additional root authentication.
+
+Going with method 1 will require `libguestfs` to be installed on the host.
 After installing `libguestfs` it might be necessary to run the following:
 ```bash
 sudo install -d /usr/lib/guestfs
 sudo update-libguestfs-appliance
 ```
 
+Furthermore, all methods require `rsync` installed on the host as well.
+
 Hence, running the following commands in the build directory
 should produce a working image and launch it using QEMU:
 ```bash
-# Create a HDD image file called 'image' and copy the system onto it.
+# Create a HDD image file called 'image'.
 ./image_create.sh image 4GiB ext2 gpt
-../src/scripts/mkimage
+
+# Copy the system onto it. Pick _one_ of the following methods.
+../src/scripts/mkimage                      # Default libguestfs method.
+sudo USE_LOOPBACK=1 ../src/scripts/mkimage  # Loopback and mount method, requires root.
+USE_DOCKER=1 ../src/scripts/mkimage         # Docker method, does not require root
+                                            # as long as the user is in the Docker group.
 
 # To launch the image using QEMU, you can run:
 ../src/scripts/run-qemu

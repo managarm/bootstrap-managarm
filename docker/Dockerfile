@@ -72,11 +72,11 @@ RUN cd /root && \
 FROM base AS user
 ARG USER=1000
 
-RUN useradd -ms /bin/bash managarm_buildenv -u $USER
-USER managarm_buildenv
-WORKDIR /home/managarm_buildenv
+RUN useradd -ms /bin/bash managarm-buildenv -u $USER
+USER managarm-buildenv
+WORKDIR /home/managarm-buildenv
 
-RUN git config --global user.email "managarm_buildenv@localhost" \
-	&& git config --global user.name "managarm_buildenv"
+RUN git config --global user.email "managarm-buildenv@localhost" \
+	&& git config --global user.name "managarm-buildenv"
 
 CMD ["bash"]

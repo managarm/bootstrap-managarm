@@ -81,7 +81,7 @@ fi
 if [ -n "${USE_DOCKER:-}" ]; then
     scriptdir=/stuff/scripts
     dir=/mnt
-    comm="docker exec -i -u root:root managarm_mount bash"
+    comm="docker exec -i -u root:root managarm-mount bash"
 else
     comm="bash"
 fi
