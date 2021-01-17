@@ -2,7 +2,7 @@ node {
     cleanWs()
     dir('src') { checkout scm }
     def userId = sh(returnStdout: true, script: 'id -u').trim()
-    docker.build('managarm_buildenv', "--build-arg USER=${userId} src/docker/")
+    docker.build('managarm-buildenv', "--build-arg USER=${userId} src/docker/")
           .inside {
         dir('build') {
             sh 'cp ../src/ci/bootstrap-site.yml .'

@@ -36,13 +36,13 @@ Make sure that you have enough disk space. As managarm builds a lot of large ext
 1.  A working `docker` installation is required to perform a containerized build.
 1.  Build a Docker image from the provided Dockerfile:
     ```bash
-    docker build -t managarm_buildenv --build_arg=USER=$(id -u) src/docker
+    docker build -t managarm-buildenv --build_arg=USER=$(id -u) src/docker
     ```
 1.  Change into the `build` directory and create a `bootstrap-site.yml` file containing:
     ```yml
     container:
         runtime: docker
-        image: managarm_buildenv
+        image: managarm-buildenv
         src_mount: /var/bootstrap-managarm/src
         build_mount: /var/bootstrap-managarm/build
         allow_containerless: true

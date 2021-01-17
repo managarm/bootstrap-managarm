@@ -9,7 +9,7 @@ elif [ -n "${USE_DOCKER:-}" ];
 then
     rm -f "$scriptdir"/mount_ready
     docker run --privileged=true --rm \
-        --name=managarm_mount \
+        --name=managarm-mount \
         -v "$(realpath system-root)":/stuff/system-root:ro \
         -v "$(realpath initrd.cpio)":/stuff/initrd.cpio:ro \
         -v "$(realpath tools)":/stuff/tools:ro \
@@ -17,7 +17,7 @@ then
         -v "$(realpath image)":/stuff/image:rw \
         -w /stuff \
         -u root:root \
-        -d managarm_buildenv bash -c "
+        -d managarm-buildenv bash -c "
             set -ex
             losetup -Pf --show image > loopback_dev
             mkdir /devtmpfs
