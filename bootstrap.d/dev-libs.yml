@@ -166,7 +166,6 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/json-c/json-c.git'
-      branch: 'master'
       tag: 'json-c-0.15-20200726'
       version: '0.15'
     tools_required:
