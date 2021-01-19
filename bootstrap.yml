@@ -17,6 +17,7 @@ imports:
   - file: bootstrap.d/meta-pkgs.yml
   - file: bootstrap.d/net-misc.yml
   - file: bootstrap.d/sys-apps.yml
+  - file: bootstrap.d/sys-boot.yml
   - file: bootstrap.d/sys-devel.yml
   - file: bootstrap.d/sys-libs.yml
   - file: bootstrap.d/x11-apps.yml
