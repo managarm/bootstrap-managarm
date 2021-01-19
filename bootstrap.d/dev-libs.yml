@@ -162,6 +162,29 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
+  - name: json-c
+    source:
+      subdir: ports
+      git: 'https://github.com/json-c/json-c.git'
+      branch: 'master'
+      tag: 'json-c-0.15-20200726'
+      version: '0.15'
+    tools_required:
+      - system-gcc
+      - host-cmake
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: libevdev
     source:
       subdir: 'ports'
