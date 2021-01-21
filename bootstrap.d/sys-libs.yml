@@ -64,6 +64,7 @@ packages:
       version: '6.1'
     tools_required:
       - system-gcc
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -75,6 +76,7 @@ packages:
         - '--without-normal'
         - '--with-manpage-format=normal'
         - '--with-pkg-config-libdir=/usr/lib/pkgconfig'
+        - '--with-termlib'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
