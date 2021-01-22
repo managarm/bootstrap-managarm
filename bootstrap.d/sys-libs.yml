@@ -64,7 +64,7 @@ packages:
       version: '6.1'
     tools_required:
       - system-gcc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -77,10 +77,21 @@ packages:
         - '--with-manpage-format=normal'
         - '--with-pkg-config-libdir=/usr/lib/pkgconfig'
         - '--with-termlib'
+        - '--enable-widec'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
         quiet: true
+      # As we build ncurses with wide character support, make some compatibility links
+      - args: |
+          for lib in ncurses form panel menu tinfo ; do
+              rm -vf                    @THIS_COLLECT_DIR@/usr/lib/lib${lib}.so
+              echo "INPUT(-l${lib}w)" > @THIS_COLLECT_DIR@/usr/lib/lib${lib}.so
+              ln -sfv ${lib}w.pc        @THIS_COLLECT_DIR@/usr/lib/pkgconfig/${lib}.pc
+          done
+          rm -vf                     @THIS_COLLECT_DIR@/usr/lib/libcursesw.so
+          echo "INPUT(-lncursesw)" > @THIS_COLLECT_DIR@/usr/lib/libcursesw.so
+          ln -sfv libncurses.so      @THIS_COLLECT_DIR@/usr/lib/libcurses.so
 
   - name: readline
     source:

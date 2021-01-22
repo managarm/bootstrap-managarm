@@ -23,7 +23,8 @@ packages:
     pkgs_required:
       - ncurses
       - libintl
-    revision: 2
+      - zlib
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -34,6 +35,8 @@ packages:
         environ:
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
           PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
+          gl_cv_type_wctype_t: 'yes'
+          gl_cv_type_wctrans_t: 'yes'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc']
@@ -56,7 +59,7 @@ packages:
     pkgs_required:
       - ncurses
       - libiconv
-    revision: 2
+    revision: 3
     configure:
       # vim does not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead
@@ -78,8 +81,9 @@ packages:
         - '--disable-gpm'
         - '--disable-sysmouse'
         - '--disable-nls'
-        - '--with-tlib=ncurses'
+        - '--with-tlib=tinfo'
         - '--enable-gui=no'
+        - '--without-x'
         environ:
           ac_cv_small_wchar_t: 'no'
           ac_cv_func_sigsetjmp: 'no'

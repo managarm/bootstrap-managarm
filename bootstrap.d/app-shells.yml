@@ -16,9 +16,10 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - ncurses
       - readline
       - libiconv
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
