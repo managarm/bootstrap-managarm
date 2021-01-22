@@ -385,6 +385,92 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: util-linux
+    source:
+      subdir: ports
+      git: 'https://git.kernel.org/pub/scm/utils/util-linux/util-linux.git'
+      tag: 'v2.36.1'
+      version: '2.36.1'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-pkg-config
+        - host-libtool
+      regenerate:
+        - args: ['./autogen.sh']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - eudev
+      - readline
+      - ncurses
+      - zlib
+      - libiconv
+      - file
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--disable-nls'
+        - '--disable-static'
+        - '--without-python'
+        - '--without-systemd'
+        - '--without-systemdsystemunitdir'
+        - '--disable-mount'
+        - '--disable-losetup'
+        - '--disable-zramctl'
+        - '--disable-fsck'
+        - '--disable-partx'
+        - '--disable-uuidd'
+        - '--disable-fallocate'
+        - '--disable-unshare'
+        - '--disable-nsenter'
+        - '--disable-setpriv'
+        - '--disable-eject'
+        - '--disable-agetty'
+        - '--disable-plymouth_support'
+        - '--disable-fdformat'
+        - '--disable-hwclock'
+        - '--disable-hwclock-cmos'
+        - '--disable-hwclock-gplv3'
+        - '--disable-lslogins'
+        - '--disable-wdctl'
+        - '--disable-logger'
+        - '--disable-switch_root'
+        - '--disable-pivot_root'
+        - '--disable-lsmem'
+        - '--disable-chmem'
+        - '--disable-ipcrm'
+        - '--disable-ipcs'
+        - '--disable-irqtop'
+        - '--disable-lsirq'
+        - '--disable-rfkill'
+        - '--disable-kill'
+        - '--disable-last'
+        - '--disable-utmpdump'
+        - '--disable-raw'
+        - '--disable-chfn-chsh'
+        - '--disable-login'
+        - '--disable-nologin'
+        - '--disable-sulogin'
+        - '--disable-su'
+        - '--disable-runuser'
+        - '--disable-more'
+        - '--disable-setterm'
+        - '--disable-schedutils'
+        - '--disable-wall'
+        - '--disable-pg-bell'
+        - '--without-cap-ng'
+        - '--without-btrfs'
+        - '--without-selinux'
+        - '--without-audit'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: which
     source:
       subdir: ports

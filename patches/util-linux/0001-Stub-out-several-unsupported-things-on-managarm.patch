@@ -1,0 +1,80 @@
+From a6f339b6e35449c83f49a18093a150fc70d54ea5 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Thu, 21 Jan 2021 12:23:48 +0100
+Subject: [PATCH] Stub out several unsupported things on managarm
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ disk-utils/cfdisk.c | 1 +
+ include/path.h      | 2 ++
+ lib/cpuset.c        | 2 ++
+ lib/path.c          | 2 ++
+ 4 files changed, 7 insertions(+)
+
+diff --git a/disk-utils/cfdisk.c b/disk-utils/cfdisk.c
+index d96b6e9e0..3a5b20939 100644
+--- a/disk-utils/cfdisk.c
++++ b/disk-utils/cfdisk.c
+@@ -22,6 +22,7 @@
+ #include <libsmartcols.h>
+ #include <sys/ioctl.h>
+ #include <libfdisk.h>
++#include <termios.h>
+ 
+ #ifdef HAVE_LIBMOUNT
+ # include <libmount.h>	/* keep it optional for non-linux systems */
+diff --git a/include/path.h b/include/path.h
+index 2a4f80ecd..183a0d4a8 100644
+--- a/include/path.h
++++ b/include/path.h
+@@ -124,6 +124,7 @@ int ul_path_countf_dirents(struct path_cxt *pc, const char *path, ...)
+ FILE *ul_prefix_fopen(const char *prefix, const char *path, const char *mode);
+ 
+ 
++#ifndef __managarm__
+ #ifdef HAVE_CPU_SET_T
+ # include "cpuset.h"
+ int ul_path_readf_cpuset(struct path_cxt *pc, cpu_set_t **set, int maxcpus, const char *path, ...)
+@@ -132,4 +133,5 @@ int ul_path_readf_cpuset(struct path_cxt *pc, cpu_set_t **set, int maxcpus, cons
+ int ul_path_readf_cpulist(struct path_cxt *pc, cpu_set_t **set, int maxcpus, const char *path, ...)
+ 				__attribute__ ((__format__ (__printf__, 4, 5)));
+ #endif /* HAVE_CPU_SET_T */
++#endif /* !__managarm__ */
+ #endif /* UTIL_LINUX_PATH_H */
+diff --git a/lib/cpuset.c b/lib/cpuset.c
+index 2847db853..78ffd5f1b 100644
+--- a/lib/cpuset.c
++++ b/lib/cpuset.c
+@@ -1,3 +1,4 @@
++#ifndef __managarm__
+ /*
+  * Terminology:
+  *
+@@ -411,3 +412,4 @@ usage_err:
+ 	exit(EXIT_FAILURE);
+ }
+ #endif
++#endif
+diff --git a/lib/path.c b/lib/path.c
+index 75fa85305..fe3702970 100644
+--- a/lib/path.c
++++ b/lib/path.c
+@@ -977,6 +977,7 @@ FILE *ul_prefix_fopen(const char *prefix, const char *path, const char *mode)
+ 	return fopen(buf, mode);
+ }
+ 
++#ifndef __managarm__
+ #ifdef HAVE_CPU_SET_T
+ static int ul_path_cpuparse(struct path_cxt *pc, cpu_set_t **set, int maxcpus, int islist, const char *path, va_list ap)
+ {
+@@ -1044,6 +1045,7 @@ int ul_path_readf_cpulist(struct path_cxt *pc, cpu_set_t **set, int maxcpus, con
+ }
+ 
+ #endif /* HAVE_CPU_SET_T */
++#endif /* !__managarm__ */
+ 
+ 
+ #ifdef TEST_PROGRAM_PATH
+-- 
+2.30.0
+
