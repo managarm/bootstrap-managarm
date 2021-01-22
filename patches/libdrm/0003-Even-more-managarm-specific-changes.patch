@@ -1,0 +1,43 @@
+From 6a0feed25f14d7368770123c30ce7ccfa1b45733 Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Sat, 23 Jan 2021 21:09:10 +0100
+Subject: [PATCH] Even more managarm-specific changes
+
+---
+ xf86drm.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/xf86drm.c b/xf86drm.c
+index 4396369..39b4309 100644
+--- a/xf86drm.c
++++ b/xf86drm.c
+@@ -3078,7 +3078,7 @@ sysfs_uevent_get(const char *path, const char *fmt, ...)
+ /* Little white lie to avoid major rework of the existing code */
+ #define DRM_BUS_VIRTIO 0x10
+ 
+-#ifdef __linux__
++#if defined(__linux__) || defined(__managarm__)
+ static int get_subsystem_type(const char *device_path)
+ {
+     char path[PATH_MAX + 1] = "";
+@@ -3144,7 +3144,7 @@ static int drmParseSubsystemType(int maj, int min)
+ #endif
+ }
+ 
+-#ifdef __linux__
++#if defined(__linux__) || defined(__managarm__)
+ static void
+ get_pci_path(int maj, int min, char *pci_path)
+ {
+@@ -3631,7 +3631,7 @@ free_device:
+     return ret;
+ }
+ 
+-#ifdef __linux__
++#if defined(__linux__) || defined(__managarm__)
+ static int drm_usb_dev_path(int maj, int min, char *path, size_t len)
+ {
+     char *value, *tmp_path, *slash;
+-- 
+2.29.2
+
