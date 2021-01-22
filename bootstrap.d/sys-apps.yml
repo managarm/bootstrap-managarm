@@ -259,6 +259,7 @@ packages:
       - system-gcc
     pkgs_required:
       - ncurses
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
