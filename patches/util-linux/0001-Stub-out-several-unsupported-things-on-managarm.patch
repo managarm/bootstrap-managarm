@@ -1,15 +1,19 @@
-From a6f339b6e35449c83f49a18093a150fc70d54ea5 Mon Sep 17 00:00:00 2001
+From 15309a6d59ca6832f1f23543500a8f3f29483401 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Thu, 21 Jan 2021 12:23:48 +0100
-Subject: [PATCH] Stub out several unsupported things on managarm
+Subject: [PATCH 1/2] Stub out several unsupported things on managarm
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
- disk-utils/cfdisk.c | 1 +
- include/path.h      | 2 ++
- lib/cpuset.c        | 2 ++
- lib/path.c          | 2 ++
- 4 files changed, 7 insertions(+)
+ disk-utils/cfdisk.c           | 1 +
+ include/namespace.h           | 2 ++
+ include/path.h                | 2 ++
+ lib/cpuset.c                  | 2 ++
+ lib/path.c                    | 2 ++
+ libblkid/src/topology/ioctl.c | 2 ++
+ libmount/src/context_umount.c | 4 +++-
+ misc-utils/lsblk.h            | 2 ++
+ 8 files changed, 16 insertions(+), 1 deletion(-)
 
 diff --git a/disk-utils/cfdisk.c b/disk-utils/cfdisk.c
 index d96b6e9e0..3a5b20939 100644
@@ -23,6 +27,24 @@ index d96b6e9e0..3a5b20939 100644
  
  #ifdef HAVE_LIBMOUNT
  # include <libmount.h>	/* keep it optional for non-linux systems */
+diff --git a/include/namespace.h b/include/namespace.h
+index 2d0a56e02..75d0f439d 100644
+--- a/include/namespace.h
++++ b/include/namespace.h
+@@ -7,6 +7,7 @@
+  */
+ #ifndef UTIL_LINUX_NAMESPACE_H
+ # define UTIL_LINUX_NAMESPACE_H
++#ifndef __managarm__
+ 
+ # include <sched.h>
+ 
+@@ -53,4 +54,5 @@ static inline int setns(int fd, int nstype)
+ }
+ # endif
+ 
++#endif /* !__managarm__ */
+ #endif	/* UTIL_LINUX_NAMESPACE_H */
 diff --git a/include/path.h b/include/path.h
 index 2a4f80ecd..183a0d4a8 100644
 --- a/include/path.h
@@ -75,6 +97,47 @@ index 75fa85305..fe3702970 100644
  
  
  #ifdef TEST_PROGRAM_PATH
+diff --git a/libblkid/src/topology/ioctl.c b/libblkid/src/topology/ioctl.c
+index 3aba09e4f..76b750e20 100644
+--- a/libblkid/src/topology/ioctl.c
++++ b/libblkid/src/topology/ioctl.c
+@@ -16,6 +16,8 @@
+ #include <unistd.h>
+ #include <errno.h>
+ 
++#include <linux/fs.h>
++
+ #include "topology.h"
+ 
+ /*
+diff --git a/libmount/src/context_umount.c b/libmount/src/context_umount.c
+index df9a2ebf5..3a4ec3c52 100644
+--- a/libmount/src/context_umount.c
++++ b/libmount/src/context_umount.c
+@@ -291,7 +291,9 @@ static int lookup_umount_fs_by_statfs(struct libmnt_context *cxt, const char *tg
+ 		DBG(CXT, ul_debugobj(cxt, "  trying fstatfs()"));
+ 
+ 		/* O_PATH avoids triggering automount points. */
+-		fd = open(tgt, O_PATH);
++		/* MANAGARM: We don't support O_PATH (yet) so disable it. */
++		fd = open(tgt, 0);
++		//fd = open(tgt, O_PATH);
+ 		if (fd >= 0) {
+ 			if (fstatfs(fd, &vfs) == 0)
+ 				type = mnt_statfs_get_fstype(&vfs);
+diff --git a/misc-utils/lsblk.h b/misc-utils/lsblk.h
+index 87221271e..6ae1ebecc 100644
+--- a/misc-utils/lsblk.h
++++ b/misc-utils/lsblk.h
+@@ -13,6 +13,8 @@
+ 
+ #include <libsmartcols.h>
+ 
++#include <linux/fs.h>
++
+ #include "c.h"
+ #include "list.h"
+ #include "debug.h"
 -- 
 2.30.0
 
