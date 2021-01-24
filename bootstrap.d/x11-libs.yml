@@ -82,37 +82,40 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/mesa/drm'
-      tag: 'libdrm-2.4.89'
-      version: '2.4.89'
+      tag: 'libdrm-2.4.104'
+      version: '2.4.104'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
         - host-libtool
-        - host-pkg-config
         - host-xorg-macros
-      regenerate:
-        - args: ['./autogen.sh']
-          environ:
-            'NOCONFIGURE': 'yes'
+        - host-pkg-config
+        - virtual: pkgconfig-for-target
+          triple: x86_64-managarm
     tools_required:
       - system-gcc
     configure:
       - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - 'meson'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
-        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
-        - '--disable-intel'
-        - '--disable-vmwgfx'
-        - '--disable-radeon'
-        - '--disable-amdgpu'
-        - '--disable-nouveau'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '-Dintel=false'
+        - '-Dvmwgfx=false'
+        - '-Dradeon=false'
+        - '-Damdgpu=false'
+        - '-Dnouveau=false'
         # We might want to build cairo with OpenGL support.
         # Doing so would introduce a circular dependency here.
-        - '--disable-cairo-tests'
+        - '-Dcairo-tests=false'
+        - '@THIS_SOURCE_DIR@'
     build:
-      - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'install']
+      - args: ['ninja']
+      - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
@@ -238,7 +241,7 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
-  
+
   - name: libx11
     source:
       subdir: ports

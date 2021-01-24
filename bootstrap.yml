@@ -166,8 +166,8 @@ sources:
   - name: wayland
     subdir: 'ports'
     git: 'https://github.com/wayland-project/wayland.git'
-    tag: '1.17.0'
-    version: '1.17.0'
+    tag: '1.18.93'
+    version: '1.18.93'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.15
@@ -1326,7 +1326,7 @@ packages:
       - args: ['make', '-j@PARALLELISM@', '-C', 'src']
       - args: 'install -Dt @THIS_COLLECT_DIR@/bin $(sed s,^,src/, @THIS_BUILD_DIR@/package/commands)'
 
-      
+
 tasks:
   - name: useful-image-dependencies
     pkgs_required:

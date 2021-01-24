@@ -117,7 +117,7 @@ packages:
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
-        - host-libtool  
+        - host-libtool
       regenerate:
         - args: ['@THIS_SOURCE_DIR@/.bootstrap']
         - args: ['cp', '@THIS_SOURCE_DIR@/configfsf.guess', '@THIS_SOURCE_DIR@/config.guess']
@@ -416,8 +416,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/wayland-project/libinput.git'
-      tag: '1.10.7'
-      version: '1.10.7'
+      tag: '1.16.4'
+      version: '1.16.4'
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -789,3 +789,4 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+
