@@ -201,6 +201,7 @@ packages:
             'NOCONFIGURE': 'yes'
     tools_required:
       - system-gcc
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
