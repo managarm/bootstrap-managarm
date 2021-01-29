@@ -118,8 +118,8 @@ packages:
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/findutils.git'
-      tag: 'v4.7.0'
-      version: '4.7.0'
+      tag: 'v4.8.0'
+      version: '4.8.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
