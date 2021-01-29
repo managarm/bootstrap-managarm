@@ -112,10 +112,10 @@ packages:
   - name: glew
     source:
       subdir: 'ports'
-      url: 'https://github.com/nigels-com/glew/releases/download/glew-2.1.0/glew-2.1.0.tgz'
+      url: 'https://github.com/nigels-com/glew/releases/download/glew-2.2.0/glew-2.2.0.tgz'
       format: 'tar.gz'
-      extract_path: 'glew-2.1.0'
-      version: '2.1.0'
+      extract_path: 'glew-2.2.0'
+      version: '2.2.0'
     tools_required:
       - system-gcc
     pkgs_required:
