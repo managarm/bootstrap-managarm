@@ -408,7 +408,7 @@ packages:
       - zlib
       - libiconv
       - file
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -425,13 +425,11 @@ packages:
         - '--disable-nsenter'
         - '--disable-setpriv'
         - '--disable-eject'
-        - '--disable-agetty'
         - '--disable-plymouth_support'
         - '--disable-fdformat'
         - '--disable-hwclock'
         - '--disable-hwclock-cmos'
         - '--disable-hwclock-gplv3'
-        - '--disable-lslogins'
         - '--disable-wdctl'
         - '--disable-logger'
         - '--disable-switch_root'
@@ -441,7 +439,6 @@ packages:
         - '--disable-ipcs'
         - '--disable-irqtop'
         - '--disable-rfkill'
-        - '--disable-last'
         - '--disable-utmpdump'
         - '--disable-raw'
         - '--disable-chfn-chsh'
@@ -452,7 +449,6 @@ packages:
         - '--disable-runuser'
         - '--disable-setterm'
         - '--disable-schedutils'
-        - '--disable-wall'
         - '--disable-pg-bell'
         - '--disable-fstrim'
         - '--disable-swapon'
@@ -472,7 +468,7 @@ packages:
         - '--disable-rtcwake'
         - '--disable-setarch'
         - '--disable-tunelp'
-        #- '--enable-write'
+        - '--enable-write'
         - '--without-cap-ng'
         - '--without-btrfs'
         - '--without-selinux'

@@ -1,4 +1,4 @@
-From 7133753aae9956396a271604b8e3f427ef71b990 Mon Sep 17 00:00:00 2001
+From 0a00d26a55188907036ab4c1b260de3952416f16 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Sat, 23 Jan 2021 00:06:46 +0100
 Subject: [PATCH 2/2] Revamp the configure script.
