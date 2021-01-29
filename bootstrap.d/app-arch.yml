@@ -87,8 +87,8 @@ packages:
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/tar.git'
-      tag: 'release_1_32'
-      version: '1.32'
+      tag: 'release_1_33'
+      version: '1.33'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
