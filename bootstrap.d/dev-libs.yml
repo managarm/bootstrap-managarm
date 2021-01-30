@@ -89,6 +89,8 @@ packages:
       - libffi
       - zlib
       - libiconv
+      - libintl
+    revision: 2
     configure:
       - args:
         - 'meson'
