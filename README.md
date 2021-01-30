@@ -62,7 +62,7 @@ Now proceed to the Building paragraph.
     Install it from pip: `pip3 install meson`
 1.  `protobuf` is also required. There is a Debian package, but a newer version is required.
     Install it from pip: `pip3 install protobuf`
-1.  [bragi](https://github.com/managarm/bragi) is required to build managarm. It can be insalled via pip: `pip3 install bragi`.
+1.  [bragi](https://github.com/managarm/bragi) is required to build managarm. It can be installed via pip: `pip3 install bragi`.
 1.  For managarm kernel documentation you may also want `mdbook`. This requires `rust` & `cargo` to be installed.
     Install it using cargo: `cargo install --git https://github.com/rust-lang/mdBook.git mdbook`
 
@@ -73,9 +73,23 @@ Now proceed to the Building paragraph.
     cd build
     xbstrap init ../src
     ```
-1.  Start the build using
+1.  There are several meta-packages available which control what software is build, this means that the build can be started using one of the following commands:
+
+    If you only want to build the bare minimum to boot into `kmscon` use
     ```bash
     xbstrap install --all
+    ```
+    If you want to boot into `kmscon` and have some functional commands to play around with use
+    ```bash
+    xbstrap install base
+    ```
+    If you want to boot into `weston` as well and have some gui apps to try out use
+    ```bash
+    xbstrap install gui
+    ```
+    If you want some development tools in addition to the functionality of `base` use
+    ```bash
+    xbstrap install base-devel
     ```
     Note that this command can take multiple hours, depending on your machine.
 
