@@ -75,21 +75,21 @@ Now proceed to the Building paragraph.
     ```
 1.  There are several meta-packages available which control what software is build, this means that the build can be started using one of the following commands:
 
-    If you only want to build the bare minimum to boot into `kmscon` use
+    If you want the full managarm experience with a selection of terminal and gui software available to try out use
     ```bash
-    xbstrap install --all
+    xbstrap install gui
     ```
     If you want to boot into `kmscon` and have some functional commands to play around with use
     ```bash
     xbstrap install base
     ```
-    If you want to boot into `weston` as well and have some gui apps to try out use
-    ```bash
-    xbstrap install gui
-    ```
     If you want some development tools in addition to the functionality of `base` use
     ```bash
     xbstrap install base-devel
+    ```
+    If you only want to build the bare minimum to boot into `kmscon` use
+    ```bash
+    xbstrap install --all
     ```
     Note that this command can take multiple hours, depending on your machine.
 
