@@ -89,6 +89,8 @@ packages:
       - libffi
       - zlib
       - libiconv
+      - libintl
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -444,6 +446,53 @@ packages:
     build:
       - args: ['ninja']
       - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+
+  - name: libintl
+    source:
+      subdir: 'ports'
+      url: 'https://ftp.gnu.org/gnu/gettext/gettext-0.21.tar.xz'
+      format: 'tar.xz'
+      extract_path: 'gettext-0.21'
+      version: '0.21'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+      regenerate:
+        - args: ['autoreconf', '-fvi']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - libiconv
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--without-emacs'
+        - '--without-lispdir'
+        # Normally this controls nls behavior in general, but the libintl
+        # subdir is skipped unless this is explicitly set.
+        - '--enable-nls'
+        # This magic flag enables libintl.
+        - '--with-included-gettext'
+        - '--disable-c++'
+        - '--disable-libasprintf'
+        - '--disable-java'
+        - '--enable-shared'
+        - '--disable-static'
+        - '--enable-threads=posix'
+        - '--disable-curses'
+        - '--without-git'
+        - '--without-cvs'
+        - '--without-bzip2'
+        - '--without-xz'
+    build:
+      - args: ['make', '-C', 'gettext-runtime/intl', '-j@PARALLELISM@']
+      - args: ['make', '-C', 'gettext-runtime/intl', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true

@@ -955,6 +955,7 @@ packages:
         - '@THIS_SOURCE_DIR@'
         - '-Dheaders_only=true'
         - '-Ddisable_iconv_option=true'
+        - '-Ddisable_intl_option=true'
     build:
       - args: ['ninja']
       - args: ['ninja', 'install']
@@ -982,6 +983,7 @@ packages:
         - '--buildtype=debugoptimized'
         - '-Dmlibc_no_headers=true'
         - '-Ddisable_iconv_option=true'
+        - '-Ddisable_intl_option=true'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
