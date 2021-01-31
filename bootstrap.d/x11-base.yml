@@ -59,6 +59,7 @@ packages:
       - system-gcc
     pkgs_required:
       - xorg-util-macros
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
