@@ -1,0 +1,25 @@
+From c56de322d59c4e889bc21fabc1be08c09667debc Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Wed, 3 Feb 2021 16:18:36 +0100
+Subject: [PATCH] Fix missing termios include
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ src/popthelp.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/popthelp.c b/src/popthelp.c
+index 3c05acb..902ea1c 100644
+--- a/src/popthelp.c
++++ b/src/popthelp.c
+@@ -12,6 +12,7 @@
+ 
+ #define        POPT_USE_TIOCGWINSZ
+ #ifdef POPT_USE_TIOCGWINSZ
++#include <termios.h>
+ #include <sys/ioctl.h>
+ #endif
+ 
+-- 
+2.30.0
+
