@@ -83,6 +83,28 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
+  - name: lz4
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/lz4/lz4.git'
+      tag: 'v1.9.3'
+      version: '1.9.3'
+    tools_required:
+      - host-cmake
+      - system-gcc
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain.txt'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '@THIS_SOURCE_DIR@/build/cmake'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: tar
     source:
       subdir: ports
