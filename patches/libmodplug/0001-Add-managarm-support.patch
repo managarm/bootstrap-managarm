@@ -1,0 +1,65 @@
+From 07683190e0e2d5b4b04f82ea692a115adb6e42e8 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Wed, 3 Feb 2021 15:48:41 +0100
+Subject: [PATCH] Add managarm support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ src/fastmix.cpp  | 1 +
+ src/load_abc.cpp | 1 +
+ src/load_stm.cpp | 1 +
+ src/load_umx.cpp | 2 +-
+ 4 files changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/src/fastmix.cpp b/src/fastmix.cpp
+index d693d20..f25c8be 100644
+--- a/src/fastmix.cpp
++++ b/src/fastmix.cpp
+@@ -8,6 +8,7 @@
+ #include "stdafx.h"
+ #include "sndfile.h"
+ #include <math.h>
++#include <strings.h>
+ 
+ #ifdef MSC_VER
+ #pragma bss_seg(".modplug")
+diff --git a/src/load_abc.cpp b/src/load_abc.cpp
+index ee79f39..2baf693 100644
+--- a/src/load_abc.cpp
++++ b/src/load_abc.cpp
+@@ -28,6 +28,7 @@
+ #include <stdlib.h>
+ #include <time.h>
+ #include <string.h>
++#include <strings.h>
+ #include <math.h>
+ #include <ctype.h>
+ #ifndef _WIN32
+diff --git a/src/load_stm.cpp b/src/load_stm.cpp
+index 6f55b78..8b314ac 100644
+--- a/src/load_stm.cpp
++++ b/src/load_stm.cpp
+@@ -6,6 +6,7 @@
+ 
+ #include "stdafx.h"
+ #include "sndfile.h"
++#include <strings.h>
+ 
+ //#pragma warning(disable:4244)
+ 
+diff --git a/src/load_umx.cpp b/src/load_umx.cpp
+index c3f8c93..d4128da 100644
+--- a/src/load_umx.cpp
++++ b/src/load_umx.cpp
+@@ -11,7 +11,7 @@
+ 
+ #include "stdafx.h"
+ #include "sndfile.h"
+-
++#include <strings.h>
+ 
+ typedef LONG fci_t;		/* FCompactIndex */
+ 
+-- 
+2.30.0
+

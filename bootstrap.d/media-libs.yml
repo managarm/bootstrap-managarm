@@ -284,6 +284,34 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
+  - name: libmodplug
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/Konstanty/libmodplug.git'
+      # Check out current master
+      branch: 'master'
+      commit: '5a39f5913d07ba3e61d8d5afdba00b70165da81d'
+      version: '0.8.9.0'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['autoreconf', '-fvi']
+    tools_required:
+      - system-gcc
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: libogg
     source:
       subdir: 'ports'
