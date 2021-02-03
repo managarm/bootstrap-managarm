@@ -930,3 +930,27 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
+  - name: xxhash
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/Cyan4973/xxHash.git'
+      tag: 'v0.8.0'
+      version: '0.8.0'
+    tools_required:
+      - system-gcc
+    configure:
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+        environ:
+          PREFIX: '/usr'
+          LIBDIR: '/usr/lib'
+          CC: '@OPTION:arch-triple@-gcc'
+          AR: '@OPTION:arch-triple@-ar'
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+          PREFIX: '/usr'
+          LIBDIR: '/usr/lib'
+          MANDIR: '/usr/share/man/man1'
+      - args: ['rm', '-v', '@THIS_COLLECT_DIR@/usr/lib/libxxhash.a']
