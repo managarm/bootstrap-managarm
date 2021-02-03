@@ -45,6 +45,35 @@ tools:
       - args: ['make', 'install']
 
 packages:
+  - name: atk
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.gnome.org/GNOME/atk.git'
+      tag: 'ATK_2_36_0'
+      version: '2.36.0'
+    tools_required:
+      - system-gcc
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: x86_64-managarm
+    pkgs_required:
+      - glib
+    configure:
+      - args:
+        - 'meson'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '-Dintrospection=false'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: fribidi
     source:
       subdir: 'ports'

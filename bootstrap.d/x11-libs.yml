@@ -78,6 +78,90 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
+  - name: gdk-pixbuf
+    source:
+      subdir: ports
+      git: 'https://gitlab.gnome.org/GNOME/gdk-pixbuf.git'
+      tag: '2.40.0'
+      version: '2.40.0'
+    tools_required:
+      - system-gcc
+      - host-libtool
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: x86_64-managarm
+    pkgs_required:
+      - glib
+      - libjpeg-turbo
+      - libpng
+      - shared-mime-info
+      - libx11
+    configure:
+      - args:
+        - 'meson'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson.cross-file'
+        - '--prefix=/usr'
+        - '-Dgir=false'
+        - '-Dman=false'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: gtk+-2
+    source:
+      subdir: 'ports'
+      url: 'https://download.gnome.org/sources/gtk+/2.24/gtk+-2.24.32.tar.xz'
+      format: 'tar.xz'
+      extract_path: 'gtk+-2.24.32'
+      patch-path-strip: 1
+      version: '2.24.32'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+        - host-xorg-macros
+        - host-glib
+      regenerate:
+        - args: ['autoreconf', '-fvi']
+    tools_required:
+      - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: x86_64-managarm
+    pkgs_required:
+      - atk
+      - cairo
+      - glib
+      - gdk-pixbuf
+      - libx11
+      - libxext
+      - libxcb
+      - pango
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--sysconfdir=/etc'
+        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
+        - '--disable-gtk-doc-html'
+        - '--disable-cups'
+        - '--disable-papi'
+        - '--disable-introspection'
+        - '--disable-glibtest'
+        - '--disable-test-print-backend'
+        - '--enable-xkb'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+
   - name: libdrm
     source:
       subdir: 'ports'
