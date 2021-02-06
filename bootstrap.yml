@@ -38,6 +38,8 @@ repositories:
 declare_options:
   - name: arch-triple
     default: x86_64-managarm
+  - name: mount-using
+    default: guestfs
 
 sources:
   - name: binutils
@@ -1347,6 +1349,38 @@ tasks:
         order_only: true
     args:
       - '@SOURCE_ROOT@/scripts/mkimage'
+    workdir: '@BUILD_ROOT@'
+    containerless: true
+
+  - name: update-initrd
+    pkgs_required:
+      - managarm-kernel
+      - managarm-system
+    tasks_required:
+      - task: useful-image-dependencies
+        order_only: true
+    tools_required:
+      - cross-binutils
+    args:
+      - '@SOURCE_ROOT@/managarm/tools/gen-initrd.py'
+      - '--triple'
+      - '@OPTION:arch-triple@'
+    workdir: '@BUILD_ROOT@'
+
+  - name: update-image
+    pkgs_required:
+      - managarm-kernel
+      - managarm-system
+    tasks_required:
+      - task: useful-image-dependencies
+        order_only: true
+      - update-initrd
+    args:
+      - '@SOURCE_ROOT@/scripts/update-image.py'
+      - '--triple'
+      - '@OPTION:arch-triple@'
+      - '--mount-using'
+      - '@OPTION:mount-using@'
     workdir: '@BUILD_ROOT@'
     containerless: true
 
