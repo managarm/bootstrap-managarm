@@ -24,7 +24,7 @@ packages:
       - ncurses
       - libintl
       - zlib
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -39,12 +39,16 @@ packages:
           gl_cv_type_wctrans_t: 'yes'
     build:
       - args: ['make', '-j@PARALLELISM@']
-      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc']
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
-      - args: ['cp', '@THIS_BUILD_DIR@/doc/sample.nanorc', '@THIS_COLLECT_DIR@/etc/nanorc']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/home/managarm']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/root']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/nanorc', '@THIS_COLLECT_DIR@/etc/nanorc']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/nanorc', '@THIS_COLLECT_DIR@/home/managarm/.nanorc']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/root-nanorc', '@THIS_COLLECT_DIR@/root/.nanorc']
 
   - name: vim
     source:
