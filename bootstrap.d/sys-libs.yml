@@ -64,7 +64,7 @@ packages:
       version: '6.1'
     tools_required:
       - system-gcc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -78,6 +78,8 @@ packages:
         - '--with-pkg-config-libdir=/usr/lib/pkgconfig'
         - '--with-termlib'
         - '--enable-widec'
+        environ:
+          cf_cv_func_nanosleep: 'yes'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
