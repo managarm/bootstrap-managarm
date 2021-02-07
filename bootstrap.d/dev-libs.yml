@@ -2,8 +2,8 @@ sources:
   - name: glib
     subdir: ports
     git: 'https://gitlab.gnome.org/GNOME/glib'
-    tag: '2.66.4'
-    version: '2.66.4'
+    tag: '2.66.6'
+    version: '2.66.6'
 
   - name: icu
     subdir: 'ports'
@@ -119,7 +119,6 @@ packages:
       - zlib
       - libiconv
       - libintl
-    revision: 2
     configure:
       - args:
         - 'meson'
