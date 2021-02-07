@@ -3,8 +3,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/curl/curl.git'
-      tag: 'curl-7_70_0'
-      version: '7.70.0'
+      tag: 'curl-7_75_0'
+      version: '7.75.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -24,7 +24,6 @@ packages:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
-        - '--disable-ipv6'
         - '--disable-static'
         - '--with-ca-path=/etc/ssl/certs'
         - '--enable-threaded-resolver'
