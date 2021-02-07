@@ -62,7 +62,7 @@ packages:
       - args:
         - 'meson'
         - '--cross-file'
-        - '@SOURCE_ROOT@/scripts/meson.cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
