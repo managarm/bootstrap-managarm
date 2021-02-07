@@ -259,6 +259,7 @@ packages:
       - system-gcc
     pkgs_required:
       - ncurses
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -379,6 +380,101 @@ packages:
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
         - '--disable-nls'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: util-linux
+    source:
+      subdir: ports
+      git: 'https://git.kernel.org/pub/scm/utils/util-linux/util-linux.git'
+      tag: 'v2.36.1'
+      version: '2.36.1'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-pkg-config
+        - host-libtool
+      regenerate:
+        - args: ['./autogen.sh']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - eudev
+      - readline
+      - ncurses
+      - zlib
+      - libiconv
+      - file
+    revision: 3
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--disable-nls'
+        - '--disable-static'
+        - '--without-python'
+        - '--without-systemd'
+        - '--without-systemdsystemunitdir'
+        - '--disable-partx'
+        - '--disable-fallocate'
+        - '--disable-unshare'
+        - '--disable-nsenter'
+        - '--disable-setpriv'
+        - '--disable-eject'
+        - '--disable-plymouth_support'
+        - '--disable-fdformat'
+        - '--disable-hwclock'
+        - '--disable-hwclock-cmos'
+        - '--disable-hwclock-gplv3'
+        - '--disable-wdctl'
+        - '--disable-logger'
+        - '--disable-switch_root'
+        - '--disable-pivot_root'
+        - '--disable-chmem'
+        - '--disable-ipcrm'
+        - '--disable-ipcs'
+        - '--disable-irqtop'
+        - '--disable-rfkill'
+        - '--disable-utmpdump'
+        - '--disable-raw'
+        - '--disable-chfn-chsh'
+        - '--disable-login'
+        - '--disable-nologin'
+        - '--disable-sulogin'
+        - '--disable-su'
+        - '--disable-runuser'
+        - '--disable-setterm'
+        - '--disable-schedutils'
+        - '--disable-pg-bell'
+        - '--disable-fstrim'
+        - '--disable-swapon'
+        - '--disable-lscpu'
+        - '--disable-chcpu'
+        - '--disable-blockdev'
+        - '--disable-prlimit'
+        - '--disable-lsipc'
+        - '--disable-lsns'
+        - '--disable-readprofile'
+        - '--disable-dmesg'
+        - '--disable-fincore'
+        - '--disable-fsfreeze'
+        - '--disable-blkdiscard'
+        - '--disable-blkzone'
+        - '--disable-ldattach'
+        - '--disable-rtcwake'
+        - '--disable-setarch'
+        - '--disable-tunelp'
+        - '--enable-write'
+        - '--without-cap-ng'
+        - '--without-btrfs'
+        - '--without-selinux'
+        - '--without-audit'
+        - '--enable-usrdir-path'
+        - '--disable-makeinstall-chown'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']

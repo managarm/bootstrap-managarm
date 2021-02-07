@@ -1,0 +1,175 @@
+From 3b0ef9e87835d779a439a00088907d2e6e71feca Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Thu, 21 Jan 2021 12:23:48 +0100
+Subject: [PATCH 1/2] Stub out several unsupported things on managarm
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ disk-utils/cfdisk.c           | 1 +
+ include/namespace.h           | 2 ++
+ include/path.h                | 2 ++
+ lib/cpuset.c                  | 2 ++
+ lib/path.c                    | 2 ++
+ libblkid/src/topology/ioctl.c | 2 ++
+ login-utils/logindefs.c       | 2 +-
+ login-utils/lslogins.c        | 2 +-
+ misc-utils/lsblk.h            | 2 ++
+ term-utils/agetty.c           | 8 ++++++++
+ 10 files changed, 23 insertions(+), 2 deletions(-)
+
+diff --git a/disk-utils/cfdisk.c b/disk-utils/cfdisk.c
+index d96b6e9e0..3a5b20939 100644
+--- a/disk-utils/cfdisk.c
++++ b/disk-utils/cfdisk.c
+@@ -22,6 +22,7 @@
+ #include <libsmartcols.h>
+ #include <sys/ioctl.h>
+ #include <libfdisk.h>
++#include <termios.h>
+ 
+ #ifdef HAVE_LIBMOUNT
+ # include <libmount.h>	/* keep it optional for non-linux systems */
+diff --git a/include/namespace.h b/include/namespace.h
+index 2d0a56e02..75d0f439d 100644
+--- a/include/namespace.h
++++ b/include/namespace.h
+@@ -7,6 +7,7 @@
+  */
+ #ifndef UTIL_LINUX_NAMESPACE_H
+ # define UTIL_LINUX_NAMESPACE_H
++#ifndef __managarm__
+ 
+ # include <sched.h>
+ 
+@@ -53,4 +54,5 @@ static inline int setns(int fd, int nstype)
+ }
+ # endif
+ 
++#endif /* !__managarm__ */
+ #endif	/* UTIL_LINUX_NAMESPACE_H */
+diff --git a/include/path.h b/include/path.h
+index 2a4f80ecd..183a0d4a8 100644
+--- a/include/path.h
++++ b/include/path.h
+@@ -124,6 +124,7 @@ int ul_path_countf_dirents(struct path_cxt *pc, const char *path, ...)
+ FILE *ul_prefix_fopen(const char *prefix, const char *path, const char *mode);
+ 
+ 
++#ifndef __managarm__
+ #ifdef HAVE_CPU_SET_T
+ # include "cpuset.h"
+ int ul_path_readf_cpuset(struct path_cxt *pc, cpu_set_t **set, int maxcpus, const char *path, ...)
+@@ -132,4 +133,5 @@ int ul_path_readf_cpuset(struct path_cxt *pc, cpu_set_t **set, int maxcpus, cons
+ int ul_path_readf_cpulist(struct path_cxt *pc, cpu_set_t **set, int maxcpus, const char *path, ...)
+ 				__attribute__ ((__format__ (__printf__, 4, 5)));
+ #endif /* HAVE_CPU_SET_T */
++#endif /* !__managarm__ */
+ #endif /* UTIL_LINUX_PATH_H */
+diff --git a/lib/cpuset.c b/lib/cpuset.c
+index 2847db853..78ffd5f1b 100644
+--- a/lib/cpuset.c
++++ b/lib/cpuset.c
+@@ -1,3 +1,4 @@
++#ifndef __managarm__
+ /*
+  * Terminology:
+  *
+@@ -411,3 +412,4 @@ usage_err:
+ 	exit(EXIT_FAILURE);
+ }
+ #endif
++#endif
+diff --git a/lib/path.c b/lib/path.c
+index 75fa85305..fe3702970 100644
+--- a/lib/path.c
++++ b/lib/path.c
+@@ -977,6 +977,7 @@ FILE *ul_prefix_fopen(const char *prefix, const char *path, const char *mode)
+ 	return fopen(buf, mode);
+ }
+ 
++#ifndef __managarm__
+ #ifdef HAVE_CPU_SET_T
+ static int ul_path_cpuparse(struct path_cxt *pc, cpu_set_t **set, int maxcpus, int islist, const char *path, va_list ap)
+ {
+@@ -1044,6 +1045,7 @@ int ul_path_readf_cpulist(struct path_cxt *pc, cpu_set_t **set, int maxcpus, con
+ }
+ 
+ #endif /* HAVE_CPU_SET_T */
++#endif /* !__managarm__ */
+ 
+ 
+ #ifdef TEST_PROGRAM_PATH
+diff --git a/libblkid/src/topology/ioctl.c b/libblkid/src/topology/ioctl.c
+index 3aba09e4f..76b750e20 100644
+--- a/libblkid/src/topology/ioctl.c
++++ b/libblkid/src/topology/ioctl.c
+@@ -16,6 +16,8 @@
+ #include <unistd.h>
+ #include <errno.h>
+ 
++#include <linux/fs.h>
++
+ #include "topology.h"
+ 
+ /*
+diff --git a/login-utils/logindefs.c b/login-utils/logindefs.c
+index 97150dc28..35371ec3f 100644
+--- a/login-utils/logindefs.c
++++ b/login-utils/logindefs.c
+@@ -26,7 +26,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+-#include <sys/syslog.h>
++#include <syslog.h>
+ #include <sys/stat.h>
+ #include <sys/types.h>
+ #include <pwd.h>
+diff --git a/login-utils/lslogins.c b/login-utils/lslogins.c
+index 8a6ef713f..2b56879c3 100644
+--- a/login-utils/lslogins.c
++++ b/login-utils/lslogins.c
+@@ -25,7 +25,7 @@
+ #include <getopt.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+-#include <sys/syslog.h>
++#include <syslog.h>
+ #include <pwd.h>
+ #include <grp.h>
+ #include <shadow.h>
+diff --git a/misc-utils/lsblk.h b/misc-utils/lsblk.h
+index 87221271e..6ae1ebecc 100644
+--- a/misc-utils/lsblk.h
++++ b/misc-utils/lsblk.h
+@@ -13,6 +13,8 @@
+ 
+ #include <libsmartcols.h>
+ 
++#include <linux/fs.h>
++
+ #include "c.h"
+ #include "list.h"
+ #include "debug.h"
+diff --git a/term-utils/agetty.c b/term-utils/agetty.c
+index 191fa29c0..bf985a2f9 100644
+--- a/term-utils/agetty.c
++++ b/term-utils/agetty.c
+@@ -88,6 +88,14 @@
+ #  ifndef DEFAULT_STERM
+ #    define DEFAULT_STERM  "vt102"
+ #  endif
++#elif defined __managarm__
++#  define USE_SYSLOG
++#  ifndef DEFAULT_VCTERM
++#    define DEFAULT_VCTERM "linux"
++#  endif
++#  ifndef DEFAULT_STERM
++#    define DEFAULT_STERM  "vt100"
++#  endif
+ #else
+ #  ifndef DEFAULT_VCTERM
+ #    define DEFAULT_VCTERM "vt100"
+-- 
+2.30.0
+
