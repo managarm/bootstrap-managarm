@@ -1,0 +1,124 @@
+--- gtklife-5.2-orig/Makefile.in.managarm	1970-01-01 01:00:00.000000000 +0100
++++ gtklife-5.2/Makefile.in.managarm	2021-02-07 17:10:02.082908191 +0100
+@@ -0,0 +1,86 @@
++# Autoconf stuff
++
++VERSION=@PACKAGE_VERSION@
++
++CC=@CC@
++CFLAGS=@CFLAGS@
++GTK_CFLAGS=@GTK_CFLAGS@
++GTK_LIBS=@GTK_LIBS@
++
++INSTALL=@INSTALL@
++INSTALL_PROGRAM=@INSTALL_PROGRAM@
++INSTALL_STRIP=@INSTALL_PROGRAM@ -s
++INSTALL_DATA=@INSTALL_DATA@
++
++prefix=@prefix@
++exec_prefix=@exec_prefix@
++bindir=@bindir@
++datadir=@datadir@
++pkgdatadir=$(datadir)/gtklife
++docdir=@docdir@
++
++# Preprocessor and linking flags
++
++CPPFLAGS:=$(CPPFLAGS) $(GTK_CFLAGS) -DVERSION=\"$(VERSION)\" -DDATADIR=\"$(pkgdatadir)\" -DDOCDIR=\"$(docdir)\"
++LDFLAGS:=$(LDFLAGS) $(GTK_LIBS) -lX11
++
++# Object files
++
++OBJS=gtklife.o life.o loadsave.o ewmh.o util.o icons.o ul_lookup.o ur_lookup.o ll_lookup.o lr_lookup.o
++CL_OBJS=create_lookup.o util.o
++
++# Targets
++
++all: gtklife
++
++install: all install-data
++	$(INSTALL) -d $(DESTDIR)$(bindir)
++	$(INSTALL_PROGRAM) gtklife $(DESTDIR)$(bindir)
++
++install-strip: all install-data
++	$(INSTALL) -d $(DESTDIR)$(bindir)
++	$(INSTALL_STRIP) gtklife $(DESTDIR)$(bindir)
++
++install-data:
++	$(INSTALL) -d $(DESTDIR)$(pkgdatadir)
++	$(INSTALL) -d $(DESTDIR)$(pkgdatadir)/graphics
++	$(INSTALL_DATA) graphics/* $(DESTDIR)$(pkgdatadir)/graphics
++	rm -rf $(DESTDIR)$(pkgdatadir)/patterns
++	umask 022; cp -r patterns $(DESTDIR)$(pkgdatadir)
++	$(INSTALL) -d $(DESTDIR)$(docdir)
++	$(INSTALL_DATA) doc/* $(DESTDIR)$(docdir)
++
++gtklife: $(OBJS)
++	$(CC) -o gtklife $(OBJS) $(LDFLAGS)
++
++create_lookup: $(CL_OBJS)
++	$(CC) -o create_lookup $(CL_OBJS)
++
++mostlyclean:
++	rm -f gtklife create_lookup *.o
++
++clean: mostlyclean
++	rm -f [ul][lr]_lookup.c
++
++distclean: clean
++	rm -f Makefile config.log config.status
++
++# Generated source files
++
++#ul_lookup.c: create_lookup
++#	./create_lookup ul
++#ur_lookup.c: create_lookup
++#	./create_lookup ur
++#ll_lookup.c: create_lookup
++#	./create_lookup ll
++#lr_lookup.c: create_lookup
++#	./create_lookup lr
++
++# Dependencies
++
++gtklife.o: gtklife.h life.h ewmh.h util.h icons.h
++life.o: life.h loadsave.h lookup.h util.h
++loadsave.o: loadsave.h life.h util.h
++create_lookup.o: create_lookup.h util.h
++ewmh.o: ewmh.h util.h
++util.o: util.h
+--- gtklife-5.2-orig/Makefile.in	2017-11-02 05:21:39.000000000 +0100
++++ gtklife-5.2/Makefile.in	2021-02-07 17:09:41.587778108 +0100
+@@ -34,21 +34,21 @@
+ all: gtklife
+ 
+ install: all install-data
+-	$(INSTALL) -d $(bindir)
+-	$(INSTALL_PROGRAM) gtklife $(bindir)
++	$(INSTALL) -d $(DESTDIR)$(bindir)
++	$(INSTALL_PROGRAM) gtklife $(DESTDIR)$(bindir)
+ 
+ install-strip: all install-data
+-	$(INSTALL) -d $(bindir)
+-	$(INSTALL_STRIP) gtklife $(bindir)
++	$(INSTALL) -d $(DESTDIR)$(bindir)
++	$(INSTALL_STRIP) gtklife $(DESTDIR)$(bindir)
+ 
+ install-data:
+-	$(INSTALL) -d $(pkgdatadir)
+-	$(INSTALL) -d $(pkgdatadir)/graphics
+-	$(INSTALL_DATA) graphics/* $(pkgdatadir)/graphics
+-	rm -rf $(pkgdatadir)/patterns
+-	umask 022; cp -r patterns $(pkgdatadir)
+-	$(INSTALL) -d $(docdir)
+-	$(INSTALL_DATA) doc/* $(docdir)
++	$(INSTALL) -d $(DESTDIR)$(pkgdatadir)
++	$(INSTALL) -d $(DESTDIR)$(pkgdatadir)/graphics
++	$(INSTALL_DATA) graphics/* $(DESTDIR)$(pkgdatadir)/graphics
++	rm -rf $(DESTDIR)$(pkgdatadir)/patterns
++	umask 022; cp -r patterns $(DESTDIR)$(pkgdatadir)
++	$(INSTALL) -d $(DESTDIR)$(docdir)
++	$(INSTALL_DATA) doc/* $(DESTDIR)$(docdir)
+ 
+ gtklife: $(OBJS)
+ 	$(CC) -o gtklife $(OBJS) $(LDFLAGS)
