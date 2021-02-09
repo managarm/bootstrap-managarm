@@ -1,27 +1,28 @@
-From b2f094e8bc576366f48a99283038a4eba377f948 Mon Sep 17 00:00:00 2001
-From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
-Date: Sun, 9 Dec 2018 10:36:12 +0100
-Subject: [PATCH 1/3] Remove config.h from build-machine source files
+From 9aa37707064485088bde26cfc70f53c35f91bc17 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Tue, 9 Feb 2021 21:35:14 +0100
+Subject: [PATCH 1/3] Remove config.h from build machine source files.
 
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
- builtins/psize.c      | 27 +++++---------------------
- mksyntax.c            | 54 ++-------------------------------------------------
- support/bashversion.c |  7 ++-----
- support/man2html.c    | 24 -----------------------
- support/mksignames.c  |  8 +-------
- support/signames.c    |  9 +--------
- 6 files changed, 11 insertions(+), 118 deletions(-)
+ builtins/psize.c      | 27 ++++------------------
+ mksyntax.c            | 53 ++-----------------------------------------
+ support/bashversion.c |  7 ++----
+ support/man2html.c    | 24 --------------------
+ support/mksignames.c  |  8 +------
+ support/signames.c    |  8 +------
+ 6 files changed, 10 insertions(+), 117 deletions(-)
 
 diff --git a/builtins/psize.c b/builtins/psize.c
-index 30881fb..54d19d2 100644
+index 30881fb3..fec55ae1 100644
 --- a/builtins/psize.c
 +++ b/builtins/psize.c
-@@ -21,33 +21,16 @@
+@@ -21,33 +21,14 @@
  /*  Write output in 128-byte chunks until we get a sigpipe or write gets an
      EPIPE.  Then report how many bytes we wrote.  We assume that this is the
      pipe size. */
 -#include <config.h>
- 
+-
 -#if defined (HAVE_UNISTD_H)
 -#  ifdef _MINIX
 -#    include <sys/types.h>
@@ -33,8 +34,8 @@ index 30881fb..54d19d2 100644
 -#ifndef _MINIX
 -#include "../bashtypes.h"
 -#endif
--#include <signal.h>
- #include <errno.h>
+ #include <signal.h>
+-#include <errno.h>
 -
 -#include "../command.h"
 -#include "../general.h"
@@ -43,7 +44,6 @@ index 30881fb..54d19d2 100644
 -#ifndef errno
 -extern int errno;
 -#endif
-+#include <signal.h>
 +#include <stdio.h>
 +#include <stdlib.h>
 +#include <unistd.h>
@@ -56,10 +56,10 @@ index 30881fb..54d19d2 100644
       int sig;
  {
 diff --git a/mksyntax.c b/mksyntax.c
-index 0385686..4a52c76 100644
+index 03856866..f09fdebc 100644
 --- a/mksyntax.c
 +++ b/mksyntax.c
-@@ -20,30 +20,18 @@
+@@ -20,30 +20,19 @@
     along with Bash.  If not, see <http://www.gnu.org/licenses/>.
  */
  
@@ -70,7 +70,7 @@ index 0385686..4a52c76 100644
  #include "bashansi.h"
  #include "chartypes.h"
  #include <errno.h>
--
+ 
 -#ifdef HAVE_UNISTD_H
 -#  include <unistd.h>
 -#endif
@@ -92,7 +92,7 @@ index 0385686..4a52c76 100644
  struct wordflag {
  	int	flag;
  	char	*fstr;
-@@ -375,41 +363,3 @@ main(argc, argv)
+@@ -375,41 +364,3 @@ main(argc, argv)
      fclose (fp);
    exit (0);
  }
@@ -135,7 +135,7 @@ index 0385686..4a52c76 100644
 -}
 -#endif /* HAVE_STRERROR */
 diff --git a/support/bashversion.c b/support/bashversion.c
-index 59c2321..6700fc4 100644
+index 4f86b134..64779de1 100644
 --- a/support/bashversion.c
 +++ b/support/bashversion.c
 @@ -18,15 +18,12 @@
@@ -157,7 +157,7 @@ index 59c2321..6700fc4 100644
  #include "bashansi.h"
  
 diff --git a/support/man2html.c b/support/man2html.c
-index 6ba5061..d86bd28 100644
+index e6f441b4..846bd540 100644
 --- a/support/man2html.c
 +++ b/support/man2html.c
 @@ -62,9 +62,6 @@
@@ -199,7 +199,7 @@ index 6ba5061..d86bd28 100644
  strgrow(char *old, int len)
  {
 diff --git a/support/mksignames.c b/support/mksignames.c
-index 5618879..f8a7646 100644
+index ba87ae8b..5bcbb167 100644
 --- a/support/mksignames.c
 +++ b/support/mksignames.c
 @@ -19,17 +19,11 @@
@@ -222,10 +222,10 @@ index 5618879..f8a7646 100644
  /* Duplicated from signames.c */
  #if !defined (NSIG)
 diff --git a/support/signames.c b/support/signames.c
-index d297808..1997e0b 100644
+index aba4842a..e369a73d 100644
 --- a/support/signames.c
 +++ b/support/signames.c
-@@ -18,18 +18,11 @@
+@@ -18,18 +18,12 @@
     along with Bash.  If not, see <http://www.gnu.org/licenses/>.
  */
  
@@ -235,7 +235,7 @@ index d297808..1997e0b 100644
  
  #include <sys/types.h>
  #include <signal.h>
--
+ 
 -#if defined (HAVE_STDLIB_H)
 -#  include <stdlib.h>
 -#else
@@ -246,5 +246,5 @@ index d297808..1997e0b 100644
  #if !defined (NSIG)
  #  define NSIG 64
 -- 
-2.11.0
+2.30.0
 

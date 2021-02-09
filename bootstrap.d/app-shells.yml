@@ -4,8 +4,10 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/bash.git'
-      tag: 'bash-4.4'
-      version: '4.4'
+      # Checkout bash 5.1 patch 4 to fix build issues
+      branch: 'master'
+      commit: '76404c85d492c001f59f2644074333ffb7608532'
+      version: '5.1.4'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -19,7 +21,6 @@ packages:
       - ncurses
       - readline
       - libiconv
-    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -28,6 +29,8 @@ packages:
         - '--without-bash-malloc'
         - '--disable-nls'
         - '--with-installed-readline=$SYSROOT_DIR$/usr'
+        environ:
+          ac_cv_func_wcswidth: 'no'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
