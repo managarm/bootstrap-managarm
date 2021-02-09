@@ -1,42 +1,42 @@
-From 44848b51a1cc66cbec3b97a7d751113df5c329bf Mon Sep 17 00:00:00 2001
-From: Dennisbonke <admin@dennisbonke.com>
-Date: Fri, 22 May 2020 16:42:10 +0200
+From 3c5c2fe0ce67f80ce9698f0c6154cc1d41a113bd Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Tue, 9 Feb 2021 22:45:04 +0100
 Subject: [PATCH] Add managarm support
 
-Signed-off-by: Dennisbonke <admin@dennisbonke.com>
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
  config.sub | 2 +-
  configure  | 4 ++++
  2 files changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/config.sub b/config.sub
-index 00f68b8e..5f6344ab 100755
+index 0f2234c1..69ffcaa9 100755
 --- a/config.sub
 +++ b/config.sub
-@@ -1416,7 +1416,7 @@ case $os in
- 	      | -morphos* | -superux* | -rtmk* | -rtmk-nova* | -windiss* \
- 	      | -powermax* | -dnix* | -nx6 | -nx7 | -sei* | -dragonfly* \
- 	      | -skyos* | -haiku* | -rdos* | -toppers* | -drops* | -es* \
--	      | -onefs* | -tirtos* | -phoenix* | -fuchsia* | -redox*)
-+	      | -onefs* | -tirtos* | -phoenix* | -fuchsia* | -redox* | -managarm*)
+@@ -1366,7 +1366,7 @@ case $os in
+ 	     | skyos* | haiku* | rdos* | toppers* | drops* | es* \
+ 	     | onefs* | tirtos* | phoenix* | fuchsia* | redox* | bme* \
+ 	     | midnightbsd* | amdhsa* | unleashed* | emscripten* | wasi* \
+-	     | nsk* | powerunix)
++	     | nsk* | powerunix | managarm*)
  	# Remember, each alternative MUST END IN *, to match a version number.
  		;;
- 	-qnx*)
+ 	qnx*)
 diff --git a/configure b/configure
-index adead920..7fbdd312 100755
+index 06f344f3..72e641d3 100755
 --- a/configure
 +++ b/configure
-@@ -6335,6 +6335,10 @@ echo "${ECHO_T}$cf_cv_ldflags_search_paths_first" >&6
+@@ -5961,6 +5961,10 @@ echo "${ECHO_T}$cf_cv_ldflags_search_paths_first" >&6
  
  		MK_SHARED_LIB='${CC} ${LDFLAGS} ${CFLAGS} -shared -Wl,-soname,'$cf_cv_shared_soname',-stats,-lc -o $@'
  		;;
-+	(managarm*)
-+		CC_SHARED_OPTS='-fPIC'
-+                MK_SHARED_LIB='${CC} -shared -o $@'
-+		;;
++  (managarm*)
++    CC_SHARED_OPTS='-fPIC'
++                 MK_SHARED_LIB='${CC} -shared -o $@'
++    ;;
  	(mingw*)
  		cf_cv_shlib_version=mingw
  		cf_cv_shlib_version_infix=mingw
 -- 
-2.26.2
+2.30.0
 

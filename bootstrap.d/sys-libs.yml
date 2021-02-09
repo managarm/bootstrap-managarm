@@ -60,11 +60,10 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/ThomasDickey/ncurses-snapshots.git'
-      tag: 'v6_1'
-      version: '6.1'
+      tag: 'v6_2'
+      version: '6.2'
     tools_required:
       - system-gcc
-    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
