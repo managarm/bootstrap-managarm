@@ -1340,18 +1340,6 @@ tasks:
       - system-gcc
     args: ''
 
-  - name: make-image
-    pkgs_required:
-      - managarm-kernel
-      - managarm-system
-    tasks_required:
-      - task: useful-image-dependencies
-        order_only: true
-    args:
-      - '@SOURCE_ROOT@/scripts/mkimage'
-    workdir: '@BUILD_ROOT@'
-    containerless: true
-
   - name: update-initrd
     pkgs_required:
       - managarm-kernel
@@ -1367,7 +1355,7 @@ tasks:
       - '@OPTION:arch-triple@'
     workdir: '@BUILD_ROOT@'
 
-  - name: update-image
+  - name: make-image
     pkgs_required:
       - managarm-kernel
       - managarm-system

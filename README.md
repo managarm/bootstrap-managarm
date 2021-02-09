@@ -107,7 +107,7 @@ wget 'https://raw.githubusercontent.com/qookei/image_create/master/image_create.
 chmod +x image_create.sh
 ```
 
-This repository contains a `mkimage` script to copy the system onto the image.
+This repository contains an `update-image.py` script to mount the image and copy the system onto it.
 
 This script can use 3 different methods to copy files onto the image:
 1. Using libguestfs (the default method).
@@ -121,6 +121,14 @@ sudo install -d /usr/lib/guestfs
 sudo update-libguestfs-appliance
 ```
 
+If you're using xbstrap to invoke the script, selecting the desired method can be done by adding the following to the `bootstrap-site.yml` file:
+```
+define_options:
+    mount-using: 'loopback' # or guestfs/docker
+```
+
+When invoking the script directly, selecting the method can be done with the `--mount-using` argument.
+
 Furthermore, all methods require `rsync` installed on the host as well.
 
 Hence, running the following commands in the build directory
@@ -129,11 +137,13 @@ should produce a working image and launch it using QEMU:
 # Create a HDD image file called 'image'.
 ./image_create.sh image 4GiB ext2 gpt
 
-# Copy the system onto it. Pick _one_ of the following methods.
-../src/scripts/mkimage                      # Default libguestfs method.
-sudo USE_LOOPBACK=1 ../src/scripts/mkimage  # Loopback and mount method, requires root.
-USE_DOCKER=1 ../src/scripts/mkimage         # Docker method, does not require root
-                                            # as long as the user is in the Docker group.
+# Copy the system onto it.
+xbstrap run make-image
+
+# Alternatively, you can call the necessary scripts manually:
+# Check their help messages for more information.
+../src/managarm/tools/gen-initrd.py
+../src/scripts/update-image.py
 
 # To launch the image using QEMU, you can run:
 ../src/scripts/run-qemu
