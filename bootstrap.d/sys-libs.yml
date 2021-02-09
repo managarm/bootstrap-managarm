@@ -99,8 +99,8 @@ packages:
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/readline.git'
-      tag: 'readline-8.0'
-      version: '8.0'
+      tag: 'readline-8.1'
+      version: '8.1'
     tools_required:
       - system-gcc
     pkgs_required:

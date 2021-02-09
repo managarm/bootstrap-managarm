@@ -1,29 +1,29 @@
-From 9e4fabbecc9c725760f4ebdf781755efedf03d74 Mon Sep 17 00:00:00 2001
-From: Dennisbonke <admin@dennisbonke.com>
-Date: Tue, 26 May 2020 01:29:33 +0200
+From 983b779d546a3e7657a46e46ec3946083420c14a Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Tue, 9 Feb 2021 22:36:49 +0100
 Subject: [PATCH] Add managarm support
 
-Signed-off-by: Dennisbonke <admin@dennisbonke.com>
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
  support/config.sub    | 2 +-
  support/shlib-install | 4 ++--
  2 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/support/config.sub b/support/config.sub
-index f208558..c0c1594 100755
+index c874b7a..58e7639 100755
 --- a/support/config.sub
 +++ b/support/config.sub
-@@ -1360,7 +1360,7 @@ case $os in
- 	     | powermax* | dnix* | nx6 | nx7 | sei* | dragonfly* \
+@@ -1720,7 +1720,7 @@ case $os in
  	     | skyos* | haiku* | rdos* | toppers* | drops* | es* \
  	     | onefs* | tirtos* | phoenix* | fuchsia* | redox* | bme* \
--	     | midnightbsd*)
-+	     | midnightbsd* | managarm*)
- 	# Remember, each alternative MUST END IN *, to match a version number.
+ 	     | midnightbsd* | amdhsa* | unleashed* | emscripten* | wasi* \
+-	     | nsk* | powerunix* | genode* | zvmoe* | qnx* | emx*)
++	     | nsk* | powerunix* | genode* | zvmoe* | qnx* | emx* | managarm*)
  		;;
- 	qnx*)
+ 	# This one is extra strict with allowed versions
+ 	sco3.2v2 | sco3.2v[4-9]* | sco5v6*)
 diff --git a/support/shlib-install b/support/shlib-install
-index f4eea27..1123a48 100755
+index 661355d..2d554f3 100755
 --- a/support/shlib-install
 +++ b/support/shlib-install
 @@ -71,7 +71,7 @@ fi
@@ -45,5 +45,5 @@ index f4eea27..1123a48 100755
  	${echo} ${RM} ${INSTALLDIR}/$LINK1
  	if [ -z "$uninstall" ]; then
 -- 
-2.26.2
+2.30.0
 
