@@ -1,0 +1,48 @@
+From a65eb74e585f43f08b0b5546468e168454b21fc4 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Wed, 3 Feb 2021 15:54:42 +0100
+Subject: [PATCH] Add managarm support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ autogen.sh | 0
+ main.c     | 4 ++++
+ sha2.c     | 1 +
+ 3 files changed, 5 insertions(+)
+ mode change 100644 => 100755 autogen.sh
+
+diff --git a/autogen.sh b/autogen.sh
+old mode 100644
+new mode 100755
+diff --git a/main.c b/main.c
+index 1fa088f..7702060 100644
+--- a/main.c
++++ b/main.c
+@@ -52,8 +52,12 @@ void bench(double *b)
+ }
+ 
+ #ifndef WIN32
++#ifdef __managarm__
++#include <signal.h>
++#else
+ #include <sys/signal.h>
+ #endif
++#endif
+ volatile D0_BOOL quit = 0;
+ void mysignal(int signo)
+ {
+diff --git a/sha2.c b/sha2.c
+index 1ca0f81..56d4297 100644
+--- a/sha2.c
++++ b/sha2.c
+@@ -40,6 +40,7 @@ const char *d0_sha2_c_bsd_license_notice D0_USED = "\n"
+ " * $Original-Id: sha2.c,v 1.1 2001/11/08 00:01:51 adg Exp adg $\n"
+ " */\n";
+ 
++#include <endian.h>
+ #include <string.h>	/* memcpy()/memset() or bcopy()/bzero() */
+ #include <assert.h>	/* assert() */
+ #include "sha2.h"
+-- 
+2.30.0
+

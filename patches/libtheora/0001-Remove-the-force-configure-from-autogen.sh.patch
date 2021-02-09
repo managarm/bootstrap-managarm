@@ -1,0 +1,23 @@
+From 2bc3e53c93099e001ce5c09d8cd8f7cd37e0a7ea Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Wed, 3 Feb 2021 15:45:29 +0100
+Subject: [PATCH] Remove the force configure from autogen.sh
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ autogen.sh | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/autogen.sh b/autogen.sh
+index bbca69d..b6d4b13 100755
+--- a/autogen.sh
++++ b/autogen.sh
+@@ -125,5 +125,3 @@ $AUTOMAKE --add-missing $AUTOMAKE_FLAGS || exit 1
+ echo "  autoconf"
+ autoconf || exit 1
+ 
+-cd $olddir
+-$srcdir/configure --enable-maintainer-mode "$@" && echo
+-- 
+2.30.0
+
