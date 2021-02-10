@@ -92,11 +92,12 @@ packages:
     tools_required:
       - host-cmake
       - system-gcc
+    revision: 2
     configure:
       - args:
         - 'cmake'
         - '-GNinja'
-        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain.txt'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '@THIS_SOURCE_DIR@/build/cmake'
     build:
