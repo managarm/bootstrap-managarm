@@ -1,28 +1,26 @@
-From 1d5cc4efde39a87a42714be4ea2c6c50b24da18f Mon Sep 17 00:00:00 2001
-From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
-Date: Sun, 9 Dec 2018 10:47:09 +0100
-Subject: [PATCH 2/3] Add managarm to config.sub
+From 77d7b051df39fdb3ebc37add566042bf38741de6 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Tue, 9 Feb 2021 21:36:42 +0100
+Subject: [PATCH 2/3] Add Managarm to config.sub
 
-bash does not cleanly rebuild its build system using autoreconf
-and there is not autogen.sh script, so we just patch config.sub.
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
- support/config.sub | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ support/config.sub | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/support/config.sub b/support/config.sub
-index 61cb4bc..81baee6 100644
+index c874b7a9..58e76391 100755
 --- a/support/config.sub
 +++ b/support/config.sub
-@@ -1376,7 +1376,8 @@ case $os in
- 	      | -os2* | -vos* | -palmos* | -uclinux* | -nucleus* \
- 	      | -morphos* | -superux* | -rtmk* | -rtmk-nova* | -windiss* \
- 	      | -powermax* | -dnix* | -nx6 | -nx7 | -sei* | -dragonfly* \
--	      | -skyos* | -haiku* | -rdos* | -toppers* | -drops* | -es*)
-+	      | -skyos* | -haiku* | -rdos* | -toppers* | -drops* | -es* \
-+		  | -managarm*)
- 	# Remember, each alternative MUST END IN *, to match a version number.
+@@ -1720,7 +1720,7 @@ case $os in
+ 	     | skyos* | haiku* | rdos* | toppers* | drops* | es* \
+ 	     | onefs* | tirtos* | phoenix* | fuchsia* | redox* | bme* \
+ 	     | midnightbsd* | amdhsa* | unleashed* | emscripten* | wasi* \
+-	     | nsk* | powerunix* | genode* | zvmoe* | qnx* | emx*)
++	     | nsk* | powerunix* | genode* | zvmoe* | qnx* | emx* | managarm*)
  		;;
- 	-qnx*)
+ 	# This one is extra strict with allowed versions
+ 	sco3.2v2 | sco3.2v[4-9]* | sco5v6*)
 -- 
-2.11.0
+2.30.0
 

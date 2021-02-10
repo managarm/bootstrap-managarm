@@ -60,11 +60,10 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/ThomasDickey/ncurses-snapshots.git'
-      tag: 'v6_1'
-      version: '6.1'
+      tag: 'v6_2'
+      version: '6.2'
     tools_required:
       - system-gcc
-    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -78,6 +77,8 @@ packages:
         - '--with-pkg-config-libdir=/usr/lib/pkgconfig'
         - '--with-termlib'
         - '--enable-widec'
+        environ:
+          cf_cv_func_nanosleep: 'yes'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
@@ -97,8 +98,8 @@ packages:
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/readline.git'
-      tag: 'readline-8.0'
-      version: '8.0'
+      tag: 'readline-8.1'
+      version: '8.1'
     tools_required:
       - system-gcc
     pkgs_required:
@@ -120,9 +121,9 @@ packages:
     default: true
     source:
       subdir: 'ports'
-      url: 'https://data.iana.org/time-zones/releases/tzdata2020f.tar.gz'
+      url: 'https://data.iana.org/time-zones/releases/tzdata2021a.tar.gz'
       format: 'tar.gz'
-      version: '2020f'
+      version: '2021a'
     tools_required:
       - system-gcc
     configure:

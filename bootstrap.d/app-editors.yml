@@ -24,7 +24,7 @@ packages:
       - ncurses
       - libintl
       - zlib
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -39,19 +39,23 @@ packages:
           gl_cv_type_wctrans_t: 'yes'
     build:
       - args: ['make', '-j@PARALLELISM@']
-      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc']
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
-      - args: ['cp', '@THIS_BUILD_DIR@/doc/sample.nanorc', '@THIS_COLLECT_DIR@/etc/nanorc']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/home/managarm']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/root']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/nanorc', '@THIS_COLLECT_DIR@/etc/nanorc']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/nanorc', '@THIS_COLLECT_DIR@/home/managarm/.nanorc']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/root-nanorc', '@THIS_COLLECT_DIR@/root/.nanorc']
 
   - name: vim
     source:
       subdir: 'ports'
       git: 'https://github.com/vim/vim.git'
-      tag: 'v8.2.0814'
-      version: '8.2.0814'
+      tag: 'v8.2.2433'
+      version: '8.2.2433'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -59,7 +63,6 @@ packages:
     pkgs_required:
       - ncurses
       - libiconv
-    revision: 3
     configure:
       # vim does not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead

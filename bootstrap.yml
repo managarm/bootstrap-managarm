@@ -567,12 +567,14 @@ packages:
   - name: core-files
     default: true
     from_source: managarm
+    revision: 2
     configure: []
     build:
       # Create initial directories
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc']
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/run']
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/root']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/home/managarm']
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr']
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/share']
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/var']

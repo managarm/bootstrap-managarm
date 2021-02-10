@@ -336,7 +336,7 @@ class UpdateFsAction:
 		plan_install('usr/managarm/bin/thor', 'boot/managarm', strip = True)
 		plan_install('initrd.cpio', 'boot/managarm', ignore_sysroot = True)
 
-		for dir in ['root', 'usr/bin', 'usr/lib', 'var', 'dev', 'proc', 'run', 'sys', 'tmp', 'boot/grub']:
+		for dir in ['root', 'usr/bin', 'usr/lib', 'var', 'dev', 'proc', 'run', 'sys', 'tmp', 'boot/grub', 'home']:
 			plan_create_dir(dir)
 
 		plan_cp(os.path.join(scriptdir, 'grub.cfg'), 'boot/grub')
@@ -361,6 +361,7 @@ class UpdateFsAction:
 		plan_rsync('usr/')
 		plan_rsync('etc/')
 		plan_rsync('var/')
+		plan_rsync('home/')
 
 		plan_cp(f'tools/system-gcc/{self.arch}/lib64/libgcc_s.so.1', 'usr/lib')
 		plan_cp(f'tools/system-gcc/{self.arch}/lib64/libstdc++.so.6', 'usr/lib')
