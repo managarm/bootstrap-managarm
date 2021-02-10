@@ -3,12 +3,12 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/limine-bootloader/limine.git'
-      tag: 'v1.0.5'
-      version: '1.0.5'
+      tag: 'v1.0.2'
+      version: '1.0.2'
     tools_required:
       - system-gcc
+    configure:
+      - args: ['cp', '-rv', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
       - args: ['make', 'CC=@OPTION:arch-triple@-gcc', 'OBJCOPY=@OPTION:arch-triple@-objcopy', '-j@PARALLELISM@']
-        workdir: '@THIS_SOURCE_DIR@'
       - args: ['make', 'PREFIX=/usr', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
-        workdir: '@THIS_SOURCE_DIR@'
