@@ -3,8 +3,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/limine-bootloader/limine.git'
-      tag: 'v1.0.2'
-      version: '1.0.2'
+      tag: 'v1.0.5'
+      version: '1.0.5'
     tools_required:
       - system-gcc
     configure:
