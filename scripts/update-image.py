@@ -7,6 +7,7 @@ verbose = False
 MANAGARM_ROOT_PART_TYPE = 'EBD0A0A2-B9E5-4433-87C0-68B6B72699C7'
 EFI_SYSTEM_PART_TYPE = 'C12A7328-F81F-11D2-BA4B-00A0C93EC93B'
 global_mount_info = None
+sfdisk_command = None
 
 @attr.s
 class MountInfo:
@@ -24,40 +25,58 @@ class Partition:
 	type = attr.ib()
 	uuid = attr.ib()
 
+# shlex.join is only available since Python 3.8
+def join_command(args):
+	return ' '.join(shlex.quote(x) for x in args)
+
 def run_elevated(cmd, stdin = None, capture_output = True):
 	actual_cmd = [elevation_method] + cmd
 
 	if elevation_method == 'su':
-		actual_cmd = [elevation_method, '-c', shlex.join(cmd)]
+		actual_cmd = [elevation_method, '-c', join_command(cmd)]
 
 	if verbose:
-		print(f'update-image: Running "{shlex.join(cmd)}" as root')
+		print(f'update-image: Running "{join_command(cmd)}" as root')
 
 	res = subprocess.run(actual_cmd, capture_output = capture_output, input = stdin, encoding = 'utf-8')
 
 	if res.returncode != 0:
 		if capture_output:
 			stderr = res.stderr.rstrip()
-			raise RuntimeError(f'Command failed with code {res.returncode} and stderr: {stderr}')
+			raise RuntimeError(f'Command "{cmd[0]} ..." failed with code {res.returncode} and stderr: {stderr}')
 		else:
-			raise RuntimeError(f'Command failed with code {res.returncode}')
+			raise RuntimeError(f'Command "{cmd[0]} ..." failed with code {res.returncode}')
 
 	return res.stdout.rstrip() if capture_output else ''
 
 def run_regular(cmd, stdin = None, capture_output = True):
 	if verbose:
-		print(f'update-image: Running "{shlex.join(cmd)}"')
+		print(f'update-image: Running "{join_command(cmd)}"')
 
 	res = subprocess.run(cmd, capture_output = capture_output, input = stdin, encoding = 'utf-8')
 
 	if res.returncode != 0:
 		if capture_output:
 			stderr = res.stderr.rstrip()
-			raise RuntimeError(f'Command failed with code {res.returncode} and stderr: {stderr}')
+			raise RuntimeError(f'Command "{cmd[0]} ..." failed with code {res.returncode} and stderr: {stderr}')
 		else:
-			raise RuntimeError(f'Command failed with code {res.returncode}')
+			raise RuntimeError(f'Command "{cmd[0]} ..." failed with code {res.returncode}')
 
 	return res.stdout.rstrip() if capture_output else ''
+
+def try_find_command_exec(command):
+	i = shutil.which(command)
+	if i:
+		return i
+
+	try:
+		whereis_out = run_regular(['whereis', command]).split(' ')
+		if len(whereis_out) > 1:
+			return whereis_out[1]
+	except:
+		pass
+
+	return None
 
 def check_if_running(pid):
 	try:
@@ -67,7 +86,7 @@ def check_if_running(pid):
 
 def get_partition_list(image):
 	image_needs_root = not os.access(image, os.R_OK, effective_ids=True)
-	cmd = ['sfdisk', '-d', image]
+	cmd = [sfdisk_command, '-d', image]
 	out = run_elevated(cmd) if image_needs_root else run_regular(cmd)
 
 	partitions = []
@@ -368,7 +387,7 @@ class UpdateFsAction:
 
 		print('update-image: Updating the file system...')
 
-		commands = '\n'.join([shlex.join(step) for step in steps])
+		commands = '\n'.join([join_command(step) for step in steps])
 
 		if is_docker:
 			run_regular(['docker', 'exec', '-i', '-u', 'root:root', 'managarm-mount', 'bash'], commands, False)
@@ -483,8 +502,8 @@ class Plan:
 			print(f'update-image: Running action {action.details()}')
 			try:
 				action.run()
-			except RuntimeError as e:
-				print(f'update-image: Action {action.name()} failed with: {e.args[0]}')
+			except Exception as e:
+				print(f'update-image: Action {action.name()} failed with: {e.args}')
 
 parser = argparse.ArgumentParser(description = 'Update a managarm installation')
 parser.add_argument('-v', '--verbose', action = 'store_true',
@@ -540,6 +559,15 @@ try:
 				info['root_uuid'])
 except:
 	pass
+
+sfdisk_command = try_find_command_exec('sfdisk')
+
+if not sfdisk_command:
+	print(f'update-image: Couldn\'t find sfdisk (tried looking in PATH and using whereis)')
+	sys.exit(1)
+
+if verbose:
+	print(f'update-image: Found sfdisk at "{sfdisk_command}"')
 
 plan = Plan([make_action(v, args.mount_using, args.image_path, args.mountpoint_path,
 		args.sysroot_path, args.arch) for v in action_list])
