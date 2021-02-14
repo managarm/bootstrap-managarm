@@ -1,0 +1,26 @@
+From b009bcf166f7523f4bfcf0cefb86310396304ab6 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Sun, 14 Feb 2021 14:38:50 +0100
+Subject: [PATCH] Also link against libtinfo as that is a separate library now.
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index c3005d2..55f3610 100644
+--- a/Makefile
++++ b/Makefile
+@@ -12,7 +12,7 @@ CFLAGS=-O -Wall
+ all: sl
+ 
+ sl: sl.c sl.h
+-	$(CC) $(CFLAGS) -o sl sl.c -lncurses
++	$(CC) $(CFLAGS) -o sl sl.c -lncurses -ltinfo
+ 
+ clean:
+ 	rm -f sl
+-- 
+2.30.0
+
