@@ -70,7 +70,7 @@ def try_find_command_exec(command):
 		return i
 
 	try:
-		whereis_out = run_regular(['whereis', command]).split(' ')
+		whereis_out = run_regular(['whereis', '-b', command]).split(' ')
 		if len(whereis_out) > 1:
 			return whereis_out[1]
 	except:
