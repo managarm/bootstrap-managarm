@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import argparse, attr, shutil, shlex, subprocess, sys, os, json, time
+import argparse, attr, shutil, shlex, subprocess, sys, os, errno, json, time
 
 elevation_method = None
 verbose = False
@@ -80,9 +80,12 @@ def try_find_command_exec(command):
 
 def check_if_running(pid):
 	try:
-		return os.waitpid(pid, os.WNOHANG) != None
-	except ChildProcessError:
-		return False
+		os.kill(pid, 0)
+	except OSError as err:
+		if err.errno == errno.ESRCH:
+			return False
+
+	return True
 
 def get_partition_list(image):
 	image_needs_root = not os.access(image, os.R_OK, effective_ids=True)
