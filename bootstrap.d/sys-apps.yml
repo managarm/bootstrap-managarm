@@ -390,8 +390,8 @@ packages:
     source:
       subdir: ports
       git: 'https://git.kernel.org/pub/scm/utils/util-linux/util-linux.git'
-      tag: 'v2.36.1'
-      version: '2.36.1'
+      tag: 'v2.36.2'
+      version: '2.36.2'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -408,12 +408,16 @@ packages:
       - zlib
       - libiconv
       - file
-    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
+        - '--exec-prefix=/usr'
+        - '--libdir=/usr/lib'
+        - '--bindir=/usr/bin'
+        - '--sbindir=/usr/sbin'
+        - '--with-udev'
         - '--disable-nls'
         - '--disable-static'
         - '--without-python'
