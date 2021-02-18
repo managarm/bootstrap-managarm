@@ -274,8 +274,8 @@ packages:
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/man-db.git'
-      tag: '2.9.1'
-      version: '2.9.1'
+      tag: '2.9.4'
+      version: '2.9.4'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -301,7 +301,7 @@ packages:
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
         - '--disable-nls'
-        - '--docdir=/usr/share/doc/man-db-2.9.1'
+        - '--docdir=/usr/share/doc/man-db-2.9.4'
         - '--sysconfdir=/etc'
         - '--disable-setuid'
         - '--with-systemdtmpfilesdir='
