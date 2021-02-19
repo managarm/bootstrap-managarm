@@ -27,6 +27,7 @@ packages:
       - diffutils
       - xz-utils
       - findutils
+      - util-linux
     configure: []
     build: []
 

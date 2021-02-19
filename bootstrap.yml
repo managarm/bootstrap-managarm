@@ -677,8 +677,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/gentoo/eudev.git'
-      tag: 'v3.2.2'
-      version: '3.2.2'
+      tag: 'v3.2.10'
+      version: '3.2.10'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -699,7 +699,7 @@ packages:
         - '--disable-kmod'
         - '--disable-mtd-probe'
         - '--disable-rule-generator'
-        - '--disable-manpages'
+        - '--enable-introspection=no'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']

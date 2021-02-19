@@ -2,8 +2,8 @@ sources:
   - name: glib
     subdir: ports
     git: 'https://gitlab.gnome.org/GNOME/glib'
-    tag: '2.66.6'
-    version: '2.66.6'
+    tag: '2.66.7'
+    version: '2.66.7'
 
   - name: icu
     subdir: 'ports'
@@ -621,8 +621,8 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/libuv/libuv.git'
-      tag: 'v1.39.0'
-      version: '1.39.0'
+      tag: 'v1.41.0'
+      version: '1.41.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -755,8 +755,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://git.lysator.liu.se/nettle/nettle.git'
-      tag: 'nettle_3.6_release_20200429'
-      version: '3.6'
+      tag: 'nettle_3.7.1_release_20210217'
+      version: '3.7.1'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
