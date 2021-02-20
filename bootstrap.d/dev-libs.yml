@@ -576,7 +576,7 @@ packages:
             '@THIS_SOURCE_DIR@/']
     tools_required:
       - system-gcc
-      - host-autoconv-v2.69
+      - host-autoconf-v2.69
     pkgs_required:
       - freetype
     revision: 2
