@@ -42,6 +42,7 @@ packages:
       # Bison 3.7 broke gnulib, work around it by building an older bison
       - host-bison
       - system-gcc
+    revision: 2
     configure:
       # Huge hack: coreutils does not compile the build-machine binary make-prime-list
       # using the build-machine compiler. Hence, build and invoke the binary manually here.
@@ -56,6 +57,7 @@ packages:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
+        - '--enable-no-install-program=kill'
         - 'CFLAGS=-DSLOW_BUT_NO_HACKS -Wno-error'
     build:
       - args: ['make', '-j@PARALLELISM@']
