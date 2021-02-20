@@ -1,0 +1,25 @@
+From bb464d8148d28ec16323800d5534292c0037aa9b Mon Sep 17 00:00:00 2001
+From: sappigeninja <sebasoerlemans@gmail.com>
+Date: Wed, 17 Feb 2021 17:15:04 +0100
+Subject: [PATCH 2/2] Dont build examples
+
+---
+ Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile.am b/Makefile.am
+index ad9bd90..2a65bf6 100755
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -22,7 +22,7 @@
+ 
+ ## Process this file with Automake to create Makefile.in
+ 
+-SUBDIRS = src example
++SUBDIRS = src
+ 
+ bin_SCRIPTS = libotf-config
+ 
+-- 
+2.25.1
+

@@ -557,6 +557,41 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
+  - name: libotf
+    source:
+      subdir: ports
+      git: 'https://salsa.debian.org/debian/libotf.git'
+      branch: 'master'
+      commit: '85af96e78b5ba551d98eb994f010e737ee044b94'
+      version: '0.9.16'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['./autogen.sh']
+        - args: ['cp',
+            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
+            '@THIS_SOURCE_DIR@/']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - freetype
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--disable-static'
+        - '--docdir=/usr/share/doc/libotf-0.9.16'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+
   - name: libpipeline
     source:
       subdir: ports
