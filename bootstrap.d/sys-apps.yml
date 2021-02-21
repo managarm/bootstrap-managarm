@@ -519,9 +519,9 @@ packages:
       - system-gcc
     pkgs_required:
       - libarchive
-      - libressl
+      - openssl
       - zlib
-    revision: 2
+    revision: 3
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:

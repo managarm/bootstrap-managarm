@@ -61,14 +61,14 @@ packages:
       - host-cmake
       - system-gcc
     pkgs_required:
-      - libressl
+      - openssl
       - zlib
       - xz-utils
       - libiconv
       - libexpat
       - libxml
       - zstd
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'

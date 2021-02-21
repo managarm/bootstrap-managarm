@@ -109,10 +109,11 @@ packages:
       - ncurses
       - readline
       - bzip2
-      - libressl
+      - openssl
       - xz-utils
       - gdbm
-    revision: 3
+      - util-linux
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

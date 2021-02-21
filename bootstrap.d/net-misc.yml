@@ -18,7 +18,8 @@ packages:
       - virtual: pkgconfig-for-target
         triple: x86_64-managarm
     pkgs_required:
-      - libressl
+      - openssl
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -73,9 +74,10 @@ packages:
       - system-gcc
       - virtual: pkgconfig-for-target
         triple: x86_64-managarm
+    revision: 2
     pkgs_required:
       - lz4
-      - libressl
+      - openssl
       - libiconv
       - zlib
       - xxhash
@@ -129,7 +131,8 @@ packages:
     pkgs_required:
       - ncurses
       - readline
-      - libressl
+      - openssl
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -171,12 +174,14 @@ packages:
         triple: x86_64-managarm
     pkgs_required:
       - pcre
-      - libressl
+      - openssl
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=x86_64-managarm'
         - '--prefix=/usr'
+        - '--sysconfdir=/etc'
         - '--disable-nls'
         - '--with-ssl=openssl'
         - '--with-openssl'
