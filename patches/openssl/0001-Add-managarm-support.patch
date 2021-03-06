@@ -1,0 +1,69 @@
+From 02c4ded3f3aa33989212d34653abd71170c2ffe0 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Sun, 21 Feb 2021 13:22:15 +0100
+Subject: [PATCH] Add managarm support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ Configure          | 15 +--------------
+ apps/speed.c       |  2 ++
+ test/rsa_complex.c |  4 +++-
+ 3 files changed, 6 insertions(+), 15 deletions(-)
+
+diff --git a/Configure b/Configure
+index b286dd0678..b9faa33921 100755
+--- a/Configure
++++ b/Configure
+@@ -1546,20 +1546,7 @@ unless ($disabled{"crypto-mdebug-backtrace"})
+ unless ($disabled{afalgeng}) {
+     $config{afalgeng}="";
+     if (grep { $_ eq 'afalgeng' } @{$target{enable}}) {
+-        my $minver = 4*10000 + 1*100 + 0;
+-        if ($config{CROSS_COMPILE} eq "") {
+-            my $verstr = `uname -r`;
+-            my ($ma, $mi1, $mi2) = split("\\.", $verstr);
+-            ($mi2) = $mi2 =~ /(\d+)/;
+-            my $ver = $ma*10000 + $mi1*100 + $mi2;
+-            if ($ver < $minver) {
+-                disable('too-old-kernel', 'afalgeng');
+-            } else {
+-                push @{$config{engdirs}}, "afalg";
+-            }
+-        } else {
+-            disable('cross-compiling', 'afalgeng');
+-        }
++        push @{$config{engdirs}}, "afalg";
+     } else {
+         disable('not-linux', 'afalgeng');
+     }
+diff --git a/apps/speed.c b/apps/speed.c
+index d4ae7ab7bf..db2db31bcd 100644
+--- a/apps/speed.c
++++ b/apps/speed.c
+@@ -113,6 +113,8 @@
+ # define NO_FORK
+ #endif
+ 
++#include <sys/select.h>
++
+ #define MAX_MISALIGNMENT 63
+ #define MAX_ECDH_SIZE   256
+ #define MISALIGN        64
+diff --git a/test/rsa_complex.c b/test/rsa_complex.c
+index fac581254a..109e613f67 100644
+--- a/test/rsa_complex.c
++++ b/test/rsa_complex.c
+@@ -14,7 +14,9 @@
+  */
+ #if defined(__STDC_VERSION__)
+ # if __STDC_VERSION__ >= 199901L
+-#  include <complex.h>
++#  if !defined(__managarm__)
++#   include <complex.h>
++#  endif
+ # endif
+ #endif
+ #include <openssl/rsa.h>
+-- 
+2.30.1
+

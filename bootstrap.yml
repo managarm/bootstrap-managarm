@@ -757,6 +757,7 @@ packages:
         - 'AS=x86_64-managarm-as'
         - 'install'
 
+  # Deprecated in favor of openssl
   - name: libressl
     source:
       subdir: 'ports'

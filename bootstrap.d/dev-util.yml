@@ -57,12 +57,13 @@ packages:
       - curl
       - libarchive
       - libexpat
-      - libressl
+      - openssl
       - libuv
       - libxml
       - xz-utils
       - zlib
       - zstd
+    revision: 2
     configure:
       - args: ['sed', '-i', '/"lib64"/s/64//', '@THIS_SOURCE_DIR@/Modules/GNUInstallDirs.cmake']
       - args: ['cp', '-f', '@SOURCE_ROOT@/scripts/managarm.cmake', '@THIS_SOURCE_DIR@/Modules/Platform/']

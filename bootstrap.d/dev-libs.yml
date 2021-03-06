@@ -823,6 +823,41 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
+  - name: openssl
+    source:
+      subdir: ports
+      git: 'https://github.com/openssl/openssl.git'
+      tag: 'OpenSSL_1_1_1j'
+      version: '1.1.1j'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - zlib
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/config'
+        - '--prefix=/usr'
+        - '--openssldir=/etc/ssl'
+        - '--libdir=lib'
+        - 'shared'
+        - 'zlib-dynamic'
+        - 'no-afalgeng'
+        environ:
+          CC: 'x86_64-managarm-gcc'
+          CXX: 'x86_64-managarm-g++'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      # Disable installing static libraries
+      - args: ['sed', '-i', '/INSTALL_LIBS/s/libcrypto.a libssl.a//', '@THIS_BUILD_DIR@/Makefile']
+      # Suffix all man pages with ssl
+      - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'MANSUFFIX=ssl', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+      # Move the doc dir to a versioned directory
+      - args: ['mv', '@THIS_COLLECT_DIR@/usr/share/doc/openssl', '@THIS_COLLECT_DIR@/usr/share/doc/openssl-1.1.1j']
+      # Install more documentation
+      - args: ['cp', '-fr', '@THIS_SOURCE_DIR@/doc/.', '@THIS_COLLECT_DIR@/usr/share/doc/openssl-1.1.1j']
+
   - name: pcre
     source:
       subdir: ports
