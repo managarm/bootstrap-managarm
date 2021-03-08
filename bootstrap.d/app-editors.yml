@@ -1,4 +1,33 @@
 packages:
+  - name: mg
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/troglobit/mg.git'
+      tag: 'v3.4'
+      version: '3.4'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-pkg-config
+      regenerate:
+        - args: ['./autogen.sh']
+    tools_required:
+      - host-pkg-config
+      - system-gcc
+    pkgs_required:
+      - ncurses
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+
   - name: nano
     source:
       subdir: 'ports'
@@ -23,7 +52,8 @@ packages:
     pkgs_required:
       - ncurses
       - libintl
-    revision: 2
+      - zlib
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -34,21 +64,27 @@ packages:
         environ:
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
           PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
+          gl_cv_type_wctype_t: 'yes'
+          gl_cv_type_wctrans_t: 'yes'
     build:
       - args: ['make', '-j@PARALLELISM@']
-      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc']
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
-      - args: ['cp', '@THIS_BUILD_DIR@/doc/sample.nanorc', '@THIS_COLLECT_DIR@/etc/nanorc']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/home/managarm']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/root']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/nanorc', '@THIS_COLLECT_DIR@/etc/nanorc']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/nanorc', '@THIS_COLLECT_DIR@/home/managarm/.nanorc']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/root-nanorc', '@THIS_COLLECT_DIR@/root/.nanorc']
 
   - name: vim
     source:
       subdir: 'ports'
       git: 'https://github.com/vim/vim.git'
-      tag: 'v8.2.0814'
-      version: '8.2.0814'
+      tag: 'v8.2.2433'
+      version: '8.2.2433'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -56,7 +92,6 @@ packages:
     pkgs_required:
       - ncurses
       - libiconv
-    revision: 2
     configure:
       # vim does not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead
@@ -78,8 +113,9 @@ packages:
         - '--disable-gpm'
         - '--disable-sysmouse'
         - '--disable-nls'
-        - '--with-tlib=ncurses'
+        - '--with-tlib=tinfo'
         - '--enable-gui=no'
+        - '--without-x'
         environ:
           ac_cv_small_wchar_t: 'no'
           ac_cv_func_sigsetjmp: 'no'
