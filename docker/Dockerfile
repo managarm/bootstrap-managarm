@@ -8,6 +8,7 @@ RUN apt-get update \
 		autopoint \
 		bison \
 		build-essential \
+		cpio \
 		curl \
 		doxygen \
 		flex \
