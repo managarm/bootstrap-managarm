@@ -135,7 +135,8 @@ Hence, running the following commands in the build directory
 should produce a working image and launch it using QEMU:
 ```bash
 # Create a HDD image file called 'image'.
-./image_create.sh image 4GiB ext2 gpt
+# Check "./image_create.sh -h" for more options.
+./image_create.sh -o image -s 4GiB -t ext2 -p gpt -l grub -b
 
 # Copy the system onto it.
 xbstrap run make-image
