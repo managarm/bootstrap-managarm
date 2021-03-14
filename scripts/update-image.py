@@ -353,28 +353,22 @@ class UpdateFsAction:
 			steps.append(['sed', '-i', f's|{pattern}|{replace}|g', target])
 
 		plan_create_dir('boot/managarm')
-		plan_install('usr/managarm/bin/eir-stivale', 'boot/managarm')
-		plan_install('usr/managarm/bin/eir-mb1', 'boot/managarm', strip = True)
-		plan_install('usr/managarm/bin/thor', 'boot/managarm', strip = True)
+		if self.arch == 'x86_64-managarm':
+			plan_install('usr/managarm/bin/eir-stivale', 'boot/managarm')
+			plan_install('usr/managarm/bin/eir-mb1', 'boot/managarm', strip = True)
+			plan_install('usr/managarm/bin/thor', 'boot/managarm', strip = True)
 		plan_install('initrd.cpio', 'boot/managarm', ignore_sysroot = True)
 
 		for dir in ['root', 'usr/bin', 'usr/lib', 'var', 'dev', 'proc', 'run', 'sys', 'tmp', 'boot/grub', 'home']:
 			plan_create_dir(dir)
 
-		plan_cp(os.path.join(scriptdir, 'grub.cfg'), 'boot/grub')
+		if self.arch == 'x86_64-managarm':
+			plan_cp(os.path.join(scriptdir, 'grub.cfg'), 'boot/grub')
 
-		# TODO: once TomatBoot supports ext2, use plan_cp_sed to replace @ROOT_UUID@ with the uuid
-		plan_cp(os.path.join(scriptdir, 'limine.cfg'), 'boot/')
-		#plan_cp_sed(os.path.join(scriptdir, 'limine.cfg'), 'boot/', '@ROOT_UUID@', root_uuid)
-		if has_efi:
-			plan_cp(os.path.join(scriptdir, 'limine.cfg'), 'boot/efi/')
-			#plan_cp_sed(os.path.join(scriptdir, 'limine.cfg'), 'boot/efi/', '@ROOT_UUID@', root_uuid)
-			plan_create_dir('boot/efi/boot/managarm')
-			# TODO: TomatBoot does not support ext2 currently,
-			# so we just copy the required files onto the ESP
-			plan_install('usr/managarm/bin/eir-stivale', 'boot/efi/boot/managarm')
-			plan_install('usr/managarm/bin/thor', 'boot/efi/boot/managarm', strip = True)
-			plan_install('initrd.cpio', 'boot/efi/boot/managarm', ignore_sysroot = True)
+			plan_cp_sed(os.path.join(scriptdir, 'limine.cfg'), 'boot/', '@ROOT_UUID@', root_uuid)
+			if has_efi:
+				plan_cp(os.path.join(scriptdir, 'limine.cfg'), 'boot/efi/')
+				plan_cp_sed(os.path.join(scriptdir, 'limine.cfg'), 'boot/efi/', '@ROOT_UUID@', root_uuid)
 
 		plan_rsync('bin')
 		plan_rsync('lib')
