@@ -496,6 +496,7 @@ def determine_elevation_method(method):
 class Plan:
 	def __init__(self, actions):
 		self.actions = actions
+		self.error_count = 0
 
 	def print(self):
 		print('update-image: Running the following plan:')
@@ -508,6 +509,7 @@ class Plan:
 			try:
 				action.run()
 			except Exception as e:
+				self.error_count += 1
 				print(f'update-image: Action {action.name()} failed with: {e.args}')
 
 parser = argparse.ArgumentParser(description = 'Update a managarm installation')
@@ -578,3 +580,8 @@ plan = Plan([make_action(v, args.mount_using, args.image_path, args.mountpoint_p
 		args.sysroot_path, args.arch) for v in action_list])
 plan.print()
 plan.run()
+
+print('update-image: Finished running plan.')
+if plan.error_count > 0:
+	print(f'update-image: {plan.error_count} step(s) failed.')
+	sys.exit(1)
