@@ -143,8 +143,16 @@ class MountAction:
 				efi_partition = part.idx
 
 		if global_mount_info:
-			print('update-image: The image appears to already be mounted (mount info exists)')
-			return
+			if not os.access(global_mount_info.blockdev, os.F_OK, effective_ids=True):
+				print('update-image: Mount info exists put refers to a non-existant block device, ignoring.')
+				try:
+					os.remove(os.path.join(script_dir, 'update-image-mount-info'))
+				except:
+					pass
+				global_mount_info = None
+			else:
+				print('update-image: The image appears to already be mounted (mount info exists)')
+				return
 
 		if not root_partition:
 			raise RuntimeError('No suitable root partition found')
