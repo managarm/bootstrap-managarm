@@ -176,8 +176,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/harfbuzz/harfbuzz.git'
-      tag: '2.7.4'
-      version: '2.7.4'
+      tag: '2.8.0'
+      version: '2.8.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -198,17 +198,19 @@ packages:
       - glib
       - zlib
       - freetype
+      - cairo
+      - icu
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--disable-gtk-doc-html'
-        - '--without-cairo'
         - '--without-gobject'
-        - '--without-icu'
         - '--with-freetype=yes'
         - '--with-graphite2=yes'
+        - '--with-cairo=yes'
+        - '--with-icu=yes'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
