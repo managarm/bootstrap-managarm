@@ -3,8 +3,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/nano.git'
-      tag: 'v5.4'
-      version: '5.4'
+      tag: 'v5.6.1'
+      version: '5.6.1'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -21,6 +21,7 @@ packages:
       - host-pkg-config
       - system-gcc
     pkgs_required:
+      - file
       - ncurses
       - libintl
       - zlib
