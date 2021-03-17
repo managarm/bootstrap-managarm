@@ -43,8 +43,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/proto/xorgproto.git'
-      tag: 'xorgproto-2020.1'
-      version: '2020.1'
+      tag: 'xorgproto-2021.3'
+      version: '2021.3'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
