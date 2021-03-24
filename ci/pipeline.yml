@@ -15,6 +15,7 @@ jobs:
   - name: image
     tasks:
       - useful-image-dependencies
+      - initialize-empty-image
       - make-image
       - test-image
       - xz-image

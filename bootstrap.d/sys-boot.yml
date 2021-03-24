@@ -1,3 +1,16 @@
+sources:
+  - name: image_create
+    subdir: 'ports'
+    git: 'https://github.com/qookei/image_create.git'
+    branch: 'master'
+    rolling_version: true
+    version: '0.0pl@ROLLING_ID@'
+  - name: limine-binary
+    subdir: 'ports'
+    git: 'https://github.com/limine-bootloader/limine.git'
+    tag: 'v2.0.1-binary'
+    version: '2.0.1'
+
 packages:
   - name: limine
     source:
