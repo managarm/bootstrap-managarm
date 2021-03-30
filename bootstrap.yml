@@ -860,6 +860,7 @@ packages:
 
   - name: llvm
     from_source: llvm
+    revision: 2
     tools_required:
       - host-cmake
       - system-gcc
@@ -877,7 +878,10 @@ packages:
         - '-DLLVM_LINK_LLVM_DYLIB=ON'
         # RTTI affects the ABI. Hence, we enable it.
         - '-DLLVM_ENABLE_RTTI=ON'
-        - '-DLLVM_TARGETS_TO_BUILD=X86'
+        - '-DLLVM_TARGETS_TO_BUILD=X86;AArch64'
+        - '-DLLVM_TARGET_ARCH=@OPTION:arch@'
+        - '-DLLVM_DEFAULT_TARGET_TRIPLE=@OPTION:arch-triple@'
+        - '-DLLVM_HOST_TRIPLE=@OPTION:arch-triple@'
         # Disable linking against ncurses, which we do not build with -fPIC.
         - '-DLLVM_ENABLE_TERMINFO=OFF'
         - '@THIS_SOURCE_DIR@/llvm'
