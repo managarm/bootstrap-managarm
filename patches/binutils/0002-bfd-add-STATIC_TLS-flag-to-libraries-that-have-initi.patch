@@ -1,0 +1,28 @@
+From f8a827f5512b32504f1a2811c7c5a648408969d8 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Kacper=20S=C5=82omi=C5=84ski?=
+ <kacper.slominski72@gmail.com>
+Date: Mon, 29 Mar 2021 21:15:33 +0200
+Subject: [PATCH 2/2] bfd: add STATIC_TLS flag to libraries that have
+ initial-exec symbols
+
+---
+ bfd/elfnn-aarch64.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/bfd/elfnn-aarch64.c b/bfd/elfnn-aarch64.c
+index faa27611..13c8c880 100644
+--- a/bfd/elfnn-aarch64.c
++++ b/bfd/elfnn-aarch64.c
+@@ -7674,6 +7674,9 @@ elfNN_aarch64_check_relocs (bfd *abfd, struct bfd_link_info *info,
+ 	    if ((got_type & GOT_TLS_IE) && GOT_TLS_GD_ANY_P (got_type))
+ 	      got_type &= ~ (GOT_TLSDESC_GD | GOT_TLS_GD);
+ 
++	    if (!bfd_link_executable (info) && (got_type & GOT_TLS_IE))
++	      info->flags |= DF_STATIC_TLS;
++
+ 	    if (old_got_type != got_type)
+ 	      {
+ 		if (h != NULL)
+-- 
+2.31.0
+
