@@ -281,6 +281,8 @@ tools:
 
   - name: host-managarm-tools
     from_source: managarm
+    sources_required:
+      - frigg
     tools_required:
       - tool: host-protoc
         recursive: true
