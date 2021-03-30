@@ -113,7 +113,8 @@ packages:
       - xz-utils
       - gdbm
       - util-linux
-    revision: 4
+      - libintl
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
