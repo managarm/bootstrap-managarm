@@ -829,16 +829,18 @@ packages:
       git: 'https://github.com/openssl/openssl.git'
       tag: 'OpenSSL_1_1_1j'
       version: '1.1.1j'
+    revision: 2
     tools_required:
       - system-gcc
     pkgs_required:
       - zlib
     configure:
       - args:
-        - '@THIS_SOURCE_DIR@/config'
+        - '@THIS_SOURCE_DIR@/Configure'
         - '--prefix=/usr'
         - '--openssldir=/etc/ssl'
         - '--libdir=lib'
+        - '@OPTION:arch-triple@'
         - 'shared'
         - 'zlib-dynamic'
         - 'no-afalgeng'
