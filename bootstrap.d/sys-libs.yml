@@ -66,6 +66,7 @@ packages:
       git: 'https://github.com/ThomasDickey/ncurses-snapshots.git'
       tag: 'v6_2'
       version: '6.2'
+    revision: 2
     tools_required:
       - system-gcc
     configure:
@@ -81,6 +82,7 @@ packages:
         - '--with-pkg-config-libdir=/usr/lib/pkgconfig'
         - '--with-termlib'
         - '--enable-widec'
+        - '--disable-stripping'
         environ:
           cf_cv_func_nanosleep: 'yes'
     build:
