@@ -276,8 +276,7 @@ packages:
         - '-DCMAKE_INSTALL_DOCDIR=/usr/share/doc/libjpeg-turbo-2.0.5'
         - '-DCMAKE_INSTALL_DEFAULT_LIBDIR=lib'
         - '-DWITH_JPEG8=ON'
-        # HACK!! Hardcoding this makes it non-portable
-        - '-DCMAKE_SYSTEM_PROCESSOR=amd64'
+        - '-DCMAKE_SYSTEM_PROCESSOR=@OPTION:arch@'
         - '@THIS_SOURCE_DIR@/'
     build:
       - args: ['make', '-j@PARALLELISM@']

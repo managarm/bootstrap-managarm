@@ -35,7 +35,12 @@ repository:
 repositories:
     xbps: 'https://ci.managarm.org/repos/packages/managarm/rolling'
 
+# TODO: We currently don't support computed options or anything of that sort,
+#       so we just define the architecture, and the triple as 2 options
+#       (some packages, like llvm and libjpeg-turbo need the architecture)
 declare_options:
+  - name: arch
+    default: x86_64
   - name: arch-triple
     default: x86_64-managarm
   - name: mount-using
