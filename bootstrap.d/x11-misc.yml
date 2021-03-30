@@ -114,6 +114,11 @@ packages:
           environ:
             'NOCONFIGURE': 'yes'
     tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.15
+      - host-libtool
+      - host-pkg-config
+      - host-xorg-macros
       - system-gcc
     pkgs_required:
       - libx11

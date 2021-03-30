@@ -21,6 +21,8 @@ packages:
       - libxml
       - libiconv
     tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.15
       - system-gcc
       - host-libtool
       - host-pkg-config

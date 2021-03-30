@@ -16,6 +16,8 @@ packages:
         # after patching config.sub so that make does not try to regenerate it.
         - args: ['autoconf']
     tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.15
       - system-gcc
     pkgs_required:
       - ncurses

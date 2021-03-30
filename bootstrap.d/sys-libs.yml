@@ -12,6 +12,8 @@ packages:
       regenerate:
         - args: ['./bootstrap']
     tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.15
       - system-gcc
     configure:
       - args:
@@ -42,6 +44,8 @@ packages:
       regenerate:
         - args: ['./autogen.sh']
     tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.15
       - system-gcc
     configure:
       - args:

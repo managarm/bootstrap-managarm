@@ -150,6 +150,9 @@ packages:
       regenerate:
         - args: ['./autogen.sh', '--no-po4a']
     tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.15
+      - host-libtool
       - system-gcc
     pkgs_required:
       - zlib

@@ -314,6 +314,9 @@ tools:
         # libtool's ./bootstrap does a shallow clone with insufficient depth.
         - args: ['git', 'submodule', 'update', '--init']
         - args: ['./bootstrap']
+    tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.15
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1127,6 +1130,10 @@ packages:
           environ:
             'NOCONFIGURE': 'yes'
     tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.15
+      - host-libtool
+      - host-pkg-config
       - system-gcc
     pkgs_required:
       - libxkbcommon

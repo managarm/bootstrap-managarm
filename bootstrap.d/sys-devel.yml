@@ -39,6 +39,9 @@ sources:
 tools:
   - name: host-bison
     from_source: bison
+    tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.15
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
