@@ -449,6 +449,7 @@ packages:
       version: '20.3.1'
       tools_required:
         - host-pkg-config
+    revision: 2
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -490,7 +491,7 @@ packages:
         - '--buildtype=debugoptimized'
         #- '--buildtype=debug'
         - '-Dglx=dri'
-        - '-Dplatforms=wayland,x11'
+        - '-Dplatforms=wayland,x11,drm'
         # The Gallium swrast driver seems to be preferred over dri-swrast.
         - '-Ddri-drivers='
         - '-Dgallium-drivers=swrast'
