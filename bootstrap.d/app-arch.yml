@@ -14,9 +14,9 @@ packages:
       - args: 'sed -i s/"all: libbz2.a bzip2 bzip2recover test"/"all: libbz2.a bzip2 bzip2recover"/ @THIS_BUILD_DIR@/Makefile'
     build:
       # Building Makefile-libbz2_so first makes all programs link agains libbz2.so
-      - args: ['make', 'CC=x86_64-managarm-gcc', 'CFLAGS=-fPIC', '-f', 'Makefile-libbz2_so']
+      - args: ['make', 'CC=@OPTION:arch-triple@-gcc', 'CFLAGS=-fPIC', '-f', 'Makefile-libbz2_so']
       - args: ['make', 'clean']
-      - args: ['make', 'CC=x86_64-managarm-gcc', 'CFLAGS=-fPIC', '-j@PARALLELISM@']
+      - args: ['make', 'CC=@OPTION:arch-triple@-gcc', 'CFLAGS=-fPIC', '-j@PARALLELISM@']
       - args: ['make', 'PREFIX=@THIS_COLLECT_DIR@/usr', 'install']
       - args: ['ln', '-sf', 'bzdiff', '@THIS_COLLECT_DIR@/usr/bin/bzcmp']
       - args: ['ln', '-sf', 'bzgrep', '@THIS_COLLECT_DIR@/usr/bin/bzegrep']
@@ -42,7 +42,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
       - args: 'sed -i s/-Werror//g @THIS_BUILD_DIR@/lib/Makefile'
     build:
@@ -125,7 +125,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--disable-nls'
       - args: 'sed -i s/-Werror//g @THIS_BUILD_DIR@/lib/Makefile'
@@ -159,7 +159,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--disable-static'
         - '--disable-nls'
@@ -185,8 +185,8 @@ packages:
     build:
       - args: ['make', '-j@PARALLELISM@']
         environ:
-          CC: 'x86_64-managarm-gcc'
-          CXX: 'x86_64-managarm-g++'
+          CC: '@OPTION:arch-triple@-gcc'
+          CXX: '@OPTION:arch-triple@-g++'
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'

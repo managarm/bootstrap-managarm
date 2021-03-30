@@ -573,9 +573,9 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
-        - '--target=x86_64-managarm'
+        - '--target=@OPTION:arch-triple@'
         - '--with-sysroot=/'
         - '--disable-nls'
         # On recent compilers, binutils 2.26 causes implicit-fallthrough warnings, among others.
@@ -697,9 +697,9 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
-        - '--target=x86_64-managarm'
+        - '--target=@OPTION:arch-triple@'
         - '--with-sysroot=/'
         - '--with-build-sysroot=@SYSROOT_DIR@'
         - '--enable-languages=c,c++'
@@ -737,7 +737,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
         - '--disable-blkid'
@@ -798,9 +798,9 @@ packages:
         - 'S=@THIS_SOURCE_DIR@'
         - 'DESTDIR=@THIS_COLLECT_DIR@'
         - 'prefix=/usr/'
-        - 'CXX=x86_64-managarm-g++'
-        - 'LD=x86_64-managarm-ld'
-        - 'AS=x86_64-managarm-as'
+        - 'CXX=@OPTION:arch-triple@-g++'
+        - 'LD=@OPTION:arch-triple@-ld'
+        - 'AS=@OPTION:arch-triple@-as'
         - 'install'
 
   # Deprecated in favor of openssl
@@ -848,9 +848,9 @@ packages:
         - 'S=@THIS_SOURCE_DIR@'
         - 'DESTDIR=@THIS_COLLECT_DIR@'
         - 'prefix=/usr/'
-        - 'CXX=x86_64-managarm-g++'
-        - 'LD=x86_64-managarm-ld'
-        - 'AS=x86_64-managarm-as'
+        - 'CXX=@OPTION:arch-triple@-g++'
+        - 'LD=@OPTION:arch-triple@-ld'
+        - 'AS=@OPTION:arch-triple@-as'
         - 'install'
 
   - name: llvm
@@ -905,7 +905,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         environ:
           CFLAGS: '-O0 -g -Wall -Wextra -std=c99 -fcommon'
@@ -1051,7 +1051,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         # protobuf needs a host protoc when cross-compiling.
         - '--with-protoc=protoc'
@@ -1077,7 +1077,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--with-host-scanner'
         - '--disable-dtd-validation'
@@ -1105,7 +1105,7 @@ packages:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         environ:
-          CHOST: 'x86_64-managarm'
+          CHOST: '@OPTION:arch-triple@'
           prefix: '/usr'
     build:
       - args: ['make', '-j@PARALLELISM@']
@@ -1140,7 +1140,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
     build:
@@ -1179,7 +1179,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
         - '--with-video=drm2d'
@@ -1275,7 +1275,7 @@ packages:
       - system-gcc
       - host-pkg-config
       - virtual: pkgconfig-for-target
-        triple: x86_64-managarm
+        triple: "@OPTION:arch-triple@"
     pkgs_required:
       - sdl2
     configure:
@@ -1314,9 +1314,9 @@ packages:
       - args:
         - 'make'
         - 'generic'
-        - 'CC=x86_64-managarm-gcc'
-        - 'AR=x86_64-managarm-ar rcu'
-        - 'RANLIB=x86_64-managarm-ranlib'
+        - 'CC=@OPTION:arch-triple@-gcc'
+        - 'AR=@OPTION:arch-triple@-ar rcu'
+        - 'RANLIB=@OPTION:arch-triple@-ranlib'
         - '-j@PARALLELISM@'
       - args: ['make', 'install', 'INSTALL_TOP=@THIS_COLLECT_DIR@/usr']
         quiet: true
@@ -1345,7 +1345,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
         - '--without-libsndfile'
@@ -1370,8 +1370,8 @@ packages:
       - system-gcc
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
-      - args: 'echo x86_64-managarm-gcc -O2 -Wall > @THIS_BUILD_DIR@/src/conf-cc'
-      - args: 'echo x86_64-managarm-gcc > @THIS_BUILD_DIR@/src/conf-ld'
+      - args: 'echo @OPTION:arch-triple@-gcc -O2 -Wall > @THIS_BUILD_DIR@/src/conf-cc'
+      - args: 'echo @OPTION:arch-triple@-gcc > @THIS_BUILD_DIR@/src/conf-ld'
       - args: 'sed -i s/-static// src/Makefile'
       - args: 'sed -i 1s/utmpset// src/Makefile'
       - args: 'sed -i /utmpset/d package/commands'

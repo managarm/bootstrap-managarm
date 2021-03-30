@@ -22,7 +22,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--sysconfdir=/etc'
         - '--with-trust-paths=/etc/pki/anchors'

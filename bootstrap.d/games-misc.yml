@@ -42,7 +42,7 @@ packages:
       - args: ['mv', '-v', '@THIS_BUILD_DIR@/Makefile.in.managarm', '@THIS_BUILD_DIR@/Makefile.in']
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--with-gtk2'
         - '--disable-gtktest'
@@ -71,7 +71,7 @@ packages:
     build:
       - args: ['make', '-j@PARALLELISM@']
         environ:
-          CC: "x86_64-managarm-gcc"
+          CC: "@OPTION:arch-triple@-gcc"
       - args: ['mkdir', '-pv', '@THIS_COLLECT_DIR@/usr/bin']
       - args: ['mkdir', '-pv', '@THIS_COLLECT_DIR@/usr/share/man/man1']
       - args: ['cp', '-v', '@THIS_BUILD_DIR@/src/nyancat', '@THIS_COLLECT_DIR@/usr/bin']

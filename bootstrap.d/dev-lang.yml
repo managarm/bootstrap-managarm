@@ -43,7 +43,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
     build:
       - args: ['make', '-j@PARALLELISM@']
@@ -71,9 +71,9 @@ packages:
       - args:
         - '@THIS_BUILD_DIR@/configure'
         - '--mode=cross'
-        - '--target=x86_64-managarm'
-        - '--targetarch=x86_64-managarm'
-        - '--target-tools-prefix=x86_64-managarm-'
+        - '--target=@OPTION:arch-triple@'
+        - '--targetarch=@OPTION:arch-triple@'
+        - '--target-tools-prefix=@OPTION:arch-triple@-'
         - '--prefix=/usr'
         # Disabled threading functionality for now
         #- '-Dusethreads'
@@ -117,7 +117,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--build=x86_64-linux-gnu'
         - '--prefix=/usr'
         - '--enable-shared'
@@ -161,7 +161,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--disable-nls'
     build:

@@ -26,7 +26,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--sysconfdir=/etc'
         - '--localstatedir=/var'
@@ -63,7 +63,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--sysconfdir=/etc'
         - '--localstatedir=/var'
@@ -84,7 +84,7 @@ packages:
       - system-gcc
       - wayland-scanner
       - virtual: pkgconfig-for-target
-        triple: x86_64-managarm
+        triple: "@OPTION:arch-triple@"
       - virtual: pkgconfig-for-host
         program_name: host-pkg-config
     pkgs_required:
