@@ -500,6 +500,49 @@ tools:
         install:
           - args: ['make', 'install-target-libstdc++-v3']
 
+  - name: bootstrap-system-gcc
+    from_source: gcc
+    tools_required:
+      - tool: cross-binutils
+        recursive: true
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--prefix=@PREFIX@'
+        - '--target=@OPTION:arch-triple@'
+        - '--with-sysroot=@SYSROOT_DIR@'
+        - '--enable-languages=c,c++'
+        - '--disable-multilib'
+        - '--enable-initfini-array'
+        # -g blows up GCC's binary size.
+        - 'CFLAGS=-O2'
+        - 'CXXFLAGS=-O2'
+    stages:
+      - name: compiler
+        pkgs_required:
+         - mlibc-headers
+        compile:
+          # GCC complains if the include directory is non-existant.
+          - args: ['mkdir', '-p', '@SYSROOT_DIR@/usr/include']
+          - args: ['make', '-j@PARALLELISM@', 'inhibit_libc=true', 'all-gcc']
+        install:
+          - args: ['make', 'install-gcc']
+          # GCC does *not* look for target-prefixed LD/AS.
+          # Instead, it searches a list of prefix directories. Link AS/LD to make it happy.
+          - args: ['mkdir', '-p', '@PREFIX@/@OPTION:arch-triple@/bin']
+          - args: ['ln', '-sf', '../../../cross-binutils/@OPTION:arch-triple@/bin/as',
+                               '@PREFIX@/@OPTION:arch-triple@/bin/as']
+          - args: ['ln', '-sf', '../../../cross-binutils/@OPTION:arch-triple@/bin/ld',
+                               '@PREFIX@/@OPTION:arch-triple@/bin/ld']
+      - name: libgcc
+        tools_required:
+          - tool: bootstrap-system-gcc
+            stage_dependencies: [compiler]
+        compile:
+          - args: ['make', '-j@PARALLELISM@', 'inhibit_libc=true', 'all-target-libgcc']
+        install:
+          - args: ['make', 'install-target-libgcc']
+
   - name: wayland-scanner
     from_source: wayland
     tools_required:
@@ -972,8 +1015,7 @@ packages:
     from_source: mlibc
     tools_required:
       - host-managarm-tools
-      - tool: system-gcc
-        stage_dependencies: [compiler]
+      - bootstrap-system-gcc
       - host-protoc
     implict_package: true
     pkgs_required:
