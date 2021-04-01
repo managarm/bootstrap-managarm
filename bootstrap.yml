@@ -35,7 +35,12 @@ repository:
 repositories:
     xbps: 'https://ci.managarm.org/repos/packages/managarm/rolling'
 
+# TODO: We currently don't support computed options or anything of that sort,
+#       so we just define the architecture, and the triple as 2 options
+#       (some packages, like llvm and libjpeg-turbo need the architecture)
 declare_options:
+  - name: arch
+    default: x86_64
   - name: arch-triple
     default: x86_64-managarm
   - name: mount-using
@@ -316,6 +321,9 @@ tools:
         # libtool's ./bootstrap does a shallow clone with insufficient depth.
         - args: ['git', 'submodule', 'update', '--init']
         - args: ['./bootstrap']
+    tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.15
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -502,6 +510,49 @@ tools:
         install:
           - args: ['make', 'install-target-libstdc++-v3']
 
+  - name: bootstrap-system-gcc
+    from_source: gcc
+    tools_required:
+      - tool: cross-binutils
+        recursive: true
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--prefix=@PREFIX@'
+        - '--target=@OPTION:arch-triple@'
+        - '--with-sysroot=@SYSROOT_DIR@'
+        - '--enable-languages=c,c++'
+        - '--disable-multilib'
+        - '--enable-initfini-array'
+        # -g blows up GCC's binary size.
+        - 'CFLAGS=-O2'
+        - 'CXXFLAGS=-O2'
+    stages:
+      - name: compiler
+        pkgs_required:
+         - mlibc-headers
+        compile:
+          # GCC complains if the include directory is non-existant.
+          - args: ['mkdir', '-p', '@SYSROOT_DIR@/usr/include']
+          - args: ['make', '-j@PARALLELISM@', 'inhibit_libc=true', 'all-gcc']
+        install:
+          - args: ['make', 'install-gcc']
+          # GCC does *not* look for target-prefixed LD/AS.
+          # Instead, it searches a list of prefix directories. Link AS/LD to make it happy.
+          - args: ['mkdir', '-p', '@PREFIX@/@OPTION:arch-triple@/bin']
+          - args: ['ln', '-sf', '../../../cross-binutils/@OPTION:arch-triple@/bin/as',
+                               '@PREFIX@/@OPTION:arch-triple@/bin/as']
+          - args: ['ln', '-sf', '../../../cross-binutils/@OPTION:arch-triple@/bin/ld',
+                               '@PREFIX@/@OPTION:arch-triple@/bin/ld']
+      - name: libgcc
+        tools_required:
+          - tool: bootstrap-system-gcc
+            stage_dependencies: [compiler]
+        compile:
+          - args: ['make', '-j@PARALLELISM@', 'inhibit_libc=true', 'all-target-libgcc']
+        install:
+          - args: ['make', 'install-target-libgcc']
+
   - name: wayland-scanner
     from_source: wayland
     tools_required:
@@ -529,9 +580,9 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
-        - '--target=x86_64-managarm'
+        - '--target=@OPTION:arch-triple@'
         - '--with-sysroot=/'
         - '--disable-nls'
         # On recent compilers, binutils 2.26 causes implicit-fallthrough warnings, among others.
@@ -653,9 +704,9 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
-        - '--target=x86_64-managarm'
+        - '--target=@OPTION:arch-triple@'
         - '--with-sysroot=/'
         - '--with-build-sysroot=@SYSROOT_DIR@'
         - '--enable-languages=c,c++'
@@ -693,7 +744,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
         - '--disable-blkid'
@@ -754,9 +805,9 @@ packages:
         - 'S=@THIS_SOURCE_DIR@'
         - 'DESTDIR=@THIS_COLLECT_DIR@'
         - 'prefix=/usr/'
-        - 'CXX=x86_64-managarm-g++'
-        - 'LD=x86_64-managarm-ld'
-        - 'AS=x86_64-managarm-as'
+        - 'CXX=@OPTION:arch-triple@-g++'
+        - 'LD=@OPTION:arch-triple@-ld'
+        - 'AS=@OPTION:arch-triple@-as'
         - 'install'
 
   # Deprecated in favor of openssl
@@ -804,13 +855,14 @@ packages:
         - 'S=@THIS_SOURCE_DIR@'
         - 'DESTDIR=@THIS_COLLECT_DIR@'
         - 'prefix=/usr/'
-        - 'CXX=x86_64-managarm-g++'
-        - 'LD=x86_64-managarm-ld'
-        - 'AS=x86_64-managarm-as'
+        - 'CXX=@OPTION:arch-triple@-g++'
+        - 'LD=@OPTION:arch-triple@-ld'
+        - 'AS=@OPTION:arch-triple@-as'
         - 'install'
 
   - name: llvm
     from_source: llvm
+    revision: 2
     tools_required:
       - host-cmake
       - system-gcc
@@ -828,7 +880,10 @@ packages:
         - '-DLLVM_LINK_LLVM_DYLIB=ON'
         # RTTI affects the ABI. Hence, we enable it.
         - '-DLLVM_ENABLE_RTTI=ON'
-        - '-DLLVM_TARGETS_TO_BUILD=X86'
+        - '-DLLVM_TARGETS_TO_BUILD=X86;AArch64'
+        - '-DLLVM_TARGET_ARCH=@OPTION:arch@'
+        - '-DLLVM_DEFAULT_TARGET_TRIPLE=@OPTION:arch-triple@'
+        - '-DLLVM_HOST_TRIPLE=@OPTION:arch-triple@'
         # Disable linking against ncurses, which we do not build with -fPIC.
         - '-DLLVM_ENABLE_TERMINFO=OFF'
         - '@THIS_SOURCE_DIR@/llvm'
@@ -861,7 +916,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         environ:
           CFLAGS: '-O0 -g -Wall -Wextra -std=c99 -fcommon'
@@ -974,8 +1029,7 @@ packages:
     from_source: mlibc
     tools_required:
       - host-managarm-tools
-      - tool: system-gcc
-        stage_dependencies: [compiler]
+      - bootstrap-system-gcc
       - host-protoc
     implict_package: true
     pkgs_required:
@@ -1008,7 +1062,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         # protobuf needs a host protoc when cross-compiling.
         - '--with-protoc=protoc'
@@ -1034,7 +1088,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--with-host-scanner'
         - '--disable-dtd-validation'
@@ -1062,7 +1116,7 @@ packages:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         environ:
-          CHOST: 'x86_64-managarm'
+          CHOST: '@OPTION:arch-triple@'
           prefix: '/usr'
     build:
       - args: ['make', '-j@PARALLELISM@']
@@ -1087,13 +1141,17 @@ packages:
           environ:
             'NOCONFIGURE': 'yes'
     tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.15
+      - host-libtool
+      - host-pkg-config
       - system-gcc
     pkgs_required:
       - libxkbcommon
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
     build:
@@ -1132,7 +1190,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
         - '--with-video=drm2d'
@@ -1228,7 +1286,7 @@ packages:
       - system-gcc
       - host-pkg-config
       - virtual: pkgconfig-for-target
-        triple: x86_64-managarm
+        triple: "@OPTION:arch-triple@"
     pkgs_required:
       - sdl2
     configure:
@@ -1267,9 +1325,9 @@ packages:
       - args:
         - 'make'
         - 'generic'
-        - 'CC=x86_64-managarm-gcc'
-        - 'AR=x86_64-managarm-ar rcu'
-        - 'RANLIB=x86_64-managarm-ranlib'
+        - 'CC=@OPTION:arch-triple@-gcc'
+        - 'AR=@OPTION:arch-triple@-ar rcu'
+        - 'RANLIB=@OPTION:arch-triple@-ranlib'
         - '-j@PARALLELISM@'
       - args: ['make', 'install', 'INSTALL_TOP=@THIS_COLLECT_DIR@/usr']
         quiet: true
@@ -1298,7 +1356,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
         - '--without-libsndfile'
@@ -1323,8 +1381,8 @@ packages:
       - system-gcc
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
-      - args: 'echo x86_64-managarm-gcc -O2 -Wall > @THIS_BUILD_DIR@/src/conf-cc'
-      - args: 'echo x86_64-managarm-gcc > @THIS_BUILD_DIR@/src/conf-ld'
+      - args: 'echo @OPTION:arch-triple@-gcc -O2 -Wall > @THIS_BUILD_DIR@/src/conf-cc'
+      - args: 'echo @OPTION:arch-triple@-gcc > @THIS_BUILD_DIR@/src/conf-ld'
       - args: 'sed -i s/-static// src/Makefile'
       - args: 'sed -i 1s/utmpset// src/Makefile'
       - args: 'sed -i /utmpset/d package/commands'

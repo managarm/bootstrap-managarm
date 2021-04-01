@@ -39,6 +39,9 @@ sources:
 tools:
   - name: host-bison
     from_source: bison
+    tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.15
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -76,7 +79,7 @@ packages:
       - args: ['./configure.sh', '-G', '-O3']
         environ:
           PREFIX: '/usr'
-          CC: 'x86_64-managarm-gcc'
+          CC: '@OPTION:arch-triple@-gcc'
           CFLAGS: '-std=c99'
           GEN_HOST: '0'
     build:
@@ -95,7 +98,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--docdir=/usr/share/doc/bison-3.6.2'
         - '--disable-nls'
@@ -123,7 +126,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--docdir=/usr/share/doc/flex-2.6.4'
         - '--disable-nls'
@@ -147,7 +150,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--docdir=/usr/share/doc/gettext-0.20.2'
         - '--enable-static=no'
@@ -190,7 +193,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
       - args: 'sed -i s/-Werror//g @THIS_BUILD_DIR@/src/Makefile'
       # This sed disables the building of the documentation
@@ -222,11 +225,11 @@ packages:
       - host-pkg-config
       - system-gcc
       - virtual: pkgconfig-for-target
-        triple: x86_64-managarm
+        triple: "@OPTION:arch-triple@"
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--disable-nls'
         - '--without-guile'
@@ -257,14 +260,14 @@ packages:
       - host-pkg-config
       - system-gcc
       - virtual: pkgconfig-for-target
-        triple: x86_64-managarm
+        triple: "@OPTION:arch-triple@"
     pkgs_required:
       - diffutils
     revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
     build:
       - args: ['make', '-j@PARALLELISM@']

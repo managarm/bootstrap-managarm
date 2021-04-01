@@ -21,16 +21,18 @@ packages:
       - libxml
       - libiconv
     tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.15
       - system-gcc
       - host-libtool
       - host-pkg-config
       - virtual: pkgconfig-for-target
-        triple: x86_64-managarm
+        triple: "@OPTION:arch-triple@"
     revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--sysconfdir=/etc'
         - '--localstatedir=/var'
@@ -100,7 +102,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--disable-static'
     build:
@@ -129,13 +131,13 @@ packages:
     build:
       - args: ['make', '-j@PARALLELISM@']
         environ:
-          GCC: "x86_64-managarm-gcc"
+          GCC: "@OPTION:arch-triple@-gcc"
           # We don't want to install libs in /usr/lib64, so disable that (like gentoo does)
           M_ARCH: ""
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
-          GCC: "x86_64-managarm-gcc"
+          GCC: "@OPTION:arch-triple@-gcc"
           M_ARCH: ""
 
   - name: glu
@@ -161,7 +163,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--disable-static'
     build:
@@ -190,7 +192,7 @@ packages:
       - host-pkg-config
       - host-autoconf-v2.69
       - virtual: pkgconfig-for-target
-        triple: x86_64-managarm
+        triple: "@OPTION:arch-triple@"
     pkgs_required:
       - graphite2
       - glib
@@ -199,7 +201,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--disable-gtk-doc-html'
         - '--without-cairo'
@@ -233,7 +235,7 @@ packages:
       - host-pkg-config
       - system-gcc
       - virtual: pkgconfig-for-target
-        triple: x86_64-managarm
+        triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mesa
       - xorg-proto
@@ -263,7 +265,7 @@ packages:
       - system-gcc
       - host-cmake
       - virtual: pkgconfig-for-target
-        triple: x86_64-managarm
+        triple: "@OPTION:arch-triple@"
     configure:
       - args:
         - 'cmake'
@@ -274,8 +276,7 @@ packages:
         - '-DCMAKE_INSTALL_DOCDIR=/usr/share/doc/libjpeg-turbo-2.0.5'
         - '-DCMAKE_INSTALL_DEFAULT_LIBDIR=lib'
         - '-DWITH_JPEG8=ON'
-        # HACK!! Hardcoding this makes it non-portable
-        - '-DCMAKE_SYSTEM_PROCESSOR=amd64'
+        - '-DCMAKE_SYSTEM_PROCESSOR=@OPTION:arch@'
         - '@THIS_SOURCE_DIR@/'
     build:
       - args: ['make', '-j@PARALLELISM@']
@@ -304,7 +305,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
     build:
       - args: ['make', '-j@PARALLELISM@']
@@ -332,7 +333,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--disable-static'
     build:
@@ -361,7 +362,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
     build:
@@ -392,7 +393,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--disable-static'
         - '--disable-spec'
@@ -431,7 +432,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--disable-static'
     build:
@@ -448,12 +449,13 @@ packages:
       version: '20.3.1'
       tools_required:
         - host-pkg-config
+    revision: 2
     tools_required:
       - host-pkg-config
       - system-gcc
       - wayland-scanner
       - virtual: pkgconfig-for-target
-        triple: x86_64-managarm
+        triple: "@OPTION:arch-triple@"
       - virtual: pkgconfig-for-host
         program_name: host-pkg-config
     pkgs_required:
@@ -489,7 +491,7 @@ packages:
         - '--buildtype=debugoptimized'
         #- '--buildtype=debug'
         - '-Dglx=dri'
-        - '-Dplatforms=wayland,x11'
+        - '-Dplatforms=wayland,x11,drm'
         # The Gallium swrast driver seems to be preferred over dri-swrast.
         - '-Ddri-drivers='
         - '-Dgallium-drivers=swrast'

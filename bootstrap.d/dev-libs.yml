@@ -55,7 +55,7 @@ packages:
       - system-gcc
       - host-pkg-config
       - virtual: pkgconfig-for-target
-        triple: x86_64-managarm
+        triple: "@OPTION:arch-triple@"
     pkgs_required:
       - glib
     configure:
@@ -93,7 +93,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--disable-static'
         - '--disable-rijndael'
@@ -129,7 +129,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
     build:
       - args: ['make', '-j@PARALLELISM@']
@@ -144,7 +144,7 @@ packages:
       - host-libtool
       - host-pkg-config
       - virtual: pkgconfig-for-target
-        triple: x86_64-managarm
+        triple: "@OPTION:arch-triple@"
     pkgs_required:
       - pcre
       - libffi
@@ -191,7 +191,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--enable-cxx'
         - '--disable-static'
@@ -214,7 +214,7 @@ packages:
           '@THIS_SOURCE_DIR@/icu4c/source/config/mh-unknown']
       - args:
         - '@THIS_SOURCE_DIR@/icu4c/source/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--with-cross-build=@BUILD_ROOT@/tool-builds/host-icu'
     build:
@@ -267,7 +267,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
     build:
@@ -298,7 +298,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/expat/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
         # We disable xmlwf to avoid building its documentation.
@@ -330,7 +330,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
     build:
@@ -363,7 +363,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--disable-nls'
         - '--disable-doc'
@@ -400,7 +400,7 @@ packages:
           '@THIS_SOURCE_DIR@/src/syscfg/lock-obj-pub.managarm.h']
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--disable-nls'
         - '--disable-doc'
@@ -462,7 +462,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
         - '--disable-nls'
@@ -485,7 +485,7 @@ packages:
       - host-pkg-config
       - system-gcc
       - virtual: pkgconfig-for-target
-        triple: x86_64-managarm
+        triple: "@OPTION:arch-triple@"
     pkgs_required:
       - eudev
       - libevdev
@@ -530,7 +530,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--without-emacs'
         - '--without-lispdir'
@@ -583,7 +583,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--disable-static'
         - '--docdir=/usr/share/doc/libotf-0.9.16'
@@ -615,7 +615,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
     build:
       - args: ['make', '-j@PARALLELISM@']
@@ -644,7 +644,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--disable-static'
         - '--disable-doc'
@@ -672,7 +672,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
     build:
       - args: ['make', '-j@PARALLELISM@']
@@ -706,7 +706,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--with-python=@SYSROOT_DIR@/usr/bin/python3.8'
         - '--disable-static'
@@ -738,7 +738,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--disable-static'
         - '--docdir=/usr/share/doc/mpc-1.1.0'
@@ -771,7 +771,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--enable-static=no'
         - '--enable-shared=yes'
@@ -812,7 +812,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--disable-static'
         - '--disable-documentation'
@@ -829,22 +829,24 @@ packages:
       git: 'https://github.com/openssl/openssl.git'
       tag: 'OpenSSL_1_1_1j'
       version: '1.1.1j'
+    revision: 2
     tools_required:
       - system-gcc
     pkgs_required:
       - zlib
     configure:
       - args:
-        - '@THIS_SOURCE_DIR@/config'
+        - '@THIS_SOURCE_DIR@/Configure'
         - '--prefix=/usr'
         - '--openssldir=/etc/ssl'
         - '--libdir=lib'
+        - '@OPTION:arch-triple@'
         - 'shared'
         - 'zlib-dynamic'
         - 'no-afalgeng'
         environ:
-          CC: 'x86_64-managarm-gcc'
-          CXX: 'x86_64-managarm-g++'
+          CC: '@OPTION:arch-triple@-gcc'
+          CXX: '@OPTION:arch-triple@-g++'
     build:
       - args: ['make', '-j@PARALLELISM@']
       # Disable installing static libraries
@@ -879,7 +881,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
         - '--enable-unicode-properties'
@@ -913,7 +915,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--disable-static'
         - '--disable-nls'
@@ -943,7 +945,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
     build:
       - args: ['make', '-j@PARALLELISM@']
@@ -968,6 +970,9 @@ packages:
           environ:
             'NOCONFIGURE': 'yes'
     tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.15
+      - host-libtool
       - host-pkg-config
       - system-gcc
       - wayland-scanner
@@ -983,7 +988,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--disable-x11-compositor'
         - '--disable-weston-launch'

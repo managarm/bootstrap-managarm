@@ -12,11 +12,13 @@ packages:
       regenerate:
         - args: ['./bootstrap']
     tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.15
       - system-gcc
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--disable-nls'
         - '--disable-static'
@@ -42,11 +44,13 @@ packages:
       regenerate:
         - args: ['./autogen.sh']
     tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.15
       - system-gcc
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
     build:
@@ -62,12 +66,13 @@ packages:
       git: 'https://github.com/ThomasDickey/ncurses-snapshots.git'
       tag: 'v6_2'
       version: '6.2'
+    revision: 2
     tools_required:
       - system-gcc
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--without-ada'
         - '--enable-pc-files'
@@ -77,6 +82,7 @@ packages:
         - '--with-pkg-config-libdir=/usr/lib/pkgconfig'
         - '--with-termlib'
         - '--enable-widec'
+        - '--disable-stripping'
         environ:
           cf_cv_func_nanosleep: 'yes'
     build:
@@ -107,7 +113,7 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--disable-static'
         - '--enable-multibyte'
