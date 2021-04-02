@@ -523,6 +523,7 @@ tools:
         - '--with-sysroot=@SYSROOT_DIR@'
         - '--enable-languages=c,c++'
         - '--disable-multilib'
+        - '--disable-shared'
         - '--enable-initfini-array'
         # -g blows up GCC's binary size.
         - 'CFLAGS=-O2'
