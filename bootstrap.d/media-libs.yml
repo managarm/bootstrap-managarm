@@ -491,7 +491,7 @@ packages:
         - '--buildtype=debugoptimized'
         #- '--buildtype=debug'
         - '-Dglx=dri'
-        - '-Dplatforms=wayland,x11,drm'
+        - '-Dplatforms=wayland,x11'
         # The Gallium swrast driver seems to be preferred over dri-swrast.
         - '-Ddri-drivers='
         - '-Dgallium-drivers=swrast'
