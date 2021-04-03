@@ -8,20 +8,20 @@ sources:
   - name: limine-binary
     subdir: 'ports'
     git: 'https://github.com/limine-bootloader/limine.git'
-    tag: 'v2.0.1-binary'
-    version: '2.0.1'
+    tag: 'v2.1.4-binary'
+    version: '2.1.4'
 
 packages:
   - name: limine
     source:
       subdir: 'ports'
       git: 'https://github.com/limine-bootloader/limine.git'
-      tag: 'v1.0.5'
-      version: '1.0.5'
+      tag: 'v2.1.4'
+      version: '2.1.4'
     tools_required:
       - system-gcc
     configure:
       - args: ['cp', '-rv', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
-      - args: ['make', 'CC=@OPTION:arch-triple@-gcc', 'OBJCOPY=@OPTION:arch-triple@-objcopy', '-j@PARALLELISM@']
+      - args: ['make', 'TOOLCHAIN=@OPTION:arch-triple@', '-j@PARALLELISM@']
       - args: ['make', 'PREFIX=/usr', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']

@@ -28,6 +28,7 @@ packages:
       - xz-utils
       - findutils
       - util-linux
+      - limine
     configure: []
     build: []
 
