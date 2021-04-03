@@ -136,7 +136,7 @@ should produce a working image and launch it using QEMU:
 ```bash
 # Create a HDD image file called 'image'.
 # Check "./image_create.sh -h" for more options.
-./image_create.sh -o image -s 4GiB -t ext2 -p gpt -l grub -b
+./image_create.sh -o image -s 4GiB -t ext2 -p gpt -l limine -be
 
 # Copy the system onto it.
 xbstrap run make-image

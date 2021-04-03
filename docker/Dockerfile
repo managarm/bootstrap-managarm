@@ -32,6 +32,8 @@ RUN apt-get update \
 		libwayland-bin \
 		m4 \
 		mercurial \
+		mtools \
+		nasm \
 		netpbm \
 		ninja-build \
 		pkg-config \
