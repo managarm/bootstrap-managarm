@@ -1,6 +1,7 @@
 jobs:
   - name: system-toolchain
     tools:
+      - bootstrap-system-gcc
       - system-gcc
     packages:
       - mlibc
