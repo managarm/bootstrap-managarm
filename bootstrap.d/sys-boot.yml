@@ -18,10 +18,11 @@ packages:
       git: 'https://github.com/limine-bootloader/limine.git'
       tag: 'v2.2'
       version: '2.2'
+    revision: 2
     tools_required:
       - system-gcc
     configure:
       - args: ['cp', '-rv', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
-      - args: ['make', 'TOOLCHAIN=@OPTION:arch-triple@', '-j@PARALLELISM@']
+      - args: ['make', 'CC=@OPTION:arch-triple@-gcc', 'OBJCOPY=@OPTION:arch-triple@-objcopy', 'TOOLCHAIN=@OPTION:arch-triple@', '-j@PARALLELISM@']
       - args: ['make', 'PREFIX=/usr', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
