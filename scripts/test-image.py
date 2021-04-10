@@ -48,8 +48,10 @@ os.mkfifo('debugcon')
 # Start the qemu process.
 proc = subprocess.Popen([
 		'qemu-system-x86_64',
+		'-snapshot',
 		'-chardev', 'pipe,id=monitor-fifo,path=monitor',
 		'-enable-kvm',
+		'-smp', '4',
 		'-m', '1024',
 		'-device', 'piix3-usb-uhci', '-device', 'usb-kbd', '-device', 'usb-tablet',
 		'-drive', 'id=hdd,file=image,format=raw,if=none',
