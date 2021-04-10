@@ -25,6 +25,8 @@ args="$args -drive id=image,file=image,format=raw,if=none \
 #		-device virtio-blk-pci,disable-modern=on,drive=image"
 #args="$args -drive id=managarm,file=image,format=raw,if=none \
 #		-device usb-storage,drive=managarm"
+#args="$args -drive id=image,file=image,format=raw,if=none \
+#		-device ahci,id=ahci -device ide-hd,drive=image,bus=ahci.0" # AHCI
 #args="$args -device usb-host,vendorid=0x090c,productid=0x1000" # Real storage
 
 args="$args -netdev user,id=net0 -device virtio-net,netdev=net0"
