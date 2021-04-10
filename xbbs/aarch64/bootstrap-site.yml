@@ -1,0 +1,13 @@
+define_options:
+    arch: aarch64
+    arch-triple: aarch64-managarm
+
+pkg_management:
+    format: xbps
+
+container:
+    runtime: docker
+    image: managarm-buildenv
+    src_mount: /var/managarm-buildenv/src
+    build_mount: /var/managarm-buildenv/build
+    allow_containerless: true
