@@ -2,10 +2,10 @@ packages:
   - name: sqlite
     source:
       subdir: 'ports'
-      url: 'https://sqlite.org/2021/sqlite-autoconf-3350100.tar.gz'
+      url: 'https://sqlite.org/2021/sqlite-autoconf-3350400.tar.gz'
       format: 'tar.gz'
-      extract_path: 'sqlite-autoconf-3350100'
-      version: '3.35.1'
+      extract_path: 'sqlite-autoconf-3350400'
+      version: '3.35.4'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
