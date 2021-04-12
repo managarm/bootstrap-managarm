@@ -409,8 +409,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxaw.git'
-      tag: 'libXaw-1.0.13'
-      version: '1.0.13'
+      tag: 'libXaw-1.0.14'
+      version: '1.0.14'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
