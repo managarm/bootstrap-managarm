@@ -50,7 +50,7 @@ packages:
     build: []
 
   # Meta package for weston and usefull utilities
-  - name: gui
+  - name: weston-desktop
     from_source: managarm
     pkgs_required:
       - base

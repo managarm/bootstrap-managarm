@@ -33,8 +33,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/cairo/cairo.git'
-      tag: '1.16.0'
-      version: '1.16.0'
+      tag: '1.17.4'
+      version: '1.17.4'
       tools_required:
         - host-autoconf-v2.64
         - host-automake-v1.11
@@ -58,7 +58,6 @@ packages:
       - libxcb
       - libx11
       - libxext
-    revision: 2
     configure:
       - args:
         # For now, we build without glesv2 backend as Weston prefers the image backend.
@@ -66,6 +65,10 @@ packages:
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
+        - '--enable-xlib-xcb'
+        - '--enable-xml'
+        - '--enable-tee'
+        - '--enable-gl'
         environ:
           # freetype-config does not support cross-compilation.
           FREETYPE_CONFIG: 'no'
@@ -166,8 +169,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/mesa/drm'
-      tag: 'libdrm-2.4.104'
-      version: '2.4.104'
+      tag: 'libdrm-2.4.105'
+      version: '2.4.105'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -406,8 +409,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxaw.git'
-      tag: 'libXaw-1.0.13'
-      version: '1.0.13'
+      tag: 'libXaw-1.0.14'
+      version: '1.0.14'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -810,8 +813,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/xkbcommon/libxkbcommon.git'
-      tag: 'xkbcommon-1.0.3'
-      version: '1.0.3'
+      tag: 'xkbcommon-1.2.1'
+      version: '1.2.1'
     tools_required:
       - host-pkg-config
       - system-gcc

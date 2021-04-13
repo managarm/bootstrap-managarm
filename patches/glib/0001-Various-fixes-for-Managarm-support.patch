@@ -1,9 +1,9 @@
-From 341e9eb2c3492332d6cb10033ea5c1b08bd98b2b Mon Sep 17 00:00:00 2001
-From: Dennisbonke <admin@dennisbonke.com>
-Date: Fri, 2 Oct 2020 16:55:29 +0200
+From 87c0846f49719d71efb66a4a0c10181f31389ce1 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Tue, 13 Apr 2021 02:31:43 +0200
 Subject: [PATCH] Various fixes for Managarm support
 
-Signed-off-by: Dennisbonke <admin@dennisbonke.com>
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
  gio/gnetworking.h.in    | 2 ++
  gio/gthreadedresolver.c | 2 +-
@@ -41,10 +41,10 @@ index d170c73a9..53163e50e 100644
   * and bionic/libc/private/arpa_nameser.h */
  typedef struct {
 diff --git a/gio/meson.build b/gio/meson.build
-index 40a9ca6d0..8d5366a51 100644
+index 49a37a7bd..38dfbac9e 100644
 --- a/gio/meson.build
 +++ b/gio/meson.build
-@@ -26,7 +26,7 @@ if host_system != 'windows' and not host_system.contains('android')
+@@ -27,7 +27,7 @@ if host_system not in ['windows', 'android']
                     name : 'arpa/nameser_compat.h needed for C_IN')
        gnetworking_h_nameser_compat_include = '#include <arpa/nameser_compat.h>'
      else
@@ -53,9 +53,9 @@ index 40a9ca6d0..8d5366a51 100644
      endif
    endif
  endif
-@@ -51,7 +51,7 @@ if host_system != 'windows'
-       network_libs += [ cc.find_library('bind') ]
-       network_args += [ '-lbind' ]
+@@ -55,7 +55,7 @@ if host_system != 'windows'
+       network_libs += [ cc.find_library('socket') ]
+       network_args += [ '-lsocket' ]
      else
 -      error('Could not find res_query()')
 +      warning('Could not find res_query()')
@@ -63,7 +63,7 @@ index 40a9ca6d0..8d5366a51 100644
    endif
  
 diff --git a/glib/glib-init.c b/glib/glib-init.c
-index ed800dca1..df69dfff2 100644
+index 2958fb5be..e60273822 100644
 --- a/glib/glib-init.c
 +++ b/glib/glib-init.c
 @@ -27,6 +27,7 @@
@@ -75,7 +75,7 @@ index ed800dca1..df69dfff2 100644
  #include <stdio.h>
  #include <ctype.h>
 diff --git a/glib/gstrfuncs.c b/glib/gstrfuncs.c
-index 01f4fe3a8..4e6c7948a 100644
+index b6ff60f51..80b19a490 100644
 --- a/glib/gstrfuncs.c
 +++ b/glib/gstrfuncs.c
 @@ -33,6 +33,7 @@
@@ -87,10 +87,10 @@ index 01f4fe3a8..4e6c7948a 100644
  #include <errno.h>
  #include <garray.h>
 diff --git a/meson.build b/meson.build
-index 47f3a5cf1..4d6654d8a 100644
+index 657c478e6..17da69d64 100644
 --- a/meson.build
 +++ b/meson.build
-@@ -426,7 +426,6 @@ if cc.get_id() == 'gcc' or cc.get_id() == 'clang'
+@@ -438,7 +438,6 @@ if cc.get_id() == 'gcc' or cc.get_id() == 'clang'
      # A zero-length format string shouldn't be considered an issue.
      '-Wno-format-zero-length',
      '-Werror=declaration-after-statement',
@@ -99,5 +99,5 @@ index 47f3a5cf1..4d6654d8a 100644
      '-Werror=init-self',
      '-Werror=missing-include-dirs',
 -- 
-2.28.0
+2.31.0
 

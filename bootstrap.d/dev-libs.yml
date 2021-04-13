@@ -2,14 +2,14 @@ sources:
   - name: glib
     subdir: ports
     git: 'https://gitlab.gnome.org/GNOME/glib'
-    tag: '2.66.7'
-    version: '2.66.7'
+    tag: '2.68.1'
+    version: '2.68.1'
 
   - name: icu
     subdir: 'ports'
     git: 'https://github.com/unicode-org/icu.git'
-    tag: 'release-68-2'
-    version: '68.2'
+    tag: 'release-69-1'
+    version: '69.1'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.15
@@ -281,8 +281,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/libexpat/libexpat.git'
-      tag: 'R_2_2_9'
-      version: '2.2.9'
+      tag: 'R_2_3_0'
+      version: '2.3.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -383,8 +383,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://dev.gnupg.org/source/libgpg-error.git'
-      tag: 'libgpg-error-1.41'
-      version: '1.41'
+      tag: 'libgpg-error-1.42'
+      version: '1.42'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -827,9 +827,8 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/openssl/openssl.git'
-      tag: 'OpenSSL_1_1_1j'
-      version: '1.1.1j'
-    revision: 2
+      tag: 'OpenSSL_1_1_1k'
+      version: '1.1.1k'
     tools_required:
       - system-gcc
     pkgs_required:
