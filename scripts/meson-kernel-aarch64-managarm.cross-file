@@ -5,7 +5,7 @@ strip = 'aarch64-none-elf-strip'
 objcopy = 'aarch64-none-elf-objcopy'
 pkgconfig = 'pkgconfig'
 
-[properties]
+[built-in options]
 needs_exe_wrapper = true
 
 cpp_args = [

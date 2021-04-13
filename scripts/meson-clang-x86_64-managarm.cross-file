@@ -6,7 +6,7 @@ ar = 'x86_64-managarm-ar'
 strip = 'x86_64-managarm-strip'
 pkgconfig = 'pkg-config'
 
-[properties]
+[built-in options]
 cpp_args = ['-target', 'x86_64-managarm',
 	'-gcc-toolchain', '_BUILD_ROOT_/tools/system-gcc']
 cpp_link_args = ['-target', 'x86_64-managarm',

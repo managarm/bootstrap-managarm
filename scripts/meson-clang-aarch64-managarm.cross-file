@@ -6,7 +6,7 @@ ar = 'aarch64-managarm-ar'
 strip = 'aarch64-managarm-strip'
 pkgconfig = 'pkg-config'
 
-[properties]
+[built-in options]
 cpp_args = ['-target', 'aarch64-managarm',
 	'-gcc-toolchain', '_BUILD_ROOT_/tools/system-gcc']
 cpp_link_args = ['-target', 'aarch64-managarm',

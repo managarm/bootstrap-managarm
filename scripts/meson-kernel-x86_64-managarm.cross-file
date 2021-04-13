@@ -5,10 +5,12 @@ ar = 'x86_64-managarm-ar'
 strip = 'x86_64-managarm-strip'
 pkgconfig = 'pkg-config'
 
-[properties]
-cpp_args = ['-target', 'x86_64-managarm-kernel',
+[built-in options]
+cpp_args = ['-mno-80387', '-mno-mmx', '-mno-sse', '-mno-sse2',
+	'-ffreestanding', '-target', 'x86_64-managarm-kernel',
 	'-gcc-toolchain', '_BUILD_ROOT_/tools/kernel-gcc']
-cpp_link_args = ['-target', 'x86_64-managarm-kernel',
+cpp_link_args = ['-mno-80387', '-mno-mmx', '-mno-sse', '-mno-sse2',
+	'-ffreestanding', '-target', 'x86_64-managarm-kernel',
 	'-gcc-toolchain', '_BUILD_ROOT_/tools/kernel-gcc']
 
 [host_machine]
