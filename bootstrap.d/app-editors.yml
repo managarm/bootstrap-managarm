@@ -18,6 +18,8 @@ packages:
               fi
         - args: ['./autogen.sh']
     tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.15
       - host-pkg-config
       - system-gcc
     pkgs_required:
@@ -25,7 +27,6 @@ packages:
       - ncurses
       - libintl
       - zlib
-    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
