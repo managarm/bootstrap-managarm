@@ -1400,7 +1400,7 @@ tasks:
   - name: useful-image-dependencies
     pkgs_required:
       - base
-      - gui
+      - weston-desktop
     tools_required:
       - system-gcc
     args: ''
