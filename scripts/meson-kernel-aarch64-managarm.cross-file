@@ -6,7 +6,8 @@ objcopy = 'aarch64-none-elf-objcopy'
 pkgconfig = 'pkgconfig'
 
 [constants]
-args = [ '-target', 'aarch64-managarm-kernel', '-gcc-toolchain', '_BUILD_ROOT_/tools/kernel-gcc']
+# clang needs an additional flag to enable sized allocation/deallocation.
+args = [ '-fsized-deallocation', '-ffreestanding', '-target', 'aarch64-managarm-kernel', '-gcc-toolchain', '_BUILD_ROOT_/tools/kernel-gcc']
 
 [built-in options]
 needs_exe_wrapper = true

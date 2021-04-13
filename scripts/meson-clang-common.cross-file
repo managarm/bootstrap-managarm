@@ -1,0 +1,2 @@
+[libarch:project options]
+install_headers = true

@@ -989,6 +989,7 @@ packages:
               > ./meson-custom.cross-file
       - args:
         - 'meson'
+        - '--cross-file=@SOURCE_ROOT@/scripts/meson-clang-common.cross-file'
         - '--cross-file=./meson-custom.cross-file'
         - '--prefix=/usr'
         - '--libdir=lib'
