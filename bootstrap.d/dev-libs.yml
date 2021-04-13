@@ -2,8 +2,8 @@ sources:
   - name: glib
     subdir: ports
     git: 'https://gitlab.gnome.org/GNOME/glib'
-    tag: '2.66.7'
-    version: '2.66.7'
+    tag: '2.68.1'
+    version: '2.68.1'
 
   - name: icu
     subdir: 'ports'
