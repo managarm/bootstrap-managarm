@@ -5,17 +5,17 @@ ar = 'x86_64-managarm-ar'
 strip = 'x86_64-managarm-strip'
 pkgconfig = 'pkg-config'
 
+[constants]
+# common args that c and cxx need
+args = ['-mno-80387', '-mno-mmx', '-mno-sse', '-mno-sse2', '-ffreestanding']
+# cxx specific arguments
+cxx = args + [ '-target', 'x86_64-managarm-kernel', '-gcc-toolchain', '_BUILD_ROOT_/tools/kernel-gcc']
+
 [built-in options]
-c_args = ['-mno-80387', '-mno-mmx', '-mno-sse', '-mno-sse2',
-	'-ffreestanding']
-c_link_args = ['-mno-80387', '-mno-mmx', '-mno-sse', '-mno-sse2',
-	'-ffreestanding']
-cpp_args = ['-mno-80387', '-mno-mmx', '-mno-sse', '-mno-sse2',
-	'-ffreestanding', '-target', 'x86_64-managarm-kernel',
-	'-gcc-toolchain', '_BUILD_ROOT_/tools/kernel-gcc']
-cpp_link_args = ['-mno-80387', '-mno-mmx', '-mno-sse', '-mno-sse2',
-	'-ffreestanding', '-target', 'x86_64-managarm-kernel',
-	'-gcc-toolchain', '_BUILD_ROOT_/tools/kernel-gcc']
+c_args = args
+c_link_args = args
+cpp_args = cxx
+cpp_link_args = cxx
 
 [host_machine]
 system = 'managarm'

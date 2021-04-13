@@ -1,0 +1,3 @@
+[built-in options]
+cpp_rtti = false
+cpp_eh = 'none'
