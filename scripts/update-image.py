@@ -378,6 +378,20 @@ class UpdateFsAction:
 				plan_cp(os.path.join(scriptdir, 'limine.cfg'), 'boot/efi/')
 				plan_cp_sed(os.path.join(scriptdir, 'limine.cfg'), 'boot/efi/', '@ROOT_UUID@', root_uuid)
 
+		broken_image = False
+		if not os.path.islink(os.path.join(self.sysroot, 'bin')):
+			print('bin is not a symlink, aborting...')
+			broken_image = True
+		if not os.path.islink(os.path.join(self.sysroot, 'lib')):
+			print('lib is not a symlink, aborting...')
+			broken_image = True
+		if not os.path.islink(os.path.join(self.sysroot, 'sbin')):
+			print('sbin is not a symlink, aborting...')
+			broken_image = True
+
+		if broken_image:
+			raise RuntimeError('Broken sysroot, please fix this manually and rerun this script')
+
 		plan_rsync('bin')
 		plan_rsync('lib')
 		plan_rsync('sbin')
