@@ -1,27 +1,28 @@
-From 9de522a27f50ee54f4e8ebb8dd689323ffa0706e Mon Sep 17 00:00:00 2001
+From f5c66b35e9082f36d8b3647e1de996cf11d0e997 Mon Sep 17 00:00:00 2001
 From: Matt Taylor <mstaveleytaylor@gmail.com>
 Date: Thu, 8 Apr 2021 22:08:55 +0100
 Subject: [PATCH] managarm: initial port
 
 ---
- src/unix/mlibc/mod.rs | 550 ++++++++++++++++++++++++++++++++++++++++++
+ src/unix/mlibc/mod.rs | 547 ++++++++++++++++++++++++++++++++++++++++++
  src/unix/mod.rs       |   3 +
- 2 files changed, 553 insertions(+)
+ 2 files changed, 550 insertions(+)
  create mode 100644 src/unix/mlibc/mod.rs
 
 diff --git a/src/unix/mlibc/mod.rs b/src/unix/mlibc/mod.rs
 new file mode 100644
-index 000000000..409ac74f5
+index 000000000..51b9ee91d
 --- /dev/null
 +++ b/src/unix/mlibc/mod.rs
-@@ -0,0 +1,550 @@
-+// TODO: Should padding be public?
+@@ -0,0 +1,547 @@
++#[cfg(not(target_pointer_width = "64"))]
++compile_error!("Managarm target is not ported to this architecture");
 +
 +// Basic data types
 +pub type c_char = i8;
-+pub type c_long = i64; // TODO ?
-+pub type c_ulong = u64; // TODO ?
-+pub type wchar_t = ::c_int; // TODO ?
++pub type c_long = i64;
++pub type c_ulong = u64;
++pub type wchar_t = ::c_int;
 +
 +// options/posix/include/sys/resource.h
 +pub type rlim_t = ::c_ulong;
@@ -193,7 +194,7 @@ index 000000000..409ac74f5
 +s! {
 +    pub struct sockaddr_storage {
 +        pub ss_family: sa_family_t,
-+        pub __padding: [c_char; 128 - ::mem::size_of::<sa_family_t>()],
++        __padding: [u8; 128 - ::mem::size_of::<sa_family_t>()],
 +    }
 +}
 +
@@ -263,10 +264,6 @@ index 000000000..409ac74f5
 +        pub st_gid: gid_t,
 +        pub st_rdev: dev_t,
 +        pub st_size: off_t,
-+        // TODO: Should we use timespec here? Don't think we can
-+        // pub st_atime: timespec,
-+        // pub st_mtime: timespec,
-+        // pub st_ctime: timespec,
 +        pub st_atime: time_t,
 +        pub st_atime_nsec: c_long,
 +        pub st_mtime: time_t,
@@ -385,7 +382,7 @@ index 000000000..409ac74f5
 +    pub struct pthread_rwlock_t {
 +        pub __mlibc_m: ::c_uint,
 +        pub __mlibc_rc: ::c_uint,
-+        pub __mlibc_padding: ::c_uint,
++        __mlibc_padding: ::c_uint,
 +    }
 +    pub struct pthread_rwlockattr_t {
 +        pub __mlibc_align: ::c_int,
@@ -510,7 +507,7 @@ index 000000000..409ac74f5
 +        pub sin_family: sa_family_t,
 +        pub sin_port: in_port_t,
 +        pub sin_addr: in_addr,
-+        pub pad: [u8; 8],
++        pub __padding: [u8; 8], // std relies on this being public
 +    }
 +    pub struct sockaddr_in6 {
 +        pub sin6_family: sa_family_t,

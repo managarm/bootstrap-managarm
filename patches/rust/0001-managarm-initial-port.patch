@@ -1,4 +1,4 @@
-From 67654aea797ac07cc28fec23d771b82a60f16fa9 Mon Sep 17 00:00:00 2001
+From 73d9fe6abca8e17d7919e41bb2ccbe202b557129 Mon Sep 17 00:00:00 2001
 From: Matt Taylor <mstaveleytaylor@gmail.com>
 Date: Sat, 10 Apr 2021 17:53:24 +0100
 Subject: [PATCH] managarm: initial port
@@ -567,7 +567,7 @@ index cda17eb4bd2..fa977f5755c 100644
      pub fn set_name(name: &CStr) {
          use crate::ffi::CString;
 diff --git a/library/std/src/sys/unix/thread_local_dtor.rs b/library/std/src/sys/unix/thread_local_dtor.rs
-index c3275eb6f0e..8fe5def3ed7 100644
+index c3275eb6f0e..7ffeaea3c14 100644
 --- a/library/std/src/sys/unix/thread_local_dtor.rs
 +++ b/library/std/src/sys/unix/thread_local_dtor.rs
 @@ -15,7 +15,8 @@
@@ -576,7 +576,7 @@ index c3275eb6f0e..8fe5def3ed7 100644
      target_os = "redox",
 -    target_os = "emscripten"
 +    target_os = "emscripten",
-+    target_os = "managarm" // TODO: Is this right?
++    target_os = "managarm"
  ))]
  pub unsafe fn register_dtor(t: *mut u8, dtor: unsafe extern "C" fn(*mut u8)) {
      use crate::mem;

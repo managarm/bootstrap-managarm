@@ -69,7 +69,7 @@ tools:
             [target.x86_64-unknown-linux-gnu]
             llvm-config = "@BUILD_ROOT@/tools/host-llvm-toolchain/bin/llvm-config"
 
-            [target.x86_64-managarm-system]
+            [target.x86_64-unknown-managarm-system]
             llvm-config = "@BUILD_ROOT@/tools/host-llvm-toolchain/bin/llvm-config"
             EOF
       - args: ['@THIS_SOURCE_DIR@/x.py', 'build', '--stage', '2', '-j', '@PARALLELISM@']
