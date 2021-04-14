@@ -1,0 +1,37 @@
+From 8c7a57b0aaf67b7779e6513e8c391616406ac9e2 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Wed, 14 Apr 2021 02:14:46 +0200
+Subject: [PATCH 2/2] Remove a useless check in configure
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ configure.ac | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 4ddac8e1..a9103005 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -71,12 +71,13 @@ AM_CONDITIONAL(BUILDING_FROM_GIT, test x$from_git = xyes)
+ dnl Checks for pkg-config and gettext when building from git.
+ 
+ if test x$from_git = xyes; then
+-	if test ! -f $(aclocal --print-ac-dir)/pkg.m4; then
+-		AC_MSG_ERROR([
+-  *** The pkg.m4 macros are missing.
+-  *** The pkg-config package needs to be installed when building from git.
+-  *** After fixing this problem, rerun ./autogen.sh.])
+-	fi
++dnl This test is currently broken on Managarm and unimportant
++dnl	if test ! -f $(aclocal --print-ac-dir)/pkg.m4; then
++dnl		AC_MSG_ERROR([
++dnl  *** The pkg.m4 macros are missing.
++dnl  *** The pkg-config package needs to be installed when building from git.
++dnl  *** After fixing this problem, rerun ./autogen.sh.])
++dnl	fi
+ 	if test "$ac_cv_path_MSGFMT" = ":"; then
+ 		AC_MSG_ERROR([
+   *** The msgfmt program is missing.
+-- 
+2.31.0
+
