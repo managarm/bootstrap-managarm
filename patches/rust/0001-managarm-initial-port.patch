@@ -1,0 +1,616 @@
+From 73d9fe6abca8e17d7919e41bb2ccbe202b557129 Mon Sep 17 00:00:00 2001
+From: Matt Taylor <mstaveleytaylor@gmail.com>
+Date: Sat, 10 Apr 2021 17:53:24 +0100
+Subject: [PATCH] managarm: initial port
+
+---
+ Cargo.lock                                    |   4 +-
+ Cargo.toml                                    |   1 +
+ .../src/spec/managarm_system_base.rs          |  35 +++++
+ compiler/rustc_target/src/spec/mod.rs         |   3 +
+ .../spec/x86_64_unknown_managarm_system.rs    |  19 +++
+ library/std/build.rs                          |   1 +
+ library/std/src/os/managarm/fs.rs             | 148 ++++++++++++++++++
+ library/std/src/os/managarm/mod.rs            |   6 +
+ library/std/src/os/managarm/raw.rs            |  66 ++++++++
+ library/std/src/os/mod.rs                     |   2 +
+ library/std/src/sys/unix/args.rs              |   3 +-
+ library/std/src/sys/unix/env.rs               |  11 ++
+ library/std/src/sys/unix/fs.rs                |   6 +-
+ library/std/src/sys/unix/mod.rs               |   2 +
+ library/std/src/sys/unix/os.rs                |  34 +++-
+ library/std/src/sys/unix/thread.rs            |   7 +
+ library/std/src/sys/unix/thread_local_dtor.rs |   3 +-
+ library/std/src/sys/unix/time.rs              |   7 +-
+ library/unwind/build.rs                       |   2 +
+ 19 files changed, 344 insertions(+), 16 deletions(-)
+ create mode 100644 compiler/rustc_target/src/spec/managarm_system_base.rs
+ create mode 100644 compiler/rustc_target/src/spec/x86_64_unknown_managarm_system.rs
+ create mode 100644 library/std/src/os/managarm/fs.rs
+ create mode 100644 library/std/src/os/managarm/mod.rs
+ create mode 100644 library/std/src/os/managarm/raw.rs
+
+diff --git a/Cargo.lock b/Cargo.lock
+index 2b68f725816..4eaf3ca4ce7 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -1839,9 +1839,7 @@ checksum = "830d08ce1d1d941e6b30645f1a0eb5643013d835ce3779a5fc208261dbe10f55"
+ 
+ [[package]]
+ name = "libc"
+-version = "0.2.85"
+-source = "registry+https://github.com/rust-lang/crates.io-index"
+-checksum = "7ccac4b00700875e6a07c6cde370d44d32fa01c5a65cdd2fca6858c479d28bb3"
++version = "0.2.93"
+ dependencies = [
+  "rustc-std-workspace-core",
+ ]
+diff --git a/Cargo.toml b/Cargo.toml
+index f961d3e9b97..9b7a31f9385 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -105,6 +105,7 @@ rustc-workspace-hack = { path = 'src/tools/rustc-workspace-hack' }
+ rustc-std-workspace-core = { path = 'library/rustc-std-workspace-core' }
+ rustc-std-workspace-alloc = { path = 'library/rustc-std-workspace-alloc' }
+ rustc-std-workspace-std = { path = 'library/rustc-std-workspace-std' }
++libc = { path = '../rust-libc' }
+ 
+ [patch."https://github.com/rust-lang/rust-clippy"]
+ clippy_lints = { path = "src/tools/clippy/clippy_lints" }
+diff --git a/compiler/rustc_target/src/spec/managarm_system_base.rs b/compiler/rustc_target/src/spec/managarm_system_base.rs
+new file mode 100644
+index 00000000000..08b7d8a8c73
+--- /dev/null
++++ b/compiler/rustc_target/src/spec/managarm_system_base.rs
+@@ -0,0 +1,35 @@
++use crate::spec::{LinkArgs, LinkerFlavor, RelroLevel, TargetOptions};
++
++pub fn opts() -> TargetOptions {
++    let mut args = LinkArgs::new();
++    args.insert(
++        LinkerFlavor::Gcc,
++        vec![
++            // We want to be able to strip as much executable code as possible
++            // from the linker command line, and this flag indicates to the
++            // linker that it can avoid linking in dynamic libraries that don't
++            // actually satisfy any symbols up to that point (as with many other
++            // resolutions the linker does). This option only applies to all
++            // following libraries so we're sure to pass it as one of the first
++            // arguments.
++            "-Wl,--as-needed".to_string(),
++            // Always enable NX protection when it is available
++            "-Wl,-z,noexecstack".to_string(),
++        ],
++    );
++
++    TargetOptions {
++        os: "managarm".to_string(),
++        dynamic_linking: true,
++        executables: true,
++        os_family: Some("unix".to_string()),
++        linker_is_gnu: true,
++        has_rpath: true,
++        pre_link_args: args,
++        position_independent_executables: true,
++        relro_level: RelroLevel::Full,
++        has_elf_tls: true,
++        crt_static_respected: true,
++        ..Default::default()
++    }
++}
+diff --git a/compiler/rustc_target/src/spec/mod.rs b/compiler/rustc_target/src/spec/mod.rs
+index 7a93bac72ca..75e38b625ec 100644
+--- a/compiler/rustc_target/src/spec/mod.rs
++++ b/compiler/rustc_target/src/spec/mod.rs
+@@ -60,6 +60,7 @@
+ mod freebsd_base;
+ mod fuchsia_base;
+ mod haiku_base;
++mod managarm_system_base;
+ mod hermit_base;
+ mod hermit_kernel_base;
+ mod illumos_base;
+@@ -706,6 +707,8 @@ fn to_json(&self) -> Json {
+     ("i686-unknown-haiku", i686_unknown_haiku),
+     ("x86_64-unknown-haiku", x86_64_unknown_haiku),
+ 
++    ("x86_64-unknown-managarm-system", x86_64_unknown_managarm_system),
++
+     ("aarch64-apple-darwin", aarch64_apple_darwin),
+     ("x86_64-apple-darwin", x86_64_apple_darwin),
+     ("i686-apple-darwin", i686_apple_darwin),
+diff --git a/compiler/rustc_target/src/spec/x86_64_unknown_managarm_system.rs b/compiler/rustc_target/src/spec/x86_64_unknown_managarm_system.rs
+new file mode 100644
+index 00000000000..7c16ed9b2a5
+--- /dev/null
++++ b/compiler/rustc_target/src/spec/x86_64_unknown_managarm_system.rs
+@@ -0,0 +1,19 @@
++use crate::spec::{LinkerFlavor, StackProbeType, Target};
++
++pub fn target() -> Target {
++    let mut base = super::managarm_system_base::opts();
++    base.cpu = "x86-64".to_string();
++    base.max_atomic_width = Some(64);
++    base.pre_link_args.get_mut(&LinkerFlavor::Gcc).unwrap().push("-m64".to_string());
++    // don't use probe-stack=inline-asm until rust-lang/rust#83139 is resolved.
++    base.stack_probes = StackProbeType::Call;
++
++    Target {
++        llvm_target: "x86_64-unknown-managarm-system".to_string(),
++        pointer_width: 64,
++        data_layout: "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
++            .to_string(),
++        arch: "x86_64".to_string(),
++        options: base,
++    }
++}
+diff --git a/library/std/build.rs b/library/std/build.rs
+index a14ac63c7a8..de7f9fc4a1f 100644
+--- a/library/std/build.rs
++++ b/library/std/build.rs
+@@ -23,6 +23,7 @@ fn main() {
+         || target.contains("l4re")
+         || target.contains("redox")
+         || target.contains("haiku")
++        || target.contains("managarm")
+         || target.contains("vxworks")
+         || target.contains("wasm32")
+         || target.contains("asmjs")
+diff --git a/library/std/src/os/managarm/fs.rs b/library/std/src/os/managarm/fs.rs
+new file mode 100644
+index 00000000000..efd774d2415
+--- /dev/null
++++ b/library/std/src/os/managarm/fs.rs
+@@ -0,0 +1,148 @@
++#![stable(feature = "raw_ext", since = "1.1.0")]
++
++use crate::fs::Metadata;
++use crate::sys_common::AsInner;
++
++#[allow(deprecated)]
++use crate::os::managarm::raw;
++
++/// OS-specific extensions to [`fs::Metadata`].
++///
++/// [`fs::Metadata`]: crate::fs::Metadata
++#[stable(feature = "metadata_ext", since = "1.1.0")]
++pub trait MetadataExt {
++    /// Gain a reference to the underlying `stat` structure which contains
++    /// the raw information returned by the OS.
++    ///
++    /// The contents of the returned `stat` are **not** consistent across
++    /// Unix platforms. The `os::unix::fs::MetadataExt` trait contains the
++    /// cross-Unix abstractions contained within the raw stat.
++    #[stable(feature = "metadata_ext", since = "1.1.0")]
++    #[rustc_deprecated(
++        since = "1.8.0",
++        reason = "deprecated in favor of the accessor \
++                  methods of this trait"
++    )]
++    #[allow(deprecated)]
++    fn as_raw_stat(&self) -> &raw::stat;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_dev(&self) -> u64;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_ino(&self) -> u64;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_mode(&self) -> u32;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_nlink(&self) -> u64;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_uid(&self) -> u32;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_gid(&self) -> u32;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_rdev(&self) -> u64;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_size(&self) -> u64;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_atime(&self) -> i64;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_atime_nsec(&self) -> i64;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_mtime(&self) -> i64;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_mtime_nsec(&self) -> i64;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_ctime(&self) -> i64;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_ctime_nsec(&self) -> i64;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_blksize(&self) -> u64;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_blocks(&self) -> u64;
++}
++
++#[stable(feature = "metadata_ext", since = "1.1.0")]
++impl MetadataExt for Metadata {
++    #[allow(deprecated)]
++    fn as_raw_stat(&self) -> &raw::stat {
++        unsafe { &*(self.as_inner().as_inner() as *const libc::stat as *const raw::stat) }
++    }
++
++    fn st_dev(&self) -> u64 {
++        self.as_inner().as_inner().st_dev as u64
++    }
++
++    fn st_ino(&self) -> u64 {
++        self.as_inner().as_inner().st_ino as u64
++    }
++
++    fn st_mode(&self) -> u32 {
++        self.as_inner().as_inner().st_mode as u32
++    }
++
++    fn st_nlink(&self) -> u64 {
++        self.as_inner().as_inner().st_nlink as u64
++    }
++
++    fn st_uid(&self) -> u32 {
++        self.as_inner().as_inner().st_uid as u32
++    }
++
++    fn st_gid(&self) -> u32 {
++        self.as_inner().as_inner().st_gid as u32
++    }
++
++    fn st_rdev(&self) -> u64 {
++        self.as_inner().as_inner().st_rdev as u64
++    }
++
++    fn st_size(&self) -> u64 {
++        self.as_inner().as_inner().st_size as u64
++    }
++
++    fn st_atime(&self) -> i64 {
++        self.as_inner().as_inner().st_atime as i64
++    }
++
++    fn st_atime_nsec(&self) -> i64 {
++        self.as_inner().as_inner().st_atime_nsec as i64
++    }
++
++    fn st_mtime(&self) -> i64 {
++        self.as_inner().as_inner().st_mtime as i64
++    }
++
++    fn st_mtime_nsec(&self) -> i64 {
++        self.as_inner().as_inner().st_mtime_nsec as i64
++    }
++
++    fn st_ctime(&self) -> i64 {
++        self.as_inner().as_inner().st_ctime as i64
++    }
++
++    fn st_ctime_nsec(&self) -> i64 {
++        self.as_inner().as_inner().st_ctime_nsec as i64
++    }
++
++    fn st_blksize(&self) -> u64 {
++        self.as_inner().as_inner().st_blksize as u64
++    }
++
++    fn st_blocks(&self) -> u64 {
++        self.as_inner().as_inner().st_blocks as u64
++    }
++}
+diff --git a/library/std/src/os/managarm/mod.rs b/library/std/src/os/managarm/mod.rs
+new file mode 100644
+index 00000000000..869966bb054
+--- /dev/null
++++ b/library/std/src/os/managarm/mod.rs
+@@ -0,0 +1,6 @@
++//! Managarm-specific definitions
++
++#![stable(feature = "raw_ext", since = "1.1.0")]
++
++pub mod fs;
++pub mod raw;
+diff --git a/library/std/src/os/managarm/raw.rs b/library/std/src/os/managarm/raw.rs
+new file mode 100644
+index 00000000000..5124020d939
+--- /dev/null
++++ b/library/std/src/os/managarm/raw.rs
+@@ -0,0 +1,66 @@
++#![stable(feature = "raw_ext", since = "1.1.0")]
++
++#[stable(feature = "pthread_t", since = "1.8.0")]
++pub type pthread_t = usize; // TODO: This is completely wrong tbh
++
++#[stable(feature = "raw_ext", since = "1.1.0")]
++pub type dev_t = libc::dev_t;
++
++#[stable(feature = "raw_ext", since = "1.1.0")]
++pub type ino_t = libc::ino_t;
++
++#[stable(feature = "raw_ext", since = "1.1.0")]
++pub type mode_t = libc::mode_t;
++
++#[stable(feature = "raw_ext", since = "1.1.0")]
++pub type nlink_t = libc::nlink_t;
++
++#[stable(feature = "raw_ext", since = "1.1.0")]
++pub type off_t = libc::off_t;
++
++#[stable(feature = "raw_ext", since = "1.1.0")]
++pub type time_t = libc::time_t;
++
++#[stable(feature = "raw_ext", since = "1.1.0")]
++pub type blkcnt_t = libc::blkcnt_t;
++
++#[stable(feature = "raw_ext", since = "1.1.0")]
++pub type blksize_t = libc::blksize_t;
++
++#[repr(C)]
++#[derive(Clone)]
++#[stable(feature = "raw_ext", since = "1.1.0")]
++pub struct stat {
++    #[stable(feature = "raw_ext", since = "1.1.0")]
++    pub st_dev: libc::dev_t, 
++    #[stable(feature = "raw_ext", since = "1.1.0")]
++    pub st_ino: libc::ino_t, 
++    #[stable(feature = "raw_ext", since = "1.1.0")]
++    pub st_mode: libc::mode_t, 
++    #[stable(feature = "raw_ext", since = "1.1.0")]
++    pub st_nlink: libc::nlink_t, 
++    #[stable(feature = "raw_ext", since = "1.1.0")]
++    pub st_uid: libc::uid_t, 
++    #[stable(feature = "raw_ext", since = "1.1.0")]
++    pub st_gid: libc::gid_t, 
++    #[stable(feature = "raw_ext", since = "1.1.0")]
++    pub st_rdev: libc::dev_t, 
++    #[stable(feature = "raw_ext", since = "1.1.0")]
++    pub st_size: libc::off_t, 
++    #[stable(feature = "raw_ext", since = "1.1.0")]
++    pub st_atime: libc::time_t,
++    #[stable(feature = "raw_ext", since = "1.1.0")]
++    pub st_atime_nsec: libc::c_long,
++    #[stable(feature = "raw_ext", since = "1.1.0")]
++    pub st_mtime: libc::time_t,
++    #[stable(feature = "raw_ext", since = "1.1.0")]
++    pub st_mtime_nsec: libc::c_long,
++    #[stable(feature = "raw_ext", since = "1.1.0")]
++    pub st_ctime: libc::time_t,
++    #[stable(feature = "raw_ext", since = "1.1.0")]
++    pub st_ctime_nsec: libc::c_long,
++    #[stable(feature = "raw_ext", since = "1.1.0")]
++    pub st_blksize: libc::blksize_t, 
++    #[stable(feature = "raw_ext", since = "1.1.0")]
++    pub st_blocks: libc::blkcnt_t, 
++}
+diff --git a/library/std/src/os/mod.rs b/library/std/src/os/mod.rs
+index fd6ee088e96..d6adf1d9662 100644
+--- a/library/std/src/os/mod.rs
++++ b/library/std/src/os/mod.rs
+@@ -58,6 +58,8 @@
+ pub mod ios;
+ #[cfg(target_os = "macos")]
+ pub mod macos;
++#[cfg(target_os = "managarm")]
++pub mod managarm;
+ #[cfg(target_os = "netbsd")]
+ pub mod netbsd;
+ #[cfg(target_os = "openbsd")]
+diff --git a/library/std/src/sys/unix/args.rs b/library/std/src/sys/unix/args.rs
+index 69676472493..898aa0e3368 100644
+--- a/library/std/src/sys/unix/args.rs
++++ b/library/std/src/sys/unix/args.rs
+@@ -71,7 +71,8 @@ fn next_back(&mut self) -> Option<OsString> {
+     target_os = "l4re",
+     target_os = "fuchsia",
+     target_os = "redox",
+-    target_os = "vxworks"
++    target_os = "vxworks",
++    target_os = "managarm"
+ ))]
+ mod imp {
+     use super::Args;
+diff --git a/library/std/src/sys/unix/env.rs b/library/std/src/sys/unix/env.rs
+index 7f5e9b04dba..dd976565b3e 100644
+--- a/library/std/src/sys/unix/env.rs
++++ b/library/std/src/sys/unix/env.rs
+@@ -173,3 +173,14 @@ pub mod os {
+     pub const EXE_SUFFIX: &str = "";
+     pub const EXE_EXTENSION: &str = "";
+ }
++
++#[cfg(target_os = "managarm")]
++pub mod os {
++    pub const FAMILY: &str = "unix";
++    pub const OS: &str = "managarm";
++    pub const DLL_PREFIX: &str = "lib";
++    pub const DLL_SUFFIX: &str = ".so";
++    pub const DLL_EXTENSION: &str = "so";
++    pub const EXE_SUFFIX: &str = "";
++    pub const EXE_EXTENSION: &str = "";
++}
+diff --git a/library/std/src/sys/unix/fs.rs b/library/std/src/sys/unix/fs.rs
+index d1b0ad9e5f8..a9ba3a30123 100644
+--- a/library/std/src/sys/unix/fs.rs
++++ b/library/std/src/sys/unix/fs.rs
+@@ -594,7 +594,8 @@ pub fn file_type(&self) -> io::Result<FileType> {
+         target_os = "l4re",
+         target_os = "fuchsia",
+         target_os = "redox",
+-        target_os = "vxworks"
++        target_os = "vxworks",
++        target_os = "managarm"
+     ))]
+     pub fn ino(&self) -> u64 {
+         self.entry.d_ino as u64
+@@ -633,7 +634,8 @@ fn name_bytes(&self) -> &[u8] {
+         target_os = "emscripten",
+         target_os = "l4re",
+         target_os = "haiku",
+-        target_os = "vxworks"
++        target_os = "vxworks",
++        target_os = "managarm"
+     ))]
+     fn name_bytes(&self) -> &[u8] {
+         unsafe { CStr::from_ptr(self.entry.d_name.as_ptr()).to_bytes() }
+diff --git a/library/std/src/sys/unix/mod.rs b/library/std/src/sys/unix/mod.rs
+index f8a5ee89969..b48ef8126ab 100644
+--- a/library/std/src/sys/unix/mod.rs
++++ b/library/std/src/sys/unix/mod.rs
+@@ -25,6 +25,8 @@
+ pub use crate::os::linux as platform;
+ #[cfg(all(not(doc), target_os = "macos"))]
+ pub use crate::os::macos as platform;
++#[cfg(all(not(doc), target_os = "managarm"))]
++pub use crate::os::managarm as platform;
+ #[cfg(all(not(doc), target_os = "netbsd"))]
+ pub use crate::os::netbsd as platform;
+ #[cfg(all(not(doc), target_os = "openbsd"))]
+diff --git a/library/std/src/sys/unix/os.rs b/library/std/src/sys/unix/os.rs
+index d5e14bec765..a3f4f5c0f81 100644
+--- a/library/std/src/sys/unix/os.rs
++++ b/library/std/src/sys/unix/os.rs
+@@ -37,7 +37,7 @@
+ }
+ 
+ extern "C" {
+-    #[cfg(not(any(target_os = "dragonfly", target_os = "vxworks")))]
++    #[cfg(not(any(target_os = "dragonfly", target_os = "vxworks", target_os = "managarm")))]
+     #[cfg_attr(
+         any(
+             target_os = "linux",
+@@ -67,13 +67,13 @@
+ }
+ 
+ /// Returns the platform-specific value of errno
+-#[cfg(not(any(target_os = "dragonfly", target_os = "vxworks")))]
++#[cfg(not(any(target_os = "dragonfly", target_os = "vxworks", target_os = "managarm")))]
+ pub fn errno() -> i32 {
+     unsafe { (*errno_location()) as i32 }
+ }
+ 
+ /// Sets the platform-specific value of errno
+-#[cfg(all(not(target_os = "linux"), not(target_os = "dragonfly"), not(target_os = "vxworks")))] // needed for readdir and syscall!
++#[cfg(all(not(target_os = "linux"), not(target_os = "dragonfly"), not(target_os = "vxworks"), not(target_os = "managarm")))] // needed for readdir and syscall!
+ #[allow(dead_code)] // but not all target cfgs actually end up using it
+ pub fn set_errno(e: i32) {
+     unsafe { *errno_location() = e as c_int }
+@@ -111,6 +111,29 @@ pub fn set_errno(e: i32) {
+     }
+ }
+ 
++#[cfg(target_os = "managarm")]
++pub fn errno() -> i32 {
++    extern "C" {
++        #[thread_local]
++        static __mlibc_errno: c_int;
++    }
++
++    unsafe { __mlibc_errno as i32 }
++}
++
++#[cfg(target_os = "managarm")]
++#[allow(dead_code)]
++pub fn set_errno(e: i32) {
++    extern "C" {
++        #[thread_local]
++        static mut __mlibc_errno: c_int;
++    }
++
++    unsafe {
++        __mlibc_errno = e;
++    }
++}
++
+ /// Gets a detailed string description for the given error number.
+ pub fn error_string(errno: i32) -> String {
+     extern "C" {
+@@ -350,6 +373,11 @@ pub fn current_exe() -> io::Result<PathBuf> {
+     }
+ }
+ 
++#[cfg(target_os = "managarm")]
++pub fn current_exe() -> io::Result<PathBuf> {
++    unimplemented!()
++}
++
+ #[cfg(any(target_os = "macos", target_os = "ios"))]
+ pub fn current_exe() -> io::Result<PathBuf> {
+     extern "C" {
+diff --git a/library/std/src/sys/unix/thread.rs b/library/std/src/sys/unix/thread.rs
+index cda17eb4bd2..fa977f5755c 100644
+--- a/library/std/src/sys/unix/thread.rs
++++ b/library/std/src/sys/unix/thread.rs
+@@ -103,6 +103,13 @@ pub fn set_name(name: &CStr) {
+         }
+     }
+ 
++    #[cfg(target_os = "managarm")]
++    pub fn set_name(name: &CStr) {
++        unsafe {
++            libc::pthread_setname_np(libc::pthread_self(), name.as_ptr());
++        }
++    }
++
+     #[cfg(target_os = "netbsd")]
+     pub fn set_name(name: &CStr) {
+         use crate::ffi::CString;
+diff --git a/library/std/src/sys/unix/thread_local_dtor.rs b/library/std/src/sys/unix/thread_local_dtor.rs
+index c3275eb6f0e..7ffeaea3c14 100644
+--- a/library/std/src/sys/unix/thread_local_dtor.rs
++++ b/library/std/src/sys/unix/thread_local_dtor.rs
+@@ -15,7 +15,8 @@
+     target_os = "linux",
+     target_os = "fuchsia",
+     target_os = "redox",
+-    target_os = "emscripten"
++    target_os = "emscripten",
++    target_os = "managarm"
+ ))]
+ pub unsafe fn register_dtor(t: *mut u8, dtor: unsafe extern "C" fn(*mut u8)) {
+     use crate::mem;
+diff --git a/library/std/src/sys/unix/time.rs b/library/std/src/sys/unix/time.rs
+index 23a5c81c005..4170857d80d 100644
+--- a/library/std/src/sys/unix/time.rs
++++ b/library/std/src/sys/unix/time.rs
+@@ -361,12 +361,7 @@ fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+         }
+     }
+ 
+-    #[cfg(not(target_os = "dragonfly"))]
+-    pub type clock_t = libc::c_int;
+-    #[cfg(target_os = "dragonfly")]
+-    pub type clock_t = libc::c_ulong;
+-
+-    fn now(clock: clock_t) -> Timespec {
++    fn now(clock: libc::clockid_t) -> Timespec {
+         let mut t = Timespec { t: libc::timespec { tv_sec: 0, tv_nsec: 0 } };
+         cvt(unsafe { libc::clock_gettime(clock, &mut t.t) }).unwrap();
+         t
+diff --git a/library/unwind/build.rs b/library/unwind/build.rs
+index 694e6b98c82..8ab01ff67ad 100644
+--- a/library/unwind/build.rs
++++ b/library/unwind/build.rs
+@@ -48,6 +48,8 @@ fn main() {
+         println!("cargo:rustc-link-lib=gcc_s");
+     } else if target.contains("redox") {
+         // redox is handled in lib.rs
++    } else if target.contains("managarm") {
++        println!("cargo:rustc-link-lib=gcc_s");
+     }
+ }
+ 
+-- 
+2.31.1
+

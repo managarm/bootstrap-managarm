@@ -18,6 +18,18 @@ sources:
     regenerate:
       - args: ['autoreconf', '-f', '-i']
 
+  - name: rust
+    subdir: 'ports'
+    git: 'https://github.com/rust-lang/rust.git'
+    tag: '1.51.0'
+    version: '1.51.0'
+
+  - name: rust-libc
+    subdir: 'ports'
+    git: 'https://github.com/rust-lang/libc.git'
+    tag: '0.2.93'
+    version: '0.2.93'
+
 tools:
   - name: host-python
     from_source: python
@@ -29,6 +41,40 @@ tools:
       - args: ['make', '-j@PARALLELISM@']
     install:
       - args: ['make', 'install']
+
+  - name: host-rust
+    from_source: rust
+    sources_required:
+      - rust-libc
+    tools_required:
+      - host-llvm-toolchain
+    compile:
+      - args: |
+            cat << EOF > config.toml
+            changelog-seen = 2
+
+            [llvm]
+            targets = "X86"
+
+            [build]
+            target = ["x86_64-unknown-managarm-system"]
+            docs = false
+
+            [install]
+            prefix = "@PREFIX@"
+
+            [rust]
+            codegen-tests = false
+
+            [target.x86_64-unknown-linux-gnu]
+            llvm-config = "@BUILD_ROOT@/tools/host-llvm-toolchain/bin/llvm-config"
+
+            [target.x86_64-unknown-managarm-system]
+            llvm-config = "@BUILD_ROOT@/tools/host-llvm-toolchain/bin/llvm-config"
+            EOF
+      - args: ['@THIS_SOURCE_DIR@/x.py', 'build', '--stage', '2', '-j', '@PARALLELISM@']
+    install:
+      - args: ['@THIS_SOURCE_DIR@/x.py', 'install', '-j', '@PARALLELISM@']
 
 packages:
   - name: nasm
