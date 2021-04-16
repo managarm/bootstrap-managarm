@@ -7,9 +7,9 @@ pkgconfig = 'pkg-config'
 
 [constants]
 # common args that c and cxx need
-args = ['-mno-80387', '-mno-mmx', '-mno-sse', '-mno-sse2', '-ffreestanding', '-target', 'x86_64-managarm-kernel' ]
+args = ['-mno-80387', '-mno-mmx', '-mno-sse', '-mno-sse2', '-ffreestanding', '-target', 'x86_64-managarm-kernel', '-gcc-toolchain', '_BUILD_ROOT_/tools/kernel-gcc' ]
 # cxx specific arguments
-cxx = args + [ '-fsized-deallocation', '-gcc-toolchain', '_BUILD_ROOT_/tools/kernel-gcc']
+cxx = args + [ '-fsized-deallocation' ]
 
 [built-in options]
 c_args = args
