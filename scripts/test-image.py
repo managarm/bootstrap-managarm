@@ -45,23 +45,28 @@ os.mkfifo('monitor.in')
 os.mkfifo('monitor.out')
 os.mkfifo('debugcon')
 
+qemu_cmd = [
+	'qemu-system-x86_64',
+	'-snapshot',
+	'-chardev', 'pipe,id=monitor-fifo,path=monitor',
+	'-smp', '4',
+	'-m', '1024',
+	'-device', 'piix3-usb-uhci', '-device', 'usb-kbd', '-device', 'usb-tablet',
+	'-drive', 'id=hdd,file=image,format=raw,if=none',
+	'-device', 'virtio-blk-pci,drive=hdd',
+	'-vga', 'virtio',
+	'-display', 'none',
+	'-debugcon', 'pipe:debugcon',
+	'-monitor', 'chardev:monitor-fifo'
+]
+
+if os.access('/dev/kvm', os.W_OK):
+	qemu_cmd.append('-enable-kvm')
+else:
+	timeout = 3 * timeout # 3x timeout to accommodate for tcg
+
 # Start the qemu process.
-proc = subprocess.Popen([
-		'qemu-system-x86_64',
-		'-snapshot',
-		'-chardev', 'pipe,id=monitor-fifo,path=monitor',
-		'-enable-kvm',
-		'-smp', '4',
-		'-m', '1024',
-		'-device', 'piix3-usb-uhci', '-device', 'usb-kbd', '-device', 'usb-tablet',
-		'-drive', 'id=hdd,file=image,format=raw,if=none',
-		'-device', 'virtio-blk-pci,drive=hdd',
-		'-vga', 'virtio',
-		'-display', 'none',
-		'-debugcon', 'pipe:debugcon',
-		'-monitor', 'chardev:monitor-fifo'
-	],
-	stdin=subprocess.DEVNULL);
+proc = subprocess.Popen(qemu_cmd, stdin=subprocess.DEVNULL)
 
 # Setup the main loop that waits for the process and/or I/O.
 def open_pipe(path, mode):
