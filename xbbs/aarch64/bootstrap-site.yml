@@ -2,6 +2,10 @@ define_options:
     arch: aarch64
     arch-triple: aarch64-managarm
 
+labels:
+    match:
+      - aarch64
+
 pkg_management:
     format: xbps
 
