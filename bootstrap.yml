@@ -950,6 +950,7 @@ packages:
               > ./meson-custom.cross-file
       - args:
         - 'meson'
+        - '--cross-file=@SOURCE_ROOT@/scripts/meson-kernel-common.cross-file'
         - '--cross-file=./meson-custom.cross-file'
         - '--prefix=/usr/managarm'
         - '--libdir=lib'
@@ -989,6 +990,7 @@ packages:
               > ./meson-custom.cross-file
       - args:
         - 'meson'
+        - '--cross-file=@SOURCE_ROOT@/scripts/meson-system-common.cross-file'
         - '--cross-file=./meson-custom.cross-file'
         - '--prefix=/usr'
         - '--libdir=lib'
