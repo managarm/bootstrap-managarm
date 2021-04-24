@@ -1,6 +1,3 @@
 [built-in options]
 cpp_rtti = false
 cpp_eh = 'none'
-
-[libarch:project options]
-header_only = true
