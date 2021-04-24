@@ -4,4 +4,3 @@ cpp_eh = 'none'
 
 [libarch:project options]
 header_only = true
-install_headers = false
