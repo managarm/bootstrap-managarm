@@ -1,34 +1,30 @@
-From c2aeeaf617583cd219932e6aa7cb61596e083409 Mon Sep 17 00:00:00 2001
-From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
-Date: Wed, 29 Jun 2016 09:28:28 +0000
+From 5a656fef8ba35fc1aebdb56d919871c889f9b78f Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Tue, 13 Apr 2021 21:20:52 +0200
 Subject: [PATCH 2/2] Managarm target
 
 TODO: Use libtoolize instead of modifying in-tree libtool?
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
- config.sub                            |  9 +++-
- fixincludes/mkfixinc.sh               |  2 +
- gcc/config.gcc                        | 59 +++++++++++++++++++++++++++
- gcc/config/aarch64/aarch64-managarm.h | 45 ++++++++++++++++++++
- gcc/config/aarch64/t-aarch64-managarm |  8 ++++
- gcc/config/i386/i386-managarm.h       | 11 +++++
- gcc/config/i386/t-managarm64          |  5 +++
- gcc/config/managarm-kernel.h          | 10 +++++
- gcc/config/managarm-system.h          |  4 ++
- gcc/config/managarm.h                 | 14 +++++++
- libgcc/config.host                    | 15 +++++++
- libstdc++-v3/crossconfig.m4           |  8 ++++
- libtool.m4                            | 14 +++++++
- 13 files changed, 202 insertions(+), 2 deletions(-)
- create mode 100644 gcc/config/aarch64/aarch64-managarm.h
- create mode 100644 gcc/config/aarch64/t-aarch64-managarm
- create mode 100644 gcc/config/i386/i386-managarm.h
+ config.sub                   |  8 +++++--
+ fixincludes/mkfixinc.sh      |  1 +
+ gcc/config.gcc               | 41 ++++++++++++++++++++++++++++++++++++
+ gcc/config/i386/t-managarm64 |  4 ++++
+ gcc/config/managarm-kernel.h |  9 ++++++++
+ gcc/config/managarm-system.h |  3 +++
+ gcc/config/managarm.h        | 21 ++++++++++++++++++
+ libgcc/config.host           |  9 ++++++++
+ libstdc++-v3/crossconfig.m4  |  7 ++++++
+ libtool.m4                   | 14 ++++++++++++
+ 10 files changed, 115 insertions(+), 2 deletions(-)
  create mode 100644 gcc/config/i386/t-managarm64
  create mode 100644 gcc/config/managarm-kernel.h
  create mode 100644 gcc/config/managarm-system.h
  create mode 100644 gcc/config/managarm.h
 
 diff --git a/config.sub b/config.sub
-index 75bb6a313..64c314c39 100755
+index a318a468685..a9324e4b06a 100755
 --- a/config.sub
 +++ b/config.sub
 @@ -133,7 +133,8 @@ case $1 in
@@ -41,44 +37,42 @@ index 75bb6a313..64c314c39 100755
  			| netbsd*-eabi* | kopensolaris*-gnu* | cloudabi*-eabi* \
  			| storm-chaos* | os2-emx* | rtmk-nova*)
  				basic_machine=$field1
-@@ -1363,7 +1364,8 @@ case $os in
- 	     | powermax* | dnix* | nx6 | nx7 | sei* | dragonfly* \
+@@ -1366,7 +1367,7 @@ case $os in
  	     | skyos* | haiku* | rdos* | toppers* | drops* | es* \
  	     | onefs* | tirtos* | phoenix* | fuchsia* | redox* | bme* \
--	     | midnightbsd* | amdhsa* | unleashed* | emscripten*)
-+	     | midnightbsd* | amdhsa* | unleashed* | emscripten* \
-+	     | managarm-kernel* | managarm-system*)
+ 	     | midnightbsd* | amdhsa* | unleashed* | emscripten* | wasi* \
+-	     | nsk* | powerunix)
++	     | nsk* | powerunix* | managarm-kernel* | managarm-system*)
  	# Remember, each alternative MUST END IN *, to match a version number.
  		;;
  	qnx*)
-@@ -1402,6 +1404,9 @@ case $os in
- 	lynx*)
- 		os=lynxos
+@@ -1408,6 +1409,9 @@ case $os in
+ 	mac*)
+ 		os=`echo "$os" | sed -e 's|mac|macos|'`
  		;;
 +	managarm*)
 +		os=`echo $os | sed -e 's|managarm|managarm-system|'`
 +		;;
- 	mac*)
- 		os=`echo "$os" | sed -e 's|mac|macos|'`
+ 	opened*)
+ 		os=openedition
  		;;
 diff --git a/fixincludes/mkfixinc.sh b/fixincludes/mkfixinc.sh
-index 0f9648608..e0c18c11f 100755
+index df90720b716..f8c5be528ca 100755
 --- a/fixincludes/mkfixinc.sh
 +++ b/fixincludes/mkfixinc.sh
-@@ -12,6 +12,8 @@ target=fixinc.sh
+@@ -12,6 +12,7 @@ target=fixinc.sh
  # Check for special fix rules for particular targets
  case $machine in
      i?86-*-cygwin* | \
 +    x86_64-*-managarm* | \
-+    aarch64*-*-managarm* | \
      i?86-*-mingw32* | \
      x86_64-*-mingw32* | \
      powerpc-*-eabisim* | \
 diff --git a/gcc/config.gcc b/gcc/config.gcc
-index ddd3b8f4d..c11597fb2 100644
+index 6fcdd771d4c..dc76976840c 100644
 --- a/gcc/config.gcc
 +++ b/gcc/config.gcc
-@@ -836,6 +836,29 @@ case ${target} in
+@@ -866,6 +866,29 @@ case ${target} in
    target_has_targetcm=yes
    target_has_targetdm=yes
    ;;
@@ -108,38 +102,13 @@ index ddd3b8f4d..c11597fb2 100644
  *-*-netbsd*)
    tm_p_file="${tm_p_file} netbsd-protos.h"
    tmake_file="t-netbsd t-slibgcc"
-@@ -1050,6 +1073,24 @@ aarch64*-*-linux*)
- 	done
- 	TM_MULTILIB_CONFIG=`echo $TM_MULTILIB_CONFIG | sed 's/^,//'`
- 	;;
-+aarch64*-*-managarm*)
-+	tm_file="${tm_file} dbxelf.h elfos.h gnu-user.h managarm.h glibc-stdint.h"
-+	tm_file="${tm_file} aarch64/aarch64-elf.h aarch64/aarch64-managarm.h"
-+	tmake_file="${tmake_file} aarch64/t-aarch64 aarch64/t-aarch64-managarm"
-+	tm_defines="${tm_defines}  TARGET_DEFAULT_ASYNC_UNWIND_TABLES=1"
-+	case ${target} in
-+	*-managarm-system*)
-+		tm_file="${tm_file} managarm-system.h"
-+		;;
-+	*-managarm-kernel*)
-+		tm_file="${tm_file} managarm-kernel.h"
-+		;;
-+	*)
-+		echo "managarm target '${target}' not supported."
-+		exit 1
-+	esac
-+	TM_MULTILIB_CONFIG="lp64"
-+	;;
- alpha*-*-linux*)
- 	tm_file="elfos.h ${tm_file} alpha/elf.h alpha/linux.h alpha/linux-elf.h glibc-stdint.h"
- 	tmake_file="${tmake_file} alpha/t-linux alpha/t-alpha"
-@@ -1780,6 +1821,24 @@ x86_64-*-linux* | x86_64-*-kfreebsd*-gnu)
+@@ -2040,6 +2063,24 @@ x86_64-*-linux* | x86_64-*-kfreebsd*-gnu)
  	done
  	TM_MULTILIB_CONFIG=`echo $TM_MULTILIB_CONFIG | sed 's/^,//'`
  	;;
 +x86_64-*-managarm*)
 +	tm_file="${tm_file} i386/unix.h i386/att.h dbxelf.h elfos.h gnu-user.h glibc-stdint.h \
-+		 i386/x86-64.h i386/gnu-user-common.h i386/gnu-user64.h managarm.h i386/i386-managarm.h"
++		 i386/x86-64.h i386/gnu-user-common.h i386/gnu-user64.h managarm.h"
 +
 +	case ${target} in
 +	*-managarm-system*)
@@ -158,105 +127,22 @@ index ddd3b8f4d..c11597fb2 100644
  i[34567]86-pc-msdosdjgpp*)
  	xm_file=i386/xm-djgpp.h
  	tm_file="dbxcoff.h ${tm_file} i386/unix.h i386/bsd.h i386/gas.h i386/djgpp.h i386/djgpp-stdint.h"
-diff --git a/gcc/config/aarch64/aarch64-managarm.h b/gcc/config/aarch64/aarch64-managarm.h
-new file mode 100644
-index 000000000..9143fa673
---- /dev/null
-+++ b/gcc/config/aarch64/aarch64-managarm.h
-@@ -0,0 +1,45 @@
-+
-+#undef GCC_AARCH64_MANAGARM
-+#define GCC_AARCH64_MANAGARM 1
-+
-+#define GNU_USER_DYNAMIC_LINKER "/lib/x86_64-managarm/ld.so"
-+
-+#define MANAGARM_TARGET_LINK_SPEC  "%{h*}		\
-+   %{static:-Bstatic}				\
-+   %{shared:-shared}				\
-+   %{symbolic:-Bsymbolic}			\
-+   %{!static:%{!static-pie:			\
-+     %{rdynamic:-export-dynamic}		\
-+     %{!shared:-dynamic-linker " GNU_USER_DYNAMIC_LINKER "}}} \
-+   %{static-pie:-Bstatic -pie --no-dynamic-linker -z text} \
-+   -X						\
-+   -EL						\
-+   -maarch64managarm"
-+
-+#if TARGET_FIX_ERR_A53_835769_DEFAULT
-+#define CA53_ERR_835769_SPEC \
-+  " %{!mno-fix-cortex-a53-835769:--fix-cortex-a53-835769}"
-+#else
-+#define CA53_ERR_835769_SPEC \
-+  " %{mfix-cortex-a53-835769:--fix-cortex-a53-835769}"
-+#endif
-+
-+#if TARGET_FIX_ERR_A53_843419_DEFAULT
-+#define CA53_ERR_843419_SPEC \
-+  " %{!mno-fix-cortex-a53-843419:--fix-cortex-a53-843419}"
-+#else
-+#define CA53_ERR_843419_SPEC \
-+  " %{mfix-cortex-a53-843419:--fix-cortex-a53-843419}"
-+#endif
-+
-+#define LINK_SPEC MANAGARM_TARGET_LINK_SPEC \
-+                  CA53_ERR_835769_SPEC \
-+                  CA53_ERR_843419_SPEC
-+
-+#define GNU_USER_TARGET_MATHFILE_SPEC \
-+  "%{Ofast|ffast-math|funsafe-math-optimizations:crtfastmath.o%s}"
-+
-+#undef ENDFILE_SPEC
-+#define ENDFILE_SPEC   \
-+  GNU_USER_TARGET_MATHFILE_SPEC " " \
-+  GNU_USER_TARGET_ENDFILE_SPEC
-diff --git a/gcc/config/aarch64/t-aarch64-managarm b/gcc/config/aarch64/t-aarch64-managarm
-new file mode 100644
-index 000000000..eb6bd808f
---- /dev/null
-+++ b/gcc/config/aarch64/t-aarch64-managarm
-@@ -0,0 +1,8 @@
-+
-+LIB1ASMSRC   = aarch64/lib1funcs.asm
-+LIB1ASMFUNCS = _aarch64_sync_cache_range
-+
-+MULTILIB_OSDIRNAMES = mabi.lp64=../lib64$(call if_multiarch,:aarch64-managarm)
-+MULTIARCH_DIRNAME = $(call if_multiarch,aarch64-managarm)
-+
-+MULTILIB_OSDIRNAMES += mabi.ilp32=../libilp32$(call if_multiarch,:aarch64-managarm_ilp32)
-diff --git a/gcc/config/i386/i386-managarm.h b/gcc/config/i386/i386-managarm.h
-new file mode 100644
-index 000000000..eeba4ba00
---- /dev/null
-+++ b/gcc/config/i386/i386-managarm.h
-@@ -0,0 +1,11 @@
-+
-+#undef GCC_I386_MANAGARM
-+#define GCC_I386_MANAGARM 1
-+
-+#define GNU_USER_LINK_EMULATION32 "elf_i386"
-+#define GNU_USER_LINK_EMULATION64 "elf_x86_64"
-+#define GNU_USER_LINK_EMULATIONX32 "elf32_x86_64"
-+
-+#define GNU_USER_DYNAMIC_LINKER32 "/lib/i386-managarm/ld.so"
-+#define GNU_USER_DYNAMIC_LINKER64 "/lib/x86_64-managarm/ld.so"
-+#define GNU_USER_DYNAMIC_LINKERX32 "/lib/x86_64-managarm-x32/ld.so"
 diff --git a/gcc/config/i386/t-managarm64 b/gcc/config/i386/t-managarm64
 new file mode 100644
-index 000000000..6c26cde10
+index 00000000000..dfd959f5d1b
 --- /dev/null
 +++ b/gcc/config/i386/t-managarm64
-@@ -0,0 +1,5 @@
+@@ -0,0 +1,4 @@
 +
 +MULTILIB_OPTIONS = m64/m32
 +MULTILIB_DIRNAMES = 64 32
 +MULTILIB_OSDIRNAMES = m64=../lib64:x86_64-managarm m32=../lib32:i386-managarm
-+
 diff --git a/gcc/config/managarm-kernel.h b/gcc/config/managarm-kernel.h
 new file mode 100644
-index 000000000..62bce675a
+index 00000000000..6b1c85a7670
 --- /dev/null
 +++ b/gcc/config/managarm-kernel.h
-@@ -0,0 +1,10 @@
+@@ -0,0 +1,9 @@
 +
 +#undef LIB_SPEC
 +#define LIB_SPEC ""
@@ -266,26 +152,32 @@ index 000000000..62bce675a
 +
 +#undef ENDFILE_SPEC
 +#define ENDFILE_SPEC "%{shared:crtendS.o%s;:crtend.o%s} crtn.o%s"
-+
 diff --git a/gcc/config/managarm-system.h b/gcc/config/managarm-system.h
 new file mode 100644
-index 000000000..8a032c995
+index 00000000000..ba41561d127
 --- /dev/null
 +++ b/gcc/config/managarm-system.h
-@@ -0,0 +1,4 @@
+@@ -0,0 +1,3 @@
 +
 +#undef LIB_SPEC
 +#define LIB_SPEC "-lc"
-+
 diff --git a/gcc/config/managarm.h b/gcc/config/managarm.h
 new file mode 100644
-index 000000000..ef779b678
+index 00000000000..b8d6d122f2f
 --- /dev/null
 +++ b/gcc/config/managarm.h
-@@ -0,0 +1,14 @@
+@@ -0,0 +1,21 @@
 +
 +#undef TARGET_MANAGARM
 +#define TARGET_MANAGARM 1
++
++#define GNU_USER_LINK_EMULATION32 "elf_i386"
++#define GNU_USER_LINK_EMULATION64 "elf_x86_64"
++#define GNU_USER_LINK_EMULATIONX32 "elf32_x86_64"
++
++#define GNU_USER_DYNAMIC_LINKER32 "/lib/i386-managarm/rtdl.so"
++#define GNU_USER_DYNAMIC_LINKER64 "/lib/x86_64-managarm/rtdl.so"
++#define GNU_USER_DYNAMIC_LINKERX32 "/lib/x86_64-managarm-x32/rtdl.so"
 +
 +#undef TARGET_OS_CPP_BUILTINS
 +#define TARGET_OS_CPP_BUILTINS() \
@@ -296,37 +188,23 @@ index 000000000..ef779b678
 +		builtin_assert ("system=unix");   \
 +		builtin_assert ("system=posix");   \
 +	} while(0);
-+
 diff --git a/libgcc/config.host b/libgcc/config.host
-index 91abc84da..bf6a4878c 100644
+index c529cc40f0c..dcd054718a6 100644
 --- a/libgcc/config.host
 +++ b/libgcc/config.host
-@@ -252,6 +252,11 @@ case ${host} in
+@@ -255,6 +255,11 @@ case ${host} in
      extra_parts="$extra_parts vtv_start.o vtv_end.o vtv_start_preinit.o vtv_end_preinit.o"
    fi
    ;;
 +*-*-managarm*)
-+	extra_parts="$extra_parts crti.o crtbegin.o crtbeginS.o crtend.o crtendS.o crtn.o"
-+	tmake_file="$tmake_file t-crtstuff-pic"
-+	tmake_file="$tmake_file t-slibgcc t-slibgcc-gld t-slibgcc-elf-ver t-libgcc-pic"
-+	;;
++  extra_parts="$extra_parts crti.o crtbegin.o crtbeginS.o crtend.o crtendS.o crtn.o"
++  tmake_file="$tmake_file t-crtstuff-pic"
++  tmake_file="$tmake_file t-slibgcc t-slibgcc-gld t-slibgcc-elf-ver t-libgcc-pic"
++  ;;
  *-*-lynxos*)
    tmake_file="$tmake_file t-lynx $cpu_type/t-crtstuff t-crtstuff-pic t-libgcc-pic"
    extra_parts="crtbegin.o crtbeginS.o crtend.o crtendS.o"
-@@ -366,6 +371,12 @@ aarch64*-*-linux*)
- 	tmake_file="${tmake_file} ${cpu_type}/t-aarch64"
- 	tmake_file="${tmake_file} ${cpu_type}/t-softfp t-softfp t-crtfm"
- 	;;
-+aarch64*-*-managarm*)
-+	extra_parts="$extra_parts crtfastmath.o"
-+	md_unwind_header=aarch64/aarch64-unwind.h
-+	tmake_file="${tmake_file} ${cpu_type}/t-aarch64"
-+	tmake_file="${tmake_file} ${cpu_type}/t-softfp t-softfp t-crtfm"
-+	;;
- alpha*-*-linux*)
- 	tmake_file="${tmake_file} alpha/t-alpha alpha/t-ieee t-crtfm alpha/t-linux"
- 	extra_parts="$extra_parts crtfastmath.o"
-@@ -686,6 +697,10 @@ x86_64-*-linux*)
+@@ -743,6 +748,10 @@ i[34567]86-*-linux*)
  	tm_file="${tm_file} i386/elf-lib.h"
  	md_unwind_header=i386/linux-unwind.h
  	;;
@@ -334,14 +212,14 @@ index 91abc84da..bf6a4878c 100644
 +	extra_parts="$extra_parts crtprec32.o crtprec64.o crtprec80.o crtfastmath.o"
 +	tmake_file="$tmake_file i386/t-crtpc t-crtfm i386/t-crtstuff t-dfprules"
 +	;;
- x86_64-*-kfreebsd*-gnu)
+ i[34567]86-*-kfreebsd*-gnu | i[34567]86-*-kopensolaris*-gnu)
  	extra_parts="$extra_parts crtprec32.o crtprec64.o crtprec80.o crtfastmath.o"
  	tmake_file="${tmake_file} i386/t-crtpc t-crtfm i386/t-crtstuff t-dfprules"
 diff --git a/libstdc++-v3/crossconfig.m4 b/libstdc++-v3/crossconfig.m4
-index 344eec09d..154244809 100644
+index fe182883536..0d7aa56e566 100644
 --- a/libstdc++-v3/crossconfig.m4
 +++ b/libstdc++-v3/crossconfig.m4
-@@ -200,6 +200,14 @@ case "${host}" in
+@@ -192,6 +192,13 @@ case "${host}" in
      AC_CHECK_FUNCS(sockatmark)
      AM_ICONV
      ;;
@@ -350,17 +228,16 @@ index 344eec09d..154244809 100644
 +    GLIBCXX_CHECK_LINKER_FEATURES
 +    GLIBCXX_CHECK_MATH_SUPPORT
 +    GLIBCXX_CHECK_STDLIB_SUPPORT
-+    GCC_CHECK_TLS
 +    AC_CHECK_FUNCS(aligned_alloc posix_memalign memalign _aligned_malloc)
 +    ;;
    *-mingw32*)
      GLIBCXX_CHECK_LINKER_FEATURES
      GLIBCXX_CHECK_MATH_SUPPORT
 diff --git a/libtool.m4 b/libtool.m4
-index 896676288..ace9a37a1 100644
+index 00206549f54..23497087e35 100644
 --- a/libtool.m4
 +++ b/libtool.m4
-@@ -2494,6 +2494,16 @@ linux* | k*bsd*-gnu | kopensolaris*-gnu)
+@@ -2501,6 +2501,16 @@ linux* | k*bsd*-gnu | kopensolaris*-gnu | uclinuxfdpiceabi)
    dynamic_linker='GNU/Linux ld.so'
    ;;
  
@@ -377,7 +254,7 @@ index 896676288..ace9a37a1 100644
  netbsd*)
    version_type=sunos
    need_lib_prefix=no
-@@ -3093,6 +3103,10 @@ linux* | k*bsd*-gnu | kopensolaris*-gnu)
+@@ -3100,6 +3110,10 @@ linux* | k*bsd*-gnu | kopensolaris*-gnu | uclinuxfdpiceabi)
    lt_cv_deplibs_check_method=pass_all
    ;;
  
@@ -389,5 +266,5 @@ index 896676288..ace9a37a1 100644
    if echo __ELF__ | $CC -E - | $GREP __ELF__ > /dev/null; then
      lt_cv_deplibs_check_method='match_pattern /lib[[^/]]+(\.so\.[[0-9]]+\.[[0-9]]+|_pic\.a)$'
 -- 
-2.29.2
+2.31.0
 
