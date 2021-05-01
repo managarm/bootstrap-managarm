@@ -103,8 +103,8 @@ sources:
   - name: gcc
     subdir: 'ports'
     git: 'git://gcc.gnu.org/git/gcc.git'
-    tag: 'releases/gcc-9.2.0'
-    version: '9.2.0'
+    tag: 'releases/gcc-10.3.0'
+    version: '10.3.0'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.11
@@ -472,6 +472,7 @@ tools:
         - '--enable-languages=c,c++'
         - '--disable-multilib'
         - '--enable-initfini-array'
+        - '--enable-libstdcxx-filesystem-ts'
         # -g blows up GCC's binary size.
         - 'CFLAGS=-O2'
         - 'CXXFLAGS=-O2'
