@@ -449,14 +449,6 @@ tools:
           - args: ['make', '-j@PARALLELISM@', 'inhibit_libc=true', 'all-target-libgcc']
         install:
           - args: ['make', 'install-target-libgcc']
-      - name: libstdc++
-        tools_required:
-          - tool: kernel-gcc
-            stage_dependencies: [libgcc]
-        compile:
-          - args: ['make', '-j@PARALLELISM@', 'inhibit_libc=true', 'all-target-libstdc++-v3']
-        install:
-          - args: ['make', 'install-target-libstdc++-v3']
 
   - name: system-gcc
     from_source: gcc
