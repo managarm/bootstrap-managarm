@@ -1,0 +1,14 @@
+[unstable]
+patch-in-config = true
+
+[build]
+rustc = "@BUILD_ROOT@/tools/host-rust/bin/rustc"
+target = "x86_64-unknown-managarm-system"
+
+[target.x86_64-unknown-managarm-system]
+linker = "@BUILD_ROOT@/tools/system-gcc/bin/x86_64-managarm-gcc"
+
+[patch.crates-io]
+libc = { path = "@SOURCE_ROOT@/ports/rust-libc" }
+num_cpus = { path = "@SOURCE_ROOT@/ports/rust-num-cpus" }
+users = { path = "@SOURCE_ROOT@/ports/rust-users" }

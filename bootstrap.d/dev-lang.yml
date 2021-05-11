@@ -30,6 +30,13 @@ sources:
     tag: '0.2.93'
     version: '0.2.93'
 
+  - name: host-bootstrap-cargo
+    subdir: 'ports'
+    url: 'https://static.rust-lang.org/dist/2021-05-08/cargo-nightly-x86_64-unknown-linux-gnu.tar.xz'
+    format: 'tar.xz'
+    extract_path: 'cargo-nightly-x86_64-unknown-linux-gnu'
+    version: '0.53.0'
+
 tools:
   - name: host-python
     from_source: python
@@ -57,7 +64,8 @@ tools:
             targets = "X86"
 
             [build]
-            target = ["x86_64-unknown-managarm-system"]
+            target = ["x86_64-unknown-managarm-system", "x86_64-unknown-linux-gnu"]
+            build-dir = "@THIS_BUILD_DIR@"
             docs = false
 
             [install]
@@ -73,8 +81,35 @@ tools:
             llvm-config = "@BUILD_ROOT@/tools/host-llvm-toolchain/bin/llvm-config"
             EOF
       - args: ['@THIS_SOURCE_DIR@/x.py', 'build', '--stage', '2', '-j', '@PARALLELISM@']
+        cargo_home: false
     install:
       - args: ['@THIS_SOURCE_DIR@/x.py', 'install', '-j', '@PARALLELISM@']
+        cargo_home: false
+
+  - name: host-cargo
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/rust-lang/cargo.git'
+      tag: '0.53.0'
+      version: '0.53.0'
+    tools_required:
+      - host-rust
+    sources_required:
+      - rust-libc
+      - host-bootstrap-cargo # Cargo requires cargo to build, so we download a binary that we can use temporarily
+    compile:
+      - args:
+        - '@THIS_SOURCE_DIR@/../host-bootstrap-cargo/cargo/bin/cargo'
+        - 'install'
+        - '--target'
+        - 'x86_64-unknown-linux-gnu'
+        - '--target-dir'
+        - '@THIS_BUILD_DIR@'
+        - '--path'
+        - '@THIS_SOURCE_DIR@'
+        - '-j@PARALLELISM@'
+        - '--root'
+        - '@PREFIX@'
 
 packages:
   - name: nasm

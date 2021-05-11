@@ -29,6 +29,8 @@ general:
     patch_author: The Managarm Project
     patch_email: info@managarm.org
     everything_by_default: false
+    cargo:
+        config_toml: 'extrafiles/config.toml'
 
 repository:
     url: 'https://pkgs.managarm.org/nightly'
