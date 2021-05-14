@@ -1468,7 +1468,8 @@ tasks:
       - task: make-image
         order_only: true
     args:
-      - '@SOURCE_ROOT@/scripts/run-qemu'
+      - '@SOURCE_ROOT@/scripts/vm-util.py'
+      - 'qemu'
     workdir: '@BUILD_ROOT@'
     containerless: true
 
