@@ -229,7 +229,7 @@ packages:
       - rust-libc
       - rust-num-cpus
     configure:
-      - args: ['cargo', 'update', '--manifest-path', '@THIS_SOURCE_DIR@/Cargo.toml', '-p', 'libc', '--precise', '0.2.93']
+      - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
     build:
       - args:
         - 'cargo'
@@ -258,7 +258,7 @@ packages:
       - rust-num-cpus
       - rust-users
     configure:
-      - args: ['cargo', 'update', '--manifest-path', '@THIS_SOURCE_DIR@/Cargo.toml', '-p', 'libc', '--precise', '0.2.93']
+      - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
     build:
       - args:
         - 'cargo'
