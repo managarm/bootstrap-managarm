@@ -58,11 +58,11 @@ def do_qemu(args):
 	# Add USB HCDs.
 	qemu_args += [
 		'-device', 'piix3-usb-uhci,id=uhci',
-		'-device', 'usb-ehci'
+		'-device', 'usb-ehci,id=ehci',
+		'-device', 'qemu-xhci,id=xhci'
 	]
 
 	# Add the boot medium.
-	# TODO: Support IDE.
 	qemu_args += ['-drive', 'id=boot-drive,file=image,format=raw,if=none']
 
 	if args.boot_drive == 'virtio':
@@ -74,9 +74,12 @@ def do_qemu(args):
 			'-device', 'ahci,id=ahci',
 			'-device', 'ide-hd,drive=boot-drive,bus=ahci.0'
 		]
+	elif args.boot_drive == 'usb':
+		# Use EHCI for now since XHCI hangs on boot.
+		qemu_args += ['-device', 'usb-storage,drive=boot-drive,bus=ehci.0']
 	else:
-		assert args.boot_drive == 'usb'
-		qemu_args += ['-device', 'usb-storage,drive=managarm']
+		assert args.boot_drive == 'ide'
+		qemu_args += ['-device', 'ide-hd,drive=boot-drive,bus=ide.0']
 
 	# Add networking.
 	if args.net_bridge:
@@ -95,7 +98,7 @@ def do_qemu(args):
 	if not args.ps2:
 		qemu_args += ['-device', 'usb-kbd,bus=uhci.0']
 		if args.mouse:
-			qemu_args += ['-device', 'usb-mouse']
+			qemu_args += ['-device', 'usb-mouse,bus=uhci.0']
 		else:
 			qemu_args += ['-device', 'usb-tablet,bus=uhci.0']
 
@@ -139,7 +142,7 @@ qemu_parser.add_argument('--no-kvm', action='store_true')
 qemu_parser.add_argument('--virtual-cpu', action='store_true')
 qemu_parser.add_argument('--no-smp', action='store_true')
 qemu_parser.add_argument('--boot-drive',
-	choices=['virtio', 'virtio-legacy', 'ahci', 'usb'],
+	choices=['virtio', 'virtio-legacy', 'ahci', 'usb', 'ide'],
 	default='virtio')
 qemu_parser.add_argument('--net-bridge', action='store_true')
 qemu_parser.add_argument('--gfx',
