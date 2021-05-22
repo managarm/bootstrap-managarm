@@ -42,7 +42,7 @@ def do_qemu(args):
 			print('No hardware virtualization available!', file=sys.stderr)
 
 	cpu_extras = [ ]
-	cpu_model = 'host'
+	cpu_model = 'host,migratable=no'
 	if not have_kvm or args.virtual_cpu:
 		cpu_model = 'qemu64'
 		cpu_extras = ['+smap', '+smep', '+umip', '+pcid', '+invpcid']
