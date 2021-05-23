@@ -1,0 +1,27 @@
+From 9334ea835838d2598e4f7f313b07a00f77026da4 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Kacper=20S=C5=82omi=C5=84ski?=
+ <kacper.slominski72@gmail.com>
+Date: Sun, 23 May 2021 22:21:04 +0200
+Subject: [PATCH 3/3] shared/missing: add dummy __NR_name_to_handle_at for
+ aarch64
+
+---
+ src/shared/missing.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/shared/missing.h b/src/shared/missing.h
+index 8fb4f28..c3d6b45 100644
+--- a/src/shared/missing.h
++++ b/src/shared/missing.h
+@@ -132,6 +132,8 @@ static inline pid_t gettid(void) {
+ #    define __NR_name_to_handle_at 370
+ #  elif defined(__powerpc__)
+ #    define __NR_name_to_handle_at 345
++#  elif defined(__aarch64__)
++#    define __NR_name_to_handle_at -1
+ #  else
+ #    error "__NR_name_to_handle_at is not defined"
+ #  endif
+-- 
+2.31.1
+

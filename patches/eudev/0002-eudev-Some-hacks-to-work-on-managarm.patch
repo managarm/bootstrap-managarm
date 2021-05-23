@@ -1,7 +1,7 @@
-From 81d92a4bebc4b9a5a747ce5036a652fc341539dc Mon Sep 17 00:00:00 2001
+From 8e41993e0844dbb7831790349e6ef39e84db81a5 Mon Sep 17 00:00:00 2001
 From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
 Date: Fri, 7 Dec 2018 19:21:48 +0100
-Subject: [PATCH 2/2] eudev: Some hacks to work on managarm
+Subject: [PATCH 2/3] eudev: Some hacks to work on managarm
 
 ---
  src/ata_id/ata_id.c              | 1 +
@@ -13,7 +13,7 @@ Subject: [PATCH 2/2] eudev: Some hacks to work on managarm
  6 files changed, 7 insertions(+), 3 deletions(-)
 
 diff --git a/src/ata_id/ata_id.c b/src/ata_id/ata_id.c
-index 0f53fa010..3c52a6706 100644
+index 0f53fa0..3c52a67 100644
 --- a/src/ata_id/ata_id.c
 +++ b/src/ata_id/ata_id.c
 @@ -31,6 +31,7 @@
@@ -25,7 +25,7 @@ index 0f53fa010..3c52a6706 100644
  #include <scsi/scsi.h>
  #include <scsi/sg.h>
 diff --git a/src/shared/conf-files.c b/src/shared/conf-files.c
-index b4c2f7154..438de2421 100644
+index b4c2f71..438de24 100644
 --- a/src/shared/conf-files.c
 +++ b/src/shared/conf-files.c
 @@ -21,6 +21,7 @@
@@ -37,7 +37,7 @@ index b4c2f7154..438de2421 100644
  #include <stdio.h>
  #include <sys/stat.h>
 diff --git a/src/shared/missing.h b/src/shared/missing.h
-index 119e6997e..8fb4f2849 100644
+index 119e699..8fb4f28 100644
 --- a/src/shared/missing.h
 +++ b/src/shared/missing.h
 @@ -21,6 +21,7 @@
@@ -49,7 +49,7 @@ index 119e6997e..8fb4f2849 100644
  
  #if !HAVE_DECL_GETRANDOM || !HAVE_DECL_GETTID || !HAVE_DECL_NAME_TO_HANDLE_AT
 diff --git a/src/udev/udev-builtin-input_id.c b/src/udev/udev-builtin-input_id.c
-index ca545be5d..3940b8e25 100644
+index ca545be..3940b8e 100644
 --- a/src/udev/udev-builtin-input_id.c
 +++ b/src/udev/udev-builtin-input_id.c
 @@ -27,7 +27,7 @@
@@ -62,7 +62,7 @@ index ca545be5d..3940b8e25 100644
  
  #include "udev.h"
 diff --git a/src/udev/udev-builtin-keyboard.c b/src/udev/udev-builtin-keyboard.c
-index fad352005..e847ad29f 100644
+index fad3520..e847ad2 100644
 --- a/src/udev/udev-builtin-keyboard.c
 +++ b/src/udev/udev-builtin-keyboard.c
 @@ -23,7 +23,7 @@
@@ -75,7 +75,7 @@ index fad352005..e847ad29f 100644
  
  #include "udev.h"
 diff --git a/src/udev/udevd.c b/src/udev/udevd.c
-index 9c33eba5d..6262f07af 100644
+index 9c33eba..6262f07 100644
 --- a/src/udev/udevd.c
 +++ b/src/udev/udevd.c
 @@ -28,6 +28,7 @@
@@ -96,5 +96,5 @@ index 9c33eba5d..6262f07af 100644
                  fprintf(f, "<30>udevd[%u]: starting eudev-" VERSION "\n", getpid());
                  fclose(f);
 -- 
-2.11.0
+2.31.1
 
