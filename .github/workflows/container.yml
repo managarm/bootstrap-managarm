@@ -1,0 +1,48 @@
+name: Container
+
+on: [push, pull_request]
+
+jobs:
+    build-rootfs:
+        name: Build cbuildrt rootfs
+        runs-on: ubuntu-20.04
+        steps:
+          - name: Install prerequisites
+            run: |
+                sudo apt-get install umoci
+          - name: Checkout
+            uses: actions/checkout@v2
+          - name: Build container
+            run: |
+                docker build -t managarm-buildenv docker/
+          - name: Build OCI runtime bundle
+            run: |
+                set -x
+
+                skopeo copy docker-daemon:managarm-buildenv:latest oci:buildenv-image:latest
+                umoci unpack --rootless --image buildenv-image:latest buildenv-bundle/
+                rm -rf buildenv-image/
+          - name: Finalize cbuildroot rootfs
+            run: |
+                set -x
+
+                # Perform some post-processing.
+                mkdir buildenv-bundle/rootfs/dev/pts
+                ln -s /proc/self/fd/0 buildenv-bundle/rootfs/dev/stdin
+                ln -s /proc/self/fd/1 buildenv-bundle/rootfs/dev/stdout
+                ln -s /proc/self/fd/2 buildenv-bundle/rootfs/dev/stderr
+                touch buildenv-bundle/rootfs/dev/{full,null,zero}
+                touch buildenv-bundle/rootfs/dev/tty
+                touch buildenv-bundle/rootfs/dev/{random,urandom}
+
+                # Make directories for bind mounts.
+                mkdir -p buildenv-bundle/rootfs/var/lib/managarm-buildenv/{src,build}
+
+                # Pack the resulting rootfs.
+                tar -czf managarm-buildenv.tar.gz -C buildenv-bundle/ rootfs
+          - name: Upload rootfs to mirrors.managarm.org
+            if: github.ref == 'refs/heads/master'
+            env:
+                RSYNC_PASSWORD: ${{ secrets.RSYNC_CBUILDRT_ROOTFS_PASSWD }}
+            run:
+                rsync-ssl -a --delete managarm-buildenv.tar.gz cbuildrt-rootfs@mirrors.managarm.org::cbuildrt/rootfs
