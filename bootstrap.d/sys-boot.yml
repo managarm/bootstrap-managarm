@@ -8,16 +8,16 @@ sources:
   - name: limine-binary
     subdir: 'ports'
     git: 'https://github.com/limine-bootloader/limine.git'
-    tag: 'v2.15-binary'
-    version: '2.15'
+    tag: 'v2.16-binary'
+    version: '2.16'
 
 packages:
   - name: limine
     source:
       subdir: 'ports'
       git: 'https://github.com/limine-bootloader/limine.git'
-      tag: 'v2.15'
-      version: '2.15'
+      tag: 'v2.16'
+      version: '2.16'
     revision: 1
     tools_required:
       - system-gcc
