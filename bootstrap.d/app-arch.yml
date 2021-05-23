@@ -1,5 +1,6 @@
 packages:
   - name: bzip2
+    labels: [aarch64]
     source:
       subdir: ports
       url: 'https://www.sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz'
@@ -24,6 +25,7 @@ packages:
       - args: ['ln', '-sf', 'bzmore', '@THIS_COLLECT_DIR@/usr/bin/bzless']
 
   - name: gzip
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/gzip.git'
@@ -52,6 +54,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libarchive
+    labels: [aarch64]
     source:
       subdir: 'ports'
       git: 'https://github.com/libarchive/libarchive.git'
@@ -107,6 +110,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: tar
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/tar.git'
@@ -137,6 +141,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xz-utils
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://git.tukaani.org/xz.git'
@@ -170,6 +175,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: zstd
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://github.com/facebook/zstd.git'

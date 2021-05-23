@@ -38,6 +38,7 @@ sources:
 
 tools:
   - name: host-bison
+    labels: [aarch64]
     from_source: bison
     tools_required:
       - host-autoconf-v2.69
@@ -52,6 +53,7 @@ tools:
       - args: ['make', 'install']
 
   - name: host-gettext
+    labels: [aarch64]
     from_source: gettext
     exports_aclocal: true
     tools_required:

@@ -1,5 +1,6 @@
 packages:
   - name: nano
+    labels: [aarch64]
     source:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/nano.git'
@@ -53,6 +54,7 @@ packages:
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/root-nanorc', '@THIS_COLLECT_DIR@/root/.nanorc']
 
   - name: vim
+    labels: [aarch64]
     source:
       subdir: 'ports'
       git: 'https://github.com/vim/vim.git'

@@ -1,5 +1,6 @@
 packages:
   - name: gdbm
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/gdbm.git'
@@ -31,6 +32,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
   
   - name: mtdev
+    labels: [aarch64]
     source:
       subdir: 'ports'
       git: 'https://bitmath.org/git/mtdev.git'
@@ -61,6 +63,7 @@ packages:
         quiet: true
 
   - name: ncurses
+    labels: [aarch64]
     source:
       subdir: 'ports'
       git: 'https://github.com/ThomasDickey/ncurses-snapshots.git'
@@ -101,6 +104,7 @@ packages:
           ln -sfv libncurses.so      @THIS_COLLECT_DIR@/usr/lib/libcurses.so
 
   - name: readline
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/readline.git'
@@ -124,6 +128,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name : tzdata
+    labels: [aarch64]
     default: true
     source:
       subdir: 'ports'

@@ -187,6 +187,7 @@ sources:
 
 tools:
   - name: host-autoconf-v2.64
+    labels: [aarch64]
     source:
       name: autoconf-v2.64
       subdir: 'ports'
@@ -209,6 +210,7 @@ tools:
       - args: ['make', 'install']
 
   - name: host-autoconf-v2.69
+    labels: [aarch64]
     source:
       name: autoconf-v2.69
       subdir: 'ports'
@@ -224,6 +226,7 @@ tools:
       - args: ['make', 'install']
 
   - name: host-automake-v1.11
+    labels: [aarch64]
     source:
       name: automake-v1.11
       subdir: 'ports'
@@ -249,6 +252,7 @@ tools:
       - args: ['ln', '-sf', '@PREFIX@/share/aclocal-1.11', '@PREFIX@/share/aclocal']
 
   - name: host-autoconf-archive
+    labels: [aarch64]
     exports_aclocal: true
     source:
       subdir: 'ports'
@@ -260,6 +264,7 @@ tools:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/m4', '@BUILD_ROOT@/tools/host-autoconf-archive/share/aclocal']
 
   - name: host-automake-v1.15
+    labels: [aarch64]
     source:
       name: automake-v1.15
       subdir: 'ports'
@@ -285,6 +290,7 @@ tools:
       - args: ['ln', '-sf', '@PREFIX@/share/aclocal-1.15', '@PREFIX@/share/aclocal']
 
   - name: host-managarm-tools
+    labels: [aarch64]
     from_source: managarm
     sources_required:
       - frigg
@@ -307,6 +313,7 @@ tools:
       - args: ['ninja', 'install']
 
   - name: host-libtool
+    labels: [aarch64]
     exports_aclocal: true
     source:
       name: libtool
@@ -334,6 +341,7 @@ tools:
       - args: ['make', 'install']
 
   - name: host-llvm-toolchain
+    labels: [aarch64]
     from_source: llvm
     sources_required:
       - binutils
@@ -368,6 +376,7 @@ tools:
         quiet: true
 
   - name: cross-binutils
+    labels: [aarch64]
     from_source: binutils
     configure:
       - args:
@@ -391,6 +400,7 @@ tools:
           done
 
   - name: host-protoc
+    labels: [aarch64]
     exports_shared_libs: true
     revision: 2
     from_source: protobuf
@@ -406,6 +416,7 @@ tools:
       - args: ['make', 'install']
 
   - name: kernel-gcc
+    labels: [aarch64]
     from_source: gcc
     tools_required:
       - tool: cross-binutils
@@ -451,6 +462,7 @@ tools:
           - args: ['make', 'install-target-libgcc']
 
   - name: system-gcc
+    labels: [aarch64]
     from_source: gcc
     tools_required:
       - tool: cross-binutils
@@ -505,6 +517,7 @@ tools:
           - args: ['make', 'install-target-libstdc++-v3']
 
   - name: bootstrap-system-gcc
+    labels: [aarch64]
     from_source: gcc
     tools_required:
       - tool: cross-binutils
@@ -549,6 +562,7 @@ tools:
           - args: ['make', 'install-target-libgcc']
 
   - name: wayland-scanner
+    labels: [aarch64]
     from_source: wayland
     tools_required:
       - host-autoconf-v2.69
@@ -594,6 +608,7 @@ packages:
         quiet: true
 
   - name: boost
+    labels: [aarch64]
     source:
       subdir: 'ports'
       git: 'https://github.com/boostorg/boost.git'
@@ -614,6 +629,7 @@ packages:
             '@THIS_COLLECT_DIR@/usr/include']
 
   - name: core-files
+    labels: [aarch64]
     default: true
     from_source: managarm
     revision: 2
@@ -642,6 +658,7 @@ packages:
       - args: ['ln', '-svf', '/usr/lib/ld.so', '@THIS_COLLECT_DIR@/lib/ld-init.so']
 
   - name: fafnir
+    labels: [aarch64]
     source:
       subdir: 'ports'
       git: 'https://github.com/managarm/fafnir.git'
@@ -665,6 +682,7 @@ packages:
         quiet: true
 
   - name: frigg
+    labels: [aarch64]
     source:
       subdir: 'ports'
       git: 'https://github.com/managarm/frigg.git'
@@ -724,6 +742,7 @@ packages:
       - args: ['ln', '-sf', 'gcc', '@THIS_COLLECT_DIR@/usr/bin/cc']
 
   - name: eudev
+    labels: [aarch64]
     source:
       subdir: 'ports'
       git: 'https://github.com/gentoo/eudev.git'
@@ -758,6 +777,7 @@ packages:
         quiet: true
 
   - name: lewis
+    labels: [aarch64]
     source:
       rolling_version: true
       version: '0.0pl@ROLLING_ID@'
@@ -783,6 +803,7 @@ packages:
         quiet: true
 
   - name: libasync
+    labels: [aarch64]
     source:
       subdir: 'ports'
       git: 'https://github.com/managarm/libasync.git'
@@ -836,6 +857,7 @@ packages:
         quiet: true
 
   - name: libsmarter
+    labels: [aarch64]
     source:
       subdir: 'ports'
       git: 'https://github.com/avdgrinten/libsmarter.git'
@@ -858,6 +880,7 @@ packages:
         - 'install'
 
   - name: llvm
+    labels: [aarch64]
     from_source: llvm
     revision: 2
     tools_required:
@@ -927,6 +950,7 @@ packages:
         quiet: true
 
   - name: managarm-kernel
+    labels: [aarch64]
     default: true
     from_source: managarm
     sources_required:
@@ -959,6 +983,7 @@ packages:
         quiet: true
 
   - name: managarm-system
+    labels: [aarch64]
     default: true
     from_source: managarm
     tools_required:
@@ -1001,6 +1026,7 @@ packages:
         quiet: true
 
   - name: mlibc-headers
+    labels: [aarch64]
     from_source: mlibc
     tools_required:
       - host-managarm-tools
@@ -1024,6 +1050,7 @@ packages:
         quiet: true
 
   - name: mlibc
+    labels: [aarch64]
     from_source: mlibc
     tools_required:
       - host-managarm-tools
@@ -1053,6 +1080,7 @@ packages:
       - args: ['ln', '-sf', 'crt0.o', '@THIS_COLLECT_DIR@/usr/lib/crt1.o']
 
   - name: protobuf
+    labels: [aarch64]
     from_source: protobuf
     tools_required:
       - system-gcc
@@ -1072,6 +1100,7 @@ packages:
         quiet: true
 
   - name: wayland
+    labels: [aarch64]
     from_source: wayland
     tools_required:
       - host-autoconf-v2.69
@@ -1103,6 +1132,7 @@ packages:
         quiet: true
 
   - name: zlib
+    labels: [aarch64]
     source:
       subdir: 'ports'
       git: 'https://github.com/madler/zlib.git'
@@ -1124,6 +1154,7 @@ packages:
         quiet: true
 
   - name: libtsm
+    labels: [aarch64]
     source:
       subdir: 'ports'
       git: 'https://github.com/managarm/libtsm-mirror.git'
@@ -1160,6 +1191,7 @@ packages:
         quiet: true
 
   - name: kmscon
+    labels: [aarch64]
     default: true
     source:
       subdir: 'ports'

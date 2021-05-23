@@ -17,6 +17,7 @@ sources:
 
 tools:
   - name: host-xtrans
+    labels: [aarch64]
     exports_aclocal: true
     from_source: libxtrans
     configure:
@@ -30,6 +31,7 @@ tools:
 
 packages:
   - name: cairo
+    labels: [aarch64]
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/cairo/cairo.git'
@@ -66,6 +68,8 @@ packages:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
+        - '--enable-fc=no'
+        - '--enable-ft=no'
         - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
         - '--enable-xlib-xcb'
         - '--enable-xml'
@@ -168,6 +172,7 @@ packages:
         quiet: true
 
   - name: libdrm
+    labels: [aarch64]
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/mesa/drm'
@@ -210,6 +215,7 @@ packages:
         quiet: true
 
   - name: libfontenc
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libfontenc.git'
@@ -332,6 +338,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libx11
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libx11.git'
@@ -373,6 +380,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxau
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxau.git'
@@ -448,6 +456,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxcb
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxcb.git'
@@ -491,6 +500,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxcursor
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxcursor.git'
@@ -529,6 +539,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxdamage
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxdamage.git'
@@ -568,6 +579,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxdmcp
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxdmcp.git'
@@ -604,6 +616,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxext
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxext.git'
@@ -643,6 +656,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxfixes
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxfixes.git'
@@ -681,6 +695,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxfont2
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxfont.git'
@@ -771,6 +786,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxi
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxi.git'
@@ -812,6 +828,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxkbcommon
+    labels: [aarch64]
     source:
       subdir: 'ports'
       git: 'https://github.com/xkbcommon/libxkbcommon.git'
@@ -851,6 +868,7 @@ packages:
         quiet: true
 
   - name: libxkbfile
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxkbfile.git'
@@ -967,6 +985,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxrandr
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxrandr.git'
@@ -1008,6 +1027,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxrender
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxrender.git'
@@ -1047,6 +1067,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxshmfence
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxshmfence.git'
@@ -1127,6 +1148,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxtrans
+    labels: [aarch64]
     from_source: libxtrans
     tools_required:
       - system-gcc
@@ -1189,6 +1211,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxxf86dga
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxxf86dga.git'
@@ -1229,6 +1252,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxxf86vm
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxxf86vm.git'
@@ -1308,6 +1332,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: pixman
+    labels: [aarch64]
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/pixman/pixman.git'

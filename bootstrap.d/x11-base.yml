@@ -1,5 +1,6 @@
 packages:
   - name: xcb-proto
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/proto/xcbproto.git'
@@ -40,6 +41,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xorg-proto
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/proto/xorgproto.git'
@@ -75,6 +77,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xorg-server
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/xserver.git'

@@ -166,6 +166,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
   
   - name: xkbcomp
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xkbcomp.git'

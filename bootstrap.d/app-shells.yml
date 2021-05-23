@@ -1,5 +1,6 @@
 packages:
   - name: bash
+    labels: [aarch64]
     default: true
     source:
       subdir: 'ports'

@@ -34,6 +34,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: iana-etc
+    labels: [aarch64]
     default: true
     source:
       subdir: ports
@@ -150,6 +151,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: wget
+    labels: [aarch64]
     source:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/wget.git'

@@ -13,6 +13,7 @@ sources:
 
 tools:
   - name: host-file
+    labels: [aarch64]
     from_source: file
     tools_required:
       - host-autoconf-v2.69
@@ -29,6 +30,7 @@ tools:
 
 packages:
   - name: coreutils
+    labels: [aarch64]
     source:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/coreutils.git'
@@ -71,6 +73,7 @@ packages:
         quiet: true
 
   - name: diffutils
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/diffutils.git'
@@ -101,6 +104,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: file
+    labels: [aarch64]
     from_source: file
     tools_required:
       - system-gcc
@@ -121,6 +125,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: findutils
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/findutils.git'
@@ -156,6 +161,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: gawk
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/gawk.git'
@@ -187,6 +193,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: grep
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/grep.git'
@@ -255,6 +262,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: less
+    labels: [aarch64]
     source:
       subdir: ports
       url: 'http://www.greenwoodsoftware.com/less/less-563.tar.gz'
@@ -379,6 +387,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: sed
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/sed.git'
@@ -407,6 +416,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: util-linux
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://git.kernel.org/pub/scm/utils/util-linux/util-linux.git'
@@ -506,6 +516,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: which
+    labels: [aarch64]
     source:
       subdir: ports
       url: 'https://ftp.gnu.org/gnu/which/which-2.21.tar.gz'
@@ -526,6 +537,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xbps
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://github.com/void-linux/xbps.git'

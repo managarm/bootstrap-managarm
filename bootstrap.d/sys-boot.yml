@@ -13,6 +13,7 @@ sources:
 
 packages:
   - name: limine
+    labels: [aarch64]
     source:
       subdir: 'ports'
       git: 'https://github.com/limine-bootloader/limine.git'

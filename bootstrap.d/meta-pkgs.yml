@@ -1,6 +1,7 @@
 packages:
   # Meta package with the bare minimum to boot kmscon and be useful
   - name: base
+    labels: [aarch64]
     from_source: managarm
     pkgs_required:
       - core-files

@@ -17,6 +17,7 @@ sources:
 
 tools:
   - name: host-xorg-font-util
+    labels: [aarch64]
     exports_aclocal: true
     from_source: xorg-font-util
     configure:
@@ -30,6 +31,7 @@ tools:
 
 packages:
   - name: dejavu
+    labels: [aarch64]
     source:
       subdir: ports
       url: 'http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2'
@@ -47,6 +49,7 @@ packages:
       - args: ['cp', '-r', '@THIS_BUILD_DIR@/dejavu/dejavu', '@THIS_COLLECT_DIR@/usr/share/fonts/truetype/']
 
   - name: xorg-font-util
+    labels: [aarch64]
     from_source: xorg-font-util
     tools_required:
       - system-gcc

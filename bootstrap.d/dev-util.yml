@@ -21,6 +21,7 @@ sources:
 
 tools:
   - name: host-cmake
+    labels: [aarch64]
     from_source: cmake
     configure:
       - args:
@@ -36,6 +37,7 @@ tools:
   # We could run an external pkg-config; however, we need the aclocal files.
   # The easiest way to ensure that they are available is to just install pkg-config.
   - name: host-pkg-config
+    labels: [aarch64]
     exports_aclocal: true
     from_source: pkg-config
     configure:

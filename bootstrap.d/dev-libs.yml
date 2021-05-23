@@ -171,6 +171,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name : gmp
+    labels: [aarch64]
     source:
       subdir: 'ports'
       hg: 'https://gmplib.org/repo/gmp-6.2/'
@@ -247,6 +248,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libevdev
+    labels: [aarch64]
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/libevdev/libevdev.git'
@@ -278,6 +280,7 @@ packages:
         quiet: true
 
   - name: libexpat
+    labels: [aarch64]
     source:
       subdir: 'ports'
       git: 'https://github.com/libexpat/libexpat.git'
@@ -311,6 +314,7 @@ packages:
         quiet: true
 
   - name: libffi
+    labels: [aarch64]
     source:
       subdir: 'ports'
       git: 'https://github.com/libffi/libffi.git'
@@ -412,6 +416,7 @@ packages:
         quiet: true
 
   - name: libiconv
+    labels: [aarch64]
     source:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/libiconv.git'
@@ -476,6 +481,7 @@ packages:
         quiet: true
 
   - name: libinput
+    labels: [aarch64]
     source:
       subdir: 'ports'
       git: 'https://github.com/wayland-project/libinput.git'
@@ -511,6 +517,7 @@ packages:
         quiet: true
 
   - name: libintl
+    labels: [aarch64]
     source:
       subdir: 'ports'
       url: 'https://ftp.gnu.org/gnu/gettext/gettext-0.21.tar.xz'
@@ -681,6 +688,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxml
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.gnome.org/GNOME/libxml2.git'
@@ -789,6 +797,7 @@ packages:
         quiet: true
 
   - name: nettle
+    labels: [aarch64]
     source:
       subdir: 'ports'
       git: 'https://git.lysator.liu.se/nettle/nettle.git'
@@ -824,6 +833,7 @@ packages:
         quiet: true
 
   - name: openssl
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://github.com/openssl/openssl.git'
@@ -860,6 +870,7 @@ packages:
       - args: ['cp', '-fr', '@THIS_SOURCE_DIR@/doc/.', '@THIS_COLLECT_DIR@/usr/share/doc/openssl-1.1.1j']
 
   - name: pcre
+    labels: [aarch64]
     source:
       subdir: ports
       svn: 'svn://vcs.pcre.org/pcre/code/trunk'
@@ -925,6 +936,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: wayland-protocols
+    labels: [aarch64]
     source:
       subdir: 'ports'
       git: 'https://github.com/wayland-project/wayland-protocols.git'
@@ -954,6 +966,7 @@ packages:
         quiet: true
 
   - name: weston
+    labels: [aarch64]
     source:
       subdir: 'ports'
       git: 'https://github.com/wayland-project/weston.git'
