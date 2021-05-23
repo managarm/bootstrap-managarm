@@ -89,6 +89,8 @@ packages:
             '@THIS_SOURCE_DIR@/build-aux/']
     tools_required:
       - system-gcc
+      - host-autoconf-v2.69
+      - host-automake-v1.15
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -271,6 +273,9 @@ packages:
       version: '563'
     tools_required:
       - system-gcc
+      - host-autoconf-v2.69
+      - host-automake-v1.15
+      - host-libtool
     pkgs_required:
       - ncurses
     revision: 2
