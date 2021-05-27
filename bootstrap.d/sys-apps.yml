@@ -364,6 +364,19 @@ packages:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/share/hwdata/']
       - args: ['cp', '-f', '@THIS_SOURCE_DIR@/pci.ids', '@THIS_COLLECT_DIR@/usr/share/hwdata/pci.ids']
 
+  - name: neofetch
+    source:
+      subdir: ports
+      git: 'https://github.com/dylanaraps/neofetch.git'
+      tag: '7.1.0'
+      version: '7.1.0'
+    configure:
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+    build:
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: sed
     source:
       subdir: ports
