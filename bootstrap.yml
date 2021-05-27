@@ -1502,6 +1502,8 @@ tasks:
     args:
       - '@SOURCE_ROOT@/scripts/vm-util.py'
       - 'qemu'
+      - '--arch'
+      - '@OPTION:arch@'
     workdir: '@BUILD_ROOT@'
     containerless: true
 
