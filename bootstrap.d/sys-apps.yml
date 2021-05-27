@@ -367,9 +367,10 @@ packages:
   - name: neofetch
     source:
       subdir: ports
-      git: 'https://github.com/dylanaraps/neofetch.git'
-      tag: '7.1.0'
-      version: '7.1.0'
+      git: 'https://github.com/64/neofetch.git'
+      branch: 'master'
+      commit: 'd27a0bd748310d8ace673a614f745303b444e00e'
+      version: '7.2.0'
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
