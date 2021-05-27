@@ -6,8 +6,10 @@ pkg_management:
     format: xbps
 
 container:
-    runtime: docker
-    image: managarm-buildenv
-    src_mount: /var/managarm-buildenv/src
-    build_mount: /var/managarm-buildenv/build
+    runtime: cbuildrt
+    rootfs:  /var/lib/cbuildrt/managarm-buildenv
+    uid: 1000
+    gid: 1000
+    src_mount: /var/lib/managarm-buildenv/src
+    build_mount: /var/lib/managarm-buildenv/build
     allow_containerless: true
