@@ -5,63 +5,91 @@ FROM debian:buster AS base
 
 RUN apt-get update \
 	&& apt-get -y install \
+		# Don't install recommended stuff
+		--no-install-recommends \
+		# Used by host-bison
 		autopoint \
+		# Used by binutils in the build process
 		bison \
+		# Contains gcc and g++
 		build-essential \
+		# Used by several packages
+		cmake \
+		# Used during image generation
 		cpio \
+		# Used by protobuf
 		curl \
-		doxygen \
+		# Used by binutils in the build process
 		flex \
+		# Used by many tools in the build process
 		gawk \
+		# Used by host-gettext
 		gettext \
+		# Git is used extensively in the build process
 		git \
+		# Used by eudev
 		gperf \
+		# Used by libiconv
 		groff \
-		gtk-doc-tools \
+		# Used by libtool
 		help2man \
+		# Used by shared-mime-info
 		itstool \
-		libarchive-dev \
+		# Used by wayland-scanner
 		libexpat1-dev \
+		# Used by gtk+-2
+		libgdk-pixbuf2.0-bin \
+		# Used by gdk-pixbuf
 		libglib2.0-dev-bin \
+		# GMP, MPFR and MPC are used by gcc
 		libgmp-dev \
 		libmpc-dev \
 		libmpfr-dev \
+		# Used by cmake
 		libssl-dev \
-		libtasn1-bin \
-		libpng-dev \
-		libwayland-bin \
+		# Used by ace
+		libpng-dev \		
+		# Used by many gnu build steps		
 		m4 \
-		mercurial \
+		# Used by limine
 		mtools \
+		# Used by libjpeg-turbo for performance reasons
 		nasm \
+		# Used by groff
 		netpbm \
+		# Used by Managarm
 		ninja-build \
+		# Various build systems invoke pkg-config
 		pkg-config \
+		# Used by itstool
 		python3-libxml2 \
+		# Used by mesa
 		python3-mako \
+		# We need pip, setuptools and wheel for installing python packages
 		python3-pip \
+		python3-setuptools \
+		python3-wheel \
+		# Used by managarm
 		python3-protobuf \
-		python3-yaml \
-		ragel \
+		# Several programs use rsync
 		rsync \
-		subversion \
+		# makeinfo is used in gnu build systems
 		texinfo \
+		# Used by protobuf
 		unzip \
+		# We use wget to fetch some stuff further down
 		wget \
+		# Used by eudev
 		xsltproc \
-		xz-utils \
-		zlib1g-dev
+		# Used by various programs, for example, it is used by file
+		zlib1g-dev \
+		# Cleanup time
+		&& apt-get clean
 
+# Meson is outdated in debian repos, xbstrap and bragi are used by the build process.
 RUN pip3 install meson \
 	&& pip3 install xbstrap \
 	&& pip3 install bragi
-
-# Install xbps from source (there is no Debian package).
-RUN cd /root/ \
-	&& wget https://github.com/void-linux/xbps/archive/0.59.1.tar.gz \
-	&& tar -xzf 0.59.1.tar.gz \
-	&& cd xbps-0.59.1/ \
-	&& ./configure --enable-rpath && make && make install
 
 # Install mdbook.
 RUN cd /root && \
