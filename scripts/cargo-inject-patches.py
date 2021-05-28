@@ -12,6 +12,12 @@ parser = argparse.ArgumentParser(description='Inject patched Rust libraries into
 parser.add_argument('manifest', type=pathlib.Path, help='path to Cargo.toml')
 manifest = parser.parse_args().manifest
 
+# First, delete the existing lockfile to work around https://github.com/rust-lang/cargo/issues/9470
+lockfile = os.path.join(os.path.dirname(manifest), 'Cargo.lock')
+if os.path.exists(lockfile):
+    print('cargo-inject-patches: workaround cargo bug by removing existing lockfile...')
+    os.remove(lockfile)
+
 for lib, version in patched_libs.items():
 	cmd = [
 		'cargo',
