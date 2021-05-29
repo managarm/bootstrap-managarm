@@ -50,4 +50,4 @@ jobs:
                 RSYNC_PASSWORD: ${{ secrets.RSYNC_CBUILDRT_ROOTFS_PASSWD }}
             run:
                 # For now the URL here is docs.managarm.org since we run a single rsyncd.
-                rsync-ssl -a --delete managarm-buildenv.tar.gz cbuildrt-rootfs@docs.managarm.org::cbuildrt/rootfs
+                rsync-ssl -a --delete managarm-buildenv.tar.gz cbuildrt-rootfs@docs.managarm.org::cbuildrt-rootfs/rootfs
