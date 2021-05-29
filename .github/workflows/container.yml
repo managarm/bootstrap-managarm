@@ -10,6 +10,10 @@ jobs:
           - name: Install prerequisites
             run: |
                 sudo apt-get install umoci
+          - name: Install rsync-ssl
+            run: |
+                wget https://raw.githubusercontent.com/WayneD/rsync/c3f7414c450faaf6a8281cc4a4403529aeb7d859/rsync-ssl
+                sudo install -D rsync-ssl /usr/local/bin/rsync-ssl
           - name: Checkout
             uses: actions/checkout@v2
           - name: Build container
