@@ -26,7 +26,7 @@ jobs:
                 skopeo copy docker-daemon:managarm-buildenv:latest oci:buildenv-image:latest
                 umoci unpack --rootless --image buildenv-image:latest buildenv-bundle/
                 rm -rf buildenv-image/
-          - name: Finalize cbuildroot rootfs
+          - name: Finalize cbuildrt rootfs
             run: |
                 set -x
 
@@ -49,4 +49,5 @@ jobs:
             env:
                 RSYNC_PASSWORD: ${{ secrets.RSYNC_CBUILDRT_ROOTFS_PASSWD }}
             run:
-                rsync-ssl -a --delete managarm-buildenv.tar.gz cbuildrt-rootfs@mirrors.managarm.org::cbuildrt/rootfs
+                # For now the URL here is docs.managarm.org since we run a single rsyncd.
+                rsync-ssl -a --delete managarm-buildenv.tar.gz cbuildrt-rootfs@docs.managarm.org::cbuildrt/rootfs
