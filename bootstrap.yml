@@ -32,9 +32,8 @@ general:
     cargo:
         config_toml: 'extrafiles/config.toml'
 
-repository:
-    url: 'https://pkgs.managarm.org/nightly'
 repositories:
+    tool_archives: 'https://ci.managarm.org/repos/tools/managarm/rolling'
     xbps: 'https://ci.managarm.org/repos/packages/managarm/rolling'
 
 # TODO: We currently don't support computed options or anything of that sort,
