@@ -1,0 +1,39 @@
+From f19c2082b16c5a378be27097079518f6acca074c Mon Sep 17 00:00:00 2001
+From: Matt Taylor <mstaveleytaylor@gmail.com>
+Date: Sun, 9 May 2021 18:16:40 +0100
+Subject: [PATCH] managarm: Initial port
+
+---
+ src/base.rs | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/src/base.rs b/src/base.rs
+index ece499a..7cc5794 100644
+--- a/src/base.rs
++++ b/src/base.rs
+@@ -923,7 +923,7 @@ pub mod os {
+     /// Although the `passwd` struct is common among Unix systems, its actual
+     /// format can vary. See the definitions in the `base` module to check which
+     /// fields are actually present.
+-    #[cfg(any(target_os = "linux", target_os = "android", target_os = "macos", target_os = "freebsd", target_os = "dragonfly", target_os = "openbsd", target_os = "netbsd", target_os = "solaris"))]
++    #[cfg(any(target_os = "linux", target_os = "android", target_os = "macos", target_os = "freebsd", target_os = "dragonfly", target_os = "openbsd", target_os = "netbsd", target_os = "solaris", target_os = "managarm"))]
+     pub mod unix {
+         use std::ffi::{OsStr, OsString};
+         use std::path::{Path, PathBuf};
+@@ -1176,11 +1176,11 @@ pub mod os {
+     pub type UserExtras = bsd::UserExtras;
+ 
+     /// Any extra fields on a `User` specific to the current platform.
+-    #[cfg(any(target_os = "linux", target_os = "android", target_os = "solaris"))]
++    #[cfg(any(target_os = "linux", target_os = "android", target_os = "solaris", target_os = "managarm"))]
+     pub type UserExtras = unix::UserExtras;
+ 
+     /// Any extra fields on a `Group` specific to the current platform.
+-    #[cfg(any(target_os = "linux", target_os = "android", target_os = "macos", target_os = "freebsd", target_os = "dragonfly", target_os = "openbsd", target_os = "netbsd", target_os = "solaris"))]
++    #[cfg(any(target_os = "linux", target_os = "android", target_os = "macos", target_os = "freebsd", target_os = "dragonfly", target_os = "openbsd", target_os = "netbsd", target_os = "solaris", target_os = "managarm"))]
+     pub type GroupExtras = unix::GroupExtras;
+ }
+ 
+-- 
+2.31.1
+

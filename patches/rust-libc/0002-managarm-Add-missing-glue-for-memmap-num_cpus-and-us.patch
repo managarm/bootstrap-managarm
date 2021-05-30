@@ -1,0 +1,204 @@
+From 07284dd588cf5dfa11ea03ac384c457bb0261126 Mon Sep 17 00:00:00 2001
+From: Matt Taylor <mstaveleytaylor@gmail.com>
+Date: Sat, 8 May 2021 19:33:53 +0100
+Subject: [PATCH 2/2] managarm: Add missing glue for memmap, num_cpus and users
+
+---
+ src/unix/mlibc/mod.rs | 110 +++++++++++++++++++++++++++++++-----------
+ 1 file changed, 81 insertions(+), 29 deletions(-)
+
+diff --git a/src/unix/mlibc/mod.rs b/src/unix/mlibc/mod.rs
+index 51b9ee9..f374aa1 100644
+--- a/src/unix/mlibc/mod.rs
++++ b/src/unix/mlibc/mod.rs
+@@ -19,6 +19,19 @@ pub type socklen_t = ::c_ulong;
+ // options/internal/include/bits/off_t.h
+ pub type off_t = ::c_long;
+ 
++// abis/mlibc/vm-flags.h 
++pub const MAP_ANON: ::c_int = 8;
++pub const MAP_PRIVATE: ::c_int = 1;
++pub const MAP_SHARED: ::c_int = 2;
++pub const PROT_EXEC: ::c_int = 4;
++pub const PROT_READ: ::c_int = 1;
++pub const PROT_WRITE: ::c_int = 2;
++
++// options/posix/include/sys/mman.h
++pub const MAP_FAILED: *mut ::c_void = usize::MAX as *mut ::c_void;
++pub const MS_ASYNC: ::c_int = 1;
++pub const MS_SYNC: ::c_int = 2;
++
+ // options/ansi/include/time.h
+ pub const CLOCK_MONOTONIC: clockid_t = 1;
+ pub const CLOCK_REALTIME: clockid_t = 0;
+@@ -48,12 +61,6 @@ pub type time_t = ::c_long;
+ // options/posix/include/bits/posix/suseconds_t.h
+ pub type suseconds_t = ::c_long;
+ 
+-// abis/mlibc/uid_t.h
+-pub type uid_t = ::c_int;
+-
+-// abis/mlibc/gid_t.h
+-pub type gid_t = ::c_int;
+-
+ // abis/mlibc/dev_t.h
+ pub type dev_t = ::c_ulong;
+ 
+@@ -73,8 +80,8 @@ s! {
+         pub si_signo: ::c_int,
+         pub si_code: ::c_int,
+         pub si_errno: ::c_int,
+-        pub si_pid: pid_t,
+-        pub si_uid: uid_t,
++        pub si_pid: ::pid_t,
++        pub si_uid: ::uid_t,
+         pub si_addr: *mut ::c_void,
+         pub si_status: ::c_int,
+         pub si_value: sigval,
+@@ -110,6 +117,9 @@ s! {
+     }
+ }
+ 
++// options/posix/include/termios.h
++pub const TIOCGWINSZ: ::c_ulong = 0x5413;
++
+ // abis/mlibc/ino_t.h
+ pub type ino_t = ::c_long;
+ 
+@@ -122,9 +132,6 @@ pub type blkcnt_t = ::c_long;
+ // abis/mlibc/nlink_t.h
+ pub type nlink_t = ::c_int;
+ 
+-// abis/mlibc/pid_t.h
+-pub type pid_t = ::c_int;
+-
+ // options/posix/include/bits/posix/in_addr_t.h
+ pub type in_addr_t = u32;
+ 
+@@ -151,6 +158,7 @@ pub const STDERR_FILENO: ::c_int = 2;
+ pub const STDIN_FILENO: ::c_int = 0;
+ pub const STDOUT_FILENO: ::c_int = 1;
+ pub const _SC_GETPW_R_SIZE_MAX: ::c_int = 1;
++pub const _SC_NPROCESSORS_ONLN: ::c_int = 6;
+ pub const _SC_PAGESIZE: ::c_int = _SC_PAGE_SIZE;
+ pub const _SC_PAGE_SIZE: ::c_int = 3;
+ 
+@@ -237,24 +245,36 @@ pub const S_IFLNK: mode_t = 0xA000;
+ pub const S_IFMT: mode_t = 0xF000;
+ pub const S_IFREG: mode_t = 0x8000;
+ pub const S_IFSOCK: mode_t = 0xC000;
++pub const S_IRGRP: mode_t = 0o40;
++pub const S_IROTH: mode_t = 0o4;
++pub const S_IRUSR: mode_t = 0o400;
++pub const S_IRWXG: mode_t = 0o70;
++pub const S_IRWXO: mode_t = 0o7;
++pub const S_IRWXU: mode_t = 0o700;
++pub const S_IWGRP: mode_t = 0o20;
++pub const S_IWOTH: mode_t = 0o2;
++pub const S_IWUSR: mode_t = 0o200;
++pub const S_IXGRP: mode_t = 0o10;
++pub const S_IXOTH: mode_t = 0o1;
++pub const S_IXUSR: mode_t = 0o100;
+ s! {
+     pub struct stat {
+-        pub st_dev: dev_t,
+-        pub st_ino: ino_t,
+-        pub st_mode: mode_t,
+-        pub st_nlink: nlink_t,
+-        pub st_uid: uid_t,
+-        pub st_gid: gid_t,
+-        pub st_rdev: dev_t,
+-        pub st_size: off_t,
+-        pub st_atime: time_t,
+-        pub st_atime_nsec: c_long,
+-        pub st_mtime: time_t,
+-        pub st_mtime_nsec: c_long,
+-        pub st_ctime: time_t,
+-        pub st_ctime_nsec: c_long,
+-        pub st_blksize: blksize_t,
+-        pub st_blocks: blkcnt_t,
++        pub st_dev: ::dev_t,
++        pub st_ino: ::ino_t,
++        pub st_mode: ::mode_t,
++        pub st_nlink: ::nlink_t,
++        pub st_uid: ::uid_t,
++        pub st_gid: ::gid_t,
++        pub st_rdev: ::dev_t,
++        pub st_size: ::off_t,
++        pub st_atime: ::time_t,
++        pub st_atime_nsec: ::c_long,
++        pub st_mtime: ::time_t,
++        pub st_mtime_nsec: ::c_long,
++        pub st_ctime: ::time_t,
++        pub st_ctime_nsec: ::c_long,
++        pub st_blksize: ::blksize_t,
++        pub st_blocks: ::blkcnt_t,
+     }
+ }
+ 
+@@ -308,8 +328,8 @@ s! {
+     pub struct passwd {
+         pub pw_name: *mut ::c_char,
+         pub pw_passwd: *mut ::c_char,
+-        pub pw_uid: uid_t,
+-        pub pw_gid: gid_t,
++        pub pw_uid: ::uid_t,
++        pub pw_gid: ::gid_t,
+         pub pw_gecos: *mut ::c_char,
+         pub pw_dir: *mut ::c_char,
+         pub pw_shell: *mut ::c_char,
+@@ -513,6 +533,35 @@ extern "C" {
+     pub fn bind(socket: ::c_int, address: *const ::sockaddr, address_len: ::socklen_t) -> ::c_int;
+     pub fn clock_gettime(clk_id: clockid_t, tp: *mut ::timespec) -> ::c_int;
+     pub fn clock_settime(clk_id: clockid_t, tp: *const ::timespec) -> ::c_int;
++    pub fn endpwent();
++    pub fn getpwent() -> *mut passwd;
++    pub fn getgrgid_r(
++        gid: ::gid_t,
++        grp: *mut ::group,
++        buf: *mut ::c_char,
++        buflen: ::size_t,
++        result: *mut *mut ::group,
++    ) -> ::c_int;
++    pub fn getgrnam_r(
++        name: *const ::c_char,
++        grp: *mut ::group,
++        buf: *mut ::c_char,
++        buflen: ::size_t,
++        result: *mut *mut ::group,
++    ) -> ::c_int;
++    pub fn getgrouplist(
++        user: *const ::c_char,
++        group: ::gid_t,
++        groups: *mut ::gid_t,
++        ngroups: *mut ::c_int,
++    ) -> ::c_int;
++    pub fn getpwnam_r(
++        name: *const ::c_char,
++        pwd: *mut passwd,
++        buf: *mut ::c_char,
++        buflen: ::size_t,
++        result: *mut *mut passwd,
++    ) -> ::c_int;
+     pub fn getpwuid_r(
+         uid: ::uid_t,
+         pwd: *mut passwd,
+@@ -521,6 +570,8 @@ extern "C" {
+         result: *mut *mut passwd,
+     ) -> ::c_int;
+     pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
++    pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int) -> ::c_int;
++    pub fn msync(addr: *mut ::c_void, len: ::size_t, flags: ::c_int) -> ::c_int;
+     pub fn pthread_condattr_setclock(
+         attr: *mut pthread_condattr_t,
+         clock_id: ::clockid_t,
+@@ -543,5 +594,6 @@ extern "C" {
+         addrlen: *mut ::socklen_t,
+     ) -> ::ssize_t;
+     pub fn setgroups(ngroups: ::c_int, ptr: *const ::gid_t) -> ::c_int;
++    pub fn setpwent();
+     pub fn writev(fd: ::c_int, iov: *const ::iovec, count: ::c_int) -> ::ssize_t;
+ }
+-- 
+2.31.1
+

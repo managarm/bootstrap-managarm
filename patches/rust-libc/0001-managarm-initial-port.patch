@@ -1,7 +1,7 @@
-From f5c66b35e9082f36d8b3647e1de996cf11d0e997 Mon Sep 17 00:00:00 2001
+From 6946817a03e47b6f14449041f29670c344ac4e5f Mon Sep 17 00:00:00 2001
 From: Matt Taylor <mstaveleytaylor@gmail.com>
 Date: Thu, 8 Apr 2021 22:08:55 +0100
-Subject: [PATCH] managarm: initial port
+Subject: [PATCH 1/2] managarm: initial port
 
 ---
  src/unix/mlibc/mod.rs | 547 ++++++++++++++++++++++++++++++++++++++++++
@@ -11,7 +11,7 @@ Subject: [PATCH] managarm: initial port
 
 diff --git a/src/unix/mlibc/mod.rs b/src/unix/mlibc/mod.rs
 new file mode 100644
-index 000000000..51b9ee91d
+index 0000000..51b9ee9
 --- /dev/null
 +++ b/src/unix/mlibc/mod.rs
 @@ -0,0 +1,547 @@
@@ -563,7 +563,7 @@ index 000000000..51b9ee91d
 +    pub fn writev(fd: ::c_int, iov: *const ::iovec, count: ::c_int) -> ::ssize_t;
 +}
 diff --git a/src/unix/mod.rs b/src/unix/mod.rs
-index be7b6e73e..b7c67bb39 100644
+index be7b6e7..b7c67bb 100644
 --- a/src/unix/mod.rs
 +++ b/src/unix/mod.rs
 @@ -1459,6 +1459,9 @@ cfg_if! {
