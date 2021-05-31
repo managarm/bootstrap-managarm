@@ -21,6 +21,8 @@ RUN apt-get update \
 		curl \
 		# Used by binutils in the build process
 		flex \
+		# Required by flex but not a hard dependency in Debian.
+		libfl2 \
 		# Used by many tools in the build process
 		gawk \
 		# Used by host-gettext

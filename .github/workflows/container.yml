@@ -32,6 +32,7 @@ jobs:
 
                 # Perform some post-processing.
                 mkdir buildenv-bundle/rootfs/dev/pts
+                mkdir buildenv-bundle/rootfs/dev/shm
                 ln -s /proc/self/fd/0 buildenv-bundle/rootfs/dev/stdin
                 ln -s /proc/self/fd/1 buildenv-bundle/rootfs/dev/stdout
                 ln -s /proc/self/fd/2 buildenv-bundle/rootfs/dev/stderr
