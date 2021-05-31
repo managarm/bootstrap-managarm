@@ -21,6 +21,7 @@ RUN apt-get update \
 		curl \
 		# Used by binutils in the build process
 		flex \
+		libfl2 \
 		# Used by many tools in the build process
 		gawk \
 		# Used by host-gettext
