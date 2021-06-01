@@ -82,10 +82,8 @@ tools:
             llvm-config = "@BUILD_ROOT@/tools/host-llvm-toolchain/bin/llvm-config"
             EOF
       - args: ['@THIS_SOURCE_DIR@/x.py', 'build', '--stage', '2', '-j', '@PARALLELISM@']
-        cargo_home: false
     install:
       - args: ['@THIS_SOURCE_DIR@/x.py', 'install', '-j', '@PARALLELISM@']
-        cargo_home: false
 
   - name: host-cargo
     source:
