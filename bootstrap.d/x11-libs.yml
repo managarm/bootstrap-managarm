@@ -62,14 +62,13 @@ packages:
       - libxext
       - mesa
       - libxrender
+    revision: 2
     configure:
       - args:
         # For now, we build without glesv2 backend as Weston prefers the image backend.
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
-        - '--enable-fc=no'
-        - '--enable-ft=no'
         - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
         - '--enable-xlib-xcb'
         - '--enable-xml'
