@@ -24,12 +24,6 @@ sources:
     tag: '1.51.0'
     version: '1.51.0'
 
-  - name: rust-libc
-    subdir: 'ports'
-    git: 'https://github.com/rust-lang/libc.git'
-    tag: '0.2.93'
-    version: '0.2.93'
-
   - name: host-bootstrap-cargo
     subdir: 'ports'
     url: 'https://static.rust-lang.org/dist/2021-05-08/cargo-nightly-x86_64-unknown-linux-gnu.tar.xz'
@@ -96,8 +90,8 @@ tools:
     sources_required:
       # This cargo runs on the host, so we don't actually need any patches here. We just
       # add the sources used by cargo so that the dependency resolver doesn't complain.
-      - rust-num-cpus
-      - rust-libc
+      - name: rust-patched-libs
+        recursive: true
       # Cargo requires cargo to build, so we download a binary that we can use temporarily
       - host-bootstrap-cargo
     compile:
