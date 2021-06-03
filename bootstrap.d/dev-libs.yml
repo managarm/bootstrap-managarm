@@ -843,6 +843,7 @@ packages:
       - system-gcc
     pkgs_required:
       - zlib
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/Configure'
