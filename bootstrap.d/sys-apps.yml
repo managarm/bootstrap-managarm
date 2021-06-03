@@ -116,8 +116,7 @@ packages:
       - host-cargo
       - system-gcc # Required to build libgit2
     sources_required:
-      - name: rust-patched-libs
-        recursive: true
+      - rust-patched-libs
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
     build:
@@ -459,8 +458,7 @@ packages:
     tools_required:
       - host-cargo
     sources_required:
-      - name: rust-patched-libs
-        recursive: true
+      - rust-patched-libs
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
     build:

@@ -20,9 +20,12 @@ sources:
   - name: rust-patched-libs
     subdir: 'ports'
     sources_required:
-      - rust-libc
-      - rust-num-cpus
-      - rust-users
+      - name: rust-libc
+        recursive: true
+      - name: rust-num-cpus
+        recursive: true
+      - name: rust-users
+        recursive: true
 
 packages:
   - name: gdbm

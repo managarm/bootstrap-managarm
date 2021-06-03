@@ -90,8 +90,7 @@ tools:
     sources_required:
       # This cargo runs on the host, so we don't actually need any patches here. We just
       # add the sources used by cargo so that the dependency resolver doesn't complain.
-      - name: rust-patched-libs
-        recursive: true
+      - rust-patched-libs
       # Cargo requires cargo to build, so we download a binary that we can use temporarily
       - host-bootstrap-cargo
     compile:
