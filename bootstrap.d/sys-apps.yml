@@ -105,6 +105,35 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: exa
+    source:
+      subdir: ports
+      git: 'https://github.com/ogham/exa.git'
+      commit: 'b18e93d283d388ee42d8f0b73f36e546111324ce'
+      branch: 'master'
+      version: '0.10.1-master'
+    tools_required:
+      - host-cargo
+      - system-gcc # Required to build libgit2
+    sources_required:
+      - rust-patched-libs
+    configure:
+      - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
+    build:
+      - args:
+        - 'cargo'
+        - 'install'
+        - '--locked'
+        - '--target-dir'
+        - '@THIS_BUILD_DIR@'
+        - '--path'
+        - '@THIS_SOURCE_DIR@'
+        - '--root'
+        - '@THIS_COLLECT_DIR@'
+        - '-j@PARALLELISM@'
+        environ:
+          CC: x86_64-managarm-gcc
+
   - name: file
     labels: [aarch64]
     from_source: file
@@ -225,63 +254,6 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
-
-  - name: ripgrep
-    source:
-      subdir: ports
-      git: 'https://github.com/BurntSushi/ripgrep.git'
-      tag: '12.1.1'
-      version: '12.1.1'
-    tools_required:
-      - host-cargo
-    sources_required:
-      - rust-libc
-      - rust-num-cpus
-    configure:
-      - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
-    build:
-      - args:
-        - 'cargo'
-        - 'install'
-        - '--locked'
-        - '--target-dir'
-        - '@THIS_BUILD_DIR@'
-        - '--path'
-        - '@THIS_SOURCE_DIR@'
-        - '--root'
-        - '@THIS_COLLECT_DIR@'
-        - '-j@PARALLELISM@'
-
-  - name: exa
-    source:
-      subdir: ports
-      git: 'https://github.com/ogham/exa.git'
-      commit: 'b18e93d283d388ee42d8f0b73f36e546111324ce'
-      branch: 'master'
-      version: '0.10.1-master'
-    tools_required:
-      - host-cargo
-      - system-gcc # Required to build libgit2
-    sources_required:
-      - rust-libc
-      - rust-num-cpus
-      - rust-users
-    configure:
-      - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
-    build:
-      - args:
-        - 'cargo'
-        - 'install'
-        - '--locked'
-        - '--target-dir'
-        - '@THIS_BUILD_DIR@'
-        - '--path'
-        - '@THIS_SOURCE_DIR@'
-        - '--root'
-        - '@THIS_COLLECT_DIR@'
-        - '-j@PARALLELISM@'
-        environ:
-          CC: x86_64-managarm-gcc
 
   - name: groff
     source:
@@ -476,6 +448,31 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: ripgrep
+    source:
+      subdir: ports
+      git: 'https://github.com/BurntSushi/ripgrep.git'
+      tag: '12.1.1'
+      version: '12.1.1'
+    tools_required:
+      - host-cargo
+    sources_required:
+      - rust-patched-libs
+    configure:
+      - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
+    build:
+      - args:
+        - 'cargo'
+        - 'install'
+        - '--locked'
+        - '--target-dir'
+        - '@THIS_BUILD_DIR@'
+        - '--path'
+        - '@THIS_SOURCE_DIR@'
+        - '--root'
+        - '@THIS_COLLECT_DIR@'
+        - '-j@PARALLELISM@'
 
   - name: util-linux
     labels: [aarch64]
