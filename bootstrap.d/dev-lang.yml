@@ -88,6 +88,8 @@ tools:
     tools_required:
       - tool: host-rust
         recursive: true
+      - tool: system-gcc # GCC is used for linking
+        recursive: true
     sources_required:
       # This cargo runs on the host, so we don't actually need any patches here. We just
       # add the sources used by cargo so that the dependency resolver doesn't complain.
