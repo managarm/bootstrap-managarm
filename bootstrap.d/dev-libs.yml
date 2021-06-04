@@ -19,6 +19,12 @@ sources:
           '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
           '@THIS_SOURCE_DIR@/icu4c/source']
 
+  - name: nss
+    subdir: 'ports'
+    git: 'https://github.com/nss-dev/nss.git'
+    tag: 'NSS_3_66_RTM'
+    version: 'NSS_3_66_RTM'
+
 tools:
   - name: host-glib
     exports_aclocal: true
@@ -631,6 +637,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libtasn
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.com/gnutls/libtasn1.git'
