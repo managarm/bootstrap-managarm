@@ -86,7 +86,8 @@ tools:
       tag: '0.53.0'
       version: '0.53.0'
     tools_required:
-      - host-rust
+      - tool: host-rust
+        recursive: true
     sources_required:
       # This cargo runs on the host, so we don't actually need any patches here. We just
       # add the sources used by cargo so that the dependency resolver doesn't complain.
