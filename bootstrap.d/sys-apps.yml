@@ -111,7 +111,7 @@ packages:
       git: 'https://github.com/ogham/exa.git'
       commit: 'b18e93d283d388ee42d8f0b73f36e546111324ce'
       branch: 'master'
-      version: '0.10.1-master'
+      version: '0.10.1p1'
     tools_required:
       - host-cargo
       - system-gcc
