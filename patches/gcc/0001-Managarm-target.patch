@@ -1,4 +1,4 @@
-From 030f65149b91403828203fc63fd3c4f15eaf7bfa Mon Sep 17 00:00:00 2001
+From 1a7918abf523d88f7aa7532d5fb2ec5c90123ab1 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Tue, 13 Apr 2021 21:20:52 +0200
 Subject: [PATCH] Managarm target
@@ -17,10 +17,10 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
  gcc/config/managarm-kernel.h          |  9 ++++
  gcc/config/managarm-system.h          |  3 ++
  gcc/config/managarm.h                 | 13 ++++++
- libgcc/config.host                    | 15 +++++++
+ libgcc/config.host                    | 16 ++++++++
  libstdc++-v3/crossconfig.m4           | 11 +++++
  libtool.m4                            | 14 +++++++
- 13 files changed, 200 insertions(+), 2 deletions(-)
+ 13 files changed, 201 insertions(+), 2 deletions(-)
  create mode 100644 gcc/config/aarch64/aarch64-managarm.h
  create mode 100644 gcc/config/aarch64/t-aarch64-managarm
  create mode 100644 gcc/config/i386/i386-managarm.h
@@ -30,7 +30,7 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
  create mode 100644 gcc/config/managarm.h
 
 diff --git a/config.sub b/config.sub
-index a318a468685..a9324e4b06a 100755
+index a318a4686..a9324e4b0 100755
 --- a/config.sub
 +++ b/config.sub
 @@ -133,7 +133,8 @@ case $1 in
@@ -63,7 +63,7 @@ index a318a468685..a9324e4b06a 100755
  		os=openedition
  		;;
 diff --git a/fixincludes/mkfixinc.sh b/fixincludes/mkfixinc.sh
-index df90720b716..f79010d078e 100755
+index df90720b7..f79010d07 100755
 --- a/fixincludes/mkfixinc.sh
 +++ b/fixincludes/mkfixinc.sh
 @@ -12,6 +12,8 @@ target=fixinc.sh
@@ -76,7 +76,7 @@ index df90720b716..f79010d078e 100755
      x86_64-*-mingw32* | \
      powerpc-*-eabisim* | \
 diff --git a/gcc/config.gcc b/gcc/config.gcc
-index 6fcdd771d4c..ca1cccc78f7 100644
+index 6fcdd771d..ca1cccc78 100644
 --- a/gcc/config.gcc
 +++ b/gcc/config.gcc
 @@ -866,6 +866,29 @@ case ${target} in
@@ -161,7 +161,7 @@ index 6fcdd771d4c..ca1cccc78f7 100644
  	tm_file="dbxcoff.h ${tm_file} i386/unix.h i386/bsd.h i386/gas.h i386/djgpp.h i386/djgpp-stdint.h"
 diff --git a/gcc/config/aarch64/aarch64-managarm.h b/gcc/config/aarch64/aarch64-managarm.h
 new file mode 100644
-index 00000000000..9143fa67301
+index 000000000..9143fa673
 --- /dev/null
 +++ b/gcc/config/aarch64/aarch64-managarm.h
 @@ -0,0 +1,45 @@
@@ -212,7 +212,7 @@ index 00000000000..9143fa67301
 +  GNU_USER_TARGET_ENDFILE_SPEC
 diff --git a/gcc/config/aarch64/t-aarch64-managarm b/gcc/config/aarch64/t-aarch64-managarm
 new file mode 100644
-index 00000000000..eb6bd808f0a
+index 000000000..eb6bd808f
 --- /dev/null
 +++ b/gcc/config/aarch64/t-aarch64-managarm
 @@ -0,0 +1,8 @@
@@ -226,7 +226,7 @@ index 00000000000..eb6bd808f0a
 +MULTILIB_OSDIRNAMES += mabi.ilp32=../libilp32$(call if_multiarch,:aarch64-managarm_ilp32)
 diff --git a/gcc/config/i386/i386-managarm.h b/gcc/config/i386/i386-managarm.h
 new file mode 100644
-index 00000000000..eeba4ba008e
+index 000000000..eeba4ba00
 --- /dev/null
 +++ b/gcc/config/i386/i386-managarm.h
 @@ -0,0 +1,11 @@
@@ -243,7 +243,7 @@ index 00000000000..eeba4ba008e
 +#define GNU_USER_DYNAMIC_LINKERX32 "/lib/x86_64-managarm-x32/ld.so"
 diff --git a/gcc/config/i386/t-managarm64 b/gcc/config/i386/t-managarm64
 new file mode 100644
-index 00000000000..dfd959f5d1b
+index 000000000..dfd959f5d
 --- /dev/null
 +++ b/gcc/config/i386/t-managarm64
 @@ -0,0 +1,4 @@
@@ -253,7 +253,7 @@ index 00000000000..dfd959f5d1b
 +MULTILIB_OSDIRNAMES = m64=../lib64:x86_64-managarm m32=../lib32:i386-managarm
 diff --git a/gcc/config/managarm-kernel.h b/gcc/config/managarm-kernel.h
 new file mode 100644
-index 00000000000..6b1c85a7670
+index 000000000..6b1c85a76
 --- /dev/null
 +++ b/gcc/config/managarm-kernel.h
 @@ -0,0 +1,9 @@
@@ -268,7 +268,7 @@ index 00000000000..6b1c85a7670
 +#define ENDFILE_SPEC "%{shared:crtendS.o%s;:crtend.o%s} crtn.o%s"
 diff --git a/gcc/config/managarm-system.h b/gcc/config/managarm-system.h
 new file mode 100644
-index 00000000000..ba41561d127
+index 000000000..ba41561d1
 --- /dev/null
 +++ b/gcc/config/managarm-system.h
 @@ -0,0 +1,3 @@
@@ -277,7 +277,7 @@ index 00000000000..ba41561d127
 +#define LIB_SPEC "-lc"
 diff --git a/gcc/config/managarm.h b/gcc/config/managarm.h
 new file mode 100644
-index 00000000000..c3d1d9fc2bc
+index 000000000..c3d1d9fc2
 --- /dev/null
 +++ b/gcc/config/managarm.h
 @@ -0,0 +1,13 @@
@@ -295,7 +295,7 @@ index 00000000000..c3d1d9fc2bc
 +		builtin_assert ("system=posix");   \
 +	} while(0);
 diff --git a/libgcc/config.host b/libgcc/config.host
-index c529cc40f0c..9da036c26a2 100644
+index c529cc40f..2bf8599ae 100644
 --- a/libgcc/config.host
 +++ b/libgcc/config.host
 @@ -255,6 +255,11 @@ case ${host} in
@@ -310,7 +310,7 @@ index c529cc40f0c..9da036c26a2 100644
  *-*-lynxos*)
    tmake_file="$tmake_file t-lynx $cpu_type/t-crtstuff t-crtstuff-pic t-libgcc-pic"
    extra_parts="crtbegin.o crtbeginS.o crtend.o crtendS.o"
-@@ -392,6 +397,12 @@ aarch64*-*-linux*)
+@@ -392,6 +397,13 @@ aarch64*-*-linux*)
  	tmake_file="${tmake_file} ${cpu_type}/t-lse t-slibgcc-libgcc"
  	tmake_file="${tmake_file} ${cpu_type}/t-softfp t-softfp t-crtfm"
  	;;
@@ -318,12 +318,13 @@ index c529cc40f0c..9da036c26a2 100644
 +	extra_parts="$extra_parts crtfastmath.o"
 +	md_unwind_header=aarch64/aarch64-unwind.h
 +	tmake_file="${tmake_file} ${cpu_type}/t-aarch64"
++	tmake_file="${tmake_file} ${cpu_type}/t-lse t-slibgcc-libgcc"
 +	tmake_file="${tmake_file} ${cpu_type}/t-softfp t-softfp t-crtfm"
 +	;;
  aarch64*-*-vxworks7*)
  	extra_parts="$extra_parts crtfastmath.o"
  	md_unwind_header=aarch64/aarch64-unwind.h
-@@ -743,6 +754,10 @@ i[34567]86-*-linux*)
+@@ -743,6 +755,10 @@ i[34567]86-*-linux*)
  	tm_file="${tm_file} i386/elf-lib.h"
  	md_unwind_header=i386/linux-unwind.h
  	;;
@@ -335,7 +336,7 @@ index c529cc40f0c..9da036c26a2 100644
  	extra_parts="$extra_parts crtprec32.o crtprec64.o crtprec80.o crtfastmath.o"
  	tmake_file="${tmake_file} i386/t-crtpc t-crtfm i386/t-crtstuff t-dfprules"
 diff --git a/libstdc++-v3/crossconfig.m4 b/libstdc++-v3/crossconfig.m4
-index fe182883536..552740077e1 100644
+index fe1828835..552740077 100644
 --- a/libstdc++-v3/crossconfig.m4
 +++ b/libstdc++-v3/crossconfig.m4
 @@ -192,6 +192,17 @@ case "${host}" in
@@ -357,7 +358,7 @@ index fe182883536..552740077e1 100644
      GLIBCXX_CHECK_LINKER_FEATURES
      GLIBCXX_CHECK_MATH_SUPPORT
 diff --git a/libtool.m4 b/libtool.m4
-index 00206549f54..23497087e35 100644
+index 00206549f..23497087e 100644
 --- a/libtool.m4
 +++ b/libtool.m4
 @@ -2501,6 +2501,16 @@ linux* | k*bsd*-gnu | kopensolaris*-gnu | uclinuxfdpiceabi)
