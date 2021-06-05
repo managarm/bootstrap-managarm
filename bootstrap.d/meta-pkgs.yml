@@ -6,6 +6,7 @@ packages:
     pkgs_required:
       - core-files
       - tzdata
+      - ca-certificates
       - managarm-kernel
       - managarm-system
       - kmscon
