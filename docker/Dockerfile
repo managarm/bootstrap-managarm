@@ -61,6 +61,8 @@ RUN apt-get update \
 		netpbm \
 		# Used by Managarm
 		ninja-build \
+		# To build the certificates, we need trust, provided by p11-kit
+		p11-kit \
 		# Various build systems invoke pkg-config
 		pkg-config \
 		# Used by itstool

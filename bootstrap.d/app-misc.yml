@@ -29,7 +29,10 @@ packages:
       # BLFS installs this directory for any local certificates a system administrator may have.
       - args: ['install', '-dm755', '@THIS_COLLECT_DIR@/etc/ssl/local']
       # We don't have systemd, but it's installed if the host has it, remove it.
-      - args: ['rm', '-r', '@THIS_COLLECT_DIR@/usr/lib/systemd/']
+      - args: |
+              if [ -d @THIS_COLLECT_DIR@/usr/lib/systemd ]; then
+                  rm -r @THIS_COLLECT_DIR@/usr/lib/systemd
+              fi
       # Fix a small permission issue during installation
       - args: ['chmod', '0755', '@THIS_COLLECT_DIR@/etc/ssl/certs/.']
 
