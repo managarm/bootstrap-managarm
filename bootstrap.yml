@@ -174,8 +174,8 @@ sources:
   - name: wayland
     subdir: 'ports'
     git: 'https://github.com/wayland-project/wayland.git'
-    tag: '1.18.93'
-    version: '1.18.93'
+    tag: '1.19.0'
+    version: '1.19.0'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.15
