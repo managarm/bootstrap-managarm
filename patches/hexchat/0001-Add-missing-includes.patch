@@ -1,0 +1,38 @@
+From bd7f2f64a6c9b484fcd563a69272c75f44fb14a6 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Wed, 12 Oct 2022 03:19:59 +0200
+Subject: [PATCH] Add missing includes
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ src/common/proto-irc.c | 1 +
+ src/fe-gtk/fkeys.c     | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/src/common/proto-irc.c b/src/common/proto-irc.c
+index a8d997b..1a97f9d 100644
+--- a/src/common/proto-irc.c
++++ b/src/common/proto-irc.c
+@@ -19,6 +19,7 @@
+ /* IRC RFC1459(+commonly used extensions) protocol implementation */
+ 
+ #include <string.h>
++#include <strings.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <ctype.h>
+diff --git a/src/fe-gtk/fkeys.c b/src/fe-gtk/fkeys.c
+index dc4b41b..8b7c9a2 100644
+--- a/src/fe-gtk/fkeys.c
++++ b/src/fe-gtk/fkeys.c
+@@ -21,6 +21,7 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <string.h>
++#include <strings.h>
+ #include <fcntl.h>
+ #include <ctype.h>
+ 
+-- 
+2.37.2
+
