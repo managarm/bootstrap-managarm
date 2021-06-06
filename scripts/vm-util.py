@@ -106,7 +106,7 @@ def do_qemu(args):
 		qemu_args += ['-netdev', 'tap,id=net0']
 	else:
 		qemu_args += ['-netdev', 'user,id=net0']
-	qemu_args += ['-device', 'virtio-net,netdev=net0']
+	qemu_args += ['-device', 'virtio-net,disable-modern=on,netdev=net0']
 
 	# Add graphics output.
 	if args.gfx == 'default':
