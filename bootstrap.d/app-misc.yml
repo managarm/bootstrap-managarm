@@ -15,7 +15,7 @@ packages:
       - p11-kit
     sources_required:
       - nss
-    revision: 2
+    revision: 3
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args: ['cp', '@THIS_SOURCE_DIR@/../nss/lib/ckfw/builtins/certdata.txt', '@THIS_SOURCE_DIR@']
@@ -23,21 +23,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
-      # We need to run this script, mark it as runnable.
-      - args: ['chmod', '0755', '@THIS_BUILD_DIR@/make-ca']
       # Run it, -f forces it, -C points to our certdata.txt -D sets the destination.
       - args: ['@THIS_BUILD_DIR@/make-ca', '-f', '-C', '@THIS_SOURCE_DIR@/certdata.txt', '-D', '@THIS_COLLECT_DIR@']
       # BLFS installs this directory for any local certificates a system administrator may have.
       - args: ['install', '-dm755', '@THIS_COLLECT_DIR@/etc/ssl/local']
-      # We don't have systemd, but it's installed if the host has it, remove it.
-      - args: |
-              if [ -d @THIS_COLLECT_DIR@/lib/systemd ]; then
-                  rm -rv @THIS_COLLECT_DIR@/lib/systemd
-              fi
-      - args: |
-              if [ -d @THIS_COLLECT_DIR@/usr/lib/systemd ]; then
-                  rm -rv @THIS_COLLECT_DIR@/usr/lib/systemd
-              fi
       # Fix a small permission issue during installation
       - args: ['chmod', '0755', '@THIS_COLLECT_DIR@/etc/ssl/certs/.']
 

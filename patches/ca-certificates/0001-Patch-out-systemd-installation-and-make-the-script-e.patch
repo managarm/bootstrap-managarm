@@ -1,0 +1,32 @@
+From 36b2f21d2d2d1f599f76d7ed2866a0457ec74edb Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Mon, 7 Jun 2021 02:35:48 +0200
+Subject: [PATCH] Patch out systemd installation and make the script executable
+ by default
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ Makefile | 2 +-
+ make-ca  | 0
+ 2 files changed, 1 insertion(+), 1 deletion(-)
+ mode change 100644 => 100755 make-ca
+
+diff --git a/Makefile b/Makefile
+index 9b48ff2..e573e2a 100644
+--- a/Makefile
++++ b/Makefile
+@@ -21,7 +21,7 @@ clean_man:
+ 	rm -f make-ca.8
+ 	chmod 0644 help2man
+ 
+-install: all install_bin install_man install_systemd install_conf
++install: all install_bin install_man install_conf
+ 
+ install_bin:
+ 	install -vdm755 $(DESTDIR)$(SBINDIR)
+diff --git a/make-ca b/make-ca
+old mode 100644
+new mode 100755
+-- 
+2.32.0.rc2
+
