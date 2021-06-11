@@ -1457,17 +1457,20 @@ tasks:
     sources_required:
       - image_create
       - limine-binary
-    args:
-      - '@SOURCE_ROOT@/ports/image_create/image_create.sh'
-      - '-oimage'
-      - '-s4G'
-      - '-pgpt' # Partition table type.
-      - '-text2' # File system.
-      - '-llimine'
-      - '-be' # BIOS and UEFI bootable.
-      - '-g' # Use libguestfs for root-less image creation.
+    args: |
+      if [ "@OPTION:mount-using@" == guestfs ]; then
+          elevation=-g # Use libguestfs for root-less image creation.
+      fi
+      @SOURCE_ROOT@/ports/image_create/image_create.sh \
+      -oimage \
+      -s4G \
+      -pgpt \
+      -text2 \
+      -llimine \
+      -be \
+      $elevation
     environ:
-        'LIMINE_PATH': '@SOURCE_ROOT@/ports/limine-binary'
+      'LIMINE_PATH': '@SOURCE_ROOT@/ports/limine-binary'
     workdir: '@BUILD_ROOT@'
     containerless: true
 
