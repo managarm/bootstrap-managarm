@@ -995,6 +995,13 @@ packages:
         quiet: true
 
   - name: managarm-kernel
+    metadata:
+      summary: The Managarm kernel
+      description: This package provides the Managarm kernel.
+      spdx: 'MIT'
+      website: 'https://managarm.org'
+      maintainer: "Alexander van der Grinten <avdgrinten@managarm.org>"
+      categories: ['sys-kernel']
     labels: [aarch64]
     architecture: '@OPTION:arch@'
     default: true
@@ -1030,6 +1037,13 @@ packages:
         quiet: true
 
   - name: managarm-system
+    metadata:
+      summary: The Managarm userspace
+      description: This package provides the Managarm userspace components, various drivers and the POSIX emulation layer.
+      spdx: 'MIT'
+      website: 'https://managarm.org'
+      maintainer: "Alexander van der Grinten <avdgrinten@managarm.org>"
+      categories: ['sys-kernel']
     labels: [aarch64]
     architecture: '@OPTION:arch@'
     default: true
@@ -1075,6 +1089,13 @@ packages:
         quiet: true
 
   - name: mlibc-headers
+    metadata:
+      summary: Managarm libc headers
+      description: This package provides the headers for the C standard library that Managarm uses.
+      spdx: 'MIT'
+      website: 'https://managarm.org'
+      maintainer: "Alexander van der Grinten <avdgrinten@managarm.org>"
+      categories: ['sys-libs']
     labels: [aarch64]
     architecture: '@OPTION:arch@'
     from_source: mlibc
@@ -1099,6 +1120,13 @@ packages:
         quiet: true
 
   - name: mlibc
+    metadata:
+      summary: Managarm libc C library
+      description: This package provides the C standard library that Managarm uses, this includes the dynamic loader and various utility libraries.
+      spdx: 'MIT'
+      website: 'https://managarm.org'
+      maintainer: "Alexander van der Grinten <avdgrinten@managarm.org>"
+      categories: ['sys-libs']
     labels: [aarch64]
     architecture: '@OPTION:arch@'
     from_source: mlibc
