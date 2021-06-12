@@ -1,5 +1,12 @@
 packages:
   - name: ca-certificates
+    metadata:
+      summary: Common CA certificates PEM files
+      description: This package provides the standard set of Certificate Authorities as chosen by Mozilla in their NSS project  It also includes a script to (re)generate the certificate files.
+      spdx: 'MPL-2.0'
+      website: 'https://packages.debian.org/sid/ca-certificates'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['app-misc']
     labels: [aarch64]
     architecture: noarch
     source:
