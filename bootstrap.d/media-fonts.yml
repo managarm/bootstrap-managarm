@@ -31,6 +31,7 @@ tools:
 
 packages:
   - name: dejavu
+    revision: 2
     labels: [aarch64]
     source:
       subdir: ports
@@ -47,6 +48,10 @@ packages:
     build:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/share/fonts/truetype/']
       - args: ['cp', '-r', '@THIS_BUILD_DIR@/dejavu/dejavu', '@THIS_COLLECT_DIR@/usr/share/fonts/truetype/']
+    scripts:
+        post_install:
+          - args: 'echo "Running fc-cache; this may take a few seconds..."'
+          - args: ['fc-cache']
 
   - name: xorg-font-util
     labels: [aarch64]
