@@ -54,6 +54,13 @@ tools:
 
 packages:
   - name: atk
+    metadata:
+      summary: GTK+ & GNOME Accessibility Toolkit
+      description: This package provides a set of accessibility interfaces used extensively througout GTK and GNOME.
+      spdx: 'LGPL-2.0-or-later'
+      website: 'https://wiki.gnome.org/Accessibility'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: 'ports'
       git: 'https://gitlab.gnome.org/GNOME/atk.git'
