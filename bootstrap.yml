@@ -661,6 +661,8 @@ packages:
   - name: fafnir
     labels: [aarch64]
     source:
+      rolling_version: true
+      version: '0.0pl@ROLLING_ID@'
       subdir: 'ports'
       git: 'https://github.com/managarm/fafnir.git'
       branch: 'master'
@@ -685,6 +687,8 @@ packages:
   - name: frigg
     labels: [aarch64]
     source:
+      rolling_version: true
+      version: '0.0pl@ROLLING_ID@'
       subdir: 'ports'
       git: 'https://github.com/managarm/frigg.git'
       branch: 'master'
@@ -860,6 +864,8 @@ packages:
   - name: libsmarter
     labels: [aarch64]
     source:
+      rolling_version: true
+      version: '0.0pl@ROLLING_ID@'
       subdir: 'ports'
       git: 'https://github.com/avdgrinten/libsmarter.git'
       branch: 'master'
@@ -917,6 +923,8 @@ packages:
 
   - name: kmscube
     source:
+      rolling_version: true
+      version: '0.0pl@ROLLING_ID@'
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/mesa/kmscube.git'
       branch: 'master'
