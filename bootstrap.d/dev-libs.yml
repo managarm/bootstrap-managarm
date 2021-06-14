@@ -91,6 +91,13 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: d0-blind-id
+    metadata:
+      summary: Blind-ID library for user identification using RSA blind signatures
+      description: This package provides a library for user identification using RSA blind signatures.
+      spdx: 'BSD-3-Clause'
+      website: 'https://git.xonotic.org/?p=xonotic/d0_blind_id.git'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: 'ports'
       git: 'https://github.com/divVerent/d0_blind_id.git'
