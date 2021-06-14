@@ -63,6 +63,13 @@ packages:
           - args: ['fc-cache']
 
   - name: xorg-font-util
+    metadata:
+      summary: X.Org font utilities
+      description: This package provides various X.Org font utilities.
+      spdx: 'MIT'
+      website: 'https://gitlab.freedesktop.org/xorg/font/util'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-fonts']
     labels: [aarch64]
     architecture: '@OPTION:arch@'
     from_source: xorg-font-util
