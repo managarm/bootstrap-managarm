@@ -32,7 +32,13 @@ tools:
 
 packages:
   - name: dejavu
-    revision: 2
+    metadata:
+      summary: Dejavu fonts
+      description: This package provides the Dejavu fonts, commonly found on Linux systems.
+      spdx: 'no-spdx: BitstreamVera license'
+      website: 'https://dejavu-fonts.github.io/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-fonts']
     labels: [aarch64]
     architecture: noarch
     source:
@@ -44,6 +50,7 @@ packages:
     pkgs_required:
       - freetype
       - fontconfig
+    revision: 2
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/ttf', '@THIS_SOURCE_DIR@/dejavu']
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/', '@THIS_BUILD_DIR@']
