@@ -131,6 +131,13 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: fribidi
+    metadata:
+      summary: A free implementation of the unicode bidirectional algorithm
+      description: This package provides a library with an implementation of the Unicode Bidirectional Algorithm (BIDI). This is used for supporting Arabic and Hebrew alphabets in other packages.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://fribidi.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: 'ports'
       git: 'https://github.com/fribidi/fribidi.git'
