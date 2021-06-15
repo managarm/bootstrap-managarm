@@ -156,6 +156,12 @@ def do_qemu(args):
 			'-device', 'dmalog,chardev=gdbsocket,tag=kernel-gdbserver'
 		]
 
+	# Use serial for POSIX gdb.
+	qemu_args += [
+		'-chardev', 'socket,id=posix-gdbsocket,host=0.0.0.0,port=5679,server=on,wait=off',
+		'-serial', 'chardev:posix-gdbsocket'
+	]
+
 	# TODO: Add passthrough devices via:
 	#       -device usb-host,vendorid=0x17ef,productid=0x602d
 
@@ -203,12 +209,17 @@ def do_gdb(args):
 			'--symbols=system-root/usr/managarm/bin/thor',
 			'-ex', 'target remote tcp:localhost:1234'
 		]
-	else:
-		assert args.kernel
+	elif args.kernel:
 		gdb_args += [
-			'-ex', 'set architecture i386:x86-64'
 			'-ex', 'target remote tcp:localhost:5678'
 		]
+	else:
+		assert args.posix
+		gdb_args += [
+			'-ex', 'set sysroot system-root',
+			'-ex', 'target remote tcp:localhost:5679'
+		]
+
 	try:
 		subprocess.check_call(['gdb'] + gdb_args)
 	except subprocess.CalledProcessError:
@@ -220,6 +231,7 @@ gdb_parser.set_defaults(_fn=do_gdb)
 gdb_group = gdb_parser.add_mutually_exclusive_group(required=True)
 gdb_group.add_argument('--qemu', action='store_true')
 gdb_group.add_argument('--kernel', action='store_true')
+gdb_group.add_argument('--posix', action='store_true')
 
 # ---------------------------------------------------------------------------------------
 # analyze-profile subcommand.
