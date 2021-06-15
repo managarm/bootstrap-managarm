@@ -152,6 +152,11 @@ def do_qemu(args):
 		]
 
 		qemu_args += [
+			'-chardev', 'file,id=kernel-alloc-trace,path=kernel-alloc-trace.bin',
+			'-device', 'dmalog,chardev=kernel-alloc-trace,tag=kernel-alloc-trace'
+		]
+
+		qemu_args += [
 			'-chardev', 'socket,id=gdbsocket,host=0.0.0.0,port=5678,server=on,wait=no',
 			'-device', 'dmalog,chardev=gdbsocket,tag=kernel-gdbserver'
 		]
@@ -249,6 +254,27 @@ def do_profile(args):
 
 profile_parser = main_subparsers.add_parser('analyze-profile')
 profile_parser.set_defaults(_fn=do_profile)
+
+# ---------------------------------------------------------------------------------------
+# analyze-alloc-trace subcommand.
+# ---------------------------------------------------------------------------------------
+
+def do_alloc_trace(args):
+	try:
+		subprocess.check_call([
+			'xbstrap', 'runtool', '--',
+			'ninja', '-C', 'pkg-builds/frigg/', 'slab_trace_analyzer'
+		])
+		subprocess.check_call([
+			'pkg-builds/frigg/slab_trace_analyzer',
+			'kernel-alloc-trace.bin',
+			'system-root/usr/managarm/bin/thor'
+		])
+	except subprocess.CalledProcessError:
+		sys.exit(1)
+
+alloc_trace_parser = main_subparsers.add_parser('alloc-trace')
+alloc_trace_parser.set_defaults(_fn=do_alloc_trace)
 
 # ---------------------------------------------------------------------------------------
 # "main()" code.
