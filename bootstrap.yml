@@ -1052,7 +1052,6 @@ packages:
     tools_required:
       - host-managarm-tools
       - host-protoc
-    implict_package: true
     configure:
       - args:
         - 'meson'
@@ -1077,7 +1076,6 @@ packages:
       - host-managarm-tools
       - bootstrap-system-gcc
       - host-protoc
-    implict_package: true
     pkgs_required:
       - mlibc-headers
     configure:
