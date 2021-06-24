@@ -17,6 +17,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - freeglut
       - freetype
       - glew
@@ -65,6 +66,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - libx11
       - libxmu
       - libxaw
@@ -107,6 +109,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - xorg-util-macros
       - xorg-proto
       - xcb-proto
@@ -149,6 +152,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - mesa
       - xorg-util-macros
       - libx11
@@ -185,6 +189,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - xorg-util-macros
       - libx11
       - libxkbfile
@@ -220,6 +225,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - xorg-util-macros
       - libx11
       - libxmu
@@ -256,6 +262,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - xorg-util-macros
       - libxcb
     configure:
@@ -290,6 +297,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - xorg-util-macros
       - libx11
     configure:
@@ -324,6 +332,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - xorg-util-macros
       - libxmu
       - libx11
@@ -362,6 +371,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - xorg-util-macros
       - libx11
       - xcb-util

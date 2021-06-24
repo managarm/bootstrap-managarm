@@ -48,6 +48,7 @@ packages:
       - system-gcc
       - host-python
     pkgs_required:
+      - mlibc
       - glib
       - libxml
       - itstool

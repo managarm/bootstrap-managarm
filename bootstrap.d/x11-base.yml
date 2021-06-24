@@ -91,6 +91,7 @@ packages:
       - virtual: pkgconfig-for-host
         program_name: host-pkg-config
     pkgs_required:
+      - mlibc
       - xorg-util-macros
       - xcb-proto
       - xorg-proto
