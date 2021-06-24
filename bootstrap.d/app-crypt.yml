@@ -18,6 +18,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - libffi
       - libtasn
     configure:
