@@ -120,6 +120,8 @@ packages:
       version: '2.14.02'
     tools_required:
       - system-gcc
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -143,6 +145,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - zlib
       - bzip2
     configure:
@@ -184,6 +187,7 @@ packages:
       - host-python
       - system-gcc
     pkgs_required:
+      - mlibc
       - zlib
       - libexpat
       - libffi
@@ -240,6 +244,8 @@ packages:
         - args: ['make', '-C', '@THIS_SOURCE_DIR@', 'distclean']
     tools_required:
       - system-gcc
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
