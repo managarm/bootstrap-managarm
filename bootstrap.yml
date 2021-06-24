@@ -587,6 +587,8 @@ packages:
     from_source: binutils
     tools_required:
       - tool: system-gcc
+    pkgs_required:
+      - mlibc
     revision: 2
     configure:
       - args:
@@ -716,6 +718,7 @@ packages:
       - tool: system-gcc
       - host-automake-v1.15
     pkgs_required:
+      - mlibc
       - gmp
       - mpfr
       - mpc
@@ -762,6 +765,8 @@ packages:
         - args: ['./autogen.sh']
     tools_required:
       - system-gcc
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -791,6 +796,8 @@ packages:
       branch: 'master'
     tools_required:
       - system-gcc
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - 'meson'
@@ -845,6 +852,8 @@ packages:
     tools_required:
       - host-cmake
       - system-gcc
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - 'cmake'
@@ -894,6 +903,7 @@ packages:
       - host-cmake
       - system-gcc
     pkgs_required:
+      - mlibc
       - zlib
     configure:
       - args:
@@ -941,6 +951,7 @@ packages:
       - host-pkg-config
       - system-gcc
     pkgs_required:
+      - mlibc
       - mesa
     configure:
       - args:
@@ -1002,6 +1013,7 @@ packages:
       - host-protoc
       - system-gcc
     pkgs_required:
+      - mlibc
       - eudev
       - fafnir
       # This should not be necessary (due to the source dep),
@@ -1094,6 +1106,8 @@ packages:
     tools_required:
       - system-gcc
       - host-protoc
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1119,6 +1133,7 @@ packages:
       - system-gcc
       - wayland-scanner
     pkgs_required:
+      - mlibc
       - libexpat
       - libffi
     configure:
@@ -1149,6 +1164,8 @@ packages:
       version: '1.2.11'
     tools_required:
       - system-gcc
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1185,6 +1202,7 @@ packages:
       - host-pkg-config
       - system-gcc
     pkgs_required:
+      - mlibc
       - libxkbcommon
     configure:
       - args:
@@ -1222,6 +1240,7 @@ packages:
       - host-autoconf-v2.69
       - host-automake-v1.15
     pkgs_required:
+      - mlibc
       - libxkbcommon
       - libdrm
       - libtsm
@@ -1258,6 +1277,7 @@ packages:
       - host-pkg-config
       - wayland-scanner
     pkgs_required:
+      - mlibc
       - libdrm
       - eudev
       - mesa
@@ -1327,6 +1347,7 @@ packages:
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
     pkgs_required:
+      - mlibc
       - sdl2
     configure:
       - args:
@@ -1353,6 +1374,8 @@ packages:
       version: '5.3.5'
     tools_required:
       - system-gcc
+    pkgs_required:
+      - mlibc
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
@@ -1391,6 +1414,7 @@ packages:
       - host-autoconf-v2.69
       - host-automake-v1.15
     pkgs_required:
+      - mlibc
       - sdl2
     configure:
       - args:
@@ -1418,6 +1442,8 @@ packages:
       version: '2.1.2'
     tools_required:
       - system-gcc
+    pkgs_required:
+      - mlibc
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args: 'echo @OPTION:arch-triple@-gcc -O2 -Wall > @THIS_BUILD_DIR@/src/conf-cc'
