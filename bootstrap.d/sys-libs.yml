@@ -45,6 +45,8 @@ packages:
       - host-autoconf-v2.69
       - host-automake-v1.15
       - system-gcc
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -78,6 +80,8 @@ packages:
       - host-autoconf-v2.69
       - host-automake-v1.15
       - system-gcc
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -98,9 +102,11 @@ packages:
       git: 'https://github.com/ThomasDickey/ncurses-snapshots.git'
       tag: 'v6_2'
       version: '6.2'
-    revision: 2
     tools_required:
       - system-gcc
+    pkgs_required:
+      - mlibc
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -142,6 +148,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - ncurses
     configure:
       - args:

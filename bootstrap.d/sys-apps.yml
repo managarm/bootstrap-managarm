@@ -48,6 +48,8 @@ packages:
       # Bison 3.7 broke gnulib, work around it by building an older bison
       - host-bison
       - system-gcc
+    pkgs_required:
+      - mlibc
     revision: 2
     configure:
       # Huge hack: coreutils does not compile the build-machine binary make-prime-list
@@ -91,6 +93,8 @@ packages:
       - system-gcc
       - host-autoconf-v2.69
       - host-automake-v1.15
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -117,6 +121,8 @@ packages:
       - system-gcc
     sources_required:
       - rust-patched-libs
+    pkgs_required:
+      - mlibc
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
     build:
@@ -141,6 +147,7 @@ packages:
       - system-gcc
       - host-file
     pkgs_required:
+      - mlibc
       - zlib
     configure:
       - args:
@@ -175,6 +182,8 @@ packages:
     tools_required:
       - system-gcc
       - host-python
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -210,6 +219,8 @@ packages:
       - system-gcc
       - host-autoconf-v2.69
       - host-automake-v1.15
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -241,6 +252,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - pcre
     configure:
       - args:
@@ -273,6 +285,8 @@ packages:
             '@THIS_SOURCE_DIR@/build-aux/']
     tools_required:
       - system-gcc
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -306,6 +320,7 @@ packages:
       - host-automake-v1.15
       - host-libtool
     pkgs_required:
+      - mlibc
       - ncurses
     revision: 2
     configure:
@@ -337,6 +352,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - libpipeline
       - gdbm
       - groff
@@ -389,6 +405,8 @@ packages:
         - args: ['wget', '-O', '@THIS_SOURCE_DIR@/pci.ids', 'https://raw.githubusercontent.com/pciutils/pciids/master/pci.ids']
     tools_required:
       - system-gcc
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - 'meson'
@@ -437,6 +455,8 @@ packages:
             '@THIS_SOURCE_DIR@/build-aux/']
     tools_required:
       - system-gcc
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -459,6 +479,8 @@ packages:
       - host-cargo
     sources_required:
       - rust-patched-libs
+    pkgs_required:
+      - mlibc
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
     build:
@@ -491,6 +513,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - eudev
       - readline
       - ncurses
@@ -584,6 +607,8 @@ packages:
       version: '2.21'
     tools_required:
       - system-gcc
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -607,6 +632,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - libarchive
       - openssl
       - zlib
