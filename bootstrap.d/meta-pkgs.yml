@@ -4,6 +4,7 @@ packages:
     labels: [aarch64]
     from_source: managarm
     pkgs_required:
+      - mlibc
       - core-files
       - tzdata
       - ca-certificates

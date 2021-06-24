@@ -18,6 +18,7 @@ packages:
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
     pkgs_required:
+      - mlibc
       - openssl
     configure:
       - args:
@@ -76,6 +77,7 @@ packages:
         triple: "@OPTION:arch-triple@"
     revision: 2
     pkgs_required:
+      - mlibc
       - lz4
       - openssl
       - libiconv
@@ -129,6 +131,7 @@ packages:
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
     pkgs_required:
+      - mlibc
       - ncurses
       - readline
       - openssl
@@ -174,6 +177,7 @@ packages:
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
     pkgs_required:
+      - mlibc
       - pcre
       - openssl
     revision: 2
