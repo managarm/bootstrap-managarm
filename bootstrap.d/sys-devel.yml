@@ -76,6 +76,8 @@ packages:
       version: '3.2.4'
     tools_required:
       - system-gcc
+    pkgs_required:
+      - mlibc
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args: ['./configure.sh', '-G', '-O3']
@@ -97,6 +99,8 @@ packages:
       - system-gcc
       - host-autoconf-v2.69
       - host-automake-v1.15
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -125,6 +129,8 @@ packages:
         - args: ['./autogen.sh']
     tools_required:
       - system-gcc
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -149,6 +155,8 @@ packages:
       - system-gcc
       - host-autoconf-v2.69
       - host-automake-v1.15
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -191,6 +199,8 @@ packages:
             '@THIS_SOURCE_DIR@/build-aux/']
     tools_required:
       - system-gcc
+    pkgs_required:
+      - mlibc
     revision: 2
     configure:
       - args:
@@ -228,6 +238,8 @@ packages:
       - system-gcc
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -264,6 +276,7 @@ packages:
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
     pkgs_required:
+      - mlibc
       - diffutils
     revision: 2
     configure:

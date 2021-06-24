@@ -9,6 +9,8 @@ packages:
       version: '1.0.8'
     tools_required:
       - system-gcc
+    pkgs_required:
+      - mlibc
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       # Remove the test directory from the Makefile, as it tries to run (and fail on) the tests
@@ -41,6 +43,8 @@ packages:
             '@THIS_SOURCE_DIR@/build-aux/']
     tools_required:
       - system-gcc
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -64,6 +68,7 @@ packages:
       - host-cmake
       - system-gcc
     pkgs_required:
+      - mlibc
       - openssl
       - zlib
       - xz-utils
@@ -95,6 +100,8 @@ packages:
     tools_required:
       - host-cmake
       - system-gcc
+    pkgs_required:
+      - mlibc
     revision: 2
     configure:
       - args:
@@ -126,6 +133,8 @@ packages:
             '@THIS_SOURCE_DIR@/build-aux/']
     tools_required:
       - system-gcc
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -160,6 +169,7 @@ packages:
       - host-libtool
       - system-gcc
     pkgs_required:
+      - mlibc
       - zlib
     configure:
       - args:
@@ -184,6 +194,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - zlib
       - xz-utils
     configure:

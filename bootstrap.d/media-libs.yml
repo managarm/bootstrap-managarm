@@ -18,6 +18,7 @@ packages:
         # Make sure we regenerate this file
         - args: ['rm', '-f', 'src/fcobjshash.h']
     pkgs_required:
+      - mlibc
       - freetype
       - libxml
       - libiconv
@@ -56,6 +57,7 @@ packages:
       - host-cmake
       - system-gcc
     pkgs_required:
+      - mlibc
       - libxi
       - mesa
       - glu
@@ -98,6 +100,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - bzip2
       - libpng
       - zlib
@@ -125,6 +128,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - glu
       - mesa
     configure:
@@ -162,7 +166,8 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
-      - gcc
+      - mlibc
+      - gcc # Actually requires libstdc++.so in the system root, otherwise it links against the host libstdc++.so.6
       - mesa
     configure:
       - args:
@@ -198,6 +203,7 @@ packages:
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
     pkgs_required:
+      - mlibc
       - graphite2
       - glib
       - zlib
@@ -244,6 +250,7 @@ packages:
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
     pkgs_required:
+      - mlibc
       - mesa
       - xorg-proto
       - libx11
@@ -273,6 +280,8 @@ packages:
       - host-cmake
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - 'cmake'
@@ -309,6 +318,8 @@ packages:
         - args: ['autoreconf', '-fvi']
     tools_required:
       - system-gcc
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -337,6 +348,8 @@ packages:
             NOCONFIGURE: '1'
     tools_required:
       - system-gcc
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -366,6 +379,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - zlib
     configure:
       - args:
@@ -396,6 +410,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - libogg
       - libvorbis
     configure:
@@ -436,6 +451,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - libogg
     configure:
       - args:
@@ -468,6 +484,7 @@ packages:
       - virtual: pkgconfig-for-host
         program_name: host-pkg-config
     pkgs_required:
+      - mlibc
       - libdrm
       - llvm
       - wayland

@@ -16,6 +16,7 @@ packages:
       - system-gcc
       - host-libtool
     pkgs_required:
+      - mlibc
       - readline
       - zlib
     configure:

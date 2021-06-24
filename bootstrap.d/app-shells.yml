@@ -21,6 +21,7 @@ packages:
       - host-automake-v1.15
       - system-gcc
     pkgs_required:
+      - mlibc
       - ncurses
       - readline
       - libiconv

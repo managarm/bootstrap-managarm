@@ -53,6 +53,7 @@ packages:
       - host-libtool
       - host-pkg-config
     pkgs_required:
+      - mlibc
       - freetype
       - fontconfig
       - libpng
@@ -99,6 +100,7 @@ packages:
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
     pkgs_required:
+      - mlibc
       - glib
       - libjpeg-turbo
       - libpng
@@ -141,6 +143,7 @@ packages:
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
     pkgs_required:
+      - mlibc
       - atk
       - cairo
       - glib
@@ -187,6 +190,8 @@ packages:
           triple: "@OPTION:arch-triple@"
     tools_required:
       - system-gcc
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - 'meson'
@@ -237,6 +242,7 @@ packages:
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
     pkgs_required:
+      - mlibc
       - xorg-util-macros
       - xorg-proto
       - libx11
@@ -278,6 +284,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - xorg-util-macros
       - xorg-proto
       - libx11
@@ -317,6 +324,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - xorg-util-macros
       - xorg-proto
       - libx11
@@ -357,6 +365,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - xorg-util-macros
       - xorg-proto
       - libxcb
@@ -398,6 +407,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - xorg-util-macros
       - xorg-proto
     configure:
@@ -433,6 +443,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - xorg-util-macros
       - xorg-proto
       - libx11
@@ -475,6 +486,7 @@ packages:
       - system-gcc
       - host-python
     pkgs_required:
+      - mlibc
       - xorg-util-macros
       - xorg-proto
       - libxau
@@ -518,6 +530,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - xorg-util-macros
       - xorg-proto
       - libx11
@@ -558,6 +571,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - xorg-util-macros
       - xorg-proto
       - libx11
@@ -597,6 +611,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - xorg-util-macros
       - xorg-proto
       - libxau
@@ -635,6 +650,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - xorg-util-macros
       - xorg-proto
       - libx11
@@ -675,6 +691,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - xorg-util-macros
       - xorg-proto
       - libx11
@@ -718,6 +735,7 @@ packages:
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
     pkgs_required:
+      - mlibc
       - xorg-util-macros
       - xorg-proto
       - libx11
@@ -764,6 +782,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - xorg-util-macros
       - xorg-proto
       - libx11
@@ -805,6 +824,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - xorg-util-macros
       - xorg-proto
       - libx11
@@ -842,6 +862,7 @@ packages:
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
     pkgs_required:
+      - mlibc
       - wayland
       - wayland-protocols
       - libxcb
@@ -887,6 +908,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - xorg-util-macros
       - xorg-proto
       - libx11
@@ -925,6 +947,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - xorg-util-macros
       - xorg-proto
       - libx11
@@ -964,6 +987,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - xorg-util-macros
       - xorg-proto
       - libx11
@@ -1004,6 +1028,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - xorg-util-macros
       - xorg-proto
       - libx11
@@ -1046,6 +1071,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - xorg-util-macros
       - xorg-proto
       - libx11
@@ -1086,6 +1112,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - xorg-util-macros
       - xorg-proto
       - libx11
@@ -1124,6 +1151,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - xorg-util-macros
       - xorg-proto
       - libx11
@@ -1189,6 +1217,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - xorg-util-macros
       - xorg-proto
       - libx11
@@ -1230,6 +1259,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - xorg-util-macros
       - xorg-proto
       - libx11
@@ -1271,6 +1301,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - xorg-util-macros
       - xorg-proto
       - libx11
@@ -1304,6 +1335,7 @@ packages:
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
     pkgs_required:
+      - mlibc
       - glib
       - fontconfig
       - freetype
@@ -1353,6 +1385,7 @@ packages:
       - host-pkg-config
       - system-gcc
     pkgs_required:
+      - mlibc
       - libpng
     configure:
       - args:
@@ -1388,6 +1421,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - xorg-util-macros
       - xorg-proto
       - libx11

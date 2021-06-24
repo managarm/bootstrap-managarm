@@ -10,7 +10,8 @@ packages:
       - host-python
       - host-cmake
     pkgs_required:
-      - gcc
+      - mlibc
+      - gcc # Actually requires libstdc++.so in the system root, otherwise it links against the host libstdc++.so.6
     configure:
       - args:
         - 'cmake'

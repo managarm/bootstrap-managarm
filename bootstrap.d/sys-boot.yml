@@ -19,9 +19,10 @@ packages:
       git: 'https://github.com/limine-bootloader/limine.git'
       tag: 'v2.23'
       version: '2.23'
-    revision: 1
     tools_required:
       - system-gcc
+    pkgs_required:
+      - mlibc
     configure:
       - args: ['cp', '-rv', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:

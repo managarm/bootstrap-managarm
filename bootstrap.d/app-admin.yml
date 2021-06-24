@@ -14,6 +14,8 @@ packages:
         - args: ['./autogen.sh']
     tools_required:
       - system-gcc
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

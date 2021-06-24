@@ -63,6 +63,7 @@ packages:
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
     pkgs_required:
+      - mlibc
       - glib
     configure:
       - args:
@@ -95,6 +96,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - gmp
     configure:
       - args:
@@ -132,6 +134,8 @@ packages:
       - system-gcc
       - host-autoconf-v2.69
       - host-automake-v1.15
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -152,6 +156,7 @@ packages:
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
     pkgs_required:
+      - mlibc
       - pcre
       - libffi
       - zlib
@@ -195,6 +200,8 @@ packages:
             '@THIS_SOURCE_DIR@/']
     tools_required:
       - system-gcc
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -215,6 +222,8 @@ packages:
     tools_required:
       - system-gcc
       - host-icu
+    pkgs_required:
+      - mlibc
     configure:
       - args: ['cp',
           '@THIS_SOURCE_DIR@/icu4c/source/config/mh-linux',
@@ -240,6 +249,8 @@ packages:
     tools_required:
       - system-gcc
       - host-cmake
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - 'cmake'
@@ -271,6 +282,8 @@ packages:
             'NOCONFIGURE': 'yes'
     tools_required:
       - system-gcc
+    pkgs_required:
+      - mlibc
     revision: 2
     configure:
       - args:
@@ -304,6 +317,8 @@ packages:
       - host-automake-v1.15
       - host-libtool
       - system-gcc
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/expat/configure'
@@ -337,6 +352,8 @@ packages:
             '@THIS_SOURCE_DIR@/']
     tools_required:
       - system-gcc
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -369,6 +386,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - libgpg-error
     configure:
       - args:
@@ -404,6 +422,8 @@ packages:
         - args: ['autoreconf', '-f', '-v', '-i']
     tools_required:
       - system-gcc
+    pkgs_required:
+      - mlibc
     configure:
       # libgpg-error does not know about managarm, teach it
       - args: ['cp', '-v', '@THIS_SOURCE_DIR@/src/syscfg/lock-obj-pub.x86_64-unknown-linux-gnu.h',
@@ -470,6 +490,8 @@ packages:
     tools_required:
       - system-gcc
       - host-libtool
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -499,6 +521,7 @@ packages:
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
     pkgs_required:
+      - mlibc
       - eudev
       - libevdev
       - mtdev
@@ -539,6 +562,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - libiconv
     configure:
       - args:
@@ -591,6 +615,7 @@ packages:
       - system-gcc
       - host-autoconf-v2.69
     pkgs_required:
+      - mlibc
       - freetype
     revision: 2
     configure:
@@ -625,6 +650,8 @@ packages:
             '@THIS_SOURCE_DIR@/build-aux/']
     tools_required:
       - system-gcc
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -655,6 +682,8 @@ packages:
             '@THIS_SOURCE_DIR@/build-aux/']
     tools_required:
       - system-gcc
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -683,6 +712,8 @@ packages:
         - args: ['./autogen.sh']
     tools_required:
       - system-gcc
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -714,6 +745,7 @@ packages:
       - system-gcc
       - host-python
     pkgs_required:
+      - mlibc
       - zlib
       - python
       - libiconv
@@ -748,6 +780,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - gmp
       - mpfr
     configure:
@@ -782,6 +815,7 @@ packages:
       - system-gcc
       - host-libtool
     pkgs_required:
+      - mlibc
       - gmp
     configure:
       - args:
@@ -824,6 +858,7 @@ packages:
       - host-autoconf-v2.69
       - host-automake-v1.15
     pkgs_required:
+      - mlibc
       - gmp
     configure:
       - args:
@@ -849,6 +884,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - zlib
     revision: 2
     configure:
@@ -896,6 +932,8 @@ packages:
       - system-gcc
       - host-autoconf-v2.69
       - host-automake-v1.15
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -929,6 +967,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - libiconv
     configure:
       - args:
@@ -997,6 +1036,7 @@ packages:
       - system-gcc
       - wayland-scanner
     pkgs_required:
+      - mlibc
       - cairo
       - libinput
       - libxkbcommon
@@ -1034,6 +1074,8 @@ packages:
       version: '0.8.0'
     tools_required:
       - system-gcc
+    pkgs_required:
+      - mlibc
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
