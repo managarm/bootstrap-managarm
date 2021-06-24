@@ -981,6 +981,7 @@ packages:
       - host-protoc
       - kernel-gcc
     pkgs_required:
+      - mlibc
       - frigg
     configure:
       - args: |
