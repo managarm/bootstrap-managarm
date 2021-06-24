@@ -20,6 +20,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - libice
       - libpng
       - libx11

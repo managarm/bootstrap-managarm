@@ -10,6 +10,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - gtk+-2
       - gdk-pixbuf
       - pango
@@ -66,6 +67,8 @@ packages:
       version: '1.5.2'
     tools_required:
       - system-gcc
+    pkgs_required:
+      - mlibc
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
