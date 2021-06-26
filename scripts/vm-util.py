@@ -75,6 +75,17 @@ def do_qemu(args):
 	if not args.no_smp:
 		qemu_args += ['-smp', '4']
 
+
+	if args.virtual_boot:
+		qemu_args += [
+			'-chardev', 'file,id=serial,path=serial.out',
+			'-serial', 'chardev:serial',
+
+			'-kernel', 'system-root/usr/managarm/bin/eir-mb1',
+			'-initrd', 'system-root/usr/managarm/bin/thor,initrd.cpio',
+			'-append', f'bochs init.launch=headless init.command={args.cmd}'
+		]
+
 	# Add USB HCDs.
 	qemu_args += [
 		'-device', 'piix3-usb-uhci,id=uhci',
@@ -161,11 +172,12 @@ def do_qemu(args):
 			'-device', 'dmalog,chardev=gdbsocket,tag=kernel-gdbserver'
 		]
 
-	# Use serial for POSIX gdb.
-	qemu_args += [
-		'-chardev', 'socket,id=posix-gdbsocket,host=0.0.0.0,port=5679,server=on,wait=off',
-		'-serial', 'chardev:posix-gdbsocket'
-	]
+	# Use serial for POSIX gdb (conflicts with headless init).
+	if not args.virtual_boot:
+		qemu_args += [
+			'-chardev', 'socket,id=posix-gdbsocket,host=0.0.0.0,port=5679,server=on,wait=off',
+			'-serial', 'chardev:posix-gdbsocket'
+		]
 
 	# TODO: Add passthrough devices via:
 	#       -device usb-host,vendorid=0x17ef,productid=0x602d
@@ -192,6 +204,7 @@ qemu_parser.add_argument('--arch',
 qemu_parser.add_argument('--no-kvm', action='store_true')
 qemu_parser.add_argument('--virtual-cpu', action='store_true')
 qemu_parser.add_argument('--no-smp', action='store_true')
+qemu_parser.add_argument('--virtual-boot', action='store_true')
 qemu_parser.add_argument('--boot-drive',
 	choices=['virtio', 'virtio-legacy', 'ahci', 'usb', 'ide'],
 	default='virtio')
@@ -202,6 +215,7 @@ qemu_parser.add_argument('--gfx',
 qemu_parser.add_argument('--ps2', action='store_true')
 qemu_parser.add_argument('--mouse', action='store_true')
 qemu_parser.add_argument('--init-launch', type=str, default='weston')
+qemu_parser.add_argument('--cmd', type=str)
 
 # ---------------------------------------------------------------------------------------
 # gdb subcommand.
