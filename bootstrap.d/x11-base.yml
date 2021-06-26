@@ -60,6 +60,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - xorg-util-macros
     revision: 2
     configure:

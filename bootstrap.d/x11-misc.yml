@@ -85,6 +85,7 @@ packages:
     tools_required:
       - system-gcc
     pkgs_required:
+      - mlibc
       - xorg-util-macros
     configure:
       - args:
@@ -124,6 +125,7 @@ packages:
       - host-xorg-macros
       - system-gcc
     pkgs_required:
+      - mlibc
       - libx11
       - xorg-proto
     configure:
