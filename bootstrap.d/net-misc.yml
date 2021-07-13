@@ -3,15 +3,15 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/curl/curl.git'
-      tag: 'curl-7_76_0'
-      version: '7.76.0'
+      tag: 'curl-7_77_0'
+      version: '7.77.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
         - host-libtool
         - host-autoconf-archive
       regenerate:
-        - args: ['./buildconf']
+        - args: ['autoreconf', '-fiv']
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -20,6 +20,8 @@ packages:
     pkgs_required:
       - mlibc
       - openssl
+      - zlib
+      - zstd
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -28,6 +30,7 @@ packages:
         - '--disable-static'
         - '--with-ca-path=/etc/ssl/certs'
         - '--enable-threaded-resolver'
+        - '--with-openssl'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
