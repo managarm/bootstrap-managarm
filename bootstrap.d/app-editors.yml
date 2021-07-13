@@ -59,8 +59,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/vim/vim.git'
-      tag: 'v8.2.2604'
-      version: '8.2.2604'
+      tag: 'v8.2.3001'
+      version: '8.2.3001'
     tools_required:
       - system-gcc
       - host-pkg-config
