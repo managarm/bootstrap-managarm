@@ -987,8 +987,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/wayland-project/wayland-protocols.git'
-      tag: '1.20'
-      version: '1.20'
+      tag: '1.21'
+      version: '1.21'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
