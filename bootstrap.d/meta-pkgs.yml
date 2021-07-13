@@ -35,6 +35,7 @@ packages:
       - util-linux
       - limine
       - gcc # Temporary solution to remove the need to copy libstdc++.so and libgcc.so from system-gcc
+      - man-db
     configure: []
     build: []
 
@@ -53,6 +54,7 @@ packages:
       - pkg-config
       - cmake
       - bc
+      - man-pages-posix
     configure: []
     build: []
 
