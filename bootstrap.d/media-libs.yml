@@ -261,8 +261,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/libjpeg-turbo/libjpeg-turbo.git'
-      tag: '2.0.5'
-      version: '2.0.5'
+      tag: '2.1.0'
+      version: '2.1.0'
     tools_required:
       - host-pkg-config
       - system-gcc
