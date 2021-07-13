@@ -185,21 +185,11 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/harfbuzz/harfbuzz.git'
-      tag: '2.8.0'
-      version: '2.8.0'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
-        - host-libtool
-        - host-pkg-config
-      regenerate:
-        - args: ['./autogen.sh']
-          environ:
-            NOCONFIGURE: '1'
+      tag: '2.8.2'
+      version: '2.8.2'
     tools_required:
       - system-gcc
       - host-pkg-config
-      - host-autoconf-v2.69
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
     pkgs_required:
@@ -212,18 +202,27 @@ packages:
       - icu
     configure:
       - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--host=@OPTION:arch-triple@'
+        - 'meson'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
-        - '--disable-gtk-doc-html'
-        - '--without-gobject'
-        - '--with-freetype=yes'
-        - '--with-graphite2=yes'
-        - '--with-cairo=yes'
-        - '--with-icu=yes'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '-Dgraphite=enabled'
+        - '-Dglib=enabled'
+        - '-Dgobject=disabled'
+        - '-Dicu=enabled'
+        - '-Dfreetype=enabled'
+        - '-Dcairo=enabled'
+        - '-Dintrospection=disabled'
+        - '-Ddocs=disabled'
+        - '-Dtests=disabled' # Disabled due to a linking error
+        - '@THIS_SOURCE_DIR@'
     build:
-      - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'install']
+      - args: ['ninja']
+      - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
