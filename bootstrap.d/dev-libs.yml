@@ -303,8 +303,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/libexpat/libexpat.git'
-      tag: 'R_2_3_0'
-      version: '2.3.0'
+      tag: 'R_2_4_1'
+      version: '2.4.1'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
