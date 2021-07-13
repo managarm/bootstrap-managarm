@@ -231,18 +231,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/anholt/libepoxy.git'
-      tag: '1.5.4'
-      version: '1.5.4'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
-        - host-libtool
-        - host-pkg-config
-        - host-xorg-macros
-      regenerate:
-        - args: ['./autogen.sh']
-          environ:
-            NOCONFIGURE: '1'
+      tag: '1.5.8'
+      version: '1.5.8'
     tools_required:
       - host-pkg-config
       - system-gcc
