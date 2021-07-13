@@ -5,10 +5,10 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/bash.git'
-      # Checkout bash 5.1 patch 4 to fix build issues
+      # Checkout bash 5.1 patch 8
       branch: 'master'
-      commit: '76404c85d492c001f59f2644074333ffb7608532'
-      version: '5.1.4'
+      commit: 'ce23728687ce9e584333367075c9deef413553fa'
+      version: '5.1.8'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
