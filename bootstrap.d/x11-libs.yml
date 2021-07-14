@@ -349,8 +349,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libx11.git'
-      tag: 'libX11-1.7.0'
-      version: '1.7.0'
+      tag: 'libX11-1.7.2'
+      version: '1.7.2'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
