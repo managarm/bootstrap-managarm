@@ -668,8 +668,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.com/gnutls/libtasn1.git'
-      tag: 'libtasn1_4_16_0'
-      version: '4.16.0'
+      tag: 'v4.17.0'
+      version: '4.17.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
