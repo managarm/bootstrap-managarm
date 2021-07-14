@@ -917,9 +917,9 @@ packages:
     source:
       subdir: ports
       svn: 'svn://vcs.pcre.org/pcre/code/trunk'
-      rev: '1764'
-      # Seems to be 8.44?
-      version: '8.44'
+      rev: '1767'
+      # Seems to be 8.45?
+      version: '8.45'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
