@@ -178,8 +178,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/mesa/drm'
-      tag: 'libdrm-2.4.105'
-      version: '2.4.105'
+      tag: 'libdrm-2.4.107'
+      version: '2.4.107'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
