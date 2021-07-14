@@ -841,8 +841,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://git.lysator.liu.se/nettle/nettle.git'
-      tag: 'nettle_3.7.1_release_20210217'
-      version: '3.7.1'
+      tag: 'nettle_3.7.3_release_20210606'
+      version: '3.7.3'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
