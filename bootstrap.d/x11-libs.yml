@@ -675,8 +675,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxfixes.git'
-      tag: 'libXfixes-5.0.3'
-      version: '5.0.3'
+      tag: 'libXfixes-6.0.0'
+      version: '6.0.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
