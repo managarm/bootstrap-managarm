@@ -22,8 +22,8 @@ sources:
   - name: nss
     subdir: 'ports'
     git: 'https://github.com/nss-dev/nss.git'
-    tag: 'NSS_3_66_RTM'
-    version: 'NSS_3_66_RTM'
+    tag: 'NSS_3_68_RTM'
+    version: 'NSS_3_68_RTM'
 
 tools:
   - name: host-glib
