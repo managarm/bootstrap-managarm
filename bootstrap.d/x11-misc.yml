@@ -105,8 +105,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/xkeyboard-config/xkeyboard-config.git'
-      tag: 'xkeyboard-config-2.32'
-      version: '2.32'
+      tag: 'xkeyboard-config-2.33'
+      version: '2.33'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
