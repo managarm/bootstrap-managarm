@@ -730,8 +730,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.gnome.org/GNOME/libxml2.git'
-      tag: 'v2.9.10'
-      version: '2.9.10'
+      tag: 'v2.9.12'
+      version: '2.9.12'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -749,7 +749,6 @@ packages:
       - zlib
       - python
       - libiconv
-    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
