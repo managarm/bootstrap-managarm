@@ -459,11 +459,10 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/mesa/mesa.git'
-      tag: 'mesa-20.3.1'
-      version: '20.3.1'
+      tag: 'mesa-21.1.4'
+      version: '21.1.4'
       tools_required:
         - host-pkg-config
-    revision: 2
     tools_required:
       - host-pkg-config
       - system-gcc
