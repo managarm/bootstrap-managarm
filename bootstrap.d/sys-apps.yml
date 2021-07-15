@@ -610,7 +610,7 @@ packages:
       - libarchive
       - openssl
       - zlib
-    revision: 3
+    revision: 4
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
@@ -623,4 +623,3 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/xbps.conf', '@THIS_COLLECT_DIR@/usr/share/xbps.d/']
-      - args: ['cp', '@SOURCE_ROOT@/extrafiles/00-repository-main.conf', '@THIS_COLLECT_DIR@/usr/share/xbps.d/']

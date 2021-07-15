@@ -1,0 +1,34 @@
+From 512a7080e61b08eabdc85271ec36da79e326bdcd Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Thu, 15 Jul 2021 02:53:59 +0200
+Subject: [PATCH 3/3] Work around unimplemented Managarm features
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ bin/xbps-install/question.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/bin/xbps-install/question.c b/bin/xbps-install/question.c
+index 865649ff..f2d6e9b4 100644
+--- a/bin/xbps-install/question.c
++++ b/bin/xbps-install/question.c
+@@ -50,7 +50,7 @@ question(bool preset, const char *fmt, va_list ap)
+ 		fputs(" [y/N] ", stderr);
+ 
+ 	response = fgetc(stdin);
+-	if (response == '\n')
++	if (response == '\n' || response == '\r')
+ 		rv = preset;
+ 	else if (response == 'y' || response == 'Y')
+ 		rv = true;
+@@ -58,7 +58,7 @@ question(bool preset, const char *fmt, va_list ap)
+ 		rv = false;
+ 
+ 	/* read the rest of the line */
+-	while (response != EOF && response != '\n')
++	while (response != EOF && (response != '\n' && response != '\r'))
+ 		response = fgetc(stdin);
+ 
+ 	return rv;
+2.32.0
+
