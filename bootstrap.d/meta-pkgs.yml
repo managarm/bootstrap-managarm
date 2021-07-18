@@ -32,6 +32,7 @@ packages:
       - findutils
       - util-linux
       - limine
+      - gcc # Temporary solution to remove the need to copy libstdc++.so and libgcc.so from system-gcc
     configure: []
     build: []
 
@@ -41,7 +42,6 @@ packages:
     pkgs_required:
       - base
       - binutils
-      - gcc
       - make
       - patch
       - m4

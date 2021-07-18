@@ -401,9 +401,6 @@ class UpdateFsAction:
 		plan_rsync('var/')
 		plan_rsync('home/')
 
-		plan_cp(f'tools/system-gcc/{self.arch}/lib64/libgcc_s.so.1', 'usr/lib')
-		plan_cp(f'tools/system-gcc/{self.arch}/lib64/libstdc++.so.6', 'usr/lib')
-
 		print('update-image: Updating the file system...')
 
 		commands = '\n'.join([join_command(step) for step in steps])
