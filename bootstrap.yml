@@ -104,8 +104,8 @@ sources:
   - name: gcc
     subdir: 'ports'
     git: 'git://gcc.gnu.org/git/gcc.git'
-    tag: 'releases/gcc-10.3.0'
-    version: '10.3.0'
+    tag: 'releases/gcc-11.1.0'
+    version: '11.1.0'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.11
@@ -724,7 +724,6 @@ packages:
       - mpfr
       - mpc
       - zlib
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
