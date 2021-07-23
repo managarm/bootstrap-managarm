@@ -2,7 +2,9 @@ packages:
   # Meta package with the bare minimum to boot kmscon and be useful
   - name: base
     labels: [aarch64]
-    from_source: managarm
+    source:
+      subdir: meta-sources
+      version: '1.0'
     pkgs_required:
       - mlibc
       - core-files
@@ -38,7 +40,9 @@ packages:
 
   # Meta package with build essentials
   - name: base-devel
-    from_source: managarm
+    source:
+      subdir: meta-sources
+      version: '1.0'
     pkgs_required:
       - base
       - binutils
@@ -54,7 +58,9 @@ packages:
 
   # Meta package for weston and usefull utilities
   - name: weston-desktop
-    from_source: managarm
+    source:
+      subdir: meta-sources
+      version: '1.0'
     pkgs_required:
       - base
       - weston

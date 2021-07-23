@@ -634,8 +634,9 @@ packages:
   - name: core-files
     labels: [aarch64]
     default: true
-    from_source: managarm
-    revision: 2
+    source:
+      subdir: meta-sources
+      version: '1.0'
     configure: []
     build:
       # Create initial directories
