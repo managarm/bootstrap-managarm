@@ -1,0 +1,61 @@
+From 70e7f52cdbf0d978180bf312c34c3a7c618da6d1 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Thu, 15 Jul 2021 02:10:26 +0200
+Subject: [PATCH 2/3] Add the Managarm amd64 repository and remove the Void
+ Linux repository
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ ...2:5b:a6:50:95:c7:b9:a4:10:e4:63:39:d0:b8:c5.plist | 12 ++++++++++++
+ ...e:0c:d6:f0:95:17:80:bc:93:46:7a:89:af:a3:2d.plist | 12 ------------
+ data/repod-main.conf                                 |  2 +-
+ 3 files changed, 13 insertions(+), 13 deletions(-)
+ create mode 100644 data/5d:d2:5b:a6:50:95:c7:b9:a4:10:e4:63:39:d0:b8:c5.plist
+ delete mode 100644 data/60:ae:0c:d6:f0:95:17:80:bc:93:46:7a:89:af:a3:2d.plist
+
+diff --git a/data/5d:d2:5b:a6:50:95:c7:b9:a4:10:e4:63:39:d0:b8:c5.plist b/data/5d:d2:5b:a6:50:95:c7:b9:a4:10:e4:63:39:d0:b8:c5.plist
+new file mode 100644
+index 00000000..96142fd8
+--- /dev/null
++++ b/data/5d:d2:5b:a6:50:95:c7:b9:a4:10:e4:63:39:d0:b8:c5.plist
+@@ -0,0 +1,12 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
++<plist version="1.0">
++<dict>
++	<key>public-key</key>
++	<data>LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUlJQ0lqQU5CZ2txaGtpRzl3MEJBUUVGQUFPQ0FnOEFNSUlDQ2dLQ0FnRUF2ejlOZnBRUlZDeTBZeDN5WW5QTAppc1RKNVVjV2QxYUJZUTFMMjlvR1kyZW1ZbjZNNmxjb1l1WS96TXVKS2ZMYjNPTktWVSs0TkVZU2QwU2xTeW5kCkxuODYzamsvTk5KZVBqdjdrcVBVVEw3V0doRGhXOXNxVjczYVhGMk1XSjc4S0c2bTA5TFNnVDlMNWdobG5IdkgKNldPcEQvV2dTSGN2YXFMdjlqb1ZLWjBMWkEzbHZmUVBlUzF6N1ZvSXJFblNOc29WbTcrS3VzSGpybnZMeis4UwpyV1lVU2dWV1dvS3BZa3lwcDJESHJOTG9OTDV4NytibWdMcmdic0dTSEgzS3dqOEs3MjQrcTRrcU5oVy9pZFRVCkNZVk93bzhRYjRsTGtiN0dCRjFiMVhJTGFLK01tR09oQU0vYjZILzl3MHdYcmgzMTVmNmZUTldpODlDNDJiS3IKQTl1dXNlbDF2b3Z1d3lNZ25meXF2NmRERkMxSlBzT0Z2Y2lXeGtzQ1BZbHZkM0pxOFhQQS95UGk2TitJbjlQZAp5WXR4WlFKaHVWSmRoRmErMzZsTGlWWDJKdmw2UkVhQlVyYktzT1ZITmtlOEdmOGZmYzZUT2t0VjY2Vm9xekdXCnVCS1hReDYzR0thUi82ZWtoeXJ2SDE4WXVtYzdpeW5GbXVhdmhFeTYrRlFPMHc3Y2VkSmVIaXVSWTlGby9VblAKMmRteGhIZjdqRE5xeGpMOE43Vlp3M1lob1RoR0l0cGtjQWJVZ0N2ZW9rUCtVUXZUVjFWL1FNczhnQ01FbTFhYwpJMjdadnJ4SGcrS0xQaHpaNUgyOWtmeDNoeDFHK1BmOXUvWkptNGJ3M3BwUllVdzRkdG9ieHpmdm83TThJWVExCkVCSjI3ZUlTKzNVWFIzWFNrRzZvTitVQ0F3RUFBUT09Ci0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLQo=</data>
++	<key>public-key-size</key>
++	<integer>4096</integer>
++	<key>signature-by</key>
++	<string>The Managarm Project &lt;info@managarm.org&gt;</string>
++</dict>
++</plist>
+diff --git a/data/60:ae:0c:d6:f0:95:17:80:bc:93:46:7a:89:af:a3:2d.plist b/data/60:ae:0c:d6:f0:95:17:80:bc:93:46:7a:89:af:a3:2d.plist
+deleted file mode 100644
+index c1e82a7e..00000000
+--- a/data/60:ae:0c:d6:f0:95:17:80:bc:93:46:7a:89:af:a3:2d.plist
++++ /dev/null
+@@ -1,12 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+-<plist version="1.0">
+-<dict>
+-	<key>public-key</key>
+-	<data>LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUlJQ0lqQU5CZ2txaGtpRzl3MEJBUUVGQUFPQ0FnOEFNSUlDQ2dLQ0FnRUF2clN6QlpNdmd2T0NJM0FYYk9qYQoycktSa0pTVE0zYy9FalRJZ0NnRFhndW05M0JQQ3RZOE1jRlZvQ1U0T2lYSEdmVG1xMzlCVk5wTHZMSEw5S2sxCnAyNzhTQmhYVk90YkIyRVZtREtudmZJREVUbGRMR3plN3JaTlJKZHR1TjJtWi9UVnJVQjlTMHlRYytJdWY0aHYKMytEOTdWSWRUSkhBN0FTcjA0MjhwcEVHSkd3U1NoWTJYSm05RDVJMEV1R1JXYzE0TUVHN2RJS0ppWWlNMG5FNAp0WW8yL3ZINElGVEhkblZBM2dZaVp5RG5idUNBUi84RVNmVVRVMTNTTkNPZGJ1ZGYzRDVCY3krVWlNREpJM1llCjRNRktCclQ5WmhaK0dzWEJaWTQ4MmxxaVppNkNMNXB0YzlJUUZmOC9lS1phOGphdGtpVkZWZ3JLZU5Sak9UeE4KZldTdTJua3hHTlgrYmhYWXRoaUdXbUpFWThjQ0FQeUZOK0x2NVJldEsyNTZnZGNiMnNrbUVxZWZ2MnpQQyt3VgpXQmJkSDViRDRiWmpuME42Wmw4MXJ2NVJ6RHZudmYrdkQxNGFGVWJaOFFGcXU3NVBiTDR3Nm1ZTTRsZE0vZzBSCjZOWEU4QXo5Qnd4MnREZlllS3V1dHcxRXBQbTJZdkZ5VFViMWNveUF1VEdSeUFhcDFVVEh2ZzlsaFBJSm1oRlEKSjVrQ2cxcUQ3QTMxV2wwUmxuZTZoZ0dvMFpaTko1Y0pNL3YvelNUS0pjdUZnd283SDBoT0dpbDZEZm84OUI0agpHOTZBQ3lQUytEVktQRlhSWXdqL0FrYkhwYVEyZjFGTUFvU3BCcXVEcUhoM3VrazcxS1g2ajE5dDBpRjhEUUxyCnZ0RlNTZElqREEwMmx3ZVY5TmFRcFdzQ0F3RUFBUT09Ci0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLQo=</data>
+-	<key>public-key-size</key>
+-	<integer>4096</integer>
+-	<key>signature-by</key>
+-	<string>Void Linux</string>
+-</dict>
+-</plist>
+diff --git a/data/repod-main.conf b/data/repod-main.conf
+index 9890a844..b96b00cb 100644
+--- a/data/repod-main.conf
++++ b/data/repod-main.conf
+@@ -1 +1 @@
+-repository=https://a-hel-fi.m.voidlinux.org/current
++repository=https://pkgs.managarm.org/repos/amd64/
+-- 
+2.32.0
+

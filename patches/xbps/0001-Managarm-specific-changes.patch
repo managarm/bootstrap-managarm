@@ -1,8 +1,9 @@
-From 68cec99ba767690ae25476807ff3950954e7c132 Mon Sep 17 00:00:00 2001
+From ab4e855c68f553ddc9c0e1ba72c6a28c2942aec0 Mon Sep 17 00:00:00 2001
 From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
 Date: Sat, 9 May 2020 18:46:34 +0200
-Subject: [PATCH] Managarm-specific changes
+Subject: [PATCH 1/3] Managarm-specific changes
 
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
  bin/xbps-create/main.c                  | 1 +
  bin/xbps-install/util.c                 | 1 +
@@ -16,7 +17,7 @@ Subject: [PATCH] Managarm-specific changes
  9 files changed, 10 insertions(+), 2 deletions(-)
 
 diff --git a/bin/xbps-create/main.c b/bin/xbps-create/main.c
-index 373e744..1f594ad 100644
+index 373e7441..1f594ad6 100644
 --- a/bin/xbps-create/main.c
 +++ b/bin/xbps-create/main.c
 @@ -39,6 +39,7 @@
@@ -28,7 +29,7 @@ index 373e744..1f594ad 100644
  #include <dirent.h>
  
 diff --git a/bin/xbps-install/util.c b/bin/xbps-install/util.c
-index 7cabdd1..398b654 100644
+index 7cabdd16..398b654f 100644
 --- a/bin/xbps-install/util.c
 +++ b/bin/xbps-install/util.c
 @@ -31,6 +31,7 @@
@@ -40,7 +41,7 @@ index 7cabdd1..398b654 100644
  
  #include <xbps.h>
 diff --git a/bin/xbps-pkgdb/check_pkg_alternatives.c b/bin/xbps-pkgdb/check_pkg_alternatives.c
-index 90c4109..dc3f6d7 100644
+index 90c4109b..dc3f6d70 100644
 --- a/bin/xbps-pkgdb/check_pkg_alternatives.c
 +++ b/bin/xbps-pkgdb/check_pkg_alternatives.c
 @@ -32,6 +32,7 @@
@@ -52,7 +53,7 @@ index 90c4109..dc3f6d7 100644
  
  #include <xbps.h>
 diff --git a/bin/xbps-pkgdb/check_pkg_symlinks.c b/bin/xbps-pkgdb/check_pkg_symlinks.c
-index 851e677..782ed53 100644
+index 851e6777..782ed53e 100644
 --- a/bin/xbps-pkgdb/check_pkg_symlinks.c
 +++ b/bin/xbps-pkgdb/check_pkg_symlinks.c
 @@ -31,6 +31,7 @@
@@ -64,7 +65,7 @@ index 851e677..782ed53 100644
  
  #include <xbps.h>
 diff --git a/configure b/configure
-index da8ae75..2052b5b 100755
+index da8ae75f..2052b5b3 100755
 --- a/configure
 +++ b/configure
 @@ -275,7 +275,7 @@ fi
@@ -77,7 +78,7 @@ index da8ae75..2052b5b 100755
  	unsafe-loop-optimizations undef sign-compare \
  	missing-include-dirs old-style-definition \
 diff --git a/lib/compat/strcasestr.c b/lib/compat/strcasestr.c
-index e7861c2..5180af5 100644
+index e7861c27..5180af5e 100644
 --- a/lib/compat/strcasestr.c
 +++ b/lib/compat/strcasestr.c
 @@ -36,6 +36,7 @@
@@ -89,7 +90,7 @@ index e7861c2..5180af5 100644
  /*
   * Find the first occurrence of find in s, ignore case.
 diff --git a/lib/fetch/common.c b/lib/fetch/common.c
-index 7180c6e..86306cf 100644
+index 7180c6ef..86306cfc 100644
 --- a/lib/fetch/common.c
 +++ b/lib/fetch/common.c
 @@ -34,6 +34,7 @@
@@ -101,7 +102,7 @@ index 7180c6e..86306cf 100644
  #include <sys/time.h>
  #include <sys/uio.h>
 diff --git a/lib/fetch/ftp.c b/lib/fetch/ftp.c
-index 28296a0..0fac406 100644
+index 28296a00..0fac406e 100644
 --- a/lib/fetch/ftp.c
 +++ b/lib/fetch/ftp.c
 @@ -77,6 +77,7 @@
@@ -122,7 +123,7 @@ index 28296a0..0fac406 100644
  #endif
  }
 diff --git a/lib/fetch/http.c b/lib/fetch/http.c
-index fe98b1a..a50128c 100644
+index fe98b1a9..a50128ca 100644
 --- a/lib/fetch/http.c
 +++ b/lib/fetch/http.c
 @@ -76,6 +76,7 @@
@@ -134,5 +135,5 @@ index fe98b1a..a50128c 100644
  #include <unistd.h>
  
 -- 
-2.20.1
+2.32.0
 
