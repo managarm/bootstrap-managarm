@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import argparse, attr, shutil, shlex, subprocess, sys, os, errno, json, time
+import argparse, shutil, shlex, subprocess, sys, os, errno, json, time
 
 elevation_method = None
 verbose = False
@@ -9,21 +9,21 @@ EFI_SYSTEM_PART_TYPE = 'C12A7328-F81F-11D2-BA4B-00A0C93EC93B'
 global_mount_info = None
 sfdisk_command = None
 
-@attr.s
 class MountInfo:
-	blockdev = attr.ib()
-	mount_using = attr.ib()
-	image = attr.ib()
-	mountpoint = attr.ib()
-	root_idx = attr.ib()
-	efi_idx = attr.ib()
-	root_uuid = attr.ib()
+	def __init__(self, blockdev, mount_using, image, mountpoint, root_idx, efi_idx, root_uuid):
+		self.blockdev = blockdev
+		self.mount_using = mount_using
+		self.image = image
+		self.mountpoint = mountpoint
+		self.root_idx = root_idx
+		self.efi_idx = efi_idx
+		self.root_uuid = root_uuid
 
-@attr.s
 class Partition:
-	idx = attr.ib()
-	type = attr.ib()
-	uuid = attr.ib()
+	def __init__(self, idx, type, uuid):
+		self.idx = idx
+		self.type = type
+		self.uuid = uuid
 
 # shlex.join is only available since Python 3.8
 def join_command(args):
@@ -146,6 +146,7 @@ class MountAction:
 			if not os.access(global_mount_info.blockdev, os.F_OK, effective_ids=True):
 				print('update-image: Mount info exists put refers to a non-existant block device, ignoring.')
 				try:
+					script_dir = os.path.realpath(os.path.dirname(sys.argv[0]))
 					os.remove(os.path.join(script_dir, 'update-image-mount-info'))
 				except:
 					pass
@@ -299,9 +300,9 @@ class UpdateFsAction:
 			# Determine root uuid manually for mountpoint
 			diskdev, partdev = dev_for_mountpoint(self.mountpoint)
 
-			if os.isdir('/dev/disk/by-uuid'):
+			if os.path.isdir('/dev/disk/by-uuid'):
 				for uuid in os.listdir('/dev/disk/by-uuid'):
-					part = os.path.realpath(f'/dev/disk/by-uuid/{x}')
+					part = os.path.realpath(f'/dev/disk/by-uuid/{uuid}')
 					if part == partdev:
 						root_uuid = uuid
 						break
@@ -323,7 +324,7 @@ class UpdateFsAction:
 				print(f'update-image: Determined UUID for "{self.mountpoint}" is {root_uuid}')
 
 			# We trust the user has mounted the efi partition if /boot/efi exists
-			has_efi = os.path.isdir(self.mountpoint, 'boot/efi')
+			has_efi = os.path.isdir(os.path.join(self.mountpoint, 'boot/efi'))
 
 			needs_root = not os.access(target_mntpoint, os.W_OK, effective_ids=True)
 
@@ -355,7 +356,7 @@ class UpdateFsAction:
 			steps.append(['cp', source, target])
 
 		def plan_cp_sed(source, dest, pattern, replace):
-			dirname, name = os.path.split(source)
+			_, name = os.path.split(source)
 			target = os.path.join(target_mntpoint, dest, name)
 			steps.append(['cp', source, target])
 			steps.append(['sed', '-i', f's|{pattern}|{replace}|g', target])
@@ -450,7 +451,7 @@ class UnmountAction:
 
 			with open('guestfs.pid', 'r') as pidfile:
 				pid = int(pidfile.read().rstrip())
-				for i in range(10):
+				for _ in range(10):
 					if check_if_running(pid): time.sleep(0.1)
 
 				while check_if_running(pid):
