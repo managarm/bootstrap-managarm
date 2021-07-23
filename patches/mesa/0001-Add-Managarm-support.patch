@@ -1,9 +1,9 @@
-From 06bd005dbda6eba528d74a5dde96b1eb09644d67 Mon Sep 17 00:00:00 2001
-From: Dennisbonke <admin@dennisbonke.com>
-Date: Tue, 22 Dec 2020 23:02:13 +0100
-Subject: [PATCH] Add managarm support
+From e4fb901d8548b067e668b4f32a6b951f335f757a Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Wed, 14 Jul 2021 02:10:53 +0200
+Subject: [PATCH] Add Managarm support
 
-Signed-off-by: Dennisbonke <admin@dennisbonke.com>
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
  include/drm-uapi/drm.h                    | 5 +++--
  meson.build                               | 2 +-
@@ -34,10 +34,10 @@ index c7fd2a35fd7..4a231e0651e 100644
  
  #else /* One of the BSDs */
 diff --git a/meson.build b/meson.build
-index c2843a30766..61e926e9178 100644
+index e1e94e71049..bc1b525e61f 100644
 --- a/meson.build
 +++ b/meson.build
-@@ -153,7 +153,7 @@ with_any_opengl = with_opengl or with_gles1 or with_gles2
+@@ -154,7 +154,7 @@ with_any_opengl = with_opengl or with_gles1 or with_gles2
  # Only build shared_glapi if at least one OpenGL API is enabled
  with_shared_glapi = with_shared_glapi and with_any_opengl
  
@@ -47,10 +47,10 @@ index c2843a30766..61e926e9178 100644
  dri_drivers = get_option('dri-drivers')
  if dri_drivers.contains('auto')
 diff --git a/src/gallium/drivers/llvmpipe/lp_texture.c b/src/gallium/drivers/llvmpipe/lp_texture.c
-index 2bf223d66f9..79b1575e0a7 100644
+index 5e8f15d53fa..a260f85b41b 100644
 --- a/src/gallium/drivers/llvmpipe/lp_texture.c
 +++ b/src/gallium/drivers/llvmpipe/lp_texture.c
-@@ -929,7 +929,6 @@ llvmpipe_resource_get_param(struct pipe_screen *screen,
+@@ -962,7 +962,6 @@ llvmpipe_resource_get_param(struct pipe_screen *screen,
     default:
        break;
     }
@@ -96,19 +96,19 @@ index 6506948e035..469b502bbd9 100644
  
  #endif /* DETECT_OS_H */
 diff --git a/src/util/os_misc.c b/src/util/os_misc.c
-index e5a780b4035..39b1847947a 100644
+index 9f1ee8336b1..83aac3bae68 100644
 --- a/src/util/os_misc.c
 +++ b/src/util/os_misc.c
-@@ -56,7 +56,7 @@
- #  define LOG_TAG "MESA"
+@@ -57,7 +57,7 @@
  #  include <unistd.h>
  #  include <log/log.h>
+ #  include <cutils/properties.h>
 -#elif DETECT_OS_LINUX || DETECT_OS_CYGWIN || DETECT_OS_SOLARIS || DETECT_OS_HURD
 +#elif DETECT_OS_LINUX || DETECT_OS_CYGWIN || DETECT_OS_SOLARIS || DETECT_OS_HURD || DETECT_OS_MANAGARM
  #  include <unistd.h>
  #elif DETECT_OS_OPENBSD || DETECT_OS_FREEBSD
  #  include <sys/resource.h>
-@@ -139,7 +139,7 @@ os_get_option(const char *name)
+@@ -224,7 +224,7 @@ os_get_option(const char *name)
  bool
  os_get_total_physical_memory(uint64_t *size)
  {
@@ -118,7 +118,7 @@ index e5a780b4035..39b1847947a 100644
     const long page_size = sysconf(_SC_PAGE_SIZE);
  
 diff --git a/src/util/os_time.c b/src/util/os_time.c
-index 92fc3638ddb..b518a94672f 100644
+index d2edd88104a..c9fa9f8d31c 100644
 --- a/src/util/os_time.c
 +++ b/src/util/os_time.c
 @@ -53,7 +53,7 @@
@@ -130,7 +130,7 @@ index 92fc3638ddb..b518a94672f 100644
  
     struct timespec tv;
     clock_gettime(CLOCK_MONOTONIC, &tv);
-@@ -93,7 +93,7 @@ os_time_get_nano(void)
+@@ -92,7 +92,7 @@ os_time_get_nano(void)
  void
  os_time_sleep(int64_t usecs)
  {
@@ -140,7 +140,7 @@ index 92fc3638ddb..b518a94672f 100644
     time.tv_sec = usecs / 1000000;
     time.tv_nsec = (usecs % 1000000) * 1000;
 diff --git a/src/util/u_thread.h b/src/util/u_thread.h
-index bdfb05e158c..ffcb4d7f16a 100644
+index a4c73cce884..0f0160a81ea 100644
 --- a/src/util/u_thread.h
 +++ b/src/util/u_thread.h
 @@ -103,7 +103,7 @@ static inline thrd_t u_thread_create(int (*routine)(void *), void *param)
@@ -152,7 +152,7 @@ index bdfb05e158c..ffcb4d7f16a 100644
     pthread_setname_np(pthread_self(), name);
  #elif DETECT_OS_FREEBSD || DETECT_OS_OPENBSD
     pthread_set_name_np(pthread_self(), name);
-@@ -208,7 +208,7 @@ util_set_current_thread_affinity(const uint32_t *mask,
+@@ -209,7 +209,7 @@ util_set_current_thread_affinity(const uint32_t *mask,
  static inline int64_t
  util_thread_get_time_nano(thrd_t thread)
  {
@@ -162,5 +162,5 @@ index bdfb05e158c..ffcb4d7f16a 100644
     clockid_t cid;
  
 -- 
-2.29.2
+2.32.0
 

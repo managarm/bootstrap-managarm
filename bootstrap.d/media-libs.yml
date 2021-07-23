@@ -152,8 +152,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/mesa/glu.git'
-      tag: 'glu-9.0.1'
-      version: '9.0.1'
+      tag: 'glu-9.0.2'
+      version: '9.0.2'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -185,21 +185,11 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/harfbuzz/harfbuzz.git'
-      tag: '2.8.0'
-      version: '2.8.0'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
-        - host-libtool
-        - host-pkg-config
-      regenerate:
-        - args: ['./autogen.sh']
-          environ:
-            NOCONFIGURE: '1'
+      tag: '2.8.2'
+      version: '2.8.2'
     tools_required:
       - system-gcc
       - host-pkg-config
-      - host-autoconf-v2.69
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
     pkgs_required:
@@ -212,18 +202,27 @@ packages:
       - icu
     configure:
       - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--host=@OPTION:arch-triple@'
+        - 'meson'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
-        - '--disable-gtk-doc-html'
-        - '--without-gobject'
-        - '--with-freetype=yes'
-        - '--with-graphite2=yes'
-        - '--with-cairo=yes'
-        - '--with-icu=yes'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '-Dgraphite=enabled'
+        - '-Dglib=enabled'
+        - '-Dgobject=disabled'
+        - '-Dicu=enabled'
+        - '-Dfreetype=enabled'
+        - '-Dcairo=enabled'
+        - '-Dintrospection=disabled'
+        - '-Ddocs=disabled'
+        - '-Dtests=disabled' # Disabled due to a linking error
+        - '@THIS_SOURCE_DIR@'
     build:
-      - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'install']
+      - args: ['ninja']
+      - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
@@ -232,18 +231,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/anholt/libepoxy.git'
-      tag: '1.5.4'
-      version: '1.5.4'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
-        - host-libtool
-        - host-pkg-config
-        - host-xorg-macros
-      regenerate:
-        - args: ['./autogen.sh']
-          environ:
-            NOCONFIGURE: '1'
+      tag: '1.5.8'
+      version: '1.5.8'
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -272,8 +261,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/libjpeg-turbo/libjpeg-turbo.git'
-      tag: '2.0.5'
-      version: '2.0.5'
+      tag: '2.1.0'
+      version: '2.1.0'
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -335,8 +324,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/xiph/ogg.git'
-      tag: 'v1.3.4'
-      version: '1.3.4'
+      tag: 'v1.3.5'
+      version: '1.3.5'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -470,11 +459,10 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/mesa/mesa.git'
-      tag: 'mesa-20.3.1'
-      version: '20.3.1'
+      tag: 'mesa-21.1.4'
+      version: '21.1.4'
       tools_required:
         - host-pkg-config
-    revision: 2
     tools_required:
       - host-pkg-config
       - system-gcc

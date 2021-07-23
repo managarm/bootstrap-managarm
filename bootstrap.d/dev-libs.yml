@@ -2,8 +2,8 @@ sources:
   - name: glib
     subdir: ports
     git: 'https://gitlab.gnome.org/GNOME/glib'
-    tag: '2.68.1'
-    version: '2.68.1'
+    tag: '2.68.3'
+    version: '2.68.3'
 
   - name: icu
     subdir: 'ports'
@@ -22,8 +22,8 @@ sources:
   - name: nss
     subdir: 'ports'
     git: 'https://github.com/nss-dev/nss.git'
-    tag: 'NSS_3_66_RTM'
-    version: 'NSS_3_66_RTM'
+    tag: 'NSS_3_68_RTM'
+    version: 'NSS_3_68_RTM'
 
 tools:
   - name: host-glib
@@ -303,8 +303,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/libexpat/libexpat.git'
-      tag: 'R_2_3_0'
-      version: '2.3.0'
+      tag: 'R_2_4_1'
+      version: '2.4.1'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -668,8 +668,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.com/gnutls/libtasn1.git'
-      tag: 'libtasn1_4_16_0'
-      version: '4.16.0'
+      tag: 'v4.17.0'
+      version: '4.17.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -701,8 +701,8 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/libuv/libuv.git'
-      tag: 'v1.41.0'
-      version: '1.41.0'
+      tag: 'v1.41.1'
+      version: '1.41.1'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -730,8 +730,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.gnome.org/GNOME/libxml2.git'
-      tag: 'v2.9.10'
-      version: '2.9.10'
+      tag: 'v2.9.12'
+      version: '2.9.12'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -749,7 +749,6 @@ packages:
       - zlib
       - python
       - libiconv
-    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -842,8 +841,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://git.lysator.liu.se/nettle/nettle.git'
-      tag: 'nettle_3.7.1_release_20210217'
-      version: '3.7.1'
+      tag: 'nettle_3.7.3_release_20210606'
+      version: '3.7.3'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -918,9 +917,9 @@ packages:
     source:
       subdir: ports
       svn: 'svn://vcs.pcre.org/pcre/code/trunk'
-      rev: '1764'
-      # Seems to be 8.44?
-      version: '8.44'
+      rev: '1767'
+      # Seems to be 8.45?
+      version: '8.45'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -987,8 +986,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/wayland-project/wayland-protocols.git'
-      tag: '1.20'
-      version: '1.20'
+      tag: '1.21'
+      version: '1.21'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15

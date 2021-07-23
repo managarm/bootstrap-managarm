@@ -189,8 +189,8 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/facebook/zstd.git'
-      tag: 'v1.4.9'
-      version: '1.4.9'
+      tag: 'v1.5.0'
+      version: '1.5.0'
     tools_required:
       - system-gcc
     pkgs_required:

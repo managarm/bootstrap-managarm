@@ -178,8 +178,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/mesa/drm'
-      tag: 'libdrm-2.4.105'
-      version: '2.4.105'
+      tag: 'libdrm-2.4.107'
+      version: '2.4.107'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -349,8 +349,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libx11.git'
-      tag: 'libX11-1.7.0'
-      version: '1.7.0'
+      tag: 'libX11-1.7.2'
+      version: '1.7.2'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -675,8 +675,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxfixes.git'
-      tag: 'libXfixes-5.0.3'
-      version: '5.0.3'
+      tag: 'libXfixes-6.0.0'
+      version: '6.0.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -851,8 +851,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/xkbcommon/libxkbcommon.git'
-      tag: 'xkbcommon-1.2.1'
-      version: '1.2.1'
+      tag: 'xkbcommon-1.3.0'
+      version: '1.3.0'
     tools_required:
       - host-pkg-config
       - system-gcc

@@ -1,7 +1,7 @@
 From 803f5cc37be8c6d5a71e570226276b0154a064ec Mon Sep 17 00:00:00 2001
 From: Dennisbonke <admin@dennisbonke.com>
 Date: Sat, 28 Nov 2020 02:24:47 +0100
-Subject: [PATCH 2/3] Work around an issue with the build system
+Subject: [PATCH 2/2] Work around an issue with the build system
 
 This is a massive hack and should be removed asap, but for now it works
 

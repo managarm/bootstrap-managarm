@@ -183,8 +183,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/m4.git'
-      tag: 'v1.4.18'
-      version: '1.4.18'
+      tag: 'v1.4.19'
+      version: '1.4.19'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -201,7 +201,6 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -209,13 +208,12 @@ packages:
         - '--prefix=/usr'
       - args: 'sed -i s/-Werror//g @THIS_BUILD_DIR@/src/Makefile'
       # This sed disables the building of the documentation
-      - args: 'sed -i s/"SUBDIRS = . examples lib src doc checks tests"/"SUBDIRS = . examples lib src checks tests"/ @THIS_BUILD_DIR@/Makefile'
+      - args: 'sed -i s/"SUBDIRS = . examples lib src doc checks po tests"/"SUBDIRS = . examples lib src checks po tests"/ @THIS_BUILD_DIR@/Makefile'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
-      - args: ['rm', '-r', '@THIS_COLLECT_DIR@/usr/lib']
 
   - name: make
     source:

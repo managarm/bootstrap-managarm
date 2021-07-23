@@ -1,20 +1,17 @@
-From 87ee771ea8fbded06ce575ab3ab59d52f1a0ce4b Mon Sep 17 00:00:00 2001
-From: Dennisbonke <admin@dennisbonke.com>
-Date: Sat, 28 Nov 2020 01:40:57 +0100
-Subject: [PATCH 1/3] Fill in the distribution specific anchor hook for
- managarm. This code is from Beyond Linux From Scratch, licensed under the MIT license.
- The original page which has this code can be found here:
- http://www.linuxfromscratch.org/blfs/view/stable/postlfs/p11-kit.html
+From 188d8ea3850074133889f2d00b082ccf89478881 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Wed, 14 Jul 2021 03:10:06 +0200
+Subject: [PATCH 1/2] Fill in the distribution specific anchor hook for Managarm
 
-Signed-off-by: Dennisbonke <admin@dennisbonke.com>
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
- trust/trust-extract-compat.in | 16 ++++------------
+ trust/trust-extract-compat | 16 ++++------------
  1 file changed, 4 insertions(+), 12 deletions(-)
 
-diff --git a/trust/trust-extract-compat.in b/trust/trust-extract-compat.in
+diff --git a/trust/trust-extract-compat b/trust/trust-extract-compat
 index b1b7a08..34051b3 100755
---- a/trust/trust-extract-compat.in
-+++ b/trust/trust-extract-compat.in
+--- a/trust/trust-extract-compat
++++ b/trust/trust-extract-compat
 @@ -17,16 +17,8 @@ if [ "$uid" != 0 ]; then
          exit 0
  fi
@@ -37,5 +34,5 @@ index b1b7a08..34051b3 100755
 +# Generate a new trust store
 +/usr/sbin/make-ca -f -g
 -- 
-2.29.2
+2.32.0
 
