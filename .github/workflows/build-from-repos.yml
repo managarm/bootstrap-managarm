@@ -1,0 +1,68 @@
+name: Build from repos
+
+on: 
+    schedule:
+        - cron: '0 4 * * *' # 04:00 each day
+
+jobs:
+    build:
+        name: Build
+        runs-on: ubuntu-20.04
+        if: github.repository_owner == 'managarm' && github.ref == 'refs/heads/master'
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v2
+              with:
+                path: src
+            - name: Install prerequisites
+              run: |
+                  pip3 install xbstrap
+                  xbstrap prereqs cbuildrt xbps
+            - name: Download and unpack rootfs
+              run: |
+                  curl https://mirrors.managarm.org/cbuildrt/rootfs/managarm-buildenv.tar.gz -o managarm-rootfs.tar.gz
+                  tar xvf managarm-rootfs.tar.gz
+            - name: Prepare build directory
+              run: |
+                  mkdir build
+                  cd build
+                  cat << EOF > bootstrap-site.yml
+                  define_options:
+                    mount-using: 'loopback'
+                  pkg_management:
+                    format: xbps
+                  container:
+                    runtime: cbuildrt
+                    rootfs:  $GITHUB_WORKSPACE/rootfs
+                    uid: 1000
+                    gid: 1000
+                    src_mount: /var/lib/managarm-buildenv/src
+                    build_mount: /var/lib/managarm-buildenv/build
+                    allow_containerless: true
+                  EOF
+                  xbstrap init ../src
+            - name: Pull packages
+              run: |
+                  xbstrap pull-pack --deps-of weston-desktop mlibc mlibc-headers
+                  xbstrap install --deps-of weston-desktop
+              working-directory: ./build
+            - name: Download tool archives
+              run: |
+                  xbstrap download-tool-archive --build-deps-of managarm-system --build-deps-of managarm-kernel --build-deps-of mlibc
+              working-directory: ./build
+            - name: Build mlibc from source
+              run: |
+                  xbstrap install --rebuild mlibc mlibc-headers
+              working-directory: ./build
+            - name: Build managarm-kernel from source
+              run: |
+                  xbstrap install --rebuild managarm-kernel
+              working-directory: ./build
+            - name: Build managarm-system from source
+              run: |
+                  xbstrap install --rebuild managarm-system
+              working-directory: ./build
+            - name: Create image
+              run: |
+                  xbstrap run initialize-empty-image make-image
+              working-directory: ./build
