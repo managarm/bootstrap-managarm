@@ -46,7 +46,7 @@ jobs:
                 # Pack the resulting rootfs.
                 tar -czf managarm-buildenv.tar.gz -C buildenv-bundle/ rootfs
           - name: Upload rootfs to mirrors.managarm.org
-            if: github.ref == 'refs/heads/master'
+            if: github.repository_owner == 'managarm' && github.ref == 'refs/heads/master'
             env:
                 RSYNC_PASSWORD: ${{ secrets.RSYNC_CBUILDRT_ROOTFS_PASSWD }}
             run: |
