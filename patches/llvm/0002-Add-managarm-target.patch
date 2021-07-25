@@ -1,8 +1,9 @@
-From 47ffdf77faffead5c4d0b3ed5d9ff8f988744dda Mon Sep 17 00:00:00 2001
+From 3aa4a086912f07f57b7fd56d46077f93009937b0 Mon Sep 17 00:00:00 2001
 From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
 Date: Sun, 9 Jun 2019 16:29:17 +0200
 Subject: [PATCH 2/2] Add managarm target
 
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
  clang/lib/Basic/Targets.cpp              |   4 +
  clang/lib/Basic/Targets/OSTargets.h      |  28 ++
@@ -18,7 +19,7 @@ Subject: [PATCH 2/2] Add managarm target
  create mode 100644 clang/lib/Driver/ToolChains/Managarm.h
 
 diff --git a/clang/lib/Basic/Targets.cpp b/clang/lib/Basic/Targets.cpp
-index c063f8ca4..9fe05e8f7 100644
+index c063f8ca4472..9fe05e8f7315 100644
 --- a/clang/lib/Basic/Targets.cpp
 +++ b/clang/lib/Basic/Targets.cpp
 @@ -144,6 +144,8 @@ TargetInfo *AllocateTarget(const llvm::Triple &Triple,
@@ -40,7 +41,7 @@ index c063f8ca4..9fe05e8f7 100644
        return new NaClTargetInfo<X86_64TargetInfo>(Triple, Opts);
      case llvm::Triple::PS4:
 diff --git a/clang/lib/Basic/Targets/OSTargets.h b/clang/lib/Basic/Targets/OSTargets.h
-index 70fac030b..f1f0c30c3 100644
+index 70fac030bc5d..f1f0c30c3b75 100644
 --- a/clang/lib/Basic/Targets/OSTargets.h
 +++ b/clang/lib/Basic/Targets/OSTargets.h
 @@ -342,6 +342,34 @@ public:
@@ -79,7 +80,7 @@ index 70fac030b..f1f0c30c3 100644
  template <typename Target>
  class LLVM_LIBRARY_VISIBILITY MinixTargetInfo : public OSTargetInfo<Target> {
 diff --git a/clang/lib/Driver/CMakeLists.txt b/clang/lib/Driver/CMakeLists.txt
-index 6f25d3588..97cfe3422 100644
+index 6f25d3588ebb..97cfe34224ef 100644
 --- a/clang/lib/Driver/CMakeLists.txt
 +++ b/clang/lib/Driver/CMakeLists.txt
 @@ -54,6 +54,7 @@ add_clang_library(clangDriver
@@ -91,7 +92,7 @@ index 6f25d3588..97cfe3422 100644
    ToolChains/MinGW.cpp
    ToolChains/Minix.cpp
 diff --git a/clang/lib/Driver/Driver.cpp b/clang/lib/Driver/Driver.cpp
-index fb8335a36..76369cd6d 100644
+index fb8335a3695d..76369cd6d8f7 100644
 --- a/clang/lib/Driver/Driver.cpp
 +++ b/clang/lib/Driver/Driver.cpp
 @@ -29,6 +29,7 @@
@@ -113,7 +114,7 @@ index fb8335a36..76369cd6d 100644
        TC = std::make_unique<toolchains::Solaris>(*this, Target, Args);
        break;
 diff --git a/clang/lib/Driver/ToolChains/Gnu.cpp b/clang/lib/Driver/ToolChains/Gnu.cpp
-index da197e476..69335dbd2 100644
+index da197e476621..69335dbd2132 100644
 --- a/clang/lib/Driver/ToolChains/Gnu.cpp
 +++ b/clang/lib/Driver/ToolChains/Gnu.cpp
 @@ -261,6 +261,8 @@ static const char *getLDMOption(const llvm::Triple &T, const ArgList &Args) {
@@ -147,7 +148,7 @@ index da197e476..69335dbd2 100644
    static const char *const X86Triples[] = {
 diff --git a/clang/lib/Driver/ToolChains/Managarm.cpp b/clang/lib/Driver/ToolChains/Managarm.cpp
 new file mode 100644
-index 000000000..3941ca892
+index 000000000000..3941ca892bfa
 --- /dev/null
 +++ b/clang/lib/Driver/ToolChains/Managarm.cpp
 @@ -0,0 +1,431 @@
@@ -584,7 +585,7 @@ index 000000000..3941ca892
 +
 diff --git a/clang/lib/Driver/ToolChains/Managarm.h b/clang/lib/Driver/ToolChains/Managarm.h
 new file mode 100644
-index 000000000..86ba4e0ce
+index 000000000000..86ba4e0ce52e
 --- /dev/null
 +++ b/clang/lib/Driver/ToolChains/Managarm.h
 @@ -0,0 +1,49 @@
@@ -638,7 +639,7 @@ index 000000000..86ba4e0ce
 +
 +#endif // LLVM_CLANG_LIB_DRIVER_TOOLCHAINS_MANAGARM_H
 diff --git a/llvm/include/llvm/ADT/Triple.h b/llvm/include/llvm/ADT/Triple.h
-index 76a754d67..7104a41fd 100644
+index 76a754d671fb..7104a41fdce1 100644
 --- a/llvm/include/llvm/ADT/Triple.h
 +++ b/llvm/include/llvm/ADT/Triple.h
 @@ -168,6 +168,7 @@ public:
@@ -661,7 +662,7 @@ index 76a754d67..7104a41fd 100644
    enum ObjectFormatType {
      UnknownObjectFormat,
 diff --git a/llvm/lib/Support/Triple.cpp b/llvm/lib/Support/Triple.cpp
-index 2c480c109..b1087fbb8 100644
+index 2c480c1094a5..b1087fbb83a6 100644
 --- a/llvm/lib/Support/Triple.cpp
 +++ b/llvm/lib/Support/Triple.cpp
 @@ -201,6 +201,7 @@ StringRef Triple::getOSTypeName(OSType Kind) {
@@ -705,5 +706,5 @@ index 2c480c109..b1087fbb8 100644
  }
  
 -- 
-2.29.2
+2.32.0
 
