@@ -1,0 +1,39 @@
+From b207c0ae49dc833786b7c0ba99ecf32b12c8d8c8 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Kacper=20S=C5=82omi=C5=84ski?=
+ <kacper.slominski72@gmail.com>
+Date: Sat, 17 Jul 2021 19:09:58 +0200
+Subject: [PATCH 2/2] Use wayland-scanner found in path and not via pkg-config
+
+This doesn't play too well with cross-compiling to Managarm.
+---
+ cmake/sdlchecks.cmake | 14 +-------------
+ 1 file changed, 1 insertion(+), 13 deletions(-)
+
+diff --git a/cmake/sdlchecks.cmake b/cmake/sdlchecks.cmake
+index a9434c8..92713d1 100644
+--- a/cmake/sdlchecks.cmake
++++ b/cmake/sdlchecks.cmake
+@@ -595,19 +595,7 @@ macro(CheckWayland)
+   if(VIDEO_WAYLAND)
+     pkg_check_modules(WAYLAND wayland-client wayland-scanner wayland-egl wayland-cursor egl xkbcommon)
+ 
+-    if(WAYLAND_FOUND)
+-      execute_process(
+-        COMMAND ${PKG_CONFIG_EXECUTABLE} --variable=wayland_scanner wayland-scanner
+-        WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+-        RESULT_VARIABLE WAYLAND_SCANNER_RC
+-        OUTPUT_VARIABLE WAYLAND_SCANNER
+-        ERROR_QUIET
+-        OUTPUT_STRIP_TRAILING_WHITESPACE
+-      )
+-      if(NOT WAYLAND_SCANNER_RC EQUAL 0)
+-        set(WAYLAND_FOUND FALSE)
+-      endif()
+-    endif()
++    set(WAYLAND_SCANNER wayland-scanner)
+ 
+     if(WAYLAND_FOUND)
+       link_directories(
+-- 
+2.32.0
+
