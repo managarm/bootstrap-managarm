@@ -1,8 +1,9 @@
-From 4682febf9d07f930238f5a29e762e949eec327eb Mon Sep 17 00:00:00 2001
+From 70475a1e62453b3fb89b4725f83f4219da9a5a01 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Arsen=20Arsenovi=C4=87?= <arsen@aarsen.me>
 Date: Mon, 4 Jan 2021 14:42:36 +0100
-Subject: [PATCH] managarm: add protoc.pc
+Subject: [PATCH 2/2] managarm: add protoc.pc
 
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
  Makefile.am  |  2 +-
  configure.ac |  2 +-
@@ -11,7 +12,7 @@ Subject: [PATCH] managarm: add protoc.pc
  create mode 100644 protoc.pc.in
 
 diff --git a/Makefile.am b/Makefile.am
-index 83f1043..cc2e74b 100644
+index 83f1043d1..cc2e74be1 100644
 --- a/Makefile.am
 +++ b/Makefile.am
 @@ -46,7 +46,7 @@ clean-local:
@@ -24,7 +25,7 @@ index 83f1043..cc2e74b 100644
  csharp_EXTRA_DIST=                                                           \
    csharp/.gitignore                                                          \
 diff --git a/configure.ac b/configure.ac
-index 896f347..d682c90 100644
+index 896f3471a..d682c9073 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -185,5 +185,5 @@ export CFLAGS
@@ -36,7 +37,7 @@ index 896f347..d682c90 100644
  AC_OUTPUT
 diff --git a/protoc.pc.in b/protoc.pc.in
 new file mode 100644
-index 0000000..7ae3560
+index 000000000..7ae35600e
 --- /dev/null
 +++ b/protoc.pc.in
 @@ -0,0 +1,11 @@
@@ -52,5 +53,5 @@ index 0000000..7ae3560
 +Libs.private: @LIBS@
 +Cflags: -I${includedir} @PTHREAD_CFLAGS@
 -- 
-2.26.2
+2.32.0
 

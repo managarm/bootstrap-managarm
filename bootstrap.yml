@@ -1107,6 +1107,7 @@ packages:
       - host-protoc
     pkgs_required:
       - mlibc
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
