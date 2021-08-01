@@ -148,7 +148,7 @@ packages:
         - '--path'
         - '@THIS_SOURCE_DIR@'
         - '--root'
-        - '@THIS_COLLECT_DIR@'
+        - '@THIS_COLLECT_DIR@/usr'
         - '-j@PARALLELISM@'
         environ: # Required to build libgit2
           CC: x86_64-managarm-gcc
@@ -506,7 +506,7 @@ packages:
         - '--path'
         - '@THIS_SOURCE_DIR@'
         - '--root'
-        - '@THIS_COLLECT_DIR@'
+        - '@THIS_COLLECT_DIR@/usr'
         - '-j@PARALLELISM@'
 
   - name: util-linux-libs
