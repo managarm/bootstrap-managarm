@@ -33,8 +33,8 @@ general:
         config_toml: 'extrafiles/config.toml'
 
 repositories:
-    tool_archives: 'https://ci.managarm.org/repos/tools/managarm/latest'
-    xbps: 'https://pkgs.managarm.org/repos/amd64/'
+    tool_archives: 'https://builds.managarm.org/repos/tools/managarm/latest'
+    xbps: 'https://repos.managarm.org/repos/amd64/'
 
 # TODO: We currently don't support computed options or anything of that sort,
 #       so we just define the architecture, and the triple as 2 options

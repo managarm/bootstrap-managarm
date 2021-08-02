@@ -55,7 +55,7 @@ index 9890a844..b96b00cb 100644
 +++ b/data/repod-main.conf
 @@ -1 +1 @@
 -repository=https://a-hel-fi.m.voidlinux.org/current
-+repository=https://pkgs.managarm.org/repos/amd64/
++repository=https://repos.managarm.org/repos/amd64/
 -- 
 2.32.0
 
