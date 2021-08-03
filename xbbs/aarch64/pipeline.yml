@@ -1,1 +1,21 @@
-../../ci/pipeline.yml
+jobs:
+  - name: system-toolchain
+    tools:
+      - bootstrap-system-gcc
+      - system-gcc
+    packages:
+      - mlibc
+      - mlibc-headers
+
+  - name: icu
+    tools:
+      - host-icu
+    packages:
+      - icu
+
+  - name: image
+    tasks:
+      - useful-image-dependencies
+      - initialize-empty-image
+      - make-image
+      - xz-image
