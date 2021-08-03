@@ -714,6 +714,7 @@ packages:
         quiet: true
 
   - name: gcc
+    labels: ['aarch64']
     from_source: gcc
     tools_required:
       - tool: system-gcc

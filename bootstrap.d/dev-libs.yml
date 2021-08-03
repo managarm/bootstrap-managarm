@@ -40,6 +40,7 @@ tools:
       - args: ['ninja', 'install']
 
   - name: host-icu
+    labels: ['aarch64']
     from_source: icu
     configure:
       - args:
@@ -218,6 +219,7 @@ packages:
         quiet: true
 
   - name: icu
+    labels: ['aarch64']
     from_source: icu
     tools_required:
       - system-gcc
@@ -765,6 +767,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name : mpc
+    labels: ['aarch64']
     source:
       subdir: ports
       git: 'https://gitlab.inria.fr/mpc/mpc.git'
@@ -797,6 +800,7 @@ packages:
         quiet: true
 
   - name : mpfr
+    labels: ['aarch64']
     source:
       subdir: 'ports'
       url: 'https://ftp.gnu.org/gnu/mpfr/mpfr-4.1.0.tar.xz'
@@ -811,6 +815,10 @@ packages:
       regenerate:
         - args: ['autoreconf', '-v', '-f', '-i', '--warnings=all,error']
     tools_required:
+      - host-autoconf-archive
+      - host-autoconf-v2.69
+      - host-automake-v1.15
+      - host-libtool
       - system-gcc
       - host-libtool
     pkgs_required:
