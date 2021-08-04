@@ -69,6 +69,7 @@ packages:
       - mlibc
       - ncurses
       - libiconv
+    revision: 1
     configure:
       # vim does not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead
@@ -106,6 +107,7 @@ packages:
           vim_cv_memmove_handles_overlap: 'yes'
           vim_cv_bcopy_handles_overlap: 'yes'
           vim_cv_memcpy_handles_overlap: 'yes'
+          STRIP: '@OPTION:arch-triple@-strip'
         workdir: '@THIS_BUILD_DIR@/src/'
     build:
       - args: ['make', '-j@PARALLELISM@']

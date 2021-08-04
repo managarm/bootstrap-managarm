@@ -43,6 +43,8 @@ packages:
             '@THIS_SOURCE_DIR@/build-aux/']
     tools_required:
       - system-gcc
+      - host-autoconf-v2.69
+      - host-automake-v1.15
     pkgs_required:
       - mlibc
     configure:
