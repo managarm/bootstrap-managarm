@@ -635,6 +635,7 @@ packages:
         quiet: true
 
   - name: libpipeline
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/libpipeline.git'

@@ -47,6 +47,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xclock
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xclock.git'
@@ -91,6 +92,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xdpyinfo
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xdpyinfo.git'
@@ -134,6 +136,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xdriinfo
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xdriinfo.git'
@@ -207,6 +210,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xkill
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xkill.git'
@@ -244,6 +248,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xlsclients
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xlsclients.git'
@@ -351,6 +356,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xwininfo
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xwininfo.git'

@@ -283,6 +283,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: groff
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/groff.git'
@@ -349,6 +350,7 @@ packages:
       - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
 
   - name: man-db
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/man-db.git'

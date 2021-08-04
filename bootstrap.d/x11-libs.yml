@@ -264,6 +264,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libice
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libice.git'
@@ -304,6 +305,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libsm
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libsm.git'
@@ -425,6 +427,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxaw
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxaw.git'
@@ -764,6 +767,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxft
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxft.git'
@@ -927,6 +931,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxmu
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxmu.git'
@@ -969,6 +974,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxpm
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxpm.git'
@@ -1132,6 +1138,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxt
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxt.git'
@@ -1198,6 +1205,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxtst
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxtst.git'
@@ -1401,6 +1409,7 @@ packages:
         quiet: true
 
   - name: xcb-util
+    labels: [aarch64]
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxcb-util.git'
