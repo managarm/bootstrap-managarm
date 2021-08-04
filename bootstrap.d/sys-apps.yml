@@ -102,6 +102,7 @@ packages:
         - args: ['cp',
             '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
             '@THIS_SOURCE_DIR@/build-aux/']
+    revision: 1
     tools_required:
       - system-gcc
       - host-autoconf-v2.69
@@ -114,6 +115,7 @@ packages:
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--disable-nls'
+        - '--disable-werror'
       - args: 'sed -i s/-Werror//g @THIS_BUILD_DIR@/lib/Makefile'
       - args: 'sed -i s/-Werror//g @THIS_BUILD_DIR@/src/Makefile'
     build:

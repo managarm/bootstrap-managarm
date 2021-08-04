@@ -1,0 +1,27 @@
+From 8110ff768fb0facc3e0a7cb852b9a9cf97eddf97 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Kacper=20S=C5=82omi=C5=84ski?=
+ <kacper.slominski72@gmail.com>
+Date: Wed, 4 Aug 2021 19:15:20 +0200
+Subject: [PATCH] Makefile: Disable building man pagee
+
+---
+ Makefile.am | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/Makefile.am b/Makefile.am
+index 5041753..89143a1 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -19,7 +19,8 @@
+ ALL_RECURSIVE_TARGETS =
+ 
+ EXTRA_DIST = bootstrap exgettext ChangeLog-2008 cfg.mk dist-check.mk
+-SUBDIRS = lib src tests doc man po gnulib-tests
++#SUBDIRS = lib src tests doc man po gnulib-tests
++SUBDIRS = lib src tests doc po gnulib-tests
+ 
+ ACLOCAL_AMFLAGS = -I m4
+ AM_CFLAGS = $(WARN_CFLAGS) $(WERROR_CFLAGS)
+-- 
+2.32.0
+
