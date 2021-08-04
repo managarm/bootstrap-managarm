@@ -5,7 +5,7 @@ packages:
     source:
       subdir: meta-sources
       version: '1.0'
-    revision: 1
+    revision: 2
     pkgs_required:
       - mlibc
       - core-files
