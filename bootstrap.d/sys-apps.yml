@@ -27,6 +27,7 @@ sources:
 tools:
   - name: host-file
     labels: [aarch64]
+    architecture: noarch
     from_source: file
     tools_required:
       - host-autoconf-v2.69
@@ -44,6 +45,7 @@ tools:
 packages:
   - name: coreutils
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/coreutils.git'
@@ -89,6 +91,7 @@ packages:
 
   - name: diffutils
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/diffutils.git'
@@ -157,6 +160,7 @@ packages:
 
   - name: file
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     from_source: file
     tools_required:
       - system-gcc
@@ -179,6 +183,7 @@ packages:
 
   - name: findutils
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/findutils.git'
@@ -217,6 +222,7 @@ packages:
 
   - name: gawk
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/gawk.git'
@@ -251,6 +257,7 @@ packages:
 
   - name: grep
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/grep.git'
@@ -284,6 +291,7 @@ packages:
 
   - name: groff
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/groff.git'
@@ -324,6 +332,7 @@ packages:
 
   - name: less
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       url: 'http://www.greenwoodsoftware.com/less/less-563.tar.gz'
@@ -351,6 +360,7 @@ packages:
 
   - name: man-db
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/man-db.git'
@@ -457,6 +467,7 @@ packages:
 
   - name: sed
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/sed.git'
@@ -515,6 +526,7 @@ packages:
 
   - name: util-linux-libs
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     from_source: util-linux
     tools_required:
       - system-gcc
@@ -660,6 +672,7 @@ packages:
 
   - name: util-linux
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     from_source: util-linux
     tools_required:
       - system-gcc
@@ -756,6 +769,7 @@ packages:
 
   - name: which
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       url: 'https://ftp.gnu.org/gnu/which/which-2.21.tar.gz'
@@ -779,6 +793,7 @@ packages:
 
   - name: xbps
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://github.com/void-linux/xbps.git'

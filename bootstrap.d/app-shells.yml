@@ -1,6 +1,7 @@
 packages:
   - name: bash
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     default: true
     source:
       subdir: 'ports'

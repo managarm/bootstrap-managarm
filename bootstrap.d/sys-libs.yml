@@ -30,6 +30,7 @@ sources:
 packages:
   - name: gdbm
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/gdbm.git'
@@ -64,6 +65,7 @@ packages:
   
   - name: mtdev
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://bitmath.org/git/mtdev.git'
@@ -97,6 +99,7 @@ packages:
 
   - name: ncurses
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://github.com/ThomasDickey/ncurses-snapshots.git'
@@ -140,6 +143,7 @@ packages:
 
   - name: readline
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/readline.git'
@@ -165,6 +169,7 @@ packages:
 
   - name : tzdata
     labels: [aarch64]
+    architecture: noarch
     default: true
     source:
       subdir: 'ports'

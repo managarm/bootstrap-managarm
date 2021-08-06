@@ -1,6 +1,7 @@
 packages:
   - name: xcb-proto
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/proto/xcbproto.git'
@@ -42,6 +43,7 @@ packages:
 
   - name: xorg-proto
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/proto/xorgproto.git'
@@ -79,6 +81,7 @@ packages:
 
   - name: xorg-server
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/xserver.git'

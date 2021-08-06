@@ -48,6 +48,7 @@ packages:
 
   - name: xclock
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xclock.git'
@@ -93,6 +94,7 @@ packages:
 
   - name: xdpyinfo
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xdpyinfo.git'
@@ -137,6 +139,7 @@ packages:
 
   - name: xdriinfo
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xdriinfo.git'
@@ -174,6 +177,7 @@ packages:
   
   - name: xkbcomp
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xkbcomp.git'
@@ -211,6 +215,7 @@ packages:
 
   - name: xkill
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xkill.git'
@@ -249,6 +254,7 @@ packages:
 
   - name: xlsclients
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xlsclients.git'
@@ -357,6 +363,7 @@ packages:
 
   - name: xwininfo
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xwininfo.git'

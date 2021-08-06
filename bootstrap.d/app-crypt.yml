@@ -1,6 +1,7 @@
 packages:
   - name: p11-kit
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://github.com/p11-glue/p11-kit.git'

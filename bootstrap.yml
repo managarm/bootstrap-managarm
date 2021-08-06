@@ -189,6 +189,7 @@ sources:
 tools:
   - name: host-autoconf-v2.64
     labels: [aarch64]
+    architecture: noarch
     source:
       name: autoconf-v2.64
       subdir: 'ports'
@@ -212,6 +213,7 @@ tools:
 
   - name: host-autoconf-v2.69
     labels: [aarch64]
+    architecture: noarch
     source:
       name: autoconf-v2.69
       subdir: 'ports'
@@ -228,6 +230,7 @@ tools:
 
   - name: host-automake-v1.11
     labels: [aarch64]
+    architecture: noarch
     source:
       name: automake-v1.11
       subdir: 'ports'
@@ -254,6 +257,7 @@ tools:
 
   - name: host-autoconf-archive
     labels: [aarch64]
+    architecture: noarch
     exports_aclocal: true
     source:
       subdir: 'ports'
@@ -266,6 +270,7 @@ tools:
 
   - name: host-automake-v1.15
     labels: [aarch64]
+    architecture: noarch
     source:
       name: automake-v1.15
       subdir: 'ports'
@@ -292,6 +297,7 @@ tools:
 
   - name: host-managarm-tools
     labels: [aarch64]
+    architecture: noarch
     from_source: managarm
     sources_required:
       - frigg
@@ -315,6 +321,7 @@ tools:
 
   - name: host-libtool
     labels: [aarch64]
+    architecture: noarch
     exports_aclocal: true
     source:
       name: libtool
@@ -343,6 +350,7 @@ tools:
 
   - name: host-llvm-toolchain
     labels: [aarch64]
+    architecture: noarch
     from_source: llvm
     sources_required:
       - binutils
@@ -378,6 +386,7 @@ tools:
 
   - name: cross-binutils
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     from_source: binutils
     configure:
       - args:
@@ -402,6 +411,7 @@ tools:
 
   - name: host-protoc
     labels: [aarch64]
+    architecture: noarch
     exports_shared_libs: true
     revision: 2
     from_source: protobuf
@@ -418,6 +428,7 @@ tools:
 
   - name: kernel-gcc
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     from_source: gcc
     tools_required:
       - tool: cross-binutils
@@ -464,6 +475,7 @@ tools:
 
   - name: system-gcc
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     from_source: gcc
     tools_required:
       - tool: cross-binutils
@@ -519,6 +531,7 @@ tools:
 
   - name: bootstrap-system-gcc
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     from_source: gcc
     tools_required:
       - tool: cross-binutils
@@ -564,6 +577,7 @@ tools:
 
   - name: wayland-scanner
     labels: [aarch64]
+    architecture: noarch
     from_source: wayland
     tools_required:
       - host-autoconf-v2.69
@@ -612,6 +626,7 @@ packages:
 
   - name: boost
     labels: [aarch64]
+    architecture: noarch
     source:
       subdir: 'ports'
       git: 'https://github.com/boostorg/boost.git'
@@ -633,6 +648,7 @@ packages:
 
   - name: core-files
     labels: [aarch64]
+    architecture: noarch
     default: true
     source:
       subdir: meta-sources
@@ -663,6 +679,7 @@ packages:
 
   - name: fafnir
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       rolling_version: true
       version: '0.0pl@ROLLING_ID@'
@@ -689,6 +706,7 @@ packages:
 
   - name: frigg
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       rolling_version: true
       version: '0.0pl@ROLLING_ID@'
@@ -714,7 +732,8 @@ packages:
         quiet: true
 
   - name: gcc
-    labels: ['aarch64']
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
     from_source: gcc
     tools_required:
       - tool: system-gcc
@@ -752,6 +771,7 @@ packages:
 
   - name: eudev
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://github.com/gentoo/eudev.git'
@@ -789,6 +809,7 @@ packages:
 
   - name: lewis
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       rolling_version: true
       version: '0.0pl@ROLLING_ID@'
@@ -817,6 +838,7 @@ packages:
 
   - name: libasync
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://github.com/managarm/libasync.git'
@@ -873,6 +895,7 @@ packages:
 
   - name: libsmarter
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       rolling_version: true
       version: '0.0pl@ROLLING_ID@'
@@ -898,6 +921,7 @@ packages:
 
   - name: llvm
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     from_source: llvm
     tools_required:
       - host-cmake
@@ -972,6 +996,7 @@ packages:
 
   - name: managarm-kernel
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     default: true
     from_source: managarm
     sources_required:
@@ -1006,6 +1031,7 @@ packages:
 
   - name: managarm-system
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     default: true
     from_source: managarm
     tools_required:
@@ -1050,6 +1076,7 @@ packages:
 
   - name: mlibc-headers
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     from_source: mlibc
     tools_required:
       - host-managarm-tools
@@ -1073,6 +1100,7 @@ packages:
 
   - name: mlibc
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     from_source: mlibc
     tools_required:
       - host-managarm-tools
@@ -1102,6 +1130,7 @@ packages:
 
   - name: protobuf
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     from_source: protobuf
     tools_required:
       - system-gcc
@@ -1125,6 +1154,7 @@ packages:
 
   - name: wayland
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     from_source: wayland
     tools_required:
       - host-autoconf-v2.69
@@ -1158,6 +1188,7 @@ packages:
 
   - name: zlib
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://github.com/madler/zlib.git'
@@ -1182,6 +1213,7 @@ packages:
 
   - name: libtsm
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://github.com/managarm/libtsm-mirror.git'
@@ -1220,6 +1252,7 @@ packages:
 
   - name: kmscon
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     default: true
     source:
       subdir: 'ports'

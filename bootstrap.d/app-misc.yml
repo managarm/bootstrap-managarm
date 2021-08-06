@@ -1,6 +1,7 @@
 packages:
   - name: ca-certificates
     labels: [aarch64]
+    architecture: noarch
     source:
       subdir: ports
       git: 'https://github.com/djlucas/make-ca.git'

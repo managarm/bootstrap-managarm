@@ -22,6 +22,7 @@ sources:
 tools:
   - name: host-cmake
     labels: [aarch64]
+    architecture: noarch
     from_source: cmake
     configure:
       - args:
@@ -38,6 +39,7 @@ tools:
   # The easiest way to ensure that they are available is to just install pkg-config.
   - name: host-pkg-config
     labels: [aarch64]
+    architecture: noarch
     exports_aclocal: true
     from_source: pkg-config
     configure:

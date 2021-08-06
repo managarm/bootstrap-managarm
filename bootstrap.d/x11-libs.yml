@@ -18,6 +18,7 @@ sources:
 tools:
   - name: host-xtrans
     labels: [aarch64]
+    architecture: noarch
     exports_aclocal: true
     from_source: libxtrans
     configure:
@@ -32,6 +33,7 @@ tools:
 packages:
   - name: cairo
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/cairo/cairo.git'
@@ -175,6 +177,7 @@ packages:
 
   - name: libdrm
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/mesa/drm'
@@ -220,6 +223,7 @@ packages:
 
   - name: libfontenc
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libfontenc.git'
@@ -265,6 +269,7 @@ packages:
 
   - name: libice
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libice.git'
@@ -306,6 +311,7 @@ packages:
 
   - name: libsm
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libsm.git'
@@ -348,6 +354,7 @@ packages:
 
   - name: libx11
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libx11.git'
@@ -391,6 +398,7 @@ packages:
 
   - name: libxau
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxau.git'
@@ -428,6 +436,7 @@ packages:
 
   - name: libxaw
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxaw.git'
@@ -470,6 +479,7 @@ packages:
 
   - name: libxcb
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxcb.git'
@@ -515,6 +525,7 @@ packages:
 
   - name: libxcursor
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxcursor.git'
@@ -555,6 +566,7 @@ packages:
 
   - name: libxdamage
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxdamage.git'
@@ -596,6 +608,7 @@ packages:
 
   - name: libxdmcp
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxdmcp.git'
@@ -634,6 +647,7 @@ packages:
 
   - name: libxext
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxext.git'
@@ -675,6 +689,7 @@ packages:
 
   - name: libxfixes
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxfixes.git'
@@ -715,6 +730,7 @@ packages:
 
   - name: libxfont2
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxfont.git'
@@ -768,6 +784,7 @@ packages:
 
   - name: libxft
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxft.git'
@@ -809,6 +826,7 @@ packages:
 
   - name: libxi
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxi.git'
@@ -852,6 +870,7 @@ packages:
 
   - name: libxkbcommon
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://github.com/xkbcommon/libxkbcommon.git'
@@ -893,6 +912,7 @@ packages:
 
   - name: libxkbfile
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxkbfile.git'
@@ -932,6 +952,7 @@ packages:
 
   - name: libxmu
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxmu.git'
@@ -975,6 +996,7 @@ packages:
 
   - name: libxpm
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxpm.git'
@@ -1015,6 +1037,7 @@ packages:
 
   - name: libxrandr
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxrandr.git'
@@ -1058,6 +1081,7 @@ packages:
 
   - name: libxrender
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxrender.git'
@@ -1099,6 +1123,7 @@ packages:
 
   - name: libxshmfence
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxshmfence.git'
@@ -1139,6 +1164,7 @@ packages:
 
   - name: libxt
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxt.git'
@@ -1183,6 +1209,7 @@ packages:
 
   - name: libxtrans
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     from_source: libxtrans
     tools_required:
       - system-gcc
@@ -1206,6 +1233,7 @@ packages:
 
   - name: libxtst
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxtst.git'
@@ -1248,6 +1276,7 @@ packages:
 
   - name: libxxf86dga
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxxf86dga.git'
@@ -1290,6 +1319,7 @@ packages:
 
   - name: libxxf86vm
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxxf86vm.git'
@@ -1372,6 +1402,7 @@ packages:
 
   - name: pixman
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/pixman/pixman.git'
@@ -1410,6 +1441,7 @@ packages:
 
   - name: xcb-util
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxcb-util.git'

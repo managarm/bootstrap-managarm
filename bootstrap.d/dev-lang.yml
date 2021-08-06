@@ -34,6 +34,7 @@ sources:
 tools:
   - name: host-python
     labels: [aarch64]
+    architecture: noarch
     from_source: python
     configure:
       - args:
@@ -181,6 +182,7 @@ packages:
 
   - name: python
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     from_source: python
     tools_required:
       - host-pkg-config
