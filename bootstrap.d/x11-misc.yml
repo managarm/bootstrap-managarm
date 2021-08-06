@@ -17,6 +17,7 @@ sources:
 tools:
   - name: host-xorg-macros
     labels: [aarch64]
+    architecture: noarch
     exports_aclocal: true
     from_source: xorg-util-macros
     configure:
@@ -102,6 +103,7 @@ packages:
 
   - name: xkeyboard-config
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/xkeyboard-config/xkeyboard-config.git'
@@ -145,6 +147,7 @@ packages:
 
   - name: xorg-util-macros
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     from_source: xorg-util-macros
     tools_required:
       - system-gcc

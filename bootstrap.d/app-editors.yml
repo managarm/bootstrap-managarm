@@ -1,6 +1,7 @@
 packages:
   - name: nano
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/nano.git'
@@ -56,6 +57,7 @@ packages:
 
   - name: vim
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://github.com/vim/vim.git'

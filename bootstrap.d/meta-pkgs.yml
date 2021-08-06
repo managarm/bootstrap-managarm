@@ -2,6 +2,7 @@ packages:
   # Meta package with the bare minimum to boot kmscon and be useful
   - name: base
     labels: [aarch64]
+    architecture: noarch
     source:
       subdir: meta-sources
       version: '1.0'
@@ -61,6 +62,7 @@ packages:
   # Meta package for weston and usefull utilities
   - name: weston-desktop
     labels: [aarch64]
+    architecture: noarch
     source:
       subdir: meta-sources
       version: '1.0'

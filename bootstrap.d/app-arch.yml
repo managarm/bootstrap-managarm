@@ -1,6 +1,7 @@
 packages:
   - name: bzip2
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       url: 'https://www.sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz'
@@ -28,6 +29,7 @@ packages:
 
   - name: gzip
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/gzip.git'
@@ -61,6 +63,7 @@ packages:
 
   - name: libarchive
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://github.com/libarchive/libarchive.git'
@@ -120,6 +123,7 @@ packages:
 
   - name: tar
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/tar.git'
@@ -153,6 +157,7 @@ packages:
 
   - name: xz-utils
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://git.tukaani.org/xz.git'
@@ -188,6 +193,7 @@ packages:
 
   - name: zstd
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://github.com/facebook/zstd.git'

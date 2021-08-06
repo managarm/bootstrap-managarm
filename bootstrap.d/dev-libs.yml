@@ -40,7 +40,8 @@ tools:
       - args: ['ninja', 'install']
 
   - name: host-icu
-    labels: ['aarch64']
+    labels: [aarch64]
+    architecture: noarch
     from_source: icu
     configure:
       - args:
@@ -184,6 +185,7 @@ packages:
 
   - name : gmp
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       hg: 'https://gmplib.org/repo/gmp-6.2/'
@@ -219,7 +221,8 @@ packages:
         quiet: true
 
   - name: icu
-    labels: ['aarch64']
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
     from_source: icu
     tools_required:
       - system-gcc
@@ -268,6 +271,7 @@ packages:
 
   - name: libevdev
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/libevdev/libevdev.git'
@@ -302,6 +306,7 @@ packages:
 
   - name: libexpat
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://github.com/libexpat/libexpat.git'
@@ -338,6 +343,7 @@ packages:
 
   - name: libffi
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://github.com/libffi/libffi.git'
@@ -445,6 +451,7 @@ packages:
 
   - name: libiconv
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/libiconv.git'
@@ -512,6 +519,7 @@ packages:
 
   - name: libinput
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://github.com/wayland-project/libinput.git'
@@ -549,6 +557,7 @@ packages:
 
   - name: libintl
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       url: 'https://ftp.gnu.org/gnu/gettext/gettext-0.21.tar.xz'
@@ -636,6 +645,7 @@ packages:
 
   - name: libpipeline
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/libpipeline.git'
@@ -668,6 +678,7 @@ packages:
 
   - name: libtasn
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.com/gnutls/libtasn1.git'
@@ -730,6 +741,7 @@ packages:
 
   - name: libxml
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.gnome.org/GNOME/libxml2.git'
@@ -768,7 +780,8 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name : mpc
-    labels: ['aarch64']
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.inria.fr/mpc/mpc.git'
@@ -801,7 +814,8 @@ packages:
         quiet: true
 
   - name : mpfr
-    labels: ['aarch64']
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       url: 'https://ftp.gnu.org/gnu/mpfr/mpfr-4.1.0.tar.xz'
@@ -847,6 +861,7 @@ packages:
 
   - name: nettle
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://git.lysator.liu.se/nettle/nettle.git'
@@ -884,6 +899,7 @@ packages:
 
   - name: openssl
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://github.com/openssl/openssl.git'
@@ -923,6 +939,7 @@ packages:
 
   - name: pcre
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       svn: 'svn://vcs.pcre.org/pcre/code/trunk'
@@ -992,6 +1009,7 @@ packages:
 
   - name: wayland-protocols
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://github.com/wayland-project/wayland-protocols.git'
@@ -1022,6 +1040,7 @@ packages:
 
   - name: weston
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://github.com/wayland-project/weston.git'

@@ -1,6 +1,7 @@
 packages:
   - name: fontconfig
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/fontconfig/fontconfig'
@@ -80,6 +81,7 @@ packages:
 
   - name: freetype
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'git://git.sv.nongnu.org/freetype/freetype2.git'
@@ -228,6 +230,7 @@ packages:
 
   - name: libepoxy
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://github.com/anholt/libepoxy.git'
@@ -353,6 +356,7 @@ packages:
 
   - name: libpng
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://git.code.sf.net/p/libpng/code'
@@ -456,6 +460,7 @@ packages:
 
   - name: mesa
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/mesa/mesa.git'

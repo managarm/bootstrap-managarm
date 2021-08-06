@@ -39,6 +39,7 @@ packages:
 
   - name: iana-etc
     labels: [aarch64]
+    architecture: noarch
     default: true
     source:
       subdir: ports
@@ -158,6 +159,7 @@ packages:
 
   - name: wget
     labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/wget.git'

@@ -39,6 +39,7 @@ sources:
 tools:
   - name: host-bison
     labels: [aarch64]
+    architecture: noarch
     from_source: bison
     tools_required:
       - host-autoconf-v2.69
@@ -54,6 +55,7 @@ tools:
 
   - name: host-gettext
     labels: [aarch64]
+    architecture: noarch
     from_source: gettext
     exports_aclocal: true
     tools_required:
