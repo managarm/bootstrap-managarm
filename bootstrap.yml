@@ -1270,6 +1270,13 @@ packages:
   - name: libtsm
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Terminal emulator state machine
+      description: LibTSM provides a state machine for DEC VT100-VT520 compatible terminal emulators.
+      spdx: 'MIT'
+      website: 'https://github.com/Aetf/libtsm'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: 'ports'
       git: 'https://github.com/managarm/libtsm-mirror.git'
@@ -1310,6 +1317,13 @@ packages:
     labels: [aarch64]
     architecture: '@OPTION:arch@'
     default: true
+    metadata:
+      summary: Terminal emulator based on KMS/DRM
+      description: Kmscon is a simle KMS/DRM based terminal emulator.
+      spdx: 'MIT'
+      website: 'https://github.com/Aetf/kmscon'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-apps']
     source:
       subdir: 'ports'
       git: 'https://github.com/dvdhrm/kmscon.git'
