@@ -51,4 +51,4 @@ jobs:
                 RSYNC_PASSWORD: ${{ secrets.RSYNC_CBUILDRT_ROOTFS_PASSWD }}
             run: |
                 sha256sum managarm-buildenv.tar.gz > managarm-buildenv.sum
-                rsync-ssl -a --delete managarm-buildenv.{sum,tar.gz} wbuildenv@rsync.managarm.org::buildenv/
+                rsync-ssl -a --delete managarm-buildenv.{sum,tar.gz} buildenv@rsync.managarm.org::wbuildenv/
