@@ -422,18 +422,27 @@ packages:
       - args: ['cp', '-rv', '@THIS_SOURCE_DIR@/man3p', '@THIS_COLLECT_DIR@/usr/share/man/']
 
   - name: mini-lspci
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Small lspci program
+      description: Small program for displaying PCI information.
+      spdx: 'Zlib'
+      website: 'https://github.com/qookei/mini-lspci'
+      maintainer: 'Kacper Słomiński <qookie@managarm.org>'
+      categories: ['sys-apps']
     source:
       subdir: 'ports'
       git: 'https://github.com/qookei/mini-lspci.git'
-      branch: 'master'
-      rolling_version: true
-      version: '0.0pl@ROLLING_ID@'
+      tag: 'v1.2.1'
+      version: '1.2.1'
       regenerate:
-        - args: ['wget', '-O', '@THIS_SOURCE_DIR@/pci.ids', 'https://raw.githubusercontent.com/pciutils/pciids/master/pci.ids']
+        - args: ['git', 'submodule', 'update', '--init']
     tools_required:
       - system-gcc
     pkgs_required:
       - mlibc
+      - pciids
     configure:
       - args:
         - 'meson'
@@ -448,8 +457,6 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
-      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/share/hwdata/']
-      - args: ['cp', '-f', '@THIS_SOURCE_DIR@/pci.ids', '@THIS_COLLECT_DIR@/usr/share/hwdata/pci.ids']
 
   - name: neofetch
     source:
