@@ -376,7 +376,14 @@ packages:
         quiet: true
 
   - name: libgcrypt
-    stability_level: broken
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: General purpose crypto library based on the code used in GnuPG
+      description: This package contains a general purpose crypto library based on the code used in GnuPG. The library provides a high level interface to cryptographic building blocks using an extendable and flexible API.
+      spdx: 'LGPL-2.0-only'
+      website: 'https://www.gnupg.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: 'ports'
       git: 'https://github.com/gpg/libgcrypt.git'
@@ -388,9 +395,7 @@ packages:
         - host-libtool
       regenerate:
         - args: ['./autogen.sh']
-        - args: ['cp',
-            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
-            '@THIS_SOURCE_DIR@/build-aux/']
+        - args: ['autoreconf', '-fvi']
     tools_required:
       - system-gcc
     pkgs_required:
@@ -400,6 +405,8 @@ packages:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=@OPTION:arch-triple@'
+        - '--enable-shared'
+        - '--disable-static'
         - '--prefix=/usr'
         - '--disable-nls'
         - '--disable-doc'
@@ -416,6 +423,14 @@ packages:
         quiet: true
 
   - name: libgpg-error
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Contains error handling functions used by GnuPG software
+      description: This package contains a library that defines common error values for all GnuPG components.
+      spdx: 'LGPL-2.1-only'
+      website: 'https://www.gnupg.org/related_software/libgpg-error'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: 'ports'
       git: 'https://dev.gnupg.org/source/libgpg-error.git'

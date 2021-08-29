@@ -1,0 +1,36 @@
+From db1c8580aca27a8f3428aef9f988c44d7d62392a Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Mon, 30 Aug 2021 02:05:47 +0200
+Subject: [PATCH] Add Managarm support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ random/rndunix.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/random/rndunix.c b/random/rndunix.c
+index fcb45b7..1e32242 100644
+--- a/random/rndunix.c
++++ b/random/rndunix.c
+@@ -105,7 +105,7 @@
+ #include <unistd.h>
+ #include <fcntl.h>
+ #include <pwd.h>
+-#ifndef __QNX__
++#if !defined __QNX__ && !defined (__managarm__)
+ #include <sys/errno.h>
+ #include <sys/ipc.h>
+ #endif				/* __QNX__ */
+@@ -119,7 +119,9 @@
+ #ifndef __QNX__
+ #include <sys/shm.h>
+ #include <signal.h>
++#ifndef __managarm__
+ #include <sys/signal.h>
++#endif
+ #endif				/* __QNX__ */
+ #include <sys/stat.h>
+ #include <sys/types.h>		/* Verschiedene komische Typen */
+-- 
+2.33.0
+
