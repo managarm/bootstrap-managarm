@@ -1,4 +1,49 @@
 packages:
+  - name: glib-networking
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Network-related giomodules for glib
+      description: This package contains network related gio modules for GLib.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://gitlab.gnome.org/GNOME/glib-networking'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['net-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.gnome.org/GNOME/glib-networking.git'
+      tag: '2.68.2'
+      version: '2.68.2'
+    tools_required:
+      - system-gcc
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - glib
+      - gnutls
+      - gsettings-desktop-schemas
+    configure:
+      - args:
+        - 'meson'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--buildtype=debugoptimized'
+        - '-Dintrospection=false'
+        - '-Dgnutls=enabled'
+        - '-Dopenssl=disabled'
+        - '-Dinstalled_tests=false'
+        - '-Dstatic_modules=false'
+        - '-Dlibproxy=disabled'
+        - '-Dgnome_proxy=disabled'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: gnutls
     architecture: '@OPTION:arch@'
     metadata:
