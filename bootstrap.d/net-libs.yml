@@ -1,0 +1,58 @@
+packages:
+  - name: gnutls
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: A secure communications library implementing the SSL, TLS and DTLS protocols
+      description: This package contains libraries and userspace tools which provide a secure layer over a reliable transport layer. Currently the GnuTLS library implements the proposed standards by the IETF's TLS working group.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://www.gnutls.org'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['net-libs']
+    source:
+      subdir: 'ports'
+      url: 'https://www.gnupg.org/ftp/gcrypt/gnutls/v3.7/gnutls-3.7.2.tar.xz'
+      format: 'tar.xz'
+      extract_path: 'gnutls-3.7.2'
+      version: '3.7.2'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['autoreconf', '-fvi']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - libtasn
+      - p11-kit
+      - nettle
+      - gmp
+      - libunistring
+      - libidn2
+      - libiconv
+      - libintl
+      - openssl
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--disable-guile'
+        - '--disable-rpath'
+        - '--with-default-trust-store-pkcs11=pkcs11:'
+        - '--docdir=/usr/share/doc/gnutls-3.7.2'
+        - '--with-default-trust-store-file=/etc/pki/tls/certs/ca-bundle.crt'
+        - '--enable-openssl-compatibility'
+        - '--without-tpm'
+        - '--disable-libdane'
+        - '--disable-nls'
+        - '--enable-ssl3-support'
+        - '--enable-local-libopts'
+        - '--enable-cross-guesses=risky'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
