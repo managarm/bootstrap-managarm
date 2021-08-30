@@ -27,6 +27,7 @@ imports:
   - file: bootstrap.d/x11-base.yml
   - file: bootstrap.d/x11-libs.yml
   - file: bootstrap.d/x11-misc.yml
+  - file: bootstrap.d/x11-themes.yml
 
 general:
     patch_author: The Managarm Project

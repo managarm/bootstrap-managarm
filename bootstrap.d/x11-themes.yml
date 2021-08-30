@@ -1,0 +1,39 @@
+packages:
+  - name: xcursor-themes
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: 'X.Org cursor themes: whiteglass, redglass and handhelds'
+      description: This package provides various themes for cursors.
+      spdx: 'MIT'
+      website: 'https://gitlab.freedesktop.org/xorg/data/xcursor-themes'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['x11-themes']
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.freedesktop.org/xorg/data/cursors.git'
+      tag: 'xcursor-themes-1.0.6'
+      version: '1.0.6'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+        - host-xorg-macros
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            NOCONFIGURE: '1'
+    tools_required:
+      - system-gcc
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--sysconfdir=/etc'
+        - '--localstatedir=/var'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
