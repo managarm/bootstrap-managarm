@@ -11,6 +11,7 @@ imports:
   - file: bootstrap.d/dev-util.yml
   - file: bootstrap.d/games-board.yml
   - file: bootstrap.d/games-misc.yml
+  - file: bootstrap.d/gnome-base.yml
   - file: bootstrap.d/media-fonts.yml
   - file: bootstrap.d/media-gfx.yml
   - file: bootstrap.d/media-libs.yml

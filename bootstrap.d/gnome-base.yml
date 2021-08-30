@@ -1,0 +1,44 @@
+packages:
+  - name: gsettings-desktop-schemas
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Collection of GSettings schemas for GNOME desktop
+      description: This package contains a collection of GSettings schemas for settings shared by various components of a GNOME Desktop.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://gitlab.gnome.org/GNOME/gsettings-desktop-schemas'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['gnome-base']
+    source:
+      subdir: ports
+      git: 'https://gitlab.gnome.org/GNOME/gsettings-desktop-schemas.git'
+      tag: '3.38.0'
+      version: '3.38.0'
+    tools_required:
+      - system-gcc
+      - host-gobject-introspection
+      - host-libtool
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - glib
+    configure:
+      - args: |
+              sed -i -r 's:"(/system):"/org/gnome\1:g' @THIS_SOURCE_DIR@/schemas/*.in
+      - args:
+        - 'meson'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '-Dintrospection=false'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+    scripts:
+        post_install:
+          - args: 'echo "Running glib-compile-schemas; this may take a few seconds..."'
+          - args: ['glib-compile-schemas /usr/share/glib-2.0/schemas']
