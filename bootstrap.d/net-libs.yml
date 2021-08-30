@@ -148,3 +148,55 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: libsoup
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: https://wiki.gnome.org/Projects/libsoup
+      description: This package is a HTTP client/server library for GNOME. It uses GObject and the GLib main loop to integrate with GNOME applications and it also has an asynchronous API for use in threaded applications.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://wiki.gnome.org/Projects/libsoup'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['net-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.gnome.org/GNOME/libsoup.git'
+      tag: '2.72.0'
+      version: '2.72.0'
+    tools_required:
+      - system-gcc
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - glib
+      - glib-networking
+      - zlib
+      - libxml
+      - sqlite
+      - libpsl
+    configure:
+      - args:
+        - 'meson'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--buildtype=debugoptimized'
+        - '-Dintrospection=disabled'
+        - '-Dinstalled_tests=false'
+        - '-Dsysprof=disabled'
+        - '-Dgtk_doc=false'
+        - '-Dvapi=disabled'
+        - '-Dgnome=false'
+        - '-Dtls_check=false'
+        - '-Dbrotli=disabled'
+        - '-Dntlm=disabled'
+        - '-Dgssapi=disabled'
+        - '-Dtests=false'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
