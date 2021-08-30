@@ -5,6 +5,12 @@ sources:
     tag: '2.68.3'
     version: '2.68.3'
 
+  - name: gobject-introspection
+    subdir: 'ports'
+    git: 'https://gitlab.gnome.org/GNOME/gobject-introspection.git'
+    tag: '1.64.1'
+    version: '1.64.1'
+
   - name: icu
     subdir: 'ports'
     git: 'https://github.com/unicode-org/icu.git'
@@ -29,6 +35,19 @@ tools:
   - name: host-glib
     exports_aclocal: true
     from_source: glib
+    configure:
+      - args:
+        - 'meson'
+        - '--prefix=@PREFIX@'
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
+
+  - name: host-gobject-introspection
+    exports_aclocal: true
+    from_source: gobject-introspection
     configure:
       - args:
         - 'meson'
