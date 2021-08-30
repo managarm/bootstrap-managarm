@@ -101,3 +101,50 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: libpsl
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: C library for the Public Suffix List
+      description: This package provides a library for accessing and resolving information from the Public Suffix List (PSL). The PSL is a set of domain names beyond the standard suffixes, such as .com.
+      spdx: 'MIT'
+      website: 'https://github.com/rockdaboot/libpsl'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['net-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/rockdaboot/libpsl.git'
+      tag: '0.21.1'
+      version: '0.21.1'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['./autogen.sh']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - libidn2
+      - libunistring
+      - libiconv
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--disable-static'
+        - '--enable-builtin=libidn2'
+        - '--enable-runtime=libidn2'
+        # Gentoo disables asan, cfi and ubsan
+        - '--disable-asan'
+        - '--disable-cfi'
+        - '--disable-ubsan'
+        - '--disable-man'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
