@@ -53,6 +53,7 @@ packages:
       - glib
       - libxml
       - itstool
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -66,6 +67,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+    scripts:
+        post_install:
+          - args: 'echo "Running update-mime-database; this may take a minute or 2..."'
+          - args: ['update-mime-database /usr/share/mime/']
 
   - name: xbitmaps
     source:
