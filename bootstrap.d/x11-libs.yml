@@ -154,6 +154,8 @@ packages:
       - libxext
       - libxcb
       - pango
+      - hicolor-icon-theme
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -174,6 +176,12 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      # Rename a file to avoid conflicts, we will use gtk3 as default, so rename this one.
+      - args: ['mv', '-v', '@THIS_COLLECT_DIR@/usr/bin/gtk-update-icon-cache', '@THIS_COLLECT_DIR@/usr/bin/gtk2-update-icon-cache']
+    scripts:
+        post_install:
+          - args: 'echo "Running gtk-query-immodules-2.0; this may a few moments..."'
+          - args: ['gtk-query-immodules-2.0 --update-cache']
 
   - name: libdrm
     labels: [aarch64]

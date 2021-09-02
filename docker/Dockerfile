@@ -7,6 +7,8 @@ RUN apt-get update \
 	&& apt-get -y install \
 		# Don't install recommended stuff
 		--no-install-recommends \
+		# Used by gnutls
+		autogen \
 		# Used by host-bison
 		autopoint \
 		# Used by binutils in the build process
@@ -25,6 +27,8 @@ RUN apt-get update \
 		libfl2 \
 		# Used by many tools in the build process
 		gawk \
+		# Used by libidn2
+		gengetopt \
 		# Used by host-gettext
 		gettext \
 		# Git is used extensively in the build process
