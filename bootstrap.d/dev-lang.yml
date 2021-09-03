@@ -225,6 +225,60 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
+  - name: tcl
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Tool Command Language
+      description: Tcl is a powerful, easy to use, embeddable, cross-platform interpreted scripting language.
+      spdx: 'TCL'
+      website: 'http://www.tcl.tk/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-lang']
+    source:
+      subdir: ports
+      url: 'https://downloads.sourceforge.net/tcl/tcl8.6.11-src.tar.gz'
+      format: 'tar.gz'
+      extract_path: 'tcl8.6.11'
+      version: '8.6.11'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - sqlite
+      - zlib
+    configure:
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+      - args:
+        - './unix/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--mandir=/usr/share/man'
+        - '--enable-64bit'
+        environ:
+          # Yes, our strstr and strtoul are not broken, use them
+          tcl_cv_strstr_unbroken: 'ok'
+          tcl_cv_strtoul_unbroken: 'ok'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      # The Tcl package expects that its source tree is preserved so that packages depending on it for their compilation can utilize it.
+      # These sed's remove the references to the build directory and replace them with saner system-wide locations. 
+      - args: ['sed', '-e', "s#@THIS_SOURCE_DIR@/unix#/usr/lib#", '-e', "s#@THIS_SOURCE_DIR@#/usr/include#", '-i', 'tclConfig.sh']
+      - args: ['sed', '-e', "s#$@THIS_SOURCE_DIR@/unix/pkgs/tdbc1.1.2#/usr/lib/tdbc1.1.2#", '-e', "s#@THIS_SOURCE_DIR@/pkgs/tdbc1.1.2/generic#/usr/include#",
+          '-e', "s#@THIS_SOURCE_DIR@/pkgs/tdbc1.1.2/library#/usr/lib/tcl8.6#", '-e', "s#@THIS_SOURCE_DIR@/pkgs/tdbc1.1.2#/usr/include#", '-i', 'pkgs/tdbc1.1.2/tdbcConfig.sh']
+      - args: ['sed', '-e', "s#@THIS_SOURCE_DIR@/unix/pkgs/itcl4.2.0#/usr/lib/itcl4.2.1#", '-e', "s#@THIS_SOURCE_DIR@/pkgs/itcl4.2.1/generic#/usr/include#",
+          '-e', "s#@THIS_SOURCE_DIR@/pkgs/itcl4.2.1#/usr/include#", '-i', 'pkgs/itcl4.2.1/itclConfig.sh']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['make', 'install-private-headers']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+      # Make some expected links and correct the permissions on the library conform BLFS instructions. Also rename a man page to not conflict with Perl.
+      - args: ['ln', '-v', '-sf', 'tclsh8.6', '@THIS_COLLECT_DIR@/usr/bin/tclsh']
+      - args: ['mv', '@THIS_COLLECT_DIR@/usr/share/man/man3/Thread.3', '@THIS_COLLECT_DIR@/usr/share/man/man3/Tcl_Thread.3']
+      - args: ['ln', '-v', '-sf', 'libtcl8.6.so', '@THIS_COLLECT_DIR@/usr/lib/libtcl8.so']
+      - args: ['ln', '-v', '-sf', 'libtcl8.6.so', '@THIS_COLLECT_DIR@/usr/lib/libtcl.so']
+      - args: ['chmod', '-v', '755', '@THIS_COLLECT_DIR@/usr/lib/libtcl8.6.so']
+
   - name: yasm
     source:
       subdir: 'ports'

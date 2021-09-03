@@ -150,6 +150,35 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: ninja
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: The Ninja build system
+      description: Ninja is a small build system similar to make.
+      spdx: 'Apache-2.0'
+      website: 'https://ninja-build.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-util']
+    source:
+      subdir: ports
+      git: 'https://github.com/ninja-build/ninja.git'
+      tag: 'v1.10.2'
+      version: '1.10.2'
+    tools_required:
+      - system-gcc
+      - host-cmake
+    configure:
+      - args:
+        - 'cmake'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: pkg-config
     from_source: pkg-config
     tools_required:
