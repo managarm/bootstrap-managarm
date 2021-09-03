@@ -1323,7 +1323,7 @@ packages:
     default: true
     metadata:
       summary: Terminal emulator based on KMS/DRM
-      description: Kmscon is a simle KMS/DRM based terminal emulator.
+      description: Kmscon is a simple KMS/DRM based terminal emulator.
       spdx: 'MIT'
       website: 'https://github.com/Aetf/kmscon'
       maintainer: "Dennis Bonke <dennis@managarm.org>"
