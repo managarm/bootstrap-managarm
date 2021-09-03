@@ -48,6 +48,8 @@ tools:
   - name: host-gobject-introspection
     exports_aclocal: true
     from_source: gobject-introspection
+    tools_required:
+      - host-glib
     configure:
       - args:
         - 'meson'
