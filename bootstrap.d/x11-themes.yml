@@ -57,6 +57,8 @@ packages:
             NOCONFIGURE: '1'
     tools_required:
       - system-gcc
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
