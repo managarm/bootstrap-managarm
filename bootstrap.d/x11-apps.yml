@@ -1,3 +1,32 @@
+sources:
+  - name: xcursorgen
+    subdir: ports
+    git: 'https://gitlab.freedesktop.org/xorg/app/xcursorgen.git'
+    tag: 'xcursorgen-1.0.7'
+    version: '1.0.7'
+    tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.15
+      - host-libtool
+      - host-pkg-config
+      - host-xorg-macros
+    regenerate:
+      - args: ['./autogen.sh']
+        environ:
+          'NOCONFIGURE': 'yes'
+
+tools:
+  - name: host-xcursorgen
+    from_source: xcursorgen
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--prefix=@PREFIX@'
+    compile:
+      - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'install']
+
 packages:
   - name: mesa-demos
     source:

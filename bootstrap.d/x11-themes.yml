@@ -57,8 +57,11 @@ packages:
             NOCONFIGURE: '1'
     tools_required:
       - system-gcc
+      - host-xcursorgen
     pkgs_required:
       - mlibc
+      - xorg-util-macros
+      - libxcursor
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

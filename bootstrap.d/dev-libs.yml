@@ -50,6 +50,8 @@ tools:
     from_source: gobject-introspection
     tools_required:
       - host-glib
+      - virtual: pkgconfig-for-host
+        triple: "@OPTION:arch-triple@"
     configure:
       - args:
         - 'meson'
