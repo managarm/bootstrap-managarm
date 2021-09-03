@@ -1,5 +1,12 @@
 packages:
   - name: ca-certificates
+    metadata:
+      summary: Common CA certificates PEM files
+      description: This package provides the standard set of Certificate Authorities as chosen by Mozilla in their NSS project  It also includes a script to (re)generate the certificate files.
+      spdx: 'MPL-2.0'
+      website: 'https://packages.debian.org/sid/ca-certificates'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['app-misc']
     labels: [aarch64]
     architecture: noarch
     source:
@@ -31,6 +38,13 @@ packages:
       - args: ['chmod', '0755', '@THIS_COLLECT_DIR@/etc/ssl/certs/.']
 
   - name: sl
+    metadata:
+      summary: Never type 'ls' wrong again!
+      description: This package provides a fun way to correct the all too common typo of 'sl' when 'ls' was meant.
+      spdx: 'no-spdx: Toyoda license'
+      website: 'https://github.com/mtoyoda/sl/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['app-misc']
     source:
       subdir: ports
       git: 'https://github.com/mtoyoda/sl.git'

@@ -2,6 +2,13 @@ packages:
   - name: bzip2
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: A high-quality data compressor
+      description: This package contains programs for compressing and decompressing files.
+      spdx: 'bzip2-1.0.6'
+      website: 'https://gitlab.com/federicomenaquintero/bzip2'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['app-arch']
     source:
       subdir: ports
       url: 'https://www.sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz'
@@ -30,6 +37,13 @@ packages:
   - name: gzip
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: The standard GNU compressor
+      description: This package provides the standard GNU file compression utilities.
+      spdx: 'GPL-3.0-only'
+      website: 'https://www.gnu.org/software/gzip/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['app-arch']
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/gzip.git'
@@ -64,6 +78,13 @@ packages:
   - name: libarchive
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Multi-format archive and compression library
+      description: This package provides a common library to interface with the most used file compression standards.
+      spdx: 'BSD-2-Clause'
+      website: 'https://www.libarchive.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['app-arch']
     source:
       subdir: 'ports'
       git: 'https://github.com/libarchive/libarchive.git'
@@ -97,6 +118,13 @@ packages:
         quiet: true
 
   - name: lz4
+    metadata:
+      summary: Extremely Fast Compression algorithm
+      description: This package provides tools to compress and decompress files in .lz4 format.
+      spdx: 'BSD-2-Clause'
+      website: 'https://github.com/lz4/lz4'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['app-arch']
     source:
       subdir: 'ports'
       git: 'https://github.com/lz4/lz4.git'
@@ -124,6 +152,13 @@ packages:
   - name: tar
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: The best way to make a tarball
+      description: This package provides the GNU tar program, commonly used to distribute files or make backups.
+      spdx: 'GPL-3.0-or-later'
+      website: 'https://www.gnu.org/software/tar/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['app-arch']
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/tar.git'
@@ -158,6 +193,13 @@ packages:
   - name: xz-utils
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Utilities for managing LZMA compressed files
+      description: This package provides the programs to compress and decompress lzma and xz compressed files.
+      spdx: 'no-spdx: Public Domain'
+      website: 'https://tukaani.org/xz/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['app-arch']
     source:
       subdir: ports
       git: 'https://git.tukaani.org/xz.git'
@@ -194,6 +236,13 @@ packages:
   - name: zstd
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: zstd fast compression library
+      description: This package provides the programs to interact with Zstandard compressed files.
+      spdx: 'BSD-3-Clause'
+      website: 'https://facebook.github.io/zstd/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['app-arch']
     source:
       subdir: ports
       git: 'https://github.com/facebook/zstd.git'

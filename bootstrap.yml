@@ -602,6 +602,13 @@ tools:
 
 packages:
   - name: binutils
+    metadata:
+      summary: Tools necessary to build programs
+      description: This package provides various tools commonly used during package development, including the GNU linker and the GNU assembler. This package also includes libbfd and libopcodes.
+      spdx: 'GPL-3.0-or-later'
+      website: 'https://www.gnu.org/software/binutils/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-devel']
     from_source: binutils
     tools_required:
       - tool: system-gcc
@@ -629,6 +636,13 @@ packages:
         quiet: true
 
   - name: boost
+    metadata:
+      summary: Boost development headers
+      description: This package provides the Boost headers for C++.
+      spdx: 'BSL-1.0'
+      website: 'https://boost.org'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     labels: [aarch64]
     architecture: noarch
     source:
@@ -651,6 +665,13 @@ packages:
             '@THIS_COLLECT_DIR@/usr/include']
 
   - name: core-files
+    metadata:
+      summary: Managarm base filesystem layout
+      description: This package provides the base filesystem layout that Managarm uses, includes various directories, essential files and symlinks.
+      spdx: 'MIT'
+      website: 'https://managarm.org'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-apps']
     labels: [aarch64]
     architecture: noarch
     default: true
@@ -999,6 +1020,13 @@ packages:
         quiet: true
 
   - name: managarm-kernel
+    metadata:
+      summary: The Managarm kernel
+      description: This package provides the Managarm kernel.
+      spdx: 'MIT'
+      website: 'https://managarm.org'
+      maintainer: "Alexander van der Grinten <avdgrinten@managarm.org>"
+      categories: ['sys-kernel']
     labels: [aarch64]
     architecture: '@OPTION:arch@'
     default: true
@@ -1034,6 +1062,13 @@ packages:
         quiet: true
 
   - name: managarm-system
+    metadata:
+      summary: The Managarm userspace
+      description: This package provides the Managarm userspace components, various drivers and the POSIX emulation layer.
+      spdx: 'MIT'
+      website: 'https://managarm.org'
+      maintainer: "Alexander van der Grinten <avdgrinten@managarm.org>"
+      categories: ['sys-kernel']
     labels: [aarch64]
     architecture: '@OPTION:arch@'
     default: true
@@ -1079,6 +1114,13 @@ packages:
         quiet: true
 
   - name: mlibc-headers
+    metadata:
+      summary: Managarm libc headers
+      description: This package provides the headers for the C standard library that Managarm uses.
+      spdx: 'MIT'
+      website: 'https://managarm.org'
+      maintainer: "Alexander van der Grinten <avdgrinten@managarm.org>"
+      categories: ['sys-libs']
     labels: [aarch64]
     architecture: '@OPTION:arch@'
     from_source: mlibc
@@ -1103,6 +1145,13 @@ packages:
         quiet: true
 
   - name: mlibc
+    metadata:
+      summary: Managarm libc C library
+      description: This package provides the C standard library that Managarm uses, this includes the dynamic loader and various utility libraries.
+      spdx: 'MIT'
+      website: 'https://managarm.org'
+      maintainer: "Alexander van der Grinten <avdgrinten@managarm.org>"
+      categories: ['sys-libs']
     labels: [aarch64]
     architecture: '@OPTION:arch@'
     from_source: mlibc
@@ -1191,6 +1240,13 @@ packages:
         quiet: true
 
   - name: zlib
+    metadata:
+      summary: Standard (de)compression library
+      description: This package provides some common compression and decompression functions used by various programs.
+      spdx: 'Zlib'
+      website: 'https://zlib.net'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-libs']
     labels: [aarch64]
     architecture: '@OPTION:arch@'
     source:
@@ -1218,6 +1274,13 @@ packages:
   - name: libtsm
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Terminal emulator state machine
+      description: LibTSM provides a state machine for DEC VT100-VT520 compatible terminal emulators.
+      spdx: 'MIT'
+      website: 'https://github.com/Aetf/libtsm'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: 'ports'
       git: 'https://github.com/managarm/libtsm-mirror.git'
@@ -1258,6 +1321,13 @@ packages:
     labels: [aarch64]
     architecture: '@OPTION:arch@'
     default: true
+    metadata:
+      summary: Terminal emulator based on KMS/DRM
+      description: Kmscon is a simle KMS/DRM based terminal emulator.
+      spdx: 'MIT'
+      website: 'https://github.com/Aetf/kmscon'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-apps']
     source:
       subdir: 'ports'
       git: 'https://github.com/dvdhrm/kmscon.git'

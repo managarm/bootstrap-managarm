@@ -6,6 +6,13 @@ packages:
     source:
       subdir: meta-sources
       version: '1.0'
+    metadata:
+      summary: Minimum meta-package to provide a useful environment
+      description: This meta-package provides a useful terminal only environment with various common unix tools and the xbps package manager.
+      spdx: 'MIT'
+      website: 'https://managarm.org'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['meta-pkgs']
     revision: 2
     pkgs_required:
       - mlibc
@@ -45,6 +52,13 @@ packages:
     source:
       subdir: meta-sources
       version: '1.0'
+    metadata:
+      summary: Meta-package to provide common development utilities
+      description: This meta-package provides a set of commonly used development utilities, including the gcc compiler and GNU Make.
+      spdx: 'MIT'
+      website: 'https://managarm.org'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['meta-pkgs']
     pkgs_required:
       - base
       - binutils
@@ -66,6 +80,13 @@ packages:
     source:
       subdir: meta-sources
       version: '1.0'
+    metadata:
+      summary: Meta-package to provide a useful GUI environment (Weston)
+      description: This meta-package provides a GUI environment based on the Weston compositor and various small X based utilities.
+      spdx: 'MIT'
+      website: 'https://managarm.org'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['meta-pkgs']
     pkgs_required:
       - base
       - weston
