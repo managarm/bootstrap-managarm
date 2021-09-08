@@ -1,7 +1,7 @@
 #----------------------------------------------------------------------------------------
 # "base" stage that contains all packages that we need.
 #----------------------------------------------------------------------------------------
-FROM debian:buster AS base
+FROM debian:bullseye AS base
 
 RUN apt-get update \
 	&& apt-get -y install \
@@ -87,6 +87,8 @@ RUN apt-get update \
 		unzip \
 		# We use wget to fetch some stuff further down
 		wget \
+		# Used by xcursor-themes
+		x11-apps \
 		# Used by eudev
 		xsltproc \
 		# Used by various programs, for example, it is used by file
