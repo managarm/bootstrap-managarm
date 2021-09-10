@@ -35,10 +35,12 @@ tools:
   - name: host-glib
     exports_aclocal: true
     from_source: glib
+    revision: 2
     configure:
       - args:
         - 'meson'
         - '--prefix=@PREFIX@'
+        - '--libdir=lib'
         - '@THIS_SOURCE_DIR@'
     compile:
       - args: ['ninja']
@@ -49,13 +51,17 @@ tools:
     exports_aclocal: true
     from_source: gobject-introspection
     tools_required:
+      - host-python
       - host-glib
+      - host-pkg-config
       - virtual: pkgconfig-for-host
-        triple: "@OPTION:arch-triple@"
+        program_name: host-pkg-config
     configure:
       - args:
         - 'meson'
         - '--prefix=@PREFIX@'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
         - '@THIS_SOURCE_DIR@'
     compile:
       - args: ['ninja']
