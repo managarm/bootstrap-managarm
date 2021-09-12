@@ -51,6 +51,8 @@ tools:
       - rust-libc
     tools_required:
       - host-llvm-toolchain
+      - host-python
+    revision: 2
     compile:
       - args: |
             cat << EOF > config.toml
@@ -76,9 +78,9 @@ tools:
             [target.x86_64-unknown-managarm-system]
             llvm-config = "@BUILD_ROOT@/tools/host-llvm-toolchain/bin/llvm-config"
             EOF
-      - args: ['@THIS_SOURCE_DIR@/x.py', 'build', '--stage', '2', '-j', '@PARALLELISM@']
+      - args: ['python3', '@THIS_SOURCE_DIR@/x.py', 'build', '--stage', '2', '-j', '@PARALLELISM@']
     install:
-      - args: ['@THIS_SOURCE_DIR@/x.py', 'install', '-j', '@PARALLELISM@']
+      - args: ['python3', '@THIS_SOURCE_DIR@/x.py', 'install', '-j', '@PARALLELISM@']
 
   - name: host-cargo
     source:
