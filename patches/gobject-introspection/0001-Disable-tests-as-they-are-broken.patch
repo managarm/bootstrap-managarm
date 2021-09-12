@@ -1,0 +1,30 @@
+From 7b3845860ef4e47c0e721b3368427e32b3e8f3f3 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Sun, 12 Sep 2021 23:52:56 +0200
+Subject: [PATCH] Disable tests as they are broken
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ meson.build | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/meson.build b/meson.build
+index 3d22dd5..250aa54 100644
+--- a/meson.build
++++ b/meson.build
+@@ -216,9 +216,9 @@ subdir('docs')
+ 
+ # The tests will also run, which is not possible if they
+ # were built for a different architecture.
+-if not meson.is_cross_build()
+-    subdir('tests')
+-endif
++#if not meson.is_cross_build()
++#    subdir('tests')
++#endif
+ 
+ install_data('Makefile.introspection', install_dir: join_paths(get_option('datadir'), 'gobject-introspection-1.0'))
+ install_data('m4/introspection.m4', install_dir: join_paths(get_option('datadir'), 'aclocal'))
+-- 
+2.33.0
+
