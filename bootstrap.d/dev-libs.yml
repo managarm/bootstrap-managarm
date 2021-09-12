@@ -62,6 +62,7 @@ tools:
         - '--prefix=@PREFIX@'
         - '--native-file'
         - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '-Dbuild_introspection_data=false'
         - '@THIS_SOURCE_DIR@'
     compile:
       - args: ['ninja']
