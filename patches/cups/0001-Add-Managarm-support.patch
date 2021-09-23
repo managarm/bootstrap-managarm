@@ -1,0 +1,36 @@
+From eefe118dee85dc8fcfca06ad202dd0a333bccf75 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Thu, 23 Sep 2021 21:44:56 +0200
+Subject: [PATCH] Add Managarm support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ cups/getifaddrs-internal.h | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/cups/getifaddrs-internal.h b/cups/getifaddrs-internal.h
+index 35e98be..36a2fe8 100644
+--- a/cups/getifaddrs-internal.h
++++ b/cups/getifaddrs-internal.h
+@@ -16,6 +16,7 @@
+  */
+ 
+ #  include "config.h"
++#  include "versioning.h"
+ #  ifdef _WIN32
+ #    define _WINSOCK_DEPRECATED_NO_WARNINGS 1
+ #    include <io.h>
+@@ -28,6 +29,10 @@
+ #    define CUPS_SOCAST
+ #  endif /* _WIN32 */
+ 
++#ifdef __managarm__
++#include <linux/sockios.h>
++#endif
++
+ #  if defined(__APPLE__) && !defined(_SOCKLEN_T)
+ /*
+  * macOS 10.2.x does not define socklen_t, and in fact uses an int instead of
+-- 
+2.33.0
+
