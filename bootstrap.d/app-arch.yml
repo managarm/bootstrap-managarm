@@ -34,6 +34,48 @@ packages:
       - args: ['ln', '-sf', 'bzgrep', '@THIS_COLLECT_DIR@/usr/bin/bzfgrep']
       - args: ['ln', '-sf', 'bzmore', '@THIS_COLLECT_DIR@/usr/bin/bzless']
 
+  - name: cpio
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: The cpio package contains tools for archiving
+      description: A file archival tool which can also read and write tar files.
+      spdx: 'GPL-3.0-only'
+      website: 'https://www.gnu.org/software/cpio/cpio.html'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['app-arch']
+    source:
+      subdir: ports
+      git: 'https://git.savannah.gnu.org/git/cpio.git'
+      tag: 'release_2_13'
+      version: '2.13'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+      regenerate:
+        - args: ['./bootstrap']
+        - args: ['cp',
+            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
+            '@THIS_SOURCE_DIR@/build-aux/']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - libiconv
+      - libintl
+    configure:
+      # Fix a build issue when building with gcc 10 and higher
+      - args: ['sed', '-i', '/The name/,+2 d', '@THIS_SOURCE_DIR@/src/global.c']
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--with-rmt=/usr/libexec/rmt'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: gzip
     labels: [aarch64]
     architecture: '@OPTION:arch@'
