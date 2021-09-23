@@ -1,0 +1,36 @@
+From 50b8ee7f62941422cba786451a6faaee9239eab3 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Thu, 23 Sep 2021 23:56:13 +0200
+Subject: [PATCH] Don't build the documentation
+
+xmlto is required to build the documentation, and that adds almost 800 MB of disk space for my host alone, likely more so for the rootfs. This is unacceptable, so we remove it.
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ Makefile | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index b2bf6de..299a38f 100644
+--- a/Makefile
++++ b/Makefile
+@@ -62,7 +62,6 @@ UTILS = $(INSTALLABLE) \
+ LDLIBS=libgif.a -lm
+ 
+ all: libgif.so libgif.a libutil.so libutil.a $(UTILS)
+-	$(MAKE) -C doc
+ 
+ $(UTILS):: libgif.a libutil.a
+ 
+@@ -89,7 +88,7 @@ check: all
+ 
+ # Installation/uninstallation
+ 
+-install: all install-bin install-include install-lib install-man
++install: all install-bin install-include install-lib
+ install-bin: $(INSTALLABLE)
+ 	$(INSTALL) -d "$(DESTDIR)$(BINDIR)"
+ 	$(INSTALL) $^ "$(DESTDIR)$(BINDIR)"
+-- 
+2.33.0
+

@@ -119,6 +119,34 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: giflib
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Library to handle, display and manipulate GIF images
+      description: This package contains libraries for reading and writing GIFs as well as programs for converting and working with GIF files.
+      spdx: 'MIT'
+      website: 'https://sourceforge.net/projects/giflib/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
+    source:
+      subdir: ports
+      git: 'https://git.code.sf.net/p/giflib/code'
+      tag: '5.2.1'
+      version: '5.2.1'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+    configure:
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+        environ:
+          CC: "x86_64-managarm-gcc"
+      - args: ['make', 'PREFIX=/usr', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: glew
     source:
       subdir: 'ports'
