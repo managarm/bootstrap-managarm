@@ -51,11 +51,14 @@ RUN apt-get update \
 		libgmp-dev \
 		libmpc-dev \
 		libmpfr-dev \
+		# Used by ace
+		libpng-dev \
 		# Used by cmake
 		libssl-dev \
-		# Used by ace
-		libpng-dev \		
-		# Used by many gnu build steps		
+		# Used by swi-prolog
+		libncurses-dev \
+		libreadline-dev \
+		# Used by many gnu build steps
 		m4 \
 		# Used by limine
 		mtools \
