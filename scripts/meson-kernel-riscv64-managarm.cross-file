@@ -1,0 +1,25 @@
+[binaries]
+c = 'clang'
+cpp = 'clang++'
+strip = 'riscv64-none-elf-strip'
+objcopy = 'riscv64-none-elf-objcopy'
+pkgconfig = 'pkgconfig'
+
+[constants]
+# clang needs an additional flag to enable sized allocation/deallocation.
+args = [ '-fsized-deallocation', '-ffreestanding', '-target', 'riscv64-managarm-kernel', '-march=rv64gc', '-mabi=lp64d', '-mcmodel=medany', '-gcc-toolchain', '_BUILD_ROOT_/tools/kernel-gcc']
+
+[built-in options]
+needs_exe_wrapper = true
+
+c_args = args
+c_link_args = args
+
+cpp_args = args
+cpp_link_args = args
+
+[host_machine]
+system = 'managarm'
+cpu_family = 'riscv64'
+cpu = 'riscv64'
+endian = 'little'

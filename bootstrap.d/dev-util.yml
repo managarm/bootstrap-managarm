@@ -21,7 +21,7 @@ sources:
 
 tools:
   - name: host-cmake
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: noarch
     from_source: cmake
     configure:

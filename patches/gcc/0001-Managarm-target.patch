@@ -1,4 +1,4 @@
-From ab6e5c500d9b039a5f56af0476d5714666e12615 Mon Sep 17 00:00:00 2001
+From 57ceba3e24468a6277926a3d7d62f8b2094030cb Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Tue, 13 Apr 2021 21:20:52 +0200
 Subject: [PATCH] Managarm target
@@ -6,22 +6,24 @@ Subject: [PATCH] Managarm target
 TODO: Use libtoolize instead of modifying in-tree libtool?
 ---
  config.sub                                  | 11 +++-
- fixincludes/mkfixinc.sh                     |  2 +
- gcc/config.gcc                              | 59 +++++++++++++++++++++
+ fixincludes/mkfixinc.sh                     |  1 +
+ gcc/config.gcc                              | 71 +++++++++++++++++++++
  gcc/config.host                             |  2 +-
- gcc/config/aarch64/aarch64-managarm.h       | 45 ++++++++++++++++
+ gcc/config/aarch64/aarch64-managarm.h       | 45 +++++++++++++
  gcc/config/aarch64/t-aarch64-managarm       |  8 +++
  gcc/config/i386/i386-managarm.h             | 11 ++++
  gcc/config/i386/t-managarm64                |  4 ++
- gcc/config/managarm-kernel.h                |  9 ++++
- gcc/config/managarm-system.h                |  3 ++
- gcc/config/managarm.h                       | 13 +++++
- libgcc/config.host                          | 16 ++++++
+ gcc/config/managarm-kernel.h                |  9 +++
+ gcc/config/managarm-system.h                |  3 +
+ gcc/config/managarm.h                       | 13 ++++
+ gcc/config/riscv/managarm.h                 | 64 +++++++++++++++++++
+ gcc/config/riscv/t-managarm                 |  3 +
+ libgcc/config.host                          | 20 ++++++
  libgcc/libgcov.h                            |  1 +
  libstdc++-v3/crossconfig.m4                 | 11 ++++
- libstdc++-v3/include/c_compatibility/fenv.h | 10 ++--
- libtool.m4                                  | 14 +++++
- 16 files changed, 211 insertions(+), 8 deletions(-)
+ libstdc++-v3/include/c_compatibility/fenv.h | 10 +--
+ libtool.m4                                  | 14 ++++
+ 18 files changed, 293 insertions(+), 8 deletions(-)
  create mode 100644 gcc/config/aarch64/aarch64-managarm.h
  create mode 100644 gcc/config/aarch64/t-aarch64-managarm
  create mode 100644 gcc/config/i386/i386-managarm.h
@@ -29,6 +31,8 @@ TODO: Use libtoolize instead of modifying in-tree libtool?
  create mode 100644 gcc/config/managarm-kernel.h
  create mode 100644 gcc/config/managarm-system.h
  create mode 100644 gcc/config/managarm.h
+ create mode 100644 gcc/config/riscv/managarm.h
+ create mode 100644 gcc/config/riscv/t-managarm
 
 diff --git a/config.sub b/config.sub
 index 63c1f1c8b..033763b58 100755
@@ -74,23 +78,22 @@ index 63c1f1c8b..033763b58 100755
  		;;
  	-dietlibc* | -newlib* | -musl* | -uclibc* )
 diff --git a/fixincludes/mkfixinc.sh b/fixincludes/mkfixinc.sh
-index df90720b7..f79010d07 100755
+index df90720b7..779d71953 100755
 --- a/fixincludes/mkfixinc.sh
 +++ b/fixincludes/mkfixinc.sh
-@@ -12,6 +12,8 @@ target=fixinc.sh
- # Check for special fix rules for particular targets
- case $machine in
-     i?86-*-cygwin* | \
-+    x86_64-*-managarm* | \
-+    aarch64*-*-managarm* | \
-     i?86-*-mingw32* | \
-     x86_64-*-mingw32* | \
-     powerpc-*-eabisim* | \
+@@ -20,6 +20,7 @@ case $machine in
+     powerpcle-*-eabisim* | \
+     powerpcle-*-eabi* | \
+     *-*-vxworks7* | \
++    *-managarm* | \
+     *-musl* )
+ 	#  IF there is no include fixing,
+ 	#  THEN create a no-op fixer and exit
 diff --git a/gcc/config.gcc b/gcc/config.gcc
-index 357b0bed0..1cb66ac65 100644
+index 357b0bed0..570049be8 100644
 --- a/gcc/config.gcc
 +++ b/gcc/config.gcc
-@@ -885,6 +885,29 @@ case ${target} in
+@@ -885,6 +885,25 @@ case ${target} in
    target_has_targetcm=yes
    target_has_targetdm=yes
    ;;
@@ -106,10 +109,6 @@ index 357b0bed0..1cb66ac65 100644
 +    tmake_file="${tmake_file} t-slibgcc"
 +    thread_file='posix'
 +    ;;
-+  *-managarm-pc*)
-+    tmake_file="${tmake_file} t-slibgcc"
-+    thread_file='posix'
-+    ;; 
 +  *-managarm-kernel*)
 +    ;;
 +  *)
@@ -120,7 +119,7 @@ index 357b0bed0..1cb66ac65 100644
  *-*-netbsd*)
    tm_p_file="${tm_p_file} netbsd-protos.h"
    tmake_file="t-netbsd t-slibgcc"
-@@ -1162,6 +1185,24 @@ aarch64*-*-linux*)
+@@ -1162,6 +1181,24 @@ aarch64*-*-linux*)
  	done
  	TM_MULTILIB_CONFIG=`echo $TM_MULTILIB_CONFIG | sed 's/^,//'`
  	;;
@@ -145,7 +144,7 @@ index 357b0bed0..1cb66ac65 100644
  aarch64*-wrs-vxworks*)
          tm_file="${tm_file} elfos.h aarch64/aarch64-elf.h"
          tm_file="${tm_file} vx-common.h vxworks.h aarch64/aarch64-vxworks.h"
-@@ -2041,6 +2082,24 @@ x86_64-*-linux* | x86_64-*-kfreebsd*-gnu)
+@@ -2041,6 +2078,24 @@ x86_64-*-linux* | x86_64-*-kfreebsd*-gnu)
  	done
  	TM_MULTILIB_CONFIG=`echo $TM_MULTILIB_CONFIG | sed 's/^,//'`
  	;;
@@ -170,6 +169,29 @@ index 357b0bed0..1cb66ac65 100644
  i[34567]86-pc-msdosdjgpp*)
  	xm_file=i386/xm-djgpp.h
  	tm_file="dbxcoff.h ${tm_file} i386/unix.h i386/bsd.h i386/gas.h i386/djgpp.h i386/djgpp-stdint.h"
+@@ -2485,6 +2540,22 @@ riscv*-*-linux*)
+ 	# automatically detect that GAS supports it, yet we require it.
+ 	gcc_cv_initfini_array=yes
+ 	;;
++riscv*-*-managarm*)
++	tm_file="${tm_file} dbxelf.h elfos.h gnu-user.h managarm.h glibc-stdint.h"
++	tm_file="${tm_file} riscv/managarm.h"
++	tmake_file="${tmake_file} riscv/t-riscv riscv/t-managarm"
++	case ${target} in
++	*-managarm-system*)
++		tm_file="${tm_file} managarm-system.h"
++		;;
++	*-managarm-kernel*)
++		tm_file="${tm_file} managarm-kernel.h"
++		;;
++	*)
++		echo "managarm target '${target}' not supported."
++		exit 1
++	esac
++	;;
+ riscv*-*-elf* | riscv*-*-rtems*)
+ 	tm_file="elfos.h newlib-stdint.h ${tm_file} riscv/elf.h"
+ 	case ${target} in
 diff --git a/gcc/config.host b/gcc/config.host
 index 0a02c33cc..296d03d72 100644
 --- a/gcc/config.host
@@ -318,8 +340,87 @@ index 000000000..c3d1d9fc2
 +		builtin_assert ("system=unix");   \
 +		builtin_assert ("system=posix");   \
 +	} while(0);
+diff --git a/gcc/config/riscv/managarm.h b/gcc/config/riscv/managarm.h
+new file mode 100644
+index 000000000..2c5db5521
+--- /dev/null
++++ b/gcc/config/riscv/managarm.h
+@@ -0,0 +1,64 @@
++/* Definitions for RISC-V Managarm systems with ELF format.
++   Adopted from the Linux definitions.
++   Copyright (C) 1998-2021 Free Software Foundation, Inc.
++   Managarm-specific changes by Alexander van der Grinten.
++
++This file is part of GCC.
++
++GCC is free software; you can redistribute it and/or modify
++it under the terms of the GNU General Public License as published by
++the Free Software Foundation; either version 3, or (at your option)
++any later version.
++
++GCC is distributed in the hope that it will be useful,
++but WITHOUT ANY WARRANTY; without even the implied warranty of
++MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++GNU General Public License for more details.
++
++You should have received a copy of the GNU General Public License
++along with GCC; see the file COPYING3.  If not see
++<http://www.gnu.org/licenses/>.  */
++
++/* Because RISC-V only has word-sized atomics, it requries libatomic where
++   others do not.  So link libatomic by default, as needed.  */
++#undef LIB_SPEC
++#ifdef LD_AS_NEEDED_OPTION
++#define LIB_SPEC GNU_USER_TARGET_LIB_SPEC \
++  " %{pthread:" LD_AS_NEEDED_OPTION " -latomic " LD_NO_AS_NEEDED_OPTION "}"
++#else
++#define LIB_SPEC GNU_USER_TARGET_LIB_SPEC " -latomic "
++#endif
++
++#define ICACHE_FLUSH_FUNC "__riscv_flush_icache"
++
++#define CPP_SPEC "%{pthread:-D_REENTRANT}"
++
++#define LD_EMUL_SUFFIX \
++  "%{mabi=lp64d:}" \
++  "%{mabi=lp64f:_lp64f}" \
++  "%{mabi=lp64:_lp64}" \
++  "%{mabi=ilp32d:}" \
++  "%{mabi=ilp32f:_ilp32f}" \
++  "%{mabi=ilp32:_ilp32}"
++
++#define GNU_USER_DYNAMIC_LINKER "/lib/riscv-managarm/ld" XLEN_SPEC "-" ABI_SPEC ".so"
++
++#define LINK_SPEC "\
++-melf" XLEN_SPEC DEFAULT_ENDIAN_SPEC "riscv" LD_EMUL_SUFFIX " \
++%{mno-relax:--no-relax} \
++%{mbig-endian:-EB} \
++%{mlittle-endian:-EL} \
++%{shared} \
++  %{!shared: \
++    %{!static: \
++      %{rdynamic:-export-dynamic} \
++      -dynamic-linker " GNU_USER_DYNAMIC_LINKER "} \
++    %{static:-static}}"
++
++#define TARGET_ASM_FILE_END file_end_indicate_exec_stack
++
++#define STARTFILE_PREFIX_SPEC 			\
++   "/lib" XLEN_SPEC "/" ABI_SPEC "/ "		\
++   "/usr/lib" XLEN_SPEC "/" ABI_SPEC "/ "	\
++   "/lib/ "					\
++   "/usr/lib/ "
+diff --git a/gcc/config/riscv/t-managarm b/gcc/config/riscv/t-managarm
+new file mode 100644
+index 000000000..216d2776a
+--- /dev/null
++++ b/gcc/config/riscv/t-managarm
+@@ -0,0 +1,3 @@
++# Only XLEN and ABI affect Linux multilib dir names, e.g. /lib32/ilp32d/
++MULTILIB_DIRNAMES := $(patsubst rv32%,lib32,$(patsubst rv64%,lib64,$(MULTILIB_DIRNAMES)))
++MULTILIB_OSDIRNAMES := $(patsubst lib%,../lib%,$(MULTILIB_DIRNAMES))
 diff --git a/libgcc/config.host b/libgcc/config.host
-index f808b61be..d5c47fab0 100644
+index f808b61be..0654906f2 100644
 --- a/libgcc/config.host
 +++ b/libgcc/config.host
 @@ -252,6 +252,11 @@ case ${host} in
@@ -359,6 +460,17 @@ index f808b61be..d5c47fab0 100644
  i[34567]86-*-kfreebsd*-gnu | i[34567]86-*-kopensolaris*-gnu)
  	extra_parts="$extra_parts crtprec32.o crtprec64.o crtprec80.o crtfastmath.o"
  	tmake_file="${tmake_file} i386/t-crtpc t-crtfm i386/t-crtstuff t-dfprules"
+@@ -1272,6 +1288,10 @@ riscv*-*-linux*)
+ 	extra_parts="$extra_parts crtbegin.o crtend.o crti.o crtn.o crtendS.o crtbeginT.o"
+ 	md_unwind_header=riscv/linux-unwind.h
+ 	;;
++riscv*-*-managarm*)
++	tmake_file="${tmake_file} riscv/t-softfp${host_address} t-softfp riscv/t-elf riscv/t-elf${host_address} t-slibgcc-libgcc"
++	md_unwind_header=riscv/linux-unwind.h
++	;;
+ riscv*-*-freebsd*)
+ 	tmake_file="${tmake_file} riscv/t-softfp${host_address} t-softfp riscv/t-elf riscv/t-elf${host_address} t-slibgcc-libgcc"
+ 	extra_parts="$extra_parts crtbegin.o crtend.o crti.o crtn.o crtendS.o crtbeginT.o"
 diff --git a/libgcc/libgcov.h b/libgcc/libgcov.h
 index 7b0d367ec..f72762cb3 100644
 --- a/libgcc/libgcov.h
@@ -452,5 +564,5 @@ index 17f8e5f30..a934226d3 100644
    if echo __ELF__ | $CC -E - | $GREP __ELF__ > /dev/null; then
      lt_cv_deplibs_check_method='match_pattern /lib[[^/]]+(\.so\.[[0-9]]+\.[[0-9]]+|_pic\.a)$'
 -- 
-2.32.0
+2.20.1
 

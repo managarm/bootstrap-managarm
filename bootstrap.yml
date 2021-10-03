@@ -216,7 +216,7 @@ tools:
       - args: ['make', 'install']
 
   - name: host-autoconf-v2.69
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: noarch
     source:
       name: autoconf-v2.69
@@ -233,7 +233,7 @@ tools:
       - args: ['make', 'install']
 
   - name: host-automake-v1.11
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: noarch
     source:
       name: automake-v1.11
@@ -273,7 +273,7 @@ tools:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/m4', '@BUILD_ROOT@/tools/host-autoconf-archive/share/aclocal']
 
   - name: host-automake-v1.15
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: noarch
     source:
       name: automake-v1.15
@@ -300,7 +300,7 @@ tools:
       - args: ['ln', '-sf', '@PREFIX@/share/aclocal-1.15', '@PREFIX@/share/aclocal']
 
   - name: host-managarm-tools
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: noarch
     from_source: managarm
     sources_required:
@@ -324,7 +324,7 @@ tools:
       - args: ['ninja', 'install']
 
   - name: host-libtool
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: noarch
     exports_aclocal: true
     source:
@@ -353,7 +353,7 @@ tools:
       - args: ['make', 'install']
 
   - name: host-llvm-toolchain
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: noarch
     from_source: llvm
     sources_required:
@@ -370,7 +370,7 @@ tools:
         # We really have to build LLVM in Release mode.
         # Building it in debug mode produces tens of GiB of debugging info.
         - '-DCMAKE_BUILD_TYPE=Release'
-        - '-DLLVM_TARGETS_TO_BUILD=X86;AArch64'
+        - '-DLLVM_TARGETS_TO_BUILD=X86;AArch64;RISCV'
         - '-DLLVM_ENABLE_PROJECTS=clang;clang-tools-extra'
 
         # clang configuration options.
@@ -389,7 +389,7 @@ tools:
         quiet: true
 
   - name: cross-binutils
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     from_source: binutils
     configure:
@@ -414,7 +414,7 @@ tools:
           done
 
   - name: host-protoc
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: noarch
     exports_shared_libs: true
     revision: 2
@@ -431,7 +431,7 @@ tools:
       - args: ['make', 'install']
 
   - name: kernel-gcc
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     from_source: gcc
     tools_required:
@@ -730,7 +730,7 @@ packages:
         quiet: true
 
   - name: frigg
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       rolling_version: true
@@ -738,13 +738,9 @@ packages:
       subdir: 'ports'
       git: 'https://github.com/managarm/frigg.git'
       branch: 'master'
-    tools_required:
-      - system-gcc
     configure:
       - args:
         - 'meson'
-        - '--cross-file'
-        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
@@ -1027,7 +1023,7 @@ packages:
       website: 'https://managarm.org'
       maintainer: "Alexander van der Grinten <avdgrinten@managarm.org>"
       categories: ['sys-kernel']
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     default: true
     from_source: managarm
@@ -1039,7 +1035,6 @@ packages:
       - host-protoc
       - kernel-gcc
     pkgs_required:
-      - mlibc
       - frigg
     configure:
       - args: |

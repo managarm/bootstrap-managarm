@@ -1,25 +1,24 @@
-From 3aa4a086912f07f57b7fd56d46077f93009937b0 Mon Sep 17 00:00:00 2001
+From cf18b7c4dd656ce4a032f877a071620d40a464e9 Mon Sep 17 00:00:00 2001
 From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
 Date: Sun, 9 Jun 2019 16:29:17 +0200
-Subject: [PATCH 2/2] Add managarm target
+Subject: [PATCH] Add managarm target
 
-Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
- clang/lib/Basic/Targets.cpp              |   4 +
+ clang/lib/Basic/Targets.cpp              |   6 +
  clang/lib/Basic/Targets/OSTargets.h      |  28 ++
  clang/lib/Driver/CMakeLists.txt          |   1 +
  clang/lib/Driver/Driver.cpp              |   4 +
- clang/lib/Driver/ToolChains/Gnu.cpp      |   8 +-
- clang/lib/Driver/ToolChains/Managarm.cpp | 431 +++++++++++++++++++++++
+ clang/lib/Driver/ToolChains/Gnu.cpp      |  13 +-
+ clang/lib/Driver/ToolChains/Managarm.cpp | 438 +++++++++++++++++++++++
  clang/lib/Driver/ToolChains/Managarm.h   |  49 +++
  llvm/include/llvm/ADT/Triple.h           |   5 +-
  llvm/lib/Support/Triple.cpp              |   6 +
- 9 files changed, 533 insertions(+), 3 deletions(-)
+ 9 files changed, 546 insertions(+), 4 deletions(-)
  create mode 100644 clang/lib/Driver/ToolChains/Managarm.cpp
  create mode 100644 clang/lib/Driver/ToolChains/Managarm.h
 
 diff --git a/clang/lib/Basic/Targets.cpp b/clang/lib/Basic/Targets.cpp
-index c063f8ca4472..9fe05e8f7315 100644
+index c063f8ca4..994882732 100644
 --- a/clang/lib/Basic/Targets.cpp
 +++ b/clang/lib/Basic/Targets.cpp
 @@ -144,6 +144,8 @@ TargetInfo *AllocateTarget(const llvm::Triple &Triple,
@@ -31,7 +30,16 @@ index c063f8ca4472..9fe05e8f7315 100644
      case llvm::Triple::Win32:
        switch (Triple.getEnvironment()) {
        case llvm::Triple::GNU:
-@@ -553,6 +555,8 @@ TargetInfo *AllocateTarget(const llvm::Triple &Triple,
+@@ -387,6 +389,8 @@ TargetInfo *AllocateTarget(const llvm::Triple &Triple,
+       return new FuchsiaTargetInfo<RISCV64TargetInfo>(Triple, Opts);
+     case llvm::Triple::Linux:
+       return new LinuxTargetInfo<RISCV64TargetInfo>(Triple, Opts);
++    case llvm::Triple::Managarm:
++      return new ManagarmTargetInfo<RISCV64TargetInfo>(Triple, Opts);
+     default:
+       return new RISCV64TargetInfo(Triple, Opts);
+     }
+@@ -553,6 +557,8 @@ TargetInfo *AllocateTarget(const llvm::Triple &Triple,
      }
      case llvm::Triple::Haiku:
        return new HaikuTargetInfo<X86_64TargetInfo>(Triple, Opts);
@@ -41,7 +49,7 @@ index c063f8ca4472..9fe05e8f7315 100644
        return new NaClTargetInfo<X86_64TargetInfo>(Triple, Opts);
      case llvm::Triple::PS4:
 diff --git a/clang/lib/Basic/Targets/OSTargets.h b/clang/lib/Basic/Targets/OSTargets.h
-index 70fac030bc5d..f1f0c30c3b75 100644
+index 70fac030b..f1f0c30c3 100644
 --- a/clang/lib/Basic/Targets/OSTargets.h
 +++ b/clang/lib/Basic/Targets/OSTargets.h
 @@ -342,6 +342,34 @@ public:
@@ -80,7 +88,7 @@ index 70fac030bc5d..f1f0c30c3b75 100644
  template <typename Target>
  class LLVM_LIBRARY_VISIBILITY MinixTargetInfo : public OSTargetInfo<Target> {
 diff --git a/clang/lib/Driver/CMakeLists.txt b/clang/lib/Driver/CMakeLists.txt
-index 6f25d3588ebb..97cfe34224ef 100644
+index 6f25d3588..97cfe3422 100644
 --- a/clang/lib/Driver/CMakeLists.txt
 +++ b/clang/lib/Driver/CMakeLists.txt
 @@ -54,6 +54,7 @@ add_clang_library(clangDriver
@@ -92,7 +100,7 @@ index 6f25d3588ebb..97cfe34224ef 100644
    ToolChains/MinGW.cpp
    ToolChains/Minix.cpp
 diff --git a/clang/lib/Driver/Driver.cpp b/clang/lib/Driver/Driver.cpp
-index fb8335a3695d..76369cd6d8f7 100644
+index fb8335a36..76369cd6d 100644
 --- a/clang/lib/Driver/Driver.cpp
 +++ b/clang/lib/Driver/Driver.cpp
 @@ -29,6 +29,7 @@
@@ -114,7 +122,7 @@ index fb8335a3695d..76369cd6d8f7 100644
        TC = std::make_unique<toolchains::Solaris>(*this, Target, Args);
        break;
 diff --git a/clang/lib/Driver/ToolChains/Gnu.cpp b/clang/lib/Driver/ToolChains/Gnu.cpp
-index da197e476621..69335dbd2132 100644
+index da197e476..395c55ffa 100644
 --- a/clang/lib/Driver/ToolChains/Gnu.cpp
 +++ b/clang/lib/Driver/ToolChains/Gnu.cpp
 @@ -261,6 +261,8 @@ static const char *getLDMOption(const llvm::Triple &T, const ArgList &Args) {
@@ -146,12 +154,24 @@ index da197e476621..69335dbd2132 100644
    static const char *const X32LibDirs[] = {"/libx32"};
    static const char *const X86LibDirs[] = {"/lib32", "/lib"};
    static const char *const X86Triples[] = {
+@@ -2090,7 +2094,10 @@ void Generic_GCC::GCCInstallationDetector::AddDefaultGCCPrefixes(
+   static const char *const RISCV64Triples[] = {"riscv64-unknown-linux-gnu",
+                                                "riscv64-linux-gnu",
+                                                "riscv64-unknown-elf",
+-                                               "riscv64-suse-linux"};
++                                               "riscv64-suse-linux",
++                                               "riscv64-managarm",
++                                               "riscv64-managarm-kernel",
++                                               "riscv64-managarm-system"};
+ 
+   static const char *const SPARCv8LibDirs[] = {"/lib32", "/lib"};
+   static const char *const SPARCv8Triples[] = {"sparc-linux-gnu",
 diff --git a/clang/lib/Driver/ToolChains/Managarm.cpp b/clang/lib/Driver/ToolChains/Managarm.cpp
 new file mode 100644
-index 000000000000..3941ca892bfa
+index 000000000..3639920fd
 --- /dev/null
 +++ b/clang/lib/Driver/ToolChains/Managarm.cpp
-@@ -0,0 +1,431 @@
+@@ -0,0 +1,438 @@
 +//===--- Managarm.h - Managarm ToolChain Implementations --------*- C++ -*-===//
 +//
 +//                     The LLVM Compiler Infrastructure
@@ -165,6 +185,7 @@ index 000000000000..3941ca892bfa
 +#include "Arch/ARM.h"
 +#include "Arch/Mips.h"
 +#include "Arch/PPC.h"
++#include "Arch/RISCV.h"
 +#include "CommonArgs.h"
 +#include "clang/Config/config.h"
 +#include "clang/Driver/Distro.h"
@@ -198,6 +219,8 @@ index 000000000000..3941ca892bfa
 +    return "x86_64-managarm";
 +  case llvm::Triple::aarch64:
 +    return "aarch64-managarm";
++  case llvm::Triple::riscv64:
++    return "riscv64-managarm";
 +  }
 +  return TargetTriple.str();
 +}
@@ -396,6 +419,10 @@ index 000000000000..3941ca892bfa
 +  switch (getTriple().getArch()) {
 +  case llvm::Triple::aarch64:
 +    return "/lib/aarch64-managarm/ld.so";
++  case llvm::Triple::riscv64: {
++    StringRef ABIName = tools::riscv::getRISCVABI(Args, getTriple());
++    return ("/lib/riscv64-managarm/ld-riscv64-" + ABIName + ".so").str();
++  }
 +  case llvm::Triple::x86_64:
 +    return "/lib/x86_64-managarm/ld.so";
 +  default:
@@ -585,7 +612,7 @@ index 000000000000..3941ca892bfa
 +
 diff --git a/clang/lib/Driver/ToolChains/Managarm.h b/clang/lib/Driver/ToolChains/Managarm.h
 new file mode 100644
-index 000000000000..86ba4e0ce52e
+index 000000000..86ba4e0ce
 --- /dev/null
 +++ b/clang/lib/Driver/ToolChains/Managarm.h
 @@ -0,0 +1,49 @@
@@ -639,7 +666,7 @@ index 000000000000..86ba4e0ce52e
 +
 +#endif // LLVM_CLANG_LIB_DRIVER_TOOLCHAINS_MANAGARM_H
 diff --git a/llvm/include/llvm/ADT/Triple.h b/llvm/include/llvm/ADT/Triple.h
-index 76a754d671fb..7104a41fdce1 100644
+index 76a754d67..7104a41fd 100644
 --- a/llvm/include/llvm/ADT/Triple.h
 +++ b/llvm/include/llvm/ADT/Triple.h
 @@ -168,6 +168,7 @@ public:
@@ -662,7 +689,7 @@ index 76a754d671fb..7104a41fdce1 100644
    enum ObjectFormatType {
      UnknownObjectFormat,
 diff --git a/llvm/lib/Support/Triple.cpp b/llvm/lib/Support/Triple.cpp
-index 2c480c1094a5..b1087fbb83a6 100644
+index 2c480c109..b1087fbb8 100644
 --- a/llvm/lib/Support/Triple.cpp
 +++ b/llvm/lib/Support/Triple.cpp
 @@ -201,6 +201,7 @@ StringRef Triple::getOSTypeName(OSType Kind) {
@@ -706,5 +733,5 @@ index 2c480c1094a5..b1087fbb83a6 100644
  }
  
 -- 
-2.32.0
+2.20.1
 
