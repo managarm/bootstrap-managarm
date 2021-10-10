@@ -51,6 +51,11 @@ def do_qemu(args):
 		qemu_args += ['-initrd', 'initrd.cpio']
 		qemu_args += ['-append', f'init.launch={args.init_launch}']
 		qemu_args += ['-serial', 'stdio']
+	elif args.arch == 'riscv64':
+		# Use the virt machine and -kernel, similar to aarch64.
+		qemu_args += ['-machine', 'virt']
+		qemu_args += ['-kernel', 'system-root/usr/managarm/bin/eir-virt']
+		qemu_args += ['-serial', 'stdio']
 	else:
 		assert args.arch == 'x86_64'
 		qemu_args += ['-debugcon', 'stdio']
@@ -62,10 +67,12 @@ def do_qemu(args):
 		if not have_kvm or args.virtual_cpu:
 			cpu_model = 'qemu64'
 			cpu_extras = ['+smap', '+smep', '+umip', '+pcid', '+invpcid']
-	else:
-		assert args.arch == 'aarch64'
+	elif args.arch == 'aarch64':
 		if not have_kvm or args.virtual_cpu:
 			cpu_model = 'cortex-a72'
+	else:
+		assert args.arch == 'riscv64'
+		cpu_model = 'rv64'
 
 	if cpu_extras:
 		qemu_args += ['-cpu', cpu_model + ',' + ','.join(cpu_extras)]
@@ -94,23 +101,24 @@ def do_qemu(args):
 	]
 
 	# Add the boot medium.
-	qemu_args += ['-drive', 'id=boot-drive,file=image,format=raw,if=none']
+	if args.arch != 'riscv64':
+		qemu_args += ['-drive', 'id=boot-drive,file=image,format=raw,if=none']
 
-	if args.boot_drive == 'virtio':
-		qemu_args += ['-device', 'virtio-blk-pci,drive=boot-drive']
-	elif args.boot_drive == 'virtio-legacy':
-		qemu_args += ['-device', 'virtio-blk-pci,disable-modern=on,drive=boot-drive']
-	elif args.boot_drive == 'ahci':
-		qemu_args += [
-			'-device', 'ahci,id=ahci',
-			'-device', 'ide-hd,drive=boot-drive,bus=ahci.0'
-		]
-	elif args.boot_drive == 'usb':
-		# Use EHCI for now since XHCI hangs on boot.
-		qemu_args += ['-device', 'usb-storage,drive=boot-drive,bus=ehci.0']
-	else:
-		assert args.boot_drive == 'ide'
-		qemu_args += ['-device', 'ide-hd,drive=boot-drive,bus=ide.0']
+		if args.boot_drive == 'virtio':
+			qemu_args += ['-device', 'virtio-blk-pci,drive=boot-drive']
+		elif args.boot_drive == 'virtio-legacy':
+			qemu_args += ['-device', 'virtio-blk-pci,disable-modern=on,drive=boot-drive']
+		elif args.boot_drive == 'ahci':
+			qemu_args += [
+				'-device', 'ahci,id=ahci',
+				'-device', 'ide-hd,drive=boot-drive,bus=ahci.0'
+			]
+		elif args.boot_drive == 'usb':
+			# Use EHCI for now since XHCI hangs on boot.
+			qemu_args += ['-device', 'usb-storage,drive=boot-drive,bus=ehci.0']
+		else:
+			assert args.boot_drive == 'ide'
+			qemu_args += ['-device', 'ide-hd,drive=boot-drive,bus=ide.0']
 
 	# Add networking.
 	if args.net_bridge:
@@ -124,7 +132,7 @@ def do_qemu(args):
 		if args.arch == 'x86_64':
 			qemu_args += ['-vga', 'vmware']
 		else:
-			assert args.arch == 'aarch64'
+			assert args.arch in {'aarch64', 'riscv64'}
 			qemu_args += ['-device', 'virtio-gpu']
 	else:
 		if args.arch == 'x86_64':
@@ -199,7 +207,7 @@ def do_qemu(args):
 qemu_parser = main_subparsers.add_parser('qemu')
 qemu_parser.set_defaults(_fn=do_qemu)
 qemu_parser.add_argument('--arch',
-	choices=['x86_64', 'aarch64'],
+	choices=['x86_64', 'aarch64', 'riscv64'],
 	default='x86_64')
 qemu_parser.add_argument('--no-kvm', action='store_true')
 qemu_parser.add_argument('--virtual-cpu', action='store_true')
