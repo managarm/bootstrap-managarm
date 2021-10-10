@@ -20,7 +20,7 @@ jobs:
                   xbstrap prereqs cbuildrt xbps
             - name: Download and unpack rootfs
               run: |
-                  curl https://mirrors.managarm.org/cbuildrt/rootfs/managarm-buildenv.tar.gz -o managarm-rootfs.tar.gz
+                  curl https://repos.managarm.org/buildenv/managarm-buildenv.tar.gz -o managarm-rootfs.tar.gz
                   tar xvf managarm-rootfs.tar.gz
             - name: Prepare build directory
               run: |
