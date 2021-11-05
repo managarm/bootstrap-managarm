@@ -23,6 +23,7 @@ packages:
       - glib
       - gnutls
       - gsettings-desktop-schemas
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -30,7 +31,6 @@ packages:
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
         - '--buildtype=debugoptimized'
-        - '-Dintrospection=false'
         - '-Dgnutls=enabled'
         - '-Dopenssl=disabled'
         - '-Dinstalled_tests=false'
