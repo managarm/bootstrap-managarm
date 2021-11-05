@@ -1122,6 +1122,7 @@ packages:
     tools_required:
       - host-managarm-tools
       - host-protoc
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -1157,6 +1158,7 @@ packages:
       - host-protoc
     pkgs_required:
       - mlibc-headers
+    revision: 2
     configure:
       - args:
         - 'meson'
