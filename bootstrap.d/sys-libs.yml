@@ -62,6 +62,43 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: libxcrypt
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/besser82/libxcrypt.git'
+      tag: 'v4.4.26'
+      version: '4.4.26'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['./autogen.sh']
+    tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.15
+      - system-gcc
+    pkgs_required:
+      - mlibc
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
+        - '--enable-obsolete-api=yes'
+        - '--disable-xcrypt-compat-files'
+        - '--disable-static'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
   
   - name: mtdev
     labels: [aarch64]

@@ -1130,6 +1130,7 @@ packages:
         - '--prefix=/usr'
         - '@THIS_SOURCE_DIR@'
         - '-Dheaders_only=true'
+        - '-Ddisable_crypt_option=true'
         - '-Ddisable_iconv_option=true'
         - '-Ddisable_intl_option=true'
     build:
@@ -1165,6 +1166,7 @@ packages:
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
         - '-Dmlibc_no_headers=true'
+        - '-Ddisable_crypt_option=true'
         - '-Ddisable_iconv_option=true'
         - '-Ddisable_intl_option=true'
         - '@THIS_SOURCE_DIR@'
