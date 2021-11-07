@@ -540,11 +540,14 @@ packages:
       - host-autoconf-v2.69
       - host-automake-v1.15
     pkgs_required:
+      - mlibc
       - readline
       - ncurses
       - zlib
       - libiconv
       - file
+      - libxcrypt
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -692,7 +695,8 @@ packages:
       - zlib
       - libiconv
       - file
-    revision: 2
+      - libxcrypt
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
