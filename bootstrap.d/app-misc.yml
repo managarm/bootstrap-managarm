@@ -15,7 +15,7 @@ packages:
       tag: 'v1.7'
       # While unusual, version will be the date of the last bump + the NSS version used.
       # If needed, we can always fetch a set NSS commit past the last release to fix critical bugs.
-      version: '20210714.3.68'
+      version: '20211107.3.72'
     tools_required:
       - system-gcc
     pkgs_required:

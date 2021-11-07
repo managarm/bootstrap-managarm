@@ -28,8 +28,8 @@ sources:
   - name: nss
     subdir: 'ports'
     git: 'https://github.com/nss-dev/nss.git'
-    tag: 'NSS_3_68_RTM'
-    version: 'NSS_3_68_RTM'
+    tag: 'NSS_3_72_RTM'
+    version: 'NSS_3_72_RTM'
 
 tools:
   - name: host-glib
