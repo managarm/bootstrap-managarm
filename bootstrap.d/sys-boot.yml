@@ -8,8 +8,8 @@ sources:
   - name: limine-binary
     subdir: 'ports'
     git: 'https://github.com/limine-bootloader/limine.git'
-    tag: 'v2.64-binary'
-    version: '2.64'
+    tag: 'v2.65-binary'
+    version: '2.65'
 
 packages:
   - name: limine
@@ -17,14 +17,18 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/limine-bootloader/limine.git'
-      tag: 'v2.64'
-      version: '2.64'
+      tag: 'v2.65'
+      version: '2.65'
+      regenerate:
+        - args: ['make', 'regenerate']
     tools_required:
       - system-gcc
     pkgs_required:
       - mlibc
-    configure:
-      - args: ['cp', '-rv', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
-      - args: ['make', 'CC=@OPTION:arch-triple@-gcc', 'OBJCOPY=@OPTION:arch-triple@-objcopy', 'TOOLCHAIN=@OPTION:arch-triple@', '-j@PARALLELISM@']
-      - args: ['make', 'PREFIX=/usr', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
+      - args: |
+          set -e
+          make BUILDDIR="`pwd`" CC=@OPTION:arch-triple@-gcc OBJCOPY=@OPTION:arch-triple@-objcopy TOOLCHAIN=@OPTION:arch-triple@ -j@PARALLELISM@
+      - args: |
+          set -e
+          make BUILDDIR="`pwd`" PREFIX=/usr DESTDIR="@THIS_COLLECT_DIR@" install
