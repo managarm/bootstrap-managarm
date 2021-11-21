@@ -97,6 +97,8 @@ RUN apt-get update \
 		xsltproc \
 		# Used by various programs, for example, it is used by file
 		zlib1g-dev \
+		# Used by the developers
+		clangd \
 		# Cleanup time
 		&& apt-get clean
 
