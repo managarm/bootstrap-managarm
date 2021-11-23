@@ -28,7 +28,7 @@ packages:
     build:
       - args: |
           set -e
-          make BUILDDIR="`pwd`" CC=@OPTION:arch-triple@-gcc OBJCOPY=@OPTION:arch-triple@-objcopy TOOLCHAIN=@OPTION:arch-triple@ -j@PARALLELISM@
+          make -C "@THIS_SOURCE_DIR@" BUILDDIR="`pwd`" CC=@OPTION:arch-triple@-gcc OBJCOPY=@OPTION:arch-triple@-objcopy TOOLCHAIN=@OPTION:arch-triple@ -j@PARALLELISM@
       - args: |
           set -e
-          make BUILDDIR="`pwd`" PREFIX=/usr DESTDIR="@THIS_COLLECT_DIR@" install
+          make -C "@THIS_SOURCE_DIR@" BUILDDIR="`pwd`" PREFIX=/usr DESTDIR="@THIS_COLLECT_DIR@" install
