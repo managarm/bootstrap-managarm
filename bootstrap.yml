@@ -1373,36 +1373,6 @@ packages:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc/kmscon']
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/kmscon.conf', '@THIS_COLLECT_DIR@/etc/kmscon/']
 
-  - name: tyr-quake
-    source:
-      subdir: 'ports'
-      git: 'git://disenchant.net/tyrquake'
-      tag: 'v0.65'
-      version: '0.65'
-    tools_required:
-      - system-gcc
-      - host-pkg-config
-      - virtual: pkgconfig-for-target
-        triple: "@OPTION:arch-triple@"
-    pkgs_required:
-      - mlibc
-      - sdl2
-    configure:
-      - args:
-        - 'meson'
-        - '--cross-file'
-        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
-        - '--prefix=/usr'
-        - '--libdir=lib'
-        - '--buildtype=debugoptimized'
-        - '@THIS_SOURCE_DIR@'
-    build:
-      - args: ['ninja']
-      - args: ['ninja', 'install']
-        environ:
-          DESTDIR: '@THIS_COLLECT_DIR@'
-        quiet: true
-
   - name: lua
     source:
       subdir: ports
