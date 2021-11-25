@@ -1,0 +1,25 @@
+From 2f55c2eb5fc389ec12272d26f0aaf7f95efe8fb9 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Kacper=20S=C5=82omi=C5=84ski?=
+ <kacper.slominski72@gmail.com>
+Date: Thu, 25 Nov 2021 17:26:28 +0100
+Subject: [PATCH 2/2] umapinfo: add missing strings.h include
+
+---
+ prboom2/src/umapinfo.cpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/prboom2/src/umapinfo.cpp b/prboom2/src/umapinfo.cpp
+index a65c07b..faa2cd0 100644
+--- a/prboom2/src/umapinfo.cpp
++++ b/prboom2/src/umapinfo.cpp
+@@ -21,6 +21,7 @@
+ #include <string.h>
+ #include <ctype.h>
+ #include <assert.h>
++#include <strings.h>
+ #include "umapinfo.h"
+ #include "scanner.h"
+ 
+-- 
+2.34.0
+
