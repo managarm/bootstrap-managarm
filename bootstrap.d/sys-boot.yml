@@ -8,8 +8,8 @@ sources:
   - name: limine-binary
     subdir: 'ports'
     git: 'https://github.com/limine-bootloader/limine.git'
-    tag: 'v2.67-binary'
-    version: '2.67'
+    tag: 'v2.67.1-binary'
+    version: '2.67.1'
 
 packages:
   - name: limine
@@ -17,8 +17,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/limine-bootloader/limine.git'
-      tag: 'v2.67'
-      version: '2.67'
+      tag: 'v2.67.1'
+      version: '2.67.1'
       regenerate:
         - args: ['make', 'regenerate']
     tools_required:
