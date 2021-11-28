@@ -1372,8 +1372,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.gnome.org/GNOME/pango.git'
-      tag: '1.48.1'
-      version: '1.48.1'
+      tag: '1.48.10'
+      version: '1.48.10'
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -1401,6 +1401,7 @@ packages:
         - '--prefix=/usr'
         - '--buildtype=release'
         - '-Dintrospection=disabled'
+        - '--wrap-mode=nofallback'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
