@@ -3,8 +3,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/curl/curl.git'
-      tag: 'curl-7_77_0'
-      version: '7.77.0'
+      tag: 'curl-7_80_0'
+      version: '7.80.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -19,6 +19,8 @@ packages:
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
+      - libidn2
+      - libpsl
       - openssl
       - zlib
       - zstd
