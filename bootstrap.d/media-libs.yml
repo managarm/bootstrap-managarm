@@ -464,8 +464,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/mesa/mesa.git'
-      tag: 'mesa-21.1.4'
-      version: '21.1.4'
+      tag: 'mesa-21.2.5'
+      version: '21.2.5'
       tools_required:
         - host-pkg-config
     tools_required:
@@ -516,7 +516,7 @@ packages:
         - '-Dgallium-drivers=swrast'
         - '-Dvulkan-drivers='
         # Force Mesa to build with LLVM.
-        - '-Dllvm=true'
+        - '-Dllvm=enabled'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
