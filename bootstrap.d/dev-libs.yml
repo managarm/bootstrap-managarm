@@ -822,8 +822,8 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/libuv/libuv.git'
-      tag: 'v1.41.1'
-      version: '1.41.1'
+      tag: 'v1.42.0'
+      version: '1.42.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
