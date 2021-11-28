@@ -84,9 +84,9 @@ packages:
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
-      git: 'git://git.sv.nongnu.org/freetype/freetype2.git'
-      tag: 'VER-2-10-2'
-      version: '2.10.2'
+      git: 'https://gitlab.freedesktop.org/freetype/freetype.git'
+      tag: 'VER-2-11-0'
+      version: '2.11.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -106,7 +106,6 @@ packages:
       - bzip2
       - libpng
       - zlib
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
