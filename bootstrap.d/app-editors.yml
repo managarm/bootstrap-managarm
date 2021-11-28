@@ -5,8 +5,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/nano.git'
-      tag: 'v5.8'
-      version: '5.8'
+      tag: 'v5.9'
+      version: '5.9'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -24,6 +24,8 @@ packages:
       - host-automake-v1.15
       - host-pkg-config
       - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
       - file
