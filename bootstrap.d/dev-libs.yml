@@ -2,8 +2,8 @@ sources:
   - name: glib
     subdir: ports
     git: 'https://gitlab.gnome.org/GNOME/glib'
-    tag: '2.68.3'
-    version: '2.68.3'
+    tag: '2.70.1'
+    version: '2.70.1'
 
   - name: gobject-introspection
     subdir: 'ports'
