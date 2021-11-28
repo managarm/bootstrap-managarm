@@ -742,8 +742,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxfont.git'
-      tag: 'libXfont2-2.0.4'
-      version: '2.0.4'
+      tag: 'libXfont2-2.0.5'
+      version: '2.0.5'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
