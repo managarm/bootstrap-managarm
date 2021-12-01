@@ -47,8 +47,8 @@ packages:
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/gzip.git'
-      tag: 'v1.10'
-      version: '1.10'
+      tag: 'v1.11'
+      version: '1.11'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
