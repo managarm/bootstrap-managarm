@@ -45,10 +45,10 @@ packages:
     default: true
     source:
       subdir: ports
-      url: 'https://github.com/Mic92/iana-etc/releases/download/20210611/iana-etc-20210611.tar.gz'
+      url: 'https://github.com/Mic92/iana-etc/releases/download/20211124/iana-etc-20211124.tar.gz'
       format: 'tar.gz'
-      extract_path: 'iana-etc-20210611'
-      version: '20210611'
+      extract_path: 'iana-etc-20211124'
+      version: '20211124'
     tools_required:
       - system-gcc
     configure:
