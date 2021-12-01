@@ -326,8 +326,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/libevdev/libevdev.git'
-      tag: 'libevdev-1.9.1'
-      version: '1.9.1'
+      tag: 'libevdev-1.12.0'
+      version: '1.12.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -341,7 +341,6 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
