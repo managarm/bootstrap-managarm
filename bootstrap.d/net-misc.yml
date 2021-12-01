@@ -165,8 +165,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/wget.git'
-      tag: 'v1.21.1'
-      version: '1.21.1'
+      tag: 'v1.21.2'
+      version: '1.21.2'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -187,7 +187,6 @@ packages:
       - mlibc
       - pcre
       - openssl
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
