@@ -1,0 +1,111 @@
+sources:
+  - name: dsda-doom
+    subdir: ports
+    git: 'https://github.com/kraflab/dsda-doom.git'
+    tag: 'v0.22.1'
+    version: '0.22.1'
+
+tools:
+  - name: host-rdatawad
+    from_source: dsda-doom
+    tools_required:
+      - host-cmake
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_BUILD_TYPE=Release'
+        - '-DBUILD_RDATAWAD_ONLY=ON'
+        - '-DBUILD_GL=OFF'
+        - '@THIS_SOURCE_DIR@/prboom2'
+    compile:
+      - args: ['ninja', 'rdatawad']
+    install:
+      # We perform the install manually (and also patch the generated CMake file)
+      # since you cannot install rdatawad on it's own, and we don't want to build
+      # the whole dsda-doom for the host.
+      - args: ['mkdir', '-p', '@PREFIX@/']
+      - args: ['cp', '@THIS_BUILD_DIR@/data/rdatawad', '@PREFIX@/rdatawad']
+      - args: |
+          sed -e 's|@THIS_BUILD_DIR@/data|@PREFIX@|' @THIS_BUILD_DIR@/ImportExecutables.cmake \
+              > @PREFIX@/ImportExecutables.cmake
+
+packages:
+  - name: dsda-doom
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Modern DOOM source port with extra tooling for demos and speedrunning
+      description: Modern DOOM source port based on PrBoom+ with support for new standards and extra tooling for demo playback, demo recording and speedrunning.
+      spdx: 'GPL-2.0-or-later'
+      website: 'https://github.com/kraflab/dsda-doom'
+      maintainer: 'Kacper Słomiński <qookie@managarm.org>'
+      categories: ['games-fps']
+    from_source: dsda-doom
+    tools_required:
+      - host-cmake
+      - host-pkg-config
+      - system-gcc
+      - host-rdatawad
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - zlib
+      - pcre
+      - sdl2
+      - glu
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_BUILD_TYPE=Release'
+        - '-DIMPORT_EXECUTABLES=@BUILD_ROOT@/tools/host-rdatawad/ImportExecutables.cmake'
+        - '@THIS_SOURCE_DIR@/prboom2'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+
+  - name: tyr-quake
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Modern Quake source port that aims to keep the original feel of the game
+      description: Modern Quake source port with support for Quake and Quakeworld, with both software rendering and OpenGL, and various other improvements.
+      spdx: 'GPL-2.0-or-later'
+      website: 'https://disenchant.net/tyrquake/'
+      maintainer: 'Kacper Słomiński <qookie@managarm.org>'
+      categories: ['games-fps']
+    source:
+      subdir: 'ports'
+      url: 'https://disenchant.net/files/engine/tyrquake-0.65.tar.gz'
+      format: 'tar.gz'
+      extract_path: 'tyrutils-0.65'
+      patch-path-strip: 1
+      version: '0.65'
+    tools_required:
+      - system-gcc
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - sdl2
+    configure:
+      - args:
+        - 'meson'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
