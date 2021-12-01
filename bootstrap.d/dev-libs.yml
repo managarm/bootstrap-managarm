@@ -485,8 +485,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://dev.gnupg.org/source/libgpg-error.git'
-      tag: 'libgpg-error-1.42'
-      version: '1.42'
+      tag: 'libgpg-error-1.43'
+      version: '1.43'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
