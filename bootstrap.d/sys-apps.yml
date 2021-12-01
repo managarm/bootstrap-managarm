@@ -95,8 +95,8 @@ packages:
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/diffutils.git'
-      tag: 'v3.7'
-      version: '3.7'
+      tag: 'v3.8'
+      version: '3.8'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -105,7 +105,6 @@ packages:
         - args: ['cp',
             '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
             '@THIS_SOURCE_DIR@/build-aux/']
-    revision: 2
     tools_required:
       - system-gcc
       - host-autoconf-v2.69
