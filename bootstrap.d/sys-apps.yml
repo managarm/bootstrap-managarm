@@ -49,8 +49,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/coreutils.git'
-      tag: 'v8.32'
-      version: '8.32'
+      tag: 'v9.0'
+      version: '9.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -60,12 +60,9 @@ packages:
             '@BUILD_ROOT@/tools/host-automake-v1.11/share/automake-1.11/config.sub',
             '@THIS_SOURCE_DIR@/build-aux/']
     tools_required:
-      # Bison 3.7 broke gnulib, work around it by building an older bison
-      - host-bison
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
     configure:
       # Huge hack: coreutils does not compile the build-machine binary make-prime-list
       # using the build-machine compiler. Hence, build and invoke the binary manually here.
