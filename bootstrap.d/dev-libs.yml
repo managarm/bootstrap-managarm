@@ -437,9 +437,9 @@ packages:
       categories: ['dev-libs']
     source:
       subdir: 'ports'
-      git: 'https://github.com/gpg/libgcrypt.git'
-      tag: 'libgcrypt-1.8.5'
-      version: '1.8.5'
+      git: 'https://dev.gnupg.org/source/libgcrypt.git'
+      tag: 'libgcrypt-1.9.4'
+      version: '1.9.4'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
