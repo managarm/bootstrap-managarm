@@ -18,6 +18,6 @@ jobs:
     tasks:
       - useful-image-dependencies
       - initialize-empty-image
-      - make-image
+      - remake-image
       - test-image
       - xz-image

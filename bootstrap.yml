@@ -1631,15 +1631,31 @@ tasks:
     workdir: '@BUILD_ROOT@'
     containerless: true
 
+  - name: remake-image
+    tools_required:
+      - host-limine
+    pkgs_required:
+      - managarm-kernel
+      - managarm-system
+    tasks_required:
+      - update-initrd
+    args:
+      - '@SOURCE_ROOT@/scripts/update-image.py'
+      - '--triple'
+      - '@OPTION:arch-triple@'
+      - 'remake'
+    workdir: '@BUILD_ROOT@'
+
   - name: xz-image
     tasks_required:
       - task: make-image
+        order_only: true
+      - task: remake-image
         order_only: true
     artifact_files:
       - name: image.xz
         path: '@BUILD_ROOT@'
     args: ['xz', '--fast', '--keep', '@BUILD_ROOT@/image']
-    containerless: true
 
   - name: qemu
     tasks_required:
@@ -1656,6 +1672,8 @@ tasks:
   - name: test-image
     tasks_required:
       - task: make-image
+        order_only: true
+      - task: remake-image
         order_only: true
     args:
       - '@SOURCE_ROOT@/scripts/test-image.py'
