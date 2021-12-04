@@ -10,13 +10,14 @@ pkgconfig = 'pkgconfig'
 args = [ '-fsized-deallocation', '-ffreestanding', '-target', 'aarch64-managarm-kernel', '-gcc-toolchain', '_BUILD_ROOT_/tools/kernel-gcc']
 
 [built-in options]
-needs_exe_wrapper = true
-
 c_args = args
 c_link_args = args
 
 cpp_args = args
 cpp_link_args = args
+
+[properties]
+needs_exe_wrapper = true
 
 [host_machine]
 system = 'managarm'
