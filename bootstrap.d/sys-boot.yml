@@ -5,11 +5,12 @@ sources:
     branch: 'master'
     rolling_version: true
     version: '0.0pl@ROLLING_ID@'
+
   - name: limine-binary
     subdir: 'ports'
     git: 'https://github.com/limine-bootloader/limine.git'
-    tag: 'v2.73.2-binary'
-    version: '2.73.2'
+    tag: 'v2.73.3-binary'
+    version: '2.73.3'
 
 packages:
   - name: limine
@@ -17,8 +18,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/limine-bootloader/limine.git'
-      tag: 'v2.73.2'
-      version: '2.73.2'
+      tag: 'v2.73.3'
+      version: '2.73.3'
       regenerate:
         - args: ['make', 'regenerate']
     tools_required:
@@ -28,7 +29,5 @@ packages:
     build:
       - args: |
           set -e
-          make -C "@THIS_SOURCE_DIR@" BUILDDIR="`pwd`" CC=@OPTION:arch-triple@-gcc OBJCOPY=@OPTION:arch-triple@-objcopy TOOLCHAIN=@OPTION:arch-triple@ -j@PARALLELISM@
-      - args: |
-          set -e
-          make -C "@THIS_SOURCE_DIR@" BUILDDIR="`pwd`" PREFIX=/usr DESTDIR="@THIS_COLLECT_DIR@" install
+          make -C "@THIS_SOURCE_DIR@" BUILDDIR="@THIS_BUILD_DIR@" CC=@OPTION:arch-triple@-gcc TOOLCHAIN=@OPTION:arch-triple@ -j@PARALLELISM@
+          make -C "@THIS_SOURCE_DIR@" BUILDDIR="@THIS_BUILD_DIR@" PREFIX=/usr DESTDIR="@THIS_COLLECT_DIR@" install
