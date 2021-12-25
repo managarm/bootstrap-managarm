@@ -13,6 +13,7 @@ packages:
       git: 'https://github.com/qemu/qemu.git'
       tag: 'v6.2.0'
       version: '6.2.0'
+    revision: 2
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -24,6 +25,12 @@ packages:
       - sdl2
       - pcre
       - libiconv
+      - libxml
+      - zstd
+      - libpng
+      - pixman
+      - ncurses
+      - nettle
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
