@@ -1,0 +1,79 @@
+From 2662bf6f999bbc1685ea616405f655d7b6a1e7fe Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Sun, 3 Apr 2022 22:48:43 +0200
+Subject: [PATCH] Initial Managarm support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ gdk/wayland/gdkdisplay-wayland.c | 1 -
+ gtk/a11y/gtkaccessibility.c      | 5 +++++
+ gtk/gtkmain.c                    | 5 +++++
+ meson.build                      | 3 ++-
+ 4 files changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/gdk/wayland/gdkdisplay-wayland.c b/gdk/wayland/gdkdisplay-wayland.c
+index d4503c2..0e2efc6 100644
+--- a/gdk/wayland/gdkdisplay-wayland.c
++++ b/gdk/wayland/gdkdisplay-wayland.c
+@@ -28,7 +28,6 @@
+ #endif
+ 
+ #include <sys/mman.h>
+-#include <sys/syscall.h>
+ 
+ #include <glib.h>
+ #include "gdkwayland.h"
+diff --git a/gtk/a11y/gtkaccessibility.c b/gtk/a11y/gtkaccessibility.c
+index 7f0e520..7231eb3 100644
+--- a/gtk/a11y/gtkaccessibility.c
++++ b/gtk/a11y/gtkaccessibility.c
+@@ -974,6 +974,9 @@ do_window_event_initialization (void)
+ void
+ _gtk_accessibility_init (void)
+ {
++// We don't care about a11y and dbus isn't working, so let's just not start that.
++#ifdef __managarm__
++	return;
++#else
+   if (initialized)
+     return;
+ 
+@@ -993,4 +996,5 @@ _gtk_accessibility_init (void)
+ #endif
+ 
+   atk_misc_instance = g_object_new (GTK_TYPE_MISC_IMPL, NULL);
++#endif
+ }
+diff --git a/gtk/gtkmain.c b/gtk/gtkmain.c
+index f7cbb34..8e035d4 100644
+--- a/gtk/gtkmain.c
++++ b/gtk/gtkmain.c
+@@ -357,6 +357,11 @@ static gboolean
+ check_setugid (void)
+ {
+ /* this isn't at all relevant on MS Windows and doesn't compile ... --hb */
++#ifdef __managarm__
++  /* Managarm runs everything as root for the time being, this check is thus useless. */
++  g_warning("Managarm ignores the setugid check!\n");
++  return TRUE;
++#endif
+ #ifndef G_OS_WIN32
+   uid_t ruid, euid, suid; /* Real, effective and saved user ID's */
+   gid_t rgid, egid, sgid; /* Real, effective and saved group ID's */
+diff --git a/meson.build b/meson.build
+index a8f1383..32118df 100644
+--- a/meson.build
++++ b/meson.build
+@@ -307,7 +307,7 @@ elif cc.get_id() == 'gcc' or cc.get_id() == 'clang'
+     '-Werror=sequence-point',
+     '-Werror=return-type',
+     '-Werror=trigraphs',
+-    '-Werror=array-bounds',
++    # We get build errors with this enabled
++    #'-Werror=array-bounds',
+     '-Werror=write-strings',
+     '-Werror=address',
+     '-Werror=int-to-pointer-cast',
+-- 
+2.37.2
+

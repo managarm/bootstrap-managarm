@@ -242,6 +242,74 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: gtk+-3
+    architecture: '@OPTION:arch@'
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.gnome.org/GNOME/gtk.git'
+      tag: '3.24.23'
+      version: '3.24.23'
+    tools_required:
+      - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+      - host-glib
+      - wayland-scanner
+    pkgs_required:
+      - mlibc
+      - atk
+      - at-spi2-atk
+      - cairo
+      - glib
+      - gdk-pixbuf
+      - libx11
+      - libxext
+      - libxcb
+      - libxrender
+      - libxrandr
+      - libxfixes
+      - libxdamage
+      - pango
+      - fribidi
+      - libepoxy
+      - libxkbcommon
+      - wayland
+      - wayland-protocols
+      - fontconfig
+      - freetype
+      - libxi
+      - harfbuzz
+      - libxcursor
+      - gsettings-desktop-schemas
+      - dbus
+    configure:
+      - args:
+        - 'meson'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '-Dprint_backends=file'
+        - '-Dintrospection=false'
+        - '-Dx11_backend=true'
+        - '-Dbroadway_backend=true'
+        - '-Dwayland_backend=true'
+        - '-Dgtk_doc=false'
+        - '-Dcolord=no'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+    scripts:
+        post_install:
+          - args: ['gtk-query-immodules-3.0', '--update-cache']
+          - args: ['glib-compile-schemas', '/usr/share/glib-2.0/schemas']
+
   - name: libdrm
     labels: [aarch64]
     architecture: '@OPTION:arch@'
