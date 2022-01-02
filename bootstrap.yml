@@ -1,4 +1,5 @@
 imports:
+  - file: bootstrap.d/app-accessibility.yml
   - file: bootstrap.d/app-admin.yml
   - file: bootstrap.d/app-arch.yml
   - file: bootstrap.d/app-crypt.yml
