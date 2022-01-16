@@ -9,8 +9,8 @@ sources:
   - name: limine-binary
     subdir: 'ports'
     git: 'https://github.com/limine-bootloader/limine.git'
-    tag: 'v2.74.6-binary'
-    version: '2.74.6'
+    tag: 'v2.75.1-binary'
+    version: '2.75.1'
 
 packages:
   - name: limine
@@ -18,16 +18,27 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/limine-bootloader/limine.git'
-      tag: 'v2.74.6'
-      version: '2.74.6'
+      tag: 'v2.75.1'
+      version: '2.75.1'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
       regenerate:
-        - args: ['make', 'regenerate']
+        - args: ['autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
     tools_required:
       - system-gcc
     pkgs_required:
       - mlibc
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - 'TOOLCHAIN=@OPTION:arch-triple@'
     build:
-      - args: |
-          set -e
-          make -C "@THIS_SOURCE_DIR@" BUILDDIR="@THIS_BUILD_DIR@" CC=@OPTION:arch-triple@-gcc TOOLCHAIN=@OPTION:arch-triple@ -j@PARALLELISM@
-          make -C "@THIS_SOURCE_DIR@" BUILDDIR="@THIS_BUILD_DIR@" PREFIX=/usr DESTDIR="@THIS_COLLECT_DIR@" install
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
