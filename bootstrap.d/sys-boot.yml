@@ -24,7 +24,7 @@ packages:
         - host-autoconf-v2.69
         - host-automake-v1.15
       regenerate:
-        - args: ['autogen.sh']
+        - args: ['./autogen.sh']
           environ:
             'NOCONFIGURE': 'yes'
     tools_required:
