@@ -1,0 +1,53 @@
+packages:
+  - name: links
+    source:
+      subdir: 'ports'
+      url: 'http://links.twibright.com/download/links-2.25.tar.gz'
+      format: 'tar.gz'
+      extract_path: 'links-2.25'
+      version: '2.25'
+    tools_required:
+      - host-pkg-config
+      - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: x86_64-managarm
+    pkgs_required:
+      - mlibc
+      - zlib
+      - openssl
+      - bzip2
+      - libpng
+      - zstd
+      - libxext
+      - freetype
+      - fontconfig
+      - libjpeg-turbo
+      - xz-utils
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--mandir=/usr/share/man'
+        - '--enable-graphics'
+        - '--without-directfb'
+        - '--without-librsvg'
+        - '--with-bzip2'
+        - '--with-X'
+        - '--with-zlib'
+        - '--with-zstd'
+        - '--with-openssl'
+        - '--with-libjpeg'
+        - '--without-libtiff'
+        - '--without-openmp'
+        - '--with-lzma'
+        - '--with-freetype'
+        - '--without-ipv6'
+        environ:
+          # Configure doesn't set CC correctly and assumes gcc unless manually overridden.
+          CC: 'x86_64-managarm-gcc'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
