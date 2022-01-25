@@ -874,19 +874,22 @@ packages:
       - system-gcc
     pkgs_required:
       - boost
-    configure: []
-    build:
+    configure:
       - args:
-        - 'make'
-        - '-f'
-        - '@THIS_SOURCE_DIR@/library.makefile'
-        - 'S=@THIS_SOURCE_DIR@'
-        - 'DESTDIR=@THIS_COLLECT_DIR@'
-        - 'prefix=/usr/'
-        - 'CXX=@OPTION:arch-triple@-g++'
-        - 'LD=@OPTION:arch-triple@-ld'
-        - 'AS=@OPTION:arch-triple@-as'
-        - 'install'
+        - 'meson'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '-Dinstall_headers=true'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
 
   # Deprecated in favor of openssl
   - name: libressl
