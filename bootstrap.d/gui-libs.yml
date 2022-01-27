@@ -1,0 +1,58 @@
+packages:
+  - name: wlroots
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Pluggable, composable, unopinionated modules for building a Wayland compositor
+      description: wlroots implements a huge variety of Wayland compositor features and implements them right, so you can focus on the features that make your compositor unique. By using wlroots, you get high performance, excellent hardware compatibility, broad support for many wayland interfaces, and comfortable development tools - or any subset of these features you like, because all of them work independently of one another and freely compose with anything you want to implement yourself.
+      spdx: MIT
+      website: 'https://gitlab.freedesktop.org/wlroots/wlroots'
+      maintainer: "no92 <no92.mail@gmail.com>"
+      categories: ['gui-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.freedesktop.org/wlroots/wlroots/'
+      tag: '0.16.2'
+      version: '0.16.2'
+    tools_required:
+      - system-gcc
+      - host-libtool
+      - host-cmake
+      - wayland-scanner
+      - host-hwdata
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+      - virtual: pkgconfig-for-host
+        program_name: host-pkg-config
+    pkgs_required:
+      - mlibc
+      - eudev
+      - libdrm
+      - libinput
+      - libxcb
+      - libxkbcommon
+      - pixman
+      - wayland
+      - wayland-protocols
+      - xcb-util-image
+      - xcb-util-wm
+      - xwayland
+    configure:
+      - args: 'sed -i s#{XBSTRAP_SYSTEM_ROOT}#@SYSROOT_DIR@# @THIS_SOURCE_DIR@/xwayland/meson.build'
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--buildtype=debugoptimized'
+        - '-Dexamples=false'
+        - '-Dxwayland=enabled'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'

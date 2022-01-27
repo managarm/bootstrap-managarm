@@ -16,6 +16,7 @@ imports:
   - file: bootstrap.d/games-fps.yml
   - file: bootstrap.d/games-misc.yml
   - file: bootstrap.d/gnome-base.yml
+  - file: bootstrap.d/gui-libs.yml
   - file: bootstrap.d/media-fonts.yml
   - file: bootstrap.d/media-gfx.yml
   - file: bootstrap.d/media-libs.yml
