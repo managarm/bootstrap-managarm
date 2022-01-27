@@ -1,0 +1,40 @@
+packages:
+  - name: seatd
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: A minimal seat management daemon, and a universal seat management library.
+      description: Seat management takes care of mediating access to shared devices (graphics, input), without requiring the applications needing access to be root.
+      spdx: MIT
+      website: https://sr.ht/~kennylevinsen/seatd/
+      maintainer: "no92 <no92.mail@gmail.com>"
+      categories: ['sys-auth']
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
+    source:
+      subdir: 'ports'
+      git: 'https://git.sr.ht/~kennylevinsen/seatd/'
+      tag: '0.6.3'
+      version: '0.6.3'
+    tools_required:
+      - host-pkg-config
+      - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+    configure:
+      - args:
+        - 'meson'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--buildtype=debugoptimized'
+        - '-Dlibseat-logind=disabled'
+        - '@THIS_SOURCE_DIR@'
+        environ:
+          PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
