@@ -1,0 +1,60 @@
+packages:
+  - name: sway
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: An i3-compatible Wayland compositor
+      description: Sway is a tiling Wayland compositor and a drop-in replacement for the i3 window manager for X11. It works with your existing i3 configuration and supports most of i3's features, plus a few extras.
+      spdx: MIT
+      website: 'https://github.com/swaywm/sway'
+      maintainer: "no92 <no92.mail@gmail.com>"
+      categories: ['gui-wm']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/swaywm/sway'
+      branch: master
+      tag: '1.8.1'
+      version: '1.8.1'
+    tools_required:
+      - system-gcc
+      - host-libtool
+      - wayland-scanner
+      - host-cmake
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+      - virtual: pkgconfig-for-host
+        program_name: host-pkg-config
+    pkgs_required:
+      - mlibc
+      - cairo
+      - json-c
+      - pango
+      - pcre2
+      - wayland
+      - wayland-protocols
+      - wlroots
+      - xwayland
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '-Dbash-completions=false'
+        - '-Dfish-completions=false'
+        - '-Dgdk-pixbuf=disabled'
+        - '-Dman-pages=disabled'
+        - '-Dxwayland=enabled'
+        - '-Dzsh-completions=false'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/sway-config', '@THIS_COLLECT_DIR@/etc/sway/config']
