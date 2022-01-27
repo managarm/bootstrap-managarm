@@ -1,0 +1,47 @@
+packages:
+  - name: swaybg
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: swaybg is a wallpaper utility for Wayland compositors
+      description: "swaybg is a wallpaper utility for Wayland compositors. It is compatible with any Wayland compositor which implements the following Wayland protocols: wlr-layer-shell, xdg-output"
+      spdx: MIT
+      website: 'https://github.com/swaywm/swaybg'
+      maintainer: "no92 <no92.mail@gmail.com>"
+      categories: ['gui-apps']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/swaywm/swaybg'
+      tag: 'v1.2.0'
+      version: '1.2.0'
+    tools_required:
+      - system-gcc
+      - wayland-scanner
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+      - virtual: pkgconfig-for-host
+        program_name: host-pkg-config
+    pkgs_required:
+      - mlibc
+      - cairo
+      - wayland
+      - wayland-protocols
+      - gdk-pixbuf
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--prefix=/usr'
+        - '--buildtype=release'
+        - '-Dman-pages=disabled'
+        - '-Dgdk-pixbuf=disabled'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
