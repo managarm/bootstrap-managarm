@@ -125,7 +125,7 @@ packages:
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
-        - '-Dxorg=false'
+        - '-Dxorg=true'
         - '-Dxephyr=false'
         - '-Dxwayland=true'
         - '-Dxnest=false'
@@ -145,6 +145,10 @@ packages:
         - '-Dxvmc=false'
         - '-Dsystemd_logind=false'
         - '-Dsecure-rpc=false'
+        - '-Dglamor=false'
+        - '-Dvbe=false'
+        - '-Dint10=false'
+        - '-Dvgahw=false'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
