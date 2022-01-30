@@ -31,6 +31,7 @@ imports:
   - file: bootstrap.d/x11-libs.yml
   - file: bootstrap.d/x11-misc.yml
   - file: bootstrap.d/x11-themes.yml
+  - file: bootstrap.d/x11-wm.yml
 
 general:
     patch_author: The Managarm Project
