@@ -155,3 +155,7 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/root']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc/X11']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/xorg.conf', '@THIS_COLLECT_DIR@/etc/X11/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/xinitrc', '@THIS_COLLECT_DIR@/root/.xinitrc']
