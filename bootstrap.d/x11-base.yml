@@ -117,6 +117,7 @@ packages:
       - nettle
       - xkbcomp
       - pixman
+      - libpciaccess
     configure:
       - args:
         - 'meson'
@@ -136,7 +137,6 @@ packages:
         - '-Dvendor_name="The Managarm Project"'
         - '-Dvendor_name_short="Managarm"'
         - '-Dsuid_wrapper=false'
-        - '-Dpciaccess=false'
         - '-Ddpms=false'
         - '-Dscreensaver=false'
         - '-Dxres=false'

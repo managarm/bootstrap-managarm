@@ -1,9 +1,10 @@
-From da0c8b76121406b220f1acb723851f09e2471b99 Mon Sep 17 00:00:00 2001
+From 56a55d3ebbd3139177989019686861b2b3d4685c Mon Sep 17 00:00:00 2001
 From: Dennisbonke <admin@dennisbonke.com>
 Date: Sat, 18 Jul 2020 16:19:17 +0200
-Subject: [PATCH] Add managarm support
+Subject: [PATCH 1/2] Add managarm support
 
 Signed-off-by: Dennisbonke <admin@dennisbonke.com>
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
  include/meson.build | 2 +-
  include/os.h        | 1 +
@@ -13,7 +14,7 @@ Signed-off-by: Dennisbonke <admin@dennisbonke.com>
  5 files changed, 6 insertions(+), 3 deletions(-)
 
 diff --git a/include/meson.build b/include/meson.build
-index ac2415327..82b093442 100644
+index ac24153..82b0934 100644
 --- a/include/meson.build
 +++ b/include/meson.build
 @@ -132,7 +132,7 @@ conf_data.set('HAVE_POSIX_FALLOCATE', cc.has_function('posix_fallocate'))
@@ -26,7 +27,7 @@ index ac2415327..82b093442 100644
  conf_data.set('HAVE_SIGACTION', cc.has_function('sigaction'))
  conf_data.set('HAVE_STRCASECMP', cc.has_function('strcasecmp'))
 diff --git a/include/os.h b/include/os.h
-index 2a1c29ef3..2a7fc76c5 100644
+index 2a1c29e..2a7fc76 100644
 --- a/include/os.h
 +++ b/include/os.h
 @@ -51,6 +51,7 @@ SOFTWARE.
@@ -38,7 +39,7 @@ index 2a1c29ef3..2a7fc76c5 100644
  #include <time.h>
  #endif
 diff --git a/mi/mibitblt.c b/mi/mibitblt.c
-index 43d9bd917..740c0d268 100644
+index 43d9bd9..740c0d2 100644
 --- a/mi/mibitblt.c
 +++ b/mi/mibitblt.c
 @@ -49,6 +49,8 @@ SOFTWARE.
@@ -51,7 +52,7 @@ index 43d9bd917..740c0d268 100644
  #include <X11/Xprotostr.h>
  
 diff --git a/os/access.c b/os/access.c
-index 97246160c..7afbd3a86 100644
+index 9724616..7afbd3a 100644
 --- a/os/access.c
 +++ b/os/access.c
 @@ -117,7 +117,7 @@ SOFTWARE.
@@ -64,7 +65,7 @@ index 97246160c..7afbd3a86 100644
  #endif
  #if defined(SYSV) &&  defined(__i386__)
 diff --git a/os/utils.c b/os/utils.c
-index 2ba1c8013..0156b20fb 100644
+index 2ba1c80..0156b20 100644
 --- a/os/utils.c
 +++ b/os/utils.c
 @@ -1632,7 +1632,7 @@ Pclose(void *iop)
@@ -77,5 +78,5 @@ index 2ba1c8013..0156b20fb 100644
  
  int
 -- 
-2.28.0.rc2
+2.34.1
 
