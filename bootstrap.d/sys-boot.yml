@@ -9,8 +9,8 @@ sources:
   - name: limine-binary
     subdir: 'ports'
     git: 'https://github.com/limine-bootloader/limine.git'
-    tag: 'v2.80.2-binary'
-    version: '2.80.2'
+    tag: 'v2.81-binary'
+    version: '2.81'
 
 packages:
   - name: limine
@@ -18,8 +18,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/limine-bootloader/limine.git'
-      tag: 'v2.80.2'
-      version: '2.80.2'
+      tag: 'v2.81'
+      version: '2.81'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
