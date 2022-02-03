@@ -131,7 +131,7 @@ while proc_alive or debugcon_alive:
 		buf = tail
 
 		# Look for a message that Weston prints after finishing boot.
-		if head.endswith(b'failed to set cursor: No such device or address (ENXIO)'):
+		if head.endswith(b"launching '/usr/libexec/weston-desktop-shell'"):
 			monitor.write(b'screendump after-boot.ppm\n')
 			monitor.write(b'system_powerdown\n')
 			success = True
