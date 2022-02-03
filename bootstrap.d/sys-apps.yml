@@ -130,6 +130,7 @@ packages:
       commit: 'b18e93d283d388ee42d8f0b73f36e546111324ce'
       branch: 'master'
       version: '0.10.1p1'
+    revision: 2
     tools_required:
       - host-cargo
       - system-gcc
@@ -508,6 +509,7 @@ packages:
       git: 'https://github.com/BurntSushi/ripgrep.git'
       tag: '12.1.1'
       version: '12.1.1'
+    revision: 2
     tools_required:
       - host-cargo
     sources_required:
