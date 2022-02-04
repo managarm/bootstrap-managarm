@@ -189,8 +189,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/mesa/drm'
-      tag: 'libdrm-2.4.107'
-      version: '2.4.107'
+      tag: 'libdrm-2.4.109'
+      version: '2.4.109'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -742,8 +742,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxfont.git'
-      tag: 'libXfont2-2.0.4'
-      version: '2.0.4'
+      tag: 'libXfont2-2.0.5'
+      version: '2.0.5'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -796,8 +796,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxft.git'
-      tag: 'libXft-2.3.3'
-      version: '2.3.3'
+      tag: 'libXft-2.3.4'
+      version: '2.3.4'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -838,8 +838,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxi.git'
-      tag: 'libXi-1.7.10'
-      version: '1.7.10'
+      tag: 'libXi-1.8'
+      version: '1.8'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -882,8 +882,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/xkbcommon/libxkbcommon.git'
-      tag: 'xkbcommon-1.3.0'
-      version: '1.3.0'
+      tag: 'xkbcommon-1.3.1'
+      version: '1.3.1'
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -1372,8 +1372,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.gnome.org/GNOME/pango.git'
-      tag: '1.48.1'
-      version: '1.48.1'
+      tag: '1.48.10'
+      version: '1.48.10'
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -1401,6 +1401,7 @@ packages:
         - '--prefix=/usr'
         - '--buildtype=release'
         - '-Dintrospection=disabled'
+        - '--wrap-mode=nofallback'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']

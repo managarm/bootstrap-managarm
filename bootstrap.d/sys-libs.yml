@@ -34,8 +34,8 @@ packages:
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/gdbm.git'
-      tag: 'v1.20'
-      version: '1.20'
+      tag: 'v1.22'
+      version: '1.22'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -210,9 +210,9 @@ packages:
     default: true
     source:
       subdir: 'ports'
-      url: 'https://data.iana.org/time-zones/releases/tzdata2021a.tar.gz'
+      url: 'https://data.iana.org/time-zones/releases/tzdata2021e.tar.gz'
       format: 'tar.gz'
-      version: '2021a'
+      version: '2021e'
     tools_required:
       - system-gcc
     configure:

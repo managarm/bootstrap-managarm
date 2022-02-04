@@ -5,8 +5,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/nano.git'
-      tag: 'v5.8'
-      version: '5.8'
+      tag: 'v5.9'
+      version: '5.9'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -24,6 +24,8 @@ packages:
       - host-automake-v1.15
       - host-pkg-config
       - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
       - file
@@ -61,8 +63,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/vim/vim.git'
-      tag: 'v8.2.3001'
-      version: '8.2.3001'
+      tag: 'v8.2.3704'
+      version: '8.2.3704'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -71,7 +73,6 @@ packages:
       - mlibc
       - ncurses
       - libiconv
-    revision: 2
     configure:
       # vim does not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead

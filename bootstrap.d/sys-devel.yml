@@ -76,8 +76,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/gavinhoward/bc.git'
-      tag: '3.2.4'
-      version: '3.2.4'
+      tag: '5.2.1'
+      version: '5.2.1'
     tools_required:
       - system-gcc
     pkgs_required:

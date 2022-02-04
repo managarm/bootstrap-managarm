@@ -2,8 +2,8 @@ sources:
   - name: file
     subdir: ports
     git: 'https://github.com/file/file.git'
-    tag: 'FILE5_40'
-    version: '5.40'
+    tag: 'FILE5_41'
+    version: '5.41'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.15
@@ -49,8 +49,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/coreutils.git'
-      tag: 'v8.32'
-      version: '8.32'
+      tag: 'v9.0'
+      version: '9.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -60,12 +60,9 @@ packages:
             '@BUILD_ROOT@/tools/host-automake-v1.11/share/automake-1.11/config.sub',
             '@THIS_SOURCE_DIR@/build-aux/']
     tools_required:
-      # Bison 3.7 broke gnulib, work around it by building an older bison
-      - host-bison
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
     configure:
       # Huge hack: coreutils does not compile the build-machine binary make-prime-list
       # using the build-machine compiler. Hence, build and invoke the binary manually here.
@@ -95,8 +92,8 @@ packages:
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/diffutils.git'
-      tag: 'v3.7'
-      version: '3.7'
+      tag: 'v3.8'
+      version: '3.8'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -105,7 +102,6 @@ packages:
         - args: ['cp',
             '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
             '@THIS_SOURCE_DIR@/build-aux/']
-    revision: 2
     tools_required:
       - system-gcc
       - host-autoconf-v2.69
@@ -261,8 +257,8 @@ packages:
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/grep.git'
-      tag: 'v3.5'
-      version: '3.5'
+      tag: 'v3.7'
+      version: '3.7'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15

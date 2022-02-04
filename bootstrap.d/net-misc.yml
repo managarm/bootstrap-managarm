@@ -3,8 +3,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/curl/curl.git'
-      tag: 'curl-7_77_0'
-      version: '7.77.0'
+      tag: 'curl-7_80_0'
+      version: '7.80.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -19,6 +19,8 @@ packages:
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
+      - libidn2
+      - libpsl
       - openssl
       - zlib
       - zstd
@@ -43,10 +45,10 @@ packages:
     default: true
     source:
       subdir: ports
-      url: 'https://github.com/Mic92/iana-etc/releases/download/20210611/iana-etc-20210611.tar.gz'
+      url: 'https://github.com/Mic92/iana-etc/releases/download/20211124/iana-etc-20211124.tar.gz'
       format: 'tar.gz'
-      extract_path: 'iana-etc-20210611'
-      version: '20210611'
+      extract_path: 'iana-etc-20211124'
+      version: '20211124'
     tools_required:
       - system-gcc
     configure:
@@ -163,8 +165,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/wget.git'
-      tag: 'v1.21.1'
-      version: '1.21.1'
+      tag: 'v1.21.2'
+      version: '1.21.2'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -185,7 +187,6 @@ packages:
       - mlibc
       - pcre
       - openssl
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

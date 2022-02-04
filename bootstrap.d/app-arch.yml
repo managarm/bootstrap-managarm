@@ -47,8 +47,8 @@ packages:
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/gzip.git'
-      tag: 'v1.10'
-      version: '1.10'
+      tag: 'v1.11'
+      version: '1.11'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -88,8 +88,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/libarchive/libarchive.git'
-      tag: 'v3.5.1'
-      version: '3.5.1'
+      tag: 'v3.5.2'
+      version: '3.5.2'
     tools_required:
       - host-cmake
       - system-gcc
@@ -102,7 +102,6 @@ packages:
       - libexpat
       - libxml
       - zstd
-    revision: 3
     configure:
       - args:
         - 'cmake'
