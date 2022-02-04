@@ -34,6 +34,8 @@ packages:
         - '--without-librsvg'
         - '--with-bzip2'
         - '--with-X'
+        - '--x-includes=@SYSROOT_DIR@/usr/include'
+        - '--x-libraries=@SYSROOT_DIR@/usr/lib'
         - '--with-zlib'
         - '--with-zstd'
         - '--with-openssl'
