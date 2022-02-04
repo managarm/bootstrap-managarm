@@ -1,4 +1,4 @@
-From a961e824a5aed0a2ce06a0c3ad2183545e798cd5 Mon Sep 17 00:00:00 2001
+From a5cae70e2a970000e15aa0fc3815ac6ffeb76b92 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Sun, 30 Jan 2022 21:53:07 +0100
 Subject: [PATCH 2/2] WIP Xorg patch
@@ -9,8 +9,7 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
  hw/xfree86/common/xf86Config.c               |  1 +
  hw/xfree86/common/xf86Configure.c            |  1 +
  hw/xfree86/common/xf86Events.c               |  1 +
- hw/xfree86/drivers/modesetting/dumb_bo.c     |  3 +++
- hw/xfree86/drivers/modesetting/meson.build   |  4 ++++
+ hw/xfree86/drivers/modesetting/dumb_bo.c     |  2 ++
  hw/xfree86/fbdevhw/fbdevhw.c                 |  3 ++-
  hw/xfree86/fbdevhw/meson.build               |  2 ++
  hw/xfree86/os-support/bus/Pci.h              |  2 +-
@@ -19,7 +18,7 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
  hw/xfree86/os-support/shared/posix_tty.c     |  2 ++
  hw/xfree86/os-support/shared/sigio.c         |  2 ++
  meson.build                                  |  2 +-
- 14 files changed, 53 insertions(+), 10 deletions(-)
+ 13 files changed, 48 insertions(+), 10 deletions(-)
 
 diff --git a/hw/xfree86/common/xf86.h b/hw/xfree86/common/xf86.h
 index 5743f0c..65801c5 100644
@@ -83,7 +82,7 @@ index 8a800bd..ac8ed3c 100644
  #include <X11/X.h>
  #include <X11/Xproto.h>
 diff --git a/hw/xfree86/drivers/modesetting/dumb_bo.c b/hw/xfree86/drivers/modesetting/dumb_bo.c
-index cf13f0a..58f67fd 100644
+index cf13f0a..8ce78ae 100644
 --- a/hw/xfree86/drivers/modesetting/dumb_bo.c
 +++ b/hw/xfree86/drivers/modesetting/dumb_bo.c
 @@ -38,6 +38,7 @@
@@ -94,30 +93,14 @@ index cf13f0a..58f67fd 100644
  
  struct dumb_bo *
  dumb_bo_create(int fd,
-@@ -46,6 +47,8 @@ dumb_bo_create(int fd,
+@@ -46,6 +47,7 @@ dumb_bo_create(int fd,
      struct drm_mode_create_dumb arg;
      struct dumb_bo *bo;
      int ret;
 +    fprintf(stderr, "XORG-SERVER: height %u width %u bpp %u\n", height, width, bpp);
-+    abort();
  
      bo = calloc(1, sizeof(*bo));
      if (!bo)
-diff --git a/hw/xfree86/drivers/modesetting/meson.build b/hw/xfree86/drivers/modesetting/meson.build
-index 5e13f1a..c3662b4 100644
---- a/hw/xfree86/drivers/modesetting/meson.build
-+++ b/hw/xfree86/drivers/modesetting/meson.build
-@@ -15,6 +15,10 @@ shared_module(
- 
-     include_directories: [inc, xorg_inc],
-     c_args: xorg_c_args,
-+    link_with: [
-+        libxserver_fb,
-+        libxserver_miext_shadow,
-+    ],
-     dependencies: [
-         common_dep,
-         udev_dep,
 diff --git a/hw/xfree86/fbdevhw/fbdevhw.c b/hw/xfree86/fbdevhw/fbdevhw.c
 index 9508951..3e064e1 100644
 --- a/hw/xfree86/fbdevhw/fbdevhw.c
