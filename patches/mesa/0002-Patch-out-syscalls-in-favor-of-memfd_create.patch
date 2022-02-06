@@ -1,0 +1,25 @@
+From 84e43147e1bdb068480ce278c4fc9558472e4f82 Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Sun, 6 Feb 2022 21:51:08 +0100
+Subject: [PATCH 2/2] Patch out syscalls in favor of memfd_create()
+
+---
+ src/util/anon_file.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/util/anon_file.c b/src/util/anon_file.c
+index f8d9ef2..7b19203 100644
+--- a/src/util/anon_file.c
++++ b/src/util/anon_file.c
+@@ -125,7 +125,7 @@ os_create_anonymous_file(off_t size, const char *debug_name)
+ #elif defined(HAVE_MEMFD_CREATE) || defined(ANDROID)
+    if (!debug_name)
+       debug_name = "mesa-shared";
+-   fd = syscall(SYS_memfd_create, debug_name, MFD_CLOEXEC);
++   fd = memfd_create(debug_name, MFD_CLOEXEC);
+ #else
+    const char *path;
+    char *name;
+-- 
+2.35.1
+
