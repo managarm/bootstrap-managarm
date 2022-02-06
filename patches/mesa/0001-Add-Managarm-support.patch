@@ -1,4 +1,4 @@
-From 5f828010b2747600e8466743ca772b6444e5cb71 Mon Sep 17 00:00:00 2001
+From 3066b6474824ac82f3a84ef1c34a8c418d748483 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Sun, 28 Nov 2021 13:34:43 +0100
 Subject: [PATCH] Add Managarm support
@@ -8,16 +8,18 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
  include/drm-uapi/drm.h                    | 5 +++--
  meson.build                               | 2 +-
  src/compiler/spirv/spirv_to_nir.c         | 1 +
+ src/egl/main/egllog.c                     | 1 +
  src/gallium/drivers/llvmpipe/lp_texture.c | 1 -
  src/util/debug.c                          | 1 +
  src/util/detect_os.h                      | 8 ++++++++
  src/util/os_misc.c                        | 4 ++--
  src/util/os_time.c                        | 4 ++--
+ src/util/u_printf.h                       | 2 ++
  src/util/u_thread.h                       | 4 ++--
- 9 files changed, 20 insertions(+), 10 deletions(-)
+ 11 files changed, 23 insertions(+), 10 deletions(-)
 
 diff --git a/include/drm-uapi/drm.h b/include/drm-uapi/drm.h
-index 398c396..b00ebbc 100644
+index 5e54c3a..631abe0 100644
 --- a/include/drm-uapi/drm.h
 +++ b/include/drm-uapi/drm.h
 @@ -35,10 +35,11 @@
@@ -35,7 +37,7 @@ index 398c396..b00ebbc 100644
  
  #else /* One of the BSDs */
 diff --git a/meson.build b/meson.build
-index 9f0b3cb..f6bc25c 100644
+index 0aea312..08dfafe 100644
 --- a/meson.build
 +++ b/meson.build
 @@ -164,7 +164,7 @@ with_any_opengl = with_opengl or with_gles1 or with_gles2
@@ -48,7 +50,7 @@ index 9f0b3cb..f6bc25c 100644
  dri_drivers = get_option('dri-drivers')
  if dri_drivers.contains('auto')
 diff --git a/src/compiler/spirv/spirv_to_nir.c b/src/compiler/spirv/spirv_to_nir.c
-index 4c4b0cc..7f9646e 100644
+index 71cdc83..3d26705 100644
 --- a/src/compiler/spirv/spirv_to_nir.c
 +++ b/src/compiler/spirv/spirv_to_nir.c
 @@ -37,6 +37,7 @@
@@ -59,11 +61,23 @@ index 4c4b0cc..7f9646e 100644
  
  #ifndef NDEBUG
  static enum nir_spirv_debug_level
+diff --git a/src/egl/main/egllog.c b/src/egl/main/egllog.c
+index 984dd5b..6a91952 100644
+--- a/src/egl/main/egllog.c
++++ b/src/egl/main/egllog.c
+@@ -39,6 +39,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <strings.h>
+ #include "c11/threads.h"
+ #include "util/macros.h"
+ #include "util/u_string.h"
 diff --git a/src/gallium/drivers/llvmpipe/lp_texture.c b/src/gallium/drivers/llvmpipe/lp_texture.c
-index e240993..6ea129e 100644
+index 5bfc8db..d2b31e1 100644
 --- a/src/gallium/drivers/llvmpipe/lp_texture.c
 +++ b/src/gallium/drivers/llvmpipe/lp_texture.c
-@@ -949,7 +949,6 @@ llvmpipe_resource_get_param(struct pipe_screen *screen,
+@@ -1102,7 +1102,6 @@ llvmpipe_resource_get_param(struct pipe_screen *screen,
     default:
        break;
     }
@@ -152,6 +166,19 @@ index d2edd88..c9fa9f8 100644
     struct timespec time;
     time.tv_sec = usecs / 1000000;
     time.tv_nsec = (usecs % 1000000) * 1000;
+diff --git a/src/util/u_printf.h b/src/util/u_printf.h
+index 44dcce5..e9e23ba 100644
+--- a/src/util/u_printf.h
++++ b/src/util/u_printf.h
+@@ -22,6 +22,8 @@
+ #ifndef U_PRINTF_H
+ #define U_PRINTF_H
+ 
++#include <stdarg.h>
++
+ #ifdef __cplusplus
+ 
+ #include <string>
 diff --git a/src/util/u_thread.h b/src/util/u_thread.h
 index 013e8be..d0a3582 100644
 --- a/src/util/u_thread.h
@@ -175,5 +202,5 @@ index 013e8be..d0a3582 100644
     clockid_t cid;
  
 -- 
-2.34.0
+2.34.1
 
