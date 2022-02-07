@@ -1,17 +1,17 @@
-From 05cf21f7e1680818890ed06ee35e75d2ffaa6ec1 Mon Sep 17 00:00:00 2001
+From c939d215dfd398f77410fb92041024b4b9097f0b Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Fri, 22 Jan 2021 18:33:00 +0100
-Subject: [PATCH libevdev] Add stddef.h for missing size_t
+Subject: [PATCH libevdev 1/2] Add stddef.h for missing size_t
 
 ---
  libevdev/libevdev.h | 1 +
  1 file changed, 1 insertion(+)
 
 diff --git a/libevdev/libevdev.h b/libevdev/libevdev.h
-index bc610ec..e35fa45 100644
+index 30e4d6f..4f5f4b6 100644
 --- a/libevdev/libevdev.h
 +++ b/libevdev/libevdev.h
-@@ -29,6 +29,7 @@ extern "C" {
+@@ -32,6 +32,7 @@ extern "C" {
  
  #include <linux/input.h>
  #include <stdarg.h>
@@ -20,5 +20,5 @@ index bc610ec..e35fa45 100644
  #define LIBEVDEV_ATTRIBUTE_PRINTF(_format, _args) __attribute__ ((format (printf, _format, _args)))
  
 -- 
-2.29.2
+2.34.1
 

@@ -1,0 +1,34 @@
+From 15bd5aaa2d79eac11c14e94f905ca6795c134dcc Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Mon, 7 Feb 2022 19:18:16 +0100
+Subject: [PATCH libevdev 2/2] Add Managarm support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ include/linux/input.h  | 2 +-
+ include/linux/uinput.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/input.h b/include/linux/input.h
+index 03c512e..d2b6005 100644
+--- a/include/linux/input.h
++++ b/include/linux/input.h
+@@ -1,4 +1,4 @@
+-#ifdef __linux__
++#if defined __linux__ || defined __managarm__
+ #include "linux/input.h"
+ #elif __FreeBSD__
+ #include "freebsd/input.h"
+diff --git a/include/linux/uinput.h b/include/linux/uinput.h
+index 1ef4e3b..95127ef 100644
+--- a/include/linux/uinput.h
++++ b/include/linux/uinput.h
+@@ -1,4 +1,4 @@
+-#ifdef __linux__
++#if defined __linux__ || defined __managarm__
+ #include "linux/uinput.h"
+ #elif __FreeBSD__
+ #include "freebsd/uinput.h"
+-- 
+2.34.1
+
