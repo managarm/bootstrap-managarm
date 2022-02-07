@@ -307,6 +307,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -325,6 +326,7 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/charset.alias']
 
   - name: less
     labels: [aarch64]
