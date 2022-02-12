@@ -259,6 +259,45 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
+  - name: libglvnd
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.freedesktop.org/glvnd/libglvnd.git'
+      tag: 'v1.4.0'
+      version: '1.4.0'
+    tools_required:
+      - system-gcc
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - libx11
+      - libxext
+    configure:
+      - args:
+        - 'meson'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '-Dasm=disabled'
+        - '-Dx11=enabled'
+        - '-Degl=true'
+        - '-Dglx=enabled'
+        - '-Dgles1=true'
+        - '-Dgles2=true'
+        - '-Dtls=true'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: libjpeg-turbo
     source:
       subdir: 'ports'
@@ -463,8 +502,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/mesa/mesa.git'
-      tag: 'mesa-21.2.5'
-      version: '21.2.5'
+      tag: 'mesa-21.3.5'
+      version: '21.3.5'
       tools_required:
         - host-pkg-config
     tools_required:
@@ -490,6 +529,7 @@ packages:
       - libx11
       - libxext
       - libxcb
+      - libglvnd
     configure:
       - args: ['cp', '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file', 'meson.cross-file']
       - args:
@@ -514,6 +554,7 @@ packages:
         - '-Ddri-drivers='
         - '-Dgallium-drivers=swrast'
         - '-Dvulkan-drivers='
+        - '-Dglvnd=true'
         # Force Mesa to build with LLVM.
         - '-Dllvm=enabled'
         - '@THIS_SOURCE_DIR@'
