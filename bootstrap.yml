@@ -182,17 +182,8 @@ sources:
   - name: wayland
     subdir: 'ports'
     git: 'https://github.com/wayland-project/wayland.git'
-    tag: '1.19.0'
-    version: '1.19.0'
-    tools_required:
-      - host-autoconf-v2.69
-      - host-automake-v1.15
-      - host-libtool
-      - host-pkg-config
-    regenerate:
-      - args: ['./autogen.sh']
-        environ:
-          'NOCONFIGURE': 'yes'
+    tag: '1.20.0'
+    version: '1.20.0'
 
 tools:
   - name: host-autoconf-v2.64
@@ -588,21 +579,23 @@ tools:
     architecture: noarch
     from_source: wayland
     tools_required:
-      - host-autoconf-v2.69
-      - host-automake-v1.15
-      - host-libtool
+      - virtual: pkgconfig-for-host
+        program_name: host-pkg-config
     configure:
       - args:
-        - '@THIS_SOURCE_DIR@/configure'
+        - 'meson'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
         - '--prefix=@PREFIX@'
-        - '--disable-libraries'
-        - '--disable-dtd-validation'
-        - '--disable-documentation'
+        - '-Ddtd_validation=false'
+        - '-Ddocumentation=false'
+        - '-Dscanner=true'
+        - '-Dlibraries=false'
+        - '@THIS_SOURCE_DIR@'
     compile:
-      - args: ['make', '-j@PARALLELISM@']
+      - args: ['ninja']
     install:
-      - args: ['make', 'install']
-        quiet: true
+      - args: ['ninja', 'install']
 
 packages:
   - name: binutils
@@ -1215,34 +1208,38 @@ packages:
     architecture: '@OPTION:arch@'
     from_source: wayland
     tools_required:
-      - host-autoconf-v2.69
-      - host-automake-v1.15
-      - host-libtool
       - host-pkg-config
       - system-gcc
       - wayland-scanner
+      - host-libtool
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+      - virtual: pkgconfig-for-host
+        program_name: host-pkg-config
     pkgs_required:
       - mlibc
       - libexpat
       - libffi
     configure:
       - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--host=@OPTION:arch-triple@'
+        - 'meson'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
-        - '--with-host-scanner'
-        - '--disable-dtd-validation'
-        - '--disable-documentation'
-        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
+        - '--buildtype=debugoptimized'
+        - '-Ddtd_validation=false'
+        - '-Ddocumentation=false'
+        - '-Dscanner=false'
+        - '@THIS_SOURCE_DIR@'
         environ:
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
-          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
     build:
-      - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'install']
+      - args: ['ninja']
+      - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
-        quiet: true
 
   - name: zlib
     metadata:
