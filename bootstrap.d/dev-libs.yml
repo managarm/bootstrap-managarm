@@ -1181,6 +1181,9 @@ packages:
       - dejavu
       - libxcursor
       - xorg-server
+      - pango
+      - glib
+      - libjpeg-turbo
     configure:
       - args:
         - 'meson'
@@ -1193,7 +1196,7 @@ packages:
         - '--buildtype=debugoptimized'
         - '-Dbackend-x11=false'
         - '-Dsimple-clients=damage,im,egl,shm,touch'
-        - '-Dimage-jpeg=false'
+        - '-Dimage-jpeg=true'
         - '-Dimage-webp=false'
         - '-Dlauncher-logind=false'
         - '-Dbackend-drm-screencast-vaapi=false'
