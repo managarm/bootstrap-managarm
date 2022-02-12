@@ -301,6 +301,8 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libjpeg-turbo
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://github.com/libjpeg-turbo/libjpeg-turbo.git'
