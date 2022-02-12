@@ -165,6 +165,8 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: fribidi
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
     metadata:
       summary: A free implementation of the unicode bidirectional algorithm
       description: This package provides a library with an implementation of the Unicode Bidirectional Algorithm (BIDI). This is used for supporting Arabic and Hebrew alphabets in other packages.
