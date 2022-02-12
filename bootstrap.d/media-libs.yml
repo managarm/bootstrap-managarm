@@ -183,6 +183,8 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: harfbuzz
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://github.com/harfbuzz/harfbuzz.git'
