@@ -110,6 +110,8 @@ while proc_alive or debugcon_alive:
 			# We must read non-zero bytes since select() returned readable.
 			assert chunk is not None
 			if len(chunk):
+				sys.stdout.buffer.write(chunk)
+				sys.stdout.buffer.flush()
 				logfile.write(chunk)
 				buf += chunk
 			else:
