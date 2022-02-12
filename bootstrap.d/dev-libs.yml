@@ -35,6 +35,8 @@ sources:
 
 tools:
   - name: host-glib
+    labels: [aarch64]
+    architecture: noarch
     exports_aclocal: true
     from_source: glib
     revision: 2
@@ -203,6 +205,8 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: glib
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
     from_source: glib
     tools_required:
       - system-gcc
