@@ -510,6 +510,7 @@ packages:
       version: '21.3.5'
       tools_required:
         - host-pkg-config
+    revision: 2
     tools_required:
       - host-pkg-config
       - system-gcc
