@@ -39,6 +39,7 @@ general:
     patch_author: The Managarm Project
     patch_email: info@managarm.org
     everything_by_default: false
+    mandate_hashes_for_archives: true
     cargo:
         config_toml: 'extrafiles/config.toml'
 
