@@ -106,8 +106,8 @@ sources:
   - name: llvm
     subdir: 'ports'
     git: 'https://github.com/llvm/llvm-project'
-    tag: 'llvmorg-10.0.0'
-    version: '10.0.0'
+    tag: 'llvmorg-13.0.1'
+    version: '13.0.1'
 
   - name: gcc
     subdir: 'ports'
@@ -951,7 +951,6 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
-    revision: 3
     configure:
       - args:
         - 'cmake'

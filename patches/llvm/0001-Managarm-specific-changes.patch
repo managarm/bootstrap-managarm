@@ -1,21 +1,19 @@
-From fba5efe7fc4760d30556a839a8e6771c4d229874 Mon Sep 17 00:00:00 2001
-From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
-Date: Thu, 6 Jun 2019 17:55:59 +0200
+From a608eab300e14a52782df121beef5d7c0e893165 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Mon, 14 Feb 2022 08:28:17 +0100
 Subject: [PATCH 1/2] Managarm-specific changes
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
- llvm/cmake/modules/CrossCompile.cmake         | 4 ++--
- llvm/include/llvm/Support/SwapByteOrder.h     | 2 +-
- llvm/lib/Support/Unix/Path.inc                | 6 +++---
- llvm/lib/Support/Unix/Program.inc             | 1 +
- llvm/tools/llvm-dwarfdump/Statistics.cpp      | 1 +
- llvm/tools/llvm-shlib/CMakeLists.txt          | 1 +
- llvm/utils/benchmark/src/benchmark_register.h | 1 +
- 7 files changed, 10 insertions(+), 6 deletions(-)
+ llvm/cmake/modules/CrossCompile.cmake     | 4 ++--
+ llvm/include/llvm/Support/SwapByteOrder.h | 2 +-
+ llvm/lib/Support/Unix/Path.inc            | 6 +++---
+ llvm/tools/llvm-dwarfdump/Statistics.cpp  | 1 +
+ llvm/tools/llvm-shlib/CMakeLists.txt      | 1 +
+ 5 files changed, 8 insertions(+), 6 deletions(-)
 
 diff --git a/llvm/cmake/modules/CrossCompile.cmake b/llvm/cmake/modules/CrossCompile.cmake
-index 8a6e880c4e21..fb86a7c17994 100644
+index 01cd37124..5d55ac110 100644
 --- a/llvm/cmake/modules/CrossCompile.cmake
 +++ b/llvm/cmake/modules/CrossCompile.cmake
 @@ -17,8 +17,8 @@ function(llvm_create_cross_target project_name target_name toolchain buildtype)
@@ -30,23 +28,23 @@ index 8a6e880c4e21..fb86a7c17994 100644
    endif()
    set(CROSS_TOOLCHAIN_FLAGS_${target_name} ${CROSS_TOOLCHAIN_FLAGS_INIT}
 diff --git a/llvm/include/llvm/Support/SwapByteOrder.h b/llvm/include/llvm/Support/SwapByteOrder.h
-index 6cec87006c02..eac816c6bb02 100644
+index e8612ba66..56d3dd721 100644
 --- a/llvm/include/llvm/Support/SwapByteOrder.h
 +++ b/llvm/include/llvm/Support/SwapByteOrder.h
 @@ -22,7 +22,7 @@
- #include <stdlib.h>
  #endif
  
--#if defined(__linux__) || defined(__GNU__) || defined(__HAIKU__)
-+#if defined(__linux__) || defined(__GNU__) || defined(__HAIKU__) || defined(__managarm__)
+ #if defined(__linux__) || defined(__GNU__) || defined(__HAIKU__) ||            \
+-    defined(__Fuchsia__) || defined(__EMSCRIPTEN__)
++    defined(__Fuchsia__) || defined(__EMSCRIPTEN__) || defined(__managarm__)
  #include <endian.h>
  #elif defined(_AIX)
  #include <sys/machine.h>
 diff --git a/llvm/lib/Support/Unix/Path.inc b/llvm/lib/Support/Unix/Path.inc
-index 2a03dc682bce..5d07e56a79f3 100644
+index c37b3a546..cb1078363 100644
 --- a/llvm/lib/Support/Unix/Path.inc
 +++ b/llvm/lib/Support/Unix/Path.inc
-@@ -64,7 +64,7 @@ extern char **environ;
+@@ -71,7 +71,7 @@ extern char **environ;
  
  #include <sys/types.h>
  #if !defined(__APPLE__) && !defined(__OpenBSD__) && !defined(__FreeBSD__) &&   \
@@ -55,7 +53,7 @@ index 2a03dc682bce..5d07e56a79f3 100644
  #include <sys/statvfs.h>
  #define STATVFS statvfs
  #define FSTATVFS fstatvfs
-@@ -73,7 +73,7 @@ extern char **environ;
+@@ -80,7 +80,7 @@ extern char **environ;
  #if defined(__OpenBSD__) || defined(__FreeBSD__)
  #include <sys/mount.h>
  #include <sys/param.h>
@@ -64,7 +62,7 @@ index 2a03dc682bce..5d07e56a79f3 100644
  #if defined(HAVE_LINUX_MAGIC_H)
  #include <linux/magic.h>
  #else
-@@ -431,7 +431,7 @@ std::error_code remove(const Twine &path, bool IgnoreNonExisting) {
+@@ -458,7 +458,7 @@ std::error_code remove(const Twine &path, bool IgnoreNonExisting) {
  }
  
  static bool is_local_impl(struct STATVFS &Vfs) {
@@ -73,29 +71,20 @@ index 2a03dc682bce..5d07e56a79f3 100644
  #ifndef NFS_SUPER_MAGIC
  #define NFS_SUPER_MAGIC 0x6969
  #endif
-diff --git a/llvm/lib/Support/Unix/Program.inc b/llvm/lib/Support/Unix/Program.inc
-index 520685a0e987..e6c2ddf2067f 100644
---- a/llvm/lib/Support/Unix/Program.inc
-+++ b/llvm/lib/Support/Unix/Program.inc
-@@ -39,6 +39,7 @@
- #if HAVE_UNISTD_H
- #include <unistd.h>
- #endif
-+#undef HAVE_POSIX_SPAWN
- #ifdef HAVE_POSIX_SPAWN
- #include <spawn.h>
- 
 diff --git a/llvm/tools/llvm-dwarfdump/Statistics.cpp b/llvm/tools/llvm-dwarfdump/Statistics.cpp
-index 5bef4d5148ca..2a237ef59646 100644
+index 19a971afa..7b81da3a3 100644
 --- a/llvm/tools/llvm-dwarfdump/Statistics.cpp
 +++ b/llvm/tools/llvm-dwarfdump/Statistics.cpp
-@@ -1,3 +1,4 @@
+@@ -6,6 +6,7 @@
+ //
+ //===----------------------------------------------------------------------===//
+ 
 +#include <cmath>
+ #include "llvm-dwarfdump.h"
  #include "llvm/ADT/DenseMap.h"
- #include "llvm/ADT/StringExtras.h"
  #include "llvm/ADT/StringSet.h"
 diff --git a/llvm/tools/llvm-shlib/CMakeLists.txt b/llvm/tools/llvm-shlib/CMakeLists.txt
-index 3eb6db33a435..c03d2f45511c 100644
+index 76b9a25cb..e6d236c39 100644
 --- a/llvm/tools/llvm-shlib/CMakeLists.txt
 +++ b/llvm/tools/llvm-shlib/CMakeLists.txt
 @@ -36,6 +36,7 @@ if(LLVM_BUILD_LLVM_DYLIB)
@@ -106,18 +95,6 @@ index 3eb6db33a435..c03d2f45511c 100644
       OR ("${CMAKE_SYSTEM_NAME}" STREQUAL "OpenBSD")
       OR ("${CMAKE_SYSTEM_NAME}" STREQUAL "Fuchsia")
       OR ("${CMAKE_SYSTEM_NAME}" STREQUAL "DragonFly")
-diff --git a/llvm/utils/benchmark/src/benchmark_register.h b/llvm/utils/benchmark/src/benchmark_register.h
-index 0705e219f2fa..6001fb8e0e48 100644
---- a/llvm/utils/benchmark/src/benchmark_register.h
-+++ b/llvm/utils/benchmark/src/benchmark_register.h
-@@ -2,6 +2,7 @@
- #define BENCHMARK_REGISTER_H
- 
- #include <vector>
-+#include <limits>
- 
- #include "check.h"
- 
 -- 
-2.32.0
+2.34.1
 
