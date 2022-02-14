@@ -6,7 +6,7 @@ patched_libs = {
 	'libc': '0.2.117',
 	'num_cpus': '1.13.0',
 	'users': '0.11.0',
-    'backtrace': '0.3.64',
+	'backtrace': '0.3.64',
 }
 
 parser = argparse.ArgumentParser(description='Inject patched Rust libraries into Cargo lockfiles')
