@@ -1,7 +1,7 @@
-From 3066b6474824ac82f3a84ef1c34a8c418d748483 Mon Sep 17 00:00:00 2001
+From 9eb966dbf45e4d32b6cc1d008da3570f0f1398fc Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Sun, 28 Nov 2021 13:34:43 +0100
-Subject: [PATCH] Add Managarm support
+Subject: [PATCH 1/2] Add Managarm support
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
@@ -19,7 +19,7 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
  11 files changed, 23 insertions(+), 10 deletions(-)
 
 diff --git a/include/drm-uapi/drm.h b/include/drm-uapi/drm.h
-index 5e54c3a..631abe0 100644
+index 5e54c3aa..631abe07 100644
 --- a/include/drm-uapi/drm.h
 +++ b/include/drm-uapi/drm.h
 @@ -35,10 +35,11 @@
@@ -37,7 +37,7 @@ index 5e54c3a..631abe0 100644
  
  #else /* One of the BSDs */
 diff --git a/meson.build b/meson.build
-index 0aea312..08dfafe 100644
+index 0aea3126..08dfafe3 100644
 --- a/meson.build
 +++ b/meson.build
 @@ -164,7 +164,7 @@ with_any_opengl = with_opengl or with_gles1 or with_gles2
@@ -50,7 +50,7 @@ index 0aea312..08dfafe 100644
  dri_drivers = get_option('dri-drivers')
  if dri_drivers.contains('auto')
 diff --git a/src/compiler/spirv/spirv_to_nir.c b/src/compiler/spirv/spirv_to_nir.c
-index 71cdc83..3d26705 100644
+index 71cdc834..3d267050 100644
 --- a/src/compiler/spirv/spirv_to_nir.c
 +++ b/src/compiler/spirv/spirv_to_nir.c
 @@ -37,6 +37,7 @@
@@ -62,7 +62,7 @@ index 71cdc83..3d26705 100644
  #ifndef NDEBUG
  static enum nir_spirv_debug_level
 diff --git a/src/egl/main/egllog.c b/src/egl/main/egllog.c
-index 984dd5b..6a91952 100644
+index 984dd5b1..6a919525 100644
 --- a/src/egl/main/egllog.c
 +++ b/src/egl/main/egllog.c
 @@ -39,6 +39,7 @@
@@ -74,7 +74,7 @@ index 984dd5b..6a91952 100644
  #include "util/macros.h"
  #include "util/u_string.h"
 diff --git a/src/gallium/drivers/llvmpipe/lp_texture.c b/src/gallium/drivers/llvmpipe/lp_texture.c
-index 5bfc8db..d2b31e1 100644
+index 5bfc8dbc..d2b31e15 100644
 --- a/src/gallium/drivers/llvmpipe/lp_texture.c
 +++ b/src/gallium/drivers/llvmpipe/lp_texture.c
 @@ -1102,7 +1102,6 @@ llvmpipe_resource_get_param(struct pipe_screen *screen,
@@ -86,7 +86,7 @@ index 5bfc8db..d2b31e1 100644
     return false;
  }
 diff --git a/src/util/debug.c b/src/util/debug.c
-index 89ae613..fbf45f4 100644
+index 89ae6131..fbf45f4b 100644
 --- a/src/util/debug.c
 +++ b/src/util/debug.c
 @@ -23,6 +23,7 @@
@@ -98,7 +98,7 @@ index 89ae613..fbf45f4 100644
  #include "u_string.h"
  
 diff --git a/src/util/detect_os.h b/src/util/detect_os.h
-index 6506948..469b502 100644
+index 6506948e..469b502b 100644
 --- a/src/util/detect_os.h
 +++ b/src/util/detect_os.h
 @@ -81,6 +81,11 @@
@@ -123,7 +123,7 @@ index 6506948..469b502 100644
  
  #endif /* DETECT_OS_H */
 diff --git a/src/util/os_misc.c b/src/util/os_misc.c
-index 31f1c55..71f3d60 100644
+index 31f1c55d..71f3d600 100644
 --- a/src/util/os_misc.c
 +++ b/src/util/os_misc.c
 @@ -57,7 +57,7 @@
@@ -145,7 +145,7 @@ index 31f1c55..71f3d60 100644
     const long page_size = sysconf(_SC_PAGE_SIZE);
  
 diff --git a/src/util/os_time.c b/src/util/os_time.c
-index d2edd88..c9fa9f8 100644
+index d2edd881..c9fa9f8d 100644
 --- a/src/util/os_time.c
 +++ b/src/util/os_time.c
 @@ -53,7 +53,7 @@
@@ -167,7 +167,7 @@ index d2edd88..c9fa9f8 100644
     time.tv_sec = usecs / 1000000;
     time.tv_nsec = (usecs % 1000000) * 1000;
 diff --git a/src/util/u_printf.h b/src/util/u_printf.h
-index 44dcce5..e9e23ba 100644
+index 44dcce55..e9e23ba3 100644
 --- a/src/util/u_printf.h
 +++ b/src/util/u_printf.h
 @@ -22,6 +22,8 @@
@@ -180,7 +180,7 @@ index 44dcce5..e9e23ba 100644
  
  #include <string>
 diff --git a/src/util/u_thread.h b/src/util/u_thread.h
-index 013e8be..d0a3582 100644
+index 013e8be6..d0a35829 100644
 --- a/src/util/u_thread.h
 +++ b/src/util/u_thread.h
 @@ -129,7 +129,7 @@ static inline thrd_t u_thread_create(int (*routine)(void *), void *param)
@@ -202,5 +202,5 @@ index 013e8be..d0a3582 100644
     clockid_t cid;
  
 -- 
-2.34.1
+2.35.1
 
