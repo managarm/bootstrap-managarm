@@ -540,7 +540,7 @@ packages:
       - libxau
       - libxdmcp
       - xcb-proto
-    revision: 2
+    revision: 3
     configure:
       - args: ['sed', '-i', "s/pthread-stubs//", '@THIS_SOURCE_DIR@/configure']
       - args:
@@ -551,6 +551,7 @@ packages:
         - '--localstatedir=/var'
         - '--disable-static'
         - '--without-doxygen'
+        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
         environ:
           PYTHON: '@BUILD_ROOT@/tools/host-python/bin/python3.8'
     build:
