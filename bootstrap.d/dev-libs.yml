@@ -39,7 +39,7 @@ tools:
     architecture: noarch
     exports_aclocal: true
     from_source: glib
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -223,6 +223,7 @@ packages:
       - zlib
       - libiconv
       - libintl
+    revision: 2
     configure:
       - args:
         - 'meson'
