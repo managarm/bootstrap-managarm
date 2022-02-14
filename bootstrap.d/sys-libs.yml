@@ -2,8 +2,8 @@ sources:
   - name: rust-libc
     subdir: 'ports'
     git: 'https://github.com/rust-lang/libc.git'
-    tag: '0.2.93'
-    version: '0.2.93'
+    tag: '0.2.117'
+    version: '0.2.117'
 
   - name: rust-num-cpus
     subdir: 'ports'
@@ -17,6 +17,12 @@ sources:
     tag: 'v0.11.0'
     version: '0.11.0'
 
+  - name: rust-backtrace
+    subdir: 'ports'
+    git: 'https://github.com/rust-lang/backtrace-rs.git'
+    tag: '0.3.64'
+    version: '0.3.64'
+
   - name: rust-patched-libs
     subdir: 'ports'
     sources_required:
@@ -25,6 +31,8 @@ sources:
       - name: rust-num-cpus
         recursive: true
       - name: rust-users
+        recursive: true
+      - name: rust-backtrace
         recursive: true
 
 packages:

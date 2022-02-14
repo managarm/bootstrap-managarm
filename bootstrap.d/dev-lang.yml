@@ -21,8 +21,8 @@ sources:
   - name: rust
     subdir: 'ports'
     git: 'https://github.com/rust-lang/rust.git'
-    tag: '1.51.0'
-    version: '1.51.0'
+    tag: '1.57.0'
+    version: '1.57.0'
 
   - name: host-bootstrap-cargo
     subdir: 'ports'
@@ -48,7 +48,7 @@ tools:
   - name: host-rust
     from_source: rust
     sources_required:
-      - rust-libc
+      - rust-patched-libs
     tools_required:
       - host-llvm-toolchain
       - host-python
@@ -71,6 +71,7 @@ tools:
 
             [rust]
             codegen-tests = false
+            deny-warnings = false # work around rust-num-cpus warning
 
             [target.x86_64-unknown-linux-gnu]
             llvm-config = "@BUILD_ROOT@/tools/host-llvm-toolchain/bin/llvm-config"

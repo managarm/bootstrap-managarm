@@ -1,7 +1,7 @@
-From 07284dd588cf5dfa11ea03ac384c457bb0261126 Mon Sep 17 00:00:00 2001
+From bc6fe0bd98c7df373acb777072ce8da7499553ba Mon Sep 17 00:00:00 2001
 From: Matt Taylor <mstaveleytaylor@gmail.com>
 Date: Sat, 8 May 2021 19:33:53 +0100
-Subject: [PATCH 2/2] managarm: Add missing glue for memmap, num_cpus and users
+Subject: [PATCH 2/3] managarm: Add missing glue for memmap, num_cpus and users
 
 ---
  src/unix/mlibc/mod.rs | 110 +++++++++++++++++++++++++++++++-----------
@@ -200,5 +200,5 @@ index 51b9ee9..f374aa1 100644
      pub fn writev(fd: ::c_int, iov: *const ::iovec, count: ::c_int) -> ::ssize_t;
  }
 -- 
-2.31.1
+2.35.1
 
