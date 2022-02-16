@@ -1,7 +1,7 @@
-From 8c82aabf5e95a88e8c2dbcc0567e4aa7d557dec8 Mon Sep 17 00:00:00 2001
+From 7ab9e84a2cca949ace22450ddab4c5f053334d76 Mon Sep 17 00:00:00 2001
 From: Matt Taylor <mstaveleytaylor@gmail.com>
 Date: Sun, 13 Feb 2022 23:31:33 +0000
-Subject: [PATCH 3/3] managarm: fixes for 1.57.0
+Subject: [PATCH 3/3] managarm: fixes for 1.58.1
 
 ---
  Cargo.lock                         | 20 +++++++++++++++-----
@@ -13,21 +13,21 @@ Subject: [PATCH 3/3] managarm: fixes for 1.57.0
  6 files changed, 28 insertions(+), 8 deletions(-)
 
 diff --git a/Cargo.lock b/Cargo.lock
-index dce77450..f165a0be 100644
+index 48d9fdb3d03..06167a111c7 100644
 --- a/Cargo.lock
 +++ b/Cargo.lock
-@@ -1880,9 +1880,7 @@ checksum = "830d08ce1d1d941e6b30645f1a0eb5643013d835ce3779a5fc208261dbe10f55"
+@@ -1900,9 +1900,7 @@ checksum = "830d08ce1d1d941e6b30645f1a0eb5643013d835ce3779a5fc208261dbe10f55"
  
  [[package]]
  name = "libc"
--version = "0.2.103"
+-version = "0.2.106"
 -source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "dd8f7255a17a627354f321ef0055d63b898c6fb27eff628af4d1b66b7331edf6"
+-checksum = "a60553f9a9e039a333b4e9b20573b9e9b9c0bb3a11e201ccc48ef4283456d673"
 +version = "0.2.117"
  dependencies = [
   "rustc-std-workspace-core",
  ]
-@@ -2291,9 +2289,9 @@ dependencies = [
+@@ -2325,9 +2323,9 @@ dependencies = [
  
  [[package]]
  name = "num_cpus"
@@ -39,7 +39,7 @@ index dce77450..f165a0be 100644
  dependencies = [
   "hermit-abi",
   "libc",
-@@ -5792,3 +5790,15 @@ checksum = "fe5c30ade05e61656247b2e334a031dfd0cc466fadef865bdcdea8d537951bf1"
+@@ -5860,3 +5858,15 @@ checksum = "fe5c30ade05e61656247b2e334a031dfd0cc466fadef865bdcdea8d537951bf1"
  dependencies = [
   "winapi",
  ]
@@ -56,23 +56,23 @@ index dce77450..f165a0be 100644
 +name = "users"
 +version = "0.11.0"
 diff --git a/library/std/Cargo.toml b/library/std/Cargo.toml
-index 6bc445c6..96f574ce 100644
+index 4147f7ee525..6dfd3a4033f 100644
 --- a/library/std/Cargo.toml
 +++ b/library/std/Cargo.toml
 @@ -15,7 +15,7 @@ cfg-if = { version = "0.1.8", features = ['rustc-dep-of-std'] }
  panic_unwind = { path = "../panic_unwind", optional = true }
  panic_abort = { path = "../panic_abort" }
  core = { path = "../core" }
--libc = { version = "0.2.103", default-features = false, features = ['rustc-dep-of-std'] }
+-libc = { version = "0.2.106", default-features = false, features = ['rustc-dep-of-std'] }
 +libc = { path = "../../../rust-libc", default-features = false, features = ['rustc-dep-of-std'] }
- compiler_builtins = { version = "0.1.44" }
+ compiler_builtins = { version = "0.1.53" }
  profiler_builtins = { path = "../profiler_builtins", optional = true }
  unwind = { path = "../unwind" }
 diff --git a/library/std/src/lib.rs b/library/std/src/lib.rs
-index 1d2d26b8..48d385a2 100644
+index 133cda4f450..fdcbc79ef88 100644
 --- a/library/std/src/lib.rs
 +++ b/library/std/src/lib.rs
-@@ -545,7 +545,7 @@ pub mod task {
+@@ -547,7 +547,7 @@ pub mod task {
  // Private support modules
  mod panicking;
  
@@ -82,7 +82,7 @@ index 1d2d26b8..48d385a2 100644
  mod backtrace_rs;
  
 diff --git a/library/std/src/os/managarm/fs.rs b/library/std/src/os/managarm/fs.rs
-index efd774d2..dd8f2955 100644
+index efd774d2415..dd8f2955738 100644
 --- a/library/std/src/os/managarm/fs.rs
 +++ b/library/std/src/os/managarm/fs.rs
 @@ -1,4 +1,4 @@
@@ -92,7 +92,7 @@ index efd774d2..dd8f2955 100644
  use crate::fs::Metadata;
  use crate::sys_common::AsInner;
 diff --git a/library/std/src/os/managarm/raw.rs b/library/std/src/os/managarm/raw.rs
-index 5124020d..0e8bdd77 100644
+index 5124020d939..0e8bdd77657 100644
 --- a/library/std/src/os/managarm/raw.rs
 +++ b/library/std/src/os/managarm/raw.rs
 @@ -1,4 +1,12 @@
@@ -109,7 +109,7 @@ index 5124020d..0e8bdd77 100644
  #[stable(feature = "pthread_t", since = "1.8.0")]
  pub type pthread_t = usize; // TODO: This is completely wrong tbh
 diff --git a/library/std/src/os/unix/mod.rs b/library/std/src/os/unix/mod.rs
-index 62f750fa..00c6e3ab 100644
+index 62f750fa607..00c6e3ab52c 100644
 --- a/library/std/src/os/unix/mod.rs
 +++ b/library/std/src/os/unix/mod.rs
 @@ -59,6 +59,8 @@ mod platform {

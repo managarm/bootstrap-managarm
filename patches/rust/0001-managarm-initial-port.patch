@@ -1,4 +1,4 @@
-From fdc4f49530f22009b0a18fbfc5187da772d8f7c3 Mon Sep 17 00:00:00 2001
+From ce89cab9b478a726c72cf386c070c83b8f711c3f Mon Sep 17 00:00:00 2001
 From: Matt Taylor <mstaveleytaylor@gmail.com>
 Date: Sat, 10 Apr 2021 17:53:24 +0100
 Subject: [PATCH 1/3] managarm: initial port
@@ -29,10 +29,10 @@ Subject: [PATCH 1/3] managarm: initial port
  create mode 100644 library/std/src/os/managarm/raw.rs
 
 diff --git a/Cargo.toml b/Cargo.toml
-index 8d6afd2b..1b4c23d2 100644
+index cae48d79517..a3328ea651f 100644
 --- a/Cargo.toml
 +++ b/Cargo.toml
-@@ -123,6 +123,7 @@ rustc-workspace-hack = { path = 'src/tools/rustc-workspace-hack' }
+@@ -130,6 +130,7 @@ rustc-workspace-hack = { path = 'src/tools/rustc-workspace-hack' }
  rustc-std-workspace-core = { path = 'library/rustc-std-workspace-core' }
  rustc-std-workspace-alloc = { path = 'library/rustc-std-workspace-alloc' }
  rustc-std-workspace-std = { path = 'library/rustc-std-workspace-std' }
@@ -42,7 +42,7 @@ index 8d6afd2b..1b4c23d2 100644
  clippy_lints = { path = "src/tools/clippy/clippy_lints" }
 diff --git a/compiler/rustc_target/src/spec/managarm_system_base.rs b/compiler/rustc_target/src/spec/managarm_system_base.rs
 new file mode 100644
-index 00000000..08b7d8a8
+index 00000000000..08b7d8a8c73
 --- /dev/null
 +++ b/compiler/rustc_target/src/spec/managarm_system_base.rs
 @@ -0,0 +1,35 @@
@@ -82,7 +82,7 @@ index 00000000..08b7d8a8
 +    }
 +}
 diff --git a/compiler/rustc_target/src/spec/mod.rs b/compiler/rustc_target/src/spec/mod.rs
-index ff5dfa3f..f1439c3b 100644
+index 0d49c7f6ee8..1e6f23af9e4 100644
 --- a/compiler/rustc_target/src/spec/mod.rs
 +++ b/compiler/rustc_target/src/spec/mod.rs
 @@ -61,6 +61,7 @@
@@ -93,7 +93,7 @@ index ff5dfa3f..f1439c3b 100644
  mod hermit_base;
  mod hermit_kernel_base;
  mod illumos_base;
-@@ -831,6 +832,8 @@ fn $module() {
+@@ -887,6 +888,8 @@ fn $module() {
      ("i686-unknown-haiku", i686_unknown_haiku),
      ("x86_64-unknown-haiku", x86_64_unknown_haiku),
  
@@ -104,7 +104,7 @@ index ff5dfa3f..f1439c3b 100644
      ("i686-apple-darwin", i686_apple_darwin),
 diff --git a/compiler/rustc_target/src/spec/x86_64_unknown_managarm_system.rs b/compiler/rustc_target/src/spec/x86_64_unknown_managarm_system.rs
 new file mode 100644
-index 00000000..7c16ed9b
+index 00000000000..7c16ed9b2a5
 --- /dev/null
 +++ b/compiler/rustc_target/src/spec/x86_64_unknown_managarm_system.rs
 @@ -0,0 +1,19 @@
@@ -128,7 +128,7 @@ index 00000000..7c16ed9b
 +    }
 +}
 diff --git a/library/std/build.rs b/library/std/build.rs
-index cc7184d5..666aae4e 100644
+index 43168e77296..3ffa1ff21dd 100644
 --- a/library/std/build.rs
 +++ b/library/std/build.rs
 @@ -23,6 +23,7 @@ fn main() {
@@ -138,10 +138,10 @@ index cc7184d5..666aae4e 100644
 +        || target.contains("managarm")
          || target.contains("vxworks")
          || target.contains("wasm32")
-         || target.contains("asmjs")
+         || target.contains("wasm64")
 diff --git a/library/std/src/os/managarm/fs.rs b/library/std/src/os/managarm/fs.rs
 new file mode 100644
-index 00000000..efd774d2
+index 00000000000..efd774d2415
 --- /dev/null
 +++ b/library/std/src/os/managarm/fs.rs
 @@ -0,0 +1,148 @@
@@ -295,7 +295,7 @@ index 00000000..efd774d2
 +}
 diff --git a/library/std/src/os/managarm/mod.rs b/library/std/src/os/managarm/mod.rs
 new file mode 100644
-index 00000000..869966bb
+index 00000000000..869966bb054
 --- /dev/null
 +++ b/library/std/src/os/managarm/mod.rs
 @@ -0,0 +1,6 @@
@@ -307,7 +307,7 @@ index 00000000..869966bb
 +pub mod raw;
 diff --git a/library/std/src/os/managarm/raw.rs b/library/std/src/os/managarm/raw.rs
 new file mode 100644
-index 00000000..5124020d
+index 00000000000..5124020d939
 --- /dev/null
 +++ b/library/std/src/os/managarm/raw.rs
 @@ -0,0 +1,66 @@
@@ -378,7 +378,7 @@ index 00000000..5124020d
 +    pub st_blocks: libc::blkcnt_t, 
 +}
 diff --git a/library/std/src/os/mod.rs b/library/std/src/os/mod.rs
-index 90c30313..ebb3ec7b 100644
+index 90c30313dbb..ebb3ec7ba26 100644
 --- a/library/std/src/os/mod.rs
 +++ b/library/std/src/os/mod.rs
 @@ -129,6 +129,8 @@ pub mod windows {}
@@ -391,7 +391,7 @@ index 90c30313..ebb3ec7b 100644
  pub mod netbsd;
  #[cfg(target_os = "openbsd")]
 diff --git a/library/std/src/sys/unix/args.rs b/library/std/src/sys/unix/args.rs
-index ee5e3983..bd59fb3a 100644
+index ee5e3983ac2..bd59fb3a3f7 100644
 --- a/library/std/src/sys/unix/args.rs
 +++ b/library/std/src/sys/unix/args.rs
 @@ -68,7 +68,8 @@ fn next_back(&mut self) -> Option<OsString> {
@@ -405,7 +405,7 @@ index ee5e3983..bd59fb3a 100644
  mod imp {
      use super::Args;
 diff --git a/library/std/src/sys/unix/env.rs b/library/std/src/sys/unix/env.rs
-index 60551aeb..f9b5322b 100644
+index 60551aeb3e7..f9b5322b367 100644
 --- a/library/std/src/sys/unix/env.rs
 +++ b/library/std/src/sys/unix/env.rs
 @@ -195,3 +195,14 @@ pub mod os {
@@ -424,10 +424,10 @@ index 60551aeb..f9b5322b 100644
 +    pub const EXE_EXTENSION: &str = "";
 +}
 diff --git a/library/std/src/sys/unix/fs.rs b/library/std/src/sys/unix/fs.rs
-index a4fff9b2..e9b4310e 100644
+index 111639d92b7..af15aad58e0 100644
 --- a/library/std/src/sys/unix/fs.rs
 +++ b/library/std/src/sys/unix/fs.rs
-@@ -613,6 +613,7 @@ pub fn file_type(&self) -> io::Result<FileType> {
+@@ -607,6 +607,7 @@ pub fn file_type(&self) -> io::Result<FileType> {
          target_os = "redox",
          target_os = "vxworks",
          target_os = "espidf"
@@ -435,7 +435,7 @@ index a4fff9b2..e9b4310e 100644
      ))]
      pub fn ino(&self) -> u64 {
          self.entry.d_ino as u64
-@@ -653,6 +654,7 @@ fn name_bytes(&self) -> &[u8] {
+@@ -647,6 +648,7 @@ fn name_bytes(&self) -> &[u8] {
          target_os = "haiku",
          target_os = "vxworks",
          target_os = "espidf"
@@ -444,7 +444,7 @@ index a4fff9b2..e9b4310e 100644
      fn name_bytes(&self) -> &[u8] {
          unsafe { CStr::from_ptr(self.entry.d_name.as_ptr()).to_bytes() }
 diff --git a/library/std/src/sys/unix/os.rs b/library/std/src/sys/unix/os.rs
-index 87893d26..68adcb10 100644
+index 87893d26912..68adcb106fd 100644
 --- a/library/std/src/sys/unix/os.rs
 +++ b/library/std/src/sys/unix/os.rs
 @@ -39,7 +39,7 @@
@@ -515,7 +515,7 @@ index 87893d26..68adcb10 100644
  pub fn current_exe() -> io::Result<PathBuf> {
      unsafe {
 diff --git a/library/std/src/sys/unix/thread.rs b/library/std/src/sys/unix/thread.rs
-index 6f486305..245b8805 100644
+index b99eb2e553f..4a3ee5d8b7b 100644
 --- a/library/std/src/sys/unix/thread.rs
 +++ b/library/std/src/sys/unix/thread.rs
 @@ -138,6 +138,13 @@ pub fn set_name(name: &CStr) {
@@ -533,7 +533,7 @@ index 6f486305..245b8805 100644
      pub fn set_name(name: &CStr) {
          use crate::ffi::CString;
 diff --git a/library/std/src/sys/unix/thread_local_dtor.rs b/library/std/src/sys/unix/thread_local_dtor.rs
-index c3f41035..df3d08dc 100644
+index c3f410353b9..df3d08dc276 100644
 --- a/library/std/src/sys/unix/thread_local_dtor.rs
 +++ b/library/std/src/sys/unix/thread_local_dtor.rs
 @@ -15,7 +15,8 @@
@@ -547,7 +547,7 @@ index c3f41035..df3d08dc 100644
  pub unsafe fn register_dtor(t: *mut u8, dtor: unsafe extern "C" fn(*mut u8)) {
      use crate::mem;
 diff --git a/library/std/src/sys/unix/time.rs b/library/std/src/sys/unix/time.rs
-index 824283ef..de405297 100644
+index 824283ef6c4..de405297929 100644
 --- a/library/std/src/sys/unix/time.rs
 +++ b/library/std/src/sys/unix/time.rs
 @@ -362,12 +362,7 @@ fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -565,7 +565,7 @@ index 824283ef..de405297 100644
          cvt(unsafe { libc::clock_gettime(clock, &mut t.t) }).unwrap();
          t
 diff --git a/library/unwind/build.rs b/library/unwind/build.rs
-index 1d0b4a59..dba57c26 100644
+index 1d0b4a59a28..dba57c26964 100644
 --- a/library/unwind/build.rs
 +++ b/library/unwind/build.rs
 @@ -43,5 +43,7 @@ fn main() {

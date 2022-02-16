@@ -1,7 +1,7 @@
 From bc6fe0bd98c7df373acb777072ce8da7499553ba Mon Sep 17 00:00:00 2001
 From: Matt Taylor <mstaveleytaylor@gmail.com>
 Date: Sat, 8 May 2021 19:33:53 +0100
-Subject: [PATCH 2/3] managarm: Add missing glue for memmap, num_cpus and users
+Subject: [PATCH 2/4] managarm: Add missing glue for memmap, num_cpus and users
 
 ---
  src/unix/mlibc/mod.rs | 110 +++++++++++++++++++++++++++++++-----------

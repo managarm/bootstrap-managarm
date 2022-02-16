@@ -1,7 +1,7 @@
-From d4a58699c6c35bd9133dcfc067091cb8d948d162 Mon Sep 17 00:00:00 2001
+From b4efb1f225a032f47117f93c203d79fe14e13793 Mon Sep 17 00:00:00 2001
 From: Matt Taylor <mstaveleytaylor@gmail.com>
 Date: Mon, 14 Feb 2022 01:29:54 +0000
-Subject: [PATCH 3/3] managarm: misc additions plus dl_iterate_phdr
+Subject: [PATCH 3/4] managarm: misc additions plus dl_iterate_phdr
 
 ---
  src/unix/mlibc/mod.rs | 194 +++++++++++++++++++++++++++++++++++-------
