@@ -1,0 +1,32 @@
+From 53f9681c247e1ff4d868f7a217ad8d3028a767f5 Mon Sep 17 00:00:00 2001
+From: Matt Taylor <mstaveleytaylor@gmail.com>
+Date: Mon, 14 Feb 2022 01:31:01 +0000
+Subject: [PATCH] managarm: use dl_iterate_phdr
+
+---
+ src/symbolize/gimli.rs | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/symbolize/gimli.rs b/src/symbolize/gimli.rs
+index a9495cc..3d752d7 100644
+--- a/src/symbolize/gimli.rs
++++ b/src/symbolize/gimli.rs
+@@ -41,6 +41,7 @@ cfg_if::cfg_if! {
+         target_os = "openbsd",
+         target_os = "solaris",
+         target_os = "illumos",
++        target_os = "managarm",
+     ))] {
+         #[path = "gimli/mmap_unix.rs"]
+         mod mmap;
+@@ -175,6 +176,7 @@ cfg_if::cfg_if! {
+     } else if #[cfg(all(
+         any(
+             target_os = "linux",
++            target_os = "managarm",
+             target_os = "fuchsia",
+             target_os = "freebsd",
+             target_os = "openbsd",
+-- 
+2.35.1
+
