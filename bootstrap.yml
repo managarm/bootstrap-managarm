@@ -1036,6 +1036,7 @@ packages:
       - kernel-gcc
     pkgs_required:
       - frigg
+    revision: 2
     configure:
       - args: |
           sed -e 's|_BUILD_ROOT_|@BUILD_ROOT@|' @SOURCE_ROOT@/scripts/meson-kernel-@OPTION:arch-triple@.cross-file \
@@ -1086,6 +1087,7 @@ packages:
       - libdrm
       - libsmarter
       - protobuf
+    revision: 2
     configure:
       - args: |
           sed -e 's|_BUILD_ROOT_|@BUILD_ROOT@|' -e 's|_SYSROOT_DIR_|@SYSROOT_DIR@|' @SOURCE_ROOT@/scripts/meson-clang-@OPTION:arch-triple@.cross-file \
