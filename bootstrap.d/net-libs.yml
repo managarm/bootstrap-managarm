@@ -23,6 +23,7 @@ packages:
       - glib
       - gnutls
       - gsettings-desktop-schemas
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -42,6 +43,9 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+    scripts:
+        post_install:
+          - args: ['gio-querymodules', '/usr/lib/gio/modules']
 
   - name: gnutls
     architecture: '@OPTION:arch@'
