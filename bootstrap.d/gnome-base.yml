@@ -23,6 +23,7 @@ packages:
     pkgs_required:
       - mlibc
       - glib
+    revision: 2
     configure:
       - args: |
               sed -i -r 's:"(/system):"/org/gnome\1:g' @THIS_SOURCE_DIR@/schemas/*.in
@@ -40,5 +41,4 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
     scripts:
         post_install:
-          - args: 'echo "Running glib-compile-schemas; this may take a few seconds..."'
-          - args: ['glib-compile-schemas /usr/share/glib-2.0/schemas']
+          - args: 'glib-compile-schemas /usr/share/glib-2.0/schemas'
