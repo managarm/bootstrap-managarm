@@ -108,6 +108,7 @@ packages:
       - libpng
       - shared-mime-info
       - libx11
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -122,6 +123,9 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+    scripts:
+        post_install:
+          - args: ['gdk-pixbuf-query-loaders', '--update-cache']
 
   - name: gtk+-2
     source:
