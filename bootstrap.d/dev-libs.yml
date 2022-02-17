@@ -223,7 +223,7 @@ packages:
       - zlib
       - libiconv
       - libintl
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -242,6 +242,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+    scripts:
+        post_install:
+          - args: ['glib-compile-schemas /usr/share/glib-2.0/schemas']
+          - args: ['gio-querymodules /usr/lib/gio/modules']
 
   - name : gmp
     labels: [aarch64]
