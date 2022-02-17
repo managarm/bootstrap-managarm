@@ -1,7 +1,7 @@
-From da7c4c3c3bdd40aba5a0da5cd96b658ffa56bdab Mon Sep 17 00:00:00 2001
+From 8af5e0038ed6027808886fe0f269c80ea5ec1d42 Mon Sep 17 00:00:00 2001
 From: Matt Taylor <mstaveleytaylor@gmail.com>
 Date: Mon, 31 May 2021 21:19:44 +0100
-Subject: [PATCH 2/3] managarm: fix build target in x.py and bootstrap
+Subject: [PATCH 2/2] managarm: fix build target in x.py and bootstrap
 
 ---
  compiler/rustc_target/src/spec/managarm_system_base.rs | 2 +-
@@ -11,7 +11,7 @@ Subject: [PATCH 2/3] managarm: fix build target in x.py and bootstrap
  4 files changed, 13 insertions(+), 7 deletions(-)
 
 diff --git a/compiler/rustc_target/src/spec/managarm_system_base.rs b/compiler/rustc_target/src/spec/managarm_system_base.rs
-index 08b7d8a8c73..cec689f192c 100644
+index 08b7d8a8..cec689f1 100644
 --- a/compiler/rustc_target/src/spec/managarm_system_base.rs
 +++ b/compiler/rustc_target/src/spec/managarm_system_base.rs
 @@ -22,7 +22,7 @@ pub fn opts() -> TargetOptions {
@@ -24,7 +24,7 @@ index 08b7d8a8c73..cec689f192c 100644
          has_rpath: true,
          pre_link_args: args,
 diff --git a/library/std/src/sys/unix/fs.rs b/library/std/src/sys/unix/fs.rs
-index af15aad58e0..2e5ce66d5c6 100644
+index af15aad5..2e5ce66d 100644
 --- a/library/std/src/sys/unix/fs.rs
 +++ b/library/std/src/sys/unix/fs.rs
 @@ -606,7 +606,7 @@ pub fn file_type(&self) -> io::Result<FileType> {
@@ -46,7 +46,7 @@ index af15aad58e0..2e5ce66d5c6 100644
      ))]
      fn name_bytes(&self) -> &[u8] {
 diff --git a/src/bootstrap/bootstrap.py b/src/bootstrap/bootstrap.py
-index 22f2e405a1e..2be8a253030 100644
+index 22f2e405..2be8a253 100644
 --- a/src/bootstrap/bootstrap.py
 +++ b/src/bootstrap/bootstrap.py
 @@ -931,7 +931,7 @@ class RustBuild(object):
@@ -79,7 +79,7 @@ index 22f2e405a1e..2be8a253030 100644
  
      def build_triple(self):
 diff --git a/src/bootstrap/builder.rs b/src/bootstrap/builder.rs
-index 6ba1b1b6036..0eb49ee960e 100644
+index 6ba1b1b6..0eb49ee9 100644
 --- a/src/bootstrap/builder.rs
 +++ b/src/bootstrap/builder.rs
 @@ -1111,6 +1111,8 @@ pub fn cargo(

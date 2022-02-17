@@ -1,50 +1,17 @@
-From bc6fe0bd98c7df373acb777072ce8da7499553ba Mon Sep 17 00:00:00 2001
+From f4581b8471f78615b394dfa0f1e929bc9f56efb2 Mon Sep 17 00:00:00 2001
 From: Matt Taylor <mstaveleytaylor@gmail.com>
 Date: Sat, 8 May 2021 19:33:53 +0100
-Subject: [PATCH 2/4] managarm: Add missing glue for memmap, num_cpus and users
+Subject: [PATCH 2/2] managarm: Add missing glue for memmap, num_cpus and users
 
 ---
- src/unix/mlibc/mod.rs | 110 +++++++++++++++++++++++++++++++-----------
- 1 file changed, 81 insertions(+), 29 deletions(-)
+ src/unix/mlibc/mod.rs | 59 ++++++++++++++++++++++++++-----------------
+ 1 file changed, 36 insertions(+), 23 deletions(-)
 
 diff --git a/src/unix/mlibc/mod.rs b/src/unix/mlibc/mod.rs
-index 51b9ee9..f374aa1 100644
+index 93bd66e..f1e602a 100644
 --- a/src/unix/mlibc/mod.rs
 +++ b/src/unix/mlibc/mod.rs
-@@ -19,6 +19,19 @@ pub type socklen_t = ::c_ulong;
- // options/internal/include/bits/off_t.h
- pub type off_t = ::c_long;
- 
-+// abis/mlibc/vm-flags.h 
-+pub const MAP_ANON: ::c_int = 8;
-+pub const MAP_PRIVATE: ::c_int = 1;
-+pub const MAP_SHARED: ::c_int = 2;
-+pub const PROT_EXEC: ::c_int = 4;
-+pub const PROT_READ: ::c_int = 1;
-+pub const PROT_WRITE: ::c_int = 2;
-+
-+// options/posix/include/sys/mman.h
-+pub const MAP_FAILED: *mut ::c_void = usize::MAX as *mut ::c_void;
-+pub const MS_ASYNC: ::c_int = 1;
-+pub const MS_SYNC: ::c_int = 2;
-+
- // options/ansi/include/time.h
- pub const CLOCK_MONOTONIC: clockid_t = 1;
- pub const CLOCK_REALTIME: clockid_t = 0;
-@@ -48,12 +61,6 @@ pub type time_t = ::c_long;
- // options/posix/include/bits/posix/suseconds_t.h
- pub type suseconds_t = ::c_long;
- 
--// abis/mlibc/uid_t.h
--pub type uid_t = ::c_int;
--
--// abis/mlibc/gid_t.h
--pub type gid_t = ::c_int;
--
- // abis/mlibc/dev_t.h
- pub type dev_t = ::c_ulong;
- 
-@@ -73,8 +80,8 @@ s! {
+@@ -130,8 +130,8 @@ s! {
          pub si_signo: ::c_int,
          pub si_code: ::c_int,
          pub si_errno: ::c_int,
@@ -55,17 +22,7 @@ index 51b9ee9..f374aa1 100644
          pub si_addr: *mut ::c_void,
          pub si_status: ::c_int,
          pub si_value: sigval,
-@@ -110,6 +117,9 @@ s! {
-     }
- }
- 
-+// options/posix/include/termios.h
-+pub const TIOCGWINSZ: ::c_ulong = 0x5413;
-+
- // abis/mlibc/ino_t.h
- pub type ino_t = ::c_long;
- 
-@@ -122,9 +132,6 @@ pub type blkcnt_t = ::c_long;
+@@ -188,9 +188,6 @@ pub type blkcnt_t = ::c_long;
  // abis/mlibc/nlink_t.h
  pub type nlink_t = ::c_int;
  
@@ -75,7 +32,7 @@ index 51b9ee9..f374aa1 100644
  // options/posix/include/bits/posix/in_addr_t.h
  pub type in_addr_t = u32;
  
-@@ -151,6 +158,7 @@ pub const STDERR_FILENO: ::c_int = 2;
+@@ -217,6 +214,7 @@ pub const STDERR_FILENO: ::c_int = 2;
  pub const STDIN_FILENO: ::c_int = 0;
  pub const STDOUT_FILENO: ::c_int = 1;
  pub const _SC_GETPW_R_SIZE_MAX: ::c_int = 1;
@@ -83,7 +40,7 @@ index 51b9ee9..f374aa1 100644
  pub const _SC_PAGESIZE: ::c_int = _SC_PAGE_SIZE;
  pub const _SC_PAGE_SIZE: ::c_int = 3;
  
-@@ -237,24 +245,36 @@ pub const S_IFLNK: mode_t = 0xA000;
+@@ -344,24 +342,36 @@ pub const S_IFLNK: mode_t = 0xA000;
  pub const S_IFMT: mode_t = 0xF000;
  pub const S_IFREG: mode_t = 0x8000;
  pub const S_IFSOCK: mode_t = 0xC000;
@@ -136,7 +93,7 @@ index 51b9ee9..f374aa1 100644
      }
  }
  
-@@ -308,8 +328,8 @@ s! {
+@@ -445,8 +455,8 @@ s! {
      pub struct passwd {
          pub pw_name: *mut ::c_char,
          pub pw_passwd: *mut ::c_char,
@@ -147,43 +104,7 @@ index 51b9ee9..f374aa1 100644
          pub pw_gecos: *mut ::c_char,
          pub pw_dir: *mut ::c_char,
          pub pw_shell: *mut ::c_char,
-@@ -513,6 +533,35 @@ extern "C" {
-     pub fn bind(socket: ::c_int, address: *const ::sockaddr, address_len: ::socklen_t) -> ::c_int;
-     pub fn clock_gettime(clk_id: clockid_t, tp: *mut ::timespec) -> ::c_int;
-     pub fn clock_settime(clk_id: clockid_t, tp: *const ::timespec) -> ::c_int;
-+    pub fn endpwent();
-+    pub fn getpwent() -> *mut passwd;
-+    pub fn getgrgid_r(
-+        gid: ::gid_t,
-+        grp: *mut ::group,
-+        buf: *mut ::c_char,
-+        buflen: ::size_t,
-+        result: *mut *mut ::group,
-+    ) -> ::c_int;
-+    pub fn getgrnam_r(
-+        name: *const ::c_char,
-+        grp: *mut ::group,
-+        buf: *mut ::c_char,
-+        buflen: ::size_t,
-+        result: *mut *mut ::group,
-+    ) -> ::c_int;
-+    pub fn getgrouplist(
-+        user: *const ::c_char,
-+        group: ::gid_t,
-+        groups: *mut ::gid_t,
-+        ngroups: *mut ::c_int,
-+    ) -> ::c_int;
-+    pub fn getpwnam_r(
-+        name: *const ::c_char,
-+        pwd: *mut passwd,
-+        buf: *mut ::c_char,
-+        buflen: ::size_t,
-+        result: *mut *mut passwd,
-+    ) -> ::c_int;
-     pub fn getpwuid_r(
-         uid: ::uid_t,
-         pwd: *mut passwd,
-@@ -521,6 +570,8 @@ extern "C" {
+@@ -696,6 +706,8 @@ extern "C" {
          result: *mut *mut passwd,
      ) -> ::c_int;
      pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
@@ -192,7 +113,7 @@ index 51b9ee9..f374aa1 100644
      pub fn pthread_condattr_setclock(
          attr: *mut pthread_condattr_t,
          clock_id: ::clockid_t,
-@@ -543,5 +594,6 @@ extern "C" {
+@@ -718,5 +730,6 @@ extern "C" {
          addrlen: *mut ::socklen_t,
      ) -> ::ssize_t;
      pub fn setgroups(ngroups: ::c_int, ptr: *const ::gid_t) -> ::c_int;
