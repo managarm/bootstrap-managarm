@@ -1,7 +1,7 @@
-From f5f7f9c127a46ca699b55e68cca654f3e605a165 Mon Sep 17 00:00:00 2001
+From 8af5e0038ed6027808886fe0f269c80ea5ec1d42 Mon Sep 17 00:00:00 2001
 From: Matt Taylor <mstaveleytaylor@gmail.com>
 Date: Mon, 31 May 2021 21:19:44 +0100
-Subject: [PATCH 2/3] managarm: fix build target in x.py and bootstrap
+Subject: [PATCH 2/2] managarm: fix build target in x.py and bootstrap
 
 ---
  compiler/rustc_target/src/spec/managarm_system_base.rs | 2 +-
@@ -24,10 +24,10 @@ index 08b7d8a8..cec689f1 100644
          has_rpath: true,
          pre_link_args: args,
 diff --git a/library/std/src/sys/unix/fs.rs b/library/std/src/sys/unix/fs.rs
-index e9b4310e..9effc7c8 100644
+index af15aad5..2e5ce66d 100644
 --- a/library/std/src/sys/unix/fs.rs
 +++ b/library/std/src/sys/unix/fs.rs
-@@ -612,7 +612,7 @@ pub fn file_type(&self) -> io::Result<FileType> {
+@@ -606,7 +606,7 @@ pub fn file_type(&self) -> io::Result<FileType> {
          target_os = "fuchsia",
          target_os = "redox",
          target_os = "vxworks",
@@ -36,7 +36,7 @@ index e9b4310e..9effc7c8 100644
          target_os = "managarm"
      ))]
      pub fn ino(&self) -> u64 {
-@@ -653,7 +653,7 @@ fn name_bytes(&self) -> &[u8] {
+@@ -647,7 +647,7 @@ fn name_bytes(&self) -> &[u8] {
          target_os = "l4re",
          target_os = "haiku",
          target_os = "vxworks",
@@ -46,10 +46,10 @@ index e9b4310e..9effc7c8 100644
      ))]
      fn name_bytes(&self) -> &[u8] {
 diff --git a/src/bootstrap/bootstrap.py b/src/bootstrap/bootstrap.py
-index 0170be96..5a93849a 100644
+index 22f2e405..2be8a253 100644
 --- a/src/bootstrap/bootstrap.py
 +++ b/src/bootstrap/bootstrap.py
-@@ -910,7 +910,7 @@ class RustBuild(object):
+@@ -931,7 +931,7 @@ class RustBuild(object):
          ... "debug", "bootstrap")
          True
          """
@@ -58,7 +58,7 @@ index 0170be96..5a93849a 100644
  
      def build_bootstrap(self):
          """Build bootstrap"""
-@@ -918,7 +918,7 @@ class RustBuild(object):
+@@ -939,7 +939,7 @@ class RustBuild(object):
          if self.clean and os.path.exists(build_dir):
              shutil.rmtree(build_dir)
          env = os.environ.copy()
@@ -67,7 +67,7 @@ index 0170be96..5a93849a 100644
          # See also: <https://github.com/rust-lang/rust/issues/70208>.
          if "CARGO_BUILD_TARGET" in env:
              del env["CARGO_BUILD_TARGET"]
-@@ -965,6 +965,10 @@ class RustBuild(object):
+@@ -986,6 +986,10 @@ class RustBuild(object):
              args.append("--locked")
          if self.use_vendored_sources:
              args.append("--frozen")
@@ -79,10 +79,10 @@ index 0170be96..5a93849a 100644
  
      def build_triple(self):
 diff --git a/src/bootstrap/builder.rs b/src/bootstrap/builder.rs
-index 6750f7a5..1f839cf5 100644
+index 6ba1b1b6..0eb49ee9 100644
 --- a/src/bootstrap/builder.rs
 +++ b/src/bootstrap/builder.rs
-@@ -1092,6 +1092,8 @@ pub fn cargo(
+@@ -1111,6 +1111,8 @@ pub fn cargo(
              self.clear_if_dirty(&out_dir, &self.rustc(compiler));
          }
  
@@ -91,7 +91,7 @@ index 6750f7a5..1f839cf5 100644
          // Customize the compiler we're running. Specify the compiler to cargo
          // as our shim and then pass it some various options used to configure
          // how the actual compiler itself is called.
-@@ -1104,7 +1106,7 @@ pub fn cargo(
+@@ -1123,7 +1125,7 @@ pub fn cargo(
              .env("RUSTC_STAGE", stage.to_string())
              .env("RUSTC_SYSROOT", &sysroot)
              .env("RUSTC_LIBDIR", &libdir)
@@ -100,7 +100,7 @@ index 6750f7a5..1f839cf5 100644
              .env(
                  "RUSTDOC_REAL",
                  if cmd == "doc" || cmd == "rustdoc" || (cmd == "test" && want_rustdoc) {
-@@ -1118,7 +1120,7 @@ pub fn cargo(
+@@ -1137,7 +1139,7 @@ pub fn cargo(
          // Clippy support is a hack and uses the default `cargo-clippy` in path.
          // Don't override RUSTC so that the `cargo-clippy` in path will be run.
          if cmd != "clippy" {
