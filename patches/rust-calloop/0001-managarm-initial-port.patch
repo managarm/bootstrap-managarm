@@ -1,0 +1,27 @@
+From 74b9be01f8ec0ff26d674d265a23a80d4e733d0f Mon Sep 17 00:00:00 2001
+From: Matt Taylor <mstaveleytaylor@gmail.com>
+Date: Mon, 21 Feb 2022 02:40:50 +0000
+Subject: [PATCH] managarm: initial port
+
+---
+ src/sys/mod.rs | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/sys/mod.rs b/src/sys/mod.rs
+index dd103a5..9cfa07f 100644
+--- a/src/sys/mod.rs
++++ b/src/sys/mod.rs
+@@ -1,8 +1,8 @@
+ use std::{io, os::unix::io::RawFd};
+ 
+-#[cfg(target_os = "linux")]
++#[cfg(any(target_os = "linux", target_os = "managarm"))]
+ mod epoll;
+-#[cfg(target_os = "linux")]
++#[cfg(any(target_os = "linux", target_os = "managarm"))]
+ use epoll::Epoll as Poller;
+ 
+ #[cfg(any(
+-- 
+2.35.1
+

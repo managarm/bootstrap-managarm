@@ -1,0 +1,40 @@
+packages:
+  - name: alacritty
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: GPU-accelerated terminal emulator
+      description: Alacritty is a GPU-accelerated terminal emulator, written in Rust.
+      spdx: 'Apache-2.0'
+      website: 'https://github.com/alacritty/alacritty'
+      maintainer: "Matt Taylor <mstaveleytaylor@gmail.com>"
+      categories: ['x11-terms']
+    source:
+      subdir: ports
+      git: 'https://github.com/alacritty/alacritty'
+      tag: 'v0.10.0'
+      version: '0.10.0'
+    tools_required:
+      - host-cargo
+      - system-gcc
+    sources_required:
+      - rust-patched-libs
+    pkgs_required:
+      - mlibc
+      - fontconfig
+    configure:
+      - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
+    build:
+      - args: ['install', '-D', '@THIS_SOURCE_DIR@/alacritty.yml', '@THIS_COLLECT_DIR@/root/.alacritty.yml']
+      - args:
+        - 'cargo'
+        - 'install'
+        - '--locked'
+        - '--target-dir'
+        - '@THIS_BUILD_DIR@'
+        - '--path'
+        - '@THIS_SOURCE_DIR@/alacritty'
+        - '--root'
+        - '@THIS_COLLECT_DIR@/usr'
+        - '-j@PARALLELISM@'
+        environ: # Required to build libgit2
+          CC: x86_64-managarm-gcc
