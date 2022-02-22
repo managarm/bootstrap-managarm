@@ -183,6 +183,55 @@ packages:
           - args: 'echo "Running gtk-query-immodules-2.0; this may a few moments..."'
           - args: ['gtk-query-immodules-2.0 --update-cache']
 
+  - name: libdmx
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: X.Org dmx library
+      description: This package contains the X.Org dmx library.
+      spdx: 'MIT'
+      website: 'https://gitlab.freedesktop.org/xorg/lib/libdmx'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['x11-libs']
+    source:
+      subdir: ports
+      git: 'https://gitlab.freedesktop.org/xorg/lib/libdmx.git'
+      tag: 'libdmx-1.1.4'
+      version: '1.1.4'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+        - host-xorg-macros
+        - host-autoconf-archive
+        - host-xtrans
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - xorg-util-macros
+      - xorg-proto
+      - libx11
+      - libxext
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--sysconfdir=/etc'
+        - '--localstatedir=/var'
+        - '--disable-static'
+        - '--disable-malloc0returnsnull'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: libdrm
     labels: [aarch64]
     architecture: '@OPTION:arch@'
