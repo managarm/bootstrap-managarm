@@ -684,7 +684,7 @@ packages:
         quiet: true
 
   - name: libotf
-    stability: 'broken' # Apparently salsa.debian.org is returning 403
+    stability_level: 'broken' # Apparently salsa.debian.org is returning 403
     source:
       subdir: ports
       git: 'https://salsa.debian.org/debian/libotf.git'
