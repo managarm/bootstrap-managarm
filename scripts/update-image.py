@@ -9,6 +9,7 @@ import shutil
 import subprocess
 import sys
 import time
+from enum import Enum
 
 elevation_method = None
 verbose = False
@@ -56,7 +57,8 @@ def run_elevated(cmd, stdin=None, capture_output=True):
         if capture_output:
             stderr = res.stderr.rstrip()
             raise RuntimeError(
-                f'Command "{cmd[0]} ..." failed with code {res.returncode} and stderr: {stderr}'
+                f'Command "{cmd[0]} ..." failed with code {res.returncode} and stderr:'
+                f" {stderr}"
             )
         else:
             raise RuntimeError(f'Command "{cmd[0]} ..." failed with code {res.returncode}')
@@ -74,7 +76,8 @@ def run_regular(cmd, stdin=None, capture_output=True):
         if capture_output:
             stderr = res.stderr.rstrip()
             raise RuntimeError(
-                f'Command "{cmd[0]} ..." failed with code {res.returncode} and stderr: {stderr}'
+                f'Command "{cmd[0]} ..." failed with code {res.returncode} and stderr:'
+                f" {stderr}"
             )
         else:
             raise RuntimeError(f'Command "{cmd[0]} ..." failed with code {res.returncode}')
@@ -91,7 +94,7 @@ def try_find_command_exec(command):
         whereis_out = run_regular(["whereis", "-b", command]).split(" ")
         if len(whereis_out) > 1:
             return whereis_out[1]
-    except Exception:
+    except RuntimeError:
         pass
 
     return None
@@ -167,17 +170,17 @@ class MountAction:
         if global_mount_info:
             if not os.access(global_mount_info.blockdev, os.F_OK, effective_ids=True):
                 print(
-                    "update-image: Mount info exists put refers to a non-existant"
-                    "block device, ignoring."
+                    "update-image: Mount info exists put refers to a non-existant block"
+                    " device, ignoring."
                 )
                 try:
                     script_dir = os.path.realpath(os.path.dirname(sys.argv[0]))
                     os.remove(os.path.join(script_dir, "update-image-mount-info"))
-                except Exception:
+                except FileNotFoundError:
                     pass
                 global_mount_info = None
             else:
-                print("update-image: The image appears to already be mounted (mount info exists)")
+                print("update-image: The image appears to already be mounted (mount info  exists)")
                 return
 
         if not root_partition:
@@ -202,7 +205,7 @@ class MountAction:
 
             try:
                 os.mkdir(self.mountpoint)
-            except Exception:
+            except FileExistsError:
                 pass
             run_elevated(["mount", f"{diskdev}{sep}{root_partition}", self.mountpoint])
         elif self.mount_using == "guestfs":
@@ -224,7 +227,7 @@ class MountAction:
 
             try:
                 os.mkdir(self.mountpoint)
-            except Exception:
+            except FileExistsError:
                 pass
             run_regular(args)
         elif self.mount_using == "docker":
@@ -243,7 +246,7 @@ class MountAction:
 
             try:
                 os.remove(os.path.join(script_dir, "tmp-docker-blockdev"))
-            except Exception:
+            except FileNotFoundError:
                 pass
 
             sysroot_dir = os.path.realpath(self.sysroot)
@@ -329,6 +332,89 @@ class MountAction:
         return f'mount ("{self.image}" to "{self.mountpoint}" using {self.mount_using})'
 
 
+FsAction = Enum("FsAction", "CREATE_DIR ENSURE_LINKS INSTALL CP CP_SED RSYNC")
+
+
+def generate_plan(arch, root_uuid, scriptdir):
+
+    for x in [
+        "root",
+        "usr/bin",
+        "usr/lib",
+        "var",
+        "dev",
+        "proc",
+        "run",
+        "sys",
+        "tmp",
+        "boot/grub",
+        "home",
+        "boot/managarm",
+        "boot/efi",
+    ]:
+        yield FsAction.CREATE_DIR, x
+
+    yield FsAction.ENSURE_LINKS
+
+    yield FsAction.INSTALL, "initrd.cpio", "boot/managarm", dict(ignore_sysroot=True)
+
+    if arch == "x86_64-managarm":
+        yield FsAction.INSTALL, "usr/managarm/bin/eir-stivale", "boot/managarm"
+        yield FsAction.INSTALL, "usr/managarm/bin/eir-mb1", "boot/managarm", dict(strip=True)
+        yield FsAction.INSTALL, "usr/managarm/bin/thor", "boot/managarm", dict(strip=True)
+        yield FsAction.CP, os.path.join(scriptdir, "grub.cfg"), "boot/grub"
+
+        yield (
+            FsAction.CP,
+            os.path.join(scriptdir, "../ports/limine-binary/BOOTX64.EFI"),
+            "boot/efi/EFI",
+        )
+        yield FsAction.CP, os.path.join(
+            scriptdir, "../ports/limine-binary/limine.sys"
+        ), "boot/efi/"
+
+        yield FsAction.CP_SED, os.path.join(
+            scriptdir, "limine.cfg"
+        ), "boot/", "@ROOT_UUID@", root_uuid
+
+        yield FsAction.CP_SED, os.path.join(
+            scriptdir, "limine.cfg"
+        ), "boot/efi/", "@ROOT_UUID@", root_uuid
+
+    yield FsAction.RSYNC, "bin"
+    yield FsAction.RSYNC, "lib"
+    yield FsAction.RSYNC, "sbin"
+    yield FsAction.RSYNC, "root/"
+    yield FsAction.RSYNC, "usr/"
+    yield FsAction.RSYNC, "etc/"
+    yield FsAction.RSYNC, "var/"
+    yield FsAction.RSYNC, "home/"
+
+
+def ensure_sysroot_links(sysroot):
+    for x in ["bin", "lib", "sbin"]:
+        wanted_link = os.path.join(sysroot, x)
+        if not os.path.islink(wanted_link):
+            print(f"{wanted_link} is not a symlink, aborting...")
+            raise RuntimeError("Broken sysroot, please fix this manually and rerun this script")
+
+
+def iterate_plan(plan, callbacks):
+    for _act in plan:
+        kwargs = {}
+        if isinstance(_act, tuple):
+            args = list(_act)  # lists have extra operations
+        else:
+            args = [_act]  # single argument
+        cmd = args.pop(0)
+        if args and isinstance(args[-1], dict):
+            kwargs = args.pop(-1)
+
+        fn = callbacks.get(cmd, None)
+        assert fn, f"action {cmd} not implemented"
+        fn(*args, **kwargs)
+
+
 class UpdateFsAction:
     def __init__(self, mountpoint, sysroot, arch):
         self.mountpoint = mountpoint
@@ -378,7 +464,7 @@ class UpdateFsAction:
                         break
 
             if verbose:
-                print(f'update-image: Determined UUID for "{self.mountpoint}" is {root_uuid}')
+                print(f'update-image: Determined UUID for "{self.mountpoint}" is' f" {root_uuid}")
 
             # We trust the user has mounted the efi partition if /boot/efi exists
             has_efi = os.path.isdir(os.path.join(self.mountpoint, "boot/efi"))
@@ -434,63 +520,20 @@ class UpdateFsAction:
             steps.append(["cp", source, target])
             steps.append(["sed", "-i", f"s|{pattern}|{replace}|g", target])
 
-        plan_create_dir("boot/managarm")
-        if self.arch == "x86_64-managarm":
-            plan_install("usr/managarm/bin/eir-stivale", "boot/managarm")
-            plan_install("usr/managarm/bin/eir-mb1", "boot/managarm", strip=True)
-            plan_install("usr/managarm/bin/thor", "boot/managarm", strip=True)
-        plan_install("initrd.cpio", "boot/managarm", ignore_sysroot=True)
+        def plan_ensure_links():
+            ensure_sysroot_links(self.sysroot)
 
-        for dir in [
-            "root",
-            "usr/bin",
-            "usr/lib",
-            "var",
-            "dev",
-            "proc",
-            "run",
-            "sys",
-            "tmp",
-            "boot/grub",
-            "home",
-        ]:
-            plan_create_dir(dir)
-
-        if self.arch == "x86_64-managarm":
-            plan_cp(os.path.join(scriptdir, "grub.cfg"), "boot/grub")
-
-            plan_cp_sed(os.path.join(scriptdir, "limine.cfg"), "boot/", "@ROOT_UUID@", root_uuid)
-            if has_efi:
-                plan_cp(os.path.join(scriptdir, "limine.cfg"), "boot/efi/")
-                plan_cp_sed(
-                    os.path.join(scriptdir, "limine.cfg"),
-                    "boot/efi/",
-                    "@ROOT_UUID@",
-                    root_uuid,
-                )
-
-        broken_image = False
-        if not os.path.islink(os.path.join(self.sysroot, "bin")):
-            print("bin is not a symlink, aborting...")
-            broken_image = True
-        if not os.path.islink(os.path.join(self.sysroot, "lib")):
-            print("lib is not a symlink, aborting...")
-            broken_image = True
-        if not os.path.islink(os.path.join(self.sysroot, "sbin")):
-            print("sbin is not a symlink, aborting...")
-            broken_image = True
-
-        if broken_image:
-            raise RuntimeError("Broken sysroot, please fix this manually and rerun this script")
-
-        plan_rsync("bin")
-        plan_rsync("lib")
-        plan_rsync("sbin")
-        plan_rsync("root/")
-        plan_rsync("usr/")
-        plan_rsync("etc/")
-        plan_rsync("var/")
-        plan_rsync("home/")
+        iterate_plan(
+            generate_plan(self.arch, root_uuid, scriptdir),
+            {
+                FsAction.CREATE_DIR: plan_create_dir,
+                FsAction.ENSURE_LINKS: plan_ensure_links,
+                FsAction.INSTALL: plan_install,
+                FsAction.CP: plan_cp,
+                FsAction.CP_SED: plan_cp_sed,
+                FsAction.RSYNC: plan_rsync,
+            },
+        )
 
         print("update-image: Updating the file system...")
 
@@ -591,7 +634,9 @@ class UnmountAction:
         if not global_mount_info:
             return "unmount (file system not mounted)"
 
-        return f'unmount ("{global_mount_info.mountpoint}" using {global_mount_info.mount_using})'
+        return (
+            f'unmount ("{global_mount_info.mountpoint}" using' f" {global_mount_info.mount_using})"
+        )
 
 
 def make_action(name, mount_using, image, mountpoint, sysroot, arch):
@@ -642,7 +687,7 @@ parser.add_argument(
     "-m",
     "--mount-using",
     dest="mount_using",
-    choices=["loopback", "docker", "guestfs", "block"],
+    choices=["loopback", "docker", "guestfs", "block", "remake"],
     default="guestfs",
     help="How to mount the image (default: guestfs)",
 )
@@ -696,7 +741,7 @@ parser.add_argument(
     choices=[[], "mount", "update-fs", "unmount"],
     help=(
         "Action to run (one of: mount, update-fs, unmount).\n"
-        "The default list of actions is all of them",
+        "The default list of actions is all of them"
     ),
 )
 
@@ -725,7 +770,7 @@ try:
             info["efi_idx"],
             info["root_uuid"],
         )
-except Exception:
+except json.JSONDecodeError:
     pass
 
 sfdisk_command = try_find_command_exec("sfdisk")
