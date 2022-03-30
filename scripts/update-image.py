@@ -2,6 +2,8 @@
 
 import argparse
 import errno
+import functools
+import io
 import json
 import os
 import shlex
@@ -9,7 +11,11 @@ import shutil
 import subprocess
 import sys
 import time
+import traceback
+import uuid
+from dataclasses import dataclass, field
 from enum import Enum
+from typing import Dict
 
 elevation_method = None
 verbose = False
@@ -97,7 +103,7 @@ def try_find_command_exec(command):
     except RuntimeError:
         pass
 
-    return None
+    raise RuntimeError(f"Couldn't find {command} (tried looking in PATH and using whereis)")
 
 
 def check_if_running(pid):
@@ -366,12 +372,10 @@ def generate_plan(arch, root_uuid, scriptdir):
 
         yield (
             FsAction.CP,
-            os.path.join(scriptdir, "../ports/limine-binary/BOOTX64.EFI"),
+            "tools/host-limine/share/limine/BOOTX64.EFI",
             "boot/efi/EFI",
         )
-        yield FsAction.CP, os.path.join(
-            scriptdir, "../ports/limine-binary/limine.sys"
-        ), "boot/efi/"
+        yield FsAction.CP, "tools/host-limine/share/limine/limine.sys", "boot/efi/"
 
         yield FsAction.CP_SED, os.path.join(
             scriptdir, "limine.cfg"
@@ -444,8 +448,8 @@ class UpdateFsAction:
             diskdev, partdev = dev_for_mountpoint(self.mountpoint)
 
             if os.path.isdir("/dev/disk/by-uuid"):
-                for uuid in os.listdir("/dev/disk/by-uuid"):
-                    part = os.path.realpath(f"/dev/disk/by-uuid/{uuid}")
+                for diskuuid in os.listdir("/dev/disk/by-uuid"):
+                    part = os.path.realpath(f"/dev/disk/by-uuid/{diskuuid}")
                     if part == partdev:
                         root_uuid = uuid
                         break
@@ -639,6 +643,199 @@ class UnmountAction:
         )
 
 
+def _is_boot_efi(x):
+    return x.startswith("boot/efi") or x.startswith("/boot/efi")
+
+
+def logged_run(cmd, *args, **kwargs):
+    print("update-image: running program: " + shlex.join(cmd))
+    return subprocess.run(cmd, *args, **kwargs)
+
+
+def logged_check_call(cmd, *args, **kwargs):
+    return logged_run(cmd, check=True, *args, **kwargs)
+
+
+@dataclass
+class RemakeImageAction:
+    """
+    This action remakes the filesystems in the image directly from the sysroot.
+    This approach turns out to be extremely quick and efficient, but does require
+    modifying the host sysroot directory.
+    """
+
+    image: str
+    mountpoint: str
+    sysroot: str
+    arch: str
+
+    _bootefi_files: Dict[str, bytes] = field(default_factory=dict, init=False)
+
+    def _create_dir(self, x):
+        os.makedirs(os.path.join(self.sysroot, x), exist_ok=True)
+
+    def _ensure_links(self):
+        ensure_sysroot_links(self.sysroot)
+
+    def _install(self, src, dst, strip=False, ignore_sysroot=False):
+        if not ignore_sysroot:
+            src = os.path.join(self.sysroot, src)
+        if _is_boot_efi(dst):
+            # XXX(arsen): this is fixable
+            assert not strip, "Can't strip into /boot/efi"
+
+            # XXX(arsen): I assume the path provided is a dir
+            dst = os.path.join(dst, os.path.basename(src))
+            with open(src, "rb") as fsrc:
+                self._bootefi_files[dst] = fsrc.read()
+                return
+
+        if os.path.isdir(dst):
+            dst = os.path.join(dst, os.path.basename(src))
+
+        dst = os.path.join(self.sysroot, dst)
+        if os.path.samefile(src, dst):
+            return
+
+        installargs = ["install"]
+        if strip:
+            installargs += [
+                "-s",
+                f"--strip-program=tools/cross-binutils/bin/{self.arch}-strip",
+            ]
+
+        installargs += [src, dst]
+        logged_check_call(installargs)
+
+    def _cp_sed(self, src, dst, var, val):
+        if _is_boot_efi(dst):
+            dstopen = io.BytesIO
+            if dst.endswith("/"):
+                dst = os.path.join(dst, os.path.basename(src))
+            dst = os.path.normpath("/" + dst)
+        else:
+            dst = os.path.join(self.sysroot, dst)
+            if os.path.isdir(dst):
+                dst = os.path.join(dst, os.path.basename(src))
+            dstopen = functools.partial(open, dst, "wb")
+        var = var.encode("utf-8")
+        val = val.encode("utf-8")
+
+        with open(src, "rb") as fsrc, dstopen() as fdst:
+            while chunk := fsrc.read(32768):
+                # XXX(arsen): edge case: if @VAR@ is on a 32kB boundary, this will fail.
+                #             files we currently substitute on are very small, so this
+                #             shouldn't be problematic
+                fdst.write(chunk.replace(var, val))
+
+            if isinstance(fdst, io.BytesIO):
+                self._bootefi_files[dst] = fdst.getvalue()
+
+    def run(self):
+        if not os.access(self.image, os.W_OK | os.R_OK):
+            raise RuntimeError(f"{self.image} does not exist or is not r/w accessible")
+
+        scriptdir = os.path.dirname(sys.argv[0])
+
+        # start by correcting the sysroot slightly
+        root_uuid = str(uuid.uuid4())
+        iterate_plan(
+            generate_plan(self.arch, root_uuid, scriptdir),
+            {
+                FsAction.CREATE_DIR: self._create_dir,
+                FsAction.ENSURE_LINKS: self._ensure_links,
+                FsAction.INSTALL: self._install,
+                FsAction.CP: functools.partial(self._install, ignore_sysroot=True),
+                FsAction.CP_SED: self._cp_sed,
+                FsAction.RSYNC: lambda *a, **kw: None,  # ignored
+            },
+        )
+
+        def setup_rootfs(start, size):
+            cmd = [
+                mke2fs_command,
+                "-Ft",
+                "ext2",
+                "-M",
+                "/",
+                "-L",
+                "managarm_rootfs",
+                "-U",
+                root_uuid,
+                "-d",
+                "system-root/",
+                "-E",
+                # XXX: is 512 correct?
+                "offset={}".format(512 * start),
+                self.image,
+                "{}K".format(size // 1024),
+            ]
+            logged_check_call(cmd)
+
+        def setup_esp(start, size):
+            # create the ESP
+            cmd = [
+                mkfsvfat_command,
+                "-F",
+                "16",
+                "-n",
+                "ESP",
+                "-s",
+                "2",
+                "-S",
+                "512",
+                "--offset",
+                str(start),
+                self.image,
+                str(size // 1024),
+            ]
+            logged_check_call(cmd)
+
+            # manipulate it using mtools
+            dosimg = "{}@@{}".format(self.image, start * 512)
+            # create \EFI
+            logged_check_call(["mmd", "-i", dosimg, "EFI"])
+
+            # ... and populate it
+            for file, val in self._bootefi_files.items():
+                if file.startswith("/"):
+                    file = file[1:]
+                file = file[len("boot/efi") :]
+                logged_check_call(["mcopy", "-i", dosimg, "-", f"::{file}"], input=val)
+
+        part_lines = (
+            logged_run(
+                ["partx", "-gbs", "--output", "start,size,type", self.image],
+                stdout=subprocess.PIPE,
+            )
+            .stdout.decode()
+            .splitlines()
+        )
+
+        done_make = False
+        for part_line in part_lines:
+            [start, size, parttype] = [x for x in part_line.split(" ") if x]
+
+            setup_fn = {
+                MANAGARM_ROOT_PART_TYPE: setup_rootfs,
+                EFI_SYSTEM_PART_TYPE: setup_esp,
+            }.get(
+                parttype.upper(), lambda x, y: None
+            )  # noop default
+
+            done_make = True
+            setup_fn(int(start), int(size))
+
+        if not done_make:
+            raise RuntimeError(f"couldn't find any partitions in {self.image}")
+
+    def name(self):
+        return "remake"
+
+    def details(self):
+        return f"remake {self.image} from scratch"
+
+
 def make_action(name, mount_using, image, mountpoint, sysroot, arch):
     if name == "mount":
         return MountAction(mount_using, image, mountpoint, sysroot)
@@ -646,6 +843,8 @@ def make_action(name, mount_using, image, mountpoint, sysroot, arch):
         return UpdateFsAction(mountpoint, sysroot, arch)
     elif name == "unmount":
         return UnmountAction()
+    elif name == "remake":
+        return RemakeImageAction(image, mountpoint, sysroot, arch)
     else:
         raise RuntimeError(f"Unknown action {name}")
 
@@ -676,9 +875,10 @@ class Plan:
             print(f"update-image: Running action {action.details()}")
             try:
                 action.run()
-            except Exception as e:
+            except Exception:
                 self.error_count += 1
-                print(f"update-image: Action {action.name()} failed with: {e.args}")
+                print(f"update-image: Action {action.name()} failed with:")
+                traceback.print_exc()
 
 
 parser = argparse.ArgumentParser(description="Update a managarm installation")
@@ -738,10 +938,10 @@ parser.add_argument(
     "plan",
     metavar="action",
     nargs="*",
-    choices=[[], "mount", "update-fs", "unmount"],
+    choices=[[], "mount", "update-fs", "unmount", "remake"],
     help=(
-        "Action to run (one of: mount, update-fs, unmount).\n"
-        "The default list of actions is all of them"
+        "Action to run (one of: mount, update-fs, unmount, remake).\n"
+        "The default list of actions is [mount, update-fs, unmount]"
     ),
 )
 
@@ -770,14 +970,12 @@ try:
             info["efi_idx"],
             info["root_uuid"],
         )
-except json.JSONDecodeError:
+except (FileNotFoundError, json.JSONDecodeError):
     pass
 
 sfdisk_command = try_find_command_exec("sfdisk")
-
-if not sfdisk_command:
-    print("update-image: Couldn't find sfdisk (tried looking in PATH and using whereis)")
-    sys.exit(1)
+mkfsvfat_command = try_find_command_exec("mkfs.vfat")
+mke2fs_command = try_find_command_exec("mke2fs")
 
 if verbose:
     print(f'update-image: Found sfdisk at "{sfdisk_command}"')
