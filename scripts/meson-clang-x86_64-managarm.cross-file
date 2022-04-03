@@ -7,8 +7,8 @@ strip = 'x86_64-managarm-strip'
 pkgconfig = 'pkg-config'
 
 [built-in options]
-cpp_args = ['-DLIBASYNC_FORCE_USE_EXPERIMENTAL', '-fsized-deallocation', '-target', 'x86_64-managarm', '-gcc-toolchain', '_BUILD_ROOT_/tools/system-gcc']
-cpp_link_args = ['-fsized-deallocation', '-target', 'x86_64-managarm', '-gcc-toolchain', '_BUILD_ROOT_/tools/system-gcc']
+cpp_args = ['-DLIBASYNC_FORCE_USE_EXPERIMENTAL', '-fsized-deallocation', '-fdebug-default-version=4', '-target', 'x86_64-managarm', '--gcc-toolchain=_BUILD_ROOT_/tools/system-gcc']
+cpp_link_args = ['-fsized-deallocation', '-fdebug-default-version=4', '-target', 'x86_64-managarm', '--gcc-toolchain=_BUILD_ROOT_/tools/system-gcc']
 
 [host_machine]
 system = 'managarm'
