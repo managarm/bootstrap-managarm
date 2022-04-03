@@ -6,21 +6,39 @@ sources:
     rolling_version: true
     version: '0.0pl@ROLLING_ID@'
 
+  - name: limine
+    subdir: 'ports'
+    git: 'https://github.com/limine-bootloader/limine.git'
+    tag: 'v3.0'
+    version: '3.0'
+    tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.15
+    regenerate:
+      - args: ['./autogen.sh']
+        environ:
+          'NOCONFIGURE': 'yes'
+
+tools:
+  - name: host-limine
+    architecture: '@OPTION:arch@'
+    from_source: limine
+    tools_required:
+      - system-gcc
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--prefix=/usr'
+        - 'TOOLCHAIN=@OPTION:arch-triple@'
+    compile:
+      - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'install']
+
 packages:
   - name: limine
     architecture: '@OPTION:arch@'
-    source:
-      subdir: 'ports'
-      git: 'https://github.com/limine-bootloader/limine.git'
-      tag: 'v3.0'
-      version: '3.0'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
-      regenerate:
-        - args: ['./autogen.sh']
-          environ:
-            'NOCONFIGURE': 'yes'
+    from_source: limine
     tools_required:
       - system-gcc
     pkgs_required:
