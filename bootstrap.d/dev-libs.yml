@@ -9,7 +9,7 @@ sources:
     subdir: 'ports'
     git: 'https://gitlab.gnome.org/GNOME/gobject-introspection.git'
     # New meson versions break old builds, but the fix isn't in a stable release yet
-    branch: 'master'
+    branch: 'main'
     commit: '7368d58a2d615e7cade85afd3f88df65256b699f'
     version: '1.70.0.managarm1'
 
