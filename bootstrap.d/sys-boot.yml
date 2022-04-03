@@ -28,7 +28,7 @@ tools:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--prefix=/usr'
+        - '--prefix=@PREFIX@'
         - 'TOOLCHAIN=@OPTION:arch-triple@'
     compile:
       - args: ['make', '-j@PARALLELISM@']

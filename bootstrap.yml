@@ -1503,8 +1503,8 @@ tasks:
   - name: initialize-empty-image
     sources_required:
       - image_create
-    pkgs_required:
-      - limine
+    tools_required:
+      - host-limine
     args: |
       if [ "@OPTION:mount-using@" == guestfs ]; then
           elevation=-g # Use libguestfs for root-less image creation.
