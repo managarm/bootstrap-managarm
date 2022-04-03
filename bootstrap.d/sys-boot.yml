@@ -6,12 +6,6 @@ sources:
     rolling_version: true
     version: '0.0pl@ROLLING_ID@'
 
-  - name: limine-binary
-    subdir: 'ports'
-    git: 'https://github.com/limine-bootloader/limine.git'
-    tag: 'v3.0-binary'
-    version: '3.0'
-
 packages:
   - name: limine
     architecture: '@OPTION:arch@'
