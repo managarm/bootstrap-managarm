@@ -22,7 +22,7 @@ sources:
 tools:
   - name: host-limine
     architecture: '@OPTION:arch@'
-    revision: 2
+    revision: 3
     from_source: limine
     tools_required:
       - system-gcc
@@ -36,7 +36,6 @@ tools:
     install:
       - args: ['mkdir', '-p', '@PREFIX@/share/limine']
       - args: ['cp', '-rv', 'bin/.', '@PREFIX@/share/limine/']
-      - args: ['ln', '-s', './limine-deploy', '@PREFIX@/share/limine/limine-install']
 
 packages:
   - name: limine
