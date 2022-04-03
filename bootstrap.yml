@@ -1518,7 +1518,7 @@ tasks:
       -be \
       $elevation
     environ:
-      'LIMINE_PATH': '@BUILD_ROOT@/tools/limine/share/limine'
+      'LIMINE_PATH': '@BUILD_ROOT@/tools/host-limine/share/limine'
     workdir: '@BUILD_ROOT@'
     containerless: true
 
