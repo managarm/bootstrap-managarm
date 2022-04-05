@@ -32,6 +32,8 @@ def do_qemu(args):
 		'-m', '2048',
 	]
 
+	qemu_args += ['-name', f'Managarm {args.arch}']
+
 	have_kvm = False
 	if not args.no_kvm:
 		# Make sure we have KVM, and are going to run the same architecture
