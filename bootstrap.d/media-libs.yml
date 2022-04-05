@@ -51,9 +51,9 @@ packages:
   - name: freeglut
     source:
       subdir: 'ports'
-      git: 'https://github.com/dcnieho/FreeGLUT.git'
-      tag: 'FG_3_2_1'
-      version: '3.2.1'
+      git: 'https://github.com/FreeGLUTProject/freeglut.git'
+      tag: 'v3.2.2'
+      version: '3.2.2'
     tools_required:
       - host-cmake
       - system-gcc
