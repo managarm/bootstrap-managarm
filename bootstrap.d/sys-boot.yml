@@ -21,6 +21,7 @@ sources:
 
 tools:
   - name: host-limine
+    labels: [aarch64]
     architecture: '@OPTION:arch@'
     revision: 3
     from_source: limine
