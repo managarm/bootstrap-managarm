@@ -108,6 +108,7 @@ packages:
       - libpng
       - shared-mime-info
       - libx11
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -122,6 +123,9 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+    scripts:
+        post_install:
+          - args: ['gdk-pixbuf-query-loaders', '--update-cache']
 
   - name: gtk+-2
     source:
@@ -155,7 +159,7 @@ packages:
       - libxcb
       - pango
       - hicolor-icon-theme
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -180,8 +184,8 @@ packages:
       - args: ['mv', '-v', '@THIS_COLLECT_DIR@/usr/bin/gtk-update-icon-cache', '@THIS_COLLECT_DIR@/usr/bin/gtk2-update-icon-cache']
     scripts:
         post_install:
-          - args: 'echo "Running gtk-query-immodules-2.0; this may a few moments..."'
-          - args: ['gtk-query-immodules-2.0 --update-cache']
+          - args: ['gtk-query-immodules-2.0', '--update-cache']
+          - args: ['glib-compile-schemas', '/usr/share/glib-2.0/schemas']
 
   - name: libdmx
     architecture: '@OPTION:arch@'
