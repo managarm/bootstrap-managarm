@@ -675,7 +675,7 @@ packages:
     source:
       subdir: meta-sources
       version: '1.0'
-    revision: 2
+    revision: 3
     configure: []
     build:
       # Create initial directories
@@ -703,6 +703,10 @@ packages:
       - args: ['touch', '@THIS_COLLECT_DIR@/tmp/.keep']
       - args: ['touch', '@THIS_COLLECT_DIR@/home/managarm/.keep']
       - args: ['touch', '@THIS_COLLECT_DIR@/var/.keep']
+      - args: ['touch', '@THIS_COLLECT_DIR@/usr/bin/.keep']
+      - args: ['touch', '@THIS_COLLECT_DIR@/usr/sbin/.keep']
+      - args: ['touch', '@THIS_COLLECT_DIR@/usr/lib/.keep']
+      - args: ['touch', '@THIS_COLLECT_DIR@/usr/share/.keep']
       # Install a default passwd, group and resolv.conf
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/passwd', '@THIS_COLLECT_DIR@/etc']
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/group', '@THIS_COLLECT_DIR@/etc']
