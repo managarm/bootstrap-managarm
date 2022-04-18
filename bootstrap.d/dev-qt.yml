@@ -1,0 +1,28 @@
+sources:
+  - name: qt6
+    subdir: 'ports'
+    # This may seem strange, but is actually correct
+    git: 'https://code.qt.io/qt/qt5.git'
+    tag: 'v6.3.0'
+    version: '6.3.0'
+    regenerate:
+      # Get the submodules that we'll need as a host tool
+      - args: ['./init-repository', '-f', '--module-subset', 'qtbase,qtsvg,qtimageformats,qtshadertools,qtlanguageserver,qtdeclarative,qtwayland,qtmultimedia']
+
+tools:
+  # We do a limited superbuild with only the needed modules of Qt6 to satisfy host tooling.
+  - name: host-qt6
+    from_source: qt6
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=@PREFIX@'
+        - '-DBUILD_SHARED_LIBS=ON'
+        - '-DQT_BUILD_EXAMPLES=OFF'
+        - '-DQT_BUILD_TESTS=OFF'
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['cmake', '--build', '.', '--parallel', '@PARALLELISM@']
+    install:
+      - args: ['cmake', '--install', '.']
