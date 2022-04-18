@@ -38,3 +38,41 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: libremines
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Qt based minesweeper
+      description: This package provides a Free/Libre and Open Source Software Qt based Minesweeper game available for GNU/Linux, FreeBSD, Windows and Managarm systems.
+      spdx: 'GPL-3.0-or-later'
+      website: 'https://github.com/Bollos00/LibreMines'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['games-board']
+    source:
+      subdir: ports
+      git: 'https://github.com/Bollos00/LibreMines.git'
+      tag: 'v1.9.1'
+      version: '1.9.1'
+    tools_required:
+      - system-gcc
+      - host-cmake
+      - host-qt6
+    pkgs_required:
+      - mlibc
+      - qtbase6
+      - qtsvg6
+      - qtmultimedia6
+    configure:
+      - args:
+        - 'cmake'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_SYSTEM_PROCESSOR=@OPTION:arch@'
+        - '-DUSE_QT6=ON'
+        - '-Wno-dev'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
