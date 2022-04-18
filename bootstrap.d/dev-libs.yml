@@ -1142,6 +1142,56 @@ packages:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
 
+  - name: pcre2
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Perl-compatible regular expression library
+      description: This package contains a new generation of the Perl Compatible Regular Expression libraries. These are useful for implementing regular expression pattern matching using the same syntax and semantics as Perl.
+      spdx: 'BSD-3-Clause'
+      website: 'https://www.pcre.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
+    source:
+      subdir: ports
+      git: 'https://github.com/PhilipHazel/pcre2.git'
+      tag: 'pcre2-10.39'
+      version: '10.39'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['./autogen.sh']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - bzip2
+      - ncurses
+      - readline
+      - zlib
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
+        - '--docdir=/usr/share/doc/pcre2-10.39'
+        - '--enable-unicode'
+        - '--enable-jit'
+        - '--enable-pcre2-16'
+        - '--enable-pcre2-32'
+        - '--enable-pcre2grep-libz'
+        - '--enable-pcre2grep-libbz2'
+        - '--enable-pcre2test-libreadline'
+        - '--disable-static'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: popt
     source:
       subdir: 'ports'
