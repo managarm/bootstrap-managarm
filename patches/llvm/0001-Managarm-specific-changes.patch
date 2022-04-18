@@ -1,4 +1,4 @@
-From a608eab300e14a52782df121beef5d7c0e893165 Mon Sep 17 00:00:00 2001
+From d30c07fc77aa02e4b2442a60f87ab8fe671c134c Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Mon, 14 Feb 2022 08:28:17 +0100
 Subject: [PATCH 1/2] Managarm-specific changes
@@ -13,7 +13,7 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
  5 files changed, 8 insertions(+), 6 deletions(-)
 
 diff --git a/llvm/cmake/modules/CrossCompile.cmake b/llvm/cmake/modules/CrossCompile.cmake
-index 01cd37124..5d55ac110 100644
+index 2a39b6a40..ceceb2aab 100644
 --- a/llvm/cmake/modules/CrossCompile.cmake
 +++ b/llvm/cmake/modules/CrossCompile.cmake
 @@ -17,8 +17,8 @@ function(llvm_create_cross_target project_name target_name toolchain buildtype)
@@ -41,10 +41,10 @@ index e8612ba66..56d3dd721 100644
  #elif defined(_AIX)
  #include <sys/machine.h>
 diff --git a/llvm/lib/Support/Unix/Path.inc b/llvm/lib/Support/Unix/Path.inc
-index c37b3a546..cb1078363 100644
+index 788460d65..02728957f 100644
 --- a/llvm/lib/Support/Unix/Path.inc
 +++ b/llvm/lib/Support/Unix/Path.inc
-@@ -71,7 +71,7 @@ extern char **environ;
+@@ -74,7 +74,7 @@ extern char **environ;
  
  #include <sys/types.h>
  #if !defined(__APPLE__) && !defined(__OpenBSD__) && !defined(__FreeBSD__) &&   \
@@ -53,7 +53,7 @@ index c37b3a546..cb1078363 100644
  #include <sys/statvfs.h>
  #define STATVFS statvfs
  #define FSTATVFS fstatvfs
-@@ -80,7 +80,7 @@ extern char **environ;
+@@ -83,7 +83,7 @@ extern char **environ;
  #if defined(__OpenBSD__) || defined(__FreeBSD__)
  #include <sys/mount.h>
  #include <sys/param.h>
@@ -62,7 +62,7 @@ index c37b3a546..cb1078363 100644
  #if defined(HAVE_LINUX_MAGIC_H)
  #include <linux/magic.h>
  #else
-@@ -458,7 +458,7 @@ std::error_code remove(const Twine &path, bool IgnoreNonExisting) {
+@@ -478,7 +478,7 @@ std::error_code remove(const Twine &path, bool IgnoreNonExisting) {
  }
  
  static bool is_local_impl(struct STATVFS &Vfs) {
@@ -72,7 +72,7 @@ index c37b3a546..cb1078363 100644
  #define NFS_SUPER_MAGIC 0x6969
  #endif
 diff --git a/llvm/tools/llvm-dwarfdump/Statistics.cpp b/llvm/tools/llvm-dwarfdump/Statistics.cpp
-index 19a971afa..7b81da3a3 100644
+index 5c08e43b4..516d22d45 100644
 --- a/llvm/tools/llvm-dwarfdump/Statistics.cpp
 +++ b/llvm/tools/llvm-dwarfdump/Statistics.cpp
 @@ -6,6 +6,7 @@
@@ -84,7 +84,7 @@ index 19a971afa..7b81da3a3 100644
  #include "llvm/ADT/DenseMap.h"
  #include "llvm/ADT/StringSet.h"
 diff --git a/llvm/tools/llvm-shlib/CMakeLists.txt b/llvm/tools/llvm-shlib/CMakeLists.txt
-index 76b9a25cb..e6d236c39 100644
+index 8e2b78f1b..4c6763391 100644
 --- a/llvm/tools/llvm-shlib/CMakeLists.txt
 +++ b/llvm/tools/llvm-shlib/CMakeLists.txt
 @@ -36,6 +36,7 @@ if(LLVM_BUILD_LLVM_DYLIB)
@@ -96,5 +96,5 @@ index 76b9a25cb..e6d236c39 100644
       OR ("${CMAKE_SYSTEM_NAME}" STREQUAL "Fuchsia")
       OR ("${CMAKE_SYSTEM_NAME}" STREQUAL "DragonFly")
 -- 
-2.34.1
+2.35.1
 

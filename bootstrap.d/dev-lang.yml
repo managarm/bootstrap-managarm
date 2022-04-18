@@ -21,8 +21,8 @@ sources:
   - name: rust
     subdir: 'ports'
     git: 'https://github.com/rust-lang/rust.git'
-    tag: '1.58.1'
-    version: '1.58.1'
+    tag: '1.60.0'
+    version: '1.60.0'
 
   - name: host-bootstrap-cargo
     subdir: 'ports'

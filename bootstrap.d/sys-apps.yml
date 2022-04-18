@@ -124,6 +124,14 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: exa
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: A modern replacement for 'ls' written in Rust
+      description: Exa is a modern `ls` replacement written in rust.
+      spdx: 'Apache-2.0 MIT Unlicense'
+      website: 'https://github.com/ogham/exa'
+      maintainer: "Matt Taylor <mstaveleytaylor@gmail.com>"
+      categories: ['sys-apps']
     source:
       subdir: ports
       git: 'https://github.com/ogham/exa.git'
@@ -137,6 +145,7 @@ packages:
       - rust-patched-libs
     pkgs_required:
       - mlibc
+    revision: 2
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
     build:
@@ -153,6 +162,8 @@ packages:
         - '-j@PARALLELISM@'
         environ: # Required to build libgit2
           CC: x86_64-managarm-gcc
+      - args: ['rm', '-v', '@THIS_COLLECT_DIR@/usr/.crates.toml']
+      - args: ['rm', '-v', '@THIS_COLLECT_DIR@/usr/.crates2.json']
 
   - name: file
     labels: [aarch64]
@@ -503,6 +514,14 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: ripgrep
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: a search tool that combines the usability of ag with the raw speed of grep
+      description: Ripgrep is a `grep` replacement written in rust, while taking several features from ag.
+      spdx: 'Apache-2.0 MIT Unlicense BSD-2-Clause BSL-1.0'
+      website: 'https://github.com/BurntSushi/ripgrep'
+      maintainer: "Matt Taylor <mstaveleytaylor@gmail.com>"
+      categories: ['sys-apps']
     source:
       subdir: ports
       git: 'https://github.com/BurntSushi/ripgrep.git'
@@ -514,6 +533,7 @@ packages:
       - rust-patched-libs
     pkgs_required:
       - mlibc
+    revision: 2
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
     build:
@@ -528,6 +548,8 @@ packages:
         - '--root'
         - '@THIS_COLLECT_DIR@/usr'
         - '-j@PARALLELISM@'
+      - args: ['rm', '-v', '@THIS_COLLECT_DIR@/usr/.crates.toml']
+      - args: ['rm', '-v', '@THIS_COLLECT_DIR@/usr/.crates2.json']
 
   - name: util-linux-libs
     labels: [aarch64]

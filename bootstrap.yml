@@ -106,8 +106,8 @@ sources:
   - name: llvm
     subdir: 'ports'
     git: 'https://github.com/llvm/llvm-project'
-    tag: 'llvmorg-13.0.1'
-    version: '13.0.1'
+    tag: 'llvmorg-14.0.1'
+    version: '14.0.1'
 
   - name: gcc
     subdir: 'ports'
@@ -987,6 +987,8 @@ packages:
         - '-DLLVM_HOST_TRIPLE=@OPTION:arch-triple@'
         # Disable linking against ncurses, which we do not build with -fPIC.
         - '-DLLVM_ENABLE_TERMINFO=OFF'
+        # Suppress developer warnings
+        - '-Wno-dev'
         - '@THIS_SOURCE_DIR@/llvm'
     build:
       - args: ['ninja']
@@ -994,6 +996,8 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      # One empty directory found, touch it so xbps doesn't complain
+      - args: ['touch', '@THIS_COLLECT_DIR@/usr/include/clang-tidy/plugin/.keep']
 
   - name: kmscube
     source:

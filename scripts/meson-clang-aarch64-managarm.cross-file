@@ -6,9 +6,9 @@ strip = 'aarch64-managarm-strip'
 pkgconfig = 'pkg-config'
 
 [built-in options]
-c_args = ['-target', 'aarch64-managarm', '-gcc-toolchain', '_BUILD_ROOT_/tools/system-gcc']
-cpp_args = ['-DLIBASYNC_FORCE_USE_EXPERIMENTAL', '-fsized-deallocation', '-target', 'aarch64-managarm', '-gcc-toolchain', '_BUILD_ROOT_/tools/system-gcc']
-cpp_link_args = [ '-fsized-deallocation', '-target', 'aarch64-managarm', '-gcc-toolchain', '_BUILD_ROOT_/tools/system-gcc']
+c_args = ['-target', 'aarch64-managarm', '-fdebug-default-version=4', '--gcc-toolchain=_BUILD_ROOT_/tools/system-gcc']
+cpp_args = ['-DLIBASYNC_FORCE_USE_EXPERIMENTAL', '-fsized-deallocation', '-fdebug-default-version=4', '-target', 'aarch64-managarm', '--gcc-toolchain=_BUILD_ROOT_/tools/system-gcc']
+cpp_link_args = [ '-fsized-deallocation', '-fdebug-default-version=4', '-target', 'aarch64-managarm', '--gcc-toolchain=_BUILD_ROOT_/tools/system-gcc']
 
 [host_machine]
 system = 'managarm'

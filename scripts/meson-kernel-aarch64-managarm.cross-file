@@ -7,7 +7,7 @@ pkgconfig = 'pkgconfig'
 
 [constants]
 # clang needs an additional flag to enable sized allocation/deallocation.
-args = [ '-fsized-deallocation', '-ffreestanding', '-target', 'aarch64-managarm-kernel', '-gcc-toolchain', '_BUILD_ROOT_/tools/kernel-gcc']
+args = [ '-fsized-deallocation', '-fdebug-default-version=4', '-ffreestanding', '-target', 'aarch64-managarm-kernel', '--gcc-toolchain=_BUILD_ROOT_/tools/kernel-gcc']
 
 [built-in options]
 c_args = args

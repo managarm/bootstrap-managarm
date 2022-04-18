@@ -7,7 +7,7 @@ pkgconfig = 'pkg-config'
 
 [constants]
 # common args that c and cxx need
-args = ['-ffreestanding', '-target', 'x86_64-managarm-kernel', '-gcc-toolchain', '_BUILD_ROOT_/tools/kernel-gcc' ]
+args = ['-ffreestanding', '-fdebug-default-version=4', '-target', 'x86_64-managarm-kernel', '--gcc-toolchain=_BUILD_ROOT_/tools/kernel-gcc' ]
 # cxx specific arguments
 cxx = args + [ '-fsized-deallocation' ]
 
