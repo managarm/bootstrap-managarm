@@ -164,6 +164,41 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: double-conversion
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Efficient binary-decimal and decimal-binary conversion routines for IEEE doubles
+      description: This package provides a library with conversion routines for binary to decimal and decimal to binary with IEEE doubles.
+      spdx: 'BSD-3-Clause'
+      website: 'https://github.com/google/double-conversion'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
+    source:
+      subdir: ports
+      git: 'https://github.com/google/double-conversion.git'
+      tag: 'v3.1.5'
+      version: '3.1.5'
+    tools_required:
+      - host-cmake
+      - system-gcc
+    pkgs_required:
+      - mlibc
+    configure:
+      - args:
+        - 'cmake'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DBUILD_SHARED_LIBS=ON'
+        - '@THIS_SOURCE_DIR@'
+        environ:
+          CC: '@OPTION:arch-triple@-gcc'
+          CXX: '@OPTION:arch-triple@-g++'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: fribidi
     labels: [aarch64]
     architecture: '@OPTION:arch@'
