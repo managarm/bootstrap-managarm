@@ -152,3 +152,40 @@ packages:
       - args: ['touch', '@THIS_COLLECT_DIR@/usr/lib/cmake/Qt6/QtBuildInternals/QtStandaloneTestTemplateProject/.keep']
       - args: ['touch', '@THIS_COLLECT_DIR@/usr/lib/cmake/Qt6/macos/.keep']
       - args: ['touch', '@THIS_COLLECT_DIR@/usr/lib/cmake/Qt6/ios/.keep']
+
+  - name: qtsvg6
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: The Qt6 SVG library
+      description: This package provides the Qt6 SVG library, giving Qt6 SVG support.
+      spdx: 'GPL-2.0-only GPL-3.0-only LGPL-3.0-only GFDL-1.3-only'
+      website: 'https://code.qt.io/cgit/qt/qtsvg.git/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-qt']
+    source:
+      subdir: 'ports'
+      git: 'http://code.qt.io/qt/qtsvg.git'
+      tag: 'v6.3.0'
+      version: '6.3.0'
+    tools_required:
+      - system-gcc
+      - host-cmake
+      - host-qt6
+    pkgs_required:
+      - mlibc
+      - qtbase6
+      - zlib
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/host-qt6'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
