@@ -210,6 +210,53 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: gstreamer
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Open source multimedia framework
+      description: This package contains a streaming media framework that enables applications to share a common set of plugins for tasks such as video encoding and decoding, audio encoding and decoding, audio and video filters, audio visualisation, web streaming and anything else that streams in real-time or otherwise. This package only provides base functionality and libraries of the GStreamer stack.
+      spdx: 'LGPL-2.0-or-later'
+      website: 'https://gstreamer.freedesktop.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.freedesktop.org/gstreamer/gstreamer.git'
+      tag: '1.19.1'
+      version: '1.19.1'
+    tools_required:
+      - system-gcc
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - glib
+    configure:
+      - args:
+        - 'meson'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '-Dintrospection=disabled'
+        - '-Dptp-helper-setuid-user=false'
+        - '-Dptp-helper-setuid-group=false'
+        - '-Dptp-helper-permissions=none'
+        - '-Dlibunwind=disabled'
+        - '-Dlibdw=disabled'
+        - '-Dgst_debug=false'
+        - '-Dcheck=disabled'
+        - '-Dpackage-origin=https://managarm.org/'
+        - '-Dpackage-name="GStreamer 1.19.1 Managarm"'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: harfbuzz
     labels: [aarch64]
     architecture: '@OPTION:arch@'
