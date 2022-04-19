@@ -996,8 +996,6 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
-      # One empty directory found, touch it so xbps doesn't complain
-      - args: ['touch', '@THIS_COLLECT_DIR@/usr/include/clang-tidy/plugin/.keep']
 
   - name: kmscube
     source:
