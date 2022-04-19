@@ -1,0 +1,36 @@
+From b5f632aa5df4e20361367fb3df6d768ca34a539e Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Tue, 19 Apr 2022 20:57:12 +0200
+Subject: [PATCH] Don't fetch new versions of config.guess and config.sub by
+ default
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ autogen.sh | 14 +-------------
+ 1 file changed, 1 insertion(+), 13 deletions(-)
+
+diff --git a/autogen.sh b/autogen.sh
+index 9ef71b5..5633885 100755
+--- a/autogen.sh
++++ b/autogen.sh
+@@ -5,16 +5,4 @@ aclocal -I ./m4
+ autoheader
+ automake --foreign --add-missing --copy
+ autoconf
+-# Get latest config.guess and config.sub from upstream master since
+-# these are often out of date.
+-for file in config.guess config.sub
+-do
+-    echo "$0: getting $file..."
+-    wget -q --timeout=5 -O config/$file.tmp \
+-      "https://git.savannah.gnu.org/cgit/config.git/plain/${file}" \
+-      && mv config/$file.tmp config/$file \
+-      && chmod a+x config/$file
+-    retval=$?
+-    rm -f config/$file.tmp
+-    test $retval -eq 0 || exit $retval
+-done
++
+-- 
+2.35.2
+
