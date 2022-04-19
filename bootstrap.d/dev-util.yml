@@ -125,16 +125,33 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
   
   - name: itstool
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Translation tool for XML documents that uses gettext files and ITS rules
+      description: This package contains a program for translating XML with PO files using W3C Internationalization Tag Set rules.
+      spdx: 'GPL-3.0-or-later'
+      website: 'http://itstool.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-util']
     source:
       subdir: ports
-      url: 'http://files.itstool.org/itstool/itstool-2.0.6.tar.bz2'
-      format: 'tar.bz2'
-      extract_path: 'itstool-2.0.6'
-      version: '2.0.6'
+      git: 'https://github.com/itstool/itstool.git'
+      tag: '2.0.7'
+      version: '2.0.7'
+      tools_required:
+          - host-autoconf-v2.69
+          - host-automake-v1.11
+          - host-libtool
+          - host-pkg-config
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
     tools_required:
       - system-gcc
       - host-python
     pkgs_required:
+      - mlibc
       - libxml
       - python
     configure:
