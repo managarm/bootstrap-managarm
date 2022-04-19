@@ -210,6 +210,64 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: gst-plugins-base
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Basepack of plugins for GStreamer
+      description: The GStreamer Base Plug-ins is a well-groomed and well-maintained collection of GStreamer plug-ins and elements, spanning the range of possible types of elements one would want to write for GStreamer.
+      spdx: 'LGPL-2.0-or-later GPL-2.0-or-later'
+      website: 'https://gstreamer.freedesktop.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.freedesktop.org/gstreamer/gst-plugins-base.git'
+      tag: '1.19.1'
+      version: '1.19.1'
+    tools_required:
+      - system-gcc
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+      - wayland-scanner
+    pkgs_required:
+      - mlibc
+      - gstreamer
+      - mesa
+      - wayland-protocols
+      - libogg
+      - libtheora
+      - libvorbis
+      - libjpeg-turbo
+      - libpng
+      - libx11
+      - glib
+      - zlib
+      - libdrm
+      - wayland
+      - pango
+      - libxext
+    configure:
+      - args:
+        - 'meson'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '-Dintrospection=disabled'
+        - '--wrap-mode=nodownload'
+        - '-Dorc=disabled'
+        - '-Dexamples=disabled'
+        - '-Dpackage-origin=https://managarm.org/'
+        - '-Dpackage-name="GStreamer 1.19.1 Managarm"'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: gstreamer
     architecture: '@OPTION:arch@'
     metadata:
