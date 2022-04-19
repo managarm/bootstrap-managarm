@@ -1,4 +1,35 @@
 packages:
+  - name: brotli
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Generic-purpose lossless compression algorithm
+      description: This package contains a compressor and decompressor for the brotli compression format.
+      spdx: 'MIT'
+      website: 'https://github.com/google/brotli'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['app-arch']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/google/brotli.git'
+      tag: 'v1.0.9'
+      version: '1.0.9'
+    tools_required:
+      - system-gcc
+      - host-cmake
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_BUILD_TYPE=Release'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: bzip2
     labels: [aarch64]
     architecture: '@OPTION:arch@'
