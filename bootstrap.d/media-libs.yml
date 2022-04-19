@@ -457,6 +457,58 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
+  - name: libtiff
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Tag Image File Format (TIFF) library
+      description: This package contains the TIFF libraries and associated utilities. The libraries are used by many programs for reading and writing TIFF files and the utilities are used for general work with TIFF files.
+      spdx: 'libtiff'
+      website: 'http://libtiff.maptools.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.com/libtiff/libtiff.git'
+      tag: 'v4.3.0'
+      version: '4.3.0'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['./autogen.sh']
+    tools_required:
+      - host-cmake
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - freeglut
+      - libjpeg-turbo
+      - zlib
+      - zstd
+      - xz-utils
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--disable-static'
+        - '--enable-shared'
+        - '--with-docdir=/usr/share/doc/libtiff-4.3.0'
+        - '--without-x'
+        - '--enable-zlib'
+        - '--enable-zstd'
+        - '--enable-jpeg'
+        - '--enable-lzma'
+        - '--disable-webp'
+        - '--enable-cxx'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: libtheora
     source:
       subdir: 'ports'
