@@ -580,6 +580,53 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: libwebp
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: A lossy image compression format
+      description: This package contains a library and support programs to encode and decode images in WebP format.
+      spdx: 'BSD-3-Clause'
+      website: 'https://github.com/webmproject/libwebp'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/webmproject/libwebp.git'
+      tag: 'v1.2.2'
+      version: '1.2.2'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['./autogen.sh']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - libjpeg-turbo
+      - libpng
+      - freeglut
+      - sdl2
+      - libtiff
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--enable-libwebpmux'
+        - '--enable-libwebpdemux'
+        - '--enable-libwebpdecoder'
+        - '--enable-libwebpextras'
+        - '--enable-swap-16bit-csp'
+        - '--disable-static'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: mesa
     labels: [aarch64]
     architecture: '@OPTION:arch@'
