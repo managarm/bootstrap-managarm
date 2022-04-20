@@ -13,6 +13,8 @@ tools:
   # We do a limited superbuild with only the needed modules of Qt6 to satisfy host tooling.
   - name: host-qt6
     from_source: qt6
+    tools_required:
+      - host-cmake
     configure:
       - args:
         - 'cmake'
