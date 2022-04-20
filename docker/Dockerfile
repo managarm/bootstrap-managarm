@@ -47,6 +47,8 @@ RUN apt-get update \
 		libgdk-pixbuf2.0-bin \
 		# Used by gdk-pixbuf
 		libglib2.0-dev-bin \
+		# Used by host-qt6
+		libgl-dev \
 		# GMP, MPFR and MPC are used by gcc
 		libgmp-dev \
 		libmpc-dev \
