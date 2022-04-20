@@ -1,4 +1,4 @@
-From 8752a394dc6eba4d0e4d39f19da6898f9ee4c925 Mon Sep 17 00:00:00 2001
+From ff8971212ec4b8c820b08fa69b5fe123b34dec29 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Tue, 12 Apr 2022 15:50:25 +0200
 Subject: [PATCH] Add Managarm support
@@ -15,8 +15,9 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
  src/corelib/io/qstorageinfo_unix.cpp          |  3 +
  src/gui/configure.cmake                       |  4 +-
  src/network/kernel/qdnslookup_unix.cpp        |  2 +-
+ src/network/kernel/qnetworkinterface_unix.cpp |  4 +
  .../kmsconvenience/qkmsdevice.cpp             |  1 +
- 11 files changed, 170 insertions(+), 5 deletions(-)
+ 12 files changed, 174 insertions(+), 5 deletions(-)
  create mode 100644 mkspecs/common/managarm.conf
  create mode 100644 mkspecs/managarm-g++/qmake.conf
  create mode 100644 mkspecs/managarm-g++/qplatformdefs.h
@@ -304,6 +305,21 @@ index 1449c329..88fcd997 100644
  #  include <arpa/nameser_compat.h>
  #endif
  #include <resolv.h>
+diff --git a/src/network/kernel/qnetworkinterface_unix.cpp b/src/network/kernel/qnetworkinterface_unix.cpp
+index 94f3a53c..40943178 100644
+--- a/src/network/kernel/qnetworkinterface_unix.cpp
++++ b/src/network/kernel/qnetworkinterface_unix.cpp
+@@ -61,6 +61,10 @@
+ # include <ifaddrs.h>
+ #endif
+ 
++#ifdef Q_OS_MANAGARM
++# include <linux/sockios.h>
++#endif
++
+ #ifdef QT_LINUXBASE
+ #  include <arpa/inet.h>
+ #  ifndef SIOCGIFBRDADDR
 diff --git a/src/platformsupport/kmsconvenience/qkmsdevice.cpp b/src/platformsupport/kmsconvenience/qkmsdevice.cpp
 index 4206b20a..71127dd8 100644
 --- a/src/platformsupport/kmsconvenience/qkmsdevice.cpp
@@ -317,5 +333,5 @@ index 4206b20a..71127dd8 100644
  #define ARRAY_LENGTH(a) (sizeof (a) / sizeof (a)[0])
  
 -- 
-2.35.1
+2.35.2
 
