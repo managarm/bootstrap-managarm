@@ -1448,7 +1448,10 @@ packages:
     pkgs_required:
       - mlibc
       - sdl2
-    revision: 2
+      - libintl
+      - libiconv
+      - zlib
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
