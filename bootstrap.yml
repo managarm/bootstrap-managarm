@@ -1466,7 +1466,10 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
-      - args: ['rm', '-r', '@THIS_COLLECT_DIR@/usr/lib/']
+      - args: |
+              if [ -f @THIS_COLLECT_DIR@/usr/lib/ ]; then
+                  rm -rf @THIS_COLLECT_DIR@/usr/lib/
+              fi
 
   - name: runit
     stability_level: broken
