@@ -13,9 +13,9 @@ jobs:
     packages:
       - icu
 
-  - name: image
-    tasks:
-      - useful-image-dependencies
-      - initialize-empty-image
-      - make-image
-      - xz-image
+#  - name: image
+#    tasks:
+#      - useful-image-dependencies
+#      - initialize-empty-image
+#      - make-image
+#      - xz-image
