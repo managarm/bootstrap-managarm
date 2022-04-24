@@ -821,7 +821,16 @@ packages:
       - wayland
       - wayland-protocols
       - libiconv
-    revision: 2
+      - libx11
+      - libxext
+      - libxcursor
+      - libxinerama
+      - libxi
+      - libxfixes
+      - libxrandr
+      - libxrender
+      - libxxf86vm
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -848,7 +857,7 @@ packages:
         - '-DRPATH=OFF'
         - '-DCLOCK_GETTIME=OFF'
         - '-DINPUT_TSLIB=OFF'
-        - '-DVIDEO_X11=OFF'
+        - '-DVIDEO_X11=ON'
         - '-DVIDEO_WAYLAND=ON'
         - '-DVIDEO_WAYLAND_QT_TOUCH=OFF'
         - '-DVIDEO_RPI=OFF'
