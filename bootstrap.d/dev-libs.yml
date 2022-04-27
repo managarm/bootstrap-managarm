@@ -1060,6 +1060,61 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
+  - name: nspr
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Netscape Portable Runtime (NSPR)
+      description: This package provides a platform-neutral API for system level and libc like functions.
+      spdx: 'MPL-2.0 GPL-2.0-only LGPL-2.1-only'
+      website: 'https://www.mozilla.org/projects/nspr/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
+    source:
+      subdir: 'ports'
+      hg: 'https://hg.mozilla.org/projects/nspr/'
+      tag: 'NSPR_4_33_RTM'
+      version: '4.33'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+      regenerate:
+        - args: ['autoreconf', '-fvi']
+        - args: ['cp',
+            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
+            '@THIS_SOURCE_DIR@/build/autoconf/']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+    configure:
+      # Disable installing two unneeded scripts.
+      - args: ['sed', '-ri', '/^RELEASE/s/^/#/', '@THIS_SOURCE_DIR@/pr/src/misc/Makefile.in']
+      # Disable installing static libraries.
+      - args: ['sed', '-i', 's#$(LIBRARY) ##', '@THIS_SOURCE_DIR@/config/rules.mk']
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-linux'
+        - '--build=x86_64-linux'
+        - '--prefix=/usr'
+        - '--with-mozilla'
+        - '--with-pthreads'
+        - '--enable-64bit'
+        environ:
+          CROSS_COMPILE: '1'
+    build:
+      # We first build a native nsinstall that the build can use later on.
+      - args: ['make', 'CC=gcc', 'CXX=g++', '-C', '@THIS_BUILD_DIR@/config/']
+      - args: ['mv', '-v', '@THIS_BUILD_DIR@/config/nsinstall', '@THIS_BUILD_DIR@/config/native-nsinstall']
+      - args: ['sed', '-s', 's#/nsinstall$#/native-nsinstall#', '-i', '@THIS_BUILD_DIR@/config/autoconf.mk']
+      - args: ['rm', '-v', '@THIS_BUILD_DIR@/config/nsinstall.o']
+      # Then build the real deal
+      - args: ['make', 'CC=x86_64-managarm-gcc', 'CXX=x86_64-managarm-g++', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+
   - name: openssl
     labels: [aarch64]
     architecture: '@OPTION:arch@'
