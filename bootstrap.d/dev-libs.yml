@@ -1115,6 +1115,115 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
+  - name: nss
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Mozilla's Network Security Services library that implements PKI support
+      description: This package provides a set of libraries designed to support cross-platform development of security-enabled client and server applications.
+      spdx: 'MPL-2.0 GPL-2.0-only LGPL-2.1-only'
+      website: 'https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
+    from_source: nss
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - nspr
+      - sqlite
+      - zlib
+    configure:
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+    build:
+      # First, build a host version of nsinstall.
+      - args: ['make', '-C', '@THIS_BUILD_DIR@/coreconf/']
+        environ:
+          CC: 'gcc'
+          BUILD_OPT: '1'
+          NSPR_INCLUDE_DIR: '/usr/include/nspr'
+          USE_SYSTEM_ZLIB: '1'
+          ZLIB_LIBS: '-lz'
+          NSS_ENABLE_WERROR: '0'
+          USE_64: '1'
+          NSS_USE_SYSTEM_SQLITE: '1'
+          NS_USE_GCC: '1'
+          CC_IS_GCC: '1'
+          NSDISTMODE: 'copy'
+      # Then, build some configuration items courtesy of BLFS (see the patches).
+      - args: |
+            make V=1 -C @THIS_BUILD_DIR@/config NSINSTALL=@THIS_BUILD_DIR@/$(find -type f -name nsinstall) -j1
+        environ:
+          # Optimized builds.
+          BUILD_OPT: '1'
+          # NSPR is here.
+          NSPR_INCLUDE_DIR: '@SYSROOT_DIR@/usr/include/nspr'
+          # Use our zlib.
+          USE_SYSTEM_ZLIB: '1'
+          # Freestanding freebl yes please.
+          FREEBL_NO_DEPEND: '1'
+          FREEBL_LOWHASH: '1'
+          NSS_SEED_ONLY_DEV_URANDOM: '1'
+          # Link with zlib.
+          ZLIB_LIBS: '-lz'
+          # Do not enable Werror.
+          NSS_ENABLE_WERROR: '0'
+          # We are 64 bit.
+          USE_64: '1'
+          # Use system sqlite.
+          NSS_USE_SYSTEM_SQLITE: '1'
+          # We're using gcc.
+          NS_USE_GCC: '1'
+          CC_IS_GCC: '1'
+          # We're cross compiling.
+          CROSS_COMPILE: '1'
+          # Don't symlink files, copy them.
+          NSDISTMODE: 'copy'
+          # Do not build the tests.
+          NSS_DISABLE_GTESTS: '1'
+          # Put the libs and binaries here.
+          SOURCE_PREFIX: '@THIS_BUILD_DIR@/dist'
+          # Specify the compiler.
+          CC: 'x86_64-managarm-gcc'
+          CXX: 'x86_64-managarm-g++'
+      # Then build the main libraries and binaries.
+      - args: |
+            make V=1 -C @THIS_BUILD_DIR@/. NSINSTALL=@THIS_BUILD_DIR@/$(find -type f -name nsinstall) -j1
+        environ:
+          BUILD_OPT: '1'
+          NSPR_INCLUDE_DIR: '@SYSROOT_DIR@/usr/include/nspr'
+          USE_SYSTEM_ZLIB: '1'
+          FREEBL_NO_DEPEND: '1'
+          FREEBL_LOWHASH: '1'
+          NSS_SEED_ONLY_DEV_URANDOM: '1'
+          ZLIB_LIBS: '-lz'
+          NSS_ENABLE_WERROR: '0'
+          USE_64: '1'
+          NSS_USE_SYSTEM_SQLITE: '1'
+          NS_USE_GCC: '1'
+          CC_IS_GCC: '1'
+          CROSS_COMPILE: '1'
+          NSDISTMODE: 'copy'
+          NSS_DISABLE_GTESTS: '1'
+          SOURCE_PREFIX: '@THIS_BUILD_DIR@/dist'
+          CC: 'x86_64-managarm-gcc'
+          CXX: 'x86_64-managarm-g++'
+      # Create some directories to install into.
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/lib/pkgconfig']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/bin']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/include']
+      # And install everything, this _will_ break on a non Linux box, but unfortunately NSS hardcodes kernel names and versions.
+      # If someone wants to patch NSS to not do that, greatly appreciated.
+      # These install instructions are adapted from BLFS, and not Gentoo as I usually do.
+      - args: |
+            cd dist
+            install -v -m755 Linux*/lib/*.so @THIS_COLLECT_DIR@/usr/lib
+            install -v -m644 Linux*/lib/{*.chk,libcrmf.a} @THIS_COLLECT_DIR@/usr/lib
+            install -v -m755 -d @THIS_COLLECT_DIR@/usr/include/nss
+            cp -v -RL {public,private}/nss/* @THIS_COLLECT_DIR@/usr/include/nss
+            chmod -v 644 @THIS_COLLECT_DIR@/usr/include/nss/*
+            install -v -m755 Linux*/bin/{certutil,nss-config,pk12util} @THIS_COLLECT_DIR@/usr/bin
+            install -v -m644 Linux*/lib/pkgconfig/nss.pc @THIS_COLLECT_DIR@/usr/lib/pkgconfig
+
   - name: openssl
     labels: [aarch64]
     architecture: '@OPTION:arch@'
