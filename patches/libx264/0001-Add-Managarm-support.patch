@@ -1,0 +1,29 @@
+From cf4be60057bd66032fa97815197ca7e04d503879 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Thu, 28 Apr 2022 08:55:10 +0200
+Subject: [PATCH] Add Managarm support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ configure | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/configure b/configure
+index e242e73c..48abab52 100755
+--- a/configure
++++ b/configure
+@@ -682,6 +682,11 @@ case $host_os in
+         define HAVE_MALLOC_H
+         libm="-lm"
+         ;;
++    managarm*)
++        SYS="MANAGARM"
++        define HAVE_MALLOC_H
++        libm="-lm"
++        ;;
+     gnu*)
+         SYS="HURD"
+         define HAVE_MALLOC_H
+-- 
+2.36.0
+

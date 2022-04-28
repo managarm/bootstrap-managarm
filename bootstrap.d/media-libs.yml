@@ -744,6 +744,57 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: libx264
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: A free library for encoding X264/AVC streams
+      description: This package contains an encoder for X264/AVC streams.
+      spdx: 'GPL-2.0-only'
+      website: 'https://www.videolan.org/developers/x264.html'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://code.videolan.org/videolan/x264.git'
+      # Check out current master, x264 doesn't do git tags
+      branch: 'master'
+      commit: 'bfc87b7a330f75f5c9a21e56081e4b20344f139e'
+      version: '20220305'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['cp',
+            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
+            '@THIS_SOURCE_DIR@/']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - nasm
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--enable-shared'
+        - '--disable-cli'
+        - '--disable-avs'
+        - '--disable-lavf'
+        - '--disable-swscale'
+        - '--disable-ffms'
+        - '--disable-gpac'
+        - '--disable-opencl'
+        - '--enable-pic'
+        - '--cross-prefix=@OPTION:arch-triple@-'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: mesa
     labels: [aarch64]
     architecture: '@OPTION:arch@'
