@@ -1,8 +1,9 @@
-From 61019bb3d0b15949b5fe41dbff6b56c6910d4f06 Mon Sep 17 00:00:00 2001
+From b595a6ed1c04effeb0bc17e2ca96144e75d45b4d Mon Sep 17 00:00:00 2001
 From: Andreas Hampicke <ahampicke@gmail.com>
 Date: Wed, 3 Jan 2018 21:03:42 +0100
 Subject: [PATCH 1/3] eudev: managarm specific changes
 
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
  configure.ac               | 6 +++---
  src/shared/missing.h       | 5 ++++-
@@ -14,7 +15,7 @@ Subject: [PATCH 1/3] eudev: managarm specific changes
  7 files changed, 10 insertions(+), 15 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index 480d22a..26ea3e1 100644
+index 0c0f795..8f56301 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -49,7 +49,7 @@ AC_CHECK_HEADERS(
@@ -45,7 +46,7 @@ index 480d22a..26ea3e1 100644
          [#include <sched.h>])
  
 diff --git a/src/shared/missing.h b/src/shared/missing.h
-index bebbb42..119e699 100644
+index 3a83c91..ac98eb8 100644
 --- a/src/shared/missing.h
 +++ b/src/shared/missing.h
 @@ -22,11 +22,14 @@
@@ -78,10 +79,10 @@ index 01a28c8..370d237 100644
  #include "random-util.h"
  #include "time-util.h"
 diff --git a/src/shared/socket-util.h b/src/shared/socket-util.h
-index 2daa327..cd5da22 100644
+index 52b8dff..a3bfc58 100644
 --- a/src/shared/socket-util.h
 +++ b/src/shared/socket-util.h
-@@ -21,9 +21,7 @@
+@@ -23,9 +23,7 @@
  #include <netinet/in.h>
  #include <sys/un.h>
  #include <net/if.h>
@@ -91,7 +92,7 @@ index 2daa327..cd5da22 100644
  
  union sockaddr_union {
          struct sockaddr sa;
-@@ -31,6 +29,4 @@ union sockaddr_union {
+@@ -33,6 +31,4 @@ union sockaddr_union {
          struct sockaddr_in6 in6;
          struct sockaddr_un un;
          struct sockaddr_nl nl;
@@ -113,7 +114,7 @@ index 04c871a..a9df1cf 100644
  #include "terminal-util.h"
  #include "time-util.h"
 diff --git a/src/shared/util.c b/src/shared/util.c
-index ac69ae8..69b60b5 100644
+index 0779476..685130c 100644
 --- a/src/shared/util.c
 +++ b/src/shared/util.c
 @@ -36,11 +36,9 @@
@@ -128,7 +129,7 @@ index ac69ae8..69b60b5 100644
  #include <dlfcn.h>
  #include <sys/wait.h>
  #include <sys/time.h>
-@@ -83,7 +81,7 @@ size_t page_size(void) {
+@@ -82,7 +80,7 @@ size_t page_size(void) {
          if (_likely_(pgsz > 0))
                  return pgsz;
  
@@ -150,5 +151,5 @@ index 5c1dc48..daf1421 100644
  #include <time.h>
  #include <stdlib.h>
 -- 
-2.31.1
+2.36.0
 
