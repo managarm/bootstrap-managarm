@@ -737,9 +737,9 @@ packages:
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
-      git: 'https://gitlab.freedesktop.org/mesa/mesa.git'
-      tag: 'mesa-21.3.5'
-      version: '21.3.5'
+      git: 'https://gitlab.freedesktop.org/YusufKhan-gamedev/manamesa'
+      tag: '22-rc2'
+      version: '21.4'
       tools_required:
         - host-pkg-config
     revision: 4
@@ -785,10 +785,11 @@ packages:
         # The debug build type enables some additional output from Mesa.
         - '--buildtype=debugoptimized'
         #- '--buildtype=debug'
+        - '-Ddri3=true'
         - '-Dglx=dri'
         - '-Dplatforms=wayland,x11'
         # The Gallium swrast driver seems to be preferred over dri-swrast.
-        - '-Ddri-drivers='
+        - '-Ddri-drivers=r200,r100'
         - '-Dgallium-drivers=swrast'
         - '-Dvulkan-drivers='
         - '-Dglvnd=true'
