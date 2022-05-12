@@ -14,7 +14,7 @@ packages:
       regenerate:
         - args: |
               if ! [ -d gnulib ]; then
-                  git clone git://git.sv.gnu.org/gnulib.git gnulib
+                  git clone https://git.savannah.gnu.org/git/gnulib.git gnulib
               else
                   git -C gnulib pull --unshallow || true
               fi

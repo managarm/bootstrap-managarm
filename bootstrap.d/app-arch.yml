@@ -270,7 +270,7 @@ packages:
       summary: Unzipper for pkzip-compressed files
       description: The UnZip package contains ZIP extraction utilities. These are useful for extracting files from ZIP archives. ZIP archives are created with PKZIP or Info-ZIP utilities, primarily in a DOS environment.
       spdx: 'Info-ZIP'
-      website: 'http://infozip.sourceforge.net/UnZip.html'
+      website: 'https://infozip.sourceforge.net/UnZip.html'
       maintainer: "Dennis Bonke <dennis@managarm.org>"
       categories: ['app-arch']
     source:
@@ -358,7 +358,7 @@ packages:
       summary: This is InfoZIP's zip program. It produces files that are fully compatible with the popular PKZIP program
       description: The Zip package contains Zip utilities. These are useful for compressing files into ZIP archives.
       spdx: 'Info-ZIP'
-      website: 'http://infozip.sourceforge.net/Zip.html'
+      website: 'https://infozip.sourceforge.net/Zip.html'
       maintainer: "Dennis Bonke <dennis@managarm.org>"
       categories: ['app-arch']
     source:

@@ -344,7 +344,7 @@ packages:
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
-      url: 'http://www.greenwoodsoftware.com/less/less-563.tar.gz'
+      url: 'https://www.greenwoodsoftware.com/less/less-563.tar.gz'
       format: 'tar.gz'
       extract_path: 'less-563'
       version: '563'

@@ -59,7 +59,7 @@ declare_options:
 sources:
   - name: binutils
     subdir: 'ports'
-    git: 'git://sourceware.org/git/binutils-gdb.git'
+    git: 'https://sourceware.org/git/binutils-gdb.git'
     tag: 'binutils-2_32'
     version: '2.32'
     tools_required:
@@ -112,7 +112,7 @@ sources:
 
   - name: gcc
     subdir: 'ports'
-    git: 'git://gcc.gnu.org/git/gcc.git'
+    git: 'https://gcc.gnu.org/git/gcc.git'
     tag: 'releases/gcc-11.1.0'
     version: '11.1.0'
     tools_required:

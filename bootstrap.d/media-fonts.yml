@@ -43,7 +43,7 @@ packages:
     architecture: noarch
     source:
       subdir: ports
-      url: 'http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2'
+      url: 'https://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2'
       format: 'tar.bz2'
       extract_path: 'dejavu-fonts-ttf-2.37'
       version: '2.37'

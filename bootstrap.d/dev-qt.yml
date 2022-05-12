@@ -166,7 +166,7 @@ packages:
       categories: ['dev-qt']
     source:
       subdir: 'ports'
-      git: 'http://code.qt.io/qt/qtdeclarative.git'
+      git: 'https://code.qt.io/qt/qtdeclarative.git'
       tag: 'v6.3.0'
       version: '6.3.0'
     tools_required:
@@ -208,7 +208,7 @@ packages:
       categories: ['dev-qt']
     source:
       subdir: 'ports'
-      git: 'http://code.qt.io/qt/qtimageformats.git'
+      git: 'https://code.qt.io/qt/qtimageformats.git'
       tag: 'v6.3.0'
       version: '6.3.0'
     tools_required:
@@ -251,7 +251,7 @@ packages:
       categories: ['dev-qt']
     source:
       subdir: 'ports'
-      git: 'http://code.qt.io/qt/qtlanguageserver.git'
+      git: 'https://code.qt.io/qt/qtlanguageserver.git'
       tag: 'v6.3.0'
       version: '6.3.0'
     tools_required:
@@ -287,7 +287,7 @@ packages:
       categories: ['dev-qt']
     source:
       subdir: 'ports'
-      git: 'http://code.qt.io/qt/qtmultimedia.git'
+      git: 'https://code.qt.io/qt/qtmultimedia.git'
       tag: 'v6.3.0'
       version: '6.3.0'
     tools_required:
@@ -331,7 +331,7 @@ packages:
       categories: ['dev-qt']
     source:
       subdir: 'ports'
-      git: 'http://code.qt.io/qt/qtshadertools.git'
+      git: 'https://code.qt.io/qt/qtshadertools.git'
       tag: 'v6.3.0'
       version: '6.3.0'
     tools_required:
@@ -370,7 +370,7 @@ packages:
       categories: ['dev-qt']
     source:
       subdir: 'ports'
-      git: 'http://code.qt.io/qt/qtsvg.git'
+      git: 'https://code.qt.io/qt/qtsvg.git'
       tag: 'v6.3.0'
       version: '6.3.0'
     tools_required:

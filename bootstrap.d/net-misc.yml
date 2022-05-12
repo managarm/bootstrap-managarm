@@ -122,7 +122,7 @@ packages:
   - name: socat
     source:
       subdir: 'ports'
-      git: 'git://repo.or.cz/socat.git'
+      git: 'https://repo.or.cz/socat.git'
       tag: 'tag-1.7.3.4'
       version: '1.7.3.4'
       tools_required:
