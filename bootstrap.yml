@@ -176,8 +176,6 @@ sources:
       - bragi
     regenerate:
       - args: ['ln', '-sf', '@SOURCE_ROOT@/managarm', '@THIS_SOURCE_DIR@/subprojects/']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cxxshim', '@THIS_SOURCE_DIR@/subprojects/']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/frigg', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/bragi', '@THIS_SOURCE_DIR@/subprojects/']
 
   - name: wayland
@@ -760,6 +758,8 @@ packages:
         - 'meson'
         - '--prefix=/usr'
         - '--libdir=lib'
+        # Install to /usr/share to avoid conflicts with standard C++ headers.
+        - '--includedir=share/frigg/include'
         - '--buildtype=debugoptimized'
         - '@THIS_SOURCE_DIR@'
     build:
@@ -1133,6 +1133,28 @@ packages:
           'DESTDIR': '@THIS_COLLECT_DIR@'
         quiet: true
 
+  - name: cxxshim
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
+    from_source: cxxshim
+    tools_required:
+      - host-managarm-tools
+    configure:
+      - args:
+        - 'meson'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        # Install to /usr/share to avoid conflicts with standard C++ headers.
+        - '--includedir=share/cxxshim/include'
+        - '@THIS_SOURCE_DIR@'
+        - '-Dinstall_headers=true'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+
   - name: mlibc-headers
     metadata:
       summary: Managarm libc headers
@@ -1180,6 +1202,7 @@ packages:
       - host-managarm-tools
       - bootstrap-system-gcc
       - host-protoc
+      - host-pkg-config
     pkgs_required:
       - mlibc-headers
     configure:
