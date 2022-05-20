@@ -1205,6 +1205,8 @@ packages:
       - host-pkg-config
     pkgs_required:
       - mlibc-headers
+      - frigg
+      - cxxshim
     configure:
       - args:
         - 'meson'
