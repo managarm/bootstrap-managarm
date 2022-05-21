@@ -9,8 +9,8 @@ sources:
   - name: limine
     subdir: 'ports'
     git: 'https://github.com/limine-bootloader/limine.git'
-    tag: 'v3.4.6'
-    version: '3.4.6'
+    tag: 'v3.4.7'
+    version: '3.4.7'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.15
@@ -49,6 +49,7 @@ packages:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
+        - 'TOOLCHAIN=@OPTION:arch-triple@'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
