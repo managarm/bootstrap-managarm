@@ -1121,6 +1121,8 @@ packages:
         - '--prefix=/usr'
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
+        - '--wrap-mode=nofallback'
+        - '--force-fallback-for=cli11'
         - '-Dbuild_drivers=true'
         - '@THIS_SOURCE_DIR@'
         environ:
