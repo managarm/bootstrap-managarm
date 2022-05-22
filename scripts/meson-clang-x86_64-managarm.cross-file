@@ -4,7 +4,7 @@ c = 'clang'
 cpp = 'clang++'
 ar = 'x86_64-managarm-ar'
 strip = 'x86_64-managarm-strip'
-pkgconfig = 'pkg-config'
+pkgconfig = 'x86_64-managarm-pkg-config'
 
 [built-in options]
 cpp_args = ['-DLIBASYNC_FORCE_USE_EXPERIMENTAL', '-fsized-deallocation', '-fdebug-default-version=4', '-target', 'x86_64-managarm', '--gcc-toolchain=_BUILD_ROOT_/tools/system-gcc']
