@@ -4,7 +4,7 @@ c = 'x86_64-managarm-gcc'
 cpp = 'x86_64-managarm-g++'
 ar = 'x86_64-managarm-ar'
 strip = 'x86_64-managarm-strip'
-pkgconfig = 'pkg-config'
+pkgconfig = 'x86_64-pkg-config'
 # sed adds binaries here.
 
 [host_machine]

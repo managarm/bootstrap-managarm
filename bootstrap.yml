@@ -1047,6 +1047,9 @@ packages:
       - host-managarm-tools
       - host-protoc
       - kernel-gcc
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
     pkgs_required:
       - frigg
     revision: 2
@@ -1089,6 +1092,8 @@ packages:
       - host-pkg-config
       - host-protoc
       - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
       - eudev
@@ -1197,6 +1202,8 @@ packages:
       - bootstrap-system-gcc
       - host-protoc
       - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc-headers
       - frigg
