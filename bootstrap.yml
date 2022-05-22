@@ -1070,6 +1070,7 @@ packages:
         - '--prefix=/usr/managarm'
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
+        - '--wrap-mode=nofallback'
         - '-Dbuild_kernel=true'
         - '@THIS_SOURCE_DIR@'
     build:
@@ -1175,6 +1176,7 @@ packages:
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
         - '@THIS_SOURCE_DIR@'
+        - '--wrap-mode=nofallback'
         - '-Dheaders_only=true'
         - '-Ddisable_crypt_option=true'
         - '-Ddisable_iconv_option=true'
@@ -1214,6 +1216,7 @@ packages:
         - '--prefix=/usr'
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
+        - '--wrap-mode=nofallback'
         - '-Dmlibc_no_headers=true'
         - '-Ddisable_crypt_option=true'
         - '-Ddisable_iconv_option=true'
