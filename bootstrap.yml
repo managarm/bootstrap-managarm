@@ -737,6 +737,12 @@ packages:
         quiet: true
 
   - name: frigg
+    metadata:
+      summary: Lightweight C++ utilities and algorithms for system programming
+      description: This package provides utility header files for freestanding C++ applications.
+      spdx: 'MIT'
+      maintainer: "Alexander van der Grinten <avdgrinten@managarm.org>"
+      categories: ['sys-libs']
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
@@ -1132,8 +1138,14 @@ packages:
         quiet: true
 
   - name: cxxshim
-    labels: [aarch64]
-    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Shim for freestanding C++
+      description: This package provides headers to use in freestanding C++ build environments.
+      spdx: 'MIT'
+      maintainer: "Alexander van der Grinten <avdgrinten@managarm.org>"
+      categories: ['sys-libs']
+    labels: [aarch64, riscv]
+    architecture: noarch
     from_source: cxxshim
     tools_required:
       - host-managarm-tools
