@@ -143,8 +143,6 @@ sources:
     version: '0.0pl@ROLLING_ID@'
     sources_required:
       - cralgo
-      - cxxshim
-      - frigg
       - lai
       - libarch
       - libasync
@@ -153,7 +151,6 @@ sources:
     regenerate:
       - args: ['mkdir', '-p', '@THIS_SOURCE_DIR@/subprojects']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cralgo', '@THIS_SOURCE_DIR@/subprojects/']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cxxshim', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/lai', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/libarch', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/libasync', '@THIS_SOURCE_DIR@/subprojects/']
@@ -168,8 +165,6 @@ sources:
     rolling_version: true
     version: '0.0pl@ROLLING_ID@'
     sources_required:
-      - cxxshim
-      - frigg
       - libdrm
       - managarm
       - bragi
@@ -296,8 +291,6 @@ tools:
     labels: [aarch64, riscv64]
     architecture: noarch
     from_source: managarm
-    sources_required:
-      - frigg
     tools_required:
       - tool: host-protoc
         recursive: true
@@ -1049,8 +1042,6 @@ packages:
     architecture: '@OPTION:arch@'
     default: true
     from_source: managarm
-    sources_required:
-      - frigg
     tools_required:
       - host-llvm-toolchain
       - host-managarm-tools
