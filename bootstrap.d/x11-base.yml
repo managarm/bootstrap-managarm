@@ -117,6 +117,7 @@ packages:
       - nettle
       - xkbcomp
       - pixman
+      - libpciaccess
     configure:
       - args:
         - 'meson'
@@ -125,7 +126,7 @@ packages:
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
-        - '-Dxorg=false'
+        - '-Dxorg=true'
         - '-Dxephyr=false'
         - '-Dxwayland=true'
         - '-Dxnest=false'
@@ -136,7 +137,6 @@ packages:
         - '-Dvendor_name="The Managarm Project"'
         - '-Dvendor_name_short="Managarm"'
         - '-Dsuid_wrapper=false'
-        - '-Dpciaccess=false'
         - '-Ddpms=false'
         - '-Dscreensaver=false'
         - '-Dxres=false'
@@ -145,9 +145,17 @@ packages:
         - '-Dxvmc=false'
         - '-Dsystemd_logind=false'
         - '-Dsecure-rpc=false'
+        - '-Dglamor=false'
+        - '-Dvbe=false'
+        - '-Dint10=false'
+        - '-Dvgahw=false'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/root']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc/X11']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/xorg.conf', '@THIS_COLLECT_DIR@/etc/X11/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/xinitrc', '@THIS_COLLECT_DIR@/root/.xinitrc']

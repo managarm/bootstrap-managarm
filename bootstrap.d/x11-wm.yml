@@ -1,0 +1,27 @@
+packages:
+  - name: bspwm
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/baskerville/bspwm.git'
+      tag: '0.9.10'
+      version: '0.9.10'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - libxcb
+      - xcb-util
+      - xcb-util-wm
+      - xcb-util-keysyms
+    configure:
+      # bspwm does not seem to support out-of-tree builds, so we just copy
+      # the source tree into the build directory instead
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+        environ:
+          CC: 'x86_64-managarm-gcc'
+      - args: ['make', 'install']
+        environ:
+          PREFIX: '/usr'
+          DESTDIR: '@THIS_COLLECT_DIR@'

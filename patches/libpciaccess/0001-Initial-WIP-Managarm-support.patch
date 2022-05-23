@@ -1,0 +1,95 @@
+From 4fb754d7e7d9d09e5cbb6ddd812ea1671fc01d43 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Sun, 30 Jan 2022 21:59:54 +0100
+Subject: [PATCH libpciaccess] Initial WIP Managarm support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ src/Makefile.am        |  5 +++++
+ src/common_init.c      |  2 +-
+ src/common_interface.c |  2 +-
+ src/linux_sysfs.c      | 10 +++++++++-
+ 4 files changed, 16 insertions(+), 3 deletions(-)
+
+diff --git a/src/Makefile.am b/src/Makefile.am
+index f222aa5..e722452 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -31,6 +31,11 @@ OS_SUPPORT = linux_sysfs.c linux_devmem.c linux_devmem.h
+ VGA_ARBITER = common_vgaarb.c
+ endif
+ 
++#if MANAGARM
++OS_SUPPORT = linux_sysfs.c linux_devmem.c linux_devmem.h
++VGA_ARBITER = common_vgaarb.c
++#endif
++
+ if FREEBSD
+ OS_SUPPORT = freebsd_pci.c
+ VGA_ARBITER = common_vgaarb_stub.c
+diff --git a/src/common_init.c b/src/common_init.c
+index 1940cff..5206b4e 100644
+--- a/src/common_init.c
++++ b/src/common_init.c
+@@ -55,7 +55,7 @@ pci_system_init( void )
+ {
+     int err = ENOSYS;
+ 
+-#ifdef __linux__
++#if defined (__linux__) || defined(__managarm__)
+     err = pci_system_linux_sysfs_create();
+ #elif defined(__FreeBSD__) || defined(__FreeBSD_kernel__) || defined(__DragonFly__)
+     err = pci_system_freebsd_create();
+diff --git a/src/common_interface.c b/src/common_interface.c
+index cb95e90..975961c 100644
+--- a/src/common_interface.c
++++ b/src/common_interface.c
+@@ -39,7 +39,7 @@
+ #include "pciaccess.h"
+ #include "pciaccess_private.h"
+ 
+-#if defined(__linux__) || defined(__GLIBC__) || defined(__CYGWIN__)
++#if defined(__linux__) || defined(__GLIBC__) || defined(__CYGWIN__) || defined(__managarm__)
+ #include <byteswap.h>
+ 
+ #if __BYTE_ORDER == __BIG_ENDIAN
+diff --git a/src/linux_sysfs.c b/src/linux_sysfs.c
+index d022644..9e1aaa9 100644
+--- a/src/linux_sysfs.c
++++ b/src/linux_sysfs.c
+@@ -50,7 +50,7 @@
+ #include <dirent.h>
+ #include <errno.h>
+ 
+-#if defined(__i386__) || defined(__x86_64__)
++#if defined(__i386__) || defined(__x86_64__) && !defined(__managarm__)
+ #include <sys/io.h>
+ #else
+ #define inb(x) -1
+@@ -462,7 +462,11 @@ pci_device_linux_sysfs_read( struct pci_device * dev, void * data,
+ 
+ 
+     while ( temp_size > 0 ) {
++#ifndef __managarm__
+ 	const ssize_t bytes = pread64( fd, data_bytes, temp_size, offset );
++#else
++	const ssize_t bytes = pread(fd, data_bytes, temp_size, offset);
++#endif
+ 
+ 	/* If zero bytes were read, then we assume it's the end of the
+ 	 * config file.
+@@ -522,7 +526,11 @@ pci_device_linux_sysfs_write( struct pci_device * dev, const void * data,
+ 
+ 
+     while ( temp_size > 0 ) {
++#ifndef __managarm__
+ 	const ssize_t bytes = pwrite64( fd, data_bytes, temp_size, offset );
++#else
++	const ssize_t bytes = pwrite(fd, data_bytes, temp_size, offset);
++#endif
+ 
+ 	/* If zero bytes were written, then we assume it's the end of the
+ 	 * config file.
+-- 
+2.34.1
+
