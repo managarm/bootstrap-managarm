@@ -77,8 +77,7 @@ packages:
       - libxt
       - libxkbfile
       - libiconv
-      - util-linux-libs
-    revision: 3
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
