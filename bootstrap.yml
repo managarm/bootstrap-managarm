@@ -292,6 +292,7 @@ tools:
     architecture: noarch
     from_source: managarm
     tools_required:
+      - host-frigg
       - tool: host-protoc
         recursive: true
       - virtual: pkgconfig-for-host
@@ -582,6 +583,26 @@ tools:
         - '-Ddocumentation=false'
         - '-Dscanner=true'
         - '-Dlibraries=false'
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
+
+  - name: host-frigg
+    labels: [aarch64, riscv]
+    architecture: noarch
+    from_source: frigg
+    tools_required:
+      - virtual: pkgconfig-for-host
+        program_name: host-pkg-config
+    configure:
+      - args:
+        - 'meson'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--prefix=@PREFIX@'
+        - '-Dfrigg_no_install=false'
         - '@THIS_SOURCE_DIR@'
     compile:
       - args: ['ninja']
