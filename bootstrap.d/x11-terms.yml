@@ -11,8 +11,8 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/alacritty/alacritty'
-      tag: 'v0.10.0'
-      version: '0.10.0'
+      tag: 'v0.10.1'
+      version: '0.10.1'
     tools_required:
       - host-cargo
       - system-gcc
@@ -21,6 +21,8 @@ packages:
     pkgs_required:
       - mlibc
       - fontconfig
+      - freetype
+      - wayland
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
     build:
@@ -28,6 +30,9 @@ packages:
       - args:
         - 'cargo'
         - 'install'
+        - '--no-default-features'
+        - '--features'
+        - 'wayland'
         - '--locked'
         - '--target-dir'
         - '@THIS_BUILD_DIR@'
