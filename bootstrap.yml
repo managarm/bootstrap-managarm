@@ -143,8 +143,6 @@ sources:
     version: '0.0pl@ROLLING_ID@'
     sources_required:
       - cralgo
-      - cxxshim
-      - frigg
       - lai
       - libarch
       - libasync
@@ -153,8 +151,6 @@ sources:
     regenerate:
       - args: ['mkdir', '-p', '@THIS_SOURCE_DIR@/subprojects']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cralgo', '@THIS_SOURCE_DIR@/subprojects/']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cxxshim', '@THIS_SOURCE_DIR@/subprojects/']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/frigg', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/lai', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/libarch', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/libasync', '@THIS_SOURCE_DIR@/subprojects/']
@@ -169,15 +165,11 @@ sources:
     rolling_version: true
     version: '0.0pl@ROLLING_ID@'
     sources_required:
-      - cxxshim
-      - frigg
       - libdrm
       - managarm
       - bragi
     regenerate:
       - args: ['ln', '-sf', '@SOURCE_ROOT@/managarm', '@THIS_SOURCE_DIR@/subprojects/']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cxxshim', '@THIS_SOURCE_DIR@/subprojects/']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/frigg', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/bragi', '@THIS_SOURCE_DIR@/subprojects/']
 
   - name: wayland
@@ -299,9 +291,8 @@ tools:
     labels: [aarch64, riscv64]
     architecture: noarch
     from_source: managarm
-    sources_required:
-      - frigg
     tools_required:
+      - host-frigg
       - tool: host-protoc
         recursive: true
       - virtual: pkgconfig-for-host
@@ -598,6 +589,26 @@ tools:
     install:
       - args: ['ninja', 'install']
 
+  - name: host-frigg
+    labels: [aarch64, riscv]
+    architecture: noarch
+    from_source: frigg
+    tools_required:
+      - virtual: pkgconfig-for-host
+        program_name: host-pkg-config
+    configure:
+      - args:
+        - 'meson'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--prefix=@PREFIX@'
+        - '-Dfrigg_no_install=false'
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
+
 packages:
   - name: binutils
     metadata:
@@ -747,6 +758,12 @@ packages:
         quiet: true
 
   - name: frigg
+    metadata:
+      summary: Lightweight C++ utilities and algorithms for system programming
+      description: This package provides utility header files for freestanding C++ applications.
+      spdx: 'MIT'
+      maintainer: "Alexander van der Grinten <avdgrinten@managarm.org>"
+      categories: ['sys-libs']
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
@@ -760,6 +777,8 @@ packages:
         - 'meson'
         - '--prefix=/usr'
         - '--libdir=lib'
+        # Install to /usr/share to avoid conflicts with standard C++ headers.
+        - '--includedir=share/frigg/include'
         - '--buildtype=debugoptimized'
         - '@THIS_SOURCE_DIR@'
     build:
@@ -1050,15 +1069,17 @@ packages:
     architecture: '@OPTION:arch@'
     default: true
     from_source: managarm
-    sources_required:
-      - frigg
     tools_required:
       - host-llvm-toolchain
       - host-managarm-tools
       - host-protoc
       - kernel-gcc
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
     pkgs_required:
       - frigg
+      - cxxshim
     revision: 2
     configure:
       - args: |
@@ -1071,6 +1092,7 @@ packages:
         - '--prefix=/usr/managarm'
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
+        - '--wrap-mode=nofallback'
         - '-Dbuild_kernel=true'
         - '@THIS_SOURCE_DIR@'
     build:
@@ -1098,13 +1120,14 @@ packages:
       - host-pkg-config
       - host-protoc
       - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
       - eudev
       - fafnir
-      # This should not be necessary (due to the source dep),
-      # but libarch and managarm-system do not correctly declare all deps in their meson.build.
       - frigg
+      - cxxshim
       - lewis
       - libasync
       - libdrm
@@ -1121,6 +1144,8 @@ packages:
         - '--prefix=/usr'
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
+        - '--wrap-mode=nofallback'
+        - '--force-fallback-for=cli11'
         - '-Dbuild_drivers=true'
         - '@THIS_SOURCE_DIR@'
         environ:
@@ -1131,6 +1156,32 @@ packages:
       - args: ['ninja', 'install']
         environ:
           'DESTDIR': '@THIS_COLLECT_DIR@'
+        quiet: true
+
+  - name: cxxshim
+    metadata:
+      summary: Shim for freestanding C++
+      description: This package provides headers to use in freestanding C++ build environments.
+      spdx: 'MIT'
+      maintainer: "Alexander van der Grinten <avdgrinten@managarm.org>"
+      categories: ['sys-libs']
+    labels: [aarch64, riscv]
+    architecture: noarch
+    from_source: cxxshim
+    configure:
+      - args:
+        - 'meson'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        # Install to /usr/share to avoid conflicts with standard C++ headers.
+        - '--includedir=share/cxxshim/include'
+        - '@THIS_SOURCE_DIR@'
+        - '-Dinstall_headers=true'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
   - name: mlibc-headers
@@ -1145,6 +1196,7 @@ packages:
     architecture: '@OPTION:arch@'
     from_source: mlibc
     tools_required:
+      # These are not strictly necessary.
       - host-managarm-tools
       - host-protoc
     configure:
@@ -1154,6 +1206,7 @@ packages:
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
         - '@THIS_SOURCE_DIR@'
+        - '--wrap-mode=nofallback'
         - '-Dheaders_only=true'
         - '-Ddisable_crypt_option=true'
         - '-Ddisable_iconv_option=true'
@@ -1180,8 +1233,13 @@ packages:
       - host-managarm-tools
       - bootstrap-system-gcc
       - host-protoc
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc-headers
+      - frigg
+      - cxxshim
     configure:
       - args:
         - 'meson'
@@ -1190,6 +1248,7 @@ packages:
         - '--prefix=/usr'
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
+        - '--wrap-mode=nofallback'
         - '-Dmlibc_no_headers=true'
         - '-Ddisable_crypt_option=true'
         - '-Ddisable_iconv_option=true'
