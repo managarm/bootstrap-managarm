@@ -766,6 +766,7 @@ packages:
       categories: ['sys-libs']
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    revision: 2 # TODO: remove
     source:
       rolling_version: true
       version: '0.0pl@ROLLING_ID@'
