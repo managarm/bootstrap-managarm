@@ -1,14 +1,14 @@
-From 857d56fe50693fd52b43ed23d2df651ac4374a8c Mon Sep 17 00:00:00 2001
+From eb222332c7acb87eb1de375379a3a649c36390b4 Mon Sep 17 00:00:00 2001
 From: Matt Taylor <mstaveleytaylor@gmail.com>
 Date: Mon, 21 Feb 2022 00:37:40 +0000
 Subject: [PATCH 3/3] managarm: alacritty updates
 
 ---
- src/unix/mlibc/mod.rs | 392 +++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 350 insertions(+), 42 deletions(-)
+ src/unix/mlibc/mod.rs | 387 +++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 344 insertions(+), 43 deletions(-)
 
 diff --git a/src/unix/mlibc/mod.rs b/src/unix/mlibc/mod.rs
-index f1e602a..ab5e33d 100644
+index f1e602a..7bfbb48 100644
 --- a/src/unix/mlibc/mod.rs
 +++ b/src/unix/mlibc/mod.rs
 @@ -26,11 +26,24 @@ pub const MAP_SHARED: ::c_int = 2;
@@ -29,7 +29,7 @@ index f1e602a..ab5e33d 100644
 +pub const MADV_SEQUENTIAL: ::c_int = 2;
 +pub const MADV_WILLNEED: ::c_int = 3;
 +pub const MADV_DONTNEED: ::c_int = 4;
-+pub const MADV_FREE: ::c_int = 5;
++pub const MADV_FREE: ::c_int = 8;
 +pub const MS_INVALIDATE: ::c_int = 4;
 +pub const MCL_CURRENT: ::c_int = 1;
 +pub const MCL_FUTURE: ::c_int = 2;
@@ -228,29 +228,23 @@ index f1e602a..ab5e33d 100644
          pub ibaud: speed_t,
          pub obaud: speed_t,
      }
-@@ -168,13 +274,15 @@ s! {
+@@ -168,13 +274,8 @@ s! {
  
  // options/posix/include/termios.h
  pub const TIOCGWINSZ: ::c_ulong = 0x5413;
-+pub const TIOCSCTTY: ::c_ulong = 0x540E;
-+pub const TIOCSWINSZ: ::c_ulong = 0x5414;
- 
+-
 -pub const CSTOPB: ::c_int = 0x0004;
 -pub const CREAD: ::c_int = 0x0008;
 -pub const PARENB: ::c_int = 0x0010;
 -pub const PARODD: ::c_int = 0x0020;
 -pub const HUPCL: ::c_int = 0x0040;
 -pub const CLOCAL: ::c_int = 0x0080;
-+// pub const CSTOPB: ::c_int = 0x0004;
-+// pub const CREAD: ::c_int = 0x0008;
-+// pub const PARENB: ::c_int = 0x0010;
-+// pub const PARODD: ::c_int = 0x0020;
-+// pub const HUPCL: ::c_int = 0x0040;
-+// pub const CLOCAL: ::c_int = 0x0080;
++pub const TIOCSCTTY: ::c_ulong = 0x540E;
++pub const TIOCSWINSZ: ::c_ulong = 0x5414;
  
  // abis/mlibc/ino_t.h
  pub type ino_t = ::c_long;
-@@ -200,6 +308,7 @@ pub const EXIT_SUCCESS: ::c_int = 0;
+@@ -200,6 +301,7 @@ pub const EXIT_SUCCESS: ::c_int = 0;
  
  // options/posix/include/dlfcn.h
  pub const RTLD_DEFAULT: *mut ::c_void = 0 as *mut ::c_void;
@@ -258,7 +252,7 @@ index f1e602a..ab5e33d 100644
  s! {
      pub struct Dl_info {
          pub dli_fname: *const ::c_char,
-@@ -210,30 +319,65 @@ s! {
+@@ -210,30 +312,65 @@ s! {
  }
  
  // options/posix/include/unistd.h
@@ -325,7 +319,7 @@ index f1e602a..ab5e33d 100644
  pub const SO_BROADCAST: ::c_int = 2;
  pub const SO_DEBUG: ::c_int = 3;
  pub const SO_DONTROUTE: ::c_int = 4;
-@@ -241,26 +385,61 @@ pub const SO_ERROR: ::c_int = 5;
+@@ -241,26 +378,61 @@ pub const SO_ERROR: ::c_int = 5;
  pub const SO_KEEPALIVE: ::c_int = 6;
  pub const SO_LINGER: ::c_int = 7;
  pub const SO_OOBINLINE: ::c_int = 8;
@@ -393,7 +387,7 @@ index f1e602a..ab5e33d 100644
  }
  
  // abis/mlibc/errno.h
-@@ -295,6 +474,7 @@ pub const ENOSYS: ::c_int = 1051;
+@@ -295,6 +467,7 @@ pub const ENOSYS: ::c_int = 1051;
  pub const ENOTCONN: ::c_int = 1052;
  pub const ENOTDIR: ::c_int = 1053;
  pub const ENOTEMPTY: ::c_int = 1054;
@@ -401,7 +395,7 @@ index f1e602a..ab5e33d 100644
  pub const EPERM: ::c_int = 1063;
  pub const EPIPE: ::c_int = 1064;
  pub const ERANGE: ::c_int = 3;
-@@ -305,25 +485,53 @@ pub const ETIMEDOUT: ::c_int = 1072;
+@@ -305,25 +478,53 @@ pub const ETIMEDOUT: ::c_int = 1072;
  pub const ETXTBSY: ::c_int = 1073;
  pub const EWOULDBLOCK: ::c_int = EAGAIN;
  pub const EXDEV: ::c_int = 1075;
@@ -455,7 +449,7 @@ index f1e602a..ab5e33d 100644
  
  // options/mlibc/seek-whence.h
  pub const SEEK_CUR: ::c_int = 1;
-@@ -406,19 +614,50 @@ safe_f! {
+@@ -406,19 +607,50 @@ safe_f! {
  }
  
  // options/linux/include/sys/poll.h
@@ -507,7 +501,7 @@ index f1e602a..ab5e33d 100644
  
  // options/elf/include/link.h
  pub type Elf64_Half = u16;
-@@ -469,6 +708,27 @@ s! {
+@@ -469,6 +701,27 @@ s! {
          pub sa_family: sa_family_t,
          pub sa_data: [::c_char; 14],
      }
@@ -535,7 +529,7 @@ index f1e602a..ab5e33d 100644
  }
  
  // options/posix/include/bits/posix/pthread_t.h
-@@ -535,6 +795,7 @@ s! {
+@@ -535,6 +788,7 @@ s! {
  }
  
  // options/ansi/include/locale.h
@@ -543,7 +537,7 @@ index f1e602a..ab5e33d 100644
  s! {
      pub struct lconv {
          pub decimal_point: *mut ::c_char,
-@@ -618,10 +879,14 @@ s! {
+@@ -618,10 +872,14 @@ s! {
  // abis/mlibc/in.h
  pub const IPV6_ADD_MEMBERSHIP: ::c_int = 1;
  pub const IPV6_DROP_MEMBERSHIP: ::c_int = 2;
@@ -558,7 +552,7 @@ index f1e602a..ab5e33d 100644
  pub const IP_MULTICAST_LOOP: ::c_int = 34;
  pub const IP_MULTICAST_TTL: ::c_int = 33;
  pub const IP_TTL: ::c_int = 2;
-@@ -637,7 +902,7 @@ s! {
+@@ -637,7 +895,7 @@ s! {
          pub sin_family: sa_family_t,
          pub sin_port: in_port_t,
          pub sin_addr: in_addr,
@@ -567,7 +561,7 @@ index f1e602a..ab5e33d 100644
      }
      pub struct sockaddr_in6 {
          pub sin6_family: sa_family_t,
-@@ -656,6 +921,8 @@ s! {
+@@ -656,6 +914,8 @@ s! {
  }
  
  extern "C" {
@@ -576,7 +570,7 @@ index f1e602a..ab5e33d 100644
      pub fn bind(socket: ::c_int, address: *const ::sockaddr, address_len: ::socklen_t) -> ::c_int;
      pub fn clock_gettime(clk_id: clockid_t, tp: *mut ::timespec) -> ::c_int;
      pub fn clock_settime(clk_id: clockid_t, tp: *const ::timespec) -> ::c_int;
-@@ -670,6 +937,24 @@ extern "C" {
+@@ -670,6 +930,24 @@ extern "C" {
          data: *mut ::c_void,
      ) -> ::c_int;
      pub fn endpwent();
@@ -601,7 +595,7 @@ index f1e602a..ab5e33d 100644
      pub fn getpwent() -> *mut passwd;
      pub fn getgrgid_r(
          gid: ::gid_t,
-@@ -705,9 +990,21 @@ extern "C" {
+@@ -705,9 +983,21 @@ extern "C" {
          buflen: ::size_t,
          result: *mut *mut passwd,
      ) -> ::c_int;
@@ -623,7 +617,7 @@ index f1e602a..ab5e33d 100644
      pub fn pthread_condattr_setclock(
          attr: *mut pthread_condattr_t,
          clock_id: ::clockid_t,
-@@ -729,7 +1026,18 @@ extern "C" {
+@@ -729,7 +1019,18 @@ extern "C" {
          addr: *mut ::sockaddr,
          addrlen: *mut ::socklen_t,
      ) -> ::ssize_t;
