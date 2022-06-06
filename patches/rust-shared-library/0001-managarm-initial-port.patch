@@ -1,0 +1,32 @@
+From 17a7e87fd250f1e4e80120a9e5d572155570400e Mon Sep 17 00:00:00 2001
+From: Matt Taylor <mstaveleytaylor@gmail.com>
+Date: Mon, 21 Feb 2022 12:21:48 +0000
+Subject: [PATCH] managarm: initial port
+
+---
+ src/dynamic_library.rs | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/dynamic_library.rs b/src/dynamic_library.rs
+index 753b632..82fc668 100644
+--- a/src/dynamic_library.rs
++++ b/src/dynamic_library.rs
+@@ -192,6 +192,7 @@ mod test {
+     #[test]
+     #[cfg(any(target_os = "linux",
+               target_os = "macos",
++              target_os = "managarm",
+               target_os = "freebsd",
+               target_os = "fuchsia",
+               target_os = "netbsd",
+@@ -213,6 +214,7 @@ mod test {
+ //TODO: use `unix` shortcut?
+ #[cfg(any(target_os = "linux",
+           target_os = "android",
++          target_os = "managarm",
+           target_os = "macos",
+           target_os = "ios",
+           target_os = "fuchsia",
+-- 
+2.35.1
+

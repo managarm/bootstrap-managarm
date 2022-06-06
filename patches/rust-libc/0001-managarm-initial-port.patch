@@ -1,7 +1,7 @@
-From ef9d4810eb3523785c789487c7c06548fd28ecbe Mon Sep 17 00:00:00 2001
+From 06857a052d3499c64e1ed48f338aab58fb8467ea Mon Sep 17 00:00:00 2001
 From: Matt Taylor <mstaveleytaylor@gmail.com>
 Date: Thu, 8 Apr 2021 22:08:55 +0100
-Subject: [PATCH 1/2] managarm: initial port
+Subject: [PATCH 1/3] managarm: initial port
 
 ---
  src/unix/mlibc/mod.rs | 722 ++++++++++++++++++++++++++++++++++++++++++
@@ -738,10 +738,10 @@ index 0000000..93bd66e
 +    pub fn writev(fd: ::c_int, iov: *const ::iovec, count: ::c_int) -> ::ssize_t;
 +}
 diff --git a/src/unix/mod.rs b/src/unix/mod.rs
-index 5ff2294..7e6e68b 100644
+index 11b6119..748c52f 100644
 --- a/src/unix/mod.rs
 +++ b/src/unix/mod.rs
-@@ -1475,6 +1475,9 @@ cfg_if! {
+@@ -1500,6 +1500,9 @@ cfg_if! {
      } else if #[cfg(target_os = "redox")] {
          mod redox;
          pub use self::redox::*;
@@ -752,5 +752,5 @@ index 5ff2294..7e6e68b 100644
          // Unknown target_os
      }
 -- 
-2.35.1
+2.36.1
 

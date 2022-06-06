@@ -2,8 +2,8 @@ sources:
   - name: rust-libc
     subdir: 'ports'
     git: 'https://github.com/rust-lang/libc.git'
-    tag: '0.2.117'
-    version: '0.2.117'
+    tag: '0.2.125'
+    version: '0.2.125'
 
   - name: rust-num-cpus
     subdir: 'ports'
@@ -23,17 +23,83 @@ sources:
     tag: '0.3.64'
     version: '0.3.64'
 
+  - name: rust-calloop
+    subdir: 'ports'
+    git: 'https://github.com/Smithay/calloop.git'
+    tag: 'v0.9.3'
+    version: '0.9.3'
+
+  - name: rust-libloading
+    subdir: 'ports'
+    git: 'https://github.com/nagisa/rust_libloading.git'
+    tag: '0.7.3'
+    version: '0.7.3'
+
+  - name: rust-mio-0.6
+    subdir: 'ports'
+    git: 'https://github.com/tokio-rs/mio.git'
+    tag: 'v0.6.23'
+    version: '0.6.23'
+
+  - name: rust-mio-0.8
+    subdir: 'ports'
+    git: 'https://github.com/tokio-rs/mio.git'
+    tag: 'v0.8.3'
+    version: '0.8.3'
+
+  - name: rust-nix
+    subdir: 'ports'
+    git: 'https://github.com/nix-rust/nix.git'
+    tag: 'v0.22.3'
+    version: '0.22.3'
+
+  - name: rust-winit
+    subdir: 'ports'
+    git: 'https://github.com/rust-windowing/winit.git'
+    tag: 'v0.26.1'
+    version: '0.26.1'
+
+  - name: rust-glutin
+    subdir: 'ports'
+    git: 'https://github.com/rust-windowing/glutin.git'
+    tag: 'v0.28.0'
+    version: '0.28.0'
+
+  - name: rust-shared-library
+    subdir: 'ports'
+    git: 'https://github.com/tomaka/shared_library.git'
+    commit: 'f09e038246a559650c8505b3b3831b820d1a5689'
+    branch: 'master'
+    version: '0.1.9'
+
   - name: rust-patched-libs
     subdir: 'ports'
     sources_required:
+      - name: rust-backtrace
+        recursive: true
+      - name: rust-calloop
+        recursive: true
       - name: rust-libc
+        recursive: true
+      - name: rust-libloading
+        recursive: true
+      - name: rust-mio-0.6
+        recursive: true
+      - name: rust-mio-0.8
+        recursive: true
+      - name: rust-nix
         recursive: true
       - name: rust-num-cpus
         recursive: true
       - name: rust-users
         recursive: true
-      - name: rust-backtrace
+      - name: rust-winit
         recursive: true
+      - name: rust-glutin
+        recursive: true
+      - name: rust-shared-library
+        recursive: true
+
 
 packages:
   - name: gdbm
