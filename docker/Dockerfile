@@ -56,8 +56,8 @@ RUN apt-get update \
 		# Used by cmake
 		libssl-dev \
 		# Used by ace
-		libpng-dev \		
-		# Used by many gnu build steps		
+		libpng-dev \
+		# Used by many gnu build steps
 		m4 \
 		# Required to build images for Android's fastboot protocol.
 		mkbootimg \
@@ -97,6 +97,8 @@ RUN apt-get update \
 		x11-apps \
 		# Used by eudev
 		xsltproc \
+		# Used for building zsh documentation
+		yodl \
 		# Used by various programs, for example, it is used by file
 		zlib1g-dev \
 		# Used by the developers
