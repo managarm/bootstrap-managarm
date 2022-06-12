@@ -402,6 +402,47 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
+  - name: libevent
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Library to execute a function when a specific event occurs on a file descriptor
+      description: This package provides a library for asynchronous event notification.
+      spdx: 'BSD-3-Clause'
+      website: 'https://github.com/libevent/libevent'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
+    source:
+      subdir: ports
+      git: 'https://github.com/libevent/libevent.git'
+      tag: 'release-2.1.12-stable'
+      version: '2.1.12'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['./autogen.sh']
+        # Fix an issue that prevents event_rpcgen.py from working.
+        - args: ['sed', '-i', 's/python/&3/', '@THIS_SOURCE_DIR@/event_rpcgen.py']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - openssl
+      - zlib
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--disable-static'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: libexpat
     labels: [aarch64]
     architecture: '@OPTION:arch@'
