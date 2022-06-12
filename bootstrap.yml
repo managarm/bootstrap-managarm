@@ -590,7 +590,7 @@ tools:
       - args: ['ninja', 'install']
 
   - name: host-frigg
-    labels: [aarch64, riscv]
+    labels: [aarch64, riscv64]
     architecture: noarch
     from_source: frigg
     tools_required:
