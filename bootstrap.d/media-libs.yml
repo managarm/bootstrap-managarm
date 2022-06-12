@@ -803,6 +803,14 @@ packages:
         quiet: true
 
   - name: sdl2
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Simple Direct Media Layer version 2
+      description: The Simple DirectMedia Layer Version 2 (SDL2 for short) is a cross-platform library designed to make it easy to write multimedia software, such as games and emulators.
+      spdx: 'Zlib'
+      website: 'https://www.libsdl.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
     source:
       subdir: 'ports'
       git: 'https://github.com/libsdl-org/SDL.git'
@@ -830,7 +838,7 @@ packages:
       - libxrandr
       - libxrender
       - libxxf86vm
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -842,7 +850,7 @@ packages:
         - '-DVIDEO_DIRECTFB=ON'
         - '-DVIDEO_OPENGL=ON'
         - '-DVIDEO_OPENGLES=ON'
-        - '-DPTHREADS=OFF'
+        - '-DPTHREADS=ON'
         - '-DPTHREADS_SEM=OFF'
         - '-DOSS=OFF'
         - '-DALSA=OFF'
