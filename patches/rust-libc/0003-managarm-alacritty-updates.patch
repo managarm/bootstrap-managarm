@@ -1,4 +1,4 @@
-From eb222332c7acb87eb1de375379a3a649c36390b4 Mon Sep 17 00:00:00 2001
+From a6ab69c7f674fcd2077d275bda096405c4153e7e Mon Sep 17 00:00:00 2001
 From: Matt Taylor <mstaveleytaylor@gmail.com>
 Date: Mon, 21 Feb 2022 00:37:40 +0000
 Subject: [PATCH 3/3] managarm: alacritty updates
@@ -8,7 +8,7 @@ Subject: [PATCH 3/3] managarm: alacritty updates
  1 file changed, 344 insertions(+), 43 deletions(-)
 
 diff --git a/src/unix/mlibc/mod.rs b/src/unix/mlibc/mod.rs
-index f1e602a..7bfbb48 100644
+index f1e602a..0d165b2 100644
 --- a/src/unix/mlibc/mod.rs
 +++ b/src/unix/mlibc/mod.rs
 @@ -26,11 +26,24 @@ pub const MAP_SHARED: ::c_int = 2;
@@ -366,23 +366,23 @@ index f1e602a..7bfbb48 100644
 +
 +f! {
 +    pub fn CMSG_FIRSTHDR(_mhdr: *const msghdr) -> *mut cmsghdr {
-+        unimplemented!()
++        core::unimplemented!()
 +    }
 +
 +    pub fn CMSG_NXTHDR(_mhdr: *const ::msghdr, _cmsg: *const ::cmsghdr) -> *mut ::cmsghdr {
-+        unimplemented!()
++        core::unimplemented!()
 +    }
 +
 +    pub fn CMSG_LEN(_length: ::c_uint) -> ::c_uint {
-+        unimplemented!()
++        core::unimplemented!()
 +    }
 +
 +    pub fn CMSG_DATA(_cmsg: *const cmsghdr) -> *mut ::c_uchar {
-+        unimplemented!()
++        core::unimplemented!()
 +    }
 +
 +    pub fn CMSG_SPACE(_len: ::c_uint) -> ::c_uint {
-+        unimplemented!()
++        core::unimplemented!()
 +    }
  }
  
