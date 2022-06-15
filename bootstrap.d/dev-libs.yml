@@ -354,14 +354,13 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/json-c/json-c.git'
-      tag: 'json-c-0.15-20200726'
-      version: '0.15'
+      tag: 'json-c-0.16-20220414'
+      version: '0.16'
     tools_required:
       - system-gcc
       - host-cmake
     pkgs_required:
       - mlibc
-    revision: 2
     configure:
       - args:
         - 'cmake'

@@ -1,0 +1,25 @@
+From 79e757a57444fabd3647fc4a187345ab780502c0 Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Wed, 15 Jun 2022 13:08:10 +0200
+Subject: [PATCH] Add managarm-specific changes
+
+---
+ json_tokener.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/json_tokener.c b/json_tokener.c
+index 0c09b66..d74153a 100644
+--- a/json_tokener.c
++++ b/json_tokener.c
+@@ -327,7 +327,7 @@ struct json_object *json_tokener_parse_ex(struct json_tokener *tok, const char *
+ 		if (newloc == NULL)
+ 		{
+ 			freelocale(duploc);
+-			return NULL;
++			// return NULL;
+ 		}
+ 		uselocale(newloc);
+ 	}
+-- 
+2.36.1
+
