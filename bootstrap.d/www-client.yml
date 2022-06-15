@@ -53,3 +53,40 @@ packages:
       - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+  - name: telescope
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: CLI Gemini Client
+      description: This package contains a CLI Geminispace browser
+      website: 'https://telescope.omarpolo.com/'
+      maintainer: "Alexander Richards <electrodeyt@gmail.com>"
+      categories: ['www-client']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/omar-polo/telescope'
+      tag: '0.8.1'
+      version: '0.8.1'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-autoconf-archive
+        - host-pkg-config
+        - host-libtool
+      regenerate:
+        - args: ['./autogen.sh']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - libretls
+      - openssl
+      - ncurses
+    configure:
+      - args: 
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--mandir=/usr/share/man'
+    build:
+      - args: ['make', 'all-am', '-j@PARALLELISM@', 'HOSTCC=gcc']
+      - args: ['make', 'install-am', 'DESTDIR=@THIS_COLLECT_DIR@']
