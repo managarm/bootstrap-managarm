@@ -591,7 +591,7 @@ tools:
       - args: ['ninja', 'install']
 
   - name: host-frigg
-    labels: [aarch64, riscv]
+    labels: [aarch64, riscv64]
     architecture: noarch
     from_source: frigg
     tools_required:
@@ -1167,7 +1167,7 @@ packages:
       spdx: 'MIT'
       maintainer: "Alexander van der Grinten <avdgrinten@managarm.org>"
       categories: ['sys-libs']
-    labels: [aarch64, riscv]
+    labels: [aarch64, riscv64]
     architecture: noarch
     from_source: cxxshim
     configure:
