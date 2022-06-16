@@ -38,7 +38,7 @@ tools:
   # We could run an external pkg-config; however, we need the aclocal files.
   # The easiest way to ensure that they are available is to just install pkg-config.
   - name: host-pkg-config
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: noarch
     exports_aclocal: true
     from_source: pkg-config
