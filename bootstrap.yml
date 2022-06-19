@@ -604,6 +604,8 @@ tools:
         - '@SOURCE_ROOT@/scripts/meson.native-file'
         - '--prefix=@PREFIX@'
         - '-Dfrigg_no_install=false'
+        # We don't have a test stage in frigg
+        - '-Dbuild_tests=disabled'
         - '@THIS_SOURCE_DIR@'
     compile:
       - args: ['ninja']
