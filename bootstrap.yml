@@ -767,7 +767,7 @@ packages:
       categories: ['sys-libs']
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
-    revision: 2 # TODO: remove
+    revision: 3 # TODO: remove
     source:
       rolling_version: true
       version: '0.0pl@ROLLING_ID@'
@@ -782,6 +782,8 @@ packages:
         # Install to /usr/share to avoid conflicts with standard C++ headers.
         - '--includedir=share/frigg/include'
         - '--buildtype=debugoptimized'
+        # We don't have a test stage in frigg
+        - '-Dbuild_tests=disabled'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
