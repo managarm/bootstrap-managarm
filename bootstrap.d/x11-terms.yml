@@ -23,8 +23,10 @@ packages:
       - fontconfig
       - freetype
       - wayland
+    revision: 2
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
+      - args: ['cargo', 'update', '-p', 'smithay-clipboard', '--precise', '0.6.5', '--manifest-path', '@THIS_SOURCE_DIR@/Cargo.toml']
     build:
       - args: ['install', '-D', '@THIS_SOURCE_DIR@/alacritty.yml', '@THIS_COLLECT_DIR@/root/.alacritty.yml']
       - args:
