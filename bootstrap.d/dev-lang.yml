@@ -26,10 +26,10 @@ sources:
 
   - name: host-bootstrap-cargo
     subdir: 'ports'
-    url: 'https://static.rust-lang.org/dist/2021-05-08/cargo-nightly-x86_64-unknown-linux-gnu.tar.xz'
+    url: 'https://static.rust-lang.org/dist/2022-04-07/cargo-1.60.0-x86_64-unknown-linux-gnu.tar.xz'
     format: 'tar.xz'
-    extract_path: 'cargo-nightly-x86_64-unknown-linux-gnu'
-    version: '0.53.0'
+    extract_path: 'cargo-1.60.0-x86_64-unknown-linux-gnu'
+    version: '0.60.0'
 
 tools:
   - name: host-python
@@ -87,8 +87,8 @@ tools:
     source:
       subdir: 'ports'
       git: 'https://github.com/rust-lang/cargo.git'
-      tag: '0.53.0'
-      version: '0.53.0'
+      tag: '0.60.0'
+      version: '0.60.0'
     tools_required:
       - tool: host-rust
         recursive: true

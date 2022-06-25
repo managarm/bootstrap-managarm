@@ -1,14 +1,14 @@
-From a6ab69c7f674fcd2077d275bda096405c4153e7e Mon Sep 17 00:00:00 2001
+From 697bfb82f63e79b54845d771fef84cf36a44bb56 Mon Sep 17 00:00:00 2001
 From: Matt Taylor <mstaveleytaylor@gmail.com>
-Date: Mon, 21 Feb 2022 00:37:40 +0000
+Date: Sat, 25 Jun 2022 03:43:30 +0100
 Subject: [PATCH 3/3] managarm: alacritty updates
 
 ---
- src/unix/mlibc/mod.rs | 387 +++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 344 insertions(+), 43 deletions(-)
+ src/unix/mlibc/mod.rs | 395 ++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 345 insertions(+), 50 deletions(-)
 
 diff --git a/src/unix/mlibc/mod.rs b/src/unix/mlibc/mod.rs
-index f1e602a..0d165b2 100644
+index f1e602a..814b1ec 100644
 --- a/src/unix/mlibc/mod.rs
 +++ b/src/unix/mlibc/mod.rs
 @@ -26,11 +26,24 @@ pub const MAP_SHARED: ::c_int = 2;
@@ -36,7 +36,20 @@ index f1e602a..0d165b2 100644
  
  // options/ansi/include/time.h
  pub const CLOCK_MONOTONIC: clockid_t = 1;
-@@ -77,43 +90,43 @@ pub type fsblkcnt_t = ::c_uint;
+@@ -61,12 +74,6 @@ pub type time_t = ::c_long;
+ // options/posix/include/bits/posix/suseconds_t.h
+ pub type suseconds_t = ::c_long;
+ 
+-// abis/mlibc/uid_t.h
+-pub type uid_t = ::c_uint;
+-
+-// abis/mlibc/gid_t.h
+-pub type gid_t = ::c_uint;
+-
+ // abis/mlibc/dev_t.h
+ pub type dev_t = ::c_ulong;
+ 
+@@ -77,43 +84,43 @@ pub type fsblkcnt_t = ::c_uint;
  pub type fsfilcnt_t = ::c_uint;
  
  // abis/mlibc/signal.h
@@ -103,7 +116,7 @@ index f1e602a..0d165b2 100644
  
  
  pub const SA_NOCLDSTOP: ::c_int = 1 << 0;
-@@ -137,10 +150,10 @@ s! {
+@@ -137,10 +144,10 @@ s! {
          pub si_value: sigval,
      }
      pub struct sigaction {
@@ -116,7 +129,7 @@ index f1e602a..0d165b2 100644
      }
  }
  s! {
-@@ -150,8 +163,101 @@ s! {
+@@ -150,8 +157,101 @@ s! {
  }
  
  // abis/mlibc/termios.h
@@ -219,7 +232,7 @@ index f1e602a..0d165b2 100644
  pub type speed_t = ::c_uint;
  pub type tcflag_t = ::c_uint;
  s! {
-@@ -160,7 +266,7 @@ s! {
+@@ -160,7 +260,7 @@ s! {
          pub c_oflag: tcflag_t,
          pub c_cflag: tcflag_t,
          pub c_lflag: tcflag_t,
@@ -228,7 +241,7 @@ index f1e602a..0d165b2 100644
          pub ibaud: speed_t,
          pub obaud: speed_t,
      }
-@@ -168,13 +274,8 @@ s! {
+@@ -168,13 +268,8 @@ s! {
  
  // options/posix/include/termios.h
  pub const TIOCGWINSZ: ::c_ulong = 0x5413;
@@ -244,7 +257,7 @@ index f1e602a..0d165b2 100644
  
  // abis/mlibc/ino_t.h
  pub type ino_t = ::c_long;
-@@ -200,6 +301,7 @@ pub const EXIT_SUCCESS: ::c_int = 0;
+@@ -200,6 +295,7 @@ pub const EXIT_SUCCESS: ::c_int = 0;
  
  // options/posix/include/dlfcn.h
  pub const RTLD_DEFAULT: *mut ::c_void = 0 as *mut ::c_void;
@@ -252,7 +265,7 @@ index f1e602a..0d165b2 100644
  s! {
      pub struct Dl_info {
          pub dli_fname: *const ::c_char,
-@@ -210,30 +312,65 @@ s! {
+@@ -210,30 +306,65 @@ s! {
  }
  
  // options/posix/include/unistd.h
@@ -319,7 +332,7 @@ index f1e602a..0d165b2 100644
  pub const SO_BROADCAST: ::c_int = 2;
  pub const SO_DEBUG: ::c_int = 3;
  pub const SO_DONTROUTE: ::c_int = 4;
-@@ -241,26 +378,61 @@ pub const SO_ERROR: ::c_int = 5;
+@@ -241,26 +372,61 @@ pub const SO_ERROR: ::c_int = 5;
  pub const SO_KEEPALIVE: ::c_int = 6;
  pub const SO_LINGER: ::c_int = 7;
  pub const SO_OOBINLINE: ::c_int = 8;
@@ -387,7 +400,7 @@ index f1e602a..0d165b2 100644
  }
  
  // abis/mlibc/errno.h
-@@ -295,6 +467,7 @@ pub const ENOSYS: ::c_int = 1051;
+@@ -295,6 +461,7 @@ pub const ENOSYS: ::c_int = 1051;
  pub const ENOTCONN: ::c_int = 1052;
  pub const ENOTDIR: ::c_int = 1053;
  pub const ENOTEMPTY: ::c_int = 1054;
@@ -395,7 +408,7 @@ index f1e602a..0d165b2 100644
  pub const EPERM: ::c_int = 1063;
  pub const EPIPE: ::c_int = 1064;
  pub const ERANGE: ::c_int = 3;
-@@ -305,25 +478,53 @@ pub const ETIMEDOUT: ::c_int = 1072;
+@@ -305,25 +472,53 @@ pub const ETIMEDOUT: ::c_int = 1072;
  pub const ETXTBSY: ::c_int = 1073;
  pub const EWOULDBLOCK: ::c_int = EAGAIN;
  pub const EXDEV: ::c_int = 1075;
@@ -449,7 +462,7 @@ index f1e602a..0d165b2 100644
  
  // options/mlibc/seek-whence.h
  pub const SEEK_CUR: ::c_int = 1;
-@@ -406,19 +607,50 @@ safe_f! {
+@@ -406,19 +601,50 @@ safe_f! {
  }
  
  // options/linux/include/sys/poll.h
@@ -501,7 +514,7 @@ index f1e602a..0d165b2 100644
  
  // options/elf/include/link.h
  pub type Elf64_Half = u16;
-@@ -469,6 +701,27 @@ s! {
+@@ -469,6 +695,27 @@ s! {
          pub sa_family: sa_family_t,
          pub sa_data: [::c_char; 14],
      }
@@ -529,7 +542,7 @@ index f1e602a..0d165b2 100644
  }
  
  // options/posix/include/bits/posix/pthread_t.h
-@@ -535,6 +788,7 @@ s! {
+@@ -535,6 +782,7 @@ s! {
  }
  
  // options/ansi/include/locale.h
@@ -537,7 +550,7 @@ index f1e602a..0d165b2 100644
  s! {
      pub struct lconv {
          pub decimal_point: *mut ::c_char,
-@@ -618,10 +872,14 @@ s! {
+@@ -618,10 +866,14 @@ s! {
  // abis/mlibc/in.h
  pub const IPV6_ADD_MEMBERSHIP: ::c_int = 1;
  pub const IPV6_DROP_MEMBERSHIP: ::c_int = 2;
@@ -552,7 +565,7 @@ index f1e602a..0d165b2 100644
  pub const IP_MULTICAST_LOOP: ::c_int = 34;
  pub const IP_MULTICAST_TTL: ::c_int = 33;
  pub const IP_TTL: ::c_int = 2;
-@@ -637,7 +895,7 @@ s! {
+@@ -637,7 +889,7 @@ s! {
          pub sin_family: sa_family_t,
          pub sin_port: in_port_t,
          pub sin_addr: in_addr,
@@ -561,7 +574,7 @@ index f1e602a..0d165b2 100644
      }
      pub struct sockaddr_in6 {
          pub sin6_family: sa_family_t,
-@@ -656,6 +914,8 @@ s! {
+@@ -656,6 +908,8 @@ s! {
  }
  
  extern "C" {
@@ -570,7 +583,7 @@ index f1e602a..0d165b2 100644
      pub fn bind(socket: ::c_int, address: *const ::sockaddr, address_len: ::socklen_t) -> ::c_int;
      pub fn clock_gettime(clk_id: clockid_t, tp: *mut ::timespec) -> ::c_int;
      pub fn clock_settime(clk_id: clockid_t, tp: *const ::timespec) -> ::c_int;
-@@ -670,6 +930,24 @@ extern "C" {
+@@ -670,6 +924,24 @@ extern "C" {
          data: *mut ::c_void,
      ) -> ::c_int;
      pub fn endpwent();
@@ -595,7 +608,14 @@ index f1e602a..0d165b2 100644
      pub fn getpwent() -> *mut passwd;
      pub fn getgrgid_r(
          gid: ::gid_t,
-@@ -705,9 +983,21 @@ extern "C" {
+@@ -699,15 +971,27 @@ extern "C" {
+         result: *mut *mut passwd,
+     ) -> ::c_int;
+     pub fn getpwuid_r(
+-        uid: uid_t,
++        uid: ::uid_t,
+         pwd: *mut passwd,
+         buf: *mut ::c_char,
          buflen: ::size_t,
          result: *mut *mut passwd,
      ) -> ::c_int;
@@ -617,7 +637,7 @@ index f1e602a..0d165b2 100644
      pub fn pthread_condattr_setclock(
          attr: *mut pthread_condattr_t,
          clock_id: ::clockid_t,
-@@ -729,7 +1019,18 @@ extern "C" {
+@@ -729,7 +1013,18 @@ extern "C" {
          addr: *mut ::sockaddr,
          addrlen: *mut ::socklen_t,
      ) -> ::ssize_t;

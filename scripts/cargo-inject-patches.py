@@ -4,7 +4,7 @@ import argparse, os, subprocess, pathlib
 
 patched_libs = {
 	'backtrace': '0.3.64',
-	'calloop': 'calloop',
+	'calloop': '0.9.3',
 	'libc': '0.2.125',
 	'libloading': '0.7.3',
 	'mio': ['0.6.23', '0.8.3'],
