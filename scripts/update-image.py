@@ -91,7 +91,7 @@ def try_find_command_exec(command):
         whereis_out = run_regular(["whereis", "-b", command]).split(" ")
         if len(whereis_out) > 1:
             return whereis_out[1]
-    except:
+    except Exception:
         pass
 
     return None
@@ -167,12 +167,13 @@ class MountAction:
         if global_mount_info:
             if not os.access(global_mount_info.blockdev, os.F_OK, effective_ids=True):
                 print(
-                    "update-image: Mount info exists put refers to a non-existant block device, ignoring."
+                    "update-image: Mount info exists put refers to a non-existant"
+                    "block device, ignoring."
                 )
                 try:
                     script_dir = os.path.realpath(os.path.dirname(sys.argv[0]))
                     os.remove(os.path.join(script_dir, "update-image-mount-info"))
-                except:
+                except Exception:
                     pass
                 global_mount_info = None
             else:
@@ -201,7 +202,7 @@ class MountAction:
 
             try:
                 os.mkdir(self.mountpoint)
-            except:
+            except Exception:
                 pass
             run_elevated(["mount", f"{diskdev}{sep}{root_partition}", self.mountpoint])
         elif self.mount_using == "guestfs":
@@ -223,7 +224,7 @@ class MountAction:
 
             try:
                 os.mkdir(self.mountpoint)
-            except:
+            except Exception:
                 pass
             run_regular(args)
         elif self.mount_using == "docker":
@@ -242,7 +243,7 @@ class MountAction:
 
             try:
                 os.remove(os.path.join(script_dir, "tmp-docker-blockdev"))
-            except:
+            except Exception:
                 pass
 
             sysroot_dir = os.path.realpath(self.sysroot)
@@ -344,7 +345,7 @@ class UpdateFsAction:
 
         if global_mount_info:
             root_uuid = global_mount_info.root_uuid
-            has_efi = global_mount_info.efi_idx != None
+            has_efi = global_mount_info.efi_idx is not None
 
             if global_mount_info.mount_using == "docker":
                 target_mntpoint = "/mnt"
@@ -385,12 +386,12 @@ class UpdateFsAction:
             needs_root = not os.access(target_mntpoint, os.W_OK, effective_ids=True)
 
         print(
-            f"update-image: Updating the image",
+            "update-image: Updating the image",
             "requires" if needs_root else "doesn't require",
             "root",
         )
         print(
-            f"update-image: Update target",
+            "update-image: Update target",
             "has" if has_efi else "doesn't have",
             "an EFI directory",
         )
@@ -559,7 +560,7 @@ class UnmountAction:
 
             cmds += "umount /mnt\n"
             cmds += f"losetup -d {blockdev}\n"
-            cmds += f"umount /devtmpfs"
+            cmds += "umount /devtmpfs"
 
             run_regular(
                 [
@@ -693,7 +694,10 @@ parser.add_argument(
     metavar="action",
     nargs="*",
     choices=[[], "mount", "update-fs", "unmount"],
-    help="Action to run (one of: mount, update-fs, unmount).\nThe default list of actions is all of them",
+    help=(
+        "Action to run (one of: mount, update-fs, unmount).\n"
+        "The default list of actions is all of them",
+    ),
 )
 
 args = parser.parse_args()
@@ -706,7 +710,7 @@ verbose = args.verbose
 elevation_method = determine_elevation_method(args.elevate_with)
 
 if verbose:
-    print(f"update-image: Being extra verbose")
+    print("update-image: Being extra verbose")
     print(f'update-image: Using "{elevation_method}" for permission elevation')
 
 try:
@@ -721,13 +725,13 @@ try:
             info["efi_idx"],
             info["root_uuid"],
         )
-except:
+except Exception:
     pass
 
 sfdisk_command = try_find_command_exec("sfdisk")
 
 if not sfdisk_command:
-    print(f"update-image: Couldn't find sfdisk (tried looking in PATH and using whereis)")
+    print("update-image: Couldn't find sfdisk (tried looking in PATH and using whereis)")
     sys.exit(1)
 
 if verbose:

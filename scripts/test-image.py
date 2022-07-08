@@ -23,6 +23,7 @@ os.set_blocking(sig_wake_fd, False)
 old_wake_fd = signal.set_wakeup_fd(sig_wake_fd, warn_on_full_buffer=False)
 assert old_wake_fd == -1, "Expected no wakeup FD to be present"
 
+
 # Need to register a handler, otherwise set_wakeup_fd() will not trigger.
 def noop_handler(signo, frame):
     pass
@@ -30,6 +31,7 @@ def noop_handler(signo, frame):
 
 old_handler = signal.signal(signal.SIGCHLD, noop_handler)
 assert not old_handler, "Expected no SIGCHLD handler to be present"
+
 
 # Setup file descriptors to communicate with qemu.
 def try_unlink(path):
@@ -83,6 +85,7 @@ else:
 
 # Start the qemu process.
 proc = subprocess.Popen(qemu_cmd, stdin=subprocess.DEVNULL)
+
 
 # Setup the main loop that waits for the process and/or I/O.
 def open_pipe(path, mode):
