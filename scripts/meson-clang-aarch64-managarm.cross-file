@@ -11,7 +11,7 @@ cpp_args = ['-DLIBASYNC_FORCE_USE_EXPERIMENTAL', '-fsized-deallocation', '-fdebu
 cpp_link_args = [ '-fsized-deallocation', '-fdebug-default-version=4', '-target', 'aarch64-managarm', '--gcc-toolchain=_BUILD_ROOT_/tools/system-gcc']
 
 [host_machine]
-system = 'managarm'
+system = 'Managarm'
 cpu_family = 'aarch64'
 cpu = 'cortex-a72'
 endian = 'little'

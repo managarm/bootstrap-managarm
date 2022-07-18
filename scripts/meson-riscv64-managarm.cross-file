@@ -7,6 +7,6 @@ pkgconfig = 'riscv64-managarm-pkg-config'
 # sed adds binaries here.
 
 [host_machine]
-system = 'managarm'
+system = 'Managarm'
 cpu_family = 'riscv64'
 endian = 'little'

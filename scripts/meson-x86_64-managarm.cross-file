@@ -8,7 +8,7 @@ pkgconfig = 'x86_64-managarm-pkg-config'
 # sed adds binaries here.
 
 [host_machine]
-system = 'managarm'
+system = 'Managarm'
 cpu_family = 'x86_64'
 cpu = 'x86_64'
 endian = 'little'

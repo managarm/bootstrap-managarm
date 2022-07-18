@@ -18,7 +18,7 @@ cpp_args = cxx
 cpp_link_args = cxx
 
 [host_machine]
-system = 'managarm'
+system = 'Managarm'
 cpu_family = 'x86_64'
 cpu = 'x86_64'
 endian = 'little'

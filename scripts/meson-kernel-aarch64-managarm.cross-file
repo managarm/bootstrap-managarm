@@ -20,7 +20,7 @@ cpp_link_args = args
 needs_exe_wrapper = true
 
 [host_machine]
-system = 'managarm'
+system = 'Managarm'
 cpu_family = 'aarch64'
 cpu = 'cortex-a72'
 endian = 'little'

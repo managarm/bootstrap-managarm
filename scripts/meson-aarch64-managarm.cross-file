@@ -8,7 +8,7 @@ pkgconfig = 'aarch64-managarm-pkg-config'
 # sed adds binaries here.
 
 [host_machine]
-system = 'managarm'
+system = 'Managarm'
 cpu_family = 'aarch64'
 cpu = 'cortex-a72'
 endian = 'little'
