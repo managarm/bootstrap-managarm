@@ -28,6 +28,7 @@ sources:
     subdir: 'ports'
     url: 'https://static.rust-lang.org/dist/2022-04-07/cargo-1.60.0-x86_64-unknown-linux-gnu.tar.xz'
     format: 'tar.xz'
+    checksum: blake2b:d60239d5977bfcf1c6f2d973d9d27e93d6d138ae6e929deb016afde8cd8e0ff0bba8396f8fa62d5e738be7bde7b91e9aa406ec2440e1ab50451c5b9ad2d8fdfb
     extract_path: 'cargo-1.60.0-x86_64-unknown-linux-gnu'
     version: '0.60.0'
 
@@ -120,6 +121,7 @@ packages:
       subdir: 'ports'
       url: 'https://www.nasm.us/pub/nasm/releasebuilds/2.14.02/nasm-2.14.02.tar.xz'
       format: 'tar.xz'
+      checksum: blake2b:deb1f3c806ffbe48eefe4163271c68f02a782f75f21980331cb03e64de20da61c118621536c1c869c1629e558cab45ce98fed8443d29c1126fb4255cd6a36ce4
       extract_path: 'nasm-2.14.02'
       version: '2.14.02'
     tools_required:
@@ -244,6 +246,7 @@ packages:
       subdir: ports
       url: 'https://downloads.sourceforge.net/tcl/tcl8.6.11-src.tar.gz'
       format: 'tar.gz'
+      checksum: blake2b:9c6fee5ab54af610518a214822d58caa0e0dcf79b8c9735e3d3e280e4339c8484afb2599f12d71da4a6e6b37639fa1da2b62c13d30579231ca01e00dbf8d1d21
       extract_path: 'tcl8.6.11'
       version: '8.6.11'
     tools_required:
@@ -266,7 +269,7 @@ packages:
     build:
       - args: ['make', '-j@PARALLELISM@']
       # The Tcl package expects that its source tree is preserved so that packages depending on it for their compilation can utilize it.
-      # These sed's remove the references to the build directory and replace them with saner system-wide locations. 
+      # These sed's remove the references to the build directory and replace them with saner system-wide locations.
       - args: ['sed', '-e', "s#@THIS_SOURCE_DIR@/unix#/usr/lib#", '-e', "s#@THIS_SOURCE_DIR@#/usr/include#", '-i', 'tclConfig.sh']
       - args: ['sed', '-e', "s#$@THIS_SOURCE_DIR@/unix/pkgs/tdbc1.1.2#/usr/lib/tdbc1.1.2#", '-e', "s#@THIS_SOURCE_DIR@/pkgs/tdbc1.1.2/generic#/usr/include#",
           '-e', "s#@THIS_SOURCE_DIR@/pkgs/tdbc1.1.2/library#/usr/lib/tcl8.6#", '-e', "s#@THIS_SOURCE_DIR@/pkgs/tdbc1.1.2#/usr/include#", '-i', 'pkgs/tdbc1.1.2/tdbcConfig.sh']

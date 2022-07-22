@@ -132,6 +132,7 @@ packages:
       subdir: 'ports'
       url: 'https://download.gnome.org/sources/gtk+/2.24/gtk+-2.24.32.tar.xz'
       format: 'tar.xz'
+      checksum: blake2b:03f4c0a8be98473f62bc8c86859937969c4169960a5f93d37ff6dcde00413215fa6c7125b15781bf50d67b40aa0056cb71b83fb50acb2c3467b5deb3c8d938f0
       extract_path: 'gtk+-2.24.32'
       patch-path-strip: 1
       version: '2.24.32'

@@ -219,7 +219,7 @@ packages:
         - '--without-selinux'
         - '--disable-nls'
         - '--localstatedir=/var/lib/locate'
-        environ:  
+        environ:
           'PYTHON': '@BUILD_ROOT@/tools/host-python/bin/python3'
     build:
       - args: ['make', '-j@PARALLELISM@']
@@ -346,6 +346,7 @@ packages:
       subdir: ports
       url: 'https://www.greenwoodsoftware.com/less/less-563.tar.gz'
       format: 'tar.gz'
+      checksum: blake2b:813e54b9a115600e4f20009ccad3708efc64ab4ee940aa3624e968045557bbfef6ace49b791f4b9efff86bf43df9fe2a04a160e76718396e0dae17f0bdaa62fb
       extract_path: 'less-563'
       version: '563'
     tools_required:
@@ -419,6 +420,7 @@ packages:
       subdir: ports
       url: 'https://mirrors.edge.kernel.org/pub/linux/docs/man-pages/man-pages-posix/man-pages-posix-2017-a.tar.gz'
       format: 'tar.gz'
+      checksum: blake2b:14305fef7bbe4e39a731468331ea28b68fcfbb5ed66dbfa525907b1817b803a7726ea6dd7fb45f8f5c02dda62750d66e0e7a9a6b535bebfe04ed7181b8804175
       extract_path: 'man-pages-posix-2017'
       version: '2017a'
     tools_required:
@@ -805,6 +807,7 @@ packages:
       subdir: ports
       url: 'https://ftp.gnu.org/gnu/which/which-2.21.tar.gz'
       format: 'tar.gz'
+      checksum: blake2b:355888b0dfe3e4e1679a8a9e1255a935fa48be220408abc441fae69fe0b26bd39e0544ed20e75497ed5bccaa75e788d9aec17007c668f15eaf6b1599faa131a0
       extract_path: 'which-2.21'
       version: '2.21'
     tools_required:
