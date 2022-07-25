@@ -152,6 +152,7 @@ packages:
       subdir: 'ports'
       url: 'https://github.com/nigels-com/glew/releases/download/glew-2.2.0/glew-2.2.0.tgz'
       format: 'tar.gz'
+      checksum: blake2b:f403f3ebd5a78d21cf5744e8e6714a0558c7cda57930751afeced966a54bc9634c070eee4d791f5948bfc60b5c03ca5f488559c6372c0953c0ffe1711a3913f3
       extract_path: 'glew-2.2.0'
       version: '2.2.0'
     tools_required:

@@ -39,6 +39,7 @@ general:
     patch_author: The Managarm Project
     patch_email: info@managarm.org
     everything_by_default: false
+    mandate_hashes_for_archives: true
     cargo:
         config_toml: 'extrafiles/config.toml'
 
@@ -188,6 +189,7 @@ tools:
       subdir: 'ports'
       url: 'https://ftp.gnu.org/gnu/autoconf/autoconf-2.64.tar.xz'
       format: 'tar.xz'
+      checksum: blake2b:598873209a67725150cd4cf09c4b78b26b3d1782f259846da48dc8106a1d32ae2b24f3a864c3be0e9e8dc7d6b6ca8781b83ff33a691c88e68391d1ea861ccf23
       extract_path: 'autoconf-2.64'
       version: '2.64'
     configure:
@@ -212,6 +214,7 @@ tools:
       subdir: 'ports'
       url: 'https://ftp.gnu.org/gnu/autoconf/autoconf-2.69.tar.xz'
       format: 'tar.xz'
+      checksum: blake2b:71d33d72a06e9a05fbed0eda73bc9d8a3805c7c90bf082959862f93f3c5f01192114176e84d84ecb58fa99512eafbc0ab21ad1407be18c8c63bb3dc1117c482d
       extract_path: 'autoconf-2.69'
       version: '2.69'
     configure:
@@ -1469,6 +1472,7 @@ packages:
       subdir: ports
       url: 'https://www.lua.org/ftp/lua-5.3.5.tar.gz'
       format: 'tar.gz'
+      checksum: blake2b:8890fa70fcfb869296bc74c754dc30621a3786d4b38dd35ef9e57ca46ee4b3df12dac1b86109be0823847499ff6b0d95de11f446c4c22de440ae3bb704e5068b
       extract_path: 'lua-5.3.5'
       version: '5.3.5'
     tools_required:
@@ -1498,6 +1502,7 @@ packages:
       subdir: 'ports'
       url: 'https://mednafen.github.io/releases/files/mednafen-1.24.0-UNSTABLE.tar.xz'
       format: 'tar.xz'
+      checksum: blake2b:d326d785e96a1360a25aa308c738ee1c613717406512f2ce73a260cb1583adb5149ab6b1cf36be730dace517aa20abf15babb58841e0b294ef18f08996176ce8
       extract_path: 'mednafen'
       version: '1.24.0'
       tools_required:
@@ -1544,6 +1549,7 @@ packages:
       subdir: ports
       url: 'http://smarden.org/runit/runit-2.1.2.tar.gz'
       format: 'tar.gz'
+      checksum: blake2b:101e514aeed282685ebe636f401ca6f94d157281d08a3ac487340aebe945b82d2ee01d41e9917446f4ebd7b27fe9fd18ba4ad55739ab1b62a0e59e1c438b55e9
       extract_path: 'admin/runit-2.1.2'
       patch-path-strip: 1
       version: '2.1.2'

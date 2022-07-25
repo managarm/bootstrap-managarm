@@ -60,6 +60,7 @@ packages:
       subdir: 'ports'
       url: 'https://www.gnupg.org/ftp/gcrypt/gnutls/v3.7/gnutls-3.7.2.tar.xz'
       format: 'tar.xz'
+      checksum: blake2b:f408ff65f2e08cf294b449dfac64a272a8ba40e987618960f57ee36c167a25974711ab8d11bdbd6335fbf18ac902a79b5c6b40bb6a37f4ee07549832d0611df2
       extract_path: 'gnutls-3.7.2'
       version: '3.7.2'
       tools_required:

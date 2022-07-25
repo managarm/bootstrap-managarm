@@ -4,6 +4,7 @@ packages:
       subdir: 'ports'
       url: 'http://links.twibright.com/download/links-2.25.tar.gz'
       format: 'tar.gz'
+      checksum: blake2b:2e52c5c00e5e32c927324b2c16e65794492f854e105674d6b1a3607e73ea487ce0fedd8d17dd067f86547ba94ec01ebd2324e7122e1ac0e72bba5e30aa8b8ef1
       extract_path: 'links-2.25'
       version: '2.25'
     tools_required:

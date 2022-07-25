@@ -47,6 +47,7 @@ packages:
       subdir: ports
       url: 'https://github.com/Mic92/iana-etc/releases/download/20211124/iana-etc-20211124.tar.gz'
       format: 'tar.gz'
+      checksum: blake2b:25483518b0b72e71fcb5a9eb8871a031b3bcc138046c0dc97245ed54eaaf6a882b30099d0b4ce0b35801ad5db254cedd5acdd2d3d0ebeb23ba77387908494a90
       extract_path: 'iana-etc-20211124'
       version: '20211124'
     tools_required:

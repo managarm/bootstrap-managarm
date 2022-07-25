@@ -4,6 +4,7 @@ packages:
       subdir: 'ports'
       url: 'https://sqlite.org/2021/sqlite-autoconf-3370000.tar.gz'
       format: 'tar.gz'
+      checksum: blake2b:35e72700f20c35701d26f7b66da126242ea1d253f710f299a9b6f180f0a53d417114af022161a6cd9ebf20b791f0645f7a30290210fac197d5fda3a647067fd0
       extract_path: 'sqlite-autoconf-3370000'
       version: '3.37.0'
       tools_required:
