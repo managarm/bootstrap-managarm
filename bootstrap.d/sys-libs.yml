@@ -100,7 +100,6 @@ sources:
       - name: rust-shared-library
         recursive: true
 
-
 packages:
   - name: gdbm
     labels: [aarch64]
@@ -122,6 +121,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -158,6 +158,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -195,6 +196,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -220,7 +222,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -265,6 +267,7 @@ packages:
     pkgs_required:
       - mlibc
       - ncurses
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

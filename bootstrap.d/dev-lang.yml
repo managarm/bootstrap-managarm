@@ -128,6 +128,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -155,7 +156,7 @@ packages:
       - bzip2
       - libxcrypt
       - zlib
-    revision: 2
+    revision: 3
     configure:
       - args: ['cp', '-rf', '@THIS_SOURCE_DIR@/../perl-cross/.', '@THIS_SOURCE_DIR@/']
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
@@ -209,7 +210,7 @@ packages:
       - util-linux-libs
       - xz-utils
       - zlib
-    revision: 7
+    revision: 8
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -254,6 +255,7 @@ packages:
     pkgs_required:
       - sqlite
       - zlib
+    revision: 2
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
@@ -311,6 +313,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

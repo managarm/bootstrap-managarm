@@ -24,6 +24,7 @@ packages:
       - fontconfig
       - libjpeg-turbo
       - xz-utils
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

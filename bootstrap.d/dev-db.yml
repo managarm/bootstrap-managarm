@@ -20,6 +20,7 @@ packages:
       - mlibc
       - readline
       - zlib
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

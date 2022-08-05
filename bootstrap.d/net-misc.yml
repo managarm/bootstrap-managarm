@@ -24,6 +24,7 @@ packages:
       - openssl
       - zlib
       - zstd
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -82,7 +83,6 @@ packages:
       - system-gcc
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
-    revision: 2
     pkgs_required:
       - mlibc
       - lz4
@@ -92,6 +92,7 @@ packages:
       - xxhash
       - zstd
       - popt
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -142,7 +143,7 @@ packages:
       - ncurses
       - readline
       - openssl
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -188,6 +189,7 @@ packages:
       - mlibc
       - pcre
       - openssl
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

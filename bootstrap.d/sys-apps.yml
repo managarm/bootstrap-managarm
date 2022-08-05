@@ -63,6 +63,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
+    revision: 2
     configure:
       # Huge hack: coreutils does not compile the build-machine binary make-prime-list
       # using the build-machine compiler. Hence, build and invoke the binary manually here.
@@ -108,6 +109,7 @@ packages:
       - host-automake-v1.15
     pkgs_required:
       - mlibc
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -145,7 +147,7 @@ packages:
       - rust-patched-libs
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
     build:
@@ -175,6 +177,7 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -211,6 +214,7 @@ packages:
       - host-python
     pkgs_required:
       - mlibc
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -249,6 +253,7 @@ packages:
       - host-automake-v1.15
     pkgs_required:
       - mlibc
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -283,6 +288,7 @@ packages:
     pkgs_required:
       - mlibc
       - pcre
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -318,7 +324,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -357,7 +363,7 @@ packages:
     pkgs_required:
       - mlibc
       - ncurses
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -395,7 +401,7 @@ packages:
       - groff
       - less
       - libiconv
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -454,6 +460,7 @@ packages:
     pkgs_required:
       - mlibc
       - pciids
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -503,6 +510,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -535,7 +543,7 @@ packages:
       - rust-patched-libs
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
     build:
@@ -569,7 +577,7 @@ packages:
       - libiconv
       - file
       - libxcrypt
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -718,7 +726,7 @@ packages:
       - libiconv
       - file
       - libxcrypt
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -814,6 +822,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -842,7 +851,7 @@ packages:
       - libarchive
       - openssl
       - zlib
-    revision: 5
+    revision: 6
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
