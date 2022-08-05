@@ -53,7 +53,7 @@ packages:
       - glib
       - libxml
       - itstool
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -93,6 +93,7 @@ packages:
     pkgs_required:
       - mlibc
       - xorg-util-macros
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -135,6 +136,7 @@ packages:
       - mlibc
       - libx11
       - xorg-proto
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -157,6 +159,7 @@ packages:
     tools_required:
       - system-gcc
       - host-xorg-macros
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

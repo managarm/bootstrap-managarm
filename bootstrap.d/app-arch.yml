@@ -18,6 +18,7 @@ packages:
       - host-cmake
     pkgs_required:
       - mlibc
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -53,6 +54,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
+    revision: 2
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       # Remove the test directory from the Makefile, as it tries to run (and fail on) the tests
@@ -96,6 +98,7 @@ packages:
       - mlibc
       - libiconv
       - libintl
+    revision: 2
     configure:
       # Fix a build issue when building with gcc 10 and higher
       - args: ['sed', '-i', '/The name/,+2 d', '@THIS_SOURCE_DIR@/src/global.c']
@@ -139,6 +142,7 @@ packages:
       - host-automake-v1.15
     pkgs_required:
       - mlibc
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -178,6 +182,7 @@ packages:
       - libexpat
       - libxml
       - zstd
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -210,7 +215,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -251,6 +256,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -288,6 +294,7 @@ packages:
       - mlibc
       - bzip2
       - libiconv
+    revision: 2
     configure:
       # Fixup their makefile, thanks gentoo!
       - args: |
@@ -340,6 +347,7 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -373,6 +381,7 @@ packages:
     pkgs_required:
       - mlibc
       - bzip2
+    revision: 2
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -409,6 +418,7 @@ packages:
       - mlibc
       - zlib
       - xz-utils
+    revision: 2
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:

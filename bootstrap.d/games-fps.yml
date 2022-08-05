@@ -54,6 +54,7 @@ packages:
       - pcre
       - sdl2
       - glu
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -95,6 +96,7 @@ packages:
     pkgs_required:
       - mlibc
       - sdl2
+    revision: 2
     configure:
       - args:
         - 'meson'
