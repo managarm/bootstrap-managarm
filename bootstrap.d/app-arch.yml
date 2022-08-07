@@ -284,6 +284,7 @@ packages:
       subdir: ports
       url: 'https://downloads.sourceforge.net/infozip/unzip60.tar.gz'
       format: 'tar.gz'
+      checksum: blake2b:5016d300b4452018a391f4ebc03c6960c068df400a0407c0c60bd7bb5ec5012031f916d8b204a6149ba291c2c35beba40d9b43c76fc093026e79471329ab0e47
       extract_path: 'unzip60'
       # A patch with consolidated fixes is provided by BLFS
       patch-path-strip: 1
@@ -374,6 +375,7 @@ packages:
       subdir: ports
       url: 'https://downloads.sourceforge.net/infozip/zip30.tar.gz'
       format: 'tar.gz'
+      checksum: blake2b:4f78ab75214e4a339ab96c2b0e6e1037596368a5ad7d2839e3568d0eb7491de2ffa7dbed6ae354417cff438005f5b7af7223ed889b616e265df54f05c1f6276e
       extract_path: 'zip30'
       version: '3.0'
     tools_required:

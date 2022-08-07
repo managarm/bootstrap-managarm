@@ -1,0 +1,25 @@
+From fbeb162a920bfb11cdd2fb033aa09170dbffa231 Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Sun, 7 Aug 2022 12:55:54 +0200
+Subject: [PATCH] Managarm-specific changes
+
+---
+ src/fcstat.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/fcstat.c b/src/fcstat.c
+index 5aa1643..d96ebc0 100644
+--- a/src/fcstat.c
++++ b/src/fcstat.c
+@@ -384,7 +384,7 @@ FcFStatFs (int fd, FcStatFS *statb)
+ #  endif
+ #  if defined(HAVE_STRUCT_STATFS_F_FSTYPENAME)
+ 	p = buf.f_fstypename;
+-#  elif defined(__linux__)
++#  elif defined(__linux__) || defined (__managarm__)
+ 	switch (buf.f_type)
+ 	{
+ 	case 0x6969: /* nfs */
+-- 
+2.37.1
+
