@@ -760,7 +760,6 @@ packages:
       version: '21.3.5'
       tools_required:
         - host-pkg-config
-    revision: 4
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -785,7 +784,7 @@ packages:
       - libxext
       - libxcb
       - libglvnd
-    revision: 2
+    revision: 5
     configure:
       - args: ['cp', '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file', 'meson.cross-file']
       - args:
