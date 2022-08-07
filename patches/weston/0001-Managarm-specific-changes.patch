@@ -1,17 +1,18 @@
-From 6e4126c47442ffd50113a5d1e5d1b6f2282bce67 Mon Sep 17 00:00:00 2001
+From 71d14cc4f054b9f24e6b0432aaad29e6bfb16acf Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Fri, 14 Jan 2022 03:23:05 +0100
 Subject: [PATCH] Managarm-specific changes
 
 ---
- compositor/main.c           | 10 +---------
- libweston/backend-drm/drm.c | 12 ++++++------
- libweston/backend-drm/fb.c  |  3 ++-
- libweston/launcher-util.c   | 16 ++--------------
- 4 files changed, 11 insertions(+), 30 deletions(-)
+ compositor/main.c              | 10 +---------
+ libweston/backend-drm/drm.c    | 12 ++++++------
+ libweston/backend-drm/fb.c     |  3 ++-
+ libweston/launcher-util.c      | 16 ++--------------
+ tools/zunitc/src/zunitc_impl.c |  1 +
+ 5 files changed, 12 insertions(+), 30 deletions(-)
 
 diff --git a/compositor/main.c b/compositor/main.c
-index 515a15d1..01971ffe 100644
+index 322f2ff..801d5fe 100644
 --- a/compositor/main.c
 +++ b/compositor/main.c
 @@ -44,7 +44,7 @@
@@ -39,10 +40,10 @@ index 515a15d1..01971ffe 100644
  
  static bool
 diff --git a/libweston/backend-drm/drm.c b/libweston/backend-drm/drm.c
-index 9a1a39e5..e8852efc 100644
+index 4278770..5ba7adb 100644
 --- a/libweston/backend-drm/drm.c
 +++ b/libweston/backend-drm/drm.c
-@@ -552,7 +552,7 @@ drm_output_start_repaint_loop(struct weston_output *output_base)
+@@ -559,7 +559,7 @@ drm_output_start_repaint_loop(struct weston_output *output_base)
  
  	/* Try to get current msc and timestamp via instant query */
  	vbl.request.type |= drm_waitvblank_pipe(output->crtc);
@@ -51,7 +52,7 @@ index 9a1a39e5..e8852efc 100644
  
  	/* Error ret or zero timestamp means failure to get valid timestamp */
  	if ((ret == 0) && (vbl.reply.tval_sec > 0 || vbl.reply.tval_usec > 0)) {
-@@ -622,11 +622,11 @@ drm_repaint_begin(struct weston_compositor *compositor)
+@@ -629,11 +629,11 @@ drm_repaint_begin(struct weston_compositor *compositor)
  	b->repaint_data = ret;
  
  	if (weston_log_scope_is_enabled(b->debug)) {
@@ -66,7 +67,7 @@ index 9a1a39e5..e8852efc 100644
  	}
  
  	return ret;
-@@ -3012,7 +3012,7 @@ drm_backend_create(struct weston_compositor *compositor,
+@@ -3019,7 +3019,7 @@ drm_backend_create(struct weston_compositor *compositor,
  	if (parse_gbm_format(config->gbm_format, DRM_FORMAT_XRGB8888, &b->gbm_format) < 0)
  		goto err_compositor;
  
@@ -75,7 +76,7 @@ index 9a1a39e5..e8852efc 100644
  	compositor->launcher = weston_launcher_connect(compositor, config->tty,
  						       seat_id, true);
  	if (compositor->launcher == NULL) {
-@@ -3020,7 +3020,7 @@ drm_backend_create(struct weston_compositor *compositor,
+@@ -3027,7 +3027,7 @@ drm_backend_create(struct weston_compositor *compositor,
  			   "weston-launch binary, or your system should "
  			   "provide the logind D-Bus API.\n");
  		goto err_compositor;
@@ -85,7 +86,7 @@ index 9a1a39e5..e8852efc 100644
  	b->udev = udev_new();
  	if (b->udev == NULL) {
 diff --git a/libweston/backend-drm/fb.c b/libweston/backend-drm/fb.c
-index ffe2cc52..a6664a83 100644
+index ffe2cc5..a6664a8 100644
 --- a/libweston/backend-drm/fb.c
 +++ b/libweston/backend-drm/fb.c
 @@ -385,13 +385,14 @@ drm_fb_get_from_bo(struct gbm_bo *bo, struct drm_backend *backend,
@@ -105,7 +106,7 @@ index ffe2cc52..a6664a83 100644
  	if (drm_fb_addfb(backend, fb) != 0) {
  		if (type == BUFFER_GBM_SURFACE)
 diff --git a/libweston/launcher-util.c b/libweston/launcher-util.c
-index b2219b68..e627e1e4 100644
+index b2219b6..e627e1e 100644
 --- a/libweston/launcher-util.c
 +++ b/libweston/launcher-util.c
 @@ -76,7 +76,8 @@ WL_EXPORT int
@@ -136,6 +137,18 @@ index b2219b68..e627e1e4 100644
 -						  switch_vt_binding,
 -						  compositor);
  }
+diff --git a/tools/zunitc/src/zunitc_impl.c b/tools/zunitc/src/zunitc_impl.c
+index 395bdd7..e11a32f 100644
+--- a/tools/zunitc/src/zunitc_impl.c
++++ b/tools/zunitc/src/zunitc_impl.c
+@@ -27,6 +27,7 @@
+ 
+ #include <errno.h>
+ #include <fcntl.h>
++#include <signal.h>
+ #include <stdarg.h>
+ #include <stdbool.h>
+ #include <stdio.h>
 -- 
-2.34.1
+2.37.1
 
