@@ -104,7 +104,7 @@ RUN apt-get update \
 		# Used by the developers
 		clangd \
 		# used to generate images
-		sfdisk \
+		fdisk \
 		# Cleanup time
 		&& apt-get clean
 
