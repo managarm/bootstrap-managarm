@@ -1166,6 +1166,7 @@ packages:
         - '--enable-64bit'
         environ:
           CROSS_COMPILE: '1'
+          ac_cv_func_syscall: 'no'
     build:
       # We first build a native nsinstall that the build can use later on.
       - args: ['make', 'CC=gcc', 'CXX=g++', '-C', '@THIS_BUILD_DIR@/config/']
