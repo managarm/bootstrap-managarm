@@ -350,11 +350,11 @@ packages:
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
-      url: 'https://www.greenwoodsoftware.com/less/less-563.tar.gz'
+      url: 'https://www.greenwoodsoftware.com/less/less-590.tar.gz'
       format: 'tar.gz'
-      checksum: blake2b:813e54b9a115600e4f20009ccad3708efc64ab4ee940aa3624e968045557bbfef6ace49b791f4b9efff86bf43df9fe2a04a160e76718396e0dae17f0bdaa62fb
-      extract_path: 'less-563'
-      version: '563'
+      checksum: blake2b:0f640f1b6b4d4925c4904ee77460e8becd2dae168fe5c1483bf6a9cfabe9eb0abdc4d4811507ba88a2b4cff6c238158bd8b4463b63d3d7863b44ce8538d32adb
+      extract_path: 'less-590'
+      version: '590'
     tools_required:
       - system-gcc
       - host-autoconf-v2.69
@@ -363,7 +363,6 @@ packages:
     pkgs_required:
       - mlibc
       - ncurses
-    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
