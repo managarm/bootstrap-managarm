@@ -106,6 +106,7 @@ RUN apt-get update \
 		# used to generate images
 		fdisk \
 		dosfstools \
+		mtools \
 		# Cleanup time
 		&& apt-get clean
 
