@@ -105,6 +105,7 @@ RUN apt-get update \
 		clangd \
 		# used to generate images
 		fdisk \
+		dosfstools \
 		# Cleanup time
 		&& apt-get clean
 
