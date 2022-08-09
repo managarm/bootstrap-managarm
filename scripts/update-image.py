@@ -97,6 +97,10 @@ def try_find_command_exec(command):
     if i:
         return i
 
+    i = shutil.which(command, path="/usr/local/sbin:/usr/sbin:/sbin")
+    if i:
+        return i
+
     try:
         whereis_out = run_regular(["whereis", "-b", command]).split(" ")
         if len(whereis_out) > 1:
