@@ -102,7 +102,7 @@ def try_find_command_exec(command):
         if len(whereis_out) > 1:
             if path.basename(whereis_out[1]) == command:
                 return whereis_out[1]
-            print("update-image: whereis returned a weird result: " + whereis_out)
+            print(f"update-image: whereis returned a weird result: {whereis_out}")
     except RuntimeError:
         pass
 
