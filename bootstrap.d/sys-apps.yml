@@ -50,11 +50,11 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/coreutils.git'
-      tag: 'v9.0'
-      version: '9.0'
+      tag: 'v9.1'
+      version: '9.1'
       tools_required:
         - host-autoconf-v2.69
-        - host-automake-v1.11
+        - host-automake-v1.15
       regenerate:
         - args: ['./bootstrap']
         - args: ['cp',
@@ -64,7 +64,6 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
     configure:
       # Huge hack: coreutils does not compile the build-machine binary make-prime-list
       # using the build-machine compiler. Hence, build and invoke the binary manually here.
