@@ -287,13 +287,12 @@ packages:
     default: true
     source:
       subdir: 'ports'
-      url: 'https://data.iana.org/time-zones/releases/tzdata2021e.tar.gz'
+      url: 'https://data.iana.org/time-zones/releases/tzdata2022b.tar.gz'
       format: 'tar.gz'
-      checksum: blake2b:e0e1189a1bbfb2ee641b9c4c8d00775372638d46d7aea72ff0c4bcb02b38a65eedaf89e6b272e054245c940369a50c2573e6fc720414e4ab3d45adeda8ed9c75
-      version: '2021e'
+      checksum: blake2b:23732f1c753efeca97bb9d6ed8d487a56c735943cb1062a77a1a76faf0109f86238ef9b0ec9ec92b8bdf1da10435f2c39e1465a7fefe74eab8de730214920249
+      version: '2022b'
     tools_required:
       - system-gcc
-    revision: 2
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
