@@ -103,6 +103,8 @@ RUN apt-get update \
 		zlib1g-dev \
 		# Used by the developers
 		clangd \
+		# used to generate images
+		sfdisk \
 		# Cleanup time
 		&& apt-get clean
 
