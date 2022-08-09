@@ -15,6 +15,7 @@ import traceback
 import uuid
 from dataclasses import dataclass, field
 from enum import Enum
+from os import path
 from typing import Dict
 
 elevation_method = None
@@ -99,7 +100,9 @@ def try_find_command_exec(command):
     try:
         whereis_out = run_regular(["whereis", "-b", command]).split(" ")
         if len(whereis_out) > 1:
-            return whereis_out[1]
+            if path.basename(whereis_out[1]) == command:
+                return whereis_out[1]
+            print("update-image: whereis returned a weird result: " + whereis_out)
     except RuntimeError:
         pass
 
