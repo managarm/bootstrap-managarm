@@ -980,21 +980,19 @@ packages:
       branch: 'master'
     tools_required:
       - system-gcc
-    revision: 2
-    configure: []
-    build:
+    revision: 3
+    configure:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/include']
       - args:
-        - 'make'
-        - '-f'
-        - '@THIS_SOURCE_DIR@/library.makefile'
-        - 'S=@THIS_SOURCE_DIR@'
-        - 'DESTDIR=@THIS_COLLECT_DIR@'
-        - 'prefix=/usr/'
-        - 'CXX=@OPTION:arch-triple@-g++'
-        - 'LD=@OPTION:arch-triple@-ld'
-        - 'AS=@OPTION:arch-triple@-as'
-        - 'install'
+        - 'meson'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: llvm
     labels: [aarch64]
