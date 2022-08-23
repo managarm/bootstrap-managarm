@@ -10,6 +10,7 @@ tools:
     from_source: dsda-doom
     tools_required:
       - host-cmake
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -54,7 +55,7 @@ packages:
       - pcre
       - sdl2
       - glu
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -96,7 +97,7 @@ packages:
     pkgs_required:
       - mlibc
       - sdl2
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'

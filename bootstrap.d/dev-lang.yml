@@ -37,6 +37,7 @@ tools:
     labels: [aarch64]
     architecture: noarch
     from_source: python
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -53,7 +54,7 @@ tools:
     tools_required:
       - host-llvm-toolchain
       - host-python
-    revision: 2
+    revision: 3
     compile:
       - args: |
             cat << EOF > config.toml
@@ -101,6 +102,7 @@ tools:
       - rust-patched-libs
       # Cargo requires cargo to build, so we download a binary that we can use temporarily
       - host-bootstrap-cargo
+    revision: 2
     compile:
       - args:
         - '@THIS_SOURCE_DIR@/../host-bootstrap-cargo/cargo/bin/cargo'
@@ -128,7 +130,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -156,7 +158,7 @@ packages:
       - bzip2
       - libxcrypt
       - zlib
-    revision: 3
+    revision: 4
     configure:
       - args: ['cp', '-rf', '@THIS_SOURCE_DIR@/../perl-cross/.', '@THIS_SOURCE_DIR@/']
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
@@ -210,7 +212,7 @@ packages:
       - util-linux-libs
       - xz-utils
       - zlib
-    revision: 8
+    revision: 9
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -255,7 +257,7 @@ packages:
     pkgs_required:
       - sqlite
       - zlib
-    revision: 2
+    revision: 3
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
@@ -313,7 +315,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

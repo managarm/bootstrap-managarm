@@ -23,6 +23,7 @@ tools:
     from_source: limine
     tools_required:
       - system-gcc
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -43,6 +44,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
