@@ -192,6 +192,7 @@ tools:
       checksum: blake2b:598873209a67725150cd4cf09c4b78b26b3d1782f259846da48dc8106a1d32ae2b24f3a864c3be0e9e8dc7d6b6ca8781b83ff33a691c88e68391d1ea861ccf23
       extract_path: 'autoconf-2.64'
       version: '2.64'
+    revision: 2
     configure:
       # Despite its efforts to be POSIX-compatible, autoconf 2.64 fails to configure on dash
       # (as it assumes that echo does not evaluate backslash escapes).
@@ -217,6 +218,7 @@ tools:
       checksum: blake2b:71d33d72a06e9a05fbed0eda73bc9d8a3805c7c90bf082959862f93f3c5f01192114176e84d84ecb58fa99512eafbc0ab21ad1407be18c8c63bb3dc1117c482d
       extract_path: 'autoconf-2.69'
       version: '2.69'
+    revision: 2
     configure:
       - args: ['@THIS_SOURCE_DIR@/configure', '--prefix=@PREFIX@']
     compile:
@@ -239,6 +241,7 @@ tools:
         - args: ['./bootstrap']
     tools_required:
       - host-autoconf-v2.69
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -260,6 +263,7 @@ tools:
       git: 'https://github.com/autoconf-archive/autoconf-archive.git'
       tag: 'v2019.01.06'
       version: '2019.01.06'
+    revision: 2
     install:
       - args: ['mkdir', '-p', '@BUILD_ROOT@/tools/host-autoconf-archive/share/']
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/m4', '@BUILD_ROOT@/tools/host-autoconf-archive/share/aclocal']
@@ -279,6 +283,7 @@ tools:
         - args: ['./bootstrap']
     tools_required:
       - host-autoconf-v2.69
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -301,6 +306,7 @@ tools:
         recursive: true
       - virtual: pkgconfig-for-host
         program_name: host-pkg-config
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -334,6 +340,7 @@ tools:
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.15
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -351,6 +358,7 @@ tools:
       - binutils
     tools_required:
       - host-cmake
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -383,6 +391,7 @@ tools:
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     from_source: binutils
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -408,8 +417,8 @@ tools:
     labels: [aarch64, riscv64]
     architecture: noarch
     exports_shared_libs: true
-    revision: 2
     from_source: protobuf
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -428,6 +437,7 @@ tools:
     tools_required:
       - tool: cross-binutils
         recursive: true
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -475,6 +485,7 @@ tools:
     tools_required:
       - tool: cross-binutils
         recursive: true
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -531,6 +542,7 @@ tools:
     tools_required:
       - tool: cross-binutils
         recursive: true
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -577,6 +589,7 @@ tools:
     tools_required:
       - virtual: pkgconfig-for-host
         program_name: host-pkg-config
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -600,6 +613,7 @@ tools:
     tools_required:
       - virtual: pkgconfig-for-host
         program_name: host-pkg-config
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -629,7 +643,7 @@ packages:
       - tool: system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -673,6 +687,7 @@ packages:
         - args: ['git', '-C', '@THIS_SOURCE_DIR@', 'submodule', 'update', '--init']
         - args: ['./bootstrap.sh']
         - args: ['./b2', 'headers']
+    revision: 2
     configure: []
     build:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/include']
@@ -693,7 +708,7 @@ packages:
     source:
       subdir: meta-sources
       version: '1.0'
-    revision: 3
+    revision: 4
     configure: []
     build:
       # Create initial directories
@@ -747,7 +762,7 @@ packages:
       branch: 'master'
     tools_required:
       - system-gcc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -780,6 +795,7 @@ packages:
       subdir: 'ports'
       git: 'https://github.com/managarm/frigg.git'
       branch: 'master'
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -811,7 +827,7 @@ packages:
       - mpfr
       - mpc
       - zlib
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -856,7 +872,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -890,7 +906,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -920,7 +936,7 @@ packages:
       - system-gcc
     pkgs_required:
       - boost
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -952,7 +968,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -980,7 +996,7 @@ packages:
       branch: 'master'
     tools_required:
       - system-gcc
-    revision: 3
+    revision: 4
     configure:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/include']
       - args:
@@ -1004,7 +1020,7 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -1055,7 +1071,7 @@ packages:
     pkgs_required:
       - mlibc
       - mesa
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1095,7 +1111,7 @@ packages:
     pkgs_required:
       - frigg
       - cxxshim
-    revision: 3
+    revision: 4
     configure:
       - args: |
           sed -e 's|_BUILD_ROOT_|@BUILD_ROOT@|' @SOURCE_ROOT@/scripts/meson-kernel-@OPTION:arch-triple@.cross-file \
@@ -1148,7 +1164,7 @@ packages:
       - libdrm
       - libsmarter
       - protobuf
-    revision: 3
+    revision: 4
     configure:
       - args: |
           sed -e 's|_BUILD_ROOT_|@BUILD_ROOT@|' -e 's|_SYSROOT_DIR_|@SYSROOT_DIR@|' @SOURCE_ROOT@/scripts/meson-clang-@OPTION:arch-triple@.cross-file \
@@ -1183,6 +1199,7 @@ packages:
     labels: [aarch64, riscv64]
     architecture: noarch
     from_source: cxxshim
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -1214,6 +1231,7 @@ packages:
       # These are not strictly necessary.
       - host-managarm-tools
       - host-protoc
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -1255,6 +1273,7 @@ packages:
       - mlibc-headers
       - frigg
       - cxxshim
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -1286,7 +1305,7 @@ packages:
       - host-protoc
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1318,7 +1337,7 @@ packages:
       - mlibc
       - libexpat
       - libffi
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -1359,7 +1378,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1406,7 +1425,7 @@ packages:
     pkgs_required:
       - mlibc
       - libxkbcommon
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1456,7 +1475,7 @@ packages:
       - libdrm
       - libtsm
       - eudev
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1489,7 +1508,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
@@ -1534,7 +1553,7 @@ packages:
       - libintl
       - libiconv
       - zlib
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1568,6 +1587,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
+    revision: 2
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args: 'echo @OPTION:arch-triple@-gcc -O2 -Wall > @THIS_BUILD_DIR@/src/conf-cc'

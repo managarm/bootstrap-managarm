@@ -27,7 +27,7 @@ packages:
       - libx11
       - libxpm
       - zlib
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -63,7 +63,7 @@ packages:
       - qtbase6
       - qtsvg6
       - qtmultimedia6
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
