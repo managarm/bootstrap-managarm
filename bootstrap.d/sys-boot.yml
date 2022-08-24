@@ -8,14 +8,16 @@ sources:
 
   - name: limine
     subdir: 'ports'
-    git: 'https://github.com/limine-bootloader/limine.git'
-    tag: 'v3.16.3'
+    url: 'https://github.com/limine-bootloader/limine/releases/download/v3.16.3/limine-3.16.3.tar.xz'
+    format: 'tar.xz'
+    checksum: blake2b:9ac96da531cbcddcd532487d11786eadd3eac713bc19b935a1bf74d8a2ec15f7c40fa402f133d1b713b415a716a8f1f73d243906dd6667877114c2c133ef8d3b
+    extract_path: 'limine-3.16.3'
     version: '3.16.3'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.15
     regenerate:
-      - args: ['./bootstrap']
+      - args: ['autoreconf', '-fvi']
 
 tools:
   - name: host-limine
@@ -23,7 +25,7 @@ tools:
     from_source: limine
     tools_required:
       - system-gcc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -44,7 +46,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
