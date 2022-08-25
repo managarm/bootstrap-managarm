@@ -57,11 +57,11 @@ packages:
       categories: ['net-libs']
     source:
       subdir: 'ports'
-      url: 'https://www.gnupg.org/ftp/gcrypt/gnutls/v3.7/gnutls-3.7.2.tar.xz'
+      url: 'https://www.gnupg.org/ftp/gcrypt/gnutls/v3.7/gnutls-3.7.7.tar.xz'
       format: 'tar.xz'
-      checksum: blake2b:f408ff65f2e08cf294b449dfac64a272a8ba40e987618960f57ee36c167a25974711ab8d11bdbd6335fbf18ac902a79b5c6b40bb6a37f4ee07549832d0611df2
-      extract_path: 'gnutls-3.7.2'
-      version: '3.7.2'
+      checksum: blake2b:a66037ecc6da660ff12949f50012840263c2e0b174079e41b62a2d884f060cee56f0c64a2815d07321a54b08cce016d2b4c8f0e059636c1ab5f7db9c8d64c7c6
+      extract_path: 'gnutls-3.7.7'
+      version: '3.7.7'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -82,7 +82,6 @@ packages:
       - libiconv
       - libintl
       - openssl
-    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -91,7 +90,7 @@ packages:
         - '--disable-guile'
         - '--disable-rpath'
         - '--with-default-trust-store-pkcs11=pkcs11:'
-        - '--docdir=/usr/share/doc/gnutls-3.7.2'
+        - '--docdir=/usr/share/doc/gnutls-3.7.7'
         - '--with-default-trust-store-file=/etc/pki/tls/certs/ca-bundle.crt'
         - '--enable-openssl-compatibility'
         - '--without-tpm'
