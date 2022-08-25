@@ -58,7 +58,7 @@ packages:
       regenerate:
         - args: ['./bootstrap']
         - args: ['cp',
-            '@BUILD_ROOT@/tools/host-automake-v1.11/share/automake-1.11/config.sub',
+            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
             '@THIS_SOURCE_DIR@/build-aux/']
     tools_required:
       - system-gcc
