@@ -2,8 +2,8 @@ sources:
   - name: 'cmake'
     subdir: 'ports'
     git: 'https://gitlab.kitware.com/cmake/cmake.git'
-    tag: 'v3.22.0'
-    version: '3.22.0'
+    tag: 'v3.24.1'
+    version: '3.24.1'
 
   - name: 'pkg-config'
     subdir: 'ports'
@@ -24,7 +24,6 @@ tools:
     labels: [aarch64, riscv64]
     architecture: noarch
     from_source: cmake
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/bootstrap'
@@ -34,7 +33,7 @@ tools:
       - args: ['make', '-j@PARALLELISM@']
     install:
       - args: ['make', 'install']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/scripts/managarm.cmake', '@PREFIX@/share/cmake-3.22/Modules/Platform/']
+      - args: ['ln', '-sf', '@SOURCE_ROOT@/scripts/managarm.cmake', '@PREFIX@/share/cmake-3.24/Modules/Platform/']
 
   # We could run an external pkg-config; however, we need the aclocal files.
   # The easiest way to ensure that they are available is to just install pkg-config.
@@ -70,7 +69,6 @@ packages:
       - xz-utils
       - zlib
       - zstd
-    revision: 3
     configure:
       - args: ['sed', '-i', '/"lib64"/s/64//', '@THIS_SOURCE_DIR@/Modules/GNUInstallDirs.cmake']
       - args: ['cp', '-f', '@SOURCE_ROOT@/scripts/managarm.cmake', '@THIS_SOURCE_DIR@/Modules/Platform/']
@@ -79,10 +77,10 @@ packages:
         - '--prefix=/usr'
         - '--system-libs'
         - '--mandir=/usr/share/man'
-        - '--datadir=/usr/share/cmake-3.22'
+        - '--datadir=/usr/share/cmake-3.24'
         - '--no-system-jsoncpp'
         - '--no-system-librhash'
-        - '--docdir=/usr/share/doc/cmake-3.22.0'
+        - '--docdir=/usr/share/doc/cmake-3.24.1'
         - '--parallel=@PARALLELISM@'
         - '--'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
