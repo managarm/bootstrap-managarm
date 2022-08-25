@@ -126,8 +126,8 @@ packages:
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/gzip.git'
-      tag: 'v1.11'
-      version: '1.11'
+      tag: 'v1.12'
+      version: '1.12'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -142,7 +142,6 @@ packages:
       - host-automake-v1.15
     pkgs_required:
       - mlibc
-    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -412,15 +411,14 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/facebook/zstd.git'
-      tag: 'v1.5.0'
-      version: '1.5.0'
+      tag: 'v1.5.2'
+      version: '1.5.2'
     tools_required:
       - system-gcc
     pkgs_required:
       - mlibc
       - zlib
       - xz-utils
-    revision: 3
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:

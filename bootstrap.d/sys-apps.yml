@@ -2,8 +2,8 @@ sources:
   - name: file
     subdir: ports
     git: 'https://github.com/file/file.git'
-    tag: 'FILE5_41'
-    version: '5.41'
+    tag: 'FILE5_42'
+    version: '5.42'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.15
@@ -50,11 +50,11 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/coreutils.git'
-      tag: 'v9.0'
-      version: '9.0'
+      tag: 'v9.1'
+      version: '9.1'
       tools_required:
         - host-autoconf-v2.69
-        - host-automake-v1.11
+        - host-automake-v1.15
       regenerate:
         - args: ['./bootstrap']
         - args: ['cp',
@@ -64,7 +64,6 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
     configure:
       # Huge hack: coreutils does not compile the build-machine binary make-prime-list
       # using the build-machine compiler. Hence, build and invoke the binary manually here.
@@ -178,7 +177,6 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
-    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -198,8 +196,8 @@ packages:
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/findutils.git'
-      tag: 'v4.8.0'
-      version: '4.8.0'
+      tag: 'v4.9.0'
+      version: '4.9.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -215,7 +213,6 @@ packages:
       - host-python
     pkgs_required:
       - mlibc
-    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -351,11 +348,11 @@ packages:
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
-      url: 'https://www.greenwoodsoftware.com/less/less-563.tar.gz'
+      url: 'https://www.greenwoodsoftware.com/less/less-590.tar.gz'
       format: 'tar.gz'
-      checksum: blake2b:813e54b9a115600e4f20009ccad3708efc64ab4ee940aa3624e968045557bbfef6ace49b791f4b9efff86bf43df9fe2a04a160e76718396e0dae17f0bdaa62fb
-      extract_path: 'less-563'
-      version: '563'
+      checksum: blake2b:0f640f1b6b4d4925c4904ee77460e8becd2dae168fe5c1483bf6a9cfabe9eb0abdc4d4811507ba88a2b4cff6c238158bd8b4463b63d3d7863b44ce8538d32adb
+      extract_path: 'less-590'
+      version: '590'
     tools_required:
       - system-gcc
       - host-autoconf-v2.69
@@ -364,7 +361,6 @@ packages:
     pkgs_required:
       - mlibc
       - ncurses
-    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

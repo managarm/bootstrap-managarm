@@ -1372,20 +1372,40 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/madler/zlib.git'
-      tag: 'v1.2.11'
-      version: '1.2.11'
+      tag: 'v1.2.12'
+      version: '1.2.12'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['autoreconf', '-fvi']
+          workdir: '@THIS_SOURCE_DIR@/contrib/minizip'
     tools_required:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
+        - '--prefix=/usr'
+        environ:
+          CHOST: '@OPTION:arch-triple@'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+      - args:
+        - '@THIS_SOURCE_DIR@/contrib/minizip/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--disable-static'
         environ:
           CHOST: '@OPTION:arch-triple@'
           prefix: '/usr'
-    build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
         environ:
