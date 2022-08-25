@@ -8,7 +8,7 @@ sources:
 
   - name: limine
     subdir: 'ports'
-    url: 'https://github.com/limine-bootloader/limine/releases/download/v3.16.3/limine-3.16.3.tar.xz'
+    url: 'https://github.com/limine-bootloader/limine/releases/download/v3.17/limine-3.17.tar.xz'
     format: 'tar.xz'
     checksum: blake2b:086b5dfb733da837d6c2fe97355549c8ab05af5cda3e97a170cb225d639c90f34391076bac01103eb86d7a7c874dcb358de305806b5ff366a177b820f3680832
     extract_path: 'limine-3.17'
@@ -25,7 +25,7 @@ tools:
     from_source: limine
     tools_required:
       - system-gcc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -46,7 +46,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
