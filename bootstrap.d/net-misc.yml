@@ -3,8 +3,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/curl/curl.git'
-      tag: 'curl-7_80_0'
-      version: '7.80.0'
+      tag: 'curl-7_84_0'
+      version: '7.84.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -24,7 +24,6 @@ packages:
       - openssl
       - zlib
       - zstd
-    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
