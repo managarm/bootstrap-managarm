@@ -38,11 +38,11 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/cairo/cairo.git'
-      tag: '1.17.4'
-      version: '1.17.4'
+      tag: '1.17.6'
+      version: '1.17.6'
       tools_required:
-        - host-autoconf-v2.64
-        - host-automake-v1.11
+        - host-autoconf-v2.69
+        - host-automake-v1.15
         - host-libtool
         - host-pkg-config
       regenerate:
@@ -51,8 +51,8 @@ packages:
             'NOCONFIGURE': 'yes'
     tools_required:
       - system-gcc
-      - host-autoconf-v2.64
-      - host-automake-v1.11
+      - host-autoconf-v2.69
+      - host-automake-v1.15
       - host-libtool
       - host-pkg-config
     pkgs_required:
@@ -66,7 +66,6 @@ packages:
       - libxext
       - mesa
       - libxrender
-    revision: 4
     configure:
       - args:
         # For now, we build without glesv2 backend as Weston prefers the image backend.
