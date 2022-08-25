@@ -30,8 +30,8 @@ sources:
   - name: nss
     subdir: 'ports'
     git: 'https://github.com/nss-dev/nss.git'
-    tag: 'NSS_3_77_RTM'
-    version: '3.77.RTM'
+    tag: 'NSS_3_82_RTM'
+    version: '3.82.RTM'
 
 tools:
   - name: host-glib
@@ -1197,7 +1197,6 @@ packages:
       - nspr
       - sqlite
       - zlib
-    revision: 2
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
