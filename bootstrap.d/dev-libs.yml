@@ -1136,8 +1136,8 @@ packages:
     source:
       subdir: 'ports'
       hg: 'https://hg.mozilla.org/projects/nspr/'
-      tag: 'NSPR_4_33_RTM'
-      version: '4.33'
+      tag: 'NSPR_4_34_1_RTM'
+      version: '4.34.1'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1151,7 +1151,6 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
     configure:
       # Disable installing two unneeded scripts.
       - args: ['sed', '-ri', '/^RELEASE/s/^/#/', '@THIS_SOURCE_DIR@/pr/src/misc/Makefile.in']
