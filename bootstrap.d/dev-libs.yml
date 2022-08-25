@@ -1064,7 +1064,7 @@ packages:
     pkgs_required:
       - mlibc
       - gmp
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1072,7 +1072,7 @@ packages:
         - '--prefix=/usr'
         - '--enable-static=no'
         - '--enable-shared=yes'
-        - '--docdir=/usr/share/doc/mpfr-4.0.2'
+        - '--docdir=/usr/share/doc/mpfr-4.1.0'
         - '--with-pic'
         environ:
           # MPFR's configuration script misdetects cross-compilations. Hence,
