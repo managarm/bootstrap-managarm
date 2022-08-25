@@ -11,8 +11,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.gnome.org/GNOME/gsettings-desktop-schemas.git'
-      tag: '3.38.0'
-      version: '3.38.0'
+      tag: '42.0'
+      version: '42.0'
     tools_required:
       - system-gcc
       - host-gobject-introspection
@@ -23,7 +23,6 @@ packages:
     pkgs_required:
       - mlibc
       - glib
-    revision: 4
     configure:
       - args: |
               sed -i -r 's:"(/system):"/org/gnome\1:g' @THIS_SOURCE_DIR@/schemas/*.in
