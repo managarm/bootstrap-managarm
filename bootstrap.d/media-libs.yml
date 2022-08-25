@@ -5,8 +5,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/fontconfig/fontconfig'
-      tag: '2.13.92'
-      version: '2.13.92'
+      tag: '2.14.0'
+      version: '2.14.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -31,7 +31,6 @@ packages:
       - host-pkg-config
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
-    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
