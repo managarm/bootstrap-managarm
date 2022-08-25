@@ -1398,19 +1398,20 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
-      - args:
-        - '@THIS_SOURCE_DIR@/contrib/minizip/configure'
-        - '--host=@OPTION:arch-triple@'
-        - '--prefix=/usr'
-        - '--disable-static'
-        environ:
-          CHOST: '@OPTION:arch-triple@'
-          prefix: '/usr'
-      - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'install']
-        environ:
-          DESTDIR: '@THIS_COLLECT_DIR@'
-        quiet: true
+      # This fails on ci, and needs further investigation.
+      # - args:
+      #   - '@THIS_SOURCE_DIR@/contrib/minizip/configure'
+      #   - '--host=@OPTION:arch-triple@'
+      #   - '--prefix=/usr'
+      #   - '--disable-static'
+      #   environ:
+      #     CHOST: '@OPTION:arch-triple@'
+      #     prefix: '/usr'
+      # - args: ['make', '-j@PARALLELISM@']
+      # - args: ['make', 'install']
+      #   environ:
+      #     DESTDIR: '@THIS_COLLECT_DIR@'
+      #   quiet: true
 
   - name: libtsm
     labels: [aarch64]
