@@ -11,8 +11,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.gnome.org/GNOME/glib-networking.git'
-      tag: '2.70.0'
-      version: '2.70.0'
+      tag: '2.72.2'
+      version: '2.72.2'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -23,7 +23,6 @@ packages:
       - glib
       - gnutls
       - gsettings-desktop-schemas
-    revision: 4
     configure:
       - args:
         - 'meson'
