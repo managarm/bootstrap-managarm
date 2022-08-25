@@ -531,8 +531,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://dev.gnupg.org/source/libgcrypt.git'
-      tag: 'libgcrypt-1.9.4'
-      version: '1.9.4'
+      tag: 'libgcrypt-1.10.1'
+      version: '1.10.1'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -545,7 +545,6 @@ packages:
     pkgs_required:
       - mlibc
       - libgpg-error
-    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
