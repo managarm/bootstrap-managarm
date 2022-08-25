@@ -100,8 +100,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.gnome.org/GNOME/atk.git'
-      tag: 'ATK_2_36_0'
-      version: '2.36.0'
+      tag: '2.38.0'
+      version: '2.38.0'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -110,7 +110,6 @@ packages:
     pkgs_required:
       - mlibc
       - glib
-    revision: 3
     configure:
       - args:
         - 'meson'
