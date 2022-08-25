@@ -244,8 +244,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/mesa/drm'
-      tag: 'libdrm-2.4.109'
-      version: '2.4.109'
+      tag: 'libdrm-2.4.112'
+      version: '2.4.112'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -258,7 +258,6 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
     configure:
       - args:
         - 'meson'
