@@ -8,11 +8,11 @@ sources:
 
   - name: limine
     subdir: 'ports'
-    url: 'https://github.com/limine-bootloader/limine/releases/download/v3.17.1/limine-3.17.1.tar.xz'
+    url: 'https://github.com/limine-bootloader/limine/releases/download/v3.17.3/limine-3.17.3.tar.xz'
     format: 'tar.xz'
-    checksum: blake2b:e89427c55db328a46957ccd7f3524d453bb2c178da455faa23ee15512cdf665b7c62a62e829925b7d885f78c5df3fb1956b8adf47d61c84a81e870f89981decb
-    extract_path: 'limine-3.17.1'
-    version: '3.17.1'
+    checksum: blake2b:72760ce49b8547657de293406f47feddcb4e7d9321bef576bbd2d04b3826dfa17cb82df6a871a23b98d27de507909edae72aca76a6638de05b0919532b9f66d2
+    extract_path: 'limine-3.17.3'
+    version: '3.17.3'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.15
