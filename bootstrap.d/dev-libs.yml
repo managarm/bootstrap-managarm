@@ -2,8 +2,8 @@ sources:
   - name: glib
     subdir: ports
     git: 'https://gitlab.gnome.org/GNOME/glib.git'
-    tag: '2.70.3'
-    version: '2.70.3'
+    tag: '2.72.3'
+    version: '2.72.3'
 
   - name: gobject-introspection
     subdir: 'ports'
@@ -30,8 +30,8 @@ sources:
   - name: nss
     subdir: 'ports'
     git: 'https://github.com/nss-dev/nss.git'
-    tag: 'NSS_3_77_RTM'
-    version: '3.77.RTM'
+    tag: 'NSS_3_82_RTM'
+    version: '3.82.RTM'
 
 tools:
   - name: host-glib
@@ -39,7 +39,6 @@ tools:
     architecture: noarch
     exports_aclocal: true
     from_source: glib
-    revision: 4
     configure:
       - args:
         - 'meson'
@@ -100,8 +99,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.gnome.org/GNOME/atk.git'
-      tag: 'ATK_2_36_0'
-      version: '2.36.0'
+      tag: '2.38.0'
+      version: '2.38.0'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -110,7 +109,6 @@ packages:
     pkgs_required:
       - mlibc
       - glib
-    revision: 3
     configure:
       - args:
         - 'meson'
@@ -180,14 +178,13 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/google/double-conversion.git'
-      tag: 'v3.1.5'
-      version: '3.1.5'
+      tag: 'v3.2.1'
+      version: '3.2.1'
     tools_required:
       - host-cmake
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -217,8 +214,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/fribidi/fribidi.git'
-      tag: 'v1.0.11'
-      version: '1.0.11'
+      tag: 'v1.0.12'
+      version: '1.0.12'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -235,7 +232,6 @@ packages:
       - host-automake-v1.15
     pkgs_required:
       - mlibc
-    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -264,7 +260,6 @@ packages:
       - zlib
       - libiconv
       - libintl
-    revision: 5
     configure:
       - args:
         - 'meson'
@@ -382,8 +377,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/libevdev/libevdev.git'
-      tag: 'libevdev-1.12.0'
-      version: '1.12.0'
+      tag: 'libevdev-1.13.0'
+      version: '1.13.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -397,7 +392,6 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -537,8 +531,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://dev.gnupg.org/source/libgcrypt.git'
-      tag: 'libgcrypt-1.9.4'
-      version: '1.9.4'
+      tag: 'libgcrypt-1.10.1'
+      version: '1.10.1'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -551,7 +545,6 @@ packages:
     pkgs_required:
       - mlibc
       - libgpg-error
-    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -585,8 +578,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://dev.gnupg.org/source/libgpg-error.git'
-      tag: 'libgpg-error-1.43'
-      version: '1.43'
+      tag: 'libgpg-error-1.45'
+      version: '1.45'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -598,7 +591,6 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
     configure:
       # libgpg-error does not know about managarm, teach it
       - args: ['cp', '-v', '@THIS_SOURCE_DIR@/src/syscfg/lock-obj-pub.x86_64-unknown-linux-gnu.h',
@@ -1065,7 +1057,7 @@ packages:
     pkgs_required:
       - mlibc
       - gmp
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1073,7 +1065,7 @@ packages:
         - '--prefix=/usr'
         - '--enable-static=no'
         - '--enable-shared=yes'
-        - '--docdir=/usr/share/doc/mpfr-4.0.2'
+        - '--docdir=/usr/share/doc/mpfr-4.1.0'
         - '--with-pic'
         environ:
           # MPFR's configuration script misdetects cross-compilations. Hence,
@@ -1137,8 +1129,8 @@ packages:
     source:
       subdir: 'ports'
       hg: 'https://hg.mozilla.org/projects/nspr/'
-      tag: 'NSPR_4_33_RTM'
-      version: '4.33'
+      tag: 'NSPR_4_34_1_RTM'
+      version: '4.34.1'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1152,7 +1144,6 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
     configure:
       # Disable installing two unneeded scripts.
       - args: ['sed', '-ri', '/^RELEASE/s/^/#/', '@THIS_SOURCE_DIR@/pr/src/misc/Makefile.in']
@@ -1199,7 +1190,6 @@ packages:
       - nspr
       - sqlite
       - zlib
-    revision: 2
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -1298,14 +1288,13 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/openssl/openssl.git'
-      tag: 'OpenSSL_1_1_1l'
-      version: '1.1.1l'
+      tag: 'OpenSSL_1_1_1q'
+      version: '1.1.1q'
     tools_required:
       - system-gcc
     pkgs_required:
       - mlibc
       - zlib
-    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/Configure'
@@ -1328,9 +1317,9 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
       # Move the doc dir to a versioned directory
-      - args: ['mv', '@THIS_COLLECT_DIR@/usr/share/doc/openssl', '@THIS_COLLECT_DIR@/usr/share/doc/openssl-1.1.1j']
+      - args: ['mv', '@THIS_COLLECT_DIR@/usr/share/doc/openssl', '@THIS_COLLECT_DIR@/usr/share/doc/openssl-1.1.1q']
       # Install more documentation
-      - args: ['cp', '-fr', '@THIS_SOURCE_DIR@/doc/.', '@THIS_COLLECT_DIR@/usr/share/doc/openssl-1.1.1j']
+      - args: ['cp', '-fr', '@THIS_SOURCE_DIR@/doc/.', '@THIS_COLLECT_DIR@/usr/share/doc/openssl-1.1.1q']
 
   - name: pcre
     labels: [aarch64]
