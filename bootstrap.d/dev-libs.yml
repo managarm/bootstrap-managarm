@@ -614,10 +614,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/libiconv.git'
-      # Last release tag is broken for us, use current master (07-12-2020)
-      branch: 'master'
-      commit: '0eb1068ceb77ba383c3ce2fc391ab40ef686c491'
-      version: '1.16'
+      tag: 'v1.17'
+      version: '1.17'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -627,8 +625,9 @@ packages:
         - host-gettext
       regenerate:
         - args: ['./gitsub.sh', 'pull']
-        # Gnulib broke on commit e3174b6d1fdbe6ea2297bf8c8333f65f9d9d9588, so check out the one before that.
-        - args: ['git', 'checkout', '766ec17a90f67e8cda78394e58a7fffb00f5a4b7']
+        # Checkout current gnulib master, 044bf893acee0a55b22b4be0ede0e3ce010c480a, 29-08-2022.
+        # This avoids random breakage in the future
+        - args: ['git', 'checkout', '044bf893acee0a55b22b4be0ede0e3ce010c480a']
           workdir: '@THIS_SOURCE_DIR@/gnulib'
         - args: ['./autogen.sh']
           environ:
@@ -663,7 +662,6 @@ packages:
       - host-libtool
     pkgs_required:
       - mlibc
-    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
