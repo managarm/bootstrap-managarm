@@ -569,8 +569,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxcb.git'
-      tag: 'libxcb-1.14'
-      version: '1.14'
+      tag: 'libxcb-1.15'
+      version: '1.15'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -583,7 +583,6 @@ packages:
             'NOCONFIGURE': 'yes'
     tools_required:
       - system-gcc
-      - host-python
       - host-autoconf-v2.69
       - host-automake-v1.15
       - host-pkg-config
@@ -594,7 +593,6 @@ packages:
       - libxau
       - libxdmcp
       - xcb-proto
-    revision: 5
     configure:
       - args: ['sed', '-i', "s/pthread-stubs//", '@THIS_SOURCE_DIR@/configure']
       - args:
@@ -607,7 +605,7 @@ packages:
         - '--without-doxygen'
         - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
         environ:
-          PYTHON: '@BUILD_ROOT@/tools/host-python/bin/python3.8'
+          PYTHON: 'python3'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
