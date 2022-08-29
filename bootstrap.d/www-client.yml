@@ -2,11 +2,11 @@ packages:
   - name: links
     source:
       subdir: 'ports'
-      url: 'http://links.twibright.com/download/links-2.25.tar.gz'
+      url: 'http://links.twibright.com/download/links-2.27.tar.gz'
       format: 'tar.gz'
-      checksum: blake2b:2e52c5c00e5e32c927324b2c16e65794492f854e105674d6b1a3607e73ea487ce0fedd8d17dd067f86547ba94ec01ebd2324e7122e1ac0e72bba5e30aa8b8ef1
-      extract_path: 'links-2.25'
-      version: '2.25'
+      checksum: blake2b:e10be3c8dd07ef2fd87afc5dd438c58857350533edfa154e8cf663e8868b5f1fe8a4f7e5c67e2aab3f0c09ab17638fc31e986f5f975af6a79ee2a4c254c1039b
+      extract_path: 'links-2.27'
+      version: '2.27'
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -24,7 +24,6 @@ packages:
       - fontconfig
       - libjpeg-turbo
       - xz-utils
-    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
