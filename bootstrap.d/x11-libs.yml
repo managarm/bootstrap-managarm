@@ -1093,8 +1093,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/xkbcommon/libxkbcommon.git'
-      tag: 'xkbcommon-1.3.1'
-      version: '1.3.1'
+      tag: 'xkbcommon-1.4.1'
+      version: '1.4.1'
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -1110,7 +1110,6 @@ packages:
       - libxcb
       - libxml
       - xkeyboard-config
-    revision: 3
     configure:
       - args:
         - 'meson'
