@@ -815,8 +815,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.com/cjwatson/libpipeline.git'
-      tag: '1.5.4'
-      version: '1.5.4'
+      tag: '1.5.6'
+      version: '1.5.6'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -831,7 +831,6 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
