@@ -848,8 +848,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.com/gnutls/libtasn1.git'
-      tag: 'v4.17.0'
-      version: '4.17.0'
+      tag: 'v4.18.0'
+      version: '4.18.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -864,7 +864,6 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
