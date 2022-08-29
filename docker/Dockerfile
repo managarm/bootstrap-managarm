@@ -83,6 +83,8 @@ RUN apt-get update \
 		python3-wheel \
 		# Used by managarm
 		python3-protobuf \
+		# Used by libxcb
+		python3-xcbgen \
 		# Several programs use rsync
 		rsync \
 		# makeinfo is used in gnu build systems
