@@ -955,11 +955,11 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.gnome.org/GNOME/libxml2.git'
-      tag: 'v2.9.12'
-      version: '2.9.12'
+      tag: 'v2.10.0'
+      version: '2.10.0'
       tools_required:
         - host-autoconf-v2.69
-        - host-automake-v1.11
+        - host-automake-v1.15
         - host-libtool
         - host-pkg-config
       regenerate:
@@ -968,19 +968,16 @@ packages:
             'NOCONFIGURE': 'yes'
     tools_required:
       - system-gcc
-      - host-python
     pkgs_required:
       - mlibc
       - zlib
-      - python
       - libiconv
-    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
-        - '--with-python=@SYSROOT_DIR@/usr/bin/python3.8'
+        - '--without-python'
         - '--disable-static'
         - '--with-threads'
         - '--disable-ipv6'
