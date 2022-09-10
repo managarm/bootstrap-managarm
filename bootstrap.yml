@@ -1675,6 +1675,8 @@ tasks:
     containerless: true
 
   - name: make-image
+    tools_required:
+      - host-limine
     pkgs_required:
       - managarm-kernel
       - managarm-system
