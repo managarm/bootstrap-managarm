@@ -614,10 +614,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/libiconv.git'
-      # Last release tag is broken for us, use current master (07-12-2020)
-      branch: 'master'
-      commit: '0eb1068ceb77ba383c3ce2fc391ab40ef686c491'
-      version: '1.16'
+      tag: 'v1.17'
+      version: '1.17'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -627,8 +625,9 @@ packages:
         - host-gettext
       regenerate:
         - args: ['./gitsub.sh', 'pull']
-        # Gnulib broke on commit e3174b6d1fdbe6ea2297bf8c8333f65f9d9d9588, so check out the one before that.
-        - args: ['git', 'checkout', '766ec17a90f67e8cda78394e58a7fffb00f5a4b7']
+        # Checkout current gnulib master, 044bf893acee0a55b22b4be0ede0e3ce010c480a, 29-08-2022.
+        # This avoids random breakage in the future
+        - args: ['git', 'checkout', '044bf893acee0a55b22b4be0ede0e3ce010c480a']
           workdir: '@THIS_SOURCE_DIR@/gnulib'
         - args: ['./autogen.sh']
           environ:
@@ -663,7 +662,6 @@ packages:
       - host-libtool
     pkgs_required:
       - mlibc
-    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -817,8 +815,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.com/cjwatson/libpipeline.git'
-      tag: '1.5.4'
-      version: '1.5.4'
+      tag: '1.5.6'
+      version: '1.5.6'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -833,7 +831,6 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -851,8 +848,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.com/gnutls/libtasn1.git'
-      tag: 'v4.17.0'
-      version: '4.17.0'
+      tag: 'v4.18.0'
+      version: '4.18.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -867,7 +864,6 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -892,11 +888,11 @@ packages:
       categories: ['dev-libs']
     source:
       subdir: 'ports'
-      url: 'https://ftp.gnu.org/gnu/libunistring/libunistring-0.9.10.tar.xz'
+      url: 'https://ftp.gnu.org/gnu/libunistring/libunistring-1.0.tar.xz'
       format: 'tar.xz'
-      checksum: blake2b:25d162d9d510cc35ad4209acceb9b06bcc0553b8ce56e94f8df12c4df64d91abfc4a9e15b50b5c8d5b9672939305a394a7e83f1892258defb7ae5ac2ccf79dfb
-      extract_path: 'libunistring-0.9.10'
-      version: '0.9.10'
+      checksum: blake2b:8208fe33d4ac2f015b0efb56b0c7dd87afc4bb1c6ca4eb3ded86d7e2101d7b7f68bfd8991af4b6dd408282ec73f134ee0b884e761ff6d52e8a1e398326aec420
+      extract_path: 'libunistring-1.0'
+      version: '1.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -908,7 +904,6 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -916,7 +911,7 @@ packages:
         - '--prefix=/usr'
         - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
         - '--disable-static'
-        - '--docdir=/usr/share/doc/libunistring-0.9.10'
+        - '--docdir=/usr/share/doc/libunistring-1.0'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
@@ -960,11 +955,11 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.gnome.org/GNOME/libxml2.git'
-      tag: 'v2.9.12'
-      version: '2.9.12'
+      tag: 'v2.10.0'
+      version: '2.10.0'
       tools_required:
         - host-autoconf-v2.69
-        - host-automake-v1.11
+        - host-automake-v1.15
         - host-libtool
         - host-pkg-config
       regenerate:
@@ -973,19 +968,16 @@ packages:
             'NOCONFIGURE': 'yes'
     tools_required:
       - system-gcc
-      - host-python
     pkgs_required:
       - mlibc
       - zlib
-      - python
       - libiconv
-    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
-        - '--with-python=@SYSROOT_DIR@/usr/bin/python3.8'
+        - '--without-python'
         - '--disable-static'
         - '--with-threads'
         - '--disable-ipv6'
@@ -1084,8 +1076,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://git.lysator.liu.se/nettle/nettle.git'
-      tag: 'nettle_3.7.3_release_20210606'
-      version: '3.7.3'
+      tag: 'nettle_3.8.1_release_20220727'
+      version: '3.8.1'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1102,7 +1094,6 @@ packages:
     pkgs_required:
       - mlibc
       - gmp
-    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

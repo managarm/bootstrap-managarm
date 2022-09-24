@@ -850,7 +850,7 @@ packages:
       - libarchive
       - openssl
       - zlib
-    revision: 7
+    revision: 8
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:

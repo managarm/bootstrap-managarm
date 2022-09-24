@@ -1,0 +1,26 @@
+From 817dc2102610dd853a718e14eee63373ab31c8eb Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Mon, 29 Aug 2022 01:04:27 +0200
+Subject: [PATCH] Add Managarm support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ src/fcstat.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/fcstat.c b/src/fcstat.c
+index 4f69eae..d0a0664 100644
+--- a/src/fcstat.c
++++ b/src/fcstat.c
+@@ -386,7 +386,7 @@ FcFStatFs (int fd, FcStatFS *statb)
+ #  endif
+ #  if defined(HAVE_STRUCT_STATFS_F_FSTYPENAME)
+ 	p = buf.f_fstypename;
+-#  elif defined(__linux__) || defined (__EMSCRIPTEN__)
++#  elif defined(__linux__) || defined (__EMSCRIPTEN__) || defined(__managarm__)
+ 	switch (buf.f_type)
+ 	{
+ 	case 0x6969: /* nfs */
+-- 
+2.37.2
+

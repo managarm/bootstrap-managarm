@@ -142,8 +142,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/besser82/libxcrypt.git'
-      tag: 'v4.4.26'
-      version: '4.4.26'
+      tag: 'v4.4.28'
+      version: '4.4.28'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -157,7 +157,6 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
