@@ -589,7 +589,6 @@ tools:
     tools_required:
       - virtual: pkgconfig-for-host
         program_name: host-pkg-config
-    revision: 2
     configure:
       - args:
         - 'meson'
@@ -600,6 +599,7 @@ tools:
         - '-Ddocumentation=false'
         - '-Dscanner=true'
         - '-Dlibraries=false'
+        - '-Dtests=false'
         - '@THIS_SOURCE_DIR@'
     compile:
       - args: ['ninja']
