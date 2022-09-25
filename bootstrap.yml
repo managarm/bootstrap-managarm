@@ -177,8 +177,8 @@ sources:
   - name: wayland
     subdir: 'ports'
     git: 'https://github.com/wayland-project/wayland.git'
-    tag: '1.20.0'
-    version: '1.20.0'
+    tag: '1.21.0'
+    version: '1.21.0'
 
 tools:
   - name: host-autoconf-v2.64
@@ -1337,7 +1337,6 @@ packages:
       - mlibc
       - libexpat
       - libffi
-    revision: 3
     configure:
       - args:
         - 'meson'
