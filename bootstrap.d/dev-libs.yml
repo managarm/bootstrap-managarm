@@ -1442,12 +1442,11 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/wayland-project/wayland-protocols.git'
-      tag: '1.24'
-      version: '1.24'
+      tag: '1.26'
+      version: '1.26'
     tools_required:
       - system-gcc
       - wayland-scanner
-    revision: 2
     configure:
       - args:
         - 'meson'
