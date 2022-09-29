@@ -1,0 +1,87 @@
+From 25ad922550d51c1d38f8adfdafae5a584c52392b Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Thu, 29 Sep 2022 17:56:37 +0200
+Subject: [PATCH] Add managarm-specific changes
+
+---
+ include/meson.build | 4 ++--
+ mi/mibitblt.c       | 1 +
+ mi/miinitext.c      | 2 ++
+ os/oscolor.c        | 1 +
+ xkb/xkbActions.c    | 1 +
+ 5 files changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/include/meson.build b/include/meson.build
+index a6c7fa3..83d5f67 100644
+--- a/include/meson.build
++++ b/include/meson.build
+@@ -126,7 +126,7 @@ conf_data.set('HAVE_SYS_SYSMACROS_H', cc.has_header('sys/sysmacros.h') ? '1' : f
+ conf_data.set('HAVE_UNISTD_H', cc.has_header('unistd.h') ? '1' : false)
+ 
+ conf_data.set('HAVE_ARC4RANDOM_BUF', cc.has_function('arc4random_buf', dependencies: libbsd_dep) ? '1' : false)
+-conf_data.set('HAVE_BACKTRACE', cc.has_function('backtrace') ? '1' : false)
++conf_data.set('HAVE_BACKTRACE', false)
+ conf_data.set('HAVE_CBRT', cc.has_function('cbrt') ? '1' : false)
+ conf_data.set('HAVE_EPOLL_CREATE1', cc.has_function('epoll_create1') ? '1' : false)
+ conf_data.set('HAVE_GETUID', cc.has_function('getuid') ? '1' : false)
+@@ -147,7 +147,7 @@ conf_data.set('HAVE_POSIX_FALLOCATE', cc.has_function('posix_fallocate') ? '1' :
+ conf_data.set('HAVE_PORT_CREATE', cc.has_function('port_create') ? '1' : false)
+ conf_data.set('HAVE_REALLOCARRAY', cc.has_function('reallocarray', dependencies: libbsd_dep) ? '1' : false)
+ conf_data.set('HAVE_SETEUID', cc.has_function('seteuid') ? '1' : false)
+-conf_data.set('HAVE_SETITIMER', cc.has_function('setitimer') ? '1' : false)
++conf_data.set('HAVE_SETITIMER', false)
+ conf_data.set('HAVE_SHMCTL64', cc.has_function('shmctl64') ? '1' : false)
+ conf_data.set('HAVE_SIGACTION', cc.has_function('sigaction') ? '1' : false)
+ conf_data.set('HAVE_SIGPROCMASK', cc.has_function('sigprocmask') ? '1' : false)
+diff --git a/mi/mibitblt.c b/mi/mibitblt.c
+index 0b13e49..1a399cb 100644
+--- a/mi/mibitblt.c
++++ b/mi/mibitblt.c
+@@ -61,6 +61,7 @@ SOFTWARE.
+ #include "regionstr.h"
+ #include <X11/Xmd.h>
+ #include "servermd.h"
++#include <strings.h>
+ 
+ #ifdef __MINGW32__
+ #define ffs __builtin_ffs
+diff --git a/mi/miinitext.c b/mi/miinitext.c
+index 2e4aba5..5806d8b 100644
+--- a/mi/miinitext.c
++++ b/mi/miinitext.c
+@@ -97,6 +97,8 @@ SOFTWARE.
+ #undef DPMSExtension
+ #endif
+ 
++#include <strings.h>
++
+ #include "misc.h"
+ #include "extension.h"
+ #include "extinit.h"
+diff --git a/os/oscolor.c b/os/oscolor.c
+index af83c6a..f765388 100644
+--- a/os/oscolor.c
++++ b/os/oscolor.c
+@@ -48,6 +48,7 @@ SOFTWARE.
+ #include <dix-config.h>
+ #endif
+ 
++#include <strings.h>
+ #include <X11/keysym.h>
+ #include "dix.h"
+ #include "os.h"
+diff --git a/xkb/xkbActions.c b/xkb/xkbActions.c
+index db29091..785a00c 100644
+--- a/xkb/xkbActions.c
++++ b/xkb/xkbActions.c
+@@ -29,6 +29,7 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ #endif
+ 
+ #include <stdio.h>
++#include <strings.h>
+ #include <math.h>
+ #include <X11/X.h>
+ #include <X11/Xproto.h>
+-- 
+2.37.3
+
