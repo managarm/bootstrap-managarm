@@ -2027,3 +2027,36 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: libxcvt
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: X.Org xcvt library and cvt program
+      description: VESA CVT standard timing modeline generation library & utility.
+      spdx: 'MIT'
+      website: 'https://wayland.freedesktop.org/xserver.html'
+      maintainer: "no92 <no92.mail@gmail.com>"
+      categories: ['x11-libs']
+    source:
+      subdir: ports
+      git: 'https://gitlab.freedesktop.org/xorg/lib/libxcvt.git'
+      tag: 'libxcvt-0.1.2'
+      version: '0.1.2'
+    tools_required:
+      - system-gcc
+      - host-pkg-config
+    pkgs_required:
+      - mlibc
+    configure:
+      - args:
+        - 'meson'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
