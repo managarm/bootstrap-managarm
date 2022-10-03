@@ -48,11 +48,11 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/proto/xorgproto.git'
-      tag: 'xorgproto-2021.5'
-      version: '2021.5'
+      tag: 'xorgproto-2022.2'
+      version: '2022.2'
       tools_required:
         - host-autoconf-v2.69
-        - host-automake-v1.11
+        - host-automake-v1.15
         - host-libtool
         - host-pkg-config
         - host-xorg-macros
@@ -65,7 +65,6 @@ packages:
     pkgs_required:
       - mlibc
       - xorg-util-macros
-    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -74,6 +73,7 @@ packages:
         - '--sysconfdir=/etc'
         - '--localstatedir=/var'
         - '--disable-static'
+        - '--enable-legacy'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
