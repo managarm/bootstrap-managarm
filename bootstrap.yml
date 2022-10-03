@@ -373,19 +373,24 @@ tools:
       name: libtool
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/libtool.git'
-      tag: 'v2.4.6'
-      version: '2.4.6'
+      tag: 'v2.4.7'
+      version: '2.4.7'
       tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
+        - host-autoconf-v2.71
+        - host-automake-v1.16
       regenerate:
         # libtool's ./bootstrap does a shallow clone with insufficient depth.
         - args: ['git', 'submodule', 'update', '--init']
         - args: ['./bootstrap']
+        - args: ['cp',
+            '@BUILD_ROOT@/tools/host-automake-v1.16/share/automake-1.16/config.sub',
+            '@THIS_SOURCE_DIR@/build-aux/']
+        - args: ['cp',
+            '@BUILD_ROOT@/tools/host-automake-v1.16/share/automake-1.16/config.guess',
+            '@THIS_SOURCE_DIR@/build-aux/']
     tools_required:
-      - host-autoconf-v2.69
-      - host-automake-v1.15
-    revision: 2
+      - host-autoconf-v2.71
+      - host-automake-v1.16
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
