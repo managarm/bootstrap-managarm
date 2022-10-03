@@ -5,11 +5,11 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/proto/xcbproto.git'
-      tag: 'xcb-proto-1.14'
-      version: '1.14'
+      tag: 'xcb-proto-1.15.2'
+      version: '1.15.2'
       tools_required:
         - host-autoconf-v2.69
-        - host-automake-v1.11
+        - host-automake-v1.15
         - host-libtool
         - host-pkg-config
         - host-xorg-macros
@@ -25,7 +25,6 @@ packages:
       - xorg-proto
       - libxau
       - libxdmcp
-    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -35,7 +34,7 @@ packages:
         - '--localstatedir=/var'
         - '--disable-static'
         environ:
-          PYTHON: '@BUILD_ROOT@/tools/host-python/bin/python3.8'
+          PYTHON: '@BUILD_ROOT@/tools/host-python/bin/python3.10'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
