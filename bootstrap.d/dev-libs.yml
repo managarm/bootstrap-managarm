@@ -918,7 +918,6 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
-      - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/charset.alias']
 
   - name: libuv
     source:
