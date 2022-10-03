@@ -1,5 +1,6 @@
 packages:
   - name: alacritty
+    stability_level: broken
     architecture: '@OPTION:arch@'
     metadata:
       summary: GPU-accelerated terminal emulator
