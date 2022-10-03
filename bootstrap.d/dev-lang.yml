@@ -8,13 +8,14 @@ sources:
   - name: python
     subdir: 'ports'
     git: 'https://github.com/python/cpython.git'
-    tag: 'v3.8.2'
-    version: '3.8.2'
+    tag: 'v3.10.4'
+    version: '3.10.4'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.15
       - host-libtool
       - host-pkg-config
+      - host-autoconf-archive
     regenerate:
       - args: ['autoreconf', '-f', '-i']
 
@@ -37,7 +38,6 @@ tools:
     labels: [aarch64]
     architecture: noarch
     from_source: python
-    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -212,7 +212,6 @@ packages:
       - util-linux-libs
       - xz-utils
       - zlib
-    revision: 9
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

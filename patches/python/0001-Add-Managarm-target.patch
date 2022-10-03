@@ -1,32 +1,32 @@
-From db895160638796ba56dc0ba2f7f4469eaf4e3cd0 Mon Sep 17 00:00:00 2001
-From: Dennisbonke <admin@dennisbonke.com>
-Date: Fri, 1 May 2020 16:04:04 +0200
-Subject: [PATCH] Added managarm target
+From 2ccbff8b17fce0ca240aace200295dc8653c2925 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Wed, 13 Apr 2022 18:52:11 +0200
+Subject: [PATCH] Add Managarm target
 
-Signed-off-by: Dennisbonke <admin@dennisbonke.com>
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
  config.sub   |  2 +-
  configure.ac | 15 ++++++++++++++-
  2 files changed, 15 insertions(+), 2 deletions(-)
 
 diff --git a/config.sub b/config.sub
-index ba37cf9..111d4cb 100755
+index d74fb6d..092a302 100755
 --- a/config.sub
 +++ b/config.sub
-@@ -1394,7 +1394,7 @@ case $os in
- 	      | -powermax* | -dnix* | -nx6 | -nx7 | -sei* | -dragonfly* \
- 	      | -skyos* | -haiku* | -rdos* | -toppers* | -drops* | -es* \
- 	      | -onefs* | -tirtos* | -phoenix* | -fuchsia* | -redox* | -bme* \
--	      | -midnightbsd*)
-+	      | -midnightbsd* | -managarm*)
- 	# Remember, each alternative MUST END IN *, to match a version number.
+@@ -1748,7 +1748,7 @@ case $os in
+ 	     | skyos* | haiku* | rdos* | toppers* | drops* | es* \
+ 	     | onefs* | tirtos* | phoenix* | fuchsia* | redox* | bme* \
+ 	     | midnightbsd* | amdhsa* | unleashed* | emscripten* | wasi* \
+-	     | nsk* | powerunix* | genode* | zvmoe* | qnx* | emx* | zephyr*)
++	     | nsk* | powerunix* | genode* | zvmoe* | qnx* | emx* | zephyr* | managarm*)
  		;;
- 	-qnx*)
+ 	# This one is extra strict with allowed versions
+ 	sco3.2v2 | sco3.2v[4-9]* | sco5v6*)
 diff --git a/configure.ac b/configure.ac
-index e57ef7c..2983381 100644
+index 763fc69..0c6ea91 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -379,6 +379,9 @@ then
+@@ -400,6 +400,9 @@ then
  	*-*-cygwin*)
  		ac_sys_system=Cygwin
  		;;
@@ -36,7 +36,7 @@ index e57ef7c..2983381 100644
  	*-*-vxworks*)
  	    ac_sys_system=VxWorks
  	    ;;
-@@ -431,6 +434,9 @@ if test "$cross_compiling" = yes; then
+@@ -452,6 +455,9 @@ if test "$cross_compiling" = yes; then
  	*-*-vxworks*)
  		_host_cpu=$host_cpu
  		;;
@@ -46,7 +46,7 @@ index e57ef7c..2983381 100644
  	*)
  		# for now, limit cross builds to known configurations
  		MACHDEP="unknown"
-@@ -2641,6 +2647,9 @@ then
+@@ -2756,6 +2762,9 @@ then
  	CYGWIN*)
  		LDSHARED="gcc -shared -Wl,--enable-auto-image-base"
  		LDCXXSHARED="g++ -shared -Wl,--enable-auto-image-base";;
@@ -56,7 +56,7 @@ index e57ef7c..2983381 100644
  	*)	LDSHARED="ld";;
  	esac
  fi
-@@ -2677,7 +2686,9 @@ then
+@@ -2792,7 +2801,9 @@ then
  		else CCSHARED="-Kpic -belf"
  		fi;;
  	VxWorks*)
@@ -67,15 +67,15 @@ index e57ef7c..2983381 100644
  	esac
  fi
  AC_MSG_RESULT($CCSHARED)
-@@ -2738,6 +2749,8 @@ then
+@@ -2862,6 +2873,8 @@ then
  		LINKFORSHARED='-Wl,-E -N 2048K';;
  	VxWorks*)
- 		LINKFORSHARED='--export-dynamic';;
+ 		LINKFORSHARED='-Wl,-export-dynamic';;
 +	Managarm*)
 +		LINKFORSHARED='-export-dynamic';;
  	esac
  fi
  AC_MSG_RESULT($LINKFORSHARED)
 -- 
-2.26.2
+2.35.1
 
