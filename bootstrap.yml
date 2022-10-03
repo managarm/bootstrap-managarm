@@ -146,13 +146,39 @@ sources:
     tag: 'releases/gcc-11.1.0'
     version: '11.1.0'
     tools_required:
+      # TODO Dennis: autoconf 2.71 is too new, I'll take it during the toolchain upgrade.
       - host-autoconf-v2.69
-      - host-automake-v1.11
+      - host-automake-v1.16
+      - host-libtool
     regenerate:
-      - args: ['autoconf']
+      - args: ['autoreconf', '-fvi', '-I../config']
         workdir: '@THIS_SOURCE_DIR@/gcc'
-      - args: ['autoconf']
+      - args: ['autoreconf', '-fvi', '-I../config']
         workdir: '@THIS_SOURCE_DIR@/libstdc++-v3'
+      - args: ['libtoolize', '-cfvi']
+        workdir: '@THIS_SOURCE_DIR@/gcc'
+      - args: ['libtoolize', '-cfvi']
+        workdir: '@THIS_SOURCE_DIR@/libstdc++-v3'
+      - args: ['autoreconf', '-fvi', '-I../config']
+        workdir: '@THIS_SOURCE_DIR@/'
+      - args: ['libtoolize', '-cfvi']
+        workdir: '@THIS_SOURCE_DIR@/'
+      - args: ['autoreconf', '-fvi', '-I../config']
+        workdir: '@THIS_SOURCE_DIR@/libbacktrace'
+      - args: ['libtoolize', '-cfvi']
+        workdir: '@THIS_SOURCE_DIR@/libbacktrace'
+      - args: ['autoreconf', '-fvi', '-I../config']
+        workdir: '@THIS_SOURCE_DIR@/lto-plugin'
+      - args: ['libtoolize', '-cfvi']
+        workdir: '@THIS_SOURCE_DIR@/lto-plugin'
+      - args: ['autoreconf', '-fvi', '-I../config']
+        workdir: '@THIS_SOURCE_DIR@/libcc1'
+      - args: ['libtoolize', '-cfvi']
+        workdir: '@THIS_SOURCE_DIR@/libcc1'
+      - args: ['autoreconf', '-fvi', '-I../config']
+        workdir: '@THIS_SOURCE_DIR@/libcpp'
+      - args: ['libtoolize', '-cfvi']
+        workdir: '@THIS_SOURCE_DIR@/libcpp'
 
   - name: protobuf
     subdir: 'ports'
@@ -515,7 +541,7 @@ tools:
     tools_required:
       - tool: cross-binutils
         recursive: true
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -563,7 +589,7 @@ tools:
     tools_required:
       - tool: cross-binutils
         recursive: true
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -620,7 +646,7 @@ tools:
     tools_required:
       - tool: cross-binutils
         recursive: true
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -905,7 +931,7 @@ packages:
       - mpfr
       - mpc
       - zlib
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
