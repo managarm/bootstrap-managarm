@@ -65,11 +65,39 @@ sources:
     tag: 'binutils-2_32'
     version: '2.32'
     tools_required:
+      # TODO Dennis: autoconf-2.71 is too new, I'll grab this during the toolchain upgrade.
       - host-autoconf-v2.69
-      - host-automake-v1.15
+      - host-automake-v1.16
+      - host-libtool
     regenerate:
-      - args: ['autoreconf']
+      - args: ['autoreconf', '-fvi', '-I../config']
+        workdir: '@THIS_SOURCE_DIR@/opcodes'
+      - args: ['libtoolize', '-cfvi']
+        workdir: '@THIS_SOURCE_DIR@/opcodes'
+      - args: ['autoreconf', '-fvi', '-I../config']
+        workdir: '@THIS_SOURCE_DIR@/bfd'
+      - args: ['libtoolize', '-cfvi']
+        workdir: '@THIS_SOURCE_DIR@/bfd'
+      - args: ['autoreconf', '-fvi', '-I../config']
         workdir: '@THIS_SOURCE_DIR@/ld'
+      - args: ['libtoolize', '-cfvi']
+        workdir: '@THIS_SOURCE_DIR@/ld'
+      - args: ['autoreconf', '-fvi', '-I../config']
+        workdir: '@THIS_SOURCE_DIR@/'
+      - args: ['libtoolize', '-cfvi']
+        workdir: '@THIS_SOURCE_DIR@/'
+      - args: ['autoreconf', '-fvi', '-I../config']
+        workdir: '@THIS_SOURCE_DIR@/gas'
+      - args: ['libtoolize', '-cfvi']
+        workdir: '@THIS_SOURCE_DIR@/gas'
+      - args: ['autoreconf', '-fvi', '-I../config']
+        workdir: '@THIS_SOURCE_DIR@/binutils'
+      - args: ['libtoolize', '-cfvi']
+        workdir: '@THIS_SOURCE_DIR@/binutils'
+      - args: ['autoreconf', '-fvi', '-I../config']
+        workdir: '@THIS_SOURCE_DIR@/gprof'
+      - args: ['libtoolize', '-cfvi']
+        workdir: '@THIS_SOURCE_DIR@/gprof'
 
   - name: cralgo
     subdir: 'ports'
@@ -441,7 +469,7 @@ tools:
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     from_source: binutils
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -690,10 +718,10 @@ packages:
       categories: ['sys-devel']
     from_source: binutils
     tools_required:
-      - tool: system-gcc
+      - system-gcc
     pkgs_required:
       - mlibc
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -707,8 +735,8 @@ packages:
         # -g blows up the binary size.
         - 'CFLAGS=-O2'
     build:
-      #- args: ['make', '-j@PARALLELISM@', 'all-binutils', 'all-gas', 'all-ld']
-      - args: ['make', 'all-binutils', 'all-gas', 'all-ld']
+      - args: ['make', '-j@PARALLELISM@', 'all-binutils', 'all-gas', 'all-ld']
+      # - args: ['make', 'all-binutils', 'all-gas', 'all-ld']
       - args: ['make', 'install-binutils', 'install-gas', 'install-ld']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
