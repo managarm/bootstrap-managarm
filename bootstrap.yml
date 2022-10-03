@@ -226,6 +226,24 @@ tools:
     install:
       - args: ['make', 'install']
 
+  - name: host-autoconf-v2.71
+    labels: [aarch64, riscv64]
+    architecture: noarch
+    source:
+      name: autoconf-v2.71
+      subdir: 'ports'
+      url: 'https://ftp.gnu.org/gnu/autoconf/autoconf-2.71.tar.xz'
+      format: 'tar.xz'
+      checksum: blake2b:7fd4b98b4cfff10720e8da6ee91045637991643b50fcb3e47a0ecfcc01600f7b7b36fd1c0a5f08b68a418f1bdbd8d5a98de1008157595dd37cc3a31facb61416
+      extract_path: 'autoconf-2.71'
+      version: '2.71'
+    configure:
+      - args: ['@THIS_SOURCE_DIR@/configure', '--prefix=@PREFIX@']
+    compile:
+      - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'install']
+
   - name: host-automake-v1.11
     labels: [aarch64, riscv64]
     architecture: noarch
