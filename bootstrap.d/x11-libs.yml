@@ -1724,8 +1724,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.gnome.org/GNOME/pango.git'
-      tag: '1.48.10'
-      version: '1.48.10'
+      tag: '1.50.11'
+      version: '1.50.11'
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -1745,7 +1745,6 @@ packages:
       - libxext
       - harfbuzz
       - libxft
-    revision: 3
     configure:
       - args:
         - 'meson'
