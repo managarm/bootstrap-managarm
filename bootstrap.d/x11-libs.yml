@@ -944,8 +944,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxft.git'
-      tag: 'libXft-2.3.4'
-      version: '2.3.4'
+      tag: 'libXft-2.3.6'
+      version: '2.3.6'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -969,7 +969,6 @@ packages:
       - libxrender
       - freetype
       - fontconfig
-    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
