@@ -1,0 +1,131 @@
+From 1b6d09e9c8ac5387b49bcd0ddeaa33a8ad4e7452 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Sun, 9 Oct 2022 21:03:22 +0200
+Subject: [PATCH] Disable sound as we don't support sound
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ src/libreminesgui.cpp | 26 +++++++++++++-------------
+ src/libreminesgui.h   |  2 +-
+ 2 files changed, 14 insertions(+), 14 deletions(-)
+
+diff --git a/src/libreminesgui.cpp b/src/libreminesgui.cpp
+index cdcd6cf..67a7679 100644
+--- a/src/libreminesgui.cpp
++++ b/src/libreminesgui.cpp
+@@ -59,8 +59,8 @@ LibreMinesGui::LibreMinesGui(QWidget *parent, const int thatWidth, const int tha
+     cellLength( 0 ),
+     difficult( NONE ),
+     preferences( new LibreMinesPreferencesDialog(this) ),
+-    dirAppData( QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) ),
+-    sound( new SoundEffects() )
++    dirAppData( QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) )/*,*/
++    // sound( new SoundEffects() )
+ {
+     this->resize(800, 600);
+ 
+@@ -1188,7 +1188,7 @@ void LibreMinesGui::SLOT_showCell(const uchar _X, const uchar _Y)
+     }
+ 
+ 
+-    Q_EMIT(sound->SIGNAL_releaseCell());
++    // Q_EMIT(sound->SIGNAL_releaseCell());
+ }
+ 
+ void LibreMinesGui::SLOT_endGameScore(LibreMinesScore score,
+@@ -1357,7 +1357,7 @@ void LibreMinesGui::SLOT_flagCell(const uchar _X, const uchar _Y)
+         vKeyboardControllerSetCurrentCell(controller.currentX, controller.currentY);
+     }
+ 
+-    Q_EMIT(sound->SIGNAL_flagCell());
++    // Q_EMIT(sound->SIGNAL_flagCell());
+ }
+ 
+ void LibreMinesGui::SLOT_unflagCell(const uchar _X, const uchar _Y)
+@@ -1375,7 +1375,7 @@ void LibreMinesGui::SLOT_unflagCell(const uchar _X, const uchar _Y)
+         vKeyboardControllerSetCurrentCell(controller.currentX, controller.currentY);
+     }
+ 
+-    Q_EMIT(sound->SIGNAL_flagCell());
++    // Q_EMIT(sound->SIGNAL_flagCell());
+ }
+ 
+ void LibreMinesGui::SLOT_remakeGame()
+@@ -1422,7 +1422,7 @@ void LibreMinesGui::SLOT_gameWon()
+ 
+     labelFaceReactionInGame->setPixmap(*pmGrinningFace);
+ 
+-    Q_EMIT(sound->SIGNAL_gameWon());
++    // Q_EMIT(sound->SIGNAL_gameWon());
+ }
+ 
+ void LibreMinesGui::SLOT_gameLost(const uchar _X, const uchar _Y)
+@@ -1487,7 +1487,7 @@ void LibreMinesGui::SLOT_gameLost(const uchar _X, const uchar _Y)
+     }
+ 
+     labelFaceReactionInGame->setPixmap(*pmDizzyFace);
+-    Q_EMIT(sound->SIGNAL_gameLost());
++    // Q_EMIT(sound->SIGNAL_gameLost());
+ }
+ 
+ void LibreMinesGui::SLOT_optionChanged(const QString &name, const QString &value)
+@@ -1738,7 +1738,7 @@ void LibreMinesGui::vKeyboardControllerMoveLeft()
+ 
+     vKeyboardControllerSetCurrentCell(destX, controller.currentY);
+ 
+-    Q_EMIT(sound->SIGNAL_keyboardControllerMove());
++    // Q_EMIT(sound->SIGNAL_keyboardControllerMove());
+ }
+ 
+ void LibreMinesGui::vKeyboardControllerMoveRight()
+@@ -1772,7 +1772,7 @@ void LibreMinesGui::vKeyboardControllerMoveRight()
+ 
+     vKeyboardControllerSetCurrentCell(destX, controller.currentY);
+ 
+-    Q_EMIT(sound->SIGNAL_keyboardControllerMove());
++    // Q_EMIT(sound->SIGNAL_keyboardControllerMove());
+ }
+ 
+ void LibreMinesGui::vKeyboardControllerMoveDown()
+@@ -1806,7 +1806,7 @@ void LibreMinesGui::vKeyboardControllerMoveDown()
+ 
+     vKeyboardControllerSetCurrentCell(controller.currentX, destY);
+ 
+-    Q_EMIT(sound->SIGNAL_keyboardControllerMove());
++    // Q_EMIT(sound->SIGNAL_keyboardControllerMove());
+ }
+ 
+ void LibreMinesGui::vKeyboardControllerMoveUp()
+@@ -1840,7 +1840,7 @@ void LibreMinesGui::vKeyboardControllerMoveUp()
+ 
+     vKeyboardControllerSetCurrentCell(controller.currentX, destY);
+ 
+-    Q_EMIT(sound->SIGNAL_keyboardControllerMove());
++    // Q_EMIT(sound->SIGNAL_keyboardControllerMove());
+ }
+ 
+ void LibreMinesGui::vKeyboardControllerCenterCurrentCell()
+@@ -1883,6 +1883,6 @@ void LibreMinesGui::vUpdatePreferences()
+ #endif
+     }
+ 
+-    sound->setVolume(preferences->optionSoundVolume());
+-    sound->setMuted(preferences->optionSoundVolume() == 0);
++    // sound->setVolume(preferences->optionSoundVolume());
++    // sound->setMuted(preferences->optionSoundVolume() == 0);
+ }
+diff --git a/src/libreminesgui.h b/src/libreminesgui.h
+index 8f97244..82cc6a2 100644
+--- a/src/libreminesgui.h
++++ b/src/libreminesgui.h
+@@ -287,6 +287,6 @@ private:
+ 
+     QDir dirAppData;
+ 
+-    QScopedPointer<SoundEffects> sound;
++    // QScopedPointer<SoundEffects> sound;
+ };
+ #endif // LIBREMINESGUI_H
+-- 
+2.37.2
+
