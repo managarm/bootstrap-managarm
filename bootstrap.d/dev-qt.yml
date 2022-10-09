@@ -253,8 +253,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtlanguageserver.git'
-      tag: 'v6.3.0'
-      version: '6.3.0'
+      tag: 'v6.4.0'
+      version: '6.4.0'
     tools_required:
       - system-gcc
       - host-cmake
@@ -262,7 +262,6 @@ packages:
     pkgs_required:
       - mlibc
       - qtbase6
-    revision: 3
     configure:
       - args:
         - 'cmake'
