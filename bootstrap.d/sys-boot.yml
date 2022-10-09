@@ -8,11 +8,11 @@ sources:
 
   - name: limine
     subdir: 'ports'
-    url: 'https://github.com/limine-bootloader/limine/releases/download/v4.20221007.0/limine-4.20221007.0.tar.xz'
+    url: 'https://github.com/limine-bootloader/limine/releases/download/v4.20221009.0/limine-4.20221009.0.tar.xz'
     format: 'tar.xz'
-    checksum: blake2b:7b526911aefd2c91bf780e135fc4597fcf0cb28626dc874086eaf36e1362a98935b26094a08acd863d1564e994a02e4ef2f518485c111506c184c58c500d9fd1
-    extract_path: 'limine-4.20221007.0'
-    version: '4.20221007.0'
+    checksum: blake2b:db317ef37be8d7cc57dc15229ea6928bf42174f10df5c2b5dc8ee00e1db8bb6c4985ac45302dcad05ae71e77d2a3fbbfd8f7b90ea7747894deafef2e830830ab
+    extract_path: 'limine-4.20221009.0'
+    version: '4.20221009.0'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.15
