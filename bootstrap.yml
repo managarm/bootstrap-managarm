@@ -24,6 +24,7 @@ imports:
   - file: bootstrap.d/net-misc.yml
   - file: bootstrap.d/net-print.yml
   - file: bootstrap.d/sys-apps.yml
+  - file: bootstrap.d/sys-auth.yml
   - file: bootstrap.d/sys-boot.yml
   - file: bootstrap.d/sys-devel.yml
   - file: bootstrap.d/sys-libs.yml
@@ -177,8 +178,8 @@ sources:
   - name: wayland
     subdir: 'ports'
     git: 'https://github.com/wayland-project/wayland.git'
-    tag: '1.20.0'
-    version: '1.20.0'
+    tag: '1.21.0'
+    version: '1.21.0'
 
 tools:
   - name: host-autoconf-v2.64
@@ -589,7 +590,6 @@ tools:
     tools_required:
       - virtual: pkgconfig-for-host
         program_name: host-pkg-config
-    revision: 2
     configure:
       - args:
         - 'meson'
@@ -600,6 +600,7 @@ tools:
         - '-Ddocumentation=false'
         - '-Dscanner=true'
         - '-Dlibraries=false'
+        - '-Dtests=false'
         - '@THIS_SOURCE_DIR@'
     compile:
       - args: ['ninja']
@@ -1337,7 +1338,6 @@ packages:
       - mlibc
       - libexpat
       - libffi
-    revision: 3
     configure:
       - args:
         - 'meson'

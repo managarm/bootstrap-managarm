@@ -1,21 +1,21 @@
-From 71d14cc4f054b9f24e6b0432aaad29e6bfb16acf Mon Sep 17 00:00:00 2001
+From 24fb6f316a624dd427650243c370ce15d54addcb Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
-Date: Fri, 14 Jan 2022 03:23:05 +0100
+Date: Mon, 10 Oct 2022 11:54:07 +0200
 Subject: [PATCH] Managarm-specific changes
 
 ---
  compositor/main.c              | 10 +---------
- libweston/backend-drm/drm.c    | 12 ++++++------
- libweston/backend-drm/fb.c     |  3 ++-
+ libweston/backend-drm/drm.c    | 10 +++++-----
+ libweston/backend-drm/fb.c     |  4 ++--
  libweston/launcher-util.c      | 16 ++--------------
  tools/zunitc/src/zunitc_impl.c |  1 +
- 5 files changed, 12 insertions(+), 30 deletions(-)
+ 5 files changed, 11 insertions(+), 30 deletions(-)
 
 diff --git a/compositor/main.c b/compositor/main.c
-index 322f2ff..801d5fe 100644
+index 2eb0a03..558fe83 100644
 --- a/compositor/main.c
 +++ b/compositor/main.c
-@@ -44,7 +44,7 @@
+@@ -45,7 +45,7 @@
  #include <libevdev/libevdev.h>
  #include <linux/input.h>
  #include <sys/time.h>
@@ -24,7 +24,7 @@ index 322f2ff..801d5fe 100644
  
  #include "weston.h"
  #include <libweston/libweston.h>
-@@ -819,14 +819,6 @@ weston_compositor_log_capabilities(struct weston_compositor *compositor)
+@@ -806,14 +806,6 @@ weston_compositor_log_capabilities(struct weston_compositor *compositor)
  	weston_log_continue(STAMP_SPACE "presentation clock: %s, id %d\n",
  			    clock_name(compositor->presentation_clock),
  			    compositor->presentation_clock);
@@ -40,45 +40,42 @@ index 322f2ff..801d5fe 100644
  
  static bool
 diff --git a/libweston/backend-drm/drm.c b/libweston/backend-drm/drm.c
-index 4278770..5ba7adb 100644
+index 962cc28..387cb34 100644
 --- a/libweston/backend-drm/drm.c
 +++ b/libweston/backend-drm/drm.c
-@@ -559,7 +559,7 @@ drm_output_start_repaint_loop(struct weston_output *output_base)
+@@ -562,7 +562,7 @@ drm_output_start_repaint_loop(struct weston_output *output_base)
  
  	/* Try to get current msc and timestamp via instant query */
  	vbl.request.type |= drm_waitvblank_pipe(output->crtc);
--	ret = drmWaitVBlank(backend->drm.fd, &vbl);
-+	ret = -1; //drmWaitVBlank(backend->drm.fd, &vbl);
+-	ret = drmWaitVBlank(device->drm.fd, &vbl);
++	ret = -1; // drmWaitVBlank(device->drm.fd, &vbl);
  
  	/* Error ret or zero timestamp means failure to get valid timestamp */
  	if ((ret == 0) && (vbl.reply.tval_sec > 0 || vbl.reply.tval_usec > 0)) {
-@@ -629,11 +629,11 @@ drm_repaint_begin(struct weston_compositor *compositor)
- 	b->repaint_data = ret;
+@@ -633,11 +633,11 @@ drm_repaint_begin(struct weston_compositor *compositor)
+ 	device->repaint_data = pending_state;
  
  	if (weston_log_scope_is_enabled(b->debug)) {
 -		char *dbg = weston_compositor_print_scene_graph(compositor);
-+		// char *dbg = weston_compositor_print_scene_graph(compositor);
++		/*char *dbg = weston_compositor_print_scene_graph(compositor);
  		drm_debug(b, "[repaint] Beginning repaint; pending_state %p\n",
- 			  ret);
--		drm_debug(b, "%s", dbg);
+ 			  device->repaint_data);
+ 		drm_debug(b, "%s", dbg);
 -		free(dbg);
-+		// drm_debug(b, "%s", dbg);
-+		// free(dbg);
++		free(dbg);*/
  	}
+ }
  
- 	return ret;
-@@ -3019,7 +3019,7 @@ drm_backend_create(struct weston_compositor *compositor,
+@@ -3135,13 +3135,13 @@ drm_backend_create(struct weston_compositor *compositor,
  	if (parse_gbm_format(config->gbm_format, DRM_FORMAT_XRGB8888, &b->gbm_format) < 0)
  		goto err_compositor;
  
--	/* Check if we run drm-backend using weston-launch */
-+	/* Check if we run drm-backend using weston-launch
- 	compositor->launcher = weston_launcher_connect(compositor, config->tty,
- 						       seat_id, true);
+-	/* Check if we run drm-backend using a compatible launcher */
++	/* Check if we run drm-backend using a compatible launcher
+ 	compositor->launcher = weston_launcher_connect(compositor, seat_id, true);
  	if (compositor->launcher == NULL) {
-@@ -3027,7 +3027,7 @@ drm_backend_create(struct weston_compositor *compositor,
- 			   "weston-launch binary, or your system should "
- 			   "provide the logind D-Bus API.\n");
+ 		weston_log("fatal: your system should either provide the "
+ 			   "logind D-Bus API, or use seatd.\n");
  		goto err_compositor;
 -	}
 +	} */
@@ -86,30 +83,30 @@ index 4278770..5ba7adb 100644
  	b->udev = udev_new();
  	if (b->udev == NULL) {
 diff --git a/libweston/backend-drm/fb.c b/libweston/backend-drm/fb.c
-index ffe2cc5..a6664a8 100644
+index 05b4988..8a00212 100644
 --- a/libweston/backend-drm/fb.c
 +++ b/libweston/backend-drm/fb.c
-@@ -385,13 +385,14 @@ drm_fb_get_from_bo(struct gbm_bo *bo, struct drm_backend *backend,
+@@ -303,13 +303,13 @@ drm_fb_get_from_dmabuf(struct linux_dmabuf_buffer *dmabuf,
  	if (is_opaque)
  		fb->format = pixel_format_get_opaque_substitute(fb->format);
  
-+	/*
- 	if (backend->min_width > fb->width ||
- 	    fb->width > backend->max_width ||
- 	    backend->min_height > fb->height ||
- 	    fb->height > backend->max_height) {
+-	if (device->min_width > fb->width ||
++	/*if (device->min_width > fb->width ||
+ 	    fb->width > device->max_width ||
+ 	    device->min_height > fb->height ||
+ 	    fb->height > device->max_height) {
  		weston_log("bo geometry out of bounds\n");
  		goto err_free;
 -	}
-+	} */
++	}*/
  
- 	if (drm_fb_addfb(backend, fb) != 0) {
- 		if (type == BUFFER_GBM_SURFACE)
+ 	fb->num_planes = dmabuf->attributes.n_planes;
+ 	for (i = 0; i < dmabuf->attributes.n_planes; i++) {
 diff --git a/libweston/launcher-util.c b/libweston/launcher-util.c
-index b2219b6..e627e1e 100644
+index b277606..8ffc821 100644
 --- a/libweston/launcher-util.c
 +++ b/libweston/launcher-util.c
-@@ -76,7 +76,8 @@ WL_EXPORT int
+@@ -74,7 +74,8 @@ WL_EXPORT int
  weston_launcher_open(struct weston_launcher *launcher,
  		     const char *path, int flags)
  {
@@ -119,7 +116,7 @@ index b2219b6..e627e1e 100644
  }
  
  WL_EXPORT void
-@@ -111,17 +112,4 @@ weston_setup_vt_switch_bindings(struct weston_compositor *compositor)
+@@ -109,17 +110,4 @@ weston_setup_vt_switch_bindings(struct weston_compositor *compositor)
  	int ret;
  	uint32_t key;
  	struct weston_launcher *launcher = compositor->launcher;
@@ -138,7 +135,7 @@ index b2219b6..e627e1e 100644
 -						  compositor);
  }
 diff --git a/tools/zunitc/src/zunitc_impl.c b/tools/zunitc/src/zunitc_impl.c
-index 395bdd7..e11a32f 100644
+index 18f0301..f0a3bb6 100644
 --- a/tools/zunitc/src/zunitc_impl.c
 +++ b/tools/zunitc/src/zunitc_impl.c
 @@ -27,6 +27,7 @@
@@ -150,5 +147,5 @@ index 395bdd7..e11a32f 100644
  #include <stdbool.h>
  #include <stdio.h>
 -- 
-2.37.1
+2.37.3
 

@@ -1442,12 +1442,11 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/wayland-project/wayland-protocols.git'
-      tag: '1.24'
-      version: '1.24'
+      tag: '1.26'
+      version: '1.26'
     tools_required:
       - system-gcc
       - wayland-scanner
-    revision: 2
     configure:
       - args:
         - 'meson'
@@ -1469,9 +1468,9 @@ packages:
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
-      git: 'https://github.com/wayland-project/weston.git'
-      tag: '10.0.0'
-      version: '10.0.0'
+      git: 'https://gitlab.freedesktop.org/wayland/weston.git'
+      tag: '11.0.0'
+      version: '11.0.0'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.15
@@ -1493,11 +1492,11 @@ packages:
       - wayland-protocols
       - dejavu
       - libxcursor
-      - xorg-server
+      - xwayland
       - pango
       - glib
       - libjpeg-turbo
-    revision: 3
+      - seatd
     configure:
       - args:
         - 'meson'
@@ -1515,7 +1514,6 @@ packages:
         - '-Dlauncher-logind=false'
         - '-Dbackend-drm-screencast-vaapi=false'
         - '-Dbackend-rdp=false'
-        - '-Dcolor-management-colord=false'
         - '-Dcolor-management-lcms=false'
         - '-Dsystemd=false'
         - '-Dremoting=false'

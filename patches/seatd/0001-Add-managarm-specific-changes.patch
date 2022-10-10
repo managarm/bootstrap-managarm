@@ -1,0 +1,156 @@
+From d2773b13d4f81a2535b519aca6c4159d73ab48a6 Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Thu, 27 Jan 2022 16:53:20 +0100
+Subject: [PATCH] Add managarm-specific changes
+
+---
+ common/drm.c                | 4 ++--
+ common/evdev.c              | 2 +-
+ common/terminal.c           | 8 ++++----
+ include/drm.h               | 2 +-
+ include/evdev.h             | 2 +-
+ libseat/backend/seatd.c     | 2 +-
+ seatd-launch/seatd-launch.c | 4 ++--
+ seatd/client.c              | 2 +-
+ 8 files changed, 13 insertions(+), 13 deletions(-)
+
+diff --git a/common/drm.c b/common/drm.c
+index 9591dc0..8ad3713 100644
+--- a/common/drm.c
++++ b/common/drm.c
+@@ -2,7 +2,7 @@
+ #include <sys/ioctl.h>
+ #include <sys/types.h>
+ 
+-#if defined(__linux__)
++#if defined(__linux__) || defined(__managarm__)
+ #include <sys/sysmacros.h>
+ #endif
+ 
+@@ -24,7 +24,7 @@ int drm_drop_master(int fd) {
+ 	return ioctl(fd, DRM_IOCTL_DROP_MASTER, 0);
+ }
+ 
+-#if defined(__linux__)
++#if defined(__linux__) || defined(__managarm__)
+ int path_is_drm(const char *path) {
+ 	static const char prefix[] = "/dev/dri/";
+ 	static const int prefixlen = STRLEN(prefix);
+diff --git a/common/evdev.c b/common/evdev.c
+index 4aff9bc..b7143fc 100644
+--- a/common/evdev.c
++++ b/common/evdev.c
+@@ -3,7 +3,7 @@
+ #include <sys/ioctl.h>
+ #include <sys/types.h>
+ 
+-#if defined(__linux__)
++#if defined(__linux__) || defined(__managarm__)
+ #include <linux/input.h>
+ #include <linux/major.h>
+ #include <sys/sysmacros.h>
+diff --git a/common/terminal.c b/common/terminal.c
+index 0c3466f..dbfce9b 100644
+--- a/common/terminal.c
++++ b/common/terminal.c
+@@ -8,7 +8,7 @@
+ #include <sys/ioctl.h>
+ #include <unistd.h>
+ 
+-#if defined(__linux__)
++#if defined(__linux__) || defined(__managarm__)
+ #include <linux/kd.h>
+ #include <linux/vt.h>
+ #define K_ENABLE  K_UNICODE
+@@ -126,10 +126,10 @@ static int get_tty_path(int tty, char path[static TTYPATHLEN]) {
+ 	path[offset++] = '\0';
+ 	return 0;
+ }
+-#elif defined(__linux__)
++#elif defined(__linux__) || defined(__managarm__)
+ static int get_tty_path(int tty, char path[static TTYPATHLEN]) {
+ 	assert(tty >= 0);
+-	if (snprintf(path, TTYPATHLEN, "/dev/tty%d", tty) == -1) {
++	if (snprintf(path, TTYPATHLEN, "/dev/ttyS%d", tty) == -1) {
+ 		return -1;
+ 	}
+ 	return 0;
+@@ -153,7 +153,7 @@ int terminal_open(int vt) {
+ }
+ 
+ int terminal_current_vt(int fd) {
+-#if defined(__linux__)
++#if defined(__linux__) || defined(__managarm__)
+ 	struct vt_stat st;
+ 	int res = ioctl(fd, VT_GETSTATE, &st);
+ 	close(fd);
+diff --git a/include/drm.h b/include/drm.h
+index 8a7fb10..18d8afa 100644
+--- a/include/drm.h
++++ b/include/drm.h
+@@ -5,7 +5,7 @@ int drm_set_master(int fd);
+ int drm_drop_master(int fd);
+ int path_is_drm(const char *path);
+ 
+-#if defined(__linux__)
++#if defined(__linux__)  || defined(__managarm__)
+ #include <sys/types.h>
+ int dev_is_drm(dev_t device);
+ #endif
+diff --git a/include/evdev.h b/include/evdev.h
+index 6ebd943..1d14c46 100644
+--- a/include/evdev.h
++++ b/include/evdev.h
+@@ -4,7 +4,7 @@
+ int evdev_revoke(int fd);
+ int path_is_evdev(const char *path);
+ 
+-#if defined(__linux__)
++#if defined(__linux__) || defined(__managarm__)
+ #include <sys/types.h>
+ int dev_is_evdev(dev_t device);
+ #endif
+diff --git a/libseat/backend/seatd.c b/libseat/backend/seatd.c
+index 26308d1..fae5adc 100644
+--- a/libseat/backend/seatd.c
++++ b/libseat/backend/seatd.c
+@@ -620,7 +620,7 @@ const struct seat_impl seatd_impl = {
+ 
+ static int set_deathsig(int signal);
+ 
+-#if defined(__linux__)
++#if defined(__linux__) || defined(__managarm__)
+ #include <sys/prctl.h>
+ 
+ static int set_deathsig(int signal) {
+diff --git a/seatd-launch/seatd-launch.c b/seatd-launch/seatd-launch.c
+index 69ca86a..650ee0b 100644
+--- a/seatd-launch/seatd-launch.c
++++ b/seatd-launch/seatd-launch.c
+@@ -130,8 +130,8 @@ int main(int argc, char *argv[]) {
+ 
+ 	// Restrict access to the socket to just us
+ 	if (chown(sockpath, uid, gid) == -1) {
+-		perror("Could not chown seatd socket");
+-		goto error_seatd;
++		// perror("Could not chown seatd socket");
++		// goto error_seatd;
+ 	}
+ 	if (chmod(sockpath, 0700) == -1) {
+ 		perror("Could not chmod socket");
+diff --git a/seatd/client.c b/seatd/client.c
+index 220c5d3..faf6ccd 100644
+--- a/seatd/client.c
++++ b/seatd/client.c
+@@ -24,7 +24,7 @@
+ #include "terminal.h"
+ 
+ static int get_peer(int fd, pid_t *pid, uid_t *uid, gid_t *gid) {
+-#if defined(__linux__)
++#if defined(__linux__) || defined(__managarm__)
+ 	struct ucred cred;
+ 	socklen_t len = sizeof cred;
+ 	if (getsockopt(fd, SOL_SOCKET, SO_PEERCRED, &cred, &len) == -1) {
+-- 
+2.35.1
+

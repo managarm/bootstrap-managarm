@@ -85,8 +85,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/xserver.git'
-      tag: 'xorg-server-1.20.12'
-      version: '1.20.12'
+      tag: 'xorg-server-21.1.4'
+      version: '21.1.4'
     tools_required:
       - system-gcc
       - wayland-scanner
@@ -117,7 +117,6 @@ packages:
       - nettle
       - xkbcomp
       - pixman
-    revision: 3
     configure:
       - args:
         - 'meson'
@@ -128,14 +127,12 @@ packages:
         - '--prefix=/usr'
         - '-Dxorg=false'
         - '-Dxephyr=false'
-        - '-Dxwayland=true'
         - '-Dxnest=false'
-        - '-Ddmx=false'
         - '-Dxvfb=false'
         - '-Dxkb_output_dir=/var/lib/xkb'
-        - '-Dos_vendor="The Managarm Project"'
         - '-Dvendor_name="The Managarm Project"'
         - '-Dvendor_name_short="Managarm"'
+        - '-Dvendor_web="https://managarm.org"'
         - '-Dsuid_wrapper=false'
         - '-Dpciaccess=false'
         - '-Ddpms=false'
@@ -145,6 +142,72 @@ packages:
         - '-Dxv=false'
         - '-Dxvmc=false'
         - '-Dsystemd_logind=false'
+        - '-Dsecure-rpc=false'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: xwayland
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Standalone X server running under Wayland
+      description: Wayland is a complete window system in itself, but even so, if we're migrating away from X, it makes sense to have a good backwards compatibility story. With a few changes, the Xorg server can be modified to use wayland input devices for input and forward either the root window or individual top-level windows as wayland surfaces. The server still runs the same 2D driver with the same acceleration code as it does when it runs natively. The main difference is that wayland handles presentation of the windows instead of KMS.
+      spdx: 'MIT'
+      website: 'https://wayland.freedesktop.org/xserver.html'
+      maintainer: "no92 <no92.mail@gmail.com>"
+      categories: ['x11-base']
+    source:
+      subdir: ports
+      git: 'https://gitlab.freedesktop.org/xorg/xserver.git'
+      tag: 'xwayland-22.1.3'
+      version: '22.1.3'
+    tools_required:
+      - system-gcc
+      - wayland-scanner
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+      - virtual: pkgconfig-for-host
+        program_name: host-pkg-config
+    pkgs_required:
+      - mlibc
+      - wayland
+      - wayland-protocols
+      - libxcvt
+      - xcb-proto
+      - xorg-proto
+      - libdrm
+      - libxshmfence
+      - libxkbfile
+      - libxfont2
+      - libepoxy
+      - libxcb
+      - libxext
+      - libxdmcp
+      - nettle
+      - xkbcomp
+      - pixman
+    configure:
+      - args:
+        - 'meson'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '-Dxvfb=false'
+        - '-Dxkb_output_dir=/var/lib/xkb'
+        - '-Dvendor_name="The Managarm Project"'
+        - '-Dvendor_name_short="Managarm"'
+        - '-Dvendor_web="https://managarm.org"'
+        - '-Ddpms=false'
+        - '-Dscreensaver=false'
+        - '-Dxres=false'
+        - '-Dxinerama=false'
+        - '-Dxv=false'
         - '-Dsecure-rpc=false'
         - '@THIS_SOURCE_DIR@'
     build:
