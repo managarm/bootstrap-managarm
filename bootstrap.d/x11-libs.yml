@@ -246,18 +246,11 @@ packages:
       git: 'https://gitlab.freedesktop.org/mesa/drm'
       tag: 'libdrm-2.4.113'
       version: '2.4.113'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.11
-        - host-libtool
-        - host-xorg-macros
-        - host-pkg-config
-        - virtual: pkgconfig-for-target
-          triple: "@OPTION:arch-triple@"
     tools_required:
       - system-gcc
     pkgs_required:
       - mlibc
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -273,6 +266,9 @@ packages:
         - '-Dradeon=disabled'
         - '-Damdgpu=disabled'
         - '-Dnouveau=disabled'
+        - '-Dfreedreno=disabled'
+        - '-Detnaviv=disabled'
+        - '-Dvc4=disabled'
         # We might want to build cairo with OpenGL support.
         # Doing so would introduce a circular dependency here.
         - '-Dcairo-tests=disabled'
