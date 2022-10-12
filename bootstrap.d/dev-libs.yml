@@ -45,6 +45,7 @@ tools:
         - '--prefix=@PREFIX@'
         - '--libdir=lib'
         - '@THIS_SOURCE_DIR@'
+    revision: 2
     compile:
       - args: ['ninja']
     install:
@@ -260,6 +261,7 @@ packages:
       - zlib
       - libiconv
       - libintl
+    revision: 2
     configure:
       - args:
         - 'meson'

@@ -1,7 +1,7 @@
-From 6ecacaa62f5b20d9a4100e114de82c148cf80a54 Mon Sep 17 00:00:00 2001
+From af738f4db5bdca6cd587b33ca22bb4bb7d03b07f Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Thu, 25 Aug 2022 11:46:31 +0200
-Subject: [PATCH] Add Managarm support
+Subject: [PATCH 1/2] Add Managarm support
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
@@ -48,5 +48,5 @@ index 9273533..2e3b9b2 100644
  #include <errno.h>
  #include <garray.h>
 -- 
-2.36.1
+2.37.2
 
