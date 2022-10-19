@@ -37,6 +37,43 @@ packages:
       # Fix a small permission issue during installation
       - args: ['chmod', '0755', '@THIS_COLLECT_DIR@/etc/ssl/certs/.']
 
+  - name: cmatrix
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: An ncurses based app to show a scrolling screen from the Matrix
+      description: This package provides a classic Matrix screen
+      spdx: 'GPL-2.0-only'
+      website: 'https://github.com/abishekvashok/cmatrix'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['app-misc']
+    source:
+      subdir: ports
+      git: 'https://github.com/abishekvashok/cmatrix.git'
+      tag: 'v2.0'
+      version: '2.0'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+      regenerate:
+        - args: ['autoreconf', '-fvi']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - ncurses
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--without-fonts'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: sl
     architecture: '@OPTION:arch@'
     metadata:
