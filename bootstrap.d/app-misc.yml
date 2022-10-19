@@ -1,5 +1,7 @@
 packages:
   - name: ca-certificates
+    labels: [aarch64]
+    architecture: noarch
     metadata:
       summary: Common CA certificates PEM files
       description: This package provides the standard set of Certificate Authorities as chosen by Mozilla in their NSS project  It also includes a script to (re)generate the certificate files.
@@ -7,8 +9,6 @@ packages:
       website: 'https://packages.debian.org/sid/ca-certificates'
       maintainer: "Dennis Bonke <dennis@managarm.org>"
       categories: ['app-misc']
-    labels: [aarch64]
-    architecture: noarch
     source:
       subdir: ports
       git: 'https://github.com/djlucas/make-ca.git'
