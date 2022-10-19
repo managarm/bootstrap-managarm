@@ -75,6 +75,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: sl
+    labels: [aarch64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: Never type 'ls' wrong again!
@@ -94,7 +95,7 @@ packages:
     pkgs_required:
       - mlibc
       - ncurses
-    revision: 4
+    revision: 5
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
