@@ -121,6 +121,7 @@ tools:
 
 packages:
   - name: nasm
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       url: 'https://www.nasm.us/pub/nasm/releasebuilds/2.14.02/nasm-2.14.02.tar.xz'
@@ -146,6 +147,7 @@ packages:
         quiet: true
 
   - name: perl
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://github.com/Perl/perl5.git'
@@ -294,6 +296,7 @@ packages:
       - args: ['chmod', '-v', '755', '@THIS_COLLECT_DIR@/usr/lib/libtcl8.6.so']
 
   - name: yasm
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://github.com/yasm/yasm.git'

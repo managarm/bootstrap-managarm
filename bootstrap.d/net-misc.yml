@@ -1,5 +1,6 @@
 packages:
   - name: curl
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://github.com/curl/curl.git'
@@ -60,6 +61,7 @@ packages:
       - args: ['cp', '@THIS_BUILD_DIR@/protocols', '@THIS_COLLECT_DIR@/etc/']
 
   - name: rsync
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://github.com/WayneD/rsync.git'
@@ -121,6 +123,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: socat
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://repo.or.cz/socat.git'

@@ -75,6 +75,7 @@ tools:
 
 packages:
   - name: bc
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://github.com/gavinhoward/bc.git'
@@ -101,6 +102,7 @@ packages:
 
   - name: bison
     stability_level: broken
+    architecture: '@OPTION:arch@'
     from_source: bison
     tools_required:
       - system-gcc
@@ -123,6 +125,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: flex
+    architecture: '@OPTION:arch@'
     stability_level: broken
     source:
       subdir: 'ports'
@@ -158,6 +161,7 @@ packages:
       - args: ['ln', '-s', 'flex', '@THIS_COLLECT_DIR@/usr/bin/lex']
 
   - name: gettext
+    architecture: '@OPTION:arch@'
     from_source: gettext
     stability_level: broken
     tools_required:
@@ -190,6 +194,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: m4
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/m4.git'
@@ -227,6 +232,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: make
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/make.git'
@@ -264,6 +270,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: patch
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/patch.git'

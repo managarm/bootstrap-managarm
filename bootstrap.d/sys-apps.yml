@@ -419,6 +419,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: man-pages-posix
+    architecture: noarch
     source:
       subdir: ports
       url: 'https://mirrors.edge.kernel.org/pub/linux/docs/man-pages/man-pages-posix/man-pages-posix-2017-a.tar.gz'
@@ -475,6 +476,7 @@ packages:
         quiet: true
 
   - name: neofetch
+    architecture: noarch
     source:
       subdir: ports
       git: 'https://github.com/64/neofetch.git'

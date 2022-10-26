@@ -50,6 +50,7 @@ packages:
 
   # Meta package with build essentials
   - name: base-devel
+    architecture: noarch
     source:
       subdir: meta-sources
       version: '1.0'

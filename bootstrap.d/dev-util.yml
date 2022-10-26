@@ -55,6 +55,7 @@ tools:
 
 packages:
   - name: cmake
+    architecture: '@OPTION:arch@'
     from_source: cmake
     tools_required:
       - system-gcc
@@ -91,6 +92,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: desktop-file-utils
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       # Freedesktop broke their gitlab, so we use a github mirror
@@ -203,6 +205,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: pkg-config
+    architecture: '@OPTION:arch@'
     from_source: pkg-config
     tools_required:
       - system-gcc

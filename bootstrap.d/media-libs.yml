@@ -48,6 +48,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: freeglut
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://github.com/FreeGLUTProject/freeglut.git'
@@ -148,6 +149,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: glew
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       url: 'https://github.com/nigels-com/glew/releases/download/glew-2.2.0/glew-2.2.0.tgz'
@@ -180,6 +182,7 @@ packages:
           M_ARCH: ""
 
   - name: glu
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/mesa/glu.git'
@@ -476,6 +479,7 @@ packages:
         quiet: true
 
   - name: libmodplug
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://github.com/Konstanty/libmodplug.git'
@@ -507,6 +511,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libogg
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://github.com/xiph/ogg.git'
@@ -624,6 +629,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libtheora
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://github.com/xiph/theora.git'
@@ -664,6 +670,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libvorbis
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://github.com/xiph/vorbis.git'

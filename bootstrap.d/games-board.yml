@@ -1,5 +1,6 @@
 packages:
   - name: ace
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       url: 'https://www.delorie.com/store/ace/ace-1.4.tar.gz'

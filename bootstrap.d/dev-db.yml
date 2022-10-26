@@ -1,5 +1,6 @@
 packages:
   - name: sqlite
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       url: 'https://sqlite.org/2021/sqlite-autoconf-3370000.tar.gz'

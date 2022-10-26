@@ -196,6 +196,7 @@ packages:
         quiet: true
 
   - name: lz4
+    architecture: '@OPTION:arch@'
     metadata:
       summary: Extremely Fast Compression algorithm
       description: This package provides tools to compress and decompress files in .lz4 format.

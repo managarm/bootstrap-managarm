@@ -90,6 +90,7 @@ packages:
         quiet: true
 
   - name: gdk-pixbuf
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.gnome.org/GNOME/gdk-pixbuf.git'
@@ -128,6 +129,7 @@ packages:
           - args: ['gdk-pixbuf-query-loaders', '--update-cache']
 
   - name: gtk+-2
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       url: 'https://download.gnome.org/sources/gtk+/2.24/gtk+-2.24.32.tar.xz'

@@ -1,5 +1,6 @@
 packages:
   - name: cups
+    architecture: '@OPTION:arch@'
     metadata:
       summary: The Common Unix Printing System
       description: The Common Unix Printing System (CUPS) is a print spooler and associated utilities. It is based on the "Internet Printing Protocol" and provides printing services to most PostScript and raster printers.

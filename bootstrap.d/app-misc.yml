@@ -38,6 +38,7 @@ packages:
       - args: ['chmod', '0755', '@THIS_COLLECT_DIR@/etc/ssl/certs/.']
 
   - name: sl
+    architecture: '@OPTION:arch@'
     metadata:
       summary: Never type 'ls' wrong again!
       description: This package provides a fun way to correct the all too common typo of 'sl' when 'ls' was meant.

@@ -1,5 +1,6 @@
 packages:
   - name: mesa-demos
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/mesa/demos.git'
@@ -296,6 +297,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xprop
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xprop.git'
@@ -332,6 +334,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xset
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xset.git'

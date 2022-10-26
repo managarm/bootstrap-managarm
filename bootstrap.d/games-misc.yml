@@ -1,5 +1,6 @@
 packages:
   - name: gtklife
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       url: 'http://ironphoenix.org/gtklife/gtklife-5.2.tar.gz'
@@ -62,6 +63,7 @@ packages:
         quiet: true
 
   - name: nyancat
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://github.com/klange/nyancat.git'

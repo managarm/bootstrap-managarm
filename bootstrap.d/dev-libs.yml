@@ -91,6 +91,7 @@ tools:
 
 packages:
   - name: atk
+    architecture: '@OPTION:arch@'
     metadata:
       summary: GTK+ & GNOME Accessibility Toolkit
       description: This package provides a set of accessibility interfaces used extensively througout GTK and GNOME.
@@ -128,6 +129,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: d0-blind-id
+    architecture: '@OPTION:arch@'
     metadata:
       summary: Blind-ID library for user identification using RSA blind signatures
       description: This package provides a library for user identification using RSA blind signatures.
@@ -350,6 +352,7 @@ packages:
         quiet: true
 
   - name: json-c
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://github.com/json-c/json-c.git'
@@ -923,6 +926,7 @@ packages:
         quiet: true
 
   - name: libuv
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://github.com/libuv/libuv.git'
@@ -1409,6 +1413,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: popt
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://github.com/rpm-software-management/popt.git'
@@ -1533,6 +1538,7 @@ packages:
         quiet: true
 
   - name: xxhash
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://github.com/Cyan4973/xxHash.git'

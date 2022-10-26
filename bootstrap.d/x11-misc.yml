@@ -32,6 +32,7 @@ tools:
 
 packages:
   - name: shared-mime-info
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xdg/shared-mime-info.git'
@@ -74,6 +75,7 @@ packages:
           - args: '/usr/bin/update-mime-database /usr/share/mime/'
 
   - name: xbitmaps
+    architecture: '@OPTION:arch@'
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/data/bitmaps.git'

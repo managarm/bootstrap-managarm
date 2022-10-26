@@ -1,5 +1,6 @@
 packages:
   - name: sysklogd
+    architecture: '@OPTION:arch@'
     stability_level: broken
     source:
       subdir: 'ports'
