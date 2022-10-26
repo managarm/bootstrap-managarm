@@ -52,6 +52,7 @@ tools:
       - args: ['ninja', 'install']
 
   - name: host-gobject-introspection
+    architecture: noarch
     exports_aclocal: true
     from_source: gobject-introspection
     tools_required:

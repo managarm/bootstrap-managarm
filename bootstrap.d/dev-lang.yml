@@ -48,6 +48,7 @@ tools:
       - args: ['make', 'install']
 
   - name: host-rust
+    architecture: noarch
     from_source: rust
     sources_required:
       - rust-patched-libs
@@ -86,6 +87,7 @@ tools:
       - args: ['python3', '@THIS_SOURCE_DIR@/x.py', 'install', '-j', '@PARALLELISM@']
 
   - name: host-cargo
+    architecture: noarch
     source:
       subdir: 'ports'
       git: 'https://github.com/rust-lang/cargo.git'
