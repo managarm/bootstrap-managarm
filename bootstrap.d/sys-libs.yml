@@ -285,10 +285,10 @@ packages:
     default: true
     source:
       subdir: 'ports'
-      url: 'https://data.iana.org/time-zones/releases/tzdata2022b.tar.gz'
+      url: 'https://data.iana.org/time-zones/releases/tzdata2022d.tar.gz'
       format: 'tar.gz'
-      checksum: blake2b:23732f1c753efeca97bb9d6ed8d487a56c735943cb1062a77a1a76faf0109f86238ef9b0ec9ec92b8bdf1da10435f2c39e1465a7fefe74eab8de730214920249
-      version: '2022b'
+      checksum: blake2b:8339904a8d6ff8cfbd3e3180ebdce826ace0ba06e95a14d4cb99e423e3c7aef44eb6d5d6e35164b3cd69830d0136eb43d2a835c9b54d5f5fb40e5a0b437a33c9
+      version: '2022d'
     tools_required:
       - system-gcc
     configure:

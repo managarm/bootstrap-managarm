@@ -2,11 +2,11 @@ packages:
   - name: links
     source:
       subdir: 'ports'
-      url: 'http://links.twibright.com/download/links-2.27.tar.gz'
+      url: 'http://links.twibright.com/download/links-2.28.tar.gz'
       format: 'tar.gz'
-      checksum: blake2b:e10be3c8dd07ef2fd87afc5dd438c58857350533edfa154e8cf663e8868b5f1fe8a4f7e5c67e2aab3f0c09ab17638fc31e986f5f975af6a79ee2a4c254c1039b
-      extract_path: 'links-2.27'
-      version: '2.27'
+      checksum: blake2b:5695cfa26fac30f021ef415e75edb9456ad0360b0edeefa02d2862b149f757a1f1f4d5e5a1e6f3f198696bf35129c93f0f46bdf06ab1b0eb6c91f22e08fffb07
+      extract_path: 'links-2.28'
+      version: '2.28'
     tools_required:
       - host-pkg-config
       - system-gcc

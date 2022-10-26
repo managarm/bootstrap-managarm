@@ -944,8 +944,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxft.git'
-      tag: 'libXft-2.3.4'
-      version: '2.3.4'
+      tag: 'libXft-2.3.6'
+      version: '2.3.6'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -969,7 +969,6 @@ packages:
       - libxrender
       - freetype
       - fontconfig
-    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1584,8 +1583,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxtst.git'
-      tag: 'libXtst-1.2.3'
-      version: '1.2.3'
+      tag: 'libXtst-1.2.4'
+      version: '1.2.4'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1610,7 +1609,6 @@ packages:
       - libxtrans
       - libxext
       - libxi
-    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1678,8 +1676,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxxf86vm.git'
-      tag: 'libXxf86vm-1.1.4'
-      version: '1.1.4'
+      tag: 'libXxf86vm-1.1.5'
+      version: '1.1.5'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1703,7 +1701,6 @@ packages:
       - libx11
       - libxtrans
       - libxext
-    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1725,8 +1722,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.gnome.org/GNOME/pango.git'
-      tag: '1.48.10'
-      version: '1.48.10'
+      tag: '1.50.11'
+      version: '1.50.11'
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -1746,7 +1743,6 @@ packages:
       - libxext
       - harfbuzz
       - libxft
-    revision: 3
     configure:
       - args:
         - 'meson'

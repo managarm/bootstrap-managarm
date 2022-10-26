@@ -114,42 +114,29 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/xkeyboard-config/xkeyboard-config.git'
-      tag: 'xkeyboard-config-2.34'
-      version: '2.34'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
-        - host-libtool
-        - host-pkg-config
-        - host-xorg-macros
-      regenerate:
-        - args: ['./autogen.sh']
-          environ:
-            'NOCONFIGURE': 'yes'
+      tag: 'xkeyboard-config-2.37'
+      version: '2.37'
     tools_required:
-      - host-autoconf-v2.69
-      - host-automake-v1.15
-      - host-libtool
-      - host-pkg-config
       - host-xorg-macros
       - system-gcc
     pkgs_required:
       - mlibc
       - libx11
       - xorg-proto
-    revision: 3
     configure:
+      # Make sure a symlink is created even if it already exists.
+      - args: |
+          sed -i -E 's/(ln -s)/\1f/' @THIS_SOURCE_DIR@/rules/meson.build
       - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--host=@OPTION:arch-triple@'
+        - 'meson'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
-        - '--sysconfdir=/etc'
-        - '--localstatedir=/var'
-        - '--with-xkb-rules-symlink=xorg'
-        - '--disable-nls'
+        - '--buildtype=release'
+        - '@THIS_SOURCE_DIR@'
     build:
-      - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'install']
+      - args: ['ninja']
+      - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 

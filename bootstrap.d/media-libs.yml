@@ -544,8 +544,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://git.code.sf.net/p/libpng/code'
-      tag: 'v1.6.37'
-      version: '1.6.37'
+      tag: 'v1.6.38'
+      version: '1.6.38'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -558,7 +558,6 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
-    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
