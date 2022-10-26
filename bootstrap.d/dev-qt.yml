@@ -3,8 +3,8 @@ sources:
     subdir: 'ports'
     # This may seem strange, but is actually correct
     git: 'https://code.qt.io/qt/qt5.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.4.0'
+    version: '6.4.0'
     regenerate:
       # Get the submodules that we'll need as a host tool
       - args: ['./init-repository', '-f', '--module-subset', 'qtbase,qtsvg,qtimageformats,qtshadertools,qtlanguageserver,qtdeclarative,qtwayland,qtmultimedia']
@@ -16,7 +16,6 @@ tools:
     from_source: qt6
     tools_required:
       - host-cmake
-    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -44,8 +43,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtbase.git'
-      tag: 'v6.3.0'
-      version: '6.3.0'
+      tag: 'v6.4.0'
+      version: '6.4.0'
     tools_required:
       - system-gcc
       - host-cmake
@@ -90,7 +89,6 @@ packages:
       - libxi
       - sqlite
       - brotli
-    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -170,8 +168,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtdeclarative.git'
-      tag: 'v6.3.0'
-      version: '6.3.0'
+      tag: 'v6.4.0'
+      version: '6.4.0'
     tools_required:
       - system-gcc
       - host-cmake
@@ -185,7 +183,6 @@ packages:
       - qtsvg6
       - libxkbcommon
       - mesa
-    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -213,8 +210,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtimageformats.git'
-      tag: 'v6.3.0'
-      version: '6.3.0'
+      tag: 'v6.4.0'
+      version: '6.4.0'
     tools_required:
       - system-gcc
       - host-cmake
@@ -227,7 +224,6 @@ packages:
       - libwebp
       - libtiff
       - zlib
-    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -257,8 +253,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtlanguageserver.git'
-      tag: 'v6.3.0'
-      version: '6.3.0'
+      tag: 'v6.4.0'
+      version: '6.4.0'
     tools_required:
       - system-gcc
       - host-cmake
@@ -266,7 +262,6 @@ packages:
     pkgs_required:
       - mlibc
       - qtbase6
-    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -294,8 +289,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtmultimedia.git'
-      tag: 'v6.3.0'
-      version: '6.3.0'
+      tag: 'v6.4.0'
+      version: '6.4.0'
     tools_required:
       - system-gcc
       - host-cmake
@@ -308,7 +303,6 @@ packages:
       - libglvnd
       - gstreamer
       - gst-plugins-base
-    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -339,8 +333,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtshadertools.git'
-      tag: 'v6.3.0'
-      version: '6.3.0'
+      tag: 'v6.4.0'
+      version: '6.4.0'
     tools_required:
       - system-gcc
       - host-cmake
@@ -350,13 +344,12 @@ packages:
       - qtbase6
       - mesa
       - libxkbcommon
-    revision: 3
     configure:
       - args:
         - 'cmake'
         - '-GNinja'
         - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/host-qt6'
-        - '-DQT_BUILD_TOOLS_WHEN_CROSSCOMPILING=ON'
+        - '-DQT_FORCE_BUILD_TOOLS=ON'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_BUILD_TYPE=Debug'
@@ -379,8 +372,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtsvg.git'
-      tag: 'v6.3.0'
-      version: '6.3.0'
+      tag: 'v6.4.0'
+      version: '6.4.0'
     tools_required:
       - system-gcc
       - host-cmake
@@ -389,7 +382,44 @@ packages:
       - mlibc
       - qtbase6
       - zlib
-    revision: 3
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/host-qt6'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: qtwayland6
+    architecture: '@OPTION:arch@'
+    metadata:
+      spdx: 'GPL-2.0-only GPL-3.0-only LGPL-3.0-only GFDL-1.3-only'
+      website: 'https://code.qt.io/cgit/qt/qtwayland.git/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-qt']
+    source:
+      subdir: 'ports'
+      git: 'http://code.qt.io/qt/qtwayland.git'
+      tag: 'v6.4.0'
+      version: '6.4.0'
+    tools_required:
+      - system-gcc
+      - host-cmake
+      - host-qt6
+    pkgs_required:
+      - mlibc
+      - qtbase6
+      - qtdeclarative6
+      - mesa
+      - wayland
+      - libxkbcommon
     configure:
       - args:
         - 'cmake'

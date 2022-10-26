@@ -1,4 +1,4 @@
-From ff8971212ec4b8c820b08fa69b5fe123b34dec29 Mon Sep 17 00:00:00 2001
+From e8912eccb24096955c0e77656c51d6fb90298b53 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Tue, 12 Apr 2022 15:50:25 +0200
 Subject: [PATCH] Add Managarm support
@@ -12,21 +12,23 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
  mkspecs/managarm-g++/qmake.conf               | 12 +++
  mkspecs/managarm-g++/qplatformdefs.h          | 88 +++++++++++++++++++
  src/corelib/global/qsystemdetection.h         |  2 +
+ src/corelib/io/qstandardpaths_unix.cpp        |  4 +-
  src/corelib/io/qstorageinfo_unix.cpp          |  3 +
+ src/corelib/thread/qthread_unix.cpp           |  2 +-
  src/gui/configure.cmake                       |  4 +-
  src/network/kernel/qdnslookup_unix.cpp        |  2 +-
  src/network/kernel/qnetworkinterface_unix.cpp |  4 +
  .../kmsconvenience/qkmsdevice.cpp             |  1 +
- 12 files changed, 174 insertions(+), 5 deletions(-)
+ 14 files changed, 177 insertions(+), 8 deletions(-)
  create mode 100644 mkspecs/common/managarm.conf
  create mode 100644 mkspecs/managarm-g++/qmake.conf
  create mode 100644 mkspecs/managarm-g++/qplatformdefs.h
 
 diff --git a/cmake/QtBuild.cmake b/cmake/QtBuild.cmake
-index 3d10fc38..d78d0e01 100644
+index bb7049e7..ee547b21 100644
 --- a/cmake/QtBuild.cmake
 +++ b/cmake/QtBuild.cmake
-@@ -316,6 +316,12 @@ elseif(LINUX)
+@@ -314,6 +314,12 @@ elseif(LINUX)
      elseif(CLANG)
          set(QT_DEFAULT_MKSPEC linux-clang)
      endif()
@@ -40,7 +42,7 @@ index 3d10fc38..d78d0e01 100644
      if(GCC)
          set(QT_DEFAULT_MKSPEC android-g++)
 diff --git a/cmake/QtPlatformSupport.cmake b/cmake/QtPlatformSupport.cmake
-index 11b31641..b54352b9 100644
+index 22c6b9e0..4b61a10e 100644
 --- a/cmake/QtPlatformSupport.cmake
 +++ b/cmake/QtPlatformSupport.cmake
 @@ -7,6 +7,7 @@ function(qt_set01 result)
@@ -110,10 +112,10 @@ index 00000000..e7ea7d13
 +QMAKE_STRIP             = strip
 +QMAKE_STRIPFLAGS_LIB   += --strip-unneeded
 diff --git a/mkspecs/common/posix/qplatformdefs.h b/mkspecs/common/posix/qplatformdefs.h
-index 3ebc5233..8a8cff25 100644
+index ffae2ac3..3196f1b1 100644
 --- a/mkspecs/common/posix/qplatformdefs.h
 +++ b/mkspecs/common/posix/qplatformdefs.h
-@@ -48,7 +48,7 @@
+@@ -12,7 +12,7 @@
  #endif
  #include <sys/stat.h>
  
@@ -122,7 +124,7 @@ index 3ebc5233..8a8cff25 100644
  
  #define QT_STATBUF              struct stat64
  #define QT_FPOS_T               fpos64_t
-@@ -141,7 +141,7 @@
+@@ -105,7 +105,7 @@
  
  #if defined(QT_LARGEFILE_SUPPORT) \
          && defined(QT_USE_XOPEN_LFS_EXTENSIONS) \
@@ -244,10 +246,10 @@ index 00000000..91654548
 +
 +#endif // QPLATFORMDEFS_H
 diff --git a/src/corelib/global/qsystemdetection.h b/src/corelib/global/qsystemdetection.h
-index c8f98042..550d819b 100644
+index cbbe613e..072c219b 100644
 --- a/src/corelib/global/qsystemdetection.h
 +++ b/src/corelib/global/qsystemdetection.h
-@@ -165,6 +165,8 @@
+@@ -129,6 +129,8 @@
  #  define Q_OS_VXWORKS
  #elif defined(__HAIKU__)
  #  define Q_OS_HAIKU
@@ -256,11 +258,29 @@ index c8f98042..550d819b 100644
  #elif defined(__MAKEDEPEND__)
  #else
  #  error "Qt has not been ported to this OS - see http://www.qt-project.org/"
+diff --git a/src/corelib/io/qstandardpaths_unix.cpp b/src/corelib/io/qstandardpaths_unix.cpp
+index e5122ff3..9b60f6b2 100644
+--- a/src/corelib/io/qstandardpaths_unix.cpp
++++ b/src/corelib/io/qstandardpaths_unix.cpp
+@@ -160,11 +160,11 @@ static bool checkXdgRuntimeDir(const QString &xdgRuntimeDir)
+ 
+     // "and he MUST be the only one having read and write access to it. Its Unix access mode MUST be 0700."
+     if (metaData.permissions() != wantedPerms) {
+-        qWarning("QStandardPaths: wrong permissions on runtime directory %ls, %s instead of %s",
++        qWarning("QStandardPaths: wrong permissions on runtime directory %ls, %s instead of %s (Managarm ignores it!)",
+                  qUtf16Printable(xdgRuntimeDir),
+                  unixPermissionsText(metaData.permissions()).constData(),
+                  unixPermissionsText(wantedPerms).constData());
+-        return false;
++        // return false;
+     }
+ 
+     return true;
 diff --git a/src/corelib/io/qstorageinfo_unix.cpp b/src/corelib/io/qstorageinfo_unix.cpp
-index 2b635f63..ef151f7b 100644
+index 89b6dfea..34188433 100644
 --- a/src/corelib/io/qstorageinfo_unix.cpp
 +++ b/src/corelib/io/qstorageinfo_unix.cpp
-@@ -100,6 +100,9 @@
+@@ -64,6 +64,9 @@
  #elif defined(Q_OS_HAIKU)
  #  define QT_STATFSBUF struct statvfs
  #  define QT_STATFS    ::statvfs
@@ -270,20 +290,33 @@ index 2b635f63..ef151f7b 100644
  #else
  #  if defined(QT_LARGEFILE_SUPPORT)
  #    define QT_STATFSBUF struct statvfs64
+diff --git a/src/corelib/thread/qthread_unix.cpp b/src/corelib/thread/qthread_unix.cpp
+index 777aa362..8671eb19 100644
+--- a/src/corelib/thread/qthread_unix.cpp
++++ b/src/corelib/thread/qthread_unix.cpp
+@@ -675,7 +675,7 @@ void QThread::start(Priority priority)
+ 
+ 
+     if (d->stackSize > 0) {
+-#if defined(_POSIX_THREAD_ATTR_STACKSIZE) && (_POSIX_THREAD_ATTR_STACKSIZE-0 > 0)
++#if (defined(_POSIX_THREAD_ATTR_STACKSIZE) && (_POSIX_THREAD_ATTR_STACKSIZE-0 > 0)) || defined(__managarm__)
+         int code = pthread_attr_setstacksize(&attr, d->stackSize);
+ #else
+         int code = ENOSYS; // stack size not supported, automatically fail
 diff --git a/src/gui/configure.cmake b/src/gui/configure.cmake
-index f59f0ab2..5af332df 100644
+index 6b05d4cc..55f877a3 100644
 --- a/src/gui/configure.cmake
 +++ b/src/gui/configure.cmake
 @@ -25,7 +25,7 @@ set_property(CACHE INPUT_libpng PROPERTY STRINGS undefined no qt system)
  
  
  #### Libraries
--qt_set01(X11_SUPPORTED LINUX OR HPUX OR FREEBSD OR NETBSD OR OPENBSD OR SOLARIS) # special case
-+qt_set01(X11_SUPPORTED LINUX OR HPUX OR FREEBSD OR NETBSD OR OPENBSD OR SOLARIS OR MANAGARM) # special case
+-qt_set01(X11_SUPPORTED LINUX OR HPUX OR FREEBSD OR NETBSD OR OPENBSD OR SOLARIS OR HURD) # special case
++qt_set01(X11_SUPPORTED LINUX OR HPUX OR FREEBSD OR NETBSD OR OPENBSD OR SOLARIS OR HURD OR MANAGARM) # special case
  qt_find_package(ATSPI2 PROVIDED_TARGETS PkgConfig::ATSPI2 MODULE_NAME gui QMAKE_LIB atspi)
  qt_find_package(DirectFB PROVIDED_TARGETS PkgConfig::DirectFB MODULE_NAME gui QMAKE_LIB directfb)
  qt_find_package(Libdrm PROVIDED_TARGETS Libdrm::Libdrm MODULE_NAME gui QMAKE_LIB drm)
-@@ -51,7 +51,7 @@ qt_find_package(WrapOpenGL PROVIDED_TARGETS WrapOpenGL::WrapOpenGL MODULE_NAME g
+@@ -55,7 +55,7 @@ qt_find_package(WrapOpenGL PROVIDED_TARGETS WrapOpenGL::WrapOpenGL MODULE_NAME g
  qt_find_package(GLESv2 PROVIDED_TARGETS GLESv2::GLESv2 MODULE_NAME gui QMAKE_LIB opengl_es2)
  qt_find_package(Tslib PROVIDED_TARGETS PkgConfig::Tslib MODULE_NAME gui QMAKE_LIB tslib)
  qt_find_package(WrapVulkanHeaders PROVIDED_TARGETS WrapVulkanHeaders::WrapVulkanHeaders MODULE_NAME gui QMAKE_LIB vulkan MARK_OPTIONAL) # special case
@@ -293,10 +326,10 @@ index f59f0ab2..5af332df 100644
  endif()
  if((X11_SUPPORTED) OR QT_FIND_ALL_PACKAGES_ALWAYS)
 diff --git a/src/network/kernel/qdnslookup_unix.cpp b/src/network/kernel/qdnslookup_unix.cpp
-index 1449c329..88fcd997 100644
+index 75f7c6c4..5597bb85 100644
 --- a/src/network/kernel/qdnslookup_unix.cpp
 +++ b/src/network/kernel/qdnslookup_unix.cpp
-@@ -50,7 +50,7 @@
+@@ -14,7 +14,7 @@
  #include <sys/types.h>
  #include <netinet/in.h>
  #include <arpa/nameser.h>
@@ -306,10 +339,10 @@ index 1449c329..88fcd997 100644
  #endif
  #include <resolv.h>
 diff --git a/src/network/kernel/qnetworkinterface_unix.cpp b/src/network/kernel/qnetworkinterface_unix.cpp
-index 94f3a53c..40943178 100644
+index 51a266b2..08bb7125 100644
 --- a/src/network/kernel/qnetworkinterface_unix.cpp
 +++ b/src/network/kernel/qnetworkinterface_unix.cpp
-@@ -61,6 +61,10 @@
+@@ -25,6 +25,10 @@
  # include <ifaddrs.h>
  #endif
  
@@ -321,10 +354,10 @@ index 94f3a53c..40943178 100644
  #  include <arpa/inet.h>
  #  ifndef SIOCGIFBRDADDR
 diff --git a/src/platformsupport/kmsconvenience/qkmsdevice.cpp b/src/platformsupport/kmsconvenience/qkmsdevice.cpp
-index 4206b20a..71127dd8 100644
+index c7a1624e..df2ba09f 100644
 --- a/src/platformsupport/kmsconvenience/qkmsdevice.cpp
 +++ b/src/platformsupport/kmsconvenience/qkmsdevice.cpp
-@@ -48,6 +48,7 @@
+@@ -12,6 +12,7 @@
  #include <QtCore/QLoggingCategory>
  
  #include <errno.h>
@@ -333,5 +366,5 @@ index 4206b20a..71127dd8 100644
  #define ARRAY_LENGTH(a) (sizeof (a) / sizeof (a)[0])
  
 -- 
-2.35.2
+2.37.2
 
