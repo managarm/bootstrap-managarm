@@ -13,6 +13,13 @@ main_subparsers = main_parser.add_subparsers()
 # qemu subcommand.
 # ---------------------------------------------------------------------------------------
 
+def qemu_check_nic(qemu, nic):
+    out = subprocess.check_output([qemu] + ["-net", "nic,model=?"], encoding="ascii")
+    for line in out.splitlines():
+        if line == nic:
+            return True
+    print("QEMU does not support {} NICs".format(nic), file=sys.stderr)
+    sys.exit(1)
 
 def do_qemu(args):
     qemu = os.environ.get("QEMU", f"qemu-system-{args.arch}")
@@ -21,7 +28,7 @@ def do_qemu(args):
 
     have_dmalog = False
 
-    devhelp = subprocess.check_output([qemu] + ["-device", "?"], encoding="ascii")
+    devhelp = subprocess.check_output([qemu, "-device", "?"], encoding="ascii")
     for line in devhelp.splitlines():
         if line.startswith('name "dmalog"'):
             have_dmalog = True
@@ -143,7 +150,16 @@ def do_qemu(args):
         qemu_args += ["-netdev", "tap,id=net0"]
     else:
         qemu_args += ["-netdev", "user,id=net0"]
-    qemu_args += ["-device", "virtio-net,disable-modern=on,netdev=net0"]
+
+    if args.nic == "i8254x":
+        qemu_check_nic(qemu, "e1000")
+        qemu_args += ["-device", "e1000,netdev=net0"]
+    elif args.nic == "rtl8139":
+        qemu_check_nic(qemu, "rtl8139")
+        qemu_args += ["-device", "rtl8139,netdev=net0"]
+    elif args.nic == "virtio":
+        qemu_check_nic(qemu, "virtio-net-pci")
+        qemu_args += ["-device", "virtio-net,disable-modern=on,netdev=net0"]
 
     # Add graphics output.
     if args.gfx == "default":
@@ -246,6 +262,7 @@ qemu_parser.add_argument(
     default="virtio",
 )
 qemu_parser.add_argument("--net-bridge", action="store_true")
+qemu_parser.add_argument("--nic", choices=["i8254x", "virtio", "rtl8139", "none"], default="virtio")
 qemu_parser.add_argument("--gfx", choices=["bga", "virtio", "vmware"], default="default")
 qemu_parser.add_argument("--ps2", action="store_true")
 qemu_parser.add_argument("--mouse", action="store_true")
