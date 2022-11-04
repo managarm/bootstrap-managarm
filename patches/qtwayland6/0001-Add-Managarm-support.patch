@@ -1,0 +1,26 @@
+From a03e5244cbe1f61997a44ea3d7b44b7e80b72e02 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Fri, 4 Nov 2022 17:14:03 +0100
+Subject: [PATCH] Add Managarm support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 0007697..5dc10d8 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -14,7 +14,7 @@ find_package(Qt6 ${PROJECT_VERSION} CONFIG REQUIRED COMPONENTS
+     BuildInternals
+ )
+ 
+-if(NOT MACOS AND NOT QNX AND (ANDROID OR NOT LINUX))
++if(NOT MACOS AND NOT QNX AND (ANDROID OR NOT LINUX) AND NOT MANAGARM)
+     message(NOTICE "Skipping the build as the condition \"LINUX OR MACOS OR QNX\" is not met.")
+     return()
+ endif()
+-- 
+2.37.2
+
