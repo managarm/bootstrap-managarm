@@ -162,7 +162,7 @@ packages:
       - libxcb
       - pango
       - hicolor-icon-theme
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -177,6 +177,8 @@ packages:
         - '--disable-glibtest'
         - '--disable-test-print-backend'
         - '--enable-xkb'
+        environ:
+          ac_cv_func_getresuid: 'no'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
