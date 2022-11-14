@@ -50,6 +50,7 @@ imports:
   - file: bootstrap.d/sys-devel.y4.yml
   - file: bootstrap.d/sys-kernel.y4.yml
   - file: bootstrap.d/sys-libs.y4.yml
+  - file: bootstrap.d/sys-fs.y4.yml
   - file: bootstrap.d/sys-process.y4.yml
   - file: bootstrap.d/tasks.y4.yml
   - file: bootstrap.d/www-client.y4.yml
