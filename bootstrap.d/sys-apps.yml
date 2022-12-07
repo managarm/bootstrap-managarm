@@ -87,6 +87,64 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
+  - name: dbus
+    architecture: '@OPTION:arch@'
+    source:
+      subdir: ports
+      git: 'https://gitlab.freedesktop.org/dbus/dbus.git'
+      tag: 'dbus-1.12.20'
+      version: '1.12.20'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-autoconf-archive
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            NOCONFIGURE: 'yes'
+    tools_required:
+      - system-gcc
+      - host-autoconf-v2.69
+      - host-automake-v1.15
+      - host-pkg-config
+      - host-python
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - glib
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--sysconfdir=/etc'
+        - '--localstatedir=/var'
+        - '--disable-doxygen-docs'
+        - '--disable-xml-docs'
+        - '--disable-static'
+        - '--enable-shared'
+        - '--enable-verbose-mode'
+        - '--with-systemdsystemunitdir=no'
+        - '--with-systemduserunitdir=no'
+        - '--docdir=/usr/share/doc/dbus-1.12.20'
+        - '--with-console-auth-dir=/run/console'
+        - '--with-system-pid-file=/run/dbus/pid'
+        - '--with-system-socket=/run/dbus/system_bus_socket'
+        - '--disable-selinux'
+        - '--disable-apparmor'
+        - '--disable-libaudit'
+        - '--disable-kqueue'
+        - '--disable-launchd'
+        - '--disable-systemd'
+        - '--disable-tests'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: diffutils
     labels: [aarch64]
     architecture: '@OPTION:arch@'

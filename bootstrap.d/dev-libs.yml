@@ -993,6 +993,48 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: libxslt
+    architecture: '@OPTION:arch@'
+    source:
+      subdir: ports
+      git: 'https://gitlab.gnome.org/GNOME/libxslt.git'
+      tag: 'v1.1.34'
+      version: '1.1.34'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - libxml
+    configure:
+      # BLFS increases the recursion limit, apparently some packages need that to build their documentation.
+      - args: ['sed', '-i', 's/3000/5000/', '@THIS_SOURCE_DIR@/libxslt/transform.c']
+      - args: ['sed', '-i', 's/3000/5000/', '@THIS_SOURCE_DIR@/doc/xsltproc.1']
+      - args: ['sed', '-i', 's/3000/5000/', '@THIS_SOURCE_DIR@/doc/xsltproc.xml']
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--disable-static'
+        - '--without-crypto'
+        - '--without-debug'
+        - '--without-debugger'
+        - '--without-profiler'
+        - '--without-python'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name : mpc
     labels: [aarch64]
     architecture: '@OPTION:arch@'
