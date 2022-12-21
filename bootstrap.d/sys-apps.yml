@@ -114,6 +114,7 @@ packages:
     pkgs_required:
       - mlibc
       - glib
+      - libexpat
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
