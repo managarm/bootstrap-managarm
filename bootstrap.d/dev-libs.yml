@@ -690,8 +690,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/wayland-project/libinput.git'
-      tag: '1.19.2'
-      version: '1.19.2'
+      tag: '1.22.0'
+      version: '1.22.0'
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -702,7 +702,6 @@ packages:
       - eudev
       - libevdev
       - mtdev
-    revision: 3
     configure:
       - args:
           - 'meson'
