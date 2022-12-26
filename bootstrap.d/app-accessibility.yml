@@ -14,9 +14,10 @@ packages:
     pkgs_required:
       - mlibc
       - at-spi2-core
-      - glib
       - atk
       - dbus
+      - glib
+      - libxml
     configure:
       - args:
           - 'meson'
