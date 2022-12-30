@@ -181,6 +181,7 @@ packages:
       - libexpat
       - libxml
       - zstd
+    revision: 2
     configure:
       - args:
         - 'cmake'
