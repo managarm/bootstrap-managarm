@@ -29,6 +29,7 @@ imports:
   - file: bootstrap.d/sys-boot.yml
   - file: bootstrap.d/sys-devel.yml
   - file: bootstrap.d/sys-libs.yml
+  - file: bootstrap.d/sys-process.yml
   - file: bootstrap.d/www-client.yml
   - file: bootstrap.d/x11-apps.yml
   - file: bootstrap.d/x11-base.yml

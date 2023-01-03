@@ -1,0 +1,96 @@
+From 58c16cd8ce535226f5485a4debba9109160edc38 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Fri, 30 Dec 2022 23:26:53 +0100
+Subject: [PATCH] Add Managarm support and patch out stuff we don't support yet
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ configure.ac             | 2 +-
+ linux/LinuxProcess.c     | 2 +-
+ linux/LinuxProcessList.c | 9 ++++++++-
+ 3 files changed, 10 insertions(+), 3 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 7a52ab5..314d7b0 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -23,7 +23,7 @@ AM_INIT_AUTOMAKE([-Wall std-options subdir-objects])
+ # ----------------------------------------------------------------------
+ 
+ case "$host_os" in
+-linux*|gnu*)
++linux*|gnu*|managarm*)
+    my_htop_platform=linux
+    AC_DEFINE([HTOP_LINUX], [], [Building for Linux.])
+    ;;
+diff --git a/linux/LinuxProcess.c b/linux/LinuxProcess.c
+index 92be326..08c31da 100644
+--- a/linux/LinuxProcess.c
++++ b/linux/LinuxProcess.c
+@@ -11,7 +11,7 @@ in the source distribution for its full text.
+ #include <math.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+-#include <syscall.h>
++// #include <syscall.h>
+ #include <unistd.h>
+ 
+ #include "CRT.h"
+diff --git a/linux/LinuxProcessList.c b/linux/LinuxProcessList.c
+index 45b045c..85694bc 100644
+--- a/linux/LinuxProcessList.c
++++ b/linux/LinuxProcessList.c
+@@ -302,6 +302,9 @@ ProcessList* ProcessList_new(UsersTable* usersTable, Hashtable* dynamicMeters, H
+    this->haveSmapsRollup = (access(PROCDIR "/self/smaps_rollup", R_OK) == 0);
+ 
+    // Read btime (the kernel boot time, as number of seconds since the epoch)
++#ifdef __managarm__
++   btime = 0;
++#else
+    FILE* statfile = fopen(PROCSTATFILE, "r");
+    if (statfile == NULL)
+       CRT_fatalError("Cannot open " PROCSTATFILE);
+@@ -320,6 +323,7 @@ ProcessList* ProcessList_new(UsersTable* usersTable, Hashtable* dynamicMeters, H
+ 
+    if (btime == -1)
+       CRT_fatalError("No btime in " PROCSTATFILE);
++#endif
+ 
+    // Initialize CPU count
+    LinuxProcessList_updateCPUcount(pl);
+@@ -1506,7 +1510,7 @@ static bool LinuxProcessList_recurseProcTree(LinuxProcessList* this, openat_arg_
+       proc->tgid = parent ? parent->pid : pid;
+       proc->isUserlandThread = proc->pid != proc->tgid;
+ 
+-      LinuxProcessList_recurseProcTree(this, procFd, "task", proc, period);
++      // LinuxProcessList_recurseProcTree(this, procFd, "task", proc, period);
+ 
+       /*
+        * These conditions will not trigger on first occurrence, cause we need to
+@@ -1725,6 +1729,7 @@ static inline void LinuxProcessList_scanMemoryInfo(ProcessList* this) {
+    memory_t swapFreeMem = 0;
+    memory_t sreclaimableMem = 0;
+ 
++#ifndef __managarm__
+    FILE* file = fopen(PROCMEMINFOFILE, "r");
+    if (!file)
+       CRT_fatalError("Cannot open " PROCMEMINFOFILE);
+@@ -1774,6 +1779,7 @@ static inline void LinuxProcessList_scanMemoryInfo(ProcessList* this) {
+    }
+ 
+    fclose(file);
++#endif
+ 
+    /*
+     * Compute memory partition like procps(free)
+@@ -1973,6 +1979,7 @@ static inline void LinuxProcessList_scanZfsArcstats(LinuxProcessList* lpl) {
+ }
+ 
+ static inline double LinuxProcessList_scanCPUTime(ProcessList* super) {
++   return 0;
+    LinuxProcessList* this = (LinuxProcessList*) super;
+ 
+    LinuxProcessList_updateCPUcount(super);
+-- 
+2.39.0
+
