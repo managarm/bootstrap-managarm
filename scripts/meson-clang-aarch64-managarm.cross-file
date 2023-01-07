@@ -5,10 +5,16 @@ ar = 'aarch64-managarm-ar'
 strip = 'aarch64-managarm-strip'
 pkgconfig = 'aarch64-managarm-pkg-config'
 
+[constants]
+# common args that c and cxx need
+args = ['-fdebug-default-version=4', '-target', 'aarch64-managarm', '--gcc-toolchain=_BUILD_ROOT_/tools/system-gcc']
+cxx = args + [ '-fsized-deallocation' ]
+
 [built-in options]
-c_args = ['-target', 'aarch64-managarm', '-fdebug-default-version=4', '--gcc-toolchain=_BUILD_ROOT_/tools/system-gcc']
-cpp_args = ['-fsized-deallocation', '-fdebug-default-version=4', '-target', 'aarch64-managarm', '--gcc-toolchain=_BUILD_ROOT_/tools/system-gcc']
-cpp_link_args = [ '-fsized-deallocation', '-fdebug-default-version=4', '-target', 'aarch64-managarm', '--gcc-toolchain=_BUILD_ROOT_/tools/system-gcc']
+c_args = args
+c_link_args = args
+cpp_args = cxx
+cpp_link_args = cxx
 
 [host_machine]
 system = 'managarm'
