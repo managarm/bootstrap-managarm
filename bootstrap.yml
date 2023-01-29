@@ -444,6 +444,21 @@ tools:
       - args: ['ninja', 'install']
         quiet: true
 
+  - name: host-xxd
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/vim/vim.git'
+      tag: 'v9.0.0633'
+      version: '9.0.0633'
+    configure:
+      - args: ['cp', '@THIS_SOURCE_DIR@/src/xxd/xxd.c', '@THIS_BUILD_DIR@/']
+      - args: ['cp', '@THIS_SOURCE_DIR@/src/xxd/Makefile', '@THIS_BUILD_DIR@/']
+    compile:
+      - args: ['make']
+    install:
+      - args: ['mkdir', '-p', '@PREFIX@/bin/']
+      - args: ['cp', '@THIS_BUILD_DIR@/xxd', '@PREFIX@/bin/']
+
   - name: cross-binutils
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
