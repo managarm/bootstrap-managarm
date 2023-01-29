@@ -1,0 +1,37 @@
+From d279dfb0035ab90ca97cdca1e7b47ccbc0d2c556 Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Sat, 1 Oct 2022 19:04:39 +0200
+Subject: [PATCH 1/2] xxd: reliably name the variable independent of build root
+ path
+
+As xxd uses the path name to name the variable, and the source hardcodes
+the assumption that the build dir is exactly one level below the project
+root, having that at a different place breaks the build. To circumvent
+this issue, the variable name is passed as an extra arg to the
+generator.
+---
+ meson.build | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/meson.build b/meson.build
+index b782618..ff74dfd 100644
+--- a/meson.build
++++ b/meson.build
+@@ -38,8 +38,12 @@ asset_files = [
+ ]
+ gen = generator(find_program('xxd'),
+                 output: '@PLAINNAME@.cpp',
+-                arguments: ['-i', '@INPUT@', '@OUTPUT@'])
+-assets_src = gen.process(asset_files)
++                arguments: ['-i', '-name', '@EXTRA_ARGS@', '@INPUT@', '@OUTPUT@'])
++assets_src = []
++
++foreach asset_file : asset_files
++	assets_src += gen.process(asset_file, extra_args: '___' + asset_file.underscorify())
++endforeach
+ 
+ # Subproject configuration #defines
+ add_project_arguments('-DCPPHTTPLIB_OPENSSL_SUPPORT', language: 'cpp')
+-- 
+2.40.1
+

@@ -703,6 +703,31 @@ tools:
     install:
       - args: ['ninja', 'install']
 
+  - name: host-hdoc
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/hdoc/hdoc'
+      tag: '1.4.1'
+      version: '1.4.1'
+    tools_required:
+      - host-llvm-toolchain
+      - host-xxd
+      - virtual: pkgconfig-for-host
+        program_name: host-pkg-config
+    configure:
+      - args:
+        - 'meson'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--prefix=@PREFIX@'
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
+
 packages:
   - name: binutils
     metadata:
