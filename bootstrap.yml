@@ -356,12 +356,13 @@ tools:
   - name: host-llvm-toolchain
     labels: [aarch64, riscv64]
     architecture: noarch
+    exports_shared_libs: true
     from_source: llvm
     sources_required:
       - binutils
     tools_required:
       - host-cmake
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -372,6 +373,7 @@ tools:
         # We really have to build LLVM in Release mode.
         # Building it in debug mode produces tens of GiB of debugging info.
         - '-DCMAKE_BUILD_TYPE=Release'
+        - '-DLLVM_LINK_LLVM_DYLIB=ON'
         - '-DLLVM_TARGETS_TO_BUILD=X86;AArch64;RISCV'
         - '-DLLVM_ENABLE_PROJECTS=clang;clang-tools-extra'
 
