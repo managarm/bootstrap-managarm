@@ -1,0 +1,29 @@
+From a2718b523036a8aa99ef70f5518cd59d85aae95a Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Thu, 3 Aug 2023 01:12:58 +0200
+Subject: [PATCH 2/2] LLVM 16 support
+
+---
+ src/frontend/Frontend.cpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/frontend/Frontend.cpp b/src/frontend/Frontend.cpp
+index 36f25d3..b90e757 100644
+--- a/src/frontend/Frontend.cpp
++++ b/src/frontend/Frontend.cpp
+@@ -151,10 +151,10 @@ hdoc::frontend::Frontend::Frontend(int argc, char** argv, hdoc::types::Config* c
+     // The actual output we care about goes to tempFile, and we use /dev/null as a stand-in for the file the compiler
+     // reads.
+     llvm::SmallVector<llvm::StringRef> compilerFlags = {compilerPath.get(), "-E", "-Wp,-v", "-xc++", "/dev/null"};
+-    llvm::Optional<llvm::StringRef>    redirects[]   = {llvm::None, {"/dev/null"}, {tempFile}}; // stdin, stdout, stderr
++    std::optional<llvm::StringRef>    redirects[]   = {std::nullopt, {"/dev/null"}, {tempFile}}; // stdin, stdout, stderr
+ 
+     std::string errMsg = "";
+-    int rc = llvm::sys::ExecuteAndWait(compilerPath.get(), compilerFlags, llvm::None, redirects, 10, 0, &errMsg);
++    int rc = llvm::sys::ExecuteAndWait(compilerPath.get(), compilerFlags, std::nullopt, redirects, 10, 0, &errMsg);
+     if (rc != 0) {
+       spdlog::error("Failed to determine the system include paths ({}, {}).", rc, errMsg);
+       return;
+-- 
+2.40.1
+
