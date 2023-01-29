@@ -161,6 +161,9 @@ def do_qemu(args):
         qemu_check_nic(qemu, "virtio-net-pci")
         qemu_args += ["-device", "virtio-net,disable-modern=on,netdev=net0"]
 
+    if args.pci_passthrough:
+        qemu_args += ["-device", f"vfio-pci,host={args.pci_passthrough}"]
+
     # Add graphics output.
     if args.gfx == "default":
         if args.arch == "x86_64":
@@ -267,6 +270,7 @@ qemu_parser.add_argument("--gfx", choices=["bga", "virtio", "vmware"], default="
 qemu_parser.add_argument("--ps2", action="store_true")
 qemu_parser.add_argument("--mouse", action="store_true")
 qemu_parser.add_argument("--init-launch", type=str, default="weston")
+qemu_parser.add_argument("--pci-passthrough", type=str)
 qemu_parser.add_argument("--cmd", type=str)
 
 # ---------------------------------------------------------------------------------------
