@@ -28,6 +28,7 @@ imports:
   - file: bootstrap.d/sys-auth.yml
   - file: bootstrap.d/sys-boot.yml
   - file: bootstrap.d/sys-devel.yml
+  - file: bootstrap.d/sys-kernel.yml
   - file: bootstrap.d/sys-libs.yml
   - file: bootstrap.d/sys-process.yml
   - file: bootstrap.d/www-client.yml
@@ -1236,10 +1237,12 @@ packages:
       # These are not strictly necessary.
       - host-managarm-tools
       - host-protoc
-    revision: 2
+    pkgs_required:
+      - linux-headers
     configure:
       - args:
         - 'meson'
+        - 'setup'
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
@@ -1249,6 +1252,7 @@ packages:
         - '-Ddisable_crypt_option=true'
         - '-Ddisable_iconv_option=true'
         - '-Ddisable_intl_option=true'
+        - '-Dlinux_kernel_headers=@BUILD_ROOT@/packages/linux-headers/usr/include'
     build:
       - args: ['ninja']
       - args: ['ninja', 'install']
@@ -1275,13 +1279,14 @@ packages:
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
     pkgs_required:
+      - linux-headers
       - mlibc-headers
       - frigg
       - cxxshim
-    revision: 2
     configure:
       - args:
         - 'meson'
+        - 'setup'
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
@@ -1292,6 +1297,7 @@ packages:
         - '-Ddisable_crypt_option=true'
         - '-Ddisable_iconv_option=true'
         - '-Ddisable_intl_option=true'
+        - '-Dlinux_kernel_headers=@BUILD_ROOT@/packages/linux-headers/usr/include'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
