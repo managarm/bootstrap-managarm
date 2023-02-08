@@ -1,0 +1,31 @@
+From 684cc3c8de02bb0d2184415627316433b907f3ff Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Wed, 8 Feb 2023 08:10:04 +0100
+Subject: [PATCH 3/3] Disable futex for managarm
+
+With the new linux-headers, we now have a <linux/futex.h> present. mesa
+seems to guard using the linux syscalls for futex support only behind
+the presence of this header, and not by OS - which is incorrect, as the
+code assumes Linux due to raw syscalls. Here, we change it to force both
+the header to be present and to be linux to use that path, and use the
+fallback for managarm (as has been the case previously)
+---
+ src/util/futex.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/util/futex.h b/src/util/futex.h
+index 43097f4..98af1db 100644
+--- a/src/util/futex.h
++++ b/src/util/futex.h
+@@ -24,7 +24,7 @@
+ #ifndef UTIL_FUTEX_H
+ #define UTIL_FUTEX_H
+ 
+-#if defined(HAVE_LINUX_FUTEX_H)
++#if defined(HAVE_LINUX_FUTEX_H) && defined(__linux__)
+ #define UTIL_FUTEX_SUPPORTED 1
+ 
+ #include <limits.h>
+-- 
+2.39.0
+
