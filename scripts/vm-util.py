@@ -13,8 +13,8 @@ main_subparsers = main_parser.add_subparsers()
 # qemu subcommand.
 # ---------------------------------------------------------------------------------------
 
-def qemu_check_nic(qemu, nic):
-    out = subprocess.check_output([qemu] + ["-net", "nic,model=?"], encoding="ascii")
+def qemu_check_nic(qemu, args, nic):
+    out = subprocess.check_output([qemu] + args + ["-net", "nic,model=?"], encoding="ascii")
     for line in out.splitlines():
         if line == nic:
             return True
@@ -152,13 +152,13 @@ def do_qemu(args):
         qemu_args += ["-netdev", "user,id=net0"]
 
     if args.nic == "i8254x":
-        qemu_check_nic(qemu, "e1000")
+        qemu_check_nic(qemu, qemu_args, "e1000")
         qemu_args += ["-device", "e1000,netdev=net0"]
     elif args.nic == "rtl8139":
-        qemu_check_nic(qemu, "rtl8139")
+        qemu_check_nic(qemu, qemu_args, "rtl8139")
         qemu_args += ["-device", "rtl8139,netdev=net0"]
     elif args.nic == "virtio":
-        qemu_check_nic(qemu, "virtio-net-pci")
+        qemu_check_nic(qemu, qemu_args, "virtio-net-pci")
         qemu_args += ["-device", "virtio-net,disable-modern=on,netdev=net0"]
 
     if args.pci_passthrough:
