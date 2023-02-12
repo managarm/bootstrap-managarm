@@ -1559,7 +1559,7 @@ packages:
       - xorg-proto
       - libx11
       - libxtrans
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1568,6 +1568,7 @@ packages:
         - '--sysconfdir=/etc'
         - '--localstatedir=/var'
         - '--disable-static'
+        - '--disable-futex'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
