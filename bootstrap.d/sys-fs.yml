@@ -1,0 +1,29 @@
+packages:
+  - name: libfuse
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/libfuse/libfuse.git'
+      tag: 'fuse-3.12.0'
+      version: '3'
+    tools_required:
+      - system-gcc
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+    configure:
+      - args:
+        - 'meson'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '-Dexamples=false'
+        - '-Dtests=false'
+        - '-Dudevrulesdir="/etc/udev/rules.d/'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['meson', '@THIS_BUILD_DIR@', '@THIS_SOURCE_DIR@']
+      - args: ['meson', 'install', '-C', '@THIS_BUILD_DIR@']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
