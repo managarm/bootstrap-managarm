@@ -1,13 +1,13 @@
-From 32947df9d8b0b002c7da0c10674b2c23addd3c62 Mon Sep 17 00:00:00 2001
-From: Matt Taylor <mstaveleytaylor@gmail.com>
-Date: Sat, 10 Apr 2021 17:53:24 +0100
-Subject: [PATCH 1/2] managarm: initial port
+From a45000403a46b40d88cbee88668f349a06178b7b Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Wed, 22 Feb 2023 02:05:24 +0100
+Subject: [PATCH 1/2] Add initial Managarm support
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
- Cargo.lock                                    |  16 +-
+ Cargo.lock                                    |  10 +-
  Cargo.toml                                    |   1 +
- .../src/spec/managarm_system_base.rs          |  35 +++++
+ .../src/spec/managarm_system_base.rs          |  36 +++++
  compiler/rustc_target/src/spec/mod.rs         |   3 +
  .../spec/x86_64_unknown_managarm_system.rs    |  19 +++
  library/std/Cargo.toml                        |   2 +-
@@ -24,9 +24,10 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
  library/std/src/sys/unix/os.rs                |  34 +++-
  library/std/src/sys/unix/thread.rs            |   7 +
  library/std/src/sys/unix/thread_local_dtor.rs |   3 +-
- library/std/src/sys/unix/time.rs              |   7 +-
  library/unwind/build.rs                       |   2 +
- 21 files changed, 364 insertions(+), 17 deletions(-)
+ src/bootstrap/Cargo.lock                      |  12 ++
+ src/tools/rust-analyzer/Cargo.lock            |  12 ++
+ 22 files changed, 383 insertions(+), 10 deletions(-)
  create mode 100644 compiler/rustc_target/src/spec/managarm_system_base.rs
  create mode 100644 compiler/rustc_target/src/spec/x86_64_unknown_managarm_system.rs
  create mode 100644 library/std/src/os/managarm/fs.rs
@@ -34,28 +35,22 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
  create mode 100644 library/std/src/os/managarm/raw.rs
 
 diff --git a/Cargo.lock b/Cargo.lock
-index e3ab987b..7589d40b 100644
+index 6a151058..1c70bc35 100644
 --- a/Cargo.lock
 +++ b/Cargo.lock
-@@ -1972,9 +1972,7 @@ checksum = "830d08ce1d1d941e6b30645f1a0eb5643013d835ce3779a5fc208261dbe10f55"
- 
+@@ -2126,8 +2126,6 @@ checksum = "830d08ce1d1d941e6b30645f1a0eb5643013d835ce3779a5fc208261dbe10f55"
  [[package]]
  name = "libc"
--version = "0.2.116"
+ version = "0.2.138"
 -source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "565dbd88872dbe4cc8a46e527f26483c1d1f7afa6b884a3bd6cd893d4f98da74"
-+version = "0.2.117"
+-checksum = "db6d7e329c562c5dfab7a46a2afabc8b987ab9a4834c9d1ca04dc54c1546cef8"
  dependencies = [
   "rustc-std-workspace-core",
  ]
-@@ -5648,3 +5646,15 @@ checksum = "fe5c30ade05e61656247b2e334a031dfd0cc466fadef865bdcdea8d537951bf1"
- dependencies = [
-  "winapi",
+@@ -5980,3 +5978,11 @@ dependencies = [
+  "syn",
+  "synstructure",
  ]
-+
-+[[patch.unused]]
-+name = "backtrace"
-+version = "0.3.64"
 +
 +[[patch.unused]]
 +name = "num_cpus"
@@ -64,12 +59,11 @@ index e3ab987b..7589d40b 100644
 +[[patch.unused]]
 +name = "users"
 +version = "0.11.0"
-\ No newline at end of file
 diff --git a/Cargo.toml b/Cargo.toml
-index cae48d79..a3328ea6 100644
+index 000c10a1..8c36570f 100644
 --- a/Cargo.toml
 +++ b/Cargo.toml
-@@ -130,6 +130,7 @@ rustc-workspace-hack = { path = 'src/tools/rustc-workspace-hack' }
+@@ -111,6 +111,7 @@ rustc-workspace-hack = { path = 'src/tools/rustc-workspace-hack' }
  rustc-std-workspace-core = { path = 'library/rustc-std-workspace-core' }
  rustc-std-workspace-alloc = { path = 'library/rustc-std-workspace-alloc' }
  rustc-std-workspace-std = { path = 'library/rustc-std-workspace-std' }
@@ -79,16 +73,18 @@ index cae48d79..a3328ea6 100644
  clippy_lints = { path = "src/tools/clippy/clippy_lints" }
 diff --git a/compiler/rustc_target/src/spec/managarm_system_base.rs b/compiler/rustc_target/src/spec/managarm_system_base.rs
 new file mode 100644
-index 00000000..08b7d8a8
+index 00000000..53e2b0f0
 --- /dev/null
 +++ b/compiler/rustc_target/src/spec/managarm_system_base.rs
-@@ -0,0 +1,35 @@
-+use crate::spec::{LinkArgs, LinkerFlavor, RelroLevel, TargetOptions};
+@@ -0,0 +1,36 @@
++use crate::spec::{Cc, LinkArgs, LinkerFlavor, Lld, RelroLevel, TargetOptions};
++
++use super::cvs;
 +
 +pub fn opts() -> TargetOptions {
 +    let mut args = LinkArgs::new();
 +    args.insert(
-+        LinkerFlavor::Gcc,
++        LinkerFlavor::Gnu(Cc::Yes, Lld::No),
 +        vec![
 +            // We want to be able to strip as much executable code as possible
 +            // from the linker command line, and this flag indicates to the
@@ -97,18 +93,17 @@ index 00000000..08b7d8a8
 +            // resolutions the linker does). This option only applies to all
 +            // following libraries so we're sure to pass it as one of the first
 +            // arguments.
-+            "-Wl,--as-needed".to_string(),
++            "-Wl,--as-needed".to_string().into(),
 +            // Always enable NX protection when it is available
-+            "-Wl,-z,noexecstack".to_string(),
++            "-Wl,-z,noexecstack".to_string().into(),
 +        ],
 +    );
 +
 +    TargetOptions {
-+        os: "managarm".to_string(),
++        os: "managarm".to_string().into(),
 +        dynamic_linking: true,
 +        executables: true,
-+        os_family: Some("unix".to_string()),
-+        linker_is_gnu: true,
++        families: cvs!["unix"],
 +        has_rpath: true,
 +        pre_link_args: args,
 +        position_independent_executables: true,
@@ -119,18 +114,18 @@ index 00000000..08b7d8a8
 +    }
 +}
 diff --git a/compiler/rustc_target/src/spec/mod.rs b/compiler/rustc_target/src/spec/mod.rs
-index 92678aed..ac96c04a 100644
+index d05b8aa4..30db6831 100644
 --- a/compiler/rustc_target/src/spec/mod.rs
 +++ b/compiler/rustc_target/src/spec/mod.rs
-@@ -62,6 +62,7 @@
+@@ -67,6 +67,7 @@
  mod freebsd_base;
  mod fuchsia_base;
  mod haiku_base;
 +mod managarm_system_base;
  mod hermit_base;
- mod hermit_kernel_base;
  mod illumos_base;
-@@ -894,6 +895,8 @@ fn $module() {
+ mod l4re_base;
+@@ -1104,6 +1105,8 @@ fn $module() {
      ("i686-unknown-haiku", i686_unknown_haiku),
      ("x86_64-unknown-haiku", x86_64_unknown_haiku),
  
@@ -141,47 +136,47 @@ index 92678aed..ac96c04a 100644
      ("i686-apple-darwin", i686_apple_darwin),
 diff --git a/compiler/rustc_target/src/spec/x86_64_unknown_managarm_system.rs b/compiler/rustc_target/src/spec/x86_64_unknown_managarm_system.rs
 new file mode 100644
-index 00000000..7c16ed9b
+index 00000000..252d11c0
 --- /dev/null
 +++ b/compiler/rustc_target/src/spec/x86_64_unknown_managarm_system.rs
 @@ -0,0 +1,19 @@
-+use crate::spec::{LinkerFlavor, StackProbeType, Target};
++use crate::spec::{Cc, LinkerFlavor, Lld, StackProbeType, Target};
 +
 +pub fn target() -> Target {
 +    let mut base = super::managarm_system_base::opts();
-+    base.cpu = "x86-64".to_string();
++    base.cpu = "x86-64".to_string().into();
 +    base.max_atomic_width = Some(64);
-+    base.pre_link_args.get_mut(&LinkerFlavor::Gcc).unwrap().push("-m64".to_string());
++    base.pre_link_args.get_mut(&LinkerFlavor::Gnu(Cc::Yes, Lld::No)).unwrap().push("-m64".to_string().into());
 +    // don't use probe-stack=inline-asm until rust-lang/rust#83139 is resolved.
 +    base.stack_probes = StackProbeType::Call;
 +
 +    Target {
-+        llvm_target: "x86_64-unknown-managarm-system".to_string(),
++        llvm_target: "x86_64-unknown-managarm-system".to_string().into(),
 +        pointer_width: 64,
 +        data_layout: "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
-+            .to_string(),
-+        arch: "x86_64".to_string(),
++            .to_string().into(),
++        arch: "x86_64".to_string().into(),
 +        options: base,
 +    }
 +}
 diff --git a/library/std/Cargo.toml b/library/std/Cargo.toml
-index 14609653..ca735bcf 100644
+index a7aefc26..eac64160 100644
 --- a/library/std/Cargo.toml
 +++ b/library/std/Cargo.toml
-@@ -15,7 +15,7 @@ cfg-if = { version = "0.1.8", features = ['rustc-dep-of-std'] }
+@@ -15,7 +15,7 @@ cfg-if = { version = "1.0", features = ['rustc-dep-of-std'] }
  panic_unwind = { path = "../panic_unwind", optional = true }
  panic_abort = { path = "../panic_abort" }
  core = { path = "../core" }
--libc = { version = "0.2.116", default-features = false, features = ['rustc-dep-of-std'] }
+-libc = { version = "0.2.138", default-features = false, features = ['rustc-dep-of-std'] }
 +libc = { path = "../../../rust-libc", default-features = false, features = ['rustc-dep-of-std'] }
- compiler_builtins = { version = "0.1.69" }
+ compiler_builtins = { version = "0.1.82" }
  profiler_builtins = { path = "../profiler_builtins", optional = true }
  unwind = { path = "../unwind" }
 diff --git a/library/std/build.rs b/library/std/build.rs
-index 43168e77..3ffa1ff2 100644
+index 8b1a06ee..e4d98bd0 100644
 --- a/library/std/build.rs
 +++ b/library/std/build.rs
-@@ -23,6 +23,7 @@ fn main() {
+@@ -24,6 +24,7 @@ fn main() {
          || target.contains("l4re")
          || target.contains("redox")
          || target.contains("haiku")
@@ -190,21 +185,21 @@ index 43168e77..3ffa1ff2 100644
          || target.contains("wasm32")
          || target.contains("wasm64")
 diff --git a/library/std/src/lib.rs b/library/std/src/lib.rs
-index 8c38db9b..278225fd 100644
+index 65d4c3c8..34edb9a9 100644
 --- a/library/std/src/lib.rs
 +++ b/library/std/src/lib.rs
-@@ -576,7 +576,7 @@ pub mod arch {
- // Private support modules
+@@ -598,7 +598,7 @@ pub mod arch {
  mod panicking;
+ mod personality;
  
 -#[path = "../../backtrace/src/lib.rs"]
 +#[path = "../../../../rust-backtrace/src/lib.rs"]
- #[allow(dead_code, unused_attributes)]
+ #[allow(dead_code, unused_attributes, fuzzy_provenance_casts)]
  mod backtrace_rs;
  
 diff --git a/library/std/src/os/managarm/fs.rs b/library/std/src/os/managarm/fs.rs
 new file mode 100644
-index 00000000..dd8f2955
+index 00000000..58205f11
 --- /dev/null
 +++ b/library/std/src/os/managarm/fs.rs
 @@ -0,0 +1,148 @@
@@ -228,9 +223,9 @@ index 00000000..dd8f2955
 +    /// Unix platforms. The `os::unix::fs::MetadataExt` trait contains the
 +    /// cross-Unix abstractions contained within the raw stat.
 +    #[stable(feature = "metadata_ext", since = "1.1.0")]
-+    #[rustc_deprecated(
++    #[deprecated(
 +        since = "1.8.0",
-+        reason = "deprecated in favor of the accessor \
++        note = "deprecated in favor of the accessor \
 +                  methods of this trait"
 +    )]
 +    #[allow(deprecated)]
@@ -370,14 +365,14 @@ index 00000000..869966bb
 +pub mod raw;
 diff --git a/library/std/src/os/managarm/raw.rs b/library/std/src/os/managarm/raw.rs
 new file mode 100644
-index 00000000..0e8bdd77
+index 00000000..eabba1c4
 --- /dev/null
 +++ b/library/std/src/os/managarm/raw.rs
 @@ -0,0 +1,74 @@
 +#![stable(feature = "raw_ext", since = "1.1.0")]
-+#![rustc_deprecated(
++#![deprecated(
 +    since = "1.8.0",
-+    reason = "these type aliases are no longer supported by \
++    note = "these type aliases are no longer supported by \
 +              the standard library, the `libc` crate on \
 +              crates.io should be used instead for the correct \
 +              definitions"
@@ -449,11 +444,11 @@ index 00000000..0e8bdd77
 +    pub st_blocks: libc::blkcnt_t, 
 +}
 diff --git a/library/std/src/os/mod.rs b/library/std/src/os/mod.rs
-index 90c30313..ebb3ec7b 100644
+index 42773805..dcb46195 100644
 --- a/library/std/src/os/mod.rs
 +++ b/library/std/src/os/mod.rs
-@@ -129,6 +129,8 @@ pub mod windows {}
- pub mod ios;
+@@ -133,6 +133,8 @@ pub mod windows {}
+ pub mod l4re;
  #[cfg(target_os = "macos")]
  pub mod macos;
 +#[cfg(target_os = "managarm")]
@@ -462,10 +457,10 @@ index 90c30313..ebb3ec7b 100644
  pub mod netbsd;
  #[cfg(target_os = "openbsd")]
 diff --git a/library/std/src/os/unix/mod.rs b/library/std/src/os/unix/mod.rs
-index 62f750fa..00c6e3ab 100644
+index f97fa0fb..3bb23800 100644
 --- a/library/std/src/os/unix/mod.rs
 +++ b/library/std/src/os/unix/mod.rs
-@@ -59,6 +59,8 @@ mod platform {
+@@ -63,6 +63,8 @@ mod platform {
      pub use crate::os::linux::*;
      #[cfg(target_os = "macos")]
      pub use crate::os::macos::*;
@@ -475,24 +470,24 @@ index 62f750fa..00c6e3ab 100644
      pub use crate::os::netbsd::*;
      #[cfg(target_os = "openbsd")]
 diff --git a/library/std/src/sys/unix/args.rs b/library/std/src/sys/unix/args.rs
-index ee5e3983..bd59fb3a 100644
+index a342f0f5..758300df 100644
 --- a/library/std/src/sys/unix/args.rs
 +++ b/library/std/src/sys/unix/args.rs
-@@ -68,7 +68,8 @@ fn next_back(&mut self) -> Option<OsString> {
-     target_os = "l4re",
+@@ -69,7 +69,8 @@ fn next_back(&mut self) -> Option<OsString> {
      target_os = "fuchsia",
      target_os = "redox",
--    target_os = "vxworks"
-+    target_os = "vxworks",
+     target_os = "vxworks",
+-    target_os = "horizon"
++    target_os = "horizon",
 +    target_os = "managarm"
  ))]
  mod imp {
      use super::Args;
 diff --git a/library/std/src/sys/unix/env.rs b/library/std/src/sys/unix/env.rs
-index 60551aeb..f9b5322b 100644
+index c9ba661c..287e34fe 100644
 --- a/library/std/src/sys/unix/env.rs
 +++ b/library/std/src/sys/unix/env.rs
-@@ -195,3 +195,14 @@ pub mod os {
+@@ -217,3 +217,14 @@ pub mod os {
      pub const EXE_SUFFIX: &str = "";
      pub const EXE_EXTENSION: &str = "";
  }
@@ -508,24 +503,24 @@ index 60551aeb..f9b5322b 100644
 +    pub const EXE_EXTENSION: &str = "";
 +}
 diff --git a/library/std/src/sys/unix/fs.rs b/library/std/src/sys/unix/fs.rs
-index 8bd0b9b1..c7492b62 100644
+index 37a49f2d..b92982df 100644
 --- a/library/std/src/sys/unix/fs.rs
 +++ b/library/std/src/sys/unix/fs.rs
-@@ -633,7 +633,8 @@ pub fn file_type(&self) -> io::Result<FileType> {
-         target_os = "fuchsia",
+@@ -798,7 +798,8 @@ pub fn file_type(&self) -> io::Result<FileType> {
          target_os = "redox",
          target_os = "vxworks",
--        target_os = "espidf"
-+        target_os = "espidf",
+         target_os = "espidf",
+-        target_os = "horizon"
++        target_os = "horizon",
 +        target_os = "managarm"
      ))]
      pub fn ino(&self) -> u64 {
          self.entry.d_ino as u64
 diff --git a/library/std/src/sys/unix/os.rs b/library/std/src/sys/unix/os.rs
-index b268ef5c..2b7863e3 100644
+index 2f2663db..eea1c15e 100644
 --- a/library/std/src/sys/unix/os.rs
 +++ b/library/std/src/sys/unix/os.rs
-@@ -39,7 +39,7 @@
+@@ -41,7 +41,7 @@
  }
  
  extern "C" {
@@ -534,7 +529,7 @@ index b268ef5c..2b7863e3 100644
      #[cfg_attr(
          any(
              target_os = "linux",
-@@ -69,13 +69,13 @@
+@@ -71,13 +71,13 @@
  }
  
  /// Returns the platform-specific value of errno
@@ -550,7 +545,7 @@ index b268ef5c..2b7863e3 100644
  #[allow(dead_code)] // but not all target cfgs actually end up using it
  pub fn set_errno(e: i32) {
      unsafe { *errno_location() = e as c_int }
-@@ -109,6 +109,29 @@ pub fn set_errno(e: i32) {
+@@ -111,6 +111,29 @@ pub fn set_errno(e: i32) {
      }
  }
  
@@ -593,10 +588,10 @@ index b268ef5c..2b7863e3 100644
  pub fn current_exe() -> io::Result<PathBuf> {
      unsafe {
 diff --git a/library/std/src/sys/unix/thread.rs b/library/std/src/sys/unix/thread.rs
-index cf8cf5ad..e6228074 100644
+index c1d30dd9..b87c74b8 100644
 --- a/library/std/src/sys/unix/thread.rs
 +++ b/library/std/src/sys/unix/thread.rs
-@@ -140,6 +140,13 @@ pub fn set_name(name: &CStr) {
+@@ -160,6 +160,13 @@ pub fn set_name(name: &CStr) {
          }
      }
  
@@ -609,9 +604,9 @@ index cf8cf5ad..e6228074 100644
 +
      #[cfg(target_os = "netbsd")]
      pub fn set_name(name: &CStr) {
-         use crate::ffi::CString;
+         unsafe {
 diff --git a/library/std/src/sys/unix/thread_local_dtor.rs b/library/std/src/sys/unix/thread_local_dtor.rs
-index c3f41035..df3d08dc 100644
+index d7fd2130..cc2e5a0b 100644
 --- a/library/std/src/sys/unix/thread_local_dtor.rs
 +++ b/library/std/src/sys/unix/thread_local_dtor.rs
 @@ -15,7 +15,8 @@
@@ -622,38 +617,60 @@ index c3f41035..df3d08dc 100644
 +    target_os = "emscripten",
 +    target_os = "managarm"
  ))]
+ #[cfg_attr(target_family = "wasm", allow(unused))] // might remain unused depending on target details (e.g. wasm32-unknown-emscripten)
  pub unsafe fn register_dtor(t: *mut u8, dtor: unsafe extern "C" fn(*mut u8)) {
-     use crate::mem;
-diff --git a/library/std/src/sys/unix/time.rs b/library/std/src/sys/unix/time.rs
-index 59ddd1aa..c3fe5b00 100644
---- a/library/std/src/sys/unix/time.rs
-+++ b/library/std/src/sys/unix/time.rs
-@@ -343,12 +343,7 @@ fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-         }
-     }
- 
--    #[cfg(not(any(target_os = "dragonfly", target_os = "espidf")))]
--    pub type clock_t = libc::c_int;
--    #[cfg(any(target_os = "dragonfly", target_os = "espidf"))]
--    pub type clock_t = libc::c_ulong;
--
--    fn now(clock: clock_t) -> Timespec {
-+    fn now(clock: libc::clockid_t) -> Timespec {
-         let mut t = Timespec { t: libc::timespec { tv_sec: 0, tv_nsec: 0 } };
-         cvt(unsafe { libc::clock_gettime(clock, &mut t.t) }).unwrap();
-         t
 diff --git a/library/unwind/build.rs b/library/unwind/build.rs
-index a3f52241..2c785c17 100644
+index 5c3c02fb..9234a0b6 100644
 --- a/library/unwind/build.rs
 +++ b/library/unwind/build.rs
-@@ -46,5 +46,7 @@ fn main() {
-         println!("cargo:rustc-link-lib=gcc_s");
-     } else if target.contains("redox") {
-         // redox is handled in lib.rs
+@@ -21,5 +21,7 @@ fn main() {
+         if has_unwind {
+             println!("cargo:rustc-cfg=feature=\"system-llvm-libunwind\"");
+         }
 +    } else if target.contains("managarm") {
 +        println!("cargo:rustc-link-lib=gcc_s");
      }
  }
+diff --git a/src/bootstrap/Cargo.lock b/src/bootstrap/Cargo.lock
+index efe8ae31..fb0c33f8 100644
+--- a/src/bootstrap/Cargo.lock
++++ b/src/bootstrap/Cargo.lock
+@@ -797,3 +797,15 @@ name = "yansi"
+ version = "0.5.1"
+ source = "registry+https://github.com/rust-lang/crates.io-index"
+ checksum = "09041cd90cf85f7f8b2df60c646f853b7f535ce68f85244eb6731cf89fa498ec"
++
++[[patch.unused]]
++name = "libc"
++version = "0.2.138"
++
++[[patch.unused]]
++name = "num_cpus"
++version = "1.13.0"
++
++[[patch.unused]]
++name = "users"
++version = "0.11.0"
+diff --git a/src/tools/rust-analyzer/Cargo.lock b/src/tools/rust-analyzer/Cargo.lock
+index 41c5d366..c1410eed 100644
+--- a/src/tools/rust-analyzer/Cargo.lock
++++ b/src/tools/rust-analyzer/Cargo.lock
+@@ -2149,3 +2149,15 @@ dependencies = [
+  "xflags",
+  "xshell",
+ ]
++
++[[patch.unused]]
++name = "libc"
++version = "0.2.138"
++
++[[patch.unused]]
++name = "num_cpus"
++version = "1.13.0"
++
++[[patch.unused]]
++name = "users"
++version = "0.11.0"
 -- 
-2.35.2
+2.39.1
 

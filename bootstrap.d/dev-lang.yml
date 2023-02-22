@@ -22,8 +22,8 @@ sources:
   - name: rust
     subdir: 'ports'
     git: 'https://github.com/rust-lang/rust.git'
-    tag: '1.60.0'
-    version: '1.60.0'
+    tag: '1.67.1'
+    version: '1.67.1'
 
   - name: host-bootstrap-cargo
     subdir: 'ports'
@@ -55,7 +55,6 @@ tools:
     tools_required:
       - host-llvm-toolchain
       - host-python
-    revision: 3
     compile:
       - args: |
             cat << EOF > config.toml
