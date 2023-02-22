@@ -15,7 +15,7 @@ patched_libs = {
     "num_cpus": "1.13.0",
     "users": "0.11.0",
     "winit": "0.27.5",
-    "glutin": "0.28.0",
+    "glutin": "0.29.1",
     "glutin_glx_sys": "0.1.7",
     "glutin_egl_sys": "0.1.5",
     "shared_library": "0.1.9",

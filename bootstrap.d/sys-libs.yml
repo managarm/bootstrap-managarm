@@ -62,8 +62,8 @@ sources:
   - name: rust-glutin
     subdir: 'ports'
     git: 'https://github.com/rust-windowing/glutin.git'
-    tag: 'v0.28.0'
-    version: '0.28.0'
+    tag: 'v0.29.1'
+    version: '0.29.1'
 
   - name: rust-shared-library
     subdir: 'ports'
