@@ -32,8 +32,8 @@ sources:
   - name: rust-libloading
     subdir: 'ports'
     git: 'https://github.com/nagisa/rust_libloading.git'
-    tag: '0.7.3'
-    version: '0.7.3'
+    tag: '0.7.4'
+    version: '0.7.4'
 
   - name: rust-mio-0.6
     subdir: 'ports'

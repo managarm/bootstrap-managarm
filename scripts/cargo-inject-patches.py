@@ -9,7 +9,7 @@ patched_libs = {
     "backtrace": "0.3.64",
     "calloop": "0.10.0",
     "libc": "0.2.138",
-    "libloading": "0.7.3",
+    "libloading": "0.7.4",
     "mio": ["0.6.23", "0.8.3"],
     "nix": "0.24.3",
     "num_cpus": "1.13.0",
