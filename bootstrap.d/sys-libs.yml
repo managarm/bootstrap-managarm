@@ -56,8 +56,8 @@ sources:
   - name: rust-winit
     subdir: 'ports'
     git: 'https://github.com/rust-windowing/winit.git'
-    tag: 'v0.26.1'
-    version: '0.26.1'
+    tag: 'v0.27.5'
+    version: '0.27.5'
 
   - name: rust-glutin
     subdir: 'ports'

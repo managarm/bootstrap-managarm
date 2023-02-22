@@ -14,7 +14,7 @@ patched_libs = {
     "nix": "0.24.3",
     "num_cpus": "1.13.0",
     "users": "0.11.0",
-    "winit": "0.26.1",
+    "winit": "0.27.5",
     "glutin": "0.28.0",
     "glutin_glx_sys": "0.1.7",
     "glutin_egl_sys": "0.1.5",
