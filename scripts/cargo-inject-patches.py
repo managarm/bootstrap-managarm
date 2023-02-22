@@ -8,7 +8,7 @@ import subprocess
 patched_libs = {
     "backtrace": "0.3.64",
     "calloop": "0.9.3",
-    "libc": "0.2.125",
+    "libc": "0.2.138",
     "libloading": "0.7.3",
     "mio": ["0.6.23", "0.8.3"],
     "nix": "0.22.3",
