@@ -50,8 +50,8 @@ sources:
   - name: rust-nix
     subdir: 'ports'
     git: 'https://github.com/nix-rust/nix.git'
-    tag: 'v0.22.3'
-    version: '0.22.3'
+    tag: 'v0.24.3'
+    version: '0.24.3'
 
   - name: rust-winit
     subdir: 'ports'
