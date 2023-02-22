@@ -26,8 +26,8 @@ sources:
   - name: rust-calloop
     subdir: 'ports'
     git: 'https://github.com/Smithay/calloop.git'
-    tag: 'v0.9.3'
-    version: '0.9.3'
+    tag: 'v0.10.0'
+    version: '0.10.0'
 
   - name: rust-libloading
     subdir: 'ports'
