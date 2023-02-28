@@ -4,7 +4,6 @@ jobs:
       - bootstrap-system-gcc
       - system-gcc
     packages:
-      - linux-headers
       - mlibc
       - mlibc-headers
 

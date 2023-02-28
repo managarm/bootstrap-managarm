@@ -1252,7 +1252,7 @@ packages:
         - '-Ddisable_crypt_option=true'
         - '-Ddisable_iconv_option=true'
         - '-Ddisable_intl_option=true'
-        - '-Dlinux_kernel_headers=@BUILD_ROOT@/packages/linux-headers/usr/include'
+        - '-Dlinux_kernel_headers=@SYSROOT_DIR@/usr/src/linux-headers'
     build:
       - args: ['ninja']
       - args: ['ninja', 'install']
@@ -1297,7 +1297,7 @@ packages:
         - '-Ddisable_crypt_option=true'
         - '-Ddisable_iconv_option=true'
         - '-Ddisable_intl_option=true'
-        - '-Dlinux_kernel_headers=@BUILD_ROOT@/packages/linux-headers/usr/include'
+        - '-Dlinux_kernel_headers=@SYSROOT_DIR@/usr/src/linux-headers'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
