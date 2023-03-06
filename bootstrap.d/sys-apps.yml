@@ -196,9 +196,9 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/ogham/exa.git'
-      commit: 'b18e93d283d388ee42d8f0b73f36e546111324ce'
+      commit: 'c697d066702ab81ce0684fedb4c638e0fc0473e8'
       branch: 'master'
-      version: '0.10.1p1'
+      version: '0.10.1p2'
     tools_required:
       - host-cargo
       - system-gcc
@@ -206,7 +206,6 @@ packages:
       - rust-patched-libs
     pkgs_required:
       - mlibc
-    revision: 5
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
     build:
