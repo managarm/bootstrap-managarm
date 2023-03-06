@@ -2,8 +2,8 @@ sources:
   - name: rust-libc
     subdir: 'ports'
     git: 'https://github.com/rust-lang/libc.git'
-    tag: '0.2.125'
-    version: '0.2.125'
+    tag: '0.2.138'
+    version: '0.2.138'
 
   - name: rust-num-cpus
     subdir: 'ports'
@@ -26,14 +26,14 @@ sources:
   - name: rust-calloop
     subdir: 'ports'
     git: 'https://github.com/Smithay/calloop.git'
-    tag: 'v0.9.3'
-    version: '0.9.3'
+    tag: 'v0.10.0'
+    version: '0.10.0'
 
   - name: rust-libloading
     subdir: 'ports'
     git: 'https://github.com/nagisa/rust_libloading.git'
-    tag: '0.7.3'
-    version: '0.7.3'
+    tag: '0.7.4'
+    version: '0.7.4'
 
   - name: rust-mio-0.6
     subdir: 'ports'
@@ -50,20 +50,20 @@ sources:
   - name: rust-nix
     subdir: 'ports'
     git: 'https://github.com/nix-rust/nix.git'
-    tag: 'v0.22.3'
-    version: '0.22.3'
+    tag: 'v0.24.3'
+    version: '0.24.3'
 
   - name: rust-winit
     subdir: 'ports'
     git: 'https://github.com/rust-windowing/winit.git'
-    tag: 'v0.26.1'
-    version: '0.26.1'
+    tag: 'v0.27.5'
+    version: '0.27.5'
 
   - name: rust-glutin
     subdir: 'ports'
     git: 'https://github.com/rust-windowing/glutin.git'
-    tag: 'v0.28.0'
-    version: '0.28.0'
+    tag: 'v0.29.1'
+    version: '0.29.1'
 
   - name: rust-shared-library
     subdir: 'ports'

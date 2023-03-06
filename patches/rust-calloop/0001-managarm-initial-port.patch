@@ -1,18 +1,20 @@
-From 74b9be01f8ec0ff26d674d265a23a80d4e733d0f Mon Sep 17 00:00:00 2001
-From: Matt Taylor <mstaveleytaylor@gmail.com>
-Date: Mon, 21 Feb 2022 02:40:50 +0000
+From 6189f8e29f66e8e2edf67559b853debce850f017 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Thu, 23 Feb 2023 00:43:56 +0100
 Subject: [PATCH] managarm: initial port
 
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
  src/sys/mod.rs | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/src/sys/mod.rs b/src/sys/mod.rs
-index dd103a5..9cfa07f 100644
+index defbe11..2649571 100644
 --- a/src/sys/mod.rs
 +++ b/src/sys/mod.rs
-@@ -1,8 +1,8 @@
- use std::{io, os::unix::io::RawFd};
+@@ -3,9 +3,9 @@ use vec_map::VecMap;
+ 
+ use crate::{loop_logic::CalloopKey, sources::timer::TimerWheel};
  
 -#[cfg(target_os = "linux")]
 +#[cfg(any(target_os = "linux", target_os = "managarm"))]
@@ -23,5 +25,5 @@ index dd103a5..9cfa07f 100644
  
  #[cfg(any(
 -- 
-2.35.1
+2.39.1
 

@@ -1,6 +1,5 @@
 packages:
   - name: alacritty
-    stability_level: broken
     architecture: '@OPTION:arch@'
     metadata:
       summary: GPU-accelerated terminal emulator
@@ -12,8 +11,8 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/alacritty/alacritty'
-      tag: 'v0.10.1'
-      version: '0.10.1'
+      tag: 'v0.11.0'
+      version: '0.11.0'
     tools_required:
       - host-cargo
       - system-gcc
@@ -24,10 +23,8 @@ packages:
       - fontconfig
       - freetype
       - wayland
-    revision: 4
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
-      - args: ['cargo', 'update', '-p', 'smithay-clipboard', '--precise', '0.6.5', '--manifest-path', '@THIS_SOURCE_DIR@/Cargo.toml']
     build:
       - args: ['install', '-D', '@THIS_SOURCE_DIR@/alacritty.yml', '@THIS_COLLECT_DIR@/root/.alacritty.yml']
       - args:

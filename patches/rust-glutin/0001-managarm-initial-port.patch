@@ -1,15 +1,16 @@
-From 8f3d697d064e3112b933b40640959231a3abd945 Mon Sep 17 00:00:00 2001
+From 3c0c08baf78489c1568e348a3e040aebf4d03d19 Mon Sep 17 00:00:00 2001
 From: Matt Taylor <mstaveleytaylor@gmail.com>
 Date: Mon, 21 Feb 2022 12:20:00 +0000
 Subject: [PATCH] managarm: initial port
 
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
  glutin/Cargo.toml                    | 2 +-
  glutin/src/api/dlloader.rs           | 1 +
  glutin/src/api/egl/mod.rs            | 6 ++++++
  glutin/src/api/glx/mod.rs            | 1 +
  glutin/src/api/osmesa/mod.rs         | 1 +
- glutin/src/lib.rs                    | 4 ++++
+ glutin/src/lib.rs                    | 3 +++
  glutin/src/platform/mod.rs           | 1 +
  glutin/src/platform/unix.rs          | 1 +
  glutin/src/platform_impl/mod.rs      | 1 +
@@ -20,23 +21,23 @@ Subject: [PATCH] managarm: initial port
  glutin_glx_sys/Cargo.toml            | 2 +-
  glutin_glx_sys/build.rs              | 1 +
  glutin_glx_sys/src/lib.rs            | 1 +
- 16 files changed, 26 insertions(+), 2 deletions(-)
+ 16 files changed, 25 insertions(+), 2 deletions(-)
 
 diff --git a/glutin/Cargo.toml b/glutin/Cargo.toml
-index ddd23ee..8a0755f 100644
+index 626f76a..6495d4f 100644
 --- a/glutin/Cargo.toml
 +++ b/glutin/Cargo.toml
-@@ -56,7 +56,7 @@ glutin_wgl_sys = { version = "0.1.5", path = "../glutin_wgl_sys" }
- glutin_egl_sys = { version = "0.1.5", path = "../glutin_egl_sys" }
- parking_lot = "0.11"
+@@ -57,7 +57,7 @@ glutin_wgl_sys = { version = "0.1.5", path = "../glutin_wgl_sys" }
+ glutin_egl_sys = { version = "0.1.6", path = "../glutin_egl_sys" }
+ parking_lot = "0.12"
  
 -[target.'cfg(any(target_os = "linux", target_os = "freebsd", target_os = "dragonfly", target_os = "netbsd", target_os = "openbsd"))'.dependencies]
 +[target.'cfg(any(target_os = "linux", target_os = "managarm", target_os = "freebsd", target_os = "dragonfly", target_os = "netbsd", target_os = "openbsd"))'.dependencies]
  osmesa-sys = "0.1"
- wayland-client = { version = "0.29", features = ["dlopen"], optional = true }
- wayland-egl = { version = "0.29", optional = true }
+ wayland-client = { version = "0.29.4", features = ["dlopen"], optional = true }
+ wayland-egl = { version = "0.29.4", optional = true }
 diff --git a/glutin/src/api/dlloader.rs b/glutin/src/api/dlloader.rs
-index 9cfba93..af248f2 100644
+index 40bbb41..5bc7143 100644
 --- a/glutin/src/api/dlloader.rs
 +++ b/glutin/src/api/dlloader.rs
 @@ -1,6 +1,7 @@
@@ -48,7 +49,7 @@ index 9cfba93..af248f2 100644
      target_os = "freebsd",
      target_os = "netbsd",
 diff --git a/glutin/src/api/egl/mod.rs b/glutin/src/api/egl/mod.rs
-index d567678..590ed83 100644
+index 49e8660..9c68512 100644
 --- a/glutin/src/api/egl/mod.rs
 +++ b/glutin/src/api/egl/mod.rs
 @@ -1,6 +1,7 @@
@@ -59,7 +60,7 @@ index d567678..590ed83 100644
      target_os = "android",
      target_os = "dragonfly",
      target_os = "freebsd",
-@@ -121,6 +122,7 @@ use parking_lot::Mutex;
+@@ -23,6 +24,7 @@ use once_cell::sync::{Lazy, OnceCell};
      target_os = "android",
      target_os = "windows",
      target_os = "linux",
@@ -67,7 +68,7 @@ index d567678..590ed83 100644
      target_os = "dragonfly",
      target_os = "freebsd",
      target_os = "netbsd",
-@@ -773,6 +775,7 @@ pub struct ContextPrototype<'a> {
+@@ -697,6 +699,7 @@ pub struct ContextPrototype<'a> {
  #[cfg(any(
      target_os = "linux",
      target_os = "dragonfly",
@@ -75,7 +76,7 @@ index d567678..590ed83 100644
      target_os = "freebsd",
      target_os = "netbsd",
      target_os = "openbsd",
-@@ -804,6 +807,7 @@ impl<'a> ContextPrototype<'a> {
+@@ -728,6 +731,7 @@ impl<'a> ContextPrototype<'a> {
      #[cfg(any(
          target_os = "linux",
          target_os = "dragonfly",
@@ -83,7 +84,7 @@ index d567678..590ed83 100644
          target_os = "freebsd",
          target_os = "netbsd",
          target_os = "openbsd",
-@@ -829,6 +833,7 @@ impl<'a> ContextPrototype<'a> {
+@@ -753,6 +757,7 @@ impl<'a> ContextPrototype<'a> {
  
      #[cfg(any(
          target_os = "linux",
@@ -91,7 +92,7 @@ index d567678..590ed83 100644
          target_os = "dragonfly",
          target_os = "freebsd",
          target_os = "netbsd",
-@@ -847,6 +852,7 @@ impl<'a> ContextPrototype<'a> {
+@@ -771,6 +776,7 @@ impl<'a> ContextPrototype<'a> {
      #[cfg(any(
          target_os = "android",
          target_os = "windows",
@@ -100,7 +101,7 @@ index d567678..590ed83 100644
          target_os = "dragonfly",
          target_os = "freebsd",
 diff --git a/glutin/src/api/glx/mod.rs b/glutin/src/api/glx/mod.rs
-index 61968e6..67458f1 100644
+index 08ef63c..ac7e527 100644
 --- a/glutin/src/api/glx/mod.rs
 +++ b/glutin/src/api/glx/mod.rs
 @@ -1,5 +1,6 @@
@@ -111,7 +112,7 @@ index 61968e6..67458f1 100644
      target_os = "freebsd",
      target_os = "netbsd",
 diff --git a/glutin/src/api/osmesa/mod.rs b/glutin/src/api/osmesa/mod.rs
-index 89c0765..40b8402 100644
+index 13035f9..57600a5 100644
 --- a/glutin/src/api/osmesa/mod.rs
 +++ b/glutin/src/api/osmesa/mod.rs
 @@ -1,5 +1,6 @@
@@ -122,10 +123,10 @@ index 89c0765..40b8402 100644
      target_os = "freebsd",
      target_os = "netbsd",
 diff --git a/glutin/src/lib.rs b/glutin/src/lib.rs
-index 7ee1522..f2e6da2 100644
+index 74d46b1..5c55b98 100644
 --- a/glutin/src/lib.rs
 +++ b/glutin/src/lib.rs
-@@ -43,6 +43,7 @@
+@@ -40,6 +40,7 @@
  #![cfg_attr(
      not(any(
          target_os = "linux",
@@ -133,7 +134,7 @@ index 7ee1522..f2e6da2 100644
          target_os = "dragonfly",
          target_os = "freebsd",
          target_os = "netbsd",
-@@ -56,6 +57,7 @@
+@@ -53,6 +54,7 @@
  #![cfg_attr(
      any(
          target_os = "linux",
@@ -141,15 +142,7 @@ index 7ee1522..f2e6da2 100644
          target_os = "dragonfly",
          target_os = "freebsd",
          target_os = "netbsd",
-@@ -73,6 +75,7 @@
- #[cfg(any(
-     target_os = "windows",
-     target_os = "linux",
-+    target_os = "managarm",
-     target_os = "android",
-     target_os = "dragonfly",
-     target_os = "freebsd",
-@@ -298,6 +301,7 @@ pub enum CreationError {
+@@ -273,6 +275,7 @@ pub enum CreationError {
  impl CreationError {
      #[cfg(any(
          target_os = "linux",
@@ -158,7 +151,7 @@ index 7ee1522..f2e6da2 100644
          target_os = "freebsd",
          target_os = "netbsd",
 diff --git a/glutin/src/platform/mod.rs b/glutin/src/platform/mod.rs
-index e508519..c684a90 100644
+index 4ceb89a..a11d3ea 100644
 --- a/glutin/src/platform/mod.rs
 +++ b/glutin/src/platform/mod.rs
 @@ -25,6 +25,7 @@ pub mod run_return {
@@ -181,11 +174,11 @@ index 66aed2c..6202645 100644
      target_os = "freebsd",
      target_os = "netbsd",
 diff --git a/glutin/src/platform_impl/mod.rs b/glutin/src/platform_impl/mod.rs
-index 82affa7..2c0158e 100644
+index 7d6c795..39f4c8a 100644
 --- a/glutin/src/platform_impl/mod.rs
 +++ b/glutin/src/platform_impl/mod.rs
-@@ -5,6 +5,7 @@ pub use self::platform_impl::*;
- mod platform_impl;
+@@ -5,6 +5,7 @@ pub use self::platform::*;
+ mod platform;
  #[cfg(any(
      target_os = "linux",
 +    target_os = "managarm",
@@ -193,7 +186,7 @@ index 82affa7..2c0158e 100644
      target_os = "freebsd",
      target_os = "netbsd",
 diff --git a/glutin/src/platform_impl/unix/mod.rs b/glutin/src/platform_impl/unix/mod.rs
-index 510ec9c..6ad5e59 100644
+index ef72e8a..aba44ac 100644
 --- a/glutin/src/platform_impl/unix/mod.rs
 +++ b/glutin/src/platform_impl/unix/mod.rs
 @@ -1,5 +1,6 @@
@@ -204,10 +197,10 @@ index 510ec9c..6ad5e59 100644
      target_os = "freebsd",
      target_os = "netbsd",
 diff --git a/glutin/src/windowed.rs b/glutin/src/windowed.rs
-index b603918..6fb70b9 100644
+index f400288..145429f 100644
 --- a/glutin/src/windowed.rs
 +++ b/glutin/src/windowed.rs
-@@ -57,6 +57,7 @@ pub type WindowedContext<T> = ContextWrapper<T, Window>;
+@@ -50,6 +50,7 @@ pub type WindowedContext<T> = ContextWrapper<T, Window>;
  #[cfg_attr(
      not(any(
          target_os = "linux",
@@ -215,7 +208,7 @@ index b603918..6fb70b9 100644
          target_os = "dragonfly",
          target_os = "freebsd",
          target_os = "netbsd",
-@@ -70,6 +71,7 @@ pub type WindowedContext<T> = ContextWrapper<T, Window>;
+@@ -63,6 +64,7 @@ pub type WindowedContext<T> = ContextWrapper<T, Window>;
      any(
          target_os = "linux",
          target_os = "dragonfly",
@@ -224,7 +217,7 @@ index b603918..6fb70b9 100644
          target_os = "netbsd",
          target_os = "openbsd",
 diff --git a/glutin_egl_sys/build.rs b/glutin_egl_sys/build.rs
-index 2920f3b..0d53258 100644
+index 7b222aa..b5f0312 100644
 --- a/glutin_egl_sys/build.rs
 +++ b/glutin_egl_sys/build.rs
 @@ -11,6 +11,7 @@ fn main() {
@@ -236,7 +229,7 @@ index 2920f3b..0d53258 100644
          || target.contains("netbsd")
          || target.contains("openbsd")
 diff --git a/glutin_egl_sys/src/lib.rs b/glutin_egl_sys/src/lib.rs
-index fac07d2..2f05e8c 100644
+index e6eed6d..6a6d56f 100644
 --- a/glutin_egl_sys/src/lib.rs
 +++ b/glutin_egl_sys/src/lib.rs
 @@ -3,6 +3,7 @@
@@ -247,7 +240,7 @@ index fac07d2..2f05e8c 100644
      target_os = "freebsd",
      target_os = "netbsd",
      target_os = "openbsd"
-@@ -44,6 +45,7 @@ pub type EGLNativeWindowType = *const raw::c_void;
+@@ -50,6 +51,7 @@ pub type EGLNativeWindowType = *const raw::c_void;
  pub type EGLNativeWindowType = *const raw::c_void;
  #[cfg(any(
      target_os = "dragonfly",
@@ -256,7 +249,7 @@ index fac07d2..2f05e8c 100644
      target_os = "netbsd",
      target_os = "openbsd"
 diff --git a/glutin_glx_sys/Cargo.toml b/glutin_glx_sys/Cargo.toml
-index a919dec..9d0398d 100644
+index d29f448..2519f30 100644
 --- a/glutin_glx_sys/Cargo.toml
 +++ b/glutin_glx_sys/Cargo.toml
 @@ -12,5 +12,5 @@ edition = "2018"
@@ -267,7 +260,7 @@ index a919dec..9d0398d 100644
 +[target.'cfg(any(target_os = "linux", target_os = "freebsd", target_os = "managarm", target_os="dragonfly", target_os="netbsd", target_os="openbsd"))'.dependencies]
  x11-dl = "2.18.3"
 diff --git a/glutin_glx_sys/build.rs b/glutin_glx_sys/build.rs
-index 21e1cb3..36a90dd 100644
+index c25ef77..7d15255 100644
 --- a/glutin_glx_sys/build.rs
 +++ b/glutin_glx_sys/build.rs
 @@ -11,6 +11,7 @@ fn main() {
@@ -279,7 +272,7 @@ index 21e1cb3..36a90dd 100644
          || target.contains("netbsd")
          || target.contains("openbsd")
 diff --git a/glutin_glx_sys/src/lib.rs b/glutin_glx_sys/src/lib.rs
-index fadb62a..89f18d7 100644
+index 1ecc40a..8fb3632 100644
 --- a/glutin_glx_sys/src/lib.rs
 +++ b/glutin_glx_sys/src/lib.rs
 @@ -1,6 +1,7 @@
@@ -291,5 +284,5 @@ index fadb62a..89f18d7 100644
      target_os = "netbsd",
      target_os = "openbsd"
 -- 
-2.35.1
+2.39.1
 
