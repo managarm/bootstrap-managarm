@@ -185,6 +185,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: exa
+    stability_level: broken
     architecture: '@OPTION:arch@'
     metadata:
       summary: A modern replacement for 'ls' written in Rust
