@@ -1749,3 +1749,10 @@ tasks:
       - '@SOURCE_ROOT@/scripts/test-image.py'
     workdir: '@BUILD_ROOT@'
     containerless: true
+
+  - name: mlibc-sysdeps
+    args:
+      - '@SOURCE_ROOT@/scripts/compile-mlibc-sysdeps.sh'
+      - '@SOURCE_ROOT@/mlibc'
+      - '@SYSROOT_DIR@/usr/src/linux-headers'
+    workdir: '@BUILD_ROOT@'
