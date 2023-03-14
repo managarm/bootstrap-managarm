@@ -8,11 +8,11 @@ sources:
 
   - name: limine
     subdir: 'ports'
-    url: 'https://github.com/limine-bootloader/limine/releases/download/v4.20230313.0/limine-4.20230313.0.tar.xz'
+    url: 'https://github.com/limine-bootloader/limine/releases/download/v4.20230314.0/limine-4.20230314.0.tar.xz'
     format: 'tar.xz'
-    checksum: blake2b:a6b8ac81d884f188b28de695a8b6b502f98013feb701576201be5aee8e390448a7d74dfc728982d0687fb8e82f7ffcd85a50a2ce9a155c104264612606bd183d
-    extract_path: 'limine-4.20230313.0'
-    version: '4.20230313.0'
+    checksum: blake2b:87633f5a7b727d6a8416eddcb5e9c34e9442684c22fc4d7690780b291eeb09a4c9a760aad93b700f0fcef60d0c8c9f80876f4c2cd9792ea50750279ab082e56c
+    extract_path: 'limine-4.20230314.0'
+    version: '4.20230314.0'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.15
@@ -31,7 +31,7 @@ tools:
         - '--prefix=@PREFIX@'
         - '--enable-all'
         - '--disable-uefi-aarch64'
-        - 'CROSS_TOOLCHAIN=@OPTION:arch-triple@'
+        - 'FREESTANDING_TOOLCHAIN=@OPTION:arch-triple@'
     compile:
       - args: ['make', '-j@PARALLELISM@']
     install:
@@ -53,7 +53,7 @@ packages:
         - '--prefix=/usr'
         - '--enable-all'
         - '--disable-uefi-aarch64'
-        - 'CROSS_TOOLCHAIN=@OPTION:arch-triple@'
+        - 'FREESTANDING_TOOLCHAIN=@OPTION:arch-triple@'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
