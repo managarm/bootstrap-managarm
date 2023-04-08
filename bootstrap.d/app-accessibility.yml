@@ -18,6 +18,7 @@ packages:
       - dbus
       - glib
       - libxml
+    revision: 2
     configure:
       - args:
           - 'meson'
@@ -47,6 +48,7 @@ packages:
       - mlibc
       - dbus
       - glib
+    revision: 2
     configure:
       - args:
           - 'meson'

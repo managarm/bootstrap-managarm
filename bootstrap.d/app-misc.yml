@@ -62,6 +62,7 @@ packages:
     pkgs_required:
       - mlibc
       - ncurses
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -95,7 +96,7 @@ packages:
     pkgs_required:
       - mlibc
       - ncurses
-    revision: 5
+    revision: 6
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:

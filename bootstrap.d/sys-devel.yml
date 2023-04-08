@@ -85,7 +85,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args: ['./configure.sh', '-G', '-O3']
@@ -216,7 +216,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -255,7 +255,7 @@ packages:
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -295,7 +295,7 @@ packages:
     pkgs_required:
       - mlibc
       - diffutils
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

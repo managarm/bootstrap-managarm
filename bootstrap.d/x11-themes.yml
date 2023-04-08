@@ -62,7 +62,7 @@ packages:
       - mlibc
       - xorg-util-macros
       - libxcursor
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

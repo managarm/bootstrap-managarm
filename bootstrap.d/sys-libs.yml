@@ -121,6 +121,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -157,6 +158,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -194,7 +196,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -220,7 +222,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -265,7 +267,7 @@ packages:
     pkgs_required:
       - mlibc
       - ncurses
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

@@ -29,6 +29,7 @@ packages:
       - gnutls
       - libiconv
       - zlib
+    revision: 2
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:

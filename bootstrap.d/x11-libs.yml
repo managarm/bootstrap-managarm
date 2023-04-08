@@ -67,7 +67,7 @@ packages:
       - mesa
       - libxrender
       - glib
-    revision: 2
+    revision: 3
     configure:
       - args:
         # For now, we build without glesv2 backend as Weston prefers the image backend.
@@ -111,7 +111,7 @@ packages:
       - libpng
       - shared-mime-info
       - libx11
-    revision: 4
+    revision: 5
     configure:
       - args:
         - 'meson'
@@ -164,7 +164,7 @@ packages:
       - libxcb
       - pango
       - hicolor-icon-theme
-    revision: 6
+    revision: 7
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -193,56 +193,6 @@ packages:
         post_install:
           - args: ['gtk-query-immodules-2.0', '--update-cache']
           - args: ['glib-compile-schemas', '/usr/share/glib-2.0/schemas']
-
-  - name: libdmx
-    architecture: '@OPTION:arch@'
-    metadata:
-      summary: X.Org dmx library
-      description: This package contains the X.Org dmx library.
-      spdx: 'MIT'
-      website: 'https://gitlab.freedesktop.org/xorg/lib/libdmx'
-      maintainer: "Dennis Bonke <dennis@managarm.org>"
-      categories: ['x11-libs']
-    source:
-      subdir: ports
-      git: 'https://gitlab.freedesktop.org/xorg/lib/libdmx.git'
-      tag: 'libdmx-1.1.4'
-      version: '1.1.4'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
-        - host-libtool
-        - host-pkg-config
-        - host-xorg-macros
-        - host-autoconf-archive
-        - host-xtrans
-      regenerate:
-        - args: ['./autogen.sh']
-          environ:
-            'NOCONFIGURE': 'yes'
-    tools_required:
-      - system-gcc
-    pkgs_required:
-      - mlibc
-      - xorg-util-macros
-      - xorg-proto
-      - libx11
-      - libxext
-    revision: 3
-    configure:
-      - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--host=@OPTION:arch-triple@'
-        - '--prefix=/usr'
-        - '--sysconfdir=/etc'
-        - '--localstatedir=/var'
-        - '--disable-static'
-        - '--disable-malloc0returnsnull'
-    build:
-      - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'install']
-        environ:
-          DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: gtk+-3
     architecture: '@OPTION:arch@'
@@ -284,6 +234,7 @@ packages:
       - libxcursor
       - gsettings-desktop-schemas
       - dbus
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -312,6 +263,56 @@ packages:
           - args: ['gtk-query-immodules-3.0', '--update-cache']
           - args: ['glib-compile-schemas', '/usr/share/glib-2.0/schemas']
 
+  - name: libdmx
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: X.Org dmx library
+      description: This package contains the X.Org dmx library.
+      spdx: 'MIT'
+      website: 'https://gitlab.freedesktop.org/xorg/lib/libdmx'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['x11-libs']
+    source:
+      subdir: ports
+      git: 'https://gitlab.freedesktop.org/xorg/lib/libdmx.git'
+      tag: 'libdmx-1.1.4'
+      version: '1.1.4'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+        - host-xorg-macros
+        - host-autoconf-archive
+        - host-xtrans
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - xorg-util-macros
+      - xorg-proto
+      - libx11
+      - libxext
+    revision: 4
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--sysconfdir=/etc'
+        - '--localstatedir=/var'
+        - '--disable-static'
+        - '--disable-malloc0returnsnull'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: libdrm
     labels: [aarch64]
     architecture: '@OPTION:arch@'
@@ -324,7 +325,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -389,7 +390,7 @@ packages:
       - libxtrans
       - xorg-font-util
       - zlib
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -435,7 +436,7 @@ packages:
       - xorg-proto
       - libx11
       - libxtrans
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -482,7 +483,7 @@ packages:
       - libx11
       - libxtrans
       - libice
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -527,6 +528,7 @@ packages:
       - xorg-proto
       - libxcb
       - libxtrans
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -571,7 +573,7 @@ packages:
       - mlibc
       - xorg-util-macros
       - xorg-proto
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -618,7 +620,7 @@ packages:
       - libxt
       - libxmu
       - libxpm
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -663,6 +665,7 @@ packages:
       - libxau
       - libxdmcp
       - xcb-proto
+    revision: 2
     configure:
       - args: ['sed', '-i', "s/pthread-stubs//", '@THIS_SOURCE_DIR@/configure']
       - args:
@@ -715,7 +718,7 @@ packages:
       - xorg-proto
       - libx11
       - libxfixes
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -760,6 +763,7 @@ packages:
       - libx11
       - libxfixes
       - libxrender
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -805,7 +809,7 @@ packages:
       - libx11
       - libxtrans
       - libxfixes
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -848,7 +852,7 @@ packages:
       - xorg-util-macros
       - xorg-proto
       - libxau
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -893,7 +897,7 @@ packages:
       - xorg-proto
       - libx11
       - libxtrans
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -939,7 +943,7 @@ packages:
       - xorg-proto
       - libx11
       - libxtrans
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -993,7 +997,7 @@ packages:
       - bzip2
       - libfontenc
       - zlib
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1043,6 +1047,7 @@ packages:
       - libxrender
       - freetype
       - fontconfig
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1090,7 +1095,7 @@ packages:
       - libxtrans
       - libxext
       - libxfixes
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1140,7 +1145,7 @@ packages:
       - xorg-proto
       - libx11
       - libxext
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1179,6 +1184,7 @@ packages:
       - libxcb
       - libxml
       - xkeyboard-config
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -1227,7 +1233,7 @@ packages:
       - xorg-util-macros
       - xorg-proto
       - libx11
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1275,7 +1281,7 @@ packages:
       - libxext
       - libxtrans
       - libxt
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1320,7 +1326,7 @@ packages:
       - libx11
       - libxext
       - libxt
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1367,7 +1373,7 @@ packages:
       - libxtrans
       - libxrender
       - libxext
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1413,7 +1419,7 @@ packages:
       - xorg-proto
       - libx11
       - libxtrans
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1463,7 +1469,7 @@ packages:
       - xorg-proto
       - libx11
       - libxext
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1513,7 +1519,7 @@ packages:
       - xorg-proto
       - libx11
       - libxext
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1559,7 +1565,7 @@ packages:
       - xorg-proto
       - libx11
       - libxtrans
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1607,7 +1613,7 @@ packages:
       - libxtrans
       - libsm
       - libice
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1637,7 +1643,7 @@ packages:
       - xorg-util-macros
       - xorg-proto
       - libxcb
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1684,6 +1690,7 @@ packages:
       - libxtrans
       - libxext
       - libxi
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1729,7 +1736,7 @@ packages:
       - libx11
       - libxtrans
       - libxext
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1776,6 +1783,7 @@ packages:
       - libx11
       - libxtrans
       - libxext
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1818,6 +1826,7 @@ packages:
       - libxext
       - harfbuzz
       - libxft
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -1860,7 +1869,7 @@ packages:
     pkgs_required:
       - mlibc
       - libpng
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1906,7 +1915,7 @@ packages:
       - libx11
       - libxtrans
       - libxcb
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1950,7 +1959,7 @@ packages:
       - xorg-util-macros
       - xorg-proto
       - xcb-util
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1993,7 +2002,7 @@ packages:
       - libxcb
       - xorg-util-macros
       - xorg-proto
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -2036,7 +2045,7 @@ packages:
       - libxcb
       - xorg-util-macros
       - xorg-proto
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -2079,7 +2088,7 @@ packages:
       - libxcb
       - xorg-util-macros
       - xorg-proto
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -2115,6 +2124,7 @@ packages:
       - host-pkg-config
     pkgs_required:
       - mlibc
+    revision: 2
     configure:
       - args:
         - 'meson'
