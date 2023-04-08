@@ -185,7 +185,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: exa
-    stability_level: broken
     architecture: '@OPTION:arch@'
     metadata:
       summary: A modern replacement for 'ls' written in Rust
@@ -207,6 +206,7 @@ packages:
       - rust-patched-libs
     pkgs_required:
       - mlibc
+    revision: 2
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
     build:
