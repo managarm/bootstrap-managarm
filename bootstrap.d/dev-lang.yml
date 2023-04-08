@@ -55,6 +55,7 @@ tools:
     tools_required:
       - host-llvm-toolchain
       - host-python
+    revision: 2
     compile:
       - args: |
             cat << EOF > config.toml
