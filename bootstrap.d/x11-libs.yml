@@ -1848,8 +1848,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/pixman/pixman.git'
-      tag: 'pixman-0.40.0'
-      version: '0.40.0'
+      tag: 'pixman-0.42.2'
+      version: '0.42.2'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1868,7 +1868,6 @@ packages:
     pkgs_required:
       - mlibc
       - libpng
-    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
