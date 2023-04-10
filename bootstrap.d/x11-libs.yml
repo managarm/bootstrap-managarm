@@ -319,13 +319,12 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/mesa/drm'
-      tag: 'libdrm-2.4.113'
-      version: '2.4.113'
+      tag: 'libdrm-2.4.115'
+      version: '2.4.115'
     tools_required:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
     configure:
       - args:
         - 'meson'
