@@ -11,7 +11,6 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/swaywm/sway'
-      branch: master
       tag: '1.8.1'
       version: '1.8.1'
     tools_required:
