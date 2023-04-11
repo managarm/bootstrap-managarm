@@ -43,6 +43,22 @@ tools:
     install:
       - args: ['make', 'install']
 
+  - name: host-hwdata
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/vcrhonek/hwdata.git'
+      tag: 'v0.367'
+      version: '0.367'
+    configure:
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+      - args:
+        - '@THIS_BUILD_DIR@/configure'
+        - '--prefix=@PREFIX@/usr'
+        - '--libdir=@PREFIX@/lib'
+        - '--datadir=@PREFIX@/share'
+    install:
+      - args: ['make', 'install']
+
 packages:
   - name: coreutils
     labels: [aarch64]

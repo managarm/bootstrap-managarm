@@ -1509,9 +1509,9 @@ packages:
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
-      git: 'https://github.com/wayland-project/wayland-protocols.git'
-      tag: '1.26'
-      version: '1.26'
+      git: 'https://gitlab.freedesktop.org/wayland/wayland-protocols.git'
+      tag: '1.31'
+      version: '1.31'
     tools_required:
       - system-gcc
       - wayland-scanner

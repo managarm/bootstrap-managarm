@@ -1,0 +1,25 @@
+From 9537981b6df92bef25464d30b093f7dc89e5d2f0 Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Mon, 26 Sep 2022 01:11:05 +0200
+Subject: [PATCH] Add managarm-specific changes
+
+---
+ sway/main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sway/main.c b/sway/main.c
+index 85bc2f1c..f88948e0 100644
+--- a/sway/main.c
++++ b/sway/main.c
+@@ -311,7 +311,7 @@ int main(int argc, char **argv) {
+ 
+ 	// SUID operation is deprecated, so block it for now.
+ 	if (detect_suid()) {
+-		exit(EXIT_FAILURE);
++		// exit(EXIT_FAILURE);
+ 	}
+ 
+ 	// Since wayland requires XDG_RUNTIME_DIR to be set, abort with just the
+-- 
+2.39.2
+
