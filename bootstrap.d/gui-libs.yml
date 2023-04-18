@@ -32,6 +32,7 @@ packages:
       - libxcb
       - libxkbcommon
       - pixman
+      - seatd
       - wayland
       - wayland-protocols
       - xcb-util-image
