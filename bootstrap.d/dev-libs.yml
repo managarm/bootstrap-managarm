@@ -1626,3 +1626,28 @@ packages:
           LIBDIR: '/usr/lib'
           MANDIR: '/usr/share/man/man1'
       - args: ['rm', '-v', '@THIS_COLLECT_DIR@/usr/lib/libxxhash.a']
+
+  - name: freestanding-headers
+    labels: [aarch64, riscv64]
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Freestanding C library headers
+      description: This package provides the standard freestanding C library headers such as stdint.h
+      spdx: '0BSD'
+      maintainer: "mintsuki <mintsuki@protonmail.com>"
+      categories: ['dev-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/mintsuki/freestanding-headers.git'
+      branch: 'trunk'
+      commit: 5f432a652086b5e7871e54fedb35e7a0c5208a9a
+    configure:
+      - args: ['cp', '-rp', '@THIS_SOURCE_DIR@/.', './']
+    build:
+      - args: ['rm', 'LICENSE', 'README']
+      - args: ['rm', '-rf', '@THIS_COLLECT_DIR@/usr/src/freestanding-headers']
+      - args: ['rm', '-rf', '@THIS_COLLECT_DIR@/usr/include']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/src/freestanding-headers']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/include']
+      - args: ['cp', '-rp', '.', '@THIS_COLLECT_DIR@/usr/src/freestanding-headers/']
+      - args: ['cp', '-rp', '.', '@THIS_COLLECT_DIR@/usr/include/']
