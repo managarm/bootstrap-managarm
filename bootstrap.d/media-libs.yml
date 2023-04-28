@@ -763,8 +763,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/mesa/mesa.git'
-      tag: 'mesa-21.3.5'
-      version: '21.3.5'
+      tag: 'mesa-23.0.2'
+      version: '23.0.2'
       tools_required:
         - host-pkg-config
     tools_required:
@@ -791,7 +791,8 @@ packages:
       - libxext
       - libxcb
       - libglvnd
-    revision: 9
+      - libexpat
+      - zstd
     configure:
       - args: ['cp', '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file', 'meson.cross-file']
       - args:
@@ -819,6 +820,17 @@ packages:
         - '-Dglvnd=true'
         # Force Mesa to build with LLVM.
         - '-Dllvm=enabled'
+        - '-Dgallium-nine=false'
+        - '-Dgallium-va=disabled'
+        - '-Dgallium-vdpau=disabled'
+        - '-Dgallium-xa=disabled'
+        - '-Dshared-glapi=enabled'
+        - '-Ddri3=enabled'
+        - '-Degl=enabled'
+        - '-Dgbm=enabled'
+        - '-Dgles1=enabled'
+        - '-Dgles2=enabled'
+        - '-Dzstd=enabled'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
