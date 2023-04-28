@@ -1,4 +1,4 @@
-From c367e444fe659d83c6ee5620d367ab16ae095470 Mon Sep 17 00:00:00 2001
+From a789a978ca1913ac1571330b4e00015e2859bf4b Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Sat, 2 Apr 2022 19:44:10 +0200
 Subject: [PATCH 2/2] Add Managarm target
@@ -12,17 +12,17 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
  clang/lib/Driver/ToolChains/Gnu.cpp      |  13 +-
  clang/lib/Driver/ToolChains/Managarm.cpp | 432 +++++++++++++++++++++++
  clang/lib/Driver/ToolChains/Managarm.h   |  49 +++
- llvm/include/llvm/ADT/Triple.h           |   5 +-
- llvm/lib/Support/Triple.cpp              |   6 +
+ llvm/include/llvm/TargetParser/Triple.h  |   5 +-
+ llvm/lib/TargetParser/Triple.cpp         |   6 +
  9 files changed, 542 insertions(+), 4 deletions(-)
  create mode 100644 clang/lib/Driver/ToolChains/Managarm.cpp
  create mode 100644 clang/lib/Driver/ToolChains/Managarm.h
 
 diff --git a/clang/lib/Basic/Targets.cpp b/clang/lib/Basic/Targets.cpp
-index 994a491cd..e3df5bfa4 100644
+index 8400774db..b5688e6aa 100644
 --- a/clang/lib/Basic/Targets.cpp
 +++ b/clang/lib/Basic/Targets.cpp
-@@ -149,6 +149,8 @@ TargetInfo *AllocateTarget(const llvm::Triple &Triple,
+@@ -153,6 +153,8 @@ TargetInfo *AllocateTarget(const llvm::Triple &Triple,
        return new NetBSDTargetInfo<AArch64leTargetInfo>(Triple, Opts);
      case llvm::Triple::OpenBSD:
        return new OpenBSDTargetInfo<AArch64leTargetInfo>(Triple, Opts);
@@ -31,7 +31,7 @@ index 994a491cd..e3df5bfa4 100644
      case llvm::Triple::Win32:
        switch (Triple.getEnvironment()) {
        case llvm::Triple::GNU:
-@@ -420,6 +422,8 @@ TargetInfo *AllocateTarget(const llvm::Triple &Triple,
+@@ -424,6 +426,8 @@ TargetInfo *AllocateTarget(const llvm::Triple &Triple,
        return new FuchsiaTargetInfo<RISCV64TargetInfo>(Triple, Opts);
      case llvm::Triple::Linux:
        return new LinuxTargetInfo<RISCV64TargetInfo>(Triple, Opts);
@@ -40,7 +40,7 @@ index 994a491cd..e3df5bfa4 100644
      default:
        return new RISCV64TargetInfo(Triple, Opts);
      }
-@@ -586,6 +590,8 @@ TargetInfo *AllocateTarget(const llvm::Triple &Triple,
+@@ -590,6 +594,8 @@ TargetInfo *AllocateTarget(const llvm::Triple &Triple,
      }
      case llvm::Triple::Haiku:
        return new HaikuTargetInfo<X86_64TargetInfo>(Triple, Opts);
@@ -50,11 +50,11 @@ index 994a491cd..e3df5bfa4 100644
        return new NaClTargetInfo<X86_64TargetInfo>(Triple, Opts);
      case llvm::Triple::PS4:
 diff --git a/clang/lib/Basic/Targets/OSTargets.h b/clang/lib/Basic/Targets/OSTargets.h
-index 3c1830d5f..4e80429aa 100644
+index fd372cb12..b45c7a4da 100644
 --- a/clang/lib/Basic/Targets/OSTargets.h
 +++ b/clang/lib/Basic/Targets/OSTargets.h
-@@ -338,6 +338,36 @@ public:
-       : OSTargetInfo<Target>(Triple, Opts) {}
+@@ -340,6 +340,36 @@ public:
+   using OSTargetInfo<Target>::OSTargetInfo;
  };
  
 +// Managarm Target
@@ -91,11 +91,11 @@ index 3c1830d5f..4e80429aa 100644
  template <typename Target>
  class LLVM_LIBRARY_VISIBILITY MinixTargetInfo : public OSTargetInfo<Target> {
 diff --git a/clang/lib/Driver/CMakeLists.txt b/clang/lib/Driver/CMakeLists.txt
-index 78e8fd185..a3fbd19bd 100644
+index ba56a9323..309463336 100644
 --- a/clang/lib/Driver/CMakeLists.txt
 +++ b/clang/lib/Driver/CMakeLists.txt
-@@ -59,6 +59,7 @@ add_clang_library(clangDriver
-   ToolChains/Hexagon.cpp
+@@ -67,6 +67,7 @@ add_clang_library(clangDriver
+   ToolChains/HLSL.cpp
    ToolChains/Hurd.cpp
    ToolChains/Linux.cpp
 +  ToolChains/Managarm.cpp
@@ -103,10 +103,10 @@ index 78e8fd185..a3fbd19bd 100644
    ToolChains/MinGW.cpp
    ToolChains/Minix.cpp
 diff --git a/clang/lib/Driver/Driver.cpp b/clang/lib/Driver/Driver.cpp
-index 3bfddeefc..4d3341a1d 100644
+index a268f2fa8..fcc5eb38c 100644
 --- a/clang/lib/Driver/Driver.cpp
 +++ b/clang/lib/Driver/Driver.cpp
-@@ -30,6 +30,7 @@
+@@ -32,6 +32,7 @@
  #include "ToolChains/Hurd.h"
  #include "ToolChains/Lanai.h"
  #include "ToolChains/Linux.h"
@@ -114,7 +114,7 @@ index 3bfddeefc..4d3341a1d 100644
  #include "ToolChains/MSP430.h"
  #include "ToolChains/MSVC.h"
  #include "ToolChains/MinGW.h"
-@@ -5564,6 +5565,9 @@ const ToolChain &Driver::getToolChain(const ArgList &Args,
+@@ -6041,6 +6042,9 @@ const ToolChain &Driver::getToolChain(const ArgList &Args,
      case llvm::Triple::Fuchsia:
        TC = std::make_unique<toolchains::Fuchsia>(*this, Target, Args);
        break;
@@ -125,10 +125,10 @@ index 3bfddeefc..4d3341a1d 100644
        TC = std::make_unique<toolchains::Solaris>(*this, Target, Args);
        break;
 diff --git a/clang/lib/Driver/ToolChains/Gnu.cpp b/clang/lib/Driver/ToolChains/Gnu.cpp
-index 7a9570a68..5c561f970 100644
+index 4f2340316..73a0b6303 100644
 --- a/clang/lib/Driver/ToolChains/Gnu.cpp
 +++ b/clang/lib/Driver/ToolChains/Gnu.cpp
-@@ -246,6 +246,8 @@ static const char *getLDMOption(const llvm::Triple &T, const ArgList &Args) {
+@@ -249,6 +249,8 @@ static const char *getLDMOption(const llvm::Triple &T, const ArgList &Args) {
        return "elf_iamcu";
      return "elf_i386";
    case llvm::Triple::aarch64:
@@ -137,7 +137,7 @@ index 7a9570a68..5c561f970 100644
      return "aarch64linux";
    case llvm::Triple::aarch64_be:
      return "aarch64linuxb";
-@@ -2073,7 +2075,8 @@ void Generic_GCC::GCCInstallationDetector::AddDefaultGCCPrefixes(
+@@ -2218,7 +2220,8 @@ void Generic_GCC::GCCInstallationDetector::AddDefaultGCCPrefixes(
    static const char *const AArch64LibDirs[] = {"/lib64", "/lib"};
    static const char *const AArch64Triples[] = {
        "aarch64-none-linux-gnu", "aarch64-linux-gnu", "aarch64-redhat-linux",
@@ -147,7 +147,7 @@ index 7a9570a68..5c561f970 100644
    static const char *const AArch64beLibDirs[] = {"/lib"};
    static const char *const AArch64beTriples[] = {"aarch64_be-none-linux-gnu",
                                                   "aarch64_be-linux-gnu"};
-@@ -2099,7 +2102,8 @@ void Generic_GCC::GCCInstallationDetector::AddDefaultGCCPrefixes(
+@@ -2248,7 +2251,8 @@ void Generic_GCC::GCCInstallationDetector::AddDefaultGCCPrefixes(
        "x86_64-redhat-linux",    "x86_64-suse-linux",
        "x86_64-manbo-linux-gnu", "x86_64-linux-gnu",
        "x86_64-slackware-linux", "x86_64-unknown-linux",
@@ -157,7 +157,7 @@ index 7a9570a68..5c561f970 100644
    static const char *const X32Triples[] = {"x86_64-linux-gnux32",
                                             "x86_64-pc-linux-gnux32"};
    static const char *const X32LibDirs[] = {"/libx32", "/lib"};
-@@ -2171,7 +2175,10 @@ void Generic_GCC::GCCInstallationDetector::AddDefaultGCCPrefixes(
+@@ -2324,7 +2328,10 @@ void Generic_GCC::GCCInstallationDetector::AddDefaultGCCPrefixes(
    static const char *const RISCV64LibDirs[] = {"/lib64", "/lib"};
    static const char *const RISCV64Triples[] = {"riscv64-unknown-linux-gnu",
                                                 "riscv64-linux-gnu",
@@ -662,11 +662,11 @@ index 000000000..2d87decd8
 +} // end namespace clang
 +
 +#endif // LLVM_CLANG_LIB_DRIVER_TOOLCHAINS_MANAGARM_H
-diff --git a/llvm/include/llvm/ADT/Triple.h b/llvm/include/llvm/ADT/Triple.h
-index 42277c013..e9db917ae 100644
---- a/llvm/include/llvm/ADT/Triple.h
-+++ b/llvm/include/llvm/ADT/Triple.h
-@@ -181,6 +181,7 @@ public:
+diff --git a/llvm/include/llvm/TargetParser/Triple.h b/llvm/include/llvm/TargetParser/Triple.h
+index 59513fa2f..21a54c99b 100644
+--- a/llvm/include/llvm/TargetParser/Triple.h
++++ b/llvm/include/llvm/TargetParser/Triple.h
+@@ -196,6 +196,7 @@ public:
      Linux,
      Lv2,        // PS3
      MacOSX,
@@ -674,22 +674,23 @@ index 42277c013..e9db917ae 100644
      NetBSD,
      OpenBSD,
      Solaris,
-@@ -232,7 +233,9 @@ public:
-     CoreCLR,
-     Simulator, // Simulator variants of other systems, e.g., Apple's iOS
-     MacABI, // Mac Catalyst variant of Apple's iOS deployment target.
--    LastEnvironmentType = MacABI
+@@ -273,8 +274,10 @@ public:
+     Callable,
+     Mesh,
+     Amplification,
 +    Kernel,
 +    System,
+ 
+-    LastEnvironmentType = Amplification
 +    LastEnvironmentType = System
    };
    enum ObjectFormatType {
      UnknownObjectFormat,
-diff --git a/llvm/lib/Support/Triple.cpp b/llvm/lib/Support/Triple.cpp
-index a9afcc9db..b1e7c8259 100644
---- a/llvm/lib/Support/Triple.cpp
-+++ b/llvm/lib/Support/Triple.cpp
-@@ -215,6 +215,7 @@ StringRef Triple::getOSTypeName(OSType Kind) {
+diff --git a/llvm/lib/TargetParser/Triple.cpp b/llvm/lib/TargetParser/Triple.cpp
+index a68035989..e5a69141e 100644
+--- a/llvm/lib/TargetParser/Triple.cpp
++++ b/llvm/lib/TargetParser/Triple.cpp
+@@ -227,6 +227,7 @@ StringRef Triple::getOSTypeName(OSType Kind) {
    case Linux: return "linux";
    case Lv2: return "lv2";
    case MacOSX: return "macosx";
@@ -697,7 +698,7 @@ index a9afcc9db..b1e7c8259 100644
    case Mesa3D: return "mesa3d";
    case Minix: return "minix";
    case NVCL: return "nvcl";
-@@ -251,6 +252,7 @@ StringRef Triple::getEnvironmentTypeName(EnvironmentType Kind) {
+@@ -268,6 +269,7 @@ StringRef Triple::getEnvironmentTypeName(EnvironmentType Kind) {
    case GNUX32: return "gnux32";
    case GNUILP32: return "gnu_ilp32";
    case Itanium: return "itanium";
@@ -705,15 +706,15 @@ index a9afcc9db..b1e7c8259 100644
    case MSVC: return "msvc";
    case MacABI: return "macabi";
    case Musl: return "musl";
-@@ -258,6 +260,7 @@ StringRef Triple::getEnvironmentTypeName(EnvironmentType Kind) {
+@@ -275,6 +277,7 @@ StringRef Triple::getEnvironmentTypeName(EnvironmentType Kind) {
    case MuslEABIHF: return "musleabihf";
    case MuslX32: return "muslx32";
    case Simulator: return "simulator";
 +  case System: return "system";
-   }
- 
-   llvm_unreachable("Invalid EnvironmentType!");
-@@ -523,6 +526,7 @@ static Triple::OSType parseOS(StringRef OSName) {
+   case Pixel: return "pixel";
+   case Vertex: return "vertex";
+   case Geometry: return "geometry";
+@@ -568,6 +571,7 @@ static Triple::OSType parseOS(StringRef OSName) {
      .StartsWith("linux", Triple::Linux)
      .StartsWith("lv2", Triple::Lv2)
      .StartsWith("macos", Triple::MacOSX)
@@ -721,15 +722,15 @@ index a9afcc9db..b1e7c8259 100644
      .StartsWith("netbsd", Triple::NetBSD)
      .StartsWith("openbsd", Triple::OpenBSD)
      .StartsWith("solaris", Triple::Solaris)
-@@ -574,6 +578,8 @@ static Triple::EnvironmentType parseEnvironment(StringRef EnvironmentName) {
+@@ -625,6 +629,8 @@ static Triple::EnvironmentType parseEnvironment(StringRef EnvironmentName) {
        .StartsWith("coreclr", Triple::CoreCLR)
        .StartsWith("simulator", Triple::Simulator)
        .StartsWith("macabi", Triple::MacABI)
 +      .StartsWith("kernel", Triple::Kernel)
 +      .StartsWith("system", Triple::System)
-       .Default(Triple::UnknownEnvironment);
- }
- 
+       .StartsWith("pixel", Triple::Pixel)
+       .StartsWith("vertex", Triple::Vertex)
+       .StartsWith("geometry", Triple::Geometry)
 -- 
-2.35.1
+2.40.0
 
