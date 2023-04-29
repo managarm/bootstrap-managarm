@@ -130,7 +130,10 @@ sources:
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.11
+    sources_required: ['gnuconfig']
     regenerate:
+      - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.sub', '@THIS_SOURCE_DIR@/.']
+      - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.guess', '@THIS_SOURCE_DIR@/.']
       - args: ['autoconf']
         workdir: '@THIS_SOURCE_DIR@/gcc'
       - args: ['autoconf']
@@ -193,6 +196,13 @@ sources:
     format: 'tar.xz'
     tag: '1.22.0'
     version: '1.22.0'
+
+  - name: gnuconfig
+    subdir: 'ports'
+    git: 'https://git.savannah.gnu.org/git/config.git'
+    branch: 'master'
+    commit: '63acb96f92473ceb5e21d873d7c0aee266b3d6d3'
+    version: '20230121'
 
 tools:
   - name: host-autoconf-v2.64

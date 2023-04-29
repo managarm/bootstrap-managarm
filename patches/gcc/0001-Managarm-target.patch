@@ -5,7 +5,6 @@ Subject: [PATCH] Managarm target
 
 TODO: Use libtoolize instead of modifying in-tree libtool?
 ---
- config.sub                                  | 11 +++-
  fixincludes/mkfixinc.sh                     |  1 +
  gcc/config.gcc                              | 71 +++++++++++++++++++++
  gcc/config.host                             |  2 +-
@@ -34,49 +33,6 @@ TODO: Use libtoolize instead of modifying in-tree libtool?
  create mode 100644 gcc/config/riscv/managarm.h
  create mode 100644 gcc/config/riscv/t-managarm
 
-diff --git a/config.sub b/config.sub
-index 63c1f1c8b..033763b58 100755
---- a/config.sub
-+++ b/config.sub
-@@ -132,7 +132,8 @@ case $1 in
- 		maybe_os=$field2-$field3
- 		case $maybe_os in
- 			nto-qnx* | linux-* | uclinux-uclibc* \
--			| uclinux-gnu* | kfreebsd*-gnu* | knetbsd*-gnu* | netbsd*-gnu* \
-+			| uclinux-gnu* | managarm-kernel* | managarm-system* \
-+			| kfreebsd*-gnu* | knetbsd*-gnu* | netbsd*-gnu* \
- 			| netbsd*-eabi* | kopensolaris*-gnu* | cloudabi*-eabi* \
- 			| storm-chaos* | os2-emx* | rtmk-nova*)
- 				basic_machine=$field1
-@@ -1313,6 +1314,10 @@ EOF
- 		kernel=linux
- 		os=$(echo $basic_os | sed -e 's|linux|gnu|')
- 		;;
-+	managarm*)
-+		kernel=managarm
-+		os=$(echo $basic_os | sed -e 's|managarm|system|')
-+		;;
- 	*)
- 		kernel=
- 		os=$basic_os
-@@ -1725,7 +1730,7 @@ case $os in
- 	     | skyos* | haiku* | rdos* | toppers* | drops* | es* \
- 	     | onefs* | tirtos* | phoenix* | fuchsia* | redox* | bme* \
- 	     | midnightbsd* | amdhsa* | unleashed* | emscripten* | wasi* \
--	     | nsk* | powerunix* | genode* | zvmoe* | qnx* | emx*)
-+	     | nsk* | powerunix* | genode* | zvmoe* | qnx* | emx* | kernel* | system*)
- 		;;
- 	# This one is extra strict with allowed versions
- 	sco3.2v2 | sco3.2v[4-9]* | sco5v6*)
-@@ -1744,6 +1749,8 @@ esac
- case $kernel-$os in
- 	linux-gnu* | linux-dietlibc* | linux-android* | linux-newlib* | linux-musl* | linux-uclibc* )
- 		;;
-+	managarm-kernel* | managarm-system* )
-+		;;
- 	uclinux-uclibc* )
- 		;;
- 	-dietlibc* | -newlib* | -musl* | -uclibc* )
 diff --git a/fixincludes/mkfixinc.sh b/fixincludes/mkfixinc.sh
 index df90720b7..779d71953 100755
 --- a/fixincludes/mkfixinc.sh
