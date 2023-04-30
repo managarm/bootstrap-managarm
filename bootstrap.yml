@@ -86,13 +86,6 @@ sources:
     rolling_version: true
     version: '0.0pl@ROLLING_ID@'
 
-  - name: cxxshim
-    subdir: 'ports'
-    git: 'https://github.com/managarm/cxxshim.git'
-    branch: 'master'
-    rolling_version: true
-    version: '0.0pl@ROLLING_ID@'
-
   - name: lai
     subdir: 'ports'
     git: 'https://github.com/qword-os/lai.git'
@@ -122,20 +115,13 @@ sources:
 
   - name: gcc
     subdir: 'ports'
-    git: 'https://gcc.gnu.org/git/gcc.git'
-    tag: 'releases/gcc-11.1.0'
-    version: '11.1.0'
-    tools_required:
-      - host-autoconf-v2.69
-      - host-automake-v1.11
+    git: 'https://github.com/managarm/gcc.git'
+    tag: 'managarm/gcc-13.2.0'
+    version: '13.2.0'
     sources_required: ['gnuconfig']
     regenerate:
       - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.sub', '@THIS_SOURCE_DIR@/.']
       - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.guess', '@THIS_SOURCE_DIR@/.']
-      - args: ['autoconf']
-        workdir: '@THIS_SOURCE_DIR@/gcc'
-      - args: ['autoconf']
-        workdir: '@THIS_SOURCE_DIR@/libstdc++-v3'
 
   - name: protobuf
     subdir: 'ports'
@@ -527,12 +513,18 @@ tools:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
+        - '--with-pkgversion=managarm'
+        - '--with-bugurl=https://github.com/managarm/bootstrap-managarm/issues/'
         - '--prefix=@PREFIX@'
         - '--target=@OPTION:arch-triple@-kernel'
-        - '--with-sysroot=@BUILD_ROOT@/kernel-root'
-        - '--enable-languages=c,c++'
+        - '--without-headers'
+        - '--without-newlib'
+        - '--enable-languages=c,c++,lto'
         - '--disable-shared'
         - '--disable-hosted-libstdcxx'
+        - '--disable-libquadmath'
+        - '--disable-libssp'
+        - '--disable-libsanitizer'
         # -g blows up GCC's binary size.
         - 'CFLAGS=-O2'
         - 'CXXFLAGS=-O2'
@@ -560,9 +552,18 @@ tools:
           - tool: kernel-gcc
             stage_dependencies: [compiler]
         compile:
-          - args: ['make', '-j@PARALLELISM@', 'inhibit_libc=true', 'all-target-libgcc']
+          - args: ['make', '-j@PARALLELISM@', 'all-target-libgcc']
         install:
           - args: ['make', 'install-target-libgcc']
+
+      - name: libstdc++
+        tools_required:
+          - tool: kernel-gcc
+            stage_dependencies: [compiler, libgcc]
+        compile:
+          - args: ['make', '-j@PARALLELISM@', 'all-target-libstdc++-v3']
+        install:
+          - args: ['make', 'install-target-libstdc++-v3']
 
   - name: system-gcc
     labels: [aarch64]
@@ -575,11 +576,12 @@ tools:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
+        - '--with-pkgversion=managarm'
+        - '--with-bugurl=https://github.com/managarm/bootstrap-managarm/issues/'
         - '--prefix=@PREFIX@'
         - '--target=@OPTION:arch-triple@'
         - '--with-sysroot=@SYSROOT_DIR@'
-        - '--enable-languages=c,c++'
-        - '--disable-multilib'
+        - '--enable-languages=c,c++,lto'
         - '--enable-initfini-array'
         - '--enable-libstdcxx-filesystem-ts'
         # -g blows up GCC's binary size.
@@ -632,13 +634,22 @@ tools:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
+        - '--with-pkgversion=managarm'
+        - '--with-bugurl=https://github.com/managarm/bootstrap-managarm/issues/'
         - '--prefix=@PREFIX@'
         - '--target=@OPTION:arch-triple@'
         - '--with-sysroot=@SYSROOT_DIR@'
-        - '--enable-languages=c,c++'
-        - '--disable-multilib'
+        - '--without-headers'
+        - '--without-newlib'
+        - '--enable-languages=c,c++,lto'
         - '--disable-shared'
-        - '--enable-initfini-array'
+        - '--disable-hosted-libstdcxx'
+        # libstdc++ can detect that wchar_t is supported by @SYSROOT_DIR@ and
+        # try to enable code we don't want for wchar handling.  just remove it.
+        - '--disable-wchar_t'
+        - '--disable-libssp'
+        - '--disable-libsanitizer'
+        - '--disable-libquadmath'
         # -g blows up GCC's binary size.
         - 'CFLAGS=-O2'
         - 'CXXFLAGS=-O2'
@@ -649,7 +660,7 @@ tools:
         compile:
           # GCC complains if the include directory is non-existant.
           - args: ['mkdir', '-p', '@SYSROOT_DIR@/usr/include']
-          - args: ['make', '-j@PARALLELISM@', 'inhibit_libc=true', 'all-gcc']
+          - args: ['make', '-j@PARALLELISM@', 'all-gcc']
         install:
           - args: ['make', 'install-gcc']
           # GCC does *not* look for target-prefixed LD/AS.
@@ -664,9 +675,17 @@ tools:
           - tool: bootstrap-system-gcc
             stage_dependencies: [compiler]
         compile:
-          - args: ['make', '-j@PARALLELISM@', 'inhibit_libc=true', 'all-target-libgcc']
+          - args: ['make', '-j@PARALLELISM@', 'all-target-libgcc']
         install:
           - args: ['make', 'install-target-libgcc']
+      - name: libstdc++-v3
+        tools_required:
+          - tool: bootstrap-system-gcc
+            stage_dependencies: [compiler]
+        compile:
+          - args: ['make', '-j@PARALLELISM@', 'all-target-libstdc++-v3']
+        install:
+          - args: ['make', 'install-target-libstdc++-v3']
 
   - name: wayland-scanner
     labels: [aarch64]
@@ -945,6 +964,8 @@ packages:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
+        - '--with-pkgversion=managarm'
+        - '--with-bugurl=https://github.com/managarm/bootstrap-managarm/issues/'
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--target=@OPTION:arch-triple@'
@@ -952,7 +973,6 @@ packages:
         - '--with-build-sysroot=@SYSROOT_DIR@'
         - '--enable-languages=c,c++'
         - '--enable-initfini-array'
-        - '--disable-multilib'
         - '--disable-nls'
         - '--enable-lto'
         - '--with-system-zlib'
@@ -1224,7 +1244,6 @@ packages:
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - frigg
-      - cxxshim
       - mlibc-headers
     configure:
       - args: |
@@ -1272,7 +1291,6 @@ packages:
       - eudev
       - fafnir
       - frigg
-      - cxxshim
       - lewis
       - libasync
       - libdrm
@@ -1300,33 +1318,6 @@ packages:
       - args: ['ninja', 'install']
         environ:
           'DESTDIR': '@THIS_COLLECT_DIR@'
-        quiet: true
-
-  - name: cxxshim
-    metadata:
-      summary: Shim for freestanding C++
-      description: This package provides headers to use in freestanding C++ build environments.
-      spdx: 'MIT'
-      maintainer: "Alexander van der Grinten <avdgrinten@managarm.org>"
-      categories: ['sys-libs']
-    labels: [aarch64, riscv64]
-    architecture: noarch
-    from_source: cxxshim
-    revision: 3
-    configure:
-      - args:
-        - 'meson'
-        - '--prefix=/usr'
-        - '--libdir=lib'
-        # Install to /usr/share to avoid conflicts with standard C++ headers.
-        - '--includedir=share/cxxshim/include'
-        - '@THIS_SOURCE_DIR@'
-        - '-Dinstall_headers=true'
-    build:
-      - args: ['ninja']
-      - args: ['ninja', 'install']
-        environ:
-          DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
   - name: mlibc-headers
@@ -1389,7 +1380,6 @@ packages:
       - linux-headers
       - mlibc-headers
       - frigg
-      - cxxshim
     configure:
       - args:
         - 'meson'
@@ -1432,7 +1422,6 @@ packages:
       - linux-headers
       - mlibc-headers
       - frigg
-      - cxxshim
     configure:
       - args:
         - 'meson'
