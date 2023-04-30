@@ -245,7 +245,7 @@ def do_qemu(args):
     if "QFLAGS" in os.environ:
         qemu_args += shlex.split(os.environ["QFLAGS"])
 
-    print("Running {} with flags {}".format(qemu, qemu_args))
+    print("Running {}".format(shlex.join([qemu, *qemu_args])))
     try:
         subprocess.check_call([qemu] + qemu_args)
     except subprocess.CalledProcessError:
@@ -279,7 +279,7 @@ qemu_parser.add_argument("--cmd", type=str)
 
 
 def do_gdb(args):
-    gdb_args = []
+    gdb_args = ["gdb"]
     if args.qemu:
         gdb_args += [
             "--symbols=system-root/usr/managarm/bin/thor",
@@ -297,10 +297,7 @@ def do_gdb(args):
             "target remote tcp:" + args.ip + ":5679",
         ]
 
-    try:
-        subprocess.check_call(["gdb"] + gdb_args)
-    except subprocess.CalledProcessError:
-        sys.exit(1)
+    os.execvp("gdb", gdb_args)
 
 
 gdb_parser = main_subparsers.add_parser("gdb")
