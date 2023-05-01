@@ -529,17 +529,16 @@ packages:
       categories: ['sys-apps']
     source:
       subdir: 'ports'
-      git: 'https://github.com/qookei/mini-lspci.git'
-      tag: 'v1.2.1'
-      version: '1.2.1'
-      regenerate:
-        - args: ['git', 'submodule', 'update', '--init']
+      url: 'https://github.com/qookei/mini-lspci/releases/download/v1.2.2/mini-lspci-1.2.2.tar.xz'
+      format: 'tar.xz'
+      extract_path: 'mini-lspci-1.2.2'
+      checksum: blake2b:c16690a6b12c2297f3c2aca3f9b9d80b4fad73d6ba3ba3220b508f949788119ff60b753218b2b53dfff04bb0c88054c6f8f28d4a04fc4714d360fa66189f15e2
+      version: '1.2.2'
     tools_required:
       - system-gcc
     pkgs_required:
       - mlibc
       - pciids
-    revision: 4
     configure:
       - args:
         - 'meson'
