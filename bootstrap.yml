@@ -183,7 +183,7 @@ sources:
 
   - name: wayland
     subdir: 'ports'
-    git: 'https://github.com/wayland-project/wayland.git'
+    git: 'https://gitlab.freedesktop.org/wayland/wayland.git'
     tag: '1.21.0'
     version: '1.21.0'
 
