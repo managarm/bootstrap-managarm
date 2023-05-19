@@ -9,4 +9,5 @@ pkgconfig = 'riscv64-managarm-pkg-config'
 [host_machine]
 system = 'managarm'
 cpu_family = 'riscv64'
+cpu = 'rv64imafcv'
 endian = 'little'
