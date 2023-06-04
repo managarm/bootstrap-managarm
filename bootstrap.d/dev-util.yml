@@ -135,7 +135,7 @@ packages:
       summary: Translation tool for XML documents that uses gettext files and ITS rules
       description: This package contains a program for translating XML with PO files using W3C Internationalization Tag Set rules.
       spdx: 'GPL-3.0-or-later'
-      website: 'http://itstool.org/'
+      website: 'https://itstool.org/'
       maintainer: "Dennis Bonke <dennis@managarm.org>"
       categories: ['dev-util']
     source:
