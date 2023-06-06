@@ -8,11 +8,11 @@ sources:
 
   - name: limine
     subdir: 'ports'
-    url: 'https://github.com/limine-bootloader/limine/releases/download/v4.20230530.0/limine-4.20230530.0.tar.xz'
+    url: 'https://github.com/limine-bootloader/limine/releases/download/v4.20230606.0/limine-4.20230606.0.tar.xz'
     format: 'tar.xz'
-    checksum: blake2b:bf68ac2f360874b56d91fa009efb59faeedd5a834c8be9ed0ccf7e717e6d9e751c2aca7a6e2e0837ee17431e41235e79aeb8a95230791a35c3c82cca9cfeb5b8
-    extract_path: 'limine-4.20230530.0'
-    version: '4.20230530.0'
+    checksum: blake2b:613a0d5c5893f2cff1398c03a08c50c60b448f73a4b1f568dde0f2de1bea59ac8ecfaa398e5b601c3eea5c0fcea778a88a178fdaa77acd2236de9f56a7da8cc4
+    extract_path: 'limine-4.20230606.0'
+    version: '4.20230606.0'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.15
@@ -29,8 +29,12 @@ tools:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--prefix=@PREFIX@'
-        - '--enable-all'
-        - '--disable-uefi-aarch64'
+        - '--enable-uefi-ia32'
+        - '--enable-uefi-x86-64'
+        - '--enable-uefi-cd'
+        - '--enable-bios'
+        - '--enable-bios-cd'
+        - '--enable-bios-pxe'
         - 'TOOLCHAIN_FOR_TARGET=@OPTION:arch-triple@'
     compile:
       - args: ['make', '-j@PARALLELISM@']
@@ -46,14 +50,17 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
-        - '--enable-all'
-        - '--disable-uefi-aarch64'
+        - '--enable-uefi-ia32'
+        - '--enable-uefi-x86-64'
+        - '--enable-uefi-cd'
+        - '--enable-bios'
+        - '--enable-bios-cd'
+        - '--enable-bios-pxe'
         - 'TOOLCHAIN_FOR_TARGET=@OPTION:arch-triple@'
     build:
       - args: ['make', '-j@PARALLELISM@']
