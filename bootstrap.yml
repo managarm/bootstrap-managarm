@@ -1682,6 +1682,7 @@ tasks:
       $elevation
     environ:
       'LIMINE_PATH': '@BUILD_ROOT@/tools/host-limine/share/limine'
+      'GPT_TYPE': '64212B3B-56A1-4DFB-971E-BC8CD027996A'
     workdir: '@BUILD_ROOT@'
     containerless: true
 
