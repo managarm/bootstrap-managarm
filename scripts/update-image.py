@@ -20,7 +20,7 @@ from typing import Dict
 
 elevation_method = None
 verbose = False
-MANAGARM_ROOT_PART_TYPE = "EBD0A0A2-B9E5-4433-87C0-68B6B72699C7"
+MANAGARM_ROOT_PART_TYPE = "64212B3B-56A1-4DFB-971E-BC8CD027996A"
 EFI_SYSTEM_PART_TYPE = "C12A7328-F81F-11D2-BA4B-00A0C93EC93B"
 global_mount_info = None
 sfdisk_command = None
