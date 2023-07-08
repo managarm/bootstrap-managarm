@@ -382,7 +382,7 @@ def generate_plan(arch, root_uuid, scriptdir):
             "tools/host-limine/share/limine/BOOTX64.EFI",
             "boot/efi/EFI",
         )
-        yield FsAction.CP, "tools/host-limine/share/limine/limine.sys", "boot/efi/"
+        yield FsAction.CP, "tools/host-limine/share/limine/limine-bios.sys", "boot/efi/"
 
         yield FsAction.CP_SED, os.path.join(
             scriptdir, "limine.cfg"
