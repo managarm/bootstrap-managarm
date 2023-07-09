@@ -1,7 +1,7 @@
 #----------------------------------------------------------------------------------------
 # "base" stage that contains all packages that we need.
 #----------------------------------------------------------------------------------------
-FROM debian:bullseye AS base
+FROM debian:bookworm AS base
 
 RUN apt-get update \
 	&& apt-get -y install \
@@ -113,9 +113,9 @@ RUN apt-get update \
 		&& apt-get clean
 
 # Meson is outdated in debian repos, xbstrap and bragi are used by the build process.
-RUN pip3 install meson \
-	&& pip3 install xbstrap \
-	&& pip3 install bragi
+RUN pip3 install --break-system-packages meson \
+	&& pip3 install --break-system-packages xbstrap \
+	&& pip3 install --break-system-packages bragi
 
 # Install mdbook.
 RUN cd /root && \
