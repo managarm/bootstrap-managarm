@@ -423,6 +423,44 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
       - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/charset.alias']
 
+  - name: iproute2
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: iproute2 is a tool developed to unify network interface configuration, routing, and tunneling for Linux systems
+      description: iproute2 is a collection of utilities for controlling TCP / IP networking and traffic control in Linux.
+      spdx: GPL-2.0-only
+      website: 'https://wiki.linuxfoundation.org/networking/iproute2'
+      maintainer: "no92 <no92.mail@gmail.com>"
+      categories: ['sys-apps']
+    source:
+      subdir: ports
+      git: 'https://git.kernel.org/pub/scm/network/iproute2/iproute2.git'
+      tag: 'v6.2.0'
+      version: '6.2.0'
+    tools_required:
+      - system-gcc
+    configure:
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--include_dir=@THIS_SOURCE_DIR@/include'
+        - '--libbpf_force=off'
+        environ:
+          SBINDIR: '/usr/sbin'
+          CC: '@OPTION:arch-triple@-gcc'
+          CXX: '@OPTION:arch-triple@-g++'
+      - args: ['rm', '-r', 'include/netinet']
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+        environ:
+          SBINDIR: '/usr/sbin'
+      - args: ['make', 'install']
+        environ:
+          SBINDIR: '/usr/sbin'
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: less
     labels: [aarch64]
     architecture: '@OPTION:arch@'
