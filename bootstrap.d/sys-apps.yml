@@ -439,6 +439,8 @@ packages:
       version: '6.2.0'
     tools_required:
       - system-gcc
+    pkgs_required:
+      - mlibc
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
