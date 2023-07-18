@@ -202,6 +202,45 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: drm_info
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Small utility to dump info about DRM devices.
+      description: Small utility to dump info about DRM devices.
+      spdx: 'MIT'
+      website: 'https://gitlab.freedesktop.org/emersion/drm_info'
+      maintainer: "no92 <no92.mail@gmail.com>"
+      categories: ['sys-apps']
+    source:
+      subdir: ports
+      git: 'https://gitlab.freedesktop.org/emersion/drm_info.git'
+      tag: 'v2.5.0'
+      version: '2.5.0'
+    tools_required:
+      - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - libdrm
+      - json-c
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--buildtype=release'
+        - '--wrap-mode=nofallback'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+
   - name: exa
     stability_level: 'broken'
     architecture: '@OPTION:arch@'
