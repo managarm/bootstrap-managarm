@@ -47,8 +47,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/proto/xorgproto.git'
-      tag: 'xorgproto-2022.2'
-      version: '2022.2'
+      tag: 'xorgproto-2023.2'
+      version: '2023.2'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -64,7 +64,6 @@ packages:
     pkgs_required:
       - mlibc
       - xorg-util-macros
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -85,8 +84,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/xserver.git'
-      tag: 'xorg-server-21.1.4'
-      version: '21.1.4'
+      tag: 'xorg-server-21.1.8'
+      version: '21.1.8'
     tools_required:
       - system-gcc
       - wayland-scanner
@@ -117,7 +116,6 @@ packages:
       - nettle
       - xkbcomp
       - pixman
-    revision: 2
     configure:
       - args:
         - 'meson'
@@ -165,8 +163,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/xserver.git'
-      tag: 'xwayland-22.1.3'
-      version: '22.1.3'
+      tag: 'xwayland-23.1.99.901'
+      version: '23.1.99.901'
     tools_required:
       - system-gcc
       - wayland-scanner
@@ -192,7 +190,6 @@ packages:
       - nettle
       - xkbcomp
       - pixman
-    revision: 3
     configure:
       - args:
         - 'meson'
