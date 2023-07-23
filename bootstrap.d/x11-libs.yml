@@ -325,6 +325,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
+    revision: 2
     configure:
       - args:
         - 'meson'
