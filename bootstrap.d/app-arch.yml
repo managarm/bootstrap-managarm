@@ -329,16 +329,16 @@ packages:
       categories: ['app-arch']
     source:
       subdir: ports
-      git: 'https://git.tukaani.org/xz.git'
-      tag: 'v5.2.5'
-      version: '5.2.5'
+      git: 'https://github.com/tukaani-project/xz.git'
+      tag: 'v5.4.3'
+      version: '5.4.3'
       disable_shallow_fetch: true
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
         - host-libtool
       regenerate:
-        - args: ['./autogen.sh', '--no-po4a']
+        - args: ['./autogen.sh', '--no-po4a', '--no-doxygen']
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.15
@@ -347,7 +347,6 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
-    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
