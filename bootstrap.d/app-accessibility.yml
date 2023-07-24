@@ -1,4 +1,5 @@
 packages:
+  # Deprecated it seems?
   - name: at-spi2-atk
     architecture: '@OPTION:arch@'
     source:
