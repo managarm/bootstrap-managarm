@@ -180,6 +180,7 @@ packages:
         post_install:
           - args: ['gdk-pixbuf-query-loaders', '--update-cache']
 
+  # Deprecated, please don't depend on this anymore. Only here for gtklife and hexchat.
   - name: gtk+-2
     architecture: '@OPTION:arch@'
     source:
