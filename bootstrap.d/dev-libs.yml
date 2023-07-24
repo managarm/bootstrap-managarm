@@ -937,6 +937,44 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
+  - name: libusb
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Library for interacting with USB devices
+      description: This package provides a library used by some applications for USB device access.
+      spdx: 'LGPL-2.1-only'
+      website: 'https://github.com/libusb/libusb'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
+    source:
+      subdir: 'ports'
+      url: 'https://github.com/libusb/libusb/releases/download/v1.0.26/libusb-1.0.26.tar.bz2'
+      format: 'tar.bz2'
+      extract_path: 'libusb-1.0.26'
+      version: '1.0.26'
+      tools_required:
+        - host-automake-v1.15
+      regenerate:
+        - args: ['cp',
+            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
+            '@THIS_SOURCE_DIR@/']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--disable-static'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+
   - name: libuv
     architecture: '@OPTION:arch@'
     source:
