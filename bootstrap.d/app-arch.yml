@@ -81,24 +81,17 @@ packages:
       categories: ['app-arch']
     source:
       subdir: ports
-      git: 'https://git.savannah.gnu.org/git/cpio.git'
-      tag: 'release_2_13'
-      version: '2.13'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
-      regenerate:
-        - args: ['./bootstrap']
-        - args: ['cp',
-            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
-            '@THIS_SOURCE_DIR@/build-aux/']
+      url: 'https://ftp.gnu.org/gnu/cpio/cpio-2.14.tar.bz2'
+      checksum: 'blake2b:f2fa9f5bc39cd91f4755fdf27f43cff4d1c1f098639502689a01314762ad686bf357a1eda7f92e4c802e6e8335548ca31fc789cea056ef685c558892ddcbebd1'
+      format: tar.bz2
+      extract_path: 'cpio-2.14'
+      version: '2.14'
     tools_required:
       - system-gcc
     pkgs_required:
       - mlibc
       - libiconv
       - libintl
-    revision: 4
     configure:
       # Fix a build issue when building with gcc 10 and higher
       - args: ['sed', '-i', '/The name/,+2 d', '@THIS_SOURCE_DIR@/src/global.c']
