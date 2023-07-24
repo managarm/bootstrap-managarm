@@ -1435,37 +1435,25 @@ packages:
       categories: ['dev-libs']
     source:
       subdir: 'ports'
-      git: 'https://github.com/managarm/libtsm-mirror.git'
-      tag: 'libtsm-3'
-      version: '3'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
-        - host-libtool
-        - host-pkg-config
-      regenerate:
-        - args: ['./autogen.sh']
-          environ:
-            'NOCONFIGURE': 'yes'
+      git: 'https://github.com/Aetf/libtsm.git'
+      tag: 'v4.0.2'
+      version: '4.0.2'
     tools_required:
-      - host-autoconf-v2.69
-      - host-automake-v1.15
-      - host-libtool
-      - host-pkg-config
       - system-gcc
     pkgs_required:
       - mlibc
       - libxkbcommon
-    revision: 4
     configure:
       - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--host=@OPTION:arch-triple@'
-        - '--prefix=/usr'
-        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_BUILD_TYPE=Release'
+        - '@THIS_SOURCE_DIR@'
     build:
-      - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'install']
+      - args: ['ninja']
+      - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
@@ -1483,44 +1471,35 @@ packages:
       categories: ['sys-apps']
     source:
       subdir: 'ports'
-      git: 'https://github.com/dvdhrm/kmscon.git'
-      tag: 'kmscon-8'
-      version: '8'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
-        - host-libtool
-        - host-pkg-config
-      regenerate:
-        - args: ['./autogen.sh']
-          environ:
-            'NOCONFIGURE': '1'
+      git: 'https://github.com/Aetf/kmscon.git'
+      tag: 'v9.0.0'
+      version: '9.0.0'
     tools_required:
       - system-gcc
-      - host-pkg-config
-      - host-autoconf-v2.69
-      - host-automake-v1.15
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
       - libxkbcommon
       - libdrm
       - libtsm
       - eudev
-    revision: 4
     configure:
       - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--host=@OPTION:arch-triple@'
+        - 'meson'
+        - 'setup'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
-        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
-        - '--with-video=drm2d'
-        - '--with-renderers='
-        - '--with-fonts=unifont'
-        - '--disable-multi-seat'
-        - '--with-sessions=dummy,terminal'
+        - '--buildtype=debugoptimized'
+        - '-Dsession_dummy=enabled'
+        - '-Dsession_terminal=enabled'
+        - '@THIS_SOURCE_DIR@'
     build:
-      - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'install']
+      - args: ['ninja']
+      - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
