@@ -208,14 +208,13 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/lz4/lz4.git'
-      tag: 'v1.9.3'
-      version: '1.9.3'
+      tag: 'v1.9.4'
+      version: '1.9.4'
     tools_required:
       - host-cmake
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 5
     configure:
       - args:
         - 'cmake'
