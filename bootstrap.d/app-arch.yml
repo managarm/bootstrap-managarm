@@ -411,15 +411,14 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/facebook/zstd.git'
-      tag: 'v1.5.2'
-      version: '1.5.2'
+      tag: 'v1.5.5'
+      version: '1.5.5'
     tools_required:
       - system-gcc
     pkgs_required:
       - mlibc
       - zlib
       - xz-utils
-    revision: 2
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
