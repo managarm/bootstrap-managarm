@@ -120,10 +120,9 @@ packages:
       subdir: 'ports'
       git: 'https://github.com/pciutils/pciids.git'
       branch: 'master'
-      commit: 'ae5f03bd8cbe4c3f538cfa5e70e7e31db0741e11'
+      commit: '58f9db8387118222b4c0cec079cffd88286fb495'
       # The version indicates the date of the commit it's based on
-      version: '20210725'
-    revision: 3
+      version: '20230722'
     configure: []
     build:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/share/hwdata/']
