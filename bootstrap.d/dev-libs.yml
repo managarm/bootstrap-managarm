@@ -16,8 +16,8 @@ sources:
   - name: icu
     subdir: 'ports'
     git: 'https://github.com/unicode-org/icu.git'
-    tag: 'release-70-1'
-    version: '70.1'
+    tag: 'release-73-2'
+    version: '73.2'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.15
@@ -79,7 +79,6 @@ tools:
     labels: [aarch64]
     architecture: noarch
     from_source: icu
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/icu4c/source/configure'
@@ -337,7 +336,6 @@ packages:
       - host-icu
     pkgs_required:
       - mlibc
-    revision: 4
     configure:
       - args: ['cp',
           '@THIS_SOURCE_DIR@/icu4c/source/config/mh-linux',
