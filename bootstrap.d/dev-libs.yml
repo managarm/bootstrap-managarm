@@ -381,14 +381,21 @@ packages:
   - name: libevdev
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Handler library for evdev events
+      description: This package contains common functions for Xorg input drivers.
+      spdx: 'MIT'
+      website: 'https://www.freedesktop.org/wiki/Software/libevdev/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/libevdev/libevdev.git'
-      tag: 'libevdev-1.13.0'
-      version: '1.13.0'
+      tag: 'libevdev-1.13.1'
+      version: '1.13.1'
       tools_required:
         - host-autoconf-v2.69
-        - host-automake-v1.11
+        - host-automake-v1.15
         - host-libtool
         - host-pkg-config
       regenerate:
@@ -399,7 +406,6 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
