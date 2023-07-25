@@ -182,14 +182,13 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/google/double-conversion.git'
-      tag: 'v3.2.1'
-      version: '3.2.1'
+      tag: 'v3.3.0'
+      version: '3.3.0'
     tools_required:
       - host-cmake
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
     configure:
       - args:
         - 'cmake'
