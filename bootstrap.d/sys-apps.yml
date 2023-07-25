@@ -372,6 +372,8 @@ packages:
       tools_required:
         - host-autoconf-v2.71
         - host-automake-v1.16
+        - host-pkg-config
+        - host-libtool
       regenerate:
         - args: sed -i 's/extras//' @THIS_SOURCE_DIR@/Makefile.in
         - args: ['autoreconf', '-fvi']
