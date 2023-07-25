@@ -449,11 +449,18 @@ packages:
   - name: libjpeg-turbo
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: MMX, SSE, and SSE2 SIMD accelerated JPEG library
+      description: libjpeg-turbo is a fork of the original IJG libjpeg which uses SIMD to accelerate baseline JPEG compression and decompression. libjpeg is a library that implements JPEG image encoding, decoding and transcoding.
+      spdx: 'BSD-3-Clause ZLIB'
+      website: 'https://libjpeg-turbo.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
     source:
       subdir: 'ports'
       git: 'https://github.com/libjpeg-turbo/libjpeg-turbo.git'
-      tag: '2.1.4'
-      version: '2.1.4'
+      tag: '3.0.0'
+      version: '3.0.0'
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -462,7 +469,6 @@ packages:
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
-    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -470,7 +476,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_BUILD_TYPE=RELEASE'
         - '-DENABLE_STATIC=FALSE'
-        - '-DCMAKE_INSTALL_DOCDIR=/usr/share/doc/libjpeg-turbo-2.1.4'
+        - '-DCMAKE_INSTALL_DOCDIR=/usr/share/doc/libjpeg-turbo-3.0.0'
         - '-DCMAKE_INSTALL_DEFAULT_LIBDIR=lib'
         - '-DWITH_JPEG8=ON'
         - '-DCMAKE_SYSTEM_PROCESSOR=@OPTION:arch@'
@@ -593,8 +599,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.com/libtiff/libtiff.git'
-      tag: 'v4.4.0'
-      version: '4.4.0'
+      tag: 'v4.5.1'
+      version: '4.5.1'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -603,7 +609,6 @@ packages:
       regenerate:
         - args: ['./autogen.sh']
     tools_required:
-      - host-cmake
       - system-gcc
     pkgs_required:
       - mlibc
@@ -612,7 +617,6 @@ packages:
       - zlib
       - zstd
       - xz-utils
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -620,7 +624,7 @@ packages:
         - '--prefix=/usr'
         - '--disable-static'
         - '--enable-shared'
-        - '--with-docdir=/usr/share/doc/libtiff-4.4.0'
+        - '--with-docdir=/usr/share/doc/libtiff-4.5.1'
         - '--without-x'
         - '--enable-zlib'
         - '--enable-zstd'
@@ -721,8 +725,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/webmproject/libwebp.git'
-      tag: 'v1.2.4'
-      version: '1.2.4'
+      tag: 'v1.3.1'
+      version: '1.3.1'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -739,7 +743,6 @@ packages:
       - freeglut
       - sdl2
       - libtiff
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

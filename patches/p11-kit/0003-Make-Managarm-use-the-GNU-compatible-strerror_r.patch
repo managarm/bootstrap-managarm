@@ -1,0 +1,29 @@
+From 61549b277e40afce38bac60c5abd9671a8a852d8 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Tue, 25 Jul 2023 17:27:42 +0200
+Subject: [PATCH 3/3] Make Managarm use the GNU compatible strerror_r
+
+Managarm has a GNU compatible strerror_r, but the test for that can't be done at configure time because we're cross compiling.
+Force disable the test via autoconf cache variables and add us here to avoid hitting an #error further down.
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ common/compat.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/common/compat.c b/common/compat.c
+index 4e0c89c..2d648b3 100644
+--- a/common/compat.c
++++ b/common/compat.c
+@@ -1013,7 +1013,7 @@ p11_strerror_r (int errnum,
+ {
+ #if defined(HAVE_XSI_STRERROR_R)
+ 	strerror_r (errnum, buf, buflen);
+-#elif defined(HAVE_GNU_STRERROR_R)
++#elif defined(HAVE_GNU_STRERROR_R) || defined(__managarm__)
+ 	char *str = strerror_r (errnum, buf, buflen);
+ 	strncpy (buf, str, buflen);
+ #elif defined(OS_WIN32)
+-- 
+2.40.1
+

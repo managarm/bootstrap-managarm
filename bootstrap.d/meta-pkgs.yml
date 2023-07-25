@@ -3,9 +3,6 @@ packages:
   - name: base
     labels: [aarch64]
     architecture: noarch
-    source:
-      subdir: meta-sources
-      version: '1.0'
     metadata:
       summary: Minimum meta-package to provide a useful environment
       description: This meta-package provides a useful terminal only environment with various common unix tools and the xbps package manager.
@@ -13,7 +10,9 @@ packages:
       website: 'https://managarm.org'
       maintainer: "Dennis Bonke <dennis@managarm.org>"
       categories: ['meta-pkgs']
-    revision: 3
+    source:
+      subdir: meta-sources
+      version: '1.0'
     pkgs_required:
       - mlibc
       - core-files
@@ -45,6 +44,9 @@ packages:
       - libxcrypt
       - gcc # Temporary solution to remove the need to copy libstdc++.so and libgcc.so from system-gcc
       - man-db
+      - man-pages-posix
+      - iproute2
+    revision: 4
     configure: []
     build: []
 

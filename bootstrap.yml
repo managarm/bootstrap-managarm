@@ -321,6 +321,33 @@ tools:
       # Stop aclocal from complaining.
       - args: ['ln', '-sf', '@PREFIX@/share/aclocal-1.15', '@PREFIX@/share/aclocal']
 
+  - name: host-automake-v1.16
+    labels: [aarch64, riscv64]
+    architecture: noarch
+    source:
+      name: automake-v1.16
+      subdir: 'ports'
+      git: 'https://git.savannah.gnu.org/git/automake.git'
+      tag: 'v1.16.5'
+      version: '1.16.5'
+      tools_required:
+       - host-autoconf-v2.71
+      regenerate:
+       - args: ['./bootstrap']
+    tools_required:
+      - host-autoconf-v2.71
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--prefix=@PREFIX@'
+        - 'MAKEINFO=/bin/true'
+    compile:
+      - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'install']
+      # Stop aclocal from complaining.
+      - args: ['ln', '-sf', '@PREFIX@/share/aclocal-1.16', '@PREFIX@/share/aclocal']
+
   - name: host-managarm-tools
     labels: [aarch64, riscv64]
     architecture: noarch

@@ -180,6 +180,7 @@ packages:
         post_install:
           - args: ['gdk-pixbuf-query-loaders', '--update-cache']
 
+  # Deprecated, please don't depend on this anymore. Only here for gtklife and hexchat.
   - name: gtk+-2
     architecture: '@OPTION:arch@'
     source:
@@ -249,8 +250,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.gnome.org/GNOME/gtk.git'
-      tag: '3.24.23'
-      version: '3.24.23'
+      tag: '3.24.38'
+      version: '3.24.38'
     tools_required:
       - system-gcc
       - virtual: pkgconfig-for-target
@@ -259,7 +260,6 @@ packages:
       - wayland-scanner
     pkgs_required:
       - mlibc
-      - atk
       - at-spi2-atk
       - cairo
       - glib
@@ -284,10 +284,11 @@ packages:
       - libxcursor
       - gsettings-desktop-schemas
       - dbus
-    revision: 2
+      - libxinerama
     configure:
       - args:
         - 'meson'
+        - 'setup'
         - '--native-file'
         - '@SOURCE_ROOT@/scripts/meson.native-file'
         - '--cross-file'

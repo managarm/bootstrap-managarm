@@ -2,11 +2,18 @@ packages:
   - name: nano
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: GNU GPL'd Pico clone with more functionality
+      description: This package provides a mall, simple text editor which aims to replace Pico, the default editor in the Pine package.
+      spdx: 'LGPL-2.1-or-later GPL-3.0-or-later'
+      website: 'https://www.nano-editor.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['app-editors']
     source:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/nano.git'
-      tag: 'v5.9'
-      version: '5.9'
+      tag: 'v7.2'
+      version: '7.2'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -32,19 +39,17 @@ packages:
       - ncurses
       - libintl
       - zlib
-    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--sysconfdir=/etc'
+        - '--docdir=/usr/share/doc/nano-7.2'
         - 'CFLAGS=-DSLOW_BUT_NO_HACKS'
         environ:
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
           PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
-          gl_cv_type_wctype_t: 'yes'
-          gl_cv_type_wctrans_t: 'yes'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']

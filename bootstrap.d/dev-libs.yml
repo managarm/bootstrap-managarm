@@ -16,8 +16,8 @@ sources:
   - name: icu
     subdir: 'ports'
     git: 'https://github.com/unicode-org/icu.git'
-    tag: 'release-70-1'
-    version: '70.1'
+    tag: 'release-73-2'
+    version: '73.2'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.15
@@ -79,7 +79,6 @@ tools:
     labels: [aarch64]
     architecture: noarch
     from_source: icu
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/icu4c/source/configure'
@@ -183,14 +182,13 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/google/double-conversion.git'
-      tag: 'v3.2.1'
-      version: '3.2.1'
+      tag: 'v3.3.0'
+      version: '3.3.0'
     tools_required:
       - host-cmake
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -220,8 +218,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/fribidi/fribidi.git'
-      tag: 'v1.0.12'
-      version: '1.0.12'
+      tag: 'v1.0.13'
+      version: '1.0.13'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -238,7 +236,6 @@ packages:
       - host-automake-v1.15
     pkgs_required:
       - mlibc
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -338,7 +335,6 @@ packages:
       - host-icu
     pkgs_required:
       - mlibc
-    revision: 4
     configure:
       - args: ['cp',
           '@THIS_SOURCE_DIR@/icu4c/source/config/mh-linux',
@@ -384,14 +380,21 @@ packages:
   - name: libevdev
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Handler library for evdev events
+      description: This package contains common functions for Xorg input drivers.
+      spdx: 'MIT'
+      website: 'https://www.freedesktop.org/wiki/Software/libevdev/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/libevdev/libevdev.git'
-      tag: 'libevdev-1.13.0'
-      version: '1.13.0'
+      tag: 'libevdev-1.13.1'
+      version: '1.13.1'
       tools_required:
         - host-autoconf-v2.69
-        - host-automake-v1.11
+        - host-automake-v1.15
         - host-libtool
         - host-pkg-config
       regenerate:
@@ -402,7 +405,6 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -461,11 +463,18 @@ packages:
   - name: libexpat
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Stream-oriented XML parser library
+      description: This package contains a stream oriented C library for parsing XML.
+      spdx: 'MIT'
+      website: 'https://libexpat.github.io/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: 'ports'
       git: 'https://github.com/libexpat/libexpat.git'
-      tag: 'R_2_4_9'
-      version: '2.4.9'
+      tag: 'R_2_5_0'
+      version: '2.5.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -480,7 +489,6 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/expat/configure'
@@ -579,6 +587,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
+  # Updating to 1.47 broke libgcrypt, must be investigated
   - name: libgpg-error
     architecture: '@OPTION:arch@'
     metadata:
@@ -827,11 +836,18 @@ packages:
   - name: libpipeline
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: A pipeline manipulation library
+      description: This package provides a library for manipulating pipelines of subprocesses in a flexible and convenient way.
+      spdx: 'GPL-3.0-only'
+      website: 'https://libpipeline.nongnu.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: ports
       git: 'https://gitlab.com/cjwatson/libpipeline.git'
-      tag: '1.5.6'
-      version: '1.5.6'
+      tag: '1.5.7'
+      version: '1.5.7'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -846,7 +862,6 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -861,11 +876,18 @@ packages:
   - name: libtasn
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: ASN.1 library
+      description: This package provides a highly portable C library that encodes and decodes DER/BER data following an ASN.1 schema.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://www.gnu.org/software/libtasn1/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: ports
       git: 'https://gitlab.com/gnutls/libtasn1.git'
-      tag: 'v4.18.0'
-      version: '4.18.0'
+      tag: 'v4.19.0'
+      version: '4.19.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -880,7 +902,6 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -905,11 +926,11 @@ packages:
       categories: ['dev-libs']
     source:
       subdir: 'ports'
-      url: 'https://ftp.gnu.org/gnu/libunistring/libunistring-1.0.tar.xz'
+      url: 'https://ftp.gnu.org/gnu/libunistring/libunistring-1.1.tar.xz'
       format: 'tar.xz'
-      checksum: blake2b:8208fe33d4ac2f015b0efb56b0c7dd87afc4bb1c6ca4eb3ded86d7e2101d7b7f68bfd8991af4b6dd408282ec73f134ee0b884e761ff6d52e8a1e398326aec420
-      extract_path: 'libunistring-1.0'
-      version: '1.0'
+      checksum: blake2b:721adc90884006480055b95d0fa06cd862417aa02b467f1e14688292ad9c11f1e33520b14ed5dc2d2724c6df8713d3af1e8032014259d8355156cb72edfcb983
+      extract_path: 'libunistring-1.1'
+      version: '1.1'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -921,15 +942,14 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
         - '--disable-static'
-        - '--docdir=/usr/share/doc/libunistring-1.0'
+        - '--docdir=/usr/share/doc/libunistring-1.1'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']

@@ -1,0 +1,101 @@
+From 3795bc9b268c3c3025074a3511f8454066fe2ca6 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Mon, 3 Oct 2022 22:30:43 +0200
+Subject: [PATCH] Add Managarm support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ lib/config.guess |  6 ++++++
+ lib/config.sub   | 26 +++++++++++++++++++++++---
+ 2 files changed, 29 insertions(+), 3 deletions(-)
+
+diff --git a/lib/config.guess b/lib/config.guess
+index e81d3ae..9cafc6a 100755
+--- a/lib/config.guess
++++ b/lib/config.guess
+@@ -963,6 +963,12 @@ EOF
+ 	GNU_REL=`echo "$UNAME_RELEASE" | sed -e 's/[-(].*//'`
+ 	GUESS=$UNAME_MACHINE-unknown-$GNU_SYS$GNU_REL-$LIBC
+ 	;;
++	x86_64:[Mm]anagarm:*:*|i?86:[Mm]anagarm:*:*)
++		GUESS="$UNAME_MACHINE-pc-managarm-mlibc"
++		;;
++	*:[Mm]anagarm:*:*)
++		GUESS="$UNAME_MACHINE-unknown-managarm-mlibc"
++		;;
+     *:Minix:*:*)
+ 	GUESS=$UNAME_MACHINE-unknown-minix
+ 	;;
+diff --git a/lib/config.sub b/lib/config.sub
+index d74fb6d..ef0004f 100755
+--- a/lib/config.sub
++++ b/lib/config.sub
+@@ -145,7 +145,7 @@ case $1 in
+ 			nto-qnx* | linux-* | uclinux-uclibc* \
+ 			| uclinux-gnu* | kfreebsd*-gnu* | knetbsd*-gnu* | netbsd*-gnu* \
+ 			| netbsd*-eabi* | kopensolaris*-gnu* | cloudabi*-eabi* \
+-			| storm-chaos* | os2-emx* | rtmk-nova*)
++			| storm-chaos* | os2-emx* | rtmk-nova* | managarm-*)
+ 				basic_machine=$field1
+ 				basic_os=$maybe_os
+ 				;;
+@@ -1336,6 +1336,10 @@ EOF
+ 		kernel=linux
+ 		os=`echo "$basic_os" | sed -e 's|linux|gnu|'`
+ 		;;
++	managarm*)
++		kernel=managarm
++		os=$(echo $basic_os | sed -e 's|managarm|mlibc|')
++		;;
+ 	*)
+ 		kernel=
+ 		os=$basic_os
+@@ -1748,7 +1752,8 @@ case $os in
+ 	     | skyos* | haiku* | rdos* | toppers* | drops* | es* \
+ 	     | onefs* | tirtos* | phoenix* | fuchsia* | redox* | bme* \
+ 	     | midnightbsd* | amdhsa* | unleashed* | emscripten* | wasi* \
+-	     | nsk* | powerunix* | genode* | zvmoe* | qnx* | emx* | zephyr*)
++	     | nsk* | powerunix* | genode* | zvmoe* | qnx* | emx* | zephyr* \
++	     | mlibc* )
+ 		;;
+ 	# This one is extra strict with allowed versions
+ 	sco3.2v2 | sco3.2v[4-9]* | sco5v6*)
+@@ -1756,6 +1761,9 @@ case $os in
+ 		;;
+ 	none)
+ 		;;
++	kernel* )
++		# Restricted further below
++		;;
+ 	*)
+ 		echo Invalid configuration \`"$1"\': OS \`"$os"\' not recognized 1>&2
+ 		exit 1
+@@ -1770,12 +1778,24 @@ case $kernel-$os in
+ 		;;
+ 	uclinux-uclibc* )
+ 		;;
+-	-dietlibc* | -newlib* | -musl* | -relibc* | -uclibc* )
++	managarm-mlibc* )
++		;;
++	managarm-kernel* )
++		;;
++	-dietlibc* | -newlib* | -musl* | -relibc* | -uclibc* | -mlibc* )
+ 		# These are just libc implementations, not actual OSes, and thus
+ 		# require a kernel.
+ 		echo "Invalid configuration \`$1': libc \`$os' needs explicit kernel." 1>&2
+ 		exit 1
+ 		;;
++	-kernel* )
++		echo "Invalid configuration \`$1': -kernel must not appear on its own." 1>&2
++		exit 1
++		;;
++	*-kernel* )
++		echo "Invalid configuration \`$1': Kernel \`$kernel' does not support -kernel." 1>&2
++		exit 1
++		;;
+ 	kfreebsd*-gnu* | kopensolaris*-gnu*)
+ 		;;
+ 	vxworks-simlinux | vxworks-simwindows | vxworks-spe)
+-- 
+2.37.2
+

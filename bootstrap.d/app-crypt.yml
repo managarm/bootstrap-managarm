@@ -2,11 +2,18 @@ packages:
   - name: p11-kit
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: A standard configuration setup for installing PKCS#11
+      description: "This package provides a way to load and enumerate PKCS #11 (a Cryptographic Token Interface Standard) modules."
+      spdx: 'MIT'
+      website: 'https://p11-glue.github.io/p11-glue/p11-kit.html'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['app-crypt']
     source:
       subdir: ports
       git: 'https://github.com/p11-glue/p11-kit.git'
-      tag: '0.24.0'
-      version: '0.24.0'
+      tag: '0.25.0'
+      version: '0.25.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -22,7 +29,6 @@ packages:
       - mlibc
       - libffi
       - libtasn
-    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -33,6 +39,8 @@ packages:
         - '--without-systemd'
         - '--disable-doc-html'
         - '--disable-nls'
+        environ:
+          ac_cv_func_strerror_r: 'no'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
