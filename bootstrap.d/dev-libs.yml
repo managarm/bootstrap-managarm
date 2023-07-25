@@ -837,11 +837,18 @@ packages:
   - name: libpipeline
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: A pipeline manipulation library
+      description: This package provides a library for manipulating pipelines of subprocesses in a flexible and convenient way.
+      spdx: 'GPL-3.0-only'
+      website: 'https://libpipeline.nongnu.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: ports
       git: 'https://gitlab.com/cjwatson/libpipeline.git'
-      tag: '1.5.6'
-      version: '1.5.6'
+      tag: '1.5.7'
+      version: '1.5.7'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -856,7 +863,6 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
