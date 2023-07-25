@@ -240,14 +240,14 @@ packages:
       categories: ['app-arch']
     source:
       subdir: ports
-      git: 'https://git.savannah.gnu.org/git/tar.git'
-      tag: 'release_1_33'
-      version: '1.33'
+      url: 'https://ftp.gnu.org/gnu/tar/tar-1.34.tar.xz'
+      checksum: 'blake2b:741a662457509a6775338ffe5d2d84872fcf38b93ace70c8b748a81055b9b62f65a48c4e541955d08ae99e6f528509e89eacd7c799a65bcc3d017a259110c115'
+      format: tar.xz
+      extract_path: 'tar-1.34'
+      version: '1.34'
       tools_required:
-        - host-autoconf-v2.69
         - host-automake-v1.15
       regenerate:
-        - args: ['./bootstrap']
         - args: ['cp',
             '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
             '@THIS_SOURCE_DIR@/build-aux/']
@@ -255,7 +255,6 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
