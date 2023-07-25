@@ -351,26 +351,30 @@ packages:
   - name: gawk
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: GNU awk pattern-matching language
+      description: This package contains programs for manipulating text files.
+      spdx: 'GPL-3.0-or-later'
+      website: 'https://www.gnu.org/software/gawk/gawk.html'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-apps']
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/gawk.git'
-      tag: 'gawk-4.2.1'
-      version: '4.2.1'
+      tag: 'gawk-5.2.2'
+      version: '5.2.2'
       tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
+        - host-autoconf-v2.71
+        - host-automake-v1.16
       regenerate:
         - args: sed -i 's/extras//' @THIS_SOURCE_DIR@/Makefile.in
-        - args: ['cp',
-            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
-            '@THIS_SOURCE_DIR@/']
+        - args: ['autoreconf', '-fvi']
     tools_required:
       - system-gcc
-      - host-autoconf-v2.69
-      - host-automake-v1.15
+      - host-autoconf-v2.71
+      - host-automake-v1.16
     pkgs_required:
       - mlibc
-    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
