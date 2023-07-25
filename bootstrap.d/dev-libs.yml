@@ -970,6 +970,7 @@ packages:
       subdir: 'ports'
       url: 'https://github.com/libusb/libusb/releases/download/v1.0.26/libusb-1.0.26.tar.bz2'
       format: 'tar.bz2'
+      checksum: blake2b:0cc397ecf4de0066abbff9b286a9e4fcd48658698d5e0d6b736abf56b48c1b55a05f15fff7be53fd33f767621e0c25d87275a47e05a4bcb44c4b8ac9221cd081
       extract_path: 'libusb-1.0.26'
       version: '1.0.26'
       tools_required:
