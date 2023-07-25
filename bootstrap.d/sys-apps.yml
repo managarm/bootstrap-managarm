@@ -753,6 +753,7 @@ packages:
       subdir: 'ports'
       url: 'https://github.com/gregkh/usbutils/archive/v015/usbutils-015.tar.gz'
       format: 'tar.gz'
+      checksum: blake2b:6056947e3df829e988b9429827c69234a90b7ad1be666d54566211bc6c8e09e74372543059827a39cab2badd1df71deff1147503bef3850a38bffefe3b2ae0e2
       extract_path: 'usbutils-015'
       version: '015'
       tools_required:
