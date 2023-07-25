@@ -391,11 +391,18 @@ packages:
   - name: grep
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: GNU regular expression matcher
+      description: This package contains for searching through the contents of files.
+      spdx: 'GPL-3.0-or-later'
+      website: 'https://www.gnu.org/software/grep/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-apps']
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/grep.git'
-      tag: 'v3.7'
-      version: '3.7'
+      tag: 'v3.11'
+      version: '3.11'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -409,7 +416,6 @@ packages:
     pkgs_required:
       - mlibc
       - pcre
-    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
