@@ -2,8 +2,8 @@ sources:
   - name: file
     subdir: ports
     git: 'https://github.com/file/file.git'
-    tag: 'FILE5_43'
-    version: '5.43'
+    tag: 'FILE5_44'
+    version: '5.44'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.15
@@ -33,7 +33,6 @@ tools:
       - host-autoconf-v2.69
       - host-automake-v1.15
       - host-libtool
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -287,6 +286,13 @@ packages:
   - name: file
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Identify a file's format by scanning binary data for patterns
+      description: This package contains an utility for determining the type of a given file or files.
+      spdx: 'BSD-2-Clause'
+      website: 'https://www.darwinsys.com/file/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-apps']
     from_source: file
     tools_required:
       - system-gcc
@@ -294,7 +300,6 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
