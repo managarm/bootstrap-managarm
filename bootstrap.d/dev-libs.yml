@@ -458,11 +458,18 @@ packages:
   - name: libexpat
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Stream-oriented XML parser library
+      description: This package contains a stream oriented C library for parsing XML.
+      spdx: 'MIT'
+      website: 'https://libexpat.github.io/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: 'ports'
       git: 'https://github.com/libexpat/libexpat.git'
-      tag: 'R_2_4_9'
-      version: '2.4.9'
+      tag: 'R_2_5_0'
+      version: '2.5.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -477,7 +484,6 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/expat/configure'
