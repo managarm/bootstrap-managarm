@@ -44,8 +44,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/xorg/data/cursors.git'
-      tag: 'xcursor-themes-1.0.6'
-      version: '1.0.6'
+      tag: 'xcursor-themes-1.0.7'
+      version: '1.0.7'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -62,7 +62,6 @@ packages:
       - mlibc
       - xorg-util-macros
       - libxcursor
-    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

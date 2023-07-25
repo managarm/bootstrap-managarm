@@ -1,4 +1,4 @@
-From 8c427c87bafb463b1cface6b45c36a1ce3105780 Mon Sep 17 00:00:00 2001
+From 3e0b689e043e288b77a63f90e516d753421d209e Mon Sep 17 00:00:00 2001
 From: Dennisbonke <admin@dennisbonke.com>
 Date: Thu, 4 Jun 2020 16:55:11 +0200
 Subject: [PATCH] Add managarm support
@@ -10,15 +10,15 @@ Signed-off-by: Dennisbonke <admin@dennisbonke.com>
  2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/include/X11/Xos.h b/include/X11/Xos.h
-index 28dfc67..4daad9e 100644
+index 75cc5b7..585a4a3 100644
 --- a/include/X11/Xos.h
 +++ b/include/X11/Xos.h
 @@ -60,7 +60,7 @@ in this Software without prior written authorization from The Open Group.
   */
  
  # include <string.h>
--# if defined(__SCO__) || defined(__UNIXWARE__) || defined(__sun) || defined(__CYGWIN__) || defined(_AIX) || defined(__APPLE__)
-+# if defined(__SCO__) || defined(__UNIXWARE__) || defined(__sun) || defined(__CYGWIN__) || defined(_AIX) || defined(__APPLE__) || defined(__managarm__)
+-# if defined(__SCO__) || defined(__UNIXWARE__) || defined(__sun) || defined(__CYGWIN__) || defined(_AIX) || defined(__APPLE__) || defined(__FreeBSD__)
++# if defined(__SCO__) || defined(__UNIXWARE__) || defined(__sun) || defined(__CYGWIN__) || defined(_AIX) || defined(__APPLE__) || defined(__FreeBSD__) || defined(__managarm__)
  #  include <strings.h>
  # else
  #  ifndef index
@@ -36,5 +36,5 @@ index f963b64..729d8ee 100644
  typedef struct {
    struct passwd pws;
 -- 
-2.30.0
+2.41.0
 

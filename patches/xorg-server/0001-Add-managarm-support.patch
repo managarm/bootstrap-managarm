@@ -1,4 +1,4 @@
-From 4c5d2231c1efe5003c66318593dcf97a85f2f592 Mon Sep 17 00:00:00 2001
+From 1d7dad0407db81623e2a0b95c2c7106a3948130a Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Thu, 29 Sep 2022 18:12:01 +0200
 Subject: [PATCH] Add managarm support
@@ -12,10 +12,10 @@ Subject: [PATCH] Add managarm support
  5 files changed, 7 insertions(+), 4 deletions(-)
 
 diff --git a/include/meson.build b/include/meson.build
-index 3521fa3..38d5436 100644
+index 591bc25..1fdd593 100644
 --- a/include/meson.build
 +++ b/include/meson.build
-@@ -140,7 +140,7 @@ conf_data.set('HAVE_SYS_SYSMACROS_H', cc.has_header('sys/sysmacros.h') ? '1' : f
+@@ -141,7 +141,7 @@ conf_data.set('HAVE_SYS_SYSMACROS_H', cc.has_header('sys/sysmacros.h') ? '1' : f
  conf_data.set('HAVE_UNISTD_H', cc.has_header('unistd.h') ? '1' : false)
  
  conf_data.set('HAVE_ARC4RANDOM_BUF', cc.has_function('arc4random_buf', dependencies: libbsd_dep) ? '1' : false)
@@ -24,7 +24,7 @@ index 3521fa3..38d5436 100644
  conf_data.set('HAVE_CBRT', cc.has_function('cbrt') ? '1' : false)
  conf_data.set('HAVE_EPOLL_CREATE1', cc.has_function('epoll_create1') ? '1' : false)
  conf_data.set('HAVE_GETUID', cc.has_function('getuid') ? '1' : false)
-@@ -161,7 +161,7 @@ conf_data.set('HAVE_POSIX_FALLOCATE', cc.has_function('posix_fallocate') ? '1' :
+@@ -162,7 +162,7 @@ conf_data.set('HAVE_POSIX_FALLOCATE', cc.has_function('posix_fallocate') ? '1' :
  conf_data.set('HAVE_PORT_CREATE', cc.has_function('port_create') ? '1' : false)
  conf_data.set('HAVE_REALLOCARRAY', cc.has_function('reallocarray', dependencies: libbsd_dep) ? '1' : false)
  conf_data.set('HAVE_SETEUID', cc.has_function('seteuid') ? '1' : false)
@@ -59,11 +59,11 @@ index 0b13e49..aff6539 100644
  #include <X11/Xprotostr.h>
  
 diff --git a/os/access.c b/os/access.c
-index b170304..21883f2 100644
+index 61ee8e3..7e06564 100644
 --- a/os/access.c
 +++ b/os/access.c
-@@ -116,7 +116,7 @@ SOFTWARE.
- #endif
+@@ -120,7 +120,7 @@ SOFTWARE.
+ #include <sys/un.h>
  #endif
  
 -#if defined(SVR4) ||  (defined(SYSV) && defined(__i386__)) || defined(__GNU__)
@@ -85,5 +85,5 @@ index 92a66e8..2a56997 100644
  
  int
 -- 
-2.37.3
+2.41.0
 
