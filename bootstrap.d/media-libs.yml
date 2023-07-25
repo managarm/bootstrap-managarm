@@ -599,8 +599,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.com/libtiff/libtiff.git'
-      tag: 'v4.4.0'
-      version: '4.4.0'
+      tag: 'v4.5.1'
+      version: '4.5.1'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -609,7 +609,6 @@ packages:
       regenerate:
         - args: ['./autogen.sh']
     tools_required:
-      - host-cmake
       - system-gcc
     pkgs_required:
       - mlibc
@@ -618,7 +617,6 @@ packages:
       - zlib
       - zstd
       - xz-utils
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -626,7 +624,7 @@ packages:
         - '--prefix=/usr'
         - '--disable-static'
         - '--enable-shared'
-        - '--with-docdir=/usr/share/doc/libtiff-4.4.0'
+        - '--with-docdir=/usr/share/doc/libtiff-4.5.1'
         - '--without-x'
         - '--enable-zlib'
         - '--enable-zstd'
