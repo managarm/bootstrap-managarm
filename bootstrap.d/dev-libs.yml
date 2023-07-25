@@ -588,6 +588,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
+  # Updating to 1.47 broke libgcrypt, must be investigated
   - name: libgpg-error
     architecture: '@OPTION:arch@'
     metadata:
