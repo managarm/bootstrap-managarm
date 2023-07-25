@@ -49,6 +49,7 @@ packages:
       - mlibc
       - dbus
       - glib
+      - libxml
     configure:
       - args:
           - 'meson'
