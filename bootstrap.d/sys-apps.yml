@@ -202,6 +202,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: drm_info
+    stability_level: 'broken' # Unsure what happened, leo must fix this
     architecture: '@OPTION:arch@'
     metadata:
       summary: Small utility to dump info about DRM devices.
