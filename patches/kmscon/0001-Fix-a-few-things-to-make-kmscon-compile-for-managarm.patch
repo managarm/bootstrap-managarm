@@ -1,33 +1,17 @@
-From 6942f8b5ec61094f2524ee8d5b288923f83dcd28 Mon Sep 17 00:00:00 2001
+From f2db8b60b5c51787ae26e52b434b3f608aff537b Mon Sep 17 00:00:00 2001
 From: qookie <kacper.slominski72@gmail.com>
 Date: Sun, 23 Jun 2019 19:02:21 +0200
-Subject: [PATCH] Fix a few things to make kmscon compile for managarm
+Subject: [PATCH 1/2] Fix a few things to make kmscon compile for managarm
 
 ---
- Makefile.am            |  3 +--
  src/pty.c              |  1 +
- src/shl_misc.h         |  2 +-
  src/uterm_drm_shared.c |  3 ++-
  src/uterm_monitor.c    | 24 +++++++++++++++++-------
  src/uterm_vt.c         |  1 +
- 6 files changed, 23 insertions(+), 11 deletions(-)
+ 4 files changed, 21 insertions(+), 8 deletions(-)
 
-diff --git a/Makefile.am b/Makefile.am
-index c8006fe..d829cad 100644
---- a/Makefile.am
-+++ b/Makefile.am
-@@ -60,8 +60,7 @@ AM_CFLAGS = \
- 	-fno-strict-aliasing \
- 	-fvisibility=hidden \
- 	-ffunction-sections \
--	-fdata-sections \
--	-fstack-protector
-+	-fdata-sections
- AM_CPPFLAGS = \
- 	-DBUILD_MODULE_DIR='"$(moduledir)"' \
- 	-include $(top_builddir)/config.h \
 diff --git a/src/pty.c b/src/pty.c
-index 3494104..beeccd7 100644
+index 1443f4a..e9c817a 100644
 --- a/src/pty.c
 +++ b/src/pty.c
 @@ -23,6 +23,7 @@
@@ -38,21 +22,8 @@ index 3494104..beeccd7 100644
  #include <errno.h>
  #include <fcntl.h>
  #include <inttypes.h>
-diff --git a/src/shl_misc.h b/src/shl_misc.h
-index d90fd22..0980e2a 100644
---- a/src/shl_misc.h
-+++ b/src/shl_misc.h
-@@ -54,7 +54,7 @@ static inline int shl_dirent(const char *path, struct dirent **ent)
- 	struct dirent *tmp;
- 
- 	len = offsetof(struct dirent, d_name) +
--					pathconf(path, _PC_NAME_MAX) + 1;
-+					NAME_MAX + 1;
- 	tmp = malloc(len);
- 	if (!tmp)
- 		return -ENOMEM;
 diff --git a/src/uterm_drm_shared.c b/src/uterm_drm_shared.c
-index 75830f3..55c6030 100644
+index ec486ab..a406d39 100644
 --- a/src/uterm_drm_shared.c
 +++ b/src/uterm_drm_shared.c
 @@ -340,7 +340,8 @@ int uterm_drm_display_swap(struct uterm_display *disp, uint32_t fb,
@@ -125,7 +96,7 @@ index c6e0a6d..53f31c2 100644
  		flags = 0;
  	} else {
 diff --git a/src/uterm_vt.c b/src/uterm_vt.c
-index af377f5..ca21cb9 100644
+index fbe9e76..203350b 100644
 --- a/src/uterm_vt.c
 +++ b/src/uterm_vt.c
 @@ -38,6 +38,7 @@
@@ -135,7 +106,7 @@ index af377f5..ca21cb9 100644
 +#include <sys/sysmacros.h>
  #include <sys/signalfd.h>
  #include <sys/stat.h>
- #include <termios.h>
+ #include <sys/sysmacros.h>
 -- 
-2.11.0
+2.40.1
 

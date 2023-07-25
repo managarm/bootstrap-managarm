@@ -1,0 +1,23 @@
+From cfa28f86984a600fdcb7587295e778ea8fe6839b Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Mon, 24 Jul 2023 18:06:22 +0200
+Subject: [PATCH 2/2] Disable system locale querying via dbus
+
+---
+ scripts/kmscon.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/scripts/kmscon.in b/scripts/kmscon.in
+index 61594bf..c7f74b1 100755
+--- a/scripts/kmscon.in
++++ b/scripts/kmscon.in
+@@ -52,5 +52,5 @@ setupLocale() {
+     [ -n "${X11OPTIONS}" ] && export XKB_DEFAULT_OPTIONS="${X11OPTIONS}"
+ }
+ 
+-setupLocale
++# setupLocale
+ exec ${helperdir}/kmscon "$@"
+-- 
+2.40.1
+
