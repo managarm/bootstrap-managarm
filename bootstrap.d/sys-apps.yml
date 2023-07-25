@@ -769,6 +769,7 @@ packages:
     pkgs_required:
       - mlibc
       - libusb
+      - eudev
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
