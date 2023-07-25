@@ -72,11 +72,39 @@ sources:
     tag: 'binutils-2_32'
     version: '2.32'
     tools_required:
+      # TODO Dennis: autoconf-2.71 is too new, I'll grab this during the toolchain upgrade.
       - host-autoconf-v2.69
-      - host-automake-v1.15
+      - host-automake-v1.16
+      - host-libtool
     regenerate:
-      - args: ['autoreconf']
+      - args: ['autoreconf', '-fvi', '-I../config']
+        workdir: '@THIS_SOURCE_DIR@/opcodes'
+      - args: ['libtoolize', '-cfvi']
+        workdir: '@THIS_SOURCE_DIR@/opcodes'
+      - args: ['autoreconf', '-fvi', '-I../config']
+        workdir: '@THIS_SOURCE_DIR@/bfd'
+      - args: ['libtoolize', '-cfvi']
+        workdir: '@THIS_SOURCE_DIR@/bfd'
+      - args: ['autoreconf', '-fvi', '-I../config']
         workdir: '@THIS_SOURCE_DIR@/ld'
+      - args: ['libtoolize', '-cfvi']
+        workdir: '@THIS_SOURCE_DIR@/ld'
+      - args: ['autoreconf', '-fvi', '-I../config']
+        workdir: '@THIS_SOURCE_DIR@/'
+      - args: ['libtoolize', '-cfvi']
+        workdir: '@THIS_SOURCE_DIR@/'
+      - args: ['autoreconf', '-fvi', '-I../config']
+        workdir: '@THIS_SOURCE_DIR@/gas'
+      - args: ['libtoolize', '-cfvi']
+        workdir: '@THIS_SOURCE_DIR@/gas'
+      - args: ['autoreconf', '-fvi', '-I../config']
+        workdir: '@THIS_SOURCE_DIR@/binutils'
+      - args: ['libtoolize', '-cfvi']
+        workdir: '@THIS_SOURCE_DIR@/binutils'
+      - args: ['autoreconf', '-fvi', '-I../config']
+        workdir: '@THIS_SOURCE_DIR@/gprof'
+      - args: ['libtoolize', '-cfvi']
+        workdir: '@THIS_SOURCE_DIR@/gprof'
 
   - name: cralgo
     subdir: 'ports'
@@ -125,13 +153,39 @@ sources:
     tag: 'releases/gcc-11.1.0'
     version: '11.1.0'
     tools_required:
+      # TODO Dennis: autoconf 2.71 is too new, I'll take it during the toolchain upgrade.
       - host-autoconf-v2.69
-      - host-automake-v1.11
+      - host-automake-v1.16
+      - host-libtool
     regenerate:
-      - args: ['autoconf']
+      - args: ['autoreconf', '-fvi', '-I../config']
         workdir: '@THIS_SOURCE_DIR@/gcc'
-      - args: ['autoconf']
+      - args: ['autoreconf', '-fvi', '-I../config']
         workdir: '@THIS_SOURCE_DIR@/libstdc++-v3'
+      - args: ['libtoolize', '-cfvi']
+        workdir: '@THIS_SOURCE_DIR@/gcc'
+      - args: ['libtoolize', '-cfvi']
+        workdir: '@THIS_SOURCE_DIR@/libstdc++-v3'
+      - args: ['autoreconf', '-fvi', '-I../config']
+        workdir: '@THIS_SOURCE_DIR@/'
+      - args: ['libtoolize', '-cfvi']
+        workdir: '@THIS_SOURCE_DIR@/'
+      - args: ['autoreconf', '-fvi', '-I../config']
+        workdir: '@THIS_SOURCE_DIR@/libbacktrace'
+      - args: ['libtoolize', '-cfvi']
+        workdir: '@THIS_SOURCE_DIR@/libbacktrace'
+      - args: ['autoreconf', '-fvi', '-I../config']
+        workdir: '@THIS_SOURCE_DIR@/lto-plugin'
+      - args: ['libtoolize', '-cfvi']
+        workdir: '@THIS_SOURCE_DIR@/lto-plugin'
+      - args: ['autoreconf', '-fvi', '-I../config']
+        workdir: '@THIS_SOURCE_DIR@/libcc1'
+      - args: ['libtoolize', '-cfvi']
+        workdir: '@THIS_SOURCE_DIR@/libcc1'
+      - args: ['autoreconf', '-fvi', '-I../config']
+        workdir: '@THIS_SOURCE_DIR@/libcpp'
+      - args: ['libtoolize', '-cfvi']
+        workdir: '@THIS_SOURCE_DIR@/libcpp'
 
   - name: protobuf
     subdir: 'ports'
@@ -251,6 +305,24 @@ tools:
     install:
       - args: ['make', 'install']
 
+  - name: host-autoconf-v2.71
+    labels: [aarch64, riscv64]
+    architecture: noarch
+    source:
+      name: autoconf-v2.71
+      subdir: 'ports'
+      url: 'https://ftp.gnu.org/gnu/autoconf/autoconf-2.71.tar.xz'
+      format: 'tar.xz'
+      checksum: blake2b:7fd4b98b4cfff10720e8da6ee91045637991643b50fcb3e47a0ecfcc01600f7b7b36fd1c0a5f08b68a418f1bdbd8d5a98de1008157595dd37cc3a31facb61416
+      extract_path: 'autoconf-2.71'
+      version: '2.71'
+    configure:
+      - args: ['@THIS_SOURCE_DIR@/configure', '--prefix=@PREFIX@']
+    compile:
+      - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'install']
+
   - name: host-automake-v1.11
     labels: [aarch64, riscv64]
     architecture: noarch
@@ -321,6 +393,33 @@ tools:
       # Stop aclocal from complaining.
       - args: ['ln', '-sf', '@PREFIX@/share/aclocal-1.15', '@PREFIX@/share/aclocal']
 
+  - name: host-automake-v1.16
+    labels: [aarch64, riscv64]
+    architecture: noarch
+    source:
+      name: automake-v1.16
+      subdir: 'ports'
+      git: 'https://git.savannah.gnu.org/git/automake.git'
+      tag: 'v1.16.5'
+      version: '1.16.5'
+      tools_required:
+        - host-autoconf-v2.71
+      regenerate:
+        - args: ['./bootstrap']
+    tools_required:
+      - host-autoconf-v2.71
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--prefix=@PREFIX@'
+        - 'MAKEINFO=/bin/true'
+    compile:
+      - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'install']
+      # Stop aclocal from complaining.
+      - args: ['ln', '-sf', '@PREFIX@/share/aclocal-1.16', '@PREFIX@/share/aclocal']
+
   - name: host-managarm-tools
     labels: [aarch64, riscv64]
     architecture: noarch
@@ -353,19 +452,24 @@ tools:
       name: libtool
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/libtool.git'
-      tag: 'v2.4.6'
-      version: '2.4.6'
+      tag: 'v2.4.7'
+      version: '2.4.7'
       tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
+        - host-autoconf-v2.71
+        - host-automake-v1.16
       regenerate:
         # libtool's ./bootstrap does a shallow clone with insufficient depth.
         - args: ['git', 'submodule', 'update', '--init']
         - args: ['./bootstrap']
+        - args: ['cp',
+            '@BUILD_ROOT@/tools/host-automake-v1.16/share/automake-1.16/config.sub',
+            '@THIS_SOURCE_DIR@/build-aux/']
+        - args: ['cp',
+            '@BUILD_ROOT@/tools/host-automake-v1.16/share/automake-1.16/config.guess',
+            '@THIS_SOURCE_DIR@/build-aux/']
     tools_required:
-      - host-autoconf-v2.69
-      - host-automake-v1.15
-    revision: 2
+      - host-autoconf-v2.71
+      - host-automake-v1.16
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -417,7 +521,7 @@ tools:
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     from_source: binutils
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -463,7 +567,7 @@ tools:
     tools_required:
       - tool: cross-binutils
         recursive: true
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -511,7 +615,7 @@ tools:
     tools_required:
       - tool: cross-binutils
         recursive: true
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -568,7 +672,7 @@ tools:
     tools_required:
       - tool: cross-binutils
         recursive: true
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -666,7 +770,7 @@ packages:
       categories: ['sys-devel']
     from_source: binutils
     tools_required:
-      - tool: system-gcc
+      - system-gcc
     pkgs_required:
       - mlibc
     revision: 5
@@ -683,8 +787,8 @@ packages:
         # -g blows up the binary size.
         - 'CFLAGS=-O2'
     build:
-      #- args: ['make', '-j@PARALLELISM@', 'all-binutils', 'all-gas', 'all-ld']
-      - args: ['make', 'all-binutils', 'all-gas', 'all-ld']
+      - args: ['make', '-j@PARALLELISM@', 'all-binutils', 'all-gas', 'all-ld']
+      # - args: ['make', 'all-binutils', 'all-gas', 'all-ld']
       - args: ['make', 'install-binutils', 'install-gas', 'install-ld']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'

@@ -1,11 +1,10 @@
-From 57ceba3e24468a6277926a3d7d62f8b2094030cb Mon Sep 17 00:00:00 2001
+From 751b0dfb14ac9bc28e8056d6f23a2526248fc6c8 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Tue, 13 Apr 2021 21:20:52 +0200
-Subject: [PATCH] Managarm target
+Subject: [PATCH] Add Managarm target
 
-TODO: Use libtoolize instead of modifying in-tree libtool?
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
- config.sub                                  | 11 +++-
  fixincludes/mkfixinc.sh                     |  1 +
  gcc/config.gcc                              | 71 +++++++++++++++++++++
  gcc/config.host                             |  2 +-
@@ -14,7 +13,7 @@ TODO: Use libtoolize instead of modifying in-tree libtool?
  gcc/config/i386/i386-managarm.h             | 11 ++++
  gcc/config/i386/t-managarm64                |  4 ++
  gcc/config/managarm-kernel.h                |  9 +++
- gcc/config/managarm-system.h                |  3 +
+ gcc/config/managarm-mlibc.h                 |  3 +
  gcc/config/managarm.h                       | 13 ++++
  gcc/config/riscv/managarm.h                 | 64 +++++++++++++++++++
  gcc/config/riscv/t-managarm                 |  3 +
@@ -22,61 +21,17 @@ TODO: Use libtoolize instead of modifying in-tree libtool?
  libgcc/libgcov.h                            |  1 +
  libstdc++-v3/crossconfig.m4                 | 11 ++++
  libstdc++-v3/include/c_compatibility/fenv.h | 10 +--
- libtool.m4                                  | 14 ++++
- 18 files changed, 293 insertions(+), 8 deletions(-)
+ 16 files changed, 270 insertions(+), 6 deletions(-)
  create mode 100644 gcc/config/aarch64/aarch64-managarm.h
  create mode 100644 gcc/config/aarch64/t-aarch64-managarm
  create mode 100644 gcc/config/i386/i386-managarm.h
  create mode 100644 gcc/config/i386/t-managarm64
  create mode 100644 gcc/config/managarm-kernel.h
- create mode 100644 gcc/config/managarm-system.h
+ create mode 100644 gcc/config/managarm-mlibc.h
  create mode 100644 gcc/config/managarm.h
  create mode 100644 gcc/config/riscv/managarm.h
  create mode 100644 gcc/config/riscv/t-managarm
 
-diff --git a/config.sub b/config.sub
-index 63c1f1c8b..033763b58 100755
---- a/config.sub
-+++ b/config.sub
-@@ -132,7 +132,8 @@ case $1 in
- 		maybe_os=$field2-$field3
- 		case $maybe_os in
- 			nto-qnx* | linux-* | uclinux-uclibc* \
--			| uclinux-gnu* | kfreebsd*-gnu* | knetbsd*-gnu* | netbsd*-gnu* \
-+			| uclinux-gnu* | managarm-kernel* | managarm-system* \
-+			| kfreebsd*-gnu* | knetbsd*-gnu* | netbsd*-gnu* \
- 			| netbsd*-eabi* | kopensolaris*-gnu* | cloudabi*-eabi* \
- 			| storm-chaos* | os2-emx* | rtmk-nova*)
- 				basic_machine=$field1
-@@ -1313,6 +1314,10 @@ EOF
- 		kernel=linux
- 		os=$(echo $basic_os | sed -e 's|linux|gnu|')
- 		;;
-+	managarm*)
-+		kernel=managarm
-+		os=$(echo $basic_os | sed -e 's|managarm|system|')
-+		;;
- 	*)
- 		kernel=
- 		os=$basic_os
-@@ -1725,7 +1730,7 @@ case $os in
- 	     | skyos* | haiku* | rdos* | toppers* | drops* | es* \
- 	     | onefs* | tirtos* | phoenix* | fuchsia* | redox* | bme* \
- 	     | midnightbsd* | amdhsa* | unleashed* | emscripten* | wasi* \
--	     | nsk* | powerunix* | genode* | zvmoe* | qnx* | emx*)
-+	     | nsk* | powerunix* | genode* | zvmoe* | qnx* | emx* | kernel* | system*)
- 		;;
- 	# This one is extra strict with allowed versions
- 	sco3.2v2 | sco3.2v[4-9]* | sco5v6*)
-@@ -1744,6 +1749,8 @@ esac
- case $kernel-$os in
- 	linux-gnu* | linux-dietlibc* | linux-android* | linux-newlib* | linux-musl* | linux-uclibc* )
- 		;;
-+	managarm-kernel* | managarm-system* )
-+		;;
- 	uclinux-uclibc* )
- 		;;
- 	-dietlibc* | -newlib* | -musl* | -uclibc* )
 diff --git a/fixincludes/mkfixinc.sh b/fixincludes/mkfixinc.sh
 index df90720b7..779d71953 100755
 --- a/fixincludes/mkfixinc.sh
@@ -90,7 +45,7 @@ index df90720b7..779d71953 100755
  	#  IF there is no include fixing,
  	#  THEN create a no-op fixer and exit
 diff --git a/gcc/config.gcc b/gcc/config.gcc
-index 357b0bed0..570049be8 100644
+index 357b0bed0..c6517a934 100644
 --- a/gcc/config.gcc
 +++ b/gcc/config.gcc
 @@ -885,6 +885,25 @@ case ${target} in
@@ -105,7 +60,7 @@ index 357b0bed0..570049be8 100644
 +  use_gcc_stdint=wrap
 +
 +  case ${target} in
-+  *-managarm-system*)
++  *-managarm-mlibc*)
 +    tmake_file="${tmake_file} t-slibgcc"
 +    thread_file='posix'
 +    ;;
@@ -129,8 +84,8 @@ index 357b0bed0..570049be8 100644
 +	tmake_file="${tmake_file} aarch64/t-aarch64 aarch64/t-aarch64-managarm"
 +	tm_defines="${tm_defines}  TARGET_DEFAULT_ASYNC_UNWIND_TABLES=1"
 +	case ${target} in
-+	*-managarm-system*)
-+		tm_file="${tm_file} managarm-system.h"
++	*-managarm-mlibc*)
++		tm_file="${tm_file} managarm-mlibc.h"
 +		;;
 +	*-managarm-kernel*)
 +		tm_file="${tm_file} managarm-kernel.h"
@@ -153,8 +108,8 @@ index 357b0bed0..570049be8 100644
 +		 i386/x86-64.h i386/gnu-user-common.h i386/gnu-user64.h managarm.h i386/i386-managarm.h"
 +
 +	case ${target} in
-+	*-managarm-system*)
-+		tm_file="${tm_file} managarm-system.h"
++	*-managarm-mlibc*)
++		tm_file="${tm_file} managarm-mlibc.h"
 +		;;
 +	*-managarm-kernel*)
 +		tm_file="${tm_file} managarm-kernel.h"
@@ -178,8 +133,8 @@ index 357b0bed0..570049be8 100644
 +	tm_file="${tm_file} riscv/managarm.h"
 +	tmake_file="${tmake_file} riscv/t-riscv riscv/t-managarm"
 +	case ${target} in
-+	*-managarm-system*)
-+		tm_file="${tm_file} managarm-system.h"
++	*-managarm-mlibc*)
++		tm_file="${tm_file} managarm-mlibc.h"
 +		;;
 +	*-managarm-kernel*)
 +		tm_file="${tm_file} managarm-kernel.h"
@@ -312,11 +267,11 @@ index 000000000..6b1c85a76
 +
 +#undef ENDFILE_SPEC
 +#define ENDFILE_SPEC "%{shared:crtendS.o%s;:crtend.o%s} crtn.o%s"
-diff --git a/gcc/config/managarm-system.h b/gcc/config/managarm-system.h
+diff --git a/gcc/config/managarm-mlibc.h b/gcc/config/managarm-mlibc.h
 new file mode 100644
 index 000000000..ba41561d1
 --- /dev/null
-+++ b/gcc/config/managarm-system.h
++++ b/gcc/config/managarm-mlibc.h
 @@ -0,0 +1,3 @@
 +
 +#undef LIB_SPEC
@@ -531,38 +486,6 @@ index 0413e3b7c..3937be9f8 100644
  #if __cplusplus >= 201103L
  
  #if _GLIBCXX_USE_C99_FENV_TR1
-diff --git a/libtool.m4 b/libtool.m4
-index 17f8e5f30..a934226d3 100644
---- a/libtool.m4
-+++ b/libtool.m4
-@@ -2491,6 +2491,16 @@ linux* | k*bsd*-gnu | kopensolaris*-gnu | gnu* | uclinuxfdpiceabi)
-   dynamic_linker='GNU/Linux ld.so'
-   ;;
- 
-+managarm*)
-+  version_type=linux
-+  need_lib_prefix=no
-+  need_version=no
-+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}${major} ${libname}${shared_ext}'
-+  soname_spec='${libname}${release}${shared_ext}$major'
-+  shlibpath_var=LD_LIBRARY_PATH
-+  hardcode_into_libs=yes
-+  ;;
-+
- netbsd*)
-   version_type=sunos
-   need_lib_prefix=no
-@@ -3090,6 +3100,10 @@ linux* | k*bsd*-gnu | kopensolaris*-gnu | uclinuxfdpiceabi)
-   lt_cv_deplibs_check_method=pass_all
-   ;;
- 
-+managarm*)
-+  lt_cv_deplibs_check_method=pass_all
-+  ;;
-+
- netbsd*)
-   if echo __ELF__ | $CC -E - | $GREP __ELF__ > /dev/null; then
-     lt_cv_deplibs_check_method='match_pattern /lib[[^/]]+(\.so\.[[0-9]]+\.[[0-9]]+|_pic\.a)$'
 -- 
-2.20.1
+2.37.2
 
