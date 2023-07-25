@@ -1,5 +1,6 @@
 packages:
   - name: gtklife
+    stability_level: 'broken' # Unsure what happened, might need to deprecate this
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
