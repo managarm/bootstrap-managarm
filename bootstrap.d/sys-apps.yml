@@ -64,14 +64,14 @@ packages:
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
-      git: 'https://git.savannah.gnu.org/git/coreutils.git'
-      tag: 'v9.1'
-      version: '9.1'
+      url: 'https://ftp.gnu.org/gnu/coreutils/coreutils-9.3.tar.xz'
+      format: tar.xz
+      checksum: 'blake2b:11502cd2dbeef150d0d4cece2546bf6b835941b94456c258f6058338f0477f22e68e88934d075b08fe51ee4d1c0c50cb23d8084ac06a457d6e8975f01643b1cd'
+      extract_path: 'coreutils-9.3'
+      version: '9.3'
       tools_required:
-        - host-autoconf-v2.69
         - host-automake-v1.15
       regenerate:
-        - args: ['./bootstrap']
         - args: ['cp',
             '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
             '@THIS_SOURCE_DIR@/build-aux/']
@@ -79,7 +79,6 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
     configure:
       # Huge hack: coreutils does not compile the build-machine binary make-prime-list
       # using the build-machine compiler. Hence, build and invoke the binary manually here.
@@ -525,20 +524,16 @@ packages:
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
-      url: 'https://www.greenwoodsoftware.com/less/less-590.tar.gz'
+      url: 'https://www.greenwoodsoftware.com/less/less-633.tar.gz'
       format: 'tar.gz'
-      checksum: blake2b:0f640f1b6b4d4925c4904ee77460e8becd2dae168fe5c1483bf6a9cfabe9eb0abdc4d4811507ba88a2b4cff6c238158bd8b4463b63d3d7863b44ce8538d32adb
-      extract_path: 'less-590'
-      version: '590'
+      checksum: blake2b:e9df180794af365f86734c6b8fde766c1bba42b111717ee5e1cf11001fc7ec3d78910db9bb7c51a76816086f599808b1b60f514011ec40e37650d6bc4f8b3d5c
+      extract_path: 'less-633'
+      version: '633'
     tools_required:
       - system-gcc
-      - host-autoconf-v2.69
-      - host-automake-v1.15
-      - host-libtool
     pkgs_required:
       - mlibc
       - ncurses
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
