@@ -1954,6 +1954,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xcb-util-cursor
+    labels: [aarch64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -1999,6 +2000,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xcb-util-image
+    labels: [aarch64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -2042,6 +2044,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xcb-util-keysyms
+    labels: [aarch64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -2084,6 +2087,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xcb-util-render-util
+    labels: [aarch64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -2126,6 +2130,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xcb-util-wm
+    labels: [aarch64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
