@@ -1,4 +1,4 @@
-From 24fb6f316a624dd427650243c370ce15d54addcb Mon Sep 17 00:00:00 2001
+From 6093b65d10cba186ff26b16c23a056346981b2ff Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Mon, 10 Oct 2022 11:54:07 +0200
 Subject: [PATCH] Managarm-specific changes
@@ -12,7 +12,7 @@ Subject: [PATCH] Managarm-specific changes
  5 files changed, 11 insertions(+), 30 deletions(-)
 
 diff --git a/compositor/main.c b/compositor/main.c
-index 2eb0a03..558fe83 100644
+index c614466..414eee0 100644
 --- a/compositor/main.c
 +++ b/compositor/main.c
 @@ -45,7 +45,7 @@
@@ -24,7 +24,7 @@ index 2eb0a03..558fe83 100644
  
  #include "weston.h"
  #include <libweston/libweston.h>
-@@ -806,14 +806,6 @@ weston_compositor_log_capabilities(struct weston_compositor *compositor)
+@@ -861,14 +861,6 @@ weston_compositor_log_capabilities(struct weston_compositor *compositor)
  	weston_log_continue(STAMP_SPACE "presentation clock: %s, id %d\n",
  			    clock_name(compositor->presentation_clock),
  			    compositor->presentation_clock);
@@ -40,10 +40,10 @@ index 2eb0a03..558fe83 100644
  
  static bool
 diff --git a/libweston/backend-drm/drm.c b/libweston/backend-drm/drm.c
-index 962cc28..387cb34 100644
+index 1078b89..44b72e9 100644
 --- a/libweston/backend-drm/drm.c
 +++ b/libweston/backend-drm/drm.c
-@@ -562,7 +562,7 @@ drm_output_start_repaint_loop(struct weston_output *output_base)
+@@ -724,7 +724,7 @@ drm_output_start_repaint_loop(struct weston_output *output_base)
  
  	/* Try to get current msc and timestamp via instant query */
  	vbl.request.type |= drm_waitvblank_pipe(output->crtc);
@@ -52,22 +52,22 @@ index 962cc28..387cb34 100644
  
  	/* Error ret or zero timestamp means failure to get valid timestamp */
  	if ((ret == 0) && (vbl.reply.tval_sec > 0 || vbl.reply.tval_usec > 0)) {
-@@ -633,11 +633,11 @@ drm_repaint_begin(struct weston_compositor *compositor)
+@@ -794,11 +794,11 @@ drm_repaint_begin(struct weston_backend *backend)
  	device->repaint_data = pending_state;
  
  	if (weston_log_scope_is_enabled(b->debug)) {
--		char *dbg = weston_compositor_print_scene_graph(compositor);
-+		/*char *dbg = weston_compositor_print_scene_graph(compositor);
+-		char *dbg = weston_compositor_print_scene_graph(b->compositor);
++		/*char *dbg = weston_compositor_print_scene_graph(b->compositor);
  		drm_debug(b, "[repaint] Beginning repaint; pending_state %p\n",
  			  device->repaint_data);
  		drm_debug(b, "%s", dbg);
 -		free(dbg);
 +		free(dbg);*/
  	}
- }
  
-@@ -3135,13 +3135,13 @@ drm_backend_create(struct weston_compositor *compositor,
- 	if (parse_gbm_format(config->gbm_format, DRM_FORMAT_XRGB8888, &b->gbm_format) < 0)
+ 	wl_list_for_each(device, &b->kms_list, link) {
+@@ -3720,13 +3720,13 @@ drm_backend_create(struct weston_compositor *compositor,
+ 			     &b->format) < 0)
  		goto err_compositor;
  
 -	/* Check if we run drm-backend using a compatible launcher */
@@ -83,10 +83,10 @@ index 962cc28..387cb34 100644
  	b->udev = udev_new();
  	if (b->udev == NULL) {
 diff --git a/libweston/backend-drm/fb.c b/libweston/backend-drm/fb.c
-index 05b4988..8a00212 100644
+index 0c2c0f6..28a9e9c 100644
 --- a/libweston/backend-drm/fb.c
 +++ b/libweston/backend-drm/fb.c
-@@ -303,13 +303,13 @@ drm_fb_get_from_dmabuf(struct linux_dmabuf_buffer *dmabuf,
+@@ -451,13 +451,13 @@ drm_fb_get_from_dmabuf(struct linux_dmabuf_buffer *dmabuf,
  	if (is_opaque)
  		fb->format = pixel_format_get_opaque_substitute(fb->format);
  
@@ -147,5 +147,5 @@ index 18f0301..f0a3bb6 100644
  #include <stdbool.h>
  #include <stdio.h>
 -- 
-2.37.3
+2.40.1
 
