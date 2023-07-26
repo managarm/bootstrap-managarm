@@ -1953,6 +1953,51 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: xcb-util-cursor
+    architecture: '@OPTION:arch@'
+    source:
+      subdir: ports
+      git: 'https://gitlab.freedesktop.org/xorg/lib/libxcb-cursor.git'
+      tag: 'xcb-util-cursor-0.1.4'
+      version: '0.1.4'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+        - host-xorg-macros
+        - host-autoconf-archive
+      regenerate:
+        - args: ['git', 'submodule', 'update', '--init']
+        - args: ['autoreconf', '-fvi']
+    tools_required:
+      - system-gcc
+      - host-autoconf-v2.69
+      - host-automake-v1.15
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - libxcb
+      - xcb-util-image
+      - xcb-util-render-util
+      - xorg-proto
+      - xcb-util
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--sysconfdir=/etc'
+        - '--localstatedir=/var'
+        - '--disable-static'
+        - '--without-doxygen'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: xcb-util-image
     architecture: '@OPTION:arch@'
     source:

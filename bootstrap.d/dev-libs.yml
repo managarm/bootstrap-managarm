@@ -1596,12 +1596,9 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/wayland/weston.git'
-      tag: '11.0.0'
-      version: '11.0.0'
+      tag: '12.0.1'
+      version: '12.0.1'
     tools_required:
-      - host-autoconf-v2.69
-      - host-automake-v1.15
-      - host-libtool
       - host-pkg-config
       - system-gcc
       - wayland-scanner
@@ -1624,10 +1621,12 @@ packages:
       - glib
       - libjpeg-turbo
       - seatd
-    revision: 2
+      - xcb-proto
+      - xcb-util-cursor
     configure:
       - args:
         - 'meson'
+        - 'setup'
         - '--native-file'
         - '@SOURCE_ROOT@/scripts/meson.native-file'
         - '--cross-file'
@@ -1639,9 +1638,10 @@ packages:
         - '-Dsimple-clients=damage,im,egl,shm,touch'
         - '-Dimage-jpeg=true'
         - '-Dimage-webp=false'
-        - '-Dlauncher-logind=false'
         - '-Dbackend-drm-screencast-vaapi=false'
         - '-Dbackend-rdp=false'
+        - '-Dbackend-vnc=false'
+        - '-Dbackend-pipewire=false'
         - '-Dcolor-management-lcms=false'
         - '-Dsystemd=false'
         - '-Dremoting=false'
