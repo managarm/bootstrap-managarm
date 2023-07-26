@@ -480,6 +480,7 @@ packages:
       - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/charset.alias']
 
   - name: iproute2
+    labels: [aarch64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: iproute2 is a tool developed to unify network interface configuration, routing, and tunneling for Linux systems
@@ -592,6 +593,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: man-pages-posix
+    labels: [aarch64]
     architecture: noarch
     source:
       subdir: ports
