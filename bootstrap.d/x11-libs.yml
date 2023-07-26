@@ -260,7 +260,7 @@ packages:
       - wayland-scanner
     pkgs_required:
       - mlibc
-      - at-spi2-atk
+      - at-spi2-core
       - cairo
       - glib
       - gdk-pixbuf
