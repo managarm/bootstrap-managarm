@@ -23,6 +23,7 @@ tools:
   - name: host-limine
     architecture: '@OPTION:arch@'
     from_source: limine
+    revision: 2
     tools_required:
       - system-gcc
     configure:
