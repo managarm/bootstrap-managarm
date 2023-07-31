@@ -50,6 +50,7 @@ packages:
         - '-Dman-pages=disabled'
         - '-Dxwayland=enabled'
         - '-Dzsh-completions=false'
+        - '-Dwerror=false'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
