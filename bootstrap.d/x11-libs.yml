@@ -66,7 +66,7 @@ packages:
       - mesa
       - libxrender
       - glib
-    revision: 3
+    revision: 4
     configure:
       - args:
         # For now, we build without glesv2 backend as Weston prefers the image backend.
