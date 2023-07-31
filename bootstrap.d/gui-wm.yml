@@ -26,6 +26,7 @@ packages:
     pkgs_required:
       - mlibc
       - cairo
+      - gdk-pixbuf
       - json-c
       - pango
       - pcre2
@@ -46,7 +47,7 @@ packages:
         - '--buildtype=debugoptimized'
         - '-Dbash-completions=false'
         - '-Dfish-completions=false'
-        - '-Dgdk-pixbuf=disabled'
+        - '-Dgdk-pixbuf=enabled'
         - '-Dman-pages=disabled'
         - '-Dxwayland=enabled'
         - '-Dzsh-completions=false'
