@@ -23,7 +23,7 @@ tools:
   - name: host-limine
     architecture: '@OPTION:arch@'
     from_source: limine
-    revision: 2
+    revision: 3
     tools_required:
       - system-gcc
     configure:
@@ -37,6 +37,7 @@ tools:
         - '--enable-bios-cd'
         - '--enable-bios-pxe'
         - 'TOOLCHAIN_FOR_TARGET=@OPTION:arch-triple@'
+        - 'LDFLAGS=-static'
     compile:
       - args: ['make', '-j@PARALLELISM@']
     install:
