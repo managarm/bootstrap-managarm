@@ -1,15 +1,15 @@
-From b77abe3fc30d719c7588f6b12ac70176bb80ed13 Mon Sep 17 00:00:00 2001
-From: Matt Taylor <mstaveleytaylor@gmail.com>
-Date: Sat, 25 Jun 2022 03:43:30 +0100
-Subject: [PATCH 3/4] managarm: alacritty updates
+From 7895ffd3aaee0a2a6dd2a707c5b062decf69ae9b Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Wed, 2 Aug 2023 04:56:48 +0200
+Subject: [PATCH 3/5] managarm: alacritty updates
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
- src/unix/mlibc/mod.rs | 395 ++++++++++++++++++++++++++++++++++++------
- 1 file changed, 345 insertions(+), 50 deletions(-)
+ src/unix/mlibc/mod.rs | 394 ++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 344 insertions(+), 50 deletions(-)
 
 diff --git a/src/unix/mlibc/mod.rs b/src/unix/mlibc/mod.rs
-index eb8cdc6..d734ca4 100644
+index eb8cdc6..1787268 100644
 --- a/src/unix/mlibc/mod.rs
 +++ b/src/unix/mlibc/mod.rs
 @@ -26,11 +26,24 @@ pub const MAP_SHARED: ::c_int = 2;
@@ -638,14 +638,13 @@ index eb8cdc6..d734ca4 100644
      pub fn pthread_condattr_setclock(
          attr: *mut pthread_condattr_t,
          clock_id: ::clockid_t,
-@@ -732,7 +1016,18 @@ extern "C" {
+@@ -732,7 +1016,17 @@ extern "C" {
          addr: *mut ::sockaddr,
          addrlen: *mut ::socklen_t,
      ) -> ::ssize_t;
 +    pub fn recvmsg(fd: ::c_int, msg: *mut ::msghdr, flags: ::c_int) -> ::ssize_t;
 +    pub fn sendmsg(fd: ::c_int, msg: *const ::msghdr, flags: ::c_int) -> ::ssize_t;
      pub fn setgroups(ngroups: ::c_int, ptr: *const ::gid_t) -> ::c_int;
-+    pub fn sethostname(name: *const ::c_char, len: ::size_t) -> ::c_int;
      pub fn setpwent();
 +    pub fn shm_open(name: *const c_char, oflag: ::c_int, mode: mode_t) -> ::c_int;
 +    pub fn shm_unlink(name: *const ::c_char) -> ::c_int;
@@ -658,5 +657,5 @@ index eb8cdc6..d734ca4 100644
      pub fn writev(fd: ::c_int, iov: *const ::iovec, count: ::c_int) -> ::ssize_t;
  }
 -- 
-2.39.1
+2.40.1
 

@@ -1,0 +1,205 @@
+From ce9ac32a6d5094afe5d982be7118373bdabc4827 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Wed, 2 Aug 2023 16:18:56 +0200
+Subject: [PATCH 5/5] More fixes
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ src/unix/mlibc/mod.rs | 127 ++++++++++++++++++++++++------------------
+ 1 file changed, 72 insertions(+), 55 deletions(-)
+
+diff --git a/src/unix/mlibc/mod.rs b/src/unix/mlibc/mod.rs
+index db952e6..c268125 100644
+--- a/src/unix/mlibc/mod.rs
++++ b/src/unix/mlibc/mod.rs
+@@ -203,7 +203,7 @@ s! {
+     }
+ }
+ 
+-// abis/mlibc/termios.h
++// abis/linux/termios.h
+ pub const B0: ::c_uint = 0;
+ pub const B50: ::c_uint = 1;
+ pub const B75: ::c_uint = 2;
+@@ -223,65 +223,65 @@ pub const B38400: ::c_uint = 15;
+ pub const B57600: ::c_uint = 16;
+ pub const B115200: ::c_uint = 17;
+ pub const B230400: ::c_uint = 18;
+-pub const BRKINT: ::c_uint = 0x0001;
++pub const BRKINT: ::c_uint = 0x0002;
+ pub const BS0: ::c_int = 0x0000;
+-pub const BS1: ::c_int = 0x1000;
+-pub const BSDLY: ::c_int = 0x1000;
+-pub const CLOCAL: ::c_int = 0x0080;
++pub const BS1: ::c_int = 0x2000;
++pub const BSDLY: ::c_int = 0x2000;
++pub const CLOCAL: ::c_int = 0x0800;
+ pub const CR0: ::c_int = 0x0000;
+-pub const CR1: ::c_int = 0x0100;
+-pub const CR2: ::c_int = 0x0200;
+-pub const CR3: ::c_int = 0x0300;
+-pub const CRDLY: ::c_int = 0x0300;
+-pub const CREAD: ::c_int = 0x0008;
++pub const CR1: ::c_int = 0x0200;
++pub const CR2: ::c_int = 0x0400;
++pub const CR3: ::c_int = 0x0600;
++pub const CRDLY: ::c_int = 0x0600;
++pub const CREAD: ::c_int = 0x0080;
+ pub const CS5: ::c_uint = 0x0000;
+-pub const CS6: ::c_int = 0x0001;
+-pub const CS7: ::c_int = 0x0002;
+-pub const CS8: ::c_int = 0x0003;
+-pub const CSIZE: ::c_int = 0x0003;
+-pub const CSTOPB: ::c_int = 0x0004;
+-pub const ECHO: ::c_uint = 0x0001;
+-pub const ECHOE: ::c_int = 0x0002;
+-pub const ECHOK: ::c_int = 0x0004;
+-pub const ECHONL: ::c_int = 0x0008;
+-pub const ECHOPRT: ::c_int = 0x0200;
++pub const CS6: ::c_int = 0x0010;
++pub const CS7: ::c_int = 0x0020;
++pub const CS8: ::c_int = 0x0030;
++pub const CSIZE: ::c_int = 0x0030;
++pub const CSTOPB: ::c_int = 0x0040;
++pub const ECHO: ::c_uint = 0x0008;
++pub const ECHOE: ::c_int = 0x0010;
++pub const ECHOK: ::c_int = 0x0020;
++pub const ECHONL: ::c_int = 0x0040;
++pub const ECHOPRT: ::c_int = 0x0400;
+ pub const FF0: ::c_int = 0x0000;
+-pub const FF1: ::c_int = 0x4000;
+-pub const FFDLY: ::c_int = 0x4000;
+-pub const HUPCL: ::c_int = 0x0040;
+-pub const ICANON: ::c_int = 0x0010;
+-pub const ICRNL: ::c_uint = 0x0002;
+-pub const IEXTEN: ::c_int = 0x0020;
+-pub const IGNBRK: ::c_uint = 0x0004;
+-pub const IGNCR: ::c_uint = 0x0008;
+-pub const IGNPAR: ::c_uint = 0x0010;
+-pub const INLCR: ::c_uint = 0x0020;
+-pub const INPCK: ::c_uint = 0x0040;
+-pub const ISIG: ::c_int = 0x0040;
+-pub const ISTRIP: ::c_uint = 0x0080;
+-pub const IXANY: ::c_uint = 0x0100;
+-pub const IXOFF: ::c_uint = 0x0200;
++pub const FF1: ::c_int = 0x8000;
++pub const FFDLY: ::c_int = 0x8000;
++pub const HUPCL: ::c_int = 0x0400;
++pub const ICANON: ::c_int = 0x0002;
++pub const ICRNL: ::c_uint = 0x0100;
++pub const IEXTEN: ::c_int = 0x8000;
++pub const IGNBRK: ::c_uint = 0x0001;
++pub const IGNCR: ::c_uint = 0x0080;
++pub const IGNPAR: ::c_uint = 0x0004;
++pub const INLCR: ::c_uint = 0x0080;
++pub const INPCK: ::c_uint = 0x0010;
++pub const ISIG: ::c_int = 0x0001;
++pub const ISTRIP: ::c_uint = 0x0020;
++pub const IXANY: ::c_uint = 0x0800;
++pub const IXOFF: ::c_uint = 0x1000;
+ pub const IXON: ::c_uint = 0x0400;
+-pub const NCCS: usize = 11;
++pub const NCCS: usize = 32;
+ pub const NL0: ::c_int = 0x0000;
+-pub const NL1: ::c_int = 0x0080;
+-pub const NLDLY: ::c_int = 0x0080;
++pub const NL1: ::c_int = 0x0100;
++pub const NLDLY: ::c_int = 0x0100;
+ pub const NOFLSH: ::c_int = 0x0080;
+-pub const OCRNL: ::c_int = 0x0004;
+-pub const OFDEL: ::c_int = 0x0020;
++pub const OCRNL: ::c_int = 0x0008;
++pub const OFDEL: ::c_int = 0x0080;
+ pub const OFILL: ::c_int = 0x0040;
+-pub const ONLCR: ::c_int = 0x0002;
+-pub const ONLRET: ::c_int = 0x0010;
+-pub const ONOCR: ::c_int = 0x0008;
++pub const ONLCR: ::c_int = 0x0004;
++pub const ONLRET: ::c_int = 0x0020;
++pub const ONOCR: ::c_int = 0x0010;
+ pub const OPOST: ::c_uint = 0x0001;
+-pub const PARENB: ::c_int = 0x0010;
+-pub const PARMRK: ::c_uint = 0x0800;
+-pub const PARODD: ::c_int = 0x0020;
++pub const PARENB: ::c_int = 0x0100;
++pub const PARMRK: ::c_uint = 0x0008;
++pub const PARODD: ::c_int = 0x0200;
+ pub const TAB0: ::c_int = 0x0000;
+-pub const TAB1: ::c_int = 0x0400;
+-pub const TAB2: ::c_int = 0x0800;
+-pub const TAB3: ::c_int = 0x0C00;
+-pub const TABDLY: ::c_int = 0x0C00;
++pub const TAB1: ::c_int = 0x0800;
++pub const TAB2: ::c_int = 0x01000;
++pub const TAB3: ::c_int = 0x01800;
++pub const TABDLY: ::c_int = 0x01800;
+ pub const TCIFLUSH: ::c_int = 1;
+ pub const TCIOFF: ::c_int = 1;
+ pub const TCIOFLUSH: ::c_int = 2;
+@@ -294,10 +294,26 @@ pub const TCSAFLUSH: ::c_int = 3;
+ pub const TCSANOW: ::c_int = 1;
+ pub const TOSTOP: ::c_int = 0x0100;
+ pub const VT0: ::c_int = 0x0000;
+-pub const VT1: ::c_int = 0x2000;
++pub const VT1: ::c_int = 0x4000;
+ 
+ // The following are usize since they are indices into termios.c_cc
+-pub const VEOF: usize = 0;
++pub const VINTR: usize = 0;
++pub const VQUIT: usize = 1;
++pub const VERASE: usize = 2;
++pub const VKILL: usize = 3;
++pub const VEOF: usize = 4;
++pub const VTIME: usize = 5;
++pub const VMIN: usize = 6;
++pub const VSWTC: usize = 7;
++pub const VSTART: usize = 8;
++pub const VSTOP: usize = 9;
++pub const VSUSP: usize = 10;
++pub const VEOL: usize = 11;
++pub const VREPRINT: usize = 12;
++pub const VDISCARD: usize = 13;
++pub const VWERASE: usize = 14;
++pub const VLNEXT: usize = 15;
++pub const VEOL2: usize = 16;
+ 
+ pub type speed_t = ::c_uint;
+ pub type tcflag_t = ::c_uint;
+@@ -307,6 +323,7 @@ s! {
+         pub c_oflag: tcflag_t,
+         pub c_cflag: tcflag_t,
+         pub c_lflag: tcflag_t,
++        pub c_line: ::cc_t,
+         pub c_cc: [::cc_t; NCCS],
+         pub ibaud: speed_t,
+         pub obaud: speed_t,
+@@ -371,7 +388,7 @@ pub const _SC_NPROCESSORS_ONLN: ::c_int = 6;
+ pub const _SC_PAGESIZE: ::c_int = _SC_PAGE_SIZE;
+ pub const _SC_PAGE_SIZE: ::c_int = 3;
+ 
+-// abis/mlibc/socket.h
++// abis/linux/socket.h
+ pub const AF_APPLETALK: ::c_int = PF_APPLETALK;
+ pub const AF_BLUETOOTH: ::c_int = PF_BLUETOOTH;
+ pub const AF_DECnet: ::c_int = PF_DECnet;
+@@ -441,7 +458,7 @@ pub const TCP_KEEPIDLE: ::c_int = 4;
+ pub const TCP_KEEPINTVL: ::c_int = 5;
+ pub const MSG_NOSIGNAL: ::c_int = 0x10;
+ 
+-pub type sa_family_t = ::c_int;
++pub type sa_family_t = ::c_uint;
+ s! {
+     pub struct sockaddr_storage {
+         pub ss_family: sa_family_t,
+@@ -625,7 +642,7 @@ pub const IFF_MULTICAST: ::c_int = 0x1000;
+ // options/posix/include/bits/posix/stat.h
+ pub const UTIME_OMIT: c_long = 1073741822;
+ 
+-// abis/mlibc/stat.h
++// abis/linux/stat.h
+ pub const S_IFBLK: mode_t = 0x6000;
+ pub const S_IFCHR: mode_t = 0x2000;
+ pub const S_IFDIR: mode_t = 0x4000;
+-- 
+2.40.1
+

@@ -1,7 +1,7 @@
-From 110c9f92fe8abd4ac3ad0137a39b68e127feccf5 Mon Sep 17 00:00:00 2001
-From: Matt Taylor <mstaveleytaylor@gmail.com>
-Date: Sat, 8 May 2021 19:33:53 +0100
-Subject: [PATCH 2/4] managarm: Add missing glue for memmap, num_cpus and users
+From 8fc0c1a48fe7421488b479f15f6bda0cbeb5cbee Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Wed, 2 Aug 2023 04:45:55 +0200
+Subject: [PATCH 2/5] managarm: Add missing glue for memmap, num_cpus and users
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
@@ -122,5 +122,5 @@ index e7c4cc7..eb8cdc6 100644
      pub fn writev(fd: ::c_int, iov: *const ::iovec, count: ::c_int) -> ::ssize_t;
  }
 -- 
-2.39.1
+2.40.1
 

@@ -1,7 +1,7 @@
-From 2b9a1cf9a7abe31a2a4a5a525abda0d1df68265a Mon Sep 17 00:00:00 2001
+From d8fc7a90085b141b73d128e1ebd582687445128e Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
-Date: Thu, 23 Feb 2023 00:30:21 +0100
-Subject: [PATCH 4/4] managarm: More additions for a newer nix version
+Date: Wed, 2 Aug 2023 05:02:00 +0200
+Subject: [PATCH 4/5] managarm: More additions for a newer nix version
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
@@ -9,7 +9,7 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
  1 file changed, 174 insertions(+), 16 deletions(-)
 
 diff --git a/src/unix/mlibc/mod.rs b/src/unix/mlibc/mod.rs
-index d734ca4..9d73df8 100644
+index 1787268..db952e6 100644
 --- a/src/unix/mlibc/mod.rs
 +++ b/src/unix/mlibc/mod.rs
 @@ -8,8 +8,22 @@ pub type c_ulong = u64;
@@ -278,7 +278,7 @@ index d734ca4..9d73df8 100644
  // options/linux-headers/include/linux/if_packet.h
  s! {
      pub struct sockaddr_ll {
-@@ -1030,4 +1146,46 @@ extern "C" {
+@@ -1029,4 +1145,46 @@ extern "C" {
          flag: ::c_int,
      ) -> ::c_int;
      pub fn writev(fd: ::c_int, iov: *const ::iovec, count: ::c_int) -> ::ssize_t;
@@ -326,5 +326,5 @@ index d734ca4..9d73df8 100644
 +    pub fn clock_getres(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
  }
 -- 
-2.39.1
+2.40.1
 
