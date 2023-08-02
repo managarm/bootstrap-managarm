@@ -93,8 +93,8 @@ tools:
     source:
       subdir: 'ports'
       git: 'https://github.com/rust-lang/cargo.git'
-      tag: '0.68.0'
-      version: '0.68.0'
+      tag: '0.72.1'
+      version: '0.72.1'
     tools_required:
       - tool: host-rust
         recursive: true
