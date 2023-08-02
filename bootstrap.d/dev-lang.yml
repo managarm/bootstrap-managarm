@@ -27,11 +27,11 @@ sources:
 
   - name: host-bootstrap-cargo
     subdir: 'ports'
-    url: 'https://static.rust-lang.org/dist/2022-04-07/cargo-1.60.0-x86_64-unknown-linux-gnu.tar.xz'
+    url: 'https://static.rust-lang.org/dist/2023-06-01/cargo-1.70.0-x86_64-unknown-linux-gnu.tar.xz'
     format: 'tar.xz'
-    checksum: blake2b:d60239d5977bfcf1c6f2d973d9d27e93d6d138ae6e929deb016afde8cd8e0ff0bba8396f8fa62d5e738be7bde7b91e9aa406ec2440e1ab50451c5b9ad2d8fdfb
-    extract_path: 'cargo-1.60.0-x86_64-unknown-linux-gnu'
-    version: '0.60.0'
+    checksum: blake2b:1c08994d28af4db6f69ce74a9cd90bbd9f66f011742d4f04f669ef5b8bf3942cc400d596e4698276fb9ef33b2bdbca5e006590ae49633f518c70ad54122e0e30
+    extract_path: 'cargo-1.70.0-x86_64-unknown-linux-gnu'
+    version: '1.70.0'
 
 tools:
   - name: host-python
