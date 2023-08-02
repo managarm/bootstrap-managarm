@@ -1275,7 +1275,6 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
     configure:
       # Disable installing two unneeded scripts.
       - args: ['sed', '-ri', '/^RELEASE/s/^/#/', '@THIS_SOURCE_DIR@/pr/src/misc/Makefile.in']
