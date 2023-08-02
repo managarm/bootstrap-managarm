@@ -1,6 +1,6 @@
-From 5931d5f1a7c70b2a60f4bb93f62ab4727cd789da Mon Sep 17 00:00:00 2001
+From 7df7093c43aeb9fd1a24369a13b4f2e62a45b332 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
-Date: Wed, 22 Feb 2023 02:06:19 +0100
+Date: Wed, 2 Aug 2023 04:25:11 +0200
 Subject: [PATCH 2/2] managarm: fix build target in x.py and bootstrap
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
@@ -10,28 +10,28 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
  2 files changed, 9 insertions(+), 4 deletions(-)
 
 diff --git a/src/bootstrap/bootstrap.py b/src/bootstrap/bootstrap.py
-index 2d5018d9..c7c31791 100644
+index 58d1926a..6ae93659 100644
 --- a/src/bootstrap/bootstrap.py
 +++ b/src/bootstrap/bootstrap.py
-@@ -708,7 +708,7 @@ class RustBuild(object):
+@@ -833,7 +833,7 @@ class RustBuild(object):
          ... "debug", "bootstrap")
          True
          """
 -        return os.path.join(self.build_dir, "bootstrap", "debug", "bootstrap")
 +        return os.path.join(self.build_dir, "bootstrap", self.build, "debug", "bootstrap")
  
-     def build_bootstrap(self, color):
+     def build_bootstrap(self, color, verbose_count):
          """Build bootstrap"""
-@@ -717,7 +717,7 @@ class RustBuild(object):
+@@ -845,7 +845,7 @@ class RustBuild(object):
+         build_dir = os.path.join(self.build_dir, "bootstrap")
          if self.clean and os.path.exists(build_dir):
              shutil.rmtree(build_dir)
-         env = os.environ.copy()
 -        # `CARGO_BUILD_TARGET` breaks bootstrap build.
 +        # `CARGO_BUILD_TARGET` and `build.target` breaks bootstrap build.
          # See also: <https://github.com/rust-lang/rust/issues/70208>.
          if "CARGO_BUILD_TARGET" in env:
              del env["CARGO_BUILD_TARGET"]
-@@ -779,6 +779,9 @@ class RustBuild(object):
+@@ -913,6 +913,9 @@ class RustBuild(object):
          elif color == "never":
              args.append("--color=never")
  
@@ -42,10 +42,10 @@ index 2d5018d9..c7c31791 100644
          run(args, env=env, verbose=self.verbose, cwd=self.rust_root)
  
 diff --git a/src/bootstrap/builder.rs b/src/bootstrap/builder.rs
-index 8ee6d49d..78373869 100644
+index 2fa44550..0fcfaed4 100644
 --- a/src/bootstrap/builder.rs
 +++ b/src/bootstrap/builder.rs
-@@ -1406,6 +1406,8 @@ pub fn cargo(
+@@ -1570,6 +1570,8 @@ pub fn cargo(
              self.clear_if_dirty(&out_dir, &self.rustc(compiler));
          }
  
@@ -54,7 +54,7 @@ index 8ee6d49d..78373869 100644
          // Customize the compiler we're running. Specify the compiler to cargo
          // as our shim and then pass it some various options used to configure
          // how the actual compiler itself is called.
-@@ -1418,7 +1420,7 @@ pub fn cargo(
+@@ -1582,7 +1584,7 @@ pub fn cargo(
              .env("RUSTC_STAGE", stage.to_string())
              .env("RUSTC_SYSROOT", &sysroot)
              .env("RUSTC_LIBDIR", &libdir)
@@ -63,7 +63,7 @@ index 8ee6d49d..78373869 100644
              .env(
                  "RUSTDOC_REAL",
                  if cmd == "doc" || cmd == "rustdoc" || (cmd == "test" && want_rustdoc) {
-@@ -1432,7 +1434,7 @@ pub fn cargo(
+@@ -1596,7 +1598,7 @@ pub fn cargo(
          // Clippy support is a hack and uses the default `cargo-clippy` in path.
          // Don't override RUSTC so that the `cargo-clippy` in path will be run.
          if cmd != "clippy" {
@@ -73,5 +73,5 @@ index 8ee6d49d..78373869 100644
  
          // Dealing with rpath here is a little special, so let's go into some
 -- 
-2.39.1
+2.40.1
 

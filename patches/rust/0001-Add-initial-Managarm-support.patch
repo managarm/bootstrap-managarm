@@ -1,11 +1,11 @@
-From a45000403a46b40d88cbee88668f349a06178b7b Mon Sep 17 00:00:00 2001
+From b9a0979d3c95afba1471c35a6d01a8b43e64ed3f Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
-Date: Wed, 22 Feb 2023 02:05:24 +0100
+Date: Wed, 2 Aug 2023 04:22:24 +0200
 Subject: [PATCH 1/2] Add initial Managarm support
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
- Cargo.lock                                    |  10 +-
+ Cargo.lock                                    |  12 +-
  Cargo.toml                                    |   1 +
  .../src/spec/managarm_system_base.rs          |  36 +++++
  compiler/rustc_target/src/spec/mod.rs         |   3 +
@@ -18,16 +18,16 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
  library/std/src/os/managarm/raw.rs            |  74 +++++++++
  library/std/src/os/mod.rs                     |   2 +
  library/std/src/os/unix/mod.rs                |   2 +
- library/std/src/sys/unix/args.rs              |   3 +-
+ library/std/src/sys/unix/args.rs              |   1 +
  library/std/src/sys/unix/env.rs               |  11 ++
- library/std/src/sys/unix/fs.rs                |   3 +-
+ library/std/src/sys/unix/fs.rs                |   1 +
  library/std/src/sys/unix/os.rs                |  34 +++-
  library/std/src/sys/unix/thread.rs            |   7 +
- library/std/src/sys/unix/thread_local_dtor.rs |   3 +-
+ library/std/src/sys/unix/thread_local_dtor.rs |   2 +-
  library/unwind/build.rs                       |   2 +
  src/bootstrap/Cargo.lock                      |  12 ++
  src/tools/rust-analyzer/Cargo.lock            |  12 ++
- 22 files changed, 383 insertions(+), 10 deletions(-)
+ 22 files changed, 381 insertions(+), 9 deletions(-)
  create mode 100644 compiler/rustc_target/src/spec/managarm_system_base.rs
  create mode 100644 compiler/rustc_target/src/spec/x86_64_unknown_managarm_system.rs
  create mode 100644 library/std/src/os/managarm/fs.rs
@@ -35,21 +35,23 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
  create mode 100644 library/std/src/os/managarm/raw.rs
 
 diff --git a/Cargo.lock b/Cargo.lock
-index 6a151058..1c70bc35 100644
+index 8b097249..a065f0f8 100644
 --- a/Cargo.lock
 +++ b/Cargo.lock
-@@ -2126,8 +2126,6 @@ checksum = "830d08ce1d1d941e6b30645f1a0eb5643013d835ce3779a5fc208261dbe10f55"
+@@ -1988,9 +1988,7 @@ checksum = "830d08ce1d1d941e6b30645f1a0eb5643013d835ce3779a5fc208261dbe10f55"
+ 
  [[package]]
  name = "libc"
- version = "0.2.138"
+-version = "0.2.143"
 -source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "db6d7e329c562c5dfab7a46a2afabc8b987ab9a4834c9d1ca04dc54c1546cef8"
+-checksum = "edc207893e85c5d6be840e969b496b53d94cec8be2d501b214f50daa97fa8024"
++version = "0.2.147"
  dependencies = [
   "rustc-std-workspace-core",
  ]
-@@ -5980,3 +5978,11 @@ dependencies = [
-  "syn",
-  "synstructure",
+@@ -5911,3 +5909,11 @@ dependencies = [
+  "syn 1.0.102",
+  "synstructure 0.12.6",
  ]
 +
 +[[patch.unused]]
@@ -60,10 +62,10 @@ index 6a151058..1c70bc35 100644
 +name = "users"
 +version = "0.11.0"
 diff --git a/Cargo.toml b/Cargo.toml
-index 000c10a1..8c36570f 100644
+index 8eb378af..c366dc81 100644
 --- a/Cargo.toml
 +++ b/Cargo.toml
-@@ -111,6 +111,7 @@ rustc-workspace-hack = { path = 'src/tools/rustc-workspace-hack' }
+@@ -107,6 +107,7 @@ object.debug = 0
  rustc-std-workspace-core = { path = 'library/rustc-std-workspace-core' }
  rustc-std-workspace-alloc = { path = 'library/rustc-std-workspace-alloc' }
  rustc-std-workspace-std = { path = 'library/rustc-std-workspace-std' }
@@ -114,7 +116,7 @@ index 00000000..53e2b0f0
 +    }
 +}
 diff --git a/compiler/rustc_target/src/spec/mod.rs b/compiler/rustc_target/src/spec/mod.rs
-index d05b8aa4..30db6831 100644
+index ba4b89c9..486fcb47 100644
 --- a/compiler/rustc_target/src/spec/mod.rs
 +++ b/compiler/rustc_target/src/spec/mod.rs
 @@ -67,6 +67,7 @@
@@ -125,7 +127,7 @@ index d05b8aa4..30db6831 100644
  mod hermit_base;
  mod illumos_base;
  mod l4re_base;
-@@ -1104,6 +1105,8 @@ fn $module() {
+@@ -1111,6 +1112,8 @@ fn $module() {
      ("i686-unknown-haiku", i686_unknown_haiku),
      ("x86_64-unknown-haiku", x86_64_unknown_haiku),
  
@@ -133,7 +135,7 @@ index d05b8aa4..30db6831 100644
 +
      ("aarch64-apple-darwin", aarch64_apple_darwin),
      ("x86_64-apple-darwin", x86_64_apple_darwin),
-     ("i686-apple-darwin", i686_apple_darwin),
+     ("x86_64h-apple-darwin", x86_64h_apple_darwin),
 diff --git a/compiler/rustc_target/src/spec/x86_64_unknown_managarm_system.rs b/compiler/rustc_target/src/spec/x86_64_unknown_managarm_system.rs
 new file mode 100644
 index 00000000..252d11c0
@@ -160,23 +162,23 @@ index 00000000..252d11c0
 +    }
 +}
 diff --git a/library/std/Cargo.toml b/library/std/Cargo.toml
-index a7aefc26..eac64160 100644
+index 09afc696..bc1758f0 100644
 --- a/library/std/Cargo.toml
 +++ b/library/std/Cargo.toml
 @@ -15,7 +15,7 @@ cfg-if = { version = "1.0", features = ['rustc-dep-of-std'] }
  panic_unwind = { path = "../panic_unwind", optional = true }
  panic_abort = { path = "../panic_abort" }
  core = { path = "../core" }
--libc = { version = "0.2.138", default-features = false, features = ['rustc-dep-of-std'] }
+-libc = { version = "0.2.143", default-features = false, features = ['rustc-dep-of-std'] }
 +libc = { path = "../../../rust-libc", default-features = false, features = ['rustc-dep-of-std'] }
- compiler_builtins = { version = "0.1.82" }
+ compiler_builtins = { version = "0.1.92" }
  profiler_builtins = { path = "../profiler_builtins", optional = true }
  unwind = { path = "../unwind" }
 diff --git a/library/std/build.rs b/library/std/build.rs
-index 8b1a06ee..e4d98bd0 100644
+index 0fb03c8e..9f1d8820 100644
 --- a/library/std/build.rs
 +++ b/library/std/build.rs
-@@ -24,6 +24,7 @@ fn main() {
+@@ -27,6 +27,7 @@ fn main() {
          || target.contains("l4re")
          || target.contains("redox")
          || target.contains("haiku")
@@ -185,10 +187,10 @@ index 8b1a06ee..e4d98bd0 100644
          || target.contains("wasm32")
          || target.contains("wasm64")
 diff --git a/library/std/src/lib.rs b/library/std/src/lib.rs
-index 65d4c3c8..34edb9a9 100644
+index 318a46d1..bb33c3bc 100644
 --- a/library/std/src/lib.rs
 +++ b/library/std/src/lib.rs
-@@ -598,7 +598,7 @@ pub mod arch {
+@@ -604,7 +604,7 @@ pub mod arch {
  mod panicking;
  mod personality;
  
@@ -444,10 +446,10 @@ index 00000000..eabba1c4
 +    pub st_blocks: libc::blkcnt_t, 
 +}
 diff --git a/library/std/src/os/mod.rs b/library/std/src/os/mod.rs
-index 42773805..dcb46195 100644
+index 5b54cc5f..9c15b442 100644
 --- a/library/std/src/os/mod.rs
 +++ b/library/std/src/os/mod.rs
-@@ -133,6 +133,8 @@ pub mod windows {}
+@@ -125,6 +125,8 @@ pub mod windows {}
  pub mod l4re;
  #[cfg(target_os = "macos")]
  pub mod macos;
@@ -455,9 +457,9 @@ index 42773805..dcb46195 100644
 +pub mod managarm;
  #[cfg(target_os = "netbsd")]
  pub mod netbsd;
- #[cfg(target_os = "openbsd")]
+ #[cfg(target_os = "nto")]
 diff --git a/library/std/src/os/unix/mod.rs b/library/std/src/os/unix/mod.rs
-index f97fa0fb..3bb23800 100644
+index 6fe11111..d926709a 100644
 --- a/library/std/src/os/unix/mod.rs
 +++ b/library/std/src/os/unix/mod.rs
 @@ -63,6 +63,8 @@ mod platform {
@@ -468,26 +470,24 @@ index f97fa0fb..3bb23800 100644
 +    pub use crate::os::managarm::*;
      #[cfg(target_os = "netbsd")]
      pub use crate::os::netbsd::*;
-     #[cfg(target_os = "openbsd")]
+     #[cfg(target_os = "nto")]
 diff --git a/library/std/src/sys/unix/args.rs b/library/std/src/sys/unix/args.rs
-index a342f0f5..758300df 100644
+index 9ed4d9c1..c3de976a 100644
 --- a/library/std/src/sys/unix/args.rs
 +++ b/library/std/src/sys/unix/args.rs
-@@ -69,7 +69,8 @@ fn next_back(&mut self) -> Option<OsString> {
-     target_os = "fuchsia",
-     target_os = "redox",
+@@ -71,6 +71,7 @@ fn next_back(&mut self) -> Option<OsString> {
      target_os = "vxworks",
--    target_os = "horizon"
-+    target_os = "horizon",
-+    target_os = "managarm"
+     target_os = "horizon",
+     target_os = "nto",
++    target_os = "managarm",
  ))]
  mod imp {
      use super::Args;
 diff --git a/library/std/src/sys/unix/env.rs b/library/std/src/sys/unix/env.rs
-index c9ba661c..287e34fe 100644
+index 8c3ef88d..23022ea6 100644
 --- a/library/std/src/sys/unix/env.rs
 +++ b/library/std/src/sys/unix/env.rs
-@@ -217,3 +217,14 @@ pub mod os {
+@@ -239,3 +239,14 @@ pub mod os {
      pub const EXE_SUFFIX: &str = "";
      pub const EXE_EXTENSION: &str = "";
  }
@@ -503,24 +503,22 @@ index c9ba661c..287e34fe 100644
 +    pub const EXE_EXTENSION: &str = "";
 +}
 diff --git a/library/std/src/sys/unix/fs.rs b/library/std/src/sys/unix/fs.rs
-index 37a49f2d..b92982df 100644
+index 09e9ae27..f11522ae 100644
 --- a/library/std/src/sys/unix/fs.rs
 +++ b/library/std/src/sys/unix/fs.rs
-@@ -798,7 +798,8 @@ pub fn file_type(&self) -> io::Result<FileType> {
-         target_os = "redox",
-         target_os = "vxworks",
-         target_os = "espidf",
--        target_os = "horizon"
-+        target_os = "horizon",
-+        target_os = "managarm"
+@@ -885,6 +885,7 @@ pub fn file_type(&self) -> io::Result<FileType> {
+         target_os = "horizon",
+         target_os = "vita",
+         target_os = "nto",
++        target_os = "managarm",
      ))]
      pub fn ino(&self) -> u64 {
          self.entry.d_ino as u64
 diff --git a/library/std/src/sys/unix/os.rs b/library/std/src/sys/unix/os.rs
-index 2f2663db..eea1c15e 100644
+index 8edfd331..4cc4ed13 100644
 --- a/library/std/src/sys/unix/os.rs
 +++ b/library/std/src/sys/unix/os.rs
-@@ -41,7 +41,7 @@
+@@ -40,7 +40,7 @@
  }
  
  extern "C" {
@@ -575,7 +573,7 @@ index 2f2663db..eea1c15e 100644
  /// Gets a detailed string description for the given error number.
  pub fn error_string(errno: i32) -> String {
      extern "C" {
-@@ -241,6 +264,11 @@ fn description(&self) -> &str {
+@@ -244,6 +267,11 @@ fn description(&self) -> &str {
      }
  }
  
@@ -588,7 +586,7 @@ index 2f2663db..eea1c15e 100644
  pub fn current_exe() -> io::Result<PathBuf> {
      unsafe {
 diff --git a/library/std/src/sys/unix/thread.rs b/library/std/src/sys/unix/thread.rs
-index c1d30dd9..b87c74b8 100644
+index 7307d9b2..14853d27 100644
 --- a/library/std/src/sys/unix/thread.rs
 +++ b/library/std/src/sys/unix/thread.rs
 @@ -160,6 +160,13 @@ pub fn set_name(name: &CStr) {
@@ -606,19 +604,18 @@ index c1d30dd9..b87c74b8 100644
      pub fn set_name(name: &CStr) {
          unsafe {
 diff --git a/library/std/src/sys/unix/thread_local_dtor.rs b/library/std/src/sys/unix/thread_local_dtor.rs
-index d7fd2130..cc2e5a0b 100644
+index 236d2f2e..a19db54d 100644
 --- a/library/std/src/sys/unix/thread_local_dtor.rs
 +++ b/library/std/src/sys/unix/thread_local_dtor.rs
-@@ -15,7 +15,8 @@
-     target_os = "linux",
-     target_os = "fuchsia",
-     target_os = "redox",
--    target_os = "emscripten"
-+    target_os = "emscripten",
-+    target_os = "managarm"
- ))]
- #[cfg_attr(target_family = "wasm", allow(unused))] // might remain unused depending on target details (e.g. wasm32-unknown-emscripten)
+@@ -11,7 +11,7 @@
+ // Note, however, that we run on lots older linuxes, as well as cross
+ // compiling from a newer linux to an older linux, so we also have a
+ // fallback implementation to use as well.
+-#[cfg(any(target_os = "linux", target_os = "fuchsia", target_os = "redox"))]
++#[cfg(any(target_os = "linux", target_os = "fuchsia", target_os = "redox", target_os = "managarm"))]
  pub unsafe fn register_dtor(t: *mut u8, dtor: unsafe extern "C" fn(*mut u8)) {
+     use crate::mem;
+     use crate::sys_common::thread_local_dtor::register_dtor_fallback;
 diff --git a/library/unwind/build.rs b/library/unwind/build.rs
 index 5c3c02fb..9234a0b6 100644
 --- a/library/unwind/build.rs
@@ -632,17 +629,17 @@ index 5c3c02fb..9234a0b6 100644
      }
  }
 diff --git a/src/bootstrap/Cargo.lock b/src/bootstrap/Cargo.lock
-index efe8ae31..fb0c33f8 100644
+index 8f8778ef..795e2940 100644
 --- a/src/bootstrap/Cargo.lock
 +++ b/src/bootstrap/Cargo.lock
-@@ -797,3 +797,15 @@ name = "yansi"
+@@ -924,3 +924,15 @@ name = "yansi"
  version = "0.5.1"
  source = "registry+https://github.com/rust-lang/crates.io-index"
  checksum = "09041cd90cf85f7f8b2df60c646f853b7f535ce68f85244eb6731cf89fa498ec"
 +
 +[[patch.unused]]
 +name = "libc"
-+version = "0.2.138"
++version = "0.2.147"
 +
 +[[patch.unused]]
 +name = "num_cpus"
@@ -652,17 +649,17 @@ index efe8ae31..fb0c33f8 100644
 +name = "users"
 +version = "0.11.0"
 diff --git a/src/tools/rust-analyzer/Cargo.lock b/src/tools/rust-analyzer/Cargo.lock
-index 41c5d366..c1410eed 100644
+index 25242c60..d327221b 100644
 --- a/src/tools/rust-analyzer/Cargo.lock
 +++ b/src/tools/rust-analyzer/Cargo.lock
-@@ -2149,3 +2149,15 @@ dependencies = [
-  "xflags",
-  "xshell",
+@@ -2218,3 +2218,15 @@ dependencies = [
+  "flate2",
+  "time",
  ]
 +
 +[[patch.unused]]
 +name = "libc"
-+version = "0.2.138"
++version = "0.2.147"
 +
 +[[patch.unused]]
 +name = "num_cpus"
@@ -672,5 +669,5 @@ index 41c5d366..c1410eed 100644
 +name = "users"
 +version = "0.11.0"
 -- 
-2.39.1
+2.40.1
 
