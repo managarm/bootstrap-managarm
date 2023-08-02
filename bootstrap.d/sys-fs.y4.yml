@@ -1,3 +1,18 @@
+sources:
+  - name: echfs
+    subdir: 'ports'
+    git: 'https://github.com/echfs/echfs.git'
+    commit: '7d842e78fbe39be54bd93917a85eb9a12a50a763'
+    branch: 'master'
+    tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.15
+      - host-libtool
+      - host-pkg-config
+    regenerate:
+      - args: ['@THIS_SOURCE_DIR@/echfs-utils/bootstrap']
+      - args: ['@THIS_SOURCE_DIR@/echfs-fuse/bootstrap']
+
 packages:
   - name: libfuse
     architecture: '@OPTION:arch@'
@@ -26,5 +41,53 @@ packages:
     build:
       - args: ['meson', '@THIS_BUILD_DIR@', '@THIS_SOURCE_DIR@']
       - args: ['meson', 'install', '-C', '@THIS_BUILD_DIR@']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: echfs-utils
+    architecture: '@OPTION:arch@'
+    from_source: 'echfs'
+    tools_required:
+      - system-gcc
+      - host-pkg-config
+      - host-automake-v1.15
+      - host-autoconf-v2.69
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - util-linux-libs
+    configure:
+      - args:
+          - '@THIS_SOURCE_DIR@/echfs-utils/configure'
+          - '--host=@OPTION:arch-triple@'
+          - '--prefix=/usr'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: echfs-fuse
+    architecture: '@OPTION:arch@'
+    from_source: 'echfs'
+    tools_required:
+      - system-gcc
+      - host-pkg-config
+      - host-automake-v1.15
+      - host-autoconf-v2.69
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - libfuse
+    configure:
+      - args:
+          - '@THIS_SOURCE_DIR@/echfs-fuse/configure'
+          - '--host=@OPTION:arch-triple@'
+          - '--prefix=/usr'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
