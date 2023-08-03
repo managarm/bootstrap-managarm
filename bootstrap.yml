@@ -1392,6 +1392,43 @@ packages:
         quiet: true
       - args: ['ln', '-sf', 'crt0.o', '@THIS_COLLECT_DIR@/usr/lib/crt1.o']
 
+  - name: mlibc-docs
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
+    from_source: mlibc
+    tools_required:
+      - host-llvm-toolchain
+      - bootstrap-system-gcc
+      - host-hdoc
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - linux-headers
+      - mlibc-headers
+      - frigg
+      - cxxshim
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '--wrap-mode=nofallback'
+        - '-Dmlibc_no_headers=true'
+        - '-Ddisable_crypt_option=true'
+        - '-Ddisable_iconv_option=true'
+        - '-Ddisable_intl_option=true'
+        - '-Dlinux_kernel_headers=@SYSROOT_DIR@/usr/src/linux-headers'
+        - '-Dbuild_hdocs=true'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['hdoc']
+        workdir: '@THIS_SOURCE_DIR@'
+
   - name: protobuf
     labels: [aarch64]
     architecture: '@OPTION:arch@'
