@@ -165,6 +165,7 @@ packages:
       git: 'https://gitlab.freedesktop.org/xorg/xserver.git'
       tag: 'xwayland-23.1.99.901'
       version: '23.1.99.901'
+    revision: 2
     tools_required:
       - system-gcc
       - wayland-scanner
@@ -198,6 +199,8 @@ packages:
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
+        - '-Dxkb_dir=/usr/share/X11/xkb'
+        - '-Dxkb_bin_dir=/usr/bin'
         - '-Dxvfb=false'
         - '-Dxkb_output_dir=/var/lib/xkb'
         - '-Dvendor_name="The Managarm Project"'
