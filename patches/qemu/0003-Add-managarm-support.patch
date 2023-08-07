@@ -1,0 +1,64 @@
+From 923e5624fd2450895fe33a4df5a3108c1b3f0b02 Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Wed, 24 Jan 2024 19:34:27 +0100
+Subject: [PATCH 3/3] Add managarm support
+
+---
+ block/file-posix.c | 11 +++++++++--
+ configure          |  4 ++++
+ 2 files changed, 13 insertions(+), 2 deletions(-)
+
+diff --git a/block/file-posix.c b/block/file-posix.c
+index 7f540b0..b06212c 100644
+--- a/block/file-posix.c
++++ b/block/file-posix.c
+@@ -110,6 +110,13 @@
+ #include <sys/diskslice.h>
+ #endif
+ 
++#ifdef __managarm__
++#include <sys/ioctl.h>
++#if defined(CONFIG_BLKZONED)
++#include <linux/blkzoned.h>
++#endif
++#endif
++
+ /* OS X does not have O_DSYNC */
+ #ifndef O_DSYNC
+ #ifdef O_SYNC
+@@ -1227,7 +1234,7 @@ static int hdev_get_max_hw_transfer(int fd, struct stat *st)
+ /*
+  * Get a sysfs attribute value as character string.
+  */
+-#ifdef CONFIG_LINUX
++#if defined(CONFIG_LINUX) || defined(CONFIG_MANAGARM)
+ static int get_sysfs_str_val(struct stat *st, const char *attribute,
+                              char **val) {
+     g_autofree char *sysfspath = NULL;
+@@ -1281,7 +1288,7 @@ static int get_sysfs_zoned_model(struct stat *st, BlockZoneModel *zoned)
+ /*
+  * Get a sysfs attribute value as a long integer.
+  */
+-#ifdef CONFIG_LINUX
++#if defined(CONFIG_LINUX) || defined(CONFIG_MANAGARM)
+ static long get_sysfs_long_val(struct stat *st, const char *attribute)
+ {
+     g_autofree char *str = NULL;
+diff --git a/configure b/configure
+index 2c6f6b6..4f3c603 100755
+--- a/configure
++++ b/configure
+@@ -1747,6 +1747,10 @@ fi
+ if test "$solaris" = "yes" ; then
+   echo "CONFIG_SOLARIS=y" >> $config_host_mak
+ fi
++
++if test "$managarm" = "yes" ; then
++  echo "CONFIG_MANAGARM=y" >> $config_host_mak
++fi
+ echo "SRC_PATH=$source_path" >> $config_host_mak
+ echo "TARGET_DIRS=$target_list" >> $config_host_mak
+ 
+-- 
+2.43.0
+
