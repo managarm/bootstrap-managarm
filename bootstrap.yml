@@ -1396,6 +1396,43 @@ packages:
         quiet: true
       - args: ['ln', '-sf', 'crt0.o', '@THIS_COLLECT_DIR@/usr/lib/crt1.o']
 
+  - name: mlibc-docs
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
+    from_source: mlibc
+    tools_required:
+      - host-llvm-toolchain
+      - host-managarm-tools
+      - bootstrap-system-gcc
+      - host-protoc
+      - host-hdoc
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - linux-headers
+      - mlibc-headers
+      - frigg
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '--wrap-mode=nofallback'
+        - '-Dmlibc_no_headers=true'
+        - '-Ddisable_crypt_option=true'
+        - '-Ddisable_iconv_option=true'
+        - '-Ddisable_intl_option=true'
+        - '-Dlinux_kernel_headers=@SYSROOT_DIR@/usr/src/linux-headers'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['hdoc']
+        workdir: '@THIS_BUILD_DIR@'
+
   - name: protobuf
     labels: [aarch64]
     architecture: '@OPTION:arch@'
@@ -1820,6 +1857,18 @@ tasks:
     args:
       - '@SOURCE_ROOT@/scripts/test-image.py'
     workdir: '@BUILD_ROOT@'
+    containerless: true
+
+  - name: mlibc-docs
+    pkgs_required:
+      - mlibc-docs
+    args:
+      - 'python'
+      - '-m'
+      - 'http.server'
+      - '8080'
+      - '-d'
+      - '@BUILD_ROOT@/pkg-builds/mlibc-docs/docs'
     containerless: true
 
   - name: mlibc-sysdeps
