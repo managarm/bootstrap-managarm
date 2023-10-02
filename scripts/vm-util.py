@@ -284,17 +284,17 @@ def do_gdb(args):
         gdb_args += [
             "--symbols=system-root/usr/managarm/bin/thor",
             "-ex",
-            "target remote tcp:localhost:1234",
+            "target remote tcp:" + args.ip + ":1234",
         ]
     elif args.kernel:
-        gdb_args += ["-ex", "target remote tcp:localhost:5678"]
+        gdb_args += ["-ex", "target remote tcp:" + args.ip + ":5678"]
     else:
         assert args.posix
         gdb_args += [
             "-ex",
             "set sysroot system-root",
             "-ex",
-            "target remote tcp:localhost:5679",
+            "target remote tcp:" + args.ip + ":5679",
         ]
 
     try:
@@ -305,6 +305,7 @@ def do_gdb(args):
 
 gdb_parser = main_subparsers.add_parser("gdb")
 gdb_parser.set_defaults(_fn=do_gdb)
+gdb_parser.add_argument("--ip", type=str, default="localhost")
 
 gdb_group = gdb_parser.add_mutually_exclusive_group(required=True)
 gdb_group.add_argument("--qemu", action="store_true")
