@@ -22,6 +22,6 @@ exec xbstrap -C "$1" \
     lsp "$x" --extra-tools host-llvm-toolchain -- \
     env HOME=@BUILD_ROOT@/clangd_home \
         XDG_CACHE_HOME=@BUILD_ROOT@/clangd_home/cache \
-    clangd -background-index \
+    clangd -background-index -header-insertion=never \
     --path-mappings \
     @HOST_BUILD_ROOT@=@BUILD_ROOT@,@HOST_SOURCE_ROOT@=@SOURCE_ROOT@
