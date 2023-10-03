@@ -1,0 +1,25 @@
+From 75c75ec1b2732d700922749fba3a82c08fcc17a4 Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Wed, 4 Oct 2023 00:58:35 +0200
+Subject: [PATCH] fix libdrm pkgconfig issue
+
+---
+ meson.build | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/meson.build b/meson.build
+index 1943e4c..e107c6e 100644
+--- a/meson.build
++++ b/meson.build
+@@ -62,7 +62,7 @@ if libdrm.version().version_compare('<2.4.115')
+ elif libdrm.type_name() == 'internal'
+   fourcc_h = meson.current_source_dir() / 'subprojects/libdrm/include/drm/drm_fourcc.h'
+ else
+-  fourcc_h = libdrm.get_pkgconfig_variable('pc_sysrootdir') + libdrm.get_pkgconfig_variable('includedir') / 'libdrm/drm_fourcc.h'
++  fourcc_h = libdrm.get_pkgconfig_variable('includedir') / 'libdrm/drm_fourcc.h'
+ endif
+ 
+ if libpci.found()
+-- 
+2.42.0
+

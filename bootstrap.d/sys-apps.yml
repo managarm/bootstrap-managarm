@@ -201,7 +201,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: drm_info
-    stability_level: 'broken' # Unsure what happened, leo must fix this
     architecture: '@OPTION:arch@'
     metadata:
       summary: Small utility to dump info about DRM devices.
@@ -215,6 +214,7 @@ packages:
       git: 'https://gitlab.freedesktop.org/emersion/drm_info.git'
       tag: 'v2.5.0'
       version: '2.5.0'
+    revision: 2
     tools_required:
       - system-gcc
       - virtual: pkgconfig-for-target
@@ -230,7 +230,7 @@ packages:
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
-        - '--buildtype=release'
+        - '--buildtype=debugoptimized'
         - '--wrap-mode=nofallback'
         - '@THIS_SOURCE_DIR@'
     build:
