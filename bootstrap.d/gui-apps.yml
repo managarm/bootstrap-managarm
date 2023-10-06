@@ -45,3 +45,46 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: wlgears
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: A port of glxgears to wayland
+      description: "This utility is a port of the glxgears demo of mesa-demos onto wayland with a meson build system."
+      spdx: MIT
+      website: 'https://github.com/no92/wlgears'
+      maintainer: "no92 <no92.mail@gmail.com>"
+      categories: ['gui-apps']
+    source:
+      subdir: ports
+      git: 'https://github.com/no92/wlgears.git'
+      tag: 'v0.1.0'
+      version: '0.1.0'
+    tools_required:
+      - system-gcc
+      - wayland-scanner
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+      - virtual: pkgconfig-for-host
+        program_name: host-pkg-config
+    pkgs_required:
+      - mlibc
+      - wayland
+      - wayland-protocols
+    configure:
+      - args:
+        - 'meson'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
