@@ -71,6 +71,7 @@ packages:
       - mlibc
       - wayland
       - wayland-protocols
+      - mesa
     configure:
       - args:
         - 'meson'
