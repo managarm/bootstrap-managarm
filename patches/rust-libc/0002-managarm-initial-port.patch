@@ -1,13 +1,12 @@
-From 445e8861bba29d7b7af345b71dc43208dd2cb16c Mon Sep 17 00:00:00 2001
-From: Matt Taylor <mstaveleytaylor@gmail.com>
-Date: Thu, 8 Apr 2021 22:08:55 +0100
-Subject: [PATCH 1/4] managarm: initial port
+From 0a847578d17c102ec8b59fa7b056ed4bea3414cb Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Wed, 2 Aug 2023 04:43:10 +0200
+Subject: [PATCH 2/6] managarm: initial port
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
  src/unix/mlibc/mod.rs | 725 ++++++++++++++++++++++++++++++++++++++++++
- src/unix/mod.rs       |   3 +
- 2 files changed, 728 insertions(+)
+ 1 file changed, 725 insertions(+)
  create mode 100644 src/unix/mlibc/mod.rs
 
 diff --git a/src/unix/mlibc/mod.rs b/src/unix/mlibc/mod.rs
@@ -741,20 +740,6 @@ index 0000000..e7c4cc7
 +    pub fn setgroups(ngroups: ::c_int, ptr: *const ::gid_t) -> ::c_int;
 +    pub fn writev(fd: ::c_int, iov: *const ::iovec, count: ::c_int) -> ::ssize_t;
 +}
-diff --git a/src/unix/mod.rs b/src/unix/mod.rs
-index fb9ebf7..e50cca0 100644
---- a/src/unix/mod.rs
-+++ b/src/unix/mod.rs
-@@ -1517,6 +1517,9 @@ cfg_if! {
-     } else if #[cfg(target_os = "redox")] {
-         mod redox;
-         pub use self::redox::*;
-+    } else if #[cfg(target_os = "managarm")] {
-+        mod mlibc;
-+        pub use self::mlibc::*;
-     } else {
-         // Unknown target_os
-     }
 -- 
-2.39.1
+2.42.0
 

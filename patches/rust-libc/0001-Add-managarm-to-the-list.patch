@@ -1,0 +1,27 @@
+From db0ad329a3cf2bca4b407bca9e6a932e7631a3d4 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Fri, 1 Sep 2023 16:27:12 +0200
+Subject: [PATCH 1/6] Add managarm to the list
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ src/unix/mod.rs | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/src/unix/mod.rs b/src/unix/mod.rs
+index 9b5ce0f..55b5ef5 100644
+--- a/src/unix/mod.rs
++++ b/src/unix/mod.rs
+@@ -1594,6 +1594,9 @@ cfg_if! {
+     } else if #[cfg(target_os = "aix")] {
+         mod aix;
+         pub use self::aix::*;
++    } else if #[cfg(target_os = "managarm")] {
++        mod mlibc;
++        pub use self::mlibc::*;
+     } else {
+         // Unknown target_os
+     }
+-- 
+2.42.0
+
