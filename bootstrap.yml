@@ -1401,6 +1401,7 @@ packages:
     labels: [aarch64]
     architecture: '@OPTION:arch@'
     from_source: mlibc
+    revision: 2
     tools_required:
       - host-llvm-toolchain
       - host-managarm-tools
@@ -1414,6 +1415,7 @@ packages:
       - linux-headers
       - mlibc-headers
       - frigg
+      - cxxshim
     configure:
       - args:
         - 'meson'
