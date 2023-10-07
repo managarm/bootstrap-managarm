@@ -6,7 +6,7 @@ import pathlib
 import subprocess
 
 patched_libs = {
-    "backtrace": "0.3.64",
+    "backtrace": "0.3.69",
     "calloop": "0.10.0",
     "libc": "0.2.138",
     "libloading": "0.7.4",
