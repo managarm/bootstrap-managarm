@@ -8,8 +8,8 @@ sources:
   - name: rust-num-cpus
     subdir: 'ports'
     git: 'https://github.com/seanmonstar/num_cpus.git'
-    tag: 'v1.13.0'
-    version: '1.13.0'
+    tag: 'v1.15.0'
+    version: '1.15.0'
 
   - name: rust-users
     subdir: 'ports'

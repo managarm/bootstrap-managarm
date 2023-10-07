@@ -12,7 +12,7 @@ patched_libs = {
     "libloading": "0.7.4",
     "mio": ["0.6.23", "0.8.3"],
     "nix": "0.24.3",
-    "num_cpus": "1.13.0",
+    "num_cpus": "1.15.0",
     "users": "0.11.0",
     "winit": "0.27.5",
     "glutin": "0.29.1",
