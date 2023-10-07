@@ -1,0 +1,39 @@
+From d5bcd4218afd8503c0f91ec6bc68aab1b006ca86 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Mon, 7 Aug 2023 16:07:20 +0200
+Subject: [PATCH] Add managarm support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ src/lib.rs      | 2 +-
+ src/use_file.rs | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/src/lib.rs b/src/lib.rs
+index 931856f..07ad627 100644
+--- a/src/lib.rs
++++ b/src/lib.rs
+@@ -215,7 +215,7 @@ pub use crate::error::Error;
+ // The function MUST NOT ever write uninitialized bytes into `dest`,
+ // regardless of what value it returns.
+ cfg_if! {
+-    if #[cfg(any(target_os = "haiku", target_os = "redox", target_os = "nto", target_os = "aix"))] {
++    if #[cfg(any(target_os = "haiku", target_os = "redox", target_os = "nto", target_os = "aix", target_os = "managarm"))] {
+         mod util_libc;
+         #[path = "use_file.rs"] mod imp;
+     } else if #[cfg(any(target_os = "android", target_os = "linux"))] {
+diff --git a/src/use_file.rs b/src/use_file.rs
+index a6ef0d2..e63ed2f 100644
+--- a/src/use_file.rs
++++ b/src/use_file.rs
+@@ -33,6 +33,7 @@ const FILE_PATH: &str = "/dev/random\0";
+     target_os = "haiku",
+     target_os = "macos",
+     target_os = "nto",
++    target_os = "managarm",
+ ))]
+ const FILE_PATH: &str = "/dev/urandom\0";
+ 
+-- 
+2.40.1
+

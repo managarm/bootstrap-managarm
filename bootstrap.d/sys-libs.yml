@@ -29,6 +29,12 @@ sources:
     tag: 'v0.10.0'
     version: '0.10.0'
 
+  - name: rust-getrandom
+    subdir: 'ports'
+    git: 'https://github.com/rust-random/getrandom.git'
+    tag: 'v0.2.9'
+    version: '0.2.9'
+
   - name: rust-libloading
     subdir: 'ports'
     git: 'https://github.com/nagisa/rust_libloading.git'
@@ -78,6 +84,8 @@ sources:
       - name: rust-backtrace
         recursive: true
       - name: rust-calloop
+        recursive: true
+      - name: rust-getrandom
         recursive: true
       - name: rust-libc
         recursive: true
