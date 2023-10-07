@@ -55,7 +55,7 @@ packages:
       - glib
       - libxml
       - itstool
-    revision: 6
+    revision: 7
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -96,6 +96,7 @@ packages:
     pkgs_required:
       - mlibc
       - xorg-util-macros
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -124,6 +125,7 @@ packages:
       - mlibc
       - libx11
       - xorg-proto
+    revision: 2
     configure:
       # Make sure a symlink is created even if it already exists.
       - args: |
@@ -148,6 +150,7 @@ packages:
     tools_required:
       - system-gcc
       - host-xorg-macros
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
