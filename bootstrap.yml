@@ -444,6 +444,23 @@ tools:
       - args: ['ninja', 'install']
         quiet: true
 
+  - name: host-xxd
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/vim/vim.git'
+      tag: 'v9.0.0633'
+      version: '9.0.0633'
+    configure:
+      - args: ['cp', '@THIS_SOURCE_DIR@/src/xxd/xxd.c', '@THIS_BUILD_DIR@/']
+      - args: ['cp', '@THIS_SOURCE_DIR@/src/xxd/Makefile', '@THIS_BUILD_DIR@/']
+    compile:
+      - args: ['make']
+    install:
+      - args: ['mkdir', '-p', '@PREFIX@/bin/']
+      - args: ['cp', '@THIS_BUILD_DIR@/xxd', '@PREFIX@/bin/']
+
   - name: cross-binutils
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
@@ -680,6 +697,31 @@ tools:
         - '-Dfrigg_no_install=false'
         # We don't have a test stage in frigg
         - '-Dbuild_tests=disabled'
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
+
+  - name: host-hdoc
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/hdoc/hdoc'
+      tag: '1.4.1'
+      version: '1.4.1'
+    tools_required:
+      - host-llvm-toolchain
+      - host-xxd
+      - virtual: pkgconfig-for-host
+        program_name: host-pkg-config
+    configure:
+      - args:
+        - 'meson'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--prefix=@PREFIX@'
         - '@THIS_SOURCE_DIR@'
     compile:
       - args: ['ninja']
@@ -1354,6 +1396,43 @@ packages:
         quiet: true
       - args: ['ln', '-sf', 'crt0.o', '@THIS_COLLECT_DIR@/usr/lib/crt1.o']
 
+  - name: mlibc-docs
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
+    from_source: mlibc
+    tools_required:
+      - host-llvm-toolchain
+      - host-managarm-tools
+      - bootstrap-system-gcc
+      - host-protoc
+      - host-hdoc
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - linux-headers
+      - mlibc-headers
+      - frigg
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '--wrap-mode=nofallback'
+        - '-Dmlibc_no_headers=true'
+        - '-Ddisable_crypt_option=true'
+        - '-Ddisable_iconv_option=true'
+        - '-Ddisable_intl_option=true'
+        - '-Dlinux_kernel_headers=@SYSROOT_DIR@/usr/src/linux-headers'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['hdoc']
+        workdir: '@THIS_BUILD_DIR@'
+
   - name: protobuf
     labels: [aarch64]
     architecture: '@OPTION:arch@'
@@ -1778,6 +1857,18 @@ tasks:
     args:
       - '@SOURCE_ROOT@/scripts/test-image.py'
     workdir: '@BUILD_ROOT@'
+    containerless: true
+
+  - name: mlibc-docs
+    pkgs_required:
+      - mlibc-docs
+    args:
+      - 'python'
+      - '-m'
+      - 'http.server'
+      - '8080'
+      - '-d'
+      - '@BUILD_ROOT@/pkg-builds/mlibc-docs/docs'
     containerless: true
 
   - name: mlibc-sysdeps
