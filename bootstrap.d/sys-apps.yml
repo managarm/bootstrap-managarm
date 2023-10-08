@@ -664,7 +664,7 @@ packages:
       branch: 'master'
       commit: 'd27a0bd748310d8ace673a614f745303b444e00e'
       version: '7.2.0'
-    revision: 2
+    revision: 3
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
