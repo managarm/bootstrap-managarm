@@ -17,6 +17,10 @@ tools:
         - '--prefix=@PREFIX@'
         - '--target-list=x86_64-softmmu,aarch64-softmmu,riscv64-softmmu'
         - '--disable-werror'
+        - '--enable-opengl'
+        - '--enable-virglrenderer'
+        - '--enable-gtk'
+        - '--enable-sdl'
         environ:
           CFLAGS: '-Wno-int-conversion'
     compile:
