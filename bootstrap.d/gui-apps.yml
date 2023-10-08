@@ -27,6 +27,7 @@ packages:
       - wayland
       - wayland-protocols
       - gdk-pixbuf
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -60,7 +61,7 @@ packages:
       git: 'https://github.com/no92/wlgears.git'
       tag: 'v0.1.0'
       version: '0.1.0'
-    revision: 2
+    revision: 3
     tools_required:
       - system-gcc
       - wayland-scanner

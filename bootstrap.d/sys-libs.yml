@@ -2,14 +2,14 @@ sources:
   - name: rust-libc
     subdir: 'ports'
     git: 'https://github.com/rust-lang/libc.git'
-    tag: '0.2.138'
-    version: '0.2.138'
+    tag: '0.2.148'
+    version: '0.2.148'
 
   - name: rust-num-cpus
     subdir: 'ports'
     git: 'https://github.com/seanmonstar/num_cpus.git'
-    tag: 'v1.13.0'
-    version: '1.13.0'
+    tag: 'v1.15.0'
+    version: '1.15.0'
 
   - name: rust-users
     subdir: 'ports'
@@ -20,14 +20,20 @@ sources:
   - name: rust-backtrace
     subdir: 'ports'
     git: 'https://github.com/rust-lang/backtrace-rs.git'
-    tag: '0.3.64'
-    version: '0.3.64'
+    tag: '0.3.69'
+    version: '0.3.69'
 
   - name: rust-calloop
     subdir: 'ports'
     git: 'https://github.com/Smithay/calloop.git'
     tag: 'v0.10.0'
     version: '0.10.0'
+
+  - name: rust-getrandom
+    subdir: 'ports'
+    git: 'https://github.com/rust-random/getrandom.git'
+    tag: 'v0.2.9'
+    version: '0.2.9'
 
   - name: rust-libloading
     subdir: 'ports'
@@ -79,6 +85,8 @@ sources:
         recursive: true
       - name: rust-calloop
         recursive: true
+      - name: rust-getrandom
+        recursive: true
       - name: rust-libc
         recursive: true
       - name: rust-libloading
@@ -121,7 +129,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -158,7 +166,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -196,7 +204,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -222,7 +230,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -267,7 +275,7 @@ packages:
     pkgs_required:
       - mlibc
       - ncurses
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

@@ -25,6 +25,7 @@ packages:
       - xorg-proto
       - libxau
       - libxdmcp
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -64,6 +65,7 @@ packages:
     pkgs_required:
       - mlibc
       - xorg-util-macros
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -116,6 +118,7 @@ packages:
       - nettle
       - xkbcomp
       - pixman
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -165,7 +168,6 @@ packages:
       git: 'https://gitlab.freedesktop.org/xorg/xserver.git'
       tag: 'xwayland-23.1.99.901'
       version: '23.1.99.901'
-    revision: 2
     tools_required:
       - system-gcc
       - wayland-scanner
@@ -191,6 +193,7 @@ packages:
       - nettle
       - xkbcomp
       - pixman
+    revision: 3
     configure:
       - args:
         - 'meson'
