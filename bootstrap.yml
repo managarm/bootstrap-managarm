@@ -1315,6 +1315,8 @@ packages:
         quiet: true
 
   - name: mlibc-headers
+    labels: [aarch64, riscv64]
+    architecture: '@OPTION:arch@'
     metadata:
       summary: Managarm libc headers
       description: This package provides the headers for the C standard library that Managarm uses.
@@ -1322,8 +1324,6 @@ packages:
       website: 'https://managarm.org'
       maintainer: "Alexander van der Grinten <avdgrinten@managarm.org>"
       categories: ['sys-libs']
-    labels: [aarch64]
-    architecture: '@OPTION:arch@'
     from_source: mlibc
     tools_required:
       # These are not strictly necessary.
