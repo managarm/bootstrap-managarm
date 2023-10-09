@@ -1,0 +1,58 @@
+packages:
+  - name: hexchat
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Graphical IRC client based on XChat
+      description: This package HexChat, an IRC program. It allows you to join multiple IRC channels at the same time where you can talk publicly, have private one-to-one communications among other things.
+      spdx: 'GPL-2.0'
+      website: 'https://hexchat.github.io/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['net-irc']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/hexchat/hexchat.git'
+      tag: 'v2.16.1'
+      version: '2.16.1'
+    tools_required:
+      - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - glib
+      - gdk-pixbuf
+      - gtk+-2
+      - pango
+      - libx11
+      - openssl
+    configure:
+      - args:
+        - 'meson'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '-Dgtk-frontend=true'
+        - '-Dtext-frontend=false'
+        - '-Dtls=enabled'
+        - '-Dplugin=true'
+        - '-Ddbus=disabled'
+        - '-Dlibcanberra=disabled'
+        - '-Dtheme-manager=false'
+        - '-Ddbus-service-use-appid=false'
+        - '-Dwith-checksum=false'
+        - '-Dwith-fishlim=false'
+        - '-Dwith-lua=false'
+        - '-Dwith-perl=false'
+        - '-Dwith-python=false'
+        - '-Dwith-sysinfo=false'
+        - '-Dinstall-appdata=false'
+        - '-Dinstall-plugin-metainfo=false'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
