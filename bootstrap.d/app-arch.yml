@@ -224,6 +224,46 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: snappy
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: A high-speed compression/decompression library by Google
+      description: This package contains a compressor and decompressor for the snappy compression format.
+      spdx: 'BSD-3-Clause'
+      website: 'https://github.com/google/snappy'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['app-arch']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/google/snappy.git'
+      tag: '1.1.9'
+      version: '1.1.9'
+    tools_required:
+      - system-gcc
+      - host-cmake
+    pkgs_required:
+      - mlibc
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_BUILD_TYPE=Release'
+        - '-DSNAPPY_BUILD_TESTS=OFF'
+        - '-DSNAPPY_BUILD_BENCHMARKS=OFF'
+        - '-DBUILD_SHARED_LIBS=ON'
+        # Options below are related to benchmarking, that we disable.
+        - '-DHAVE_LIBZ=NO'
+        - '-DHAVE_LIBLZO2=NO'
+        - '-DHAVE_LIBLZ4=NO'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: tar
     labels: [aarch64]
     architecture: '@OPTION:arch@'

@@ -1,0 +1,26 @@
+From c606b2718f2c419f580f884a97e59b62feda5e39 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Wed, 27 Apr 2022 23:14:43 +0200
+Subject: [PATCH] Add initial Managarm support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ libavutil/cpu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/libavutil/cpu.c b/libavutil/cpu.c
+index 6bd0f07..4d692e4 100644
+--- a/libavutil/cpu.c
++++ b/libavutil/cpu.c
+@@ -280,7 +280,7 @@ int av_cpu_count(void)
+ #if HAVE_WINRT
+     SYSTEM_INFO sysinfo;
+ #endif
+-#if HAVE_SCHED_GETAFFINITY && defined(CPU_COUNT)
++#if HAVE_SCHED_GETAFFINITY && defined(CPU_COUNT) && !defined(__managarm__)
+     cpu_set_t cpuset;
+ 
+     CPU_ZERO(&cpuset);
+-- 
+2.36.0
+

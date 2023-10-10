@@ -1,0 +1,107 @@
+packages:
+  - name: ffmpeg
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Complete solution to record/convert/stream audio and video. Includes libavcodec
+      description: FFmpeg is a solution to record, convert and stream audio and video. It is a very fast video and audio converter and it can also acquire from a live audio/video source.FFmpeg is a solution to record, convert and stream audio and video. It is a very fast video and audio converter and it can also acquire from a live audio/video source.
+      spdx: 'GPL-2.0-only'
+      website: 'https://ffmpeg.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-video']
+    source:
+      subdir: ports
+      git: 'https://git.ffmpeg.org/ffmpeg.git'
+      tag: 'n4.4.1'
+      version: '4.4.1'
+    pkgs_required:
+      - mlibc
+      - libiconv
+      - libxcb
+      - bzip2
+      - xz-utils
+      - libxml
+      - openssl
+      - sdl2
+      - mesa
+      - zlib
+      - libx11
+      - fontconfig
+      - freetype
+      - fribidi
+      - libmodplug
+      - libvorbis
+      - libtheora
+      - libwebp
+      - libdrm
+      - libx264
+    tools_required:
+      - system-gcc
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: x86_64-managarm
+    configure:
+      # Object files are placed where configure is launched
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+      - args:
+        - './configure'
+        - '--prefix=/usr'
+        - '--enable-gpl' # Enable more plugins
+        - '--enable-version3' # Enable more plugins
+        - '--enable-nonfree' # Enable more plugins (may mean unredistributable)
+        - '--disable-static'
+        - '--enable-shared'
+        - '--disable-stripping'
+        - '--docdir=/usr/share/doc/ffmpeg-4.4.1'
+        - '--enable-avresample'
+        - '--enable-ffplay'
+        - '--disable-alsa'
+        - '--enable-openssl'
+        - '--enable-sdl2'
+        - '--enable-libxml2'
+        - '--enable-opengl'
+        - '--disable-securetransport'
+        - '--disable-frei0r'
+        - '--disable-libass'
+        - '--disable-sndio'
+        - '--disable-securetransport'
+        - '--disable-amf'
+        - '--disable-audiotoolbox'
+        - '--disable-cuda-llvm'
+        - '--disable-cuvid'
+        - '--disable-d3d11va'
+        - '--disable-dxva2'
+        - '--disable-ffnvcodec'
+        - '--disable-nvdec'
+        - '--disable-nvenc'
+        - '--disable-v4l2-m2m'
+        - '--disable-vaapi'
+        - '--disable-vdpau'
+        - '--disable-videotoolbox'
+        # Start cross compilation config
+        - '--enable-cross-compile'
+        - '--arch=@OPTION:arch@'
+        - '--cross-prefix=@OPTION:arch-triple@'
+        - '--host-cc=gcc'
+        - '--target-os=linux' # Fun times ahead
+        - '--cc=@OPTION:arch-triple@-gcc'
+        - '--cxx=@OPTION:arch-triple@-g++'
+        - '--ar=@OPTION:arch-triple@-ar'
+        - '--nm=@OPTION:arch-triple@-nm'
+        - '--strip=@OPTION:arch-triple@-strip'
+        - '--ranlib=@OPTION:arch-triple@-ranlib'
+        - '--pkg-config=@OPTION:arch-triple@-pkg-config'
+        # End cross compilation config
+        - '--enable-libfontconfig'
+        - '--enable-libfreetype'
+        - '--enable-libfribidi'
+        - '--enable-libmodplug'
+        - '--enable-libvorbis'
+        - '--enable-libtheora'
+        - '--enable-libwebp'
+        - '--enable-libdrm'
+        - '--enable-libx264'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
