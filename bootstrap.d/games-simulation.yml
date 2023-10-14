@@ -1,0 +1,78 @@
+sources:
+  - name: openttd
+    subdir: 'ports'
+    git: 'https://github.com/OpenTTD/OpenTTD.git'
+    tag: '13.4'
+    version: '13.4'
+
+tools:
+  - name: host-openttd-compile-tools
+    architecture: '@OPTION:arch'
+    from_source: openttd
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=@PREFIX@'
+        - '-DOPTION_TOOLS_ONLY=ON'
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['ninja']
+    install:
+      # This configuration does not give us an install command, so we need to copy the file manually.
+      - args: ['mkdir', '-p', '@PREFIX@/bin']
+      - args: ['cp', '@THIS_BUILD_DIR@/src/strgen/strgen', '@PREFIX@/bin']
+      - args: ['cp', '@THIS_BUILD_DIR@/src/settingsgen/settingsgen', '@PREFIX@/bin']
+
+packages:
+  - name: openttd
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: A clone of Transport Tycoon Deluxe
+      description: This package provides a free and open-source simulation game that allows you to build and manage your very own transportation empire.
+      spdx: 'GPL-2.0'
+      website: 'https://www.openttd.org/'
+      maintainer: 'Alexander Richards <electrodeyt@gmail.com>'
+      categories: ['games-simulation']
+    from_source: openttd
+    tools_required:
+      - host-cmake
+      - host-pkg-config
+      - host-python
+      - host-openttd-compile-tools
+      - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - zlib
+      - pcre
+      - sdl2
+      - glu
+      - libpng
+      - libvorbis
+      - libjpeg-turbo
+      - freetype
+      - harfbuzz
+      - curl
+      - openttd-opengfx
+      - openttd-openmsx
+      - openttd-opensfx
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_BUILD_TYPE=Release'
+        - '-DFREETYPE_INCLUDEDIR=@SYSROOT_DIR@/usr/include'
+        - '-DFREETYPE_LIBRARY=@SYSROOT_DIR@/usr/lib/libfreetype.so'
+        - '@THIS_SOURCE_DIR@'
+        environ:
+          PKG_CONFIG: "@OPTION:arch-triple@-pkg-config"
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
