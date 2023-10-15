@@ -119,8 +119,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/rockdaboot/libpsl.git'
-      tag: '0.21.1'
-      version: '0.21.1'
+      tag: '0.21.2'
+      version: '0.21.2'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -135,7 +135,6 @@ packages:
       - libidn2
       - libunistring
       - libiconv
-    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
