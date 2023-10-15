@@ -5,8 +5,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/fontconfig/fontconfig'
-      tag: '2.14.0'
-      version: '2.14.0'
+      tag: '2.14.2'
+      version: '2.14.2'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -31,7 +31,6 @@ packages:
       - freetype
       - libxml
       - libiconv
-    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
