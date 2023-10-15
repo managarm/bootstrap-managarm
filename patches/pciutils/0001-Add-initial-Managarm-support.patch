@@ -1,0 +1,147 @@
+From f6c4152a19b2430b491ff9b0c0e16a2b368ca60d Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Wed, 27 Apr 2022 23:11:14 +0200
+Subject: [PATCH] Add initial Managarm support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ lib/filter.c        |  8 ++++----
+ lib/i386-io-linux.h | 25 +++++++++++++++++++++++++
+ lib/i386-ports.c    | 20 ++++++++++++++++++++
+ lib/sysdep.h        |  6 +++---
+ 4 files changed, 52 insertions(+), 7 deletions(-)
+
+diff --git a/lib/filter.c b/lib/filter.c
+index b881b6b..294c69b 100644
+--- a/lib/filter.c
++++ b/lib/filter.c
+@@ -304,20 +304,20 @@ pci_filter_match_v30(struct pci_filter_v30 *f, struct pci_dev *d)
+ 
+ STATIC_ALIAS(void pci_filter_init(struct pci_access *a, struct pci_filter *f), pci_filter_init_v38(a, f));
+ SYMBOL_VERSION(pci_filter_init_v30, pci_filter_init@LIBPCI_3.0);
+-SYMBOL_VERSION(pci_filter_init_v38, pci_filter_init@LIBPCI_3.3);
++//SYMBOL_VERSION(pci_filter_init_v38, pci_filter_init@LIBPCI_3.3);
+ SYMBOL_VERSION(pci_filter_init_v38, pci_filter_init@@LIBPCI_3.8);
+ 
+ STATIC_ALIAS(char *pci_filter_parse_slot(struct pci_filter *f, char *str), pci_filter_parse_slot_v38(f, str));
+ SYMBOL_VERSION(pci_filter_parse_slot_v30, pci_filter_parse_slot@LIBPCI_3.0);
+-SYMBOL_VERSION(pci_filter_parse_slot_v38, pci_filter_parse_slot@LIBPCI_3.3);
++//SYMBOL_VERSION(pci_filter_parse_slot_v38, pci_filter_parse_slot@LIBPCI_3.3);
+ SYMBOL_VERSION(pci_filter_parse_slot_v38, pci_filter_parse_slot@@LIBPCI_3.8);
+ 
+ STATIC_ALIAS(char *pci_filter_parse_id(struct pci_filter *f, char *str), pci_filter_parse_id_v38(f, str));
+ SYMBOL_VERSION(pci_filter_parse_id_v30, pci_filter_parse_id@LIBPCI_3.0);
+-SYMBOL_VERSION(pci_filter_parse_id_v38, pci_filter_parse_id@LIBPCI_3.3);
++//SYMBOL_VERSION(pci_filter_parse_id_v38, pci_filter_parse_id@LIBPCI_3.3);
+ SYMBOL_VERSION(pci_filter_parse_id_v38, pci_filter_parse_id@@LIBPCI_3.8);
+ 
+ STATIC_ALIAS(int pci_filter_match(struct pci_filter *f, struct pci_dev *d), pci_filter_match_v38(f, d));
+ SYMBOL_VERSION(pci_filter_match_v30, pci_filter_match@LIBPCI_3.0);
+-SYMBOL_VERSION(pci_filter_match_v38, pci_filter_match@LIBPCI_3.3);
++//SYMBOL_VERSION(pci_filter_match_v38, pci_filter_match@LIBPCI_3.3);
+ SYMBOL_VERSION(pci_filter_match_v38, pci_filter_match@@LIBPCI_3.8);
+diff --git a/lib/i386-io-linux.h b/lib/i386-io-linux.h
+index 731e8e3..6c22ed7 100644
+--- a/lib/i386-io-linux.h
++++ b/lib/i386-io-linux.h
+@@ -6,6 +6,29 @@
+  *	Can be freely distributed and used under the terms of the GNU GPL.
+  */
+ 
++#ifdef __managarm__
++
++static int
++intel_setup_io(struct pci_access *a UNUSED)
++{
++  return 0;
++}
++
++static inline void
++intel_cleanup_io(struct pci_access *a UNUSED)
++{
++}
++
++static inline void intel_io_lock(void)
++{
++}
++
++static inline void intel_io_unlock(void)
++{
++}
++
++#else
++
+ #include <sys/io.h>
+ 
+ static int
+@@ -27,3 +50,5 @@ static inline void intel_io_lock(void)
+ static inline void intel_io_unlock(void)
+ {
+ }
++
++#endif
+diff --git a/lib/i386-ports.c b/lib/i386-ports.c
+index 2e64fe4..ca20192 100644
+--- a/lib/i386-ports.c
++++ b/lib/i386-ports.c
+@@ -32,6 +32,26 @@
+ #error Do not know how to access I/O ports on this OS.
+ #endif
+ 
++#ifdef __managarm__
++static void outb(unsigned char value, unsigned short int port) {}
++
++static void outw(unsigned short int value, unsigned short int port) {}
++
++static void outl(unsigned int value, unsigned short int port) {}
++
++static unsigned char inb(unsigned short int port) {
++	return 0;
++}
++
++static unsigned short int inw(unsigned short int port) {
++	return 0;
++}
++
++static unsigned int inl(unsigned short int port) {
++	return 0;
++}
++#endif
++
+ static int conf12_io_enabled = -1;		/* -1=haven't tried, 0=failed, 1=succeeded */
+ 
+ static int
+diff --git a/lib/sysdep.h b/lib/sysdep.h
+index bdeb34a..a4f0a76 100644
+--- a/lib/sysdep.h
++++ b/lib/sysdep.h
+@@ -29,7 +29,7 @@ typedef u16 word;
+ #endif
+ #endif
+ 
+-#ifdef PCI_HAVE_LINUX_BYTEORDER_H
++#if defined PCI_HAVE_LINUX_BYTEORDER_H && !defined __managarm__
+ 
+ #include <asm/byteorder.h>
+ #define cpu_to_le16 __cpu_to_le16
+@@ -39,7 +39,7 @@ typedef u16 word;
+ 
+ #else
+ 
+-#ifdef PCI_OS_LINUX
++#if defined PCI_OS_LINUX && !defined __managarm__
+ #include <endian.h>
+ #define BYTE_ORDER __BYTE_ORDER
+ #define BIG_ENDIAN __BIG_ENDIAN
+@@ -74,7 +74,7 @@ typedef u16 word;
+ #endif
+ #endif
+ 
+-#ifdef PCI_OS_SYLIXOS
++#if defined PCI_OS_SYLIXOS || defined __managarm__
+ #include <endian.h>
+ #endif
+ 
+-- 
+2.36.0
+

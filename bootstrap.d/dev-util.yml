@@ -5,6 +5,12 @@ sources:
     tag: 'v3.24.2'
     version: '3.24.2'
 
+  - name: ninja
+    subdir: ports
+    git: 'https://github.com/ninja-build/ninja.git'
+    tag: 'v1.10.2'
+    version: '1.10.2'
+
   - name: 'pkg-config'
     subdir: 'ports'
     git: 'https://gitlab.freedesktop.org/pkg-config/pkg-config.git'
@@ -34,6 +40,18 @@ tools:
     install:
       - args: ['make', 'install']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/scripts/managarm.cmake', '@PREFIX@/share/cmake-3.24/Modules/Platform/']
+
+  - name: host-ninja
+    from_source: ninja
+    configure:
+      - args:
+        - 'cmake'
+        - '-DCMAKE_INSTALL_PREFIX=@PREFIX@'
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'install']
 
   # We could run an external pkg-config; however, we need the aclocal files.
   # The easiest way to ensure that they are available is to just install pkg-config.
@@ -182,11 +200,7 @@ packages:
       website: 'https://ninja-build.org/'
       maintainer: "Dennis Bonke <dennis@managarm.org>"
       categories: ['dev-util']
-    source:
-      subdir: ports
-      git: 'https://github.com/ninja-build/ninja.git'
-      tag: 'v1.10.2'
-      version: '1.10.2'
+    from_source: ninja
     tools_required:
       - system-gcc
       - host-cmake

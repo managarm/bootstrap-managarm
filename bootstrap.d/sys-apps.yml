@@ -672,6 +672,40 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: pciutils
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Various utilities dealing with the PCI bus
+      description: This package contains a set of programs for listing PCI devices, inspecting their status and setting their configuration registers.
+      spdx: 'GPL-2.0-only'
+      website: 'https://mj.ucw.cz/sw/pciutils/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-apps']
+    source:
+      subdir: ports
+      git: 'https://git.kernel.org/pub/scm/utils/pciutils/pciutils.git'
+      # Commit message says released as 3.8.0, no tag made.
+      branch: 'master'
+      commit: 'd224993d423bcd0e88d8eacc0464bc3a66972e95'
+      version: '3.8.0'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - zlib
+    configure:
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+    build:
+      - args: ['make', 'ZLIB=yes', 'DNS=no', 'LIBKMOD=no', 'HWDB=no', 'PREFIX=/usr', 'SHAREDIR=/usr/share/hwdata', 'SHARED=yes', 'CC=x86_64-managarm-gcc', 'CXX=x86_64-managarm-g++', '-j@PARALLELISM@']
+        environ:
+          CC: 'x86_64-managarm-gcc'
+          CXX: 'x86_64-managarm-g++'
+      - args: ['make', 'ZLIB=yes', 'DNS=no', 'LIBKMOD=no', 'HWDB=no', 'PREFIX=/usr', 'SHAREDIR=/usr/share/hwdata', 'SHARED=yes', 'CC=x86_64-managarm-gcc', 'CXX=x86_64-managarm-g++', 'DESTDIR=@THIS_COLLECT_DIR@', 'install', 'install-lib']
+        environ:
+          CC: 'x86_64-managarm-gcc'
+          CXX: 'x86_64-managarm-g++'
+      - args: ['chmod', '-v', '755', '@THIS_COLLECT_DIR@/usr/lib/libpci.so']
+
   - name: sed
     labels: [aarch64]
     architecture: '@OPTION:arch@'
