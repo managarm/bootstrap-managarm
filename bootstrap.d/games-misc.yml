@@ -85,3 +85,90 @@ packages:
       - args: ['mkdir', '-pv', '@THIS_COLLECT_DIR@/usr/share/man/man1']
       - args: ['cp', '-v', '@THIS_BUILD_DIR@/src/nyancat', '@THIS_COLLECT_DIR@/usr/bin']
       - args: ['cp', '-v', '@THIS_BUILD_DIR@/nyancat.1', '@THIS_COLLECT_DIR@/usr/share/man/man1']
+
+  - name: openttd-opengfx
+    architecture: 'noarch'
+    metadata:
+      summary: OpenGFX data files for OpenTTD
+      description: This package provides graphics data files for OpenTTD.
+      spdx: 'GPL-2.0'
+      website: 'https://www.openttd.org/'
+      maintainer: 'Alexander Richards <electrodeyt@gmail.com>'
+      categories: ['games-misc']
+    source:
+      subdir: 'ports'
+      url: 'https://electrode.codes/managarm-mirrors/openttd-opengfx/opengfx-7.1-all.zip'
+      format: 'raw'
+      filename: 'opengfx-7.1-all.zip'
+      checksum: blake2b:337f15bf0f6d3c111a3ae1ca84601568a452922b2ced09f76d1fd5902c1a3da62153df35da490979b68c8d2a35d936a1fc6b7c06c18f934ae58a6e3535de315a
+      version: '7.1'
+    configure:
+      - args: ['unzip', '@THIS_SOURCE_DIR@/opengfx-7.1-all.zip', '-d', '@THIS_BUILD_DIR@']
+      - args: ['tar', 'xf', '@THIS_BUILD_DIR@/opengfx-7.1.tar', '-C', '@THIS_BUILD_DIR@']
+    build:
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/share/games/openttd/data']
+      - args: ['cp', '-r', 'opengfx-7.1/.', '@THIS_COLLECT_DIR@/usr/share/games/openttd/data']
+      # These files should not be in the package; they conflict with files in other openttd packages.
+      - args:
+        - 'rm'
+        - '@THIS_COLLECT_DIR@/usr/share/games/openttd/data/changelog.txt'
+        - '@THIS_COLLECT_DIR@/usr/share/games/openttd/data/license.txt'
+        - '@THIS_COLLECT_DIR@/usr/share/games/openttd/data/readme.txt'
+
+  - name: openttd-openmsx
+    architecture: 'noarch'
+    metadata:
+      summary: OpenMSX data files for OpenTTD
+      description: This package provides music data files for OpenTTD.
+      spdx: 'GPL-2.0'
+      website: 'https://www.openttd.org/'
+      maintainer: 'Alexander Richards <electrodeyt@gmail.com>'
+      categories: ['games-misc']
+    source:
+      subdir: 'ports'
+      url: 'https://electrode.codes/managarm-mirrors/openttd-openmsx/openmsx-0.4.2-all.zip'
+      format: 'raw'
+      filename: 'openmsx-0.4.2-all.zip'
+      checksum: blake2b:337f15bf0f6d3c111a3ae1ca84601568a452922b2ced09f76d1fd5902c1a3da62153df35da490979b68c8d2a35d936a1fc6b7c06c18f934ae58a6e3535de315a
+      version: '0.4.2'
+    configure:
+      - args: ['unzip', '@THIS_SOURCE_DIR@/openmsx-0.4.2-all.zip', '-d', '@THIS_BUILD_DIR@']
+      - args: ['tar', 'xf', '@THIS_BUILD_DIR@/openmsx-0.4.2.tar', '-C', '@THIS_BUILD_DIR@']
+    build:
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/share/games/openttd/data']
+      - args: ['cp', '-r', 'openmsx-0.4.2/.', '@THIS_COLLECT_DIR@/usr/share/games/openttd/data']
+      # These files should not be in the package; they conflict with files in other openttd packages.
+      - args:
+        - 'rm'
+        - '@THIS_COLLECT_DIR@/usr/share/games/openttd/data/changelog.txt'
+        - '@THIS_COLLECT_DIR@/usr/share/games/openttd/data/license.txt'
+        - '@THIS_COLLECT_DIR@/usr/share/games/openttd/data/readme.txt'
+
+  - name: openttd-opensfx
+    architecture: 'noarch'
+    metadata:
+      summary: OpenMSX data files for OpenTTD
+      description: This package provides music data files for OpenTTD.
+      spdx: 'GPL-2.0'
+      website: 'https://www.openttd.org/'
+      maintainer: 'Alexander Richards <electrodeyt@gmail.com>'
+      categories: ['games-misc']
+    source:
+      subdir: 'ports'
+      url: 'https://electrode.codes/managarm-mirrors/openttd-opensfx/opensfx-1.0.3-all.zip'
+      format: 'raw'
+      filename: 'opensfx-1.0.3-all.zip'
+      checksum: blake2b:d2eb7f9734d048fc9ef9938805ed573751cfa0fce9ab3561b671cde10f408905442949a911c13024365aafaf525a5fa974cd43dc57de09352c8404025e0909a0
+      version: '1.0.3'
+    configure:
+      - args: ['unzip', '@THIS_SOURCE_DIR@/opensfx-1.0.3-all.zip', '-d', '@THIS_BUILD_DIR@']
+      - args: ['tar', 'xf', '@THIS_BUILD_DIR@/opensfx-1.0.3.tar', '-C', '@THIS_BUILD_DIR@']
+    build:
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/share/games/openttd/data']
+      - args: ['cp', '-r', 'opensfx-1.0.3/.', '@THIS_COLLECT_DIR@/usr/share/games/openttd/data']
+      # These files should not be in the package; they conflict with files in other openttd packages.
+      - args:
+        - 'rm'
+        - '@THIS_COLLECT_DIR@/usr/share/games/openttd/data/changelog.txt'
+        - '@THIS_COLLECT_DIR@/usr/share/games/openttd/data/license.txt'
+        - '@THIS_COLLECT_DIR@/usr/share/games/openttd/data/readme.txt'
