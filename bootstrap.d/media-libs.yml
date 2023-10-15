@@ -53,8 +53,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/FreeGLUTProject/freeglut.git'
-      tag: 'v3.2.2'
-      version: '3.2.2'
+      tag: 'v3.4.0'
+      version: '3.4.0'
     tools_required:
       - host-cmake
       - system-gcc
@@ -63,7 +63,6 @@ packages:
       - libxi
       - mesa
       - glu
-    revision: 6
     configure:
       - args:
         - 'cmake'
@@ -412,8 +411,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/glvnd/libglvnd.git'
-      tag: 'v1.4.0'
-      version: '1.4.0'
+      tag: 'v1.6.0'
+      version: '1.6.0'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -423,7 +422,6 @@ packages:
       - mlibc
       - libx11
       - libxext
-    revision: 5
     configure:
       - args:
         - 'meson'
