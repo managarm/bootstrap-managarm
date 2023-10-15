@@ -1498,8 +1498,8 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/PhilipHazel/pcre2.git'
-      tag: 'pcre2-10.39'
-      version: '10.39'
+      tag: 'pcre2-10.42'
+      version: '10.42'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1515,14 +1515,13 @@ packages:
       - ncurses
       - readline
       - zlib
-    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
-        - '--docdir=/usr/share/doc/pcre2-10.39'
+        - '--docdir=/usr/share/doc/pcre2-10.42'
         - '--enable-unicode'
         - '--enable-jit'
         - '--enable-pcre2-16'
