@@ -515,10 +515,10 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/libffi/libffi.git'
-      tag: 'v3.4.2'
-      version: '3.4.2'
+      tag: 'v3.4.4'
+      version: '3.4.4'
       tools_required:
-        - host-autoconf-v2.69
+        - host-autoconf-v2.71
         - host-automake-v1.11
         - host-libtool
       regenerate:
@@ -530,7 +530,6 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
