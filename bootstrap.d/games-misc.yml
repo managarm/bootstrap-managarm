@@ -114,3 +114,32 @@ packages:
         - '@THIS_COLLECT_DIR@/usr/share/games/openttd/data/changelog.txt'
         - '@THIS_COLLECT_DIR@/usr/share/games/openttd/data/license.txt'
         - '@THIS_COLLECT_DIR@/usr/share/games/openttd/data/readme.txt'
+
+  - name: openttd-openmsx
+    architecture: 'noarch'
+    metadata:
+      summary: OpenMSX data files for OpenTTD
+      description: This package provides music data files for OpenTTD.
+      spdx: 'GPL-2.0'
+      website: 'https://www.openttd.org/'
+      maintainer: 'Alexander Richards <electrodeyt@gmail.com>'
+      categories: ['games-misc']
+    source:
+      subdir: 'ports'
+      url: 'https://electrode.codes/managarm-mirrors/openttd-openmsx/openmsx-0.4.2-all.zip'
+      format: 'raw'
+      filename: 'openmsx-0.4.2-all.zip'
+      checksum: blake2b:337f15bf0f6d3c111a3ae1ca84601568a452922b2ced09f76d1fd5902c1a3da62153df35da490979b68c8d2a35d936a1fc6b7c06c18f934ae58a6e3535de315a
+      version: '0.4.2'
+    configure:
+      - args: ['unzip', '@THIS_SOURCE_DIR@/openmsx-0.4.2-all.zip', '-d', '@THIS_BUILD_DIR@']
+      - args: ['tar', 'xf', '@THIS_BUILD_DIR@/openmsx-0.4.2.tar', '-C', '@THIS_BUILD_DIR@']
+    build:
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/share/games/openttd/data']
+      - args: ['cp', '-r', 'openmsx-0.4.2/.', '@THIS_COLLECT_DIR@/usr/share/games/openttd/data']
+      # These files should not be in the package; they conflict with files in other openttd packages.
+      - args:
+        - 'rm'
+        - '@THIS_COLLECT_DIR@/usr/share/games/openttd/data/changelog.txt'
+        - '@THIS_COLLECT_DIR@/usr/share/games/openttd/data/license.txt'
+        - '@THIS_COLLECT_DIR@/usr/share/games/openttd/data/readme.txt'
