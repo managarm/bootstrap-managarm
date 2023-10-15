@@ -8,8 +8,8 @@ sources:
   - name: python
     subdir: 'ports'
     git: 'https://github.com/python/cpython.git'
-    tag: 'v3.10.4'
-    version: '3.10.4'
+    tag: 'v3.10.12'
+    version: '3.10.12'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.15
@@ -217,7 +217,6 @@ packages:
       - util-linux-libs
       - xz-utils
       - zlib
-    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
