@@ -11,14 +11,13 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/google/brotli.git'
-      tag: 'v1.0.9'
-      version: '1.0.9'
+      tag: 'v1.1.0'
+      version: '1.1.0'
     tools_required:
       - system-gcc
       - host-cmake
     pkgs_required:
       - mlibc
-    revision: 5
     configure:
       - args:
         - 'cmake'
