@@ -1541,8 +1541,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/rpm-software-management/popt.git'
-      tag: 'popt-1.18-release'
-      version: '1.18'
+      tag: 'popt-1.19-release'
+      version: '1.19'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1554,7 +1554,6 @@ packages:
     pkgs_required:
       - mlibc
       - libiconv
-    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
