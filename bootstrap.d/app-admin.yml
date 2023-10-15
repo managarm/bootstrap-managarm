@@ -33,3 +33,45 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc/syslog.d']
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/syslog.conf', '@THIS_COLLECT_DIR@/etc']
+
+  - name: sysstat
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: System performance tools
+      description: This package contains a collection of command-line applications to track system statistics.
+      spdx: 'GPL-2'
+      website: 'https://gitlab.gnome.org/GNOME/gsettings-desktop-schemas'
+      maintainer: "Alexander Richards <electrodeyt@gmail.com>"
+      categories: ['app-admin']
+    source:
+      subdir: 'ports'
+      url: 'https://github.com/sysstat/sysstat/archive/refs/tags/v12.7.4.tar.gz'
+      format: 'tar.gz'
+      extract_path: 'sysstat-12.7.4'
+      checksum: blake2b:3b74dcc785e88fd2de93ed30bc80b834f9a36e8f00136230497f681257a3b40eea200f5f364689de52c0d13bf1612b2e45cf4bb7e2a1ab9d74ed37ec3590ebf0
+      version: '12.7.4'
+    tools_required:
+      - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+    configure:
+      # Sysstat really wants to be configured in the same tree.
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+      - args:
+        - '@THIS_BUILD_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--sysconfdir=/etc'
+        - '--localstatedir=/run'
+        - '--enable-copy-only'
+        - '--disable-sensors'
+        - '--disable-nls'
+        - '--disable-pcp'
+        - '--disable-documentation'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
