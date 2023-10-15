@@ -166,8 +166,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.gnome.org/GNOME/libsoup.git'
-      tag: '2.74.2'
-      version: '2.74.2'
+      tag: '2.74.3'
+      version: '2.74.3'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -181,7 +181,6 @@ packages:
       - libxml
       - sqlite
       - libpsl
-    revision: 5
     configure:
       - args:
         - 'meson'
