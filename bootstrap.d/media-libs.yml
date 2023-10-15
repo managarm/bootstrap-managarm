@@ -411,8 +411,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/glvnd/libglvnd.git'
-      tag: 'v1.4.0'
-      version: '1.4.0'
+      tag: 'v1.6.0'
+      version: '1.6.0'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -422,7 +422,6 @@ packages:
       - mlibc
       - libx11
       - libxext
-    revision: 5
     configure:
       - args:
         - 'meson'
