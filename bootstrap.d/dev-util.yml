@@ -95,11 +95,9 @@ packages:
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
-      # Freedesktop broke their gitlab, so we use a github mirror
-      git: 'https://github.com/freedesktop/xdg-desktop-file-utils.git'
-      #git: 'https://gitlab.freedesktop.org/xdg/desktop-file-utils.git'
-      tag: '0.24'
-      version: '0.24'
+      git: 'https://gitlab.freedesktop.org/xdg/desktop-file-utils.git'
+      tag: '0.26'
+      version: '0.26'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -116,7 +114,6 @@ packages:
     pkgs_required:
       - mlibc
       - glib
-    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
