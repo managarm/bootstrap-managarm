@@ -332,8 +332,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xset.git'
-      tag: 'xset-1.2.4'
-      version: '1.2.4'
+      tag: 'xset-1.2.5'
+      version: '1.2.5'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -352,7 +352,6 @@ packages:
       - libxmu
       - libx11
       - libxext
-    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
