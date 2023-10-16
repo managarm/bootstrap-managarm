@@ -371,8 +371,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xwininfo.git'
-      tag: 'xwininfo-1.1.5'
-      version: '1.1.5'
+      tag: 'xwininfo-1.1.6'
+      version: '1.1.6'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -392,7 +392,6 @@ packages:
       - xorg-util-macros
       - libx11
       - xcb-util
-    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
