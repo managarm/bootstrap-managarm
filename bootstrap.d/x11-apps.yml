@@ -183,8 +183,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xkbcomp.git'
-      tag: 'xkbcomp-1.4.5'
-      version: '1.4.5'
+      tag: 'xkbcomp-1.4.6'
+      version: '1.4.6'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -202,7 +202,6 @@ packages:
       - xorg-util-macros
       - libx11
       - libxkbfile
-    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
