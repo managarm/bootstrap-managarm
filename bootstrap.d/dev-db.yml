@@ -3,11 +3,11 @@ packages:
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
-      url: 'https://sqlite.org/2021/sqlite-autoconf-3370000.tar.gz'
+      url: 'https://sqlite.org/2023/sqlite-autoconf-3430200.tar.gz'
       format: 'tar.gz'
-      checksum: blake2b:35e72700f20c35701d26f7b66da126242ea1d253f710f299a9b6f180f0a53d417114af022161a6cd9ebf20b791f0645f7a30290210fac197d5fda3a647067fd0
-      extract_path: 'sqlite-autoconf-3370000'
-      version: '3.37.0'
+      checksum: blake2b:109ef44851a27dea0c0ddde2c74f23607648fa701a6e00871eb4617445c71b14da02d47b4d1159e9a10b87ac2e6cbe306ac61d4cdac35754e8d0df86597d9f9a
+      extract_path: 'sqlite-autoconf-3430200'
+      version: '3.43.2'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -21,7 +21,6 @@ packages:
       - mlibc
       - readline
       - zlib
-    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
