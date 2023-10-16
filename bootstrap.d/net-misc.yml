@@ -65,8 +65,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/WayneD/rsync.git'
-      tag: 'v3.2.3'
-      version: '3.2.3'
+      tag: 'v3.2.7'
+      version: '3.2.7'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -93,7 +93,6 @@ packages:
       - xxhash
       - zstd
       - popt
-    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
