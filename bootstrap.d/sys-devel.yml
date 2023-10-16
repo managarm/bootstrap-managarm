@@ -17,24 +17,11 @@ sources:
 
   - name: gettext
     subdir: ports
-    git: 'https://git.savannah.gnu.org/git/gettext.git'
-    tag: 'v0.19.8'
-    version: '0.19.8'
-    tools_required:
-      - host-autoconf-v2.69
-      - host-automake-v1.15
-      - host-libtool
-      - host-pkg-config
-    regenerate:
-      # The first sed removes the doc and man dirs from the makefile in gettext-runtime, the second sed does the same for gettext-tools
-      - args: 'sed -i s/"SUBDIRS = doc intl intl-java intl-csharp gnulib-lib \$(SUBDIR_libasprintf)\ src po man m4 tests"/"SUBDIRS = intl intl-java intl-csharp gnulib-lib \$(SUBDIR_libasprintf)\ src po m4 tests"/ @THIS_SOURCE_DIR@/gettext-runtime/Makefile.am'
-      - args: 'sed -i s/"SUBDIRS = doc intl gnulib-lib libgrep src libgettextpo po projects styles misc man m4 tests gnulib-tests examples its"/"SUBDIRS = intl gnulib-lib libgrep src libgettextpo po projects styles misc m4 tests gnulib-tests examples its"/ @THIS_SOURCE_DIR@/gettext-tools/Makefile.am'
-      - args: ['./autogen.sh']
-        environ:
-          'NOCONFIGURE': 'yes'
-      - args: ['cp',
-          '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
-          '@THIS_SOURCE_DIR@/build-aux/']
+    url: 'https://ftp.gnu.org/pub/gnu/gettext/gettext-0.22.3.tar.gz'
+    checksum: blake2b:aebe85a82cb94c37ed81e9801acf1e89d150f5992fb9be42d53b3f2734c5c95804f0051fabc26b8d0892dfaf89d18df16d4bca6bcb2e9b95eef5d4ae93a64379
+    extract_path: 'gettext-0.22.3'
+    format: 'tar.gz'
+    version: '0.22.3'
 
 tools:
   - name: host-bison
@@ -63,7 +50,6 @@ tools:
       - host-bison
       - host-autoconf-v2.69
       - host-automake-v1.15
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -170,7 +156,6 @@ packages:
       - host-automake-v1.15
     pkgs_required:
       - mlibc
-    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
