@@ -221,8 +221,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xkill.git'
-      tag: 'xkill-1.0.5'
-      version: '1.0.5'
+      tag: 'xkill-1.0.6'
+      version: '1.0.6'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -240,7 +240,6 @@ packages:
       - xorg-util-macros
       - libx11
       - libxmu
-    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
