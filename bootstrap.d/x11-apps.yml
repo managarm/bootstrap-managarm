@@ -260,8 +260,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xlsclients.git'
-      tag: 'xlsclients-1.1.4'
-      version: '1.1.4'
+      tag: 'xlsclients-1.1.5'
+      version: '1.1.5'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -278,7 +278,6 @@ packages:
       - mlibc
       - xorg-util-macros
       - libxcb
-    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
