@@ -981,9 +981,14 @@ packages:
       checksum: blake2b:0cc397ecf4de0066abbff9b286a9e4fcd48658698d5e0d6b736abf56b48c1b55a05f15fff7be53fd33f767621e0c25d87275a47e05a4bcb44c4b8ac9221cd081
       extract_path: 'libusb-1.0.26'
       version: '1.0.26'
+      patch-path-strip: 1
       tools_required:
+        - host-autoconf-v2.69
         - host-automake-v1.15
+        - host-pkg-config
+        - host-libtool
       regenerate:
+        - args: ['autoreconf', '-fvi']
         - args: ['cp',
             '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
             '@THIS_SOURCE_DIR@/']
@@ -991,13 +996,14 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--disable-static'
+        - '--enable-shared'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']

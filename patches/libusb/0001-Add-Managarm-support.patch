@@ -1,0 +1,46 @@
+From 718f5b5184c2fce0d209ab341ae71ac52d86191e Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Wed, 18 Oct 2023 01:21:28 +0200
+Subject: [PATCH] Add Managarm support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ configure.ac            | 2 +-
+ libusb/os/linux_usbfs.c | 2 ++
+ 2 files changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/configure.ac b/configure.ac
+index d4f1251..8a674c0 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -83,7 +83,7 @@ case $host in
+ 	backend=haiku
+ 	platform=posix
+ 	;;
+-*-linux* | *-uclinux*)
++*-linux* | *-uclinux* | *-managarm*)
+ 	dnl on Android Linux, some functions are in different places
+ 	case $host in
+ 	*-linux-android*)
+diff --git a/libusb/os/linux_usbfs.c b/libusb/os/linux_usbfs.c
+index 285d9ca..03f0273 100644
+--- a/libusb/os/linux_usbfs.c
++++ b/libusb/os/linux_usbfs.c
+@@ -358,12 +358,14 @@ static int op_init(struct libusb_context *ctx)
+ 	if (get_kernel_version(ctx, &kversion) < 0)
+ 		return LIBUSB_ERROR_OTHER;
+ 
++#ifndef __managarm__
+ 	if (!kernel_version_ge(&kversion, 2, 6, 32)) {
+ 		usbi_err(ctx, "kernel version is too old (reported as %d.%d.%d)",
+ 			 kversion.major, kversion.minor,
+ 			 kversion.sublevel != -1 ? kversion.sublevel : 0);
+ 		return LIBUSB_ERROR_NOT_SUPPORTED;
+ 	}
++#endif
+ 
+ 	usbfs_path = find_usbfs_path();
+ 	if (!usbfs_path) {
+-- 
+2.42.0
+
