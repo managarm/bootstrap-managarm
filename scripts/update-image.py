@@ -375,7 +375,8 @@ def generate_plan(arch, root_uuid, scriptdir):
         yield FsAction.INSTALL, "usr/managarm/bin/eir-mb1", "boot/managarm", dict(strip=True)
         yield FsAction.INSTALL, "usr/managarm/bin/eir-mb2", "boot/managarm", dict(strip=True)
         yield FsAction.INSTALL, "usr/managarm/bin/thor", "boot/managarm", dict(strip=True)
-        yield FsAction.CP, os.path.join(scriptdir, "grub.cfg"), "boot/grub"
+        yield FsAction.CP_SED, os.path.join(scriptdir, "grub.cfg"), \
+            "boot/grub", "@ROOT_UUID@", root_uuid
 
         yield (
             FsAction.CP,
