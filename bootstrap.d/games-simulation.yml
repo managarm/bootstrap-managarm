@@ -7,7 +7,7 @@ sources:
 
 tools:
   - name: host-openttd-compile-tools
-    architecture: '@OPTION:arch'
+    architecture: '@OPTION:arch@'
     from_source: openttd
     configure:
       - args:
