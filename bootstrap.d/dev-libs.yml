@@ -994,6 +994,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
+      - eudev
     revision: 3
     configure:
       - args:
