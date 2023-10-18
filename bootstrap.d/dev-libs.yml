@@ -515,10 +515,10 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/libffi/libffi.git'
-      tag: 'v3.4.2'
-      version: '3.4.2'
+      tag: 'v3.4.4'
+      version: '3.4.4'
       tools_required:
-        - host-autoconf-v2.69
+        - host-autoconf-v2.71
         - host-automake-v1.11
         - host-libtool
       regenerate:
@@ -530,7 +530,6 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -556,8 +555,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://dev.gnupg.org/source/libgcrypt.git'
-      tag: 'libgcrypt-1.10.1'
-      version: '1.10.1'
+      tag: 'libgcrypt-1.10.2'
+      version: '1.10.2'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -570,7 +569,6 @@ packages:
     pkgs_required:
       - mlibc
       - libgpg-error
-    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1257,8 +1255,8 @@ packages:
     source:
       subdir: 'ports'
       hg: 'https://hg.mozilla.org/projects/nspr/'
-      tag: 'NSPR_4_34_1_RTM'
-      version: '4.34.1'
+      tag: 'NSPR_4_35_RTM'
+      version: '4.35'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1272,7 +1270,6 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
     configure:
       # Disable installing two unneeded scripts.
       - args: ['sed', '-ri', '/^RELEASE/s/^/#/', '@THIS_SOURCE_DIR@/pr/src/misc/Makefile.in']
@@ -1507,8 +1504,8 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/PhilipHazel/pcre2.git'
-      tag: 'pcre2-10.39'
-      version: '10.39'
+      tag: 'pcre2-10.42'
+      version: '10.42'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1524,14 +1521,13 @@ packages:
       - ncurses
       - readline
       - zlib
-    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
-        - '--docdir=/usr/share/doc/pcre2-10.39'
+        - '--docdir=/usr/share/doc/pcre2-10.42'
         - '--enable-unicode'
         - '--enable-jit'
         - '--enable-pcre2-16'
@@ -1551,8 +1547,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/rpm-software-management/popt.git'
-      tag: 'popt-1.18-release'
-      version: '1.18'
+      tag: 'popt-1.19-release'
+      version: '1.19'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1564,7 +1560,6 @@ packages:
     pkgs_required:
       - mlibc
       - libiconv
-    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

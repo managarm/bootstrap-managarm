@@ -70,8 +70,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/vim/vim.git'
-      tag: 'v8.2.3704'
-      version: '8.2.3704'
+      tag: 'v9.0.1897'
+      version: '9.0.1897'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -80,7 +80,6 @@ packages:
       - mlibc
       - ncurses
       - libiconv
-    revision: 5
     configure:
       # vim does not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead

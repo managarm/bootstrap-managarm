@@ -2,8 +2,8 @@ sources:
   - name: xorg-font-util
     subdir: 'ports'
     git: 'https://gitlab.freedesktop.org/xorg/font/util.git'
-    tag: 'font-util-1.3.2'
-    version: '1.3.2'
+    tag: 'font-util-1.4.0'
+    version: '1.4.0'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.15
@@ -21,7 +21,6 @@ tools:
     architecture: noarch
     exports_aclocal: true
     from_source: xorg-font-util
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -79,7 +78,6 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

@@ -4,8 +4,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/curl/curl.git'
-      tag: 'curl-7_84_0'
-      version: '7.84.0'
+      tag: 'curl-8_3_0'
+      version: '8.3.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -25,7 +25,6 @@ packages:
       - openssl
       - zlib
       - zstd
-    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -66,8 +65,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/WayneD/rsync.git'
-      tag: 'v3.2.3'
-      version: '3.2.3'
+      tag: 'v3.2.7'
+      version: '3.2.7'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -94,7 +93,6 @@ packages:
       - xxhash
       - zstd
       - popt
-    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -128,8 +126,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://repo.or.cz/socat.git'
-      tag: 'tag-1.7.3.4'
-      version: '1.7.3.4'
+      tag: 'tag-1.7.4.4'
+      version: '1.7.4.4'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -146,7 +144,6 @@ packages:
       - ncurses
       - readline
       - openssl
-    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

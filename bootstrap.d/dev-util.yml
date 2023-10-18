@@ -2,8 +2,8 @@ sources:
   - name: 'cmake'
     subdir: 'ports'
     git: 'https://gitlab.kitware.com/cmake/cmake.git'
-    tag: 'v3.24.2'
-    version: '3.24.2'
+    tag: 'v3.26.4'
+    version: '3.26.4'
 
   - name: 'pkg-config'
     subdir: 'ports'
@@ -33,7 +33,7 @@ tools:
       - args: ['make', '-j@PARALLELISM@']
     install:
       - args: ['make', 'install']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/scripts/managarm.cmake', '@PREFIX@/share/cmake-3.24/Modules/Platform/']
+      - args: ['ln', '-sf', '@SOURCE_ROOT@/scripts/managarm.cmake', '@PREFIX@/share/cmake-3.26/Modules/Platform/']
 
   # We could run an external pkg-config; however, we need the aclocal files.
   # The easiest way to ensure that they are available is to just install pkg-config.
@@ -70,7 +70,6 @@ packages:
       - xz-utils
       - zlib
       - zstd
-    revision: 3
     configure:
       - args: ['sed', '-i', '/"lib64"/s/64//', '@THIS_SOURCE_DIR@/Modules/GNUInstallDirs.cmake']
       - args: ['cp', '-f', '@SOURCE_ROOT@/scripts/managarm.cmake', '@THIS_SOURCE_DIR@/Modules/Platform/']
@@ -79,10 +78,10 @@ packages:
         - '--prefix=/usr'
         - '--system-libs'
         - '--mandir=/usr/share/man'
-        - '--datadir=/usr/share/cmake-3.24'
+        - '--datadir=/usr/share/cmake-3.26'
         - '--no-system-jsoncpp'
         - '--no-system-librhash'
-        - '--docdir=/usr/share/doc/cmake-3.24.2'
+        - '--docdir=/usr/share/doc/cmake-3.26.4'
         - '--parallel=@PARALLELISM@'
         - '--'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
@@ -96,11 +95,9 @@ packages:
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
-      # Freedesktop broke their gitlab, so we use a github mirror
-      git: 'https://github.com/freedesktop/xdg-desktop-file-utils.git'
-      #git: 'https://gitlab.freedesktop.org/xdg/desktop-file-utils.git'
-      tag: '0.24'
-      version: '0.24'
+      git: 'https://gitlab.freedesktop.org/xdg/desktop-file-utils.git'
+      tag: '0.26'
+      version: '0.26'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -117,7 +114,6 @@ packages:
     pkgs_required:
       - mlibc
       - glib
-    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -185,14 +181,13 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/ninja-build/ninja.git'
-      tag: 'v1.10.2'
-      version: '1.10.2'
+      tag: 'v1.11.1'
+      version: '1.11.1'
     tools_required:
       - system-gcc
       - host-cmake
     pkgs_required:
       - mlibc
-    revision: 5
     configure:
       - args:
         - 'cmake'

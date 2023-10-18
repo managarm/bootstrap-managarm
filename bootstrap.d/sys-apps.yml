@@ -2,8 +2,8 @@ sources:
   - name: file
     subdir: ports
     git: 'https://github.com/file/file.git'
-    tag: 'FILE5_44'
-    version: '5.44'
+    tag: 'FILE5_45'
+    version: '5.45'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.15
@@ -169,8 +169,8 @@ packages:
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/diffutils.git'
-      tag: 'v3.8'
-      version: '3.8'
+      tag: 'v3.10'
+      version: '3.10'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -185,7 +185,6 @@ packages:
       - host-automake-v1.15
     pkgs_required:
       - mlibc
-    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -301,7 +300,6 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -530,17 +528,16 @@ packages:
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
-      url: 'https://www.greenwoodsoftware.com/less/less-633.tar.gz'
+      url: 'https://www.greenwoodsoftware.com/less/less-643.tar.gz'
       format: 'tar.gz'
-      checksum: blake2b:e9df180794af365f86734c6b8fde766c1bba42b111717ee5e1cf11001fc7ec3d78910db9bb7c51a76816086f599808b1b60f514011ec40e37650d6bc4f8b3d5c
-      extract_path: 'less-633'
-      version: '633'
+      checksum: blake2b:6dc60dc2e8db05afdae466877a1d26a3008ff5378bbbf2fbdf9efc4f87c0fcfde5703d44a24d4355c98d3a5f438bdb51173150f2a69f801d9c8e4a7401d71b53
+      extract_path: 'less-643'
+      version: '643'
     tools_required:
       - system-gcc
     pkgs_required:
       - mlibc
       - ncurses
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
