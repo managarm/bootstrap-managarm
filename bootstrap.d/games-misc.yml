@@ -129,7 +129,7 @@ packages:
       url: 'https://electrode.codes/managarm-mirrors/openttd-openmsx/openmsx-0.4.2-all.zip'
       format: 'raw'
       filename: 'openmsx-0.4.2-all.zip'
-      checksum: blake2b:337f15bf0f6d3c111a3ae1ca84601568a452922b2ced09f76d1fd5902c1a3da62153df35da490979b68c8d2a35d936a1fc6b7c06c18f934ae58a6e3535de315a
+      checksum: blake2b:4f72f7ab383ec64889a96e410b4d23e90058143cda812173dab24b6db474e5c1192c99e57f7620fab5f4c7a0b1599e5437025cb476ef1c4fe3ea6c91a8961466
       version: '0.4.2'
     configure:
       - args: ['unzip', '@THIS_SOURCE_DIR@/openmsx-0.4.2-all.zip', '-d', '@THIS_BUILD_DIR@']
