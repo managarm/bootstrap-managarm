@@ -1,15 +1,15 @@
-From ca0bd4a77d68a2bdcc824ccc99e99ca1650b53f8 Mon Sep 17 00:00:00 2001
+From df65dc9ff83cf0606e52296b9e9dc4c36777a3db Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Wed, 18 Oct 2023 13:28:13 +0200
 Subject: [PATCH] Improve support for Managarm OS
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
- neofetch | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ neofetch | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/neofetch b/neofetch
-index 93671d0..bd0db18 100755
+index 93671d0..12d690c 100755
 --- a/neofetch
 +++ b/neofetch
 @@ -62,17 +62,17 @@ print_info() {
@@ -36,6 +36,15 @@ index 93671d0..bd0db18 100755
  
      # info "GPU Driver" gpu_driver  # Linux/macOS only
      # info "Disk" disk
+@@ -1416,7 +1416,7 @@ get_kernel() {
+ get_uptime() {
+     # Get uptime in seconds.
+     case $os in
+-        Linux|Windows|MINIX)
++        Linux|Windows|MINIX|Managarm)
+             if [[ -r /proc/uptime ]]; then
+                 s=$(< /proc/uptime)
+                 s=${s/.*}
 @@ -8149,7 +8149,7 @@ EOF
              # TODO: Add proper art
              set_colors 2 1 3 5
