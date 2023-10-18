@@ -1084,41 +1084,41 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.gnome.org/GNOME/libxslt.git'
-      tag: 'v1.1.34'
-      version: '1.1.34'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
-        - host-libtool
-        - host-pkg-config
-      regenerate:
-        - args: ['./autogen.sh']
-          environ:
-            'NOCONFIGURE': 'yes'
+      tag: 'v1.1.38'
+      version: '1.1.38'
     tools_required:
       - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+      - host-cmake
     pkgs_required:
       - mlibc
       - libxml
-    revision: 3
     configure:
       # BLFS increases the recursion limit, apparently some packages need that to build their documentation.
       - args: ['sed', '-i', 's/3000/5000/', '@THIS_SOURCE_DIR@/libxslt/transform.c']
       - args: ['sed', '-i', 's/3000/5000/', '@THIS_SOURCE_DIR@/doc/xsltproc.1']
       - args: ['sed', '-i', 's/3000/5000/', '@THIS_SOURCE_DIR@/doc/xsltproc.xml']
       - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
-        - '--prefix=/usr'
-        - '--disable-static'
-        - '--without-crypto'
-        - '--without-debug'
-        - '--without-debugger'
-        - '--without-profiler'
-        - '--without-python'
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_PREFIX_PATH=/usr'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_SYSTEM_PROCESSOR=@OPTION:arch@'
+        - '-DLIBXSLT_WITH_DEBUGGER=OFF'
+        - '-DLIBXSLT_WITH_CRYPTO=OFF'
+        - '-DLIBXSLT_WITH_MEM_DEBUG=OFF'
+        - '-DLIBXSLT_WITH_MODULES=ON'
+        - '-DLIBXSLT_WITH_PROFILER=OFF'
+        - '-DLIBXSLT_WITH_PYTHON=OFF'
+        - '-DLIBXSLT_WITH_XSLT_DEBUG=OFF'
+        - '-DLIBXSLT_WITH_TESTS=OFF'
+        - '-DLIBXSLT_WITH_THREADS=ON'
+        - '@THIS_SOURCE_DIR@'
     build:
-      - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'install']
+      - args: ['ninja']
+      - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
