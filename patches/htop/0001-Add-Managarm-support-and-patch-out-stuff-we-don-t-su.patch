@@ -1,4 +1,4 @@
-From 58c16cd8ce535226f5485a4debba9109160edc38 Mon Sep 17 00:00:00 2001
+From 8f3d2bf3717409cee132084a996ecbef4925d7a1 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Fri, 30 Dec 2022 23:26:53 +0100
 Subject: [PATCH] Add Managarm support and patch out stuff we don't support yet
@@ -8,7 +8,8 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
  configure.ac             | 2 +-
  linux/LinuxProcess.c     | 2 +-
  linux/LinuxProcessList.c | 9 ++++++++-
- 3 files changed, 10 insertions(+), 3 deletions(-)
+ linux/Platform.c         | 8 ++++++++
+ 4 files changed, 18 insertions(+), 3 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
 index 7a52ab5..314d7b0 100644
@@ -91,6 +92,29 @@ index 45b045c..85694bc 100644
     LinuxProcessList* this = (LinuxProcessList*) super;
  
     LinuxProcessList_updateCPUcount(super);
+diff --git a/linux/Platform.c b/linux/Platform.c
+index 38b66e8..e8c6a3b 100644
+--- a/linux/Platform.c
++++ b/linux/Platform.c
+@@ -251,10 +251,18 @@ const MeterClass* const Platform_meterTypes[] = {
+ };
+ 
+ int Platform_getUptime() {
++#ifndef __managarm__
+    double uptime = 0;
++#else
++   uint64_t uptime = 0;
++#endif
+    FILE* fd = fopen(PROCDIR "/uptime", "r");
+    if (fd) {
++#ifndef __managarm__
+       int n = fscanf(fd, "%64lf", &uptime);
++#else
++      int n = fscanf(fd, "%64lu", &uptime); 
++#endif
+       fclose(fd);
+       if (n <= 0) {
+          return 0;
 -- 
-2.39.0
+2.42.0
 
