@@ -1,0 +1,50 @@
+From ca0bd4a77d68a2bdcc824ccc99e99ca1650b53f8 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Wed, 18 Oct 2023 13:28:13 +0200
+Subject: [PATCH] Improve support for Managarm OS
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ neofetch | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/neofetch b/neofetch
+index 93671d0..bd0db18 100755
+--- a/neofetch
++++ b/neofetch
+@@ -62,17 +62,17 @@ print_info() {
+     info "Uptime" uptime
+     info "Packages" packages
+     info "Shell" shell
+-    info "Resolution" resolution
++    # info "Resolution" resolution
+     info "DE" de
+     info "WM" wm
+     info "WM Theme" wm_theme
+     info "Theme" theme
+     info "Icons" icons
+-    info "Terminal" term
+-    info "Terminal Font" term_font
+-    info "CPU" cpu
+-    info "GPU" gpu
+-    info "Memory" memory
++    # info "Terminal" term
++    # info "Terminal Font" term_font
++    # info "CPU" cpu
++    # info "GPU" gpu
++    # info "Memory" memory
+ 
+     # info "GPU Driver" gpu_driver  # Linux/macOS only
+     # info "Disk" disk
+@@ -8149,7 +8149,7 @@ EOF
+             # TODO: Add proper art
+             set_colors 2 1 3 5
+             read -rd '' ascii_data <<'EOF'
+-                   @@. @@                         
++${c1}                   @@. @@                         
+                    %%%@@%@                        
+                  &%%@%&%%%.                       
+                 @%%@@%%%%%@%@@@@/                 
+-- 
+2.42.0
+
