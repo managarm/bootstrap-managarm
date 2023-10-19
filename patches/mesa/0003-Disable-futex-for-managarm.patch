@@ -1,4 +1,4 @@
-From ec2e4bb1f1b14fe7e377d73f50bef3ddb209b18e Mon Sep 17 00:00:00 2001
+From 05414fd66225218324878fb446cb9b74d524a4ad Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Sun, 16 Apr 2023 20:36:43 +0200
 Subject: [PATCH 3/3] Disable futex for managarm
@@ -29,5 +29,5 @@ index c397507..995c1e2 100644
  #elif defined(__FreeBSD__)
  #define UTIL_FUTEX_SUPPORTED 1
 -- 
-2.40.0
+2.42.0
 
