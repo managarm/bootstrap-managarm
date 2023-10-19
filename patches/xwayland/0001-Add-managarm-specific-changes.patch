@@ -1,18 +1,15 @@
-From 3e733a10e7188be620c05f39c3b0e662fa1f0c68 Mon Sep 17 00:00:00 2001
+From 33292d44e179d609c7e3db84a7c6b13c4649e16d Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Thu, 29 Sep 2022 17:56:37 +0200
 Subject: [PATCH] Add managarm-specific changes
 
 ---
- include/meson.build | 4 ++--
- mi/mibitblt.c       | 1 +
- mi/miinitext.c      | 2 ++
- os/oscolor.c        | 1 +
- xkb/xkbActions.c    | 1 +
- 5 files changed, 7 insertions(+), 2 deletions(-)
+ include/meson.build | 10 +++++++---
+ meson_options.txt   |  3 +++
+ 2 files changed, 10 insertions(+), 3 deletions(-)
 
 diff --git a/include/meson.build b/include/meson.build
-index e6e3d55..413284c 100644
+index e6e3d55..1849101 100644
 --- a/include/meson.build
 +++ b/include/meson.build
 @@ -128,7 +128,7 @@ conf_data.set('HAVE_SYS_UTSNAME_H', cc.has_header('sys/utsname.h') ? '1' : false
@@ -33,55 +30,33 @@ index e6e3d55..413284c 100644
  conf_data.set('HAVE_SHMCTL64', cc.has_function('shmctl64') ? '1' : false)
  conf_data.set('HAVE_SIGACTION', cc.has_function('sigaction') ? '1' : false)
  conf_data.set('HAVE_SIGPROCMASK', cc.has_function('sigprocmask') ? '1' : false)
-diff --git a/mi/mibitblt.c b/mi/mibitblt.c
-index 0b13e49..1a399cb 100644
---- a/mi/mibitblt.c
-+++ b/mi/mibitblt.c
-@@ -61,6 +61,7 @@ SOFTWARE.
- #include "regionstr.h"
- #include <X11/Xmd.h>
- #include "servermd.h"
-+#include <strings.h>
+@@ -196,7 +196,11 @@ conf_data.set('DBE', '1')
+ conf_data.set('DPMSExtension', build_dpms ? '1' : false)
+ conf_data.set('DRI3', build_dri3 ? '1' : false)
+ if build_glx
+-    conf_data.set_quoted('DRI_DRIVER_PATH', dri_dep.get_pkgconfig_variable('dridriverdir'))
++    dridriverdir = get_option('dridriverdir')
++    if dridriverdir == ''
++        dridriverdir = dri_dep.get_pkgconfig_variable('dridriverdir')
++    endif
++    conf_data.set_quoted('DRI_DRIVER_PATH', dridriverdir)
+ endif
+ conf_data.set('HAS_SHM', build_mitshm ? '1' : false)
+ conf_data.set('MITSHM', build_mitshm ? '1' : false)
+diff --git a/meson_options.txt b/meson_options.txt
+index 1d0de52..a168c7e 100644
+--- a/meson_options.txt
++++ b/meson_options.txt
+@@ -15,6 +15,9 @@ option('default_font_path', type: 'string')
+ option('fontrootdir', type: 'string',
+         description: 'Root directory for legacy fonts. Default: from font-utils.pc or $datadir/fonts/X11')
  
- #ifdef __MINGW32__
- #define ffs __builtin_ffs
-diff --git a/mi/miinitext.c b/mi/miinitext.c
-index 26c1eb0..6b873cd 100644
---- a/mi/miinitext.c
-+++ b/mi/miinitext.c
-@@ -97,6 +97,8 @@ SOFTWARE.
- #undef DPMSExtension
- #endif
- 
-+#include <strings.h>
++option('dridriverdir', type: 'string',
++        description: 'Directory where DRI driver libraries are stored. Default: from dri.pc')
 +
- #include "misc.h"
- #include "extension.h"
- #include "extinit.h"
-diff --git a/os/oscolor.c b/os/oscolor.c
-index af83c6a..f765388 100644
---- a/os/oscolor.c
-+++ b/os/oscolor.c
-@@ -48,6 +48,7 @@ SOFTWARE.
- #include <dix-config.h>
- #endif
- 
-+#include <strings.h>
- #include <X11/keysym.h>
- #include "dix.h"
- #include "os.h"
-diff --git a/xkb/xkbActions.c b/xkb/xkbActions.c
-index 5e9a6b6..67092e2 100644
---- a/xkb/xkbActions.c
-+++ b/xkb/xkbActions.c
-@@ -29,6 +29,7 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
- #endif
- 
- #include <stdio.h>
-+#include <strings.h>
- #include <math.h>
- #include <X11/X.h>
- #include <X11/Xproto.h>
+ option('glx', type: 'boolean', value: true)
+ option('xdmcp', type: 'boolean', value: true)
+ option('xdm-auth-1', type: 'boolean', value: true)
 -- 
-2.41.0
+2.42.0
 

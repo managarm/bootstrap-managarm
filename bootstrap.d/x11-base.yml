@@ -160,14 +160,14 @@ packages:
       description: Wayland is a complete window system in itself, but even so, if we're migrating away from X, it makes sense to have a good backwards compatibility story. With a few changes, the Xorg server can be modified to use wayland input devices for input and forward either the root window or individual top-level windows as wayland surfaces. The server still runs the same 2D driver with the same acceleration code as it does when it runs natively. The main difference is that wayland handles presentation of the windows instead of KMS.
       spdx: 'MIT'
       website: 'https://wayland.freedesktop.org/xserver.html'
-      maintainer: "no92 <no92.mail@gmail.com>"
+      maintainer: "Alexander Richards <electrodeyt@gmail.com>"
       categories: ['x11-base']
       replaces: ['xorg-server']
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/xserver.git'
-      tag: 'xwayland-23.1.99.901'
-      version: '23.1.99.901'
+      tag: 'xwayland-23.2.1'
+      version: '23.2.1'
     tools_required:
       - system-gcc
       - wayland-scanner
@@ -193,7 +193,6 @@ packages:
       - nettle
       - xkbcomp
       - pixman
-    revision: 3
     configure:
       - args:
         - 'meson'
@@ -209,12 +208,16 @@ packages:
         - '-Dvendor_name="The Managarm Project"'
         - '-Dvendor_name_short="Managarm"'
         - '-Dvendor_web="https://managarm.org"'
+        - '-Dfontrootdir=/usr/share/fonts/X11'
+        - '-Ddridriverdir=/usr/lib/dri'
         - '-Ddpms=false'
         - '-Dscreensaver=false'
         - '-Dxres=false'
         - '-Dxinerama=false'
         - '-Dxv=false'
         - '-Dsecure-rpc=false'
+        - '-Dglx=true'
+        - '-Ddri3=true'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
