@@ -799,10 +799,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/mesa/mesa.git'
-      tag: 'mesa-23.0.2'
-      version: '23.0.2'
-      tools_required:
-        - host-pkg-config
+      tag: 'mesa-23.1.9'
+      version: '23.1.9'
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -829,7 +827,6 @@ packages:
       - libglvnd
       - libexpat
       - zstd
-    revision: 2
     configure:
       - args: ['cp', '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file', 'meson.cross-file']
       - args:
@@ -850,8 +847,6 @@ packages:
         #- '--buildtype=debug'
         - '-Dglx=dri'
         - '-Dplatforms=wayland,x11'
-        # The Gallium swrast driver seems to be preferred over dri-swrast.
-        - '-Ddri-drivers='
         - '-Dgallium-drivers=swrast'
         - '-Dvulkan-drivers='
         - '-Dglvnd=true'
