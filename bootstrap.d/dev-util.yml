@@ -238,6 +238,9 @@ packages:
     tools_required:
       - system-gcc
       - host-cmake
+    pkgs_required:
+      # This is only a build-time dependency.
+      - mlibc
     configure:
       - args:
         - 'cmake'
