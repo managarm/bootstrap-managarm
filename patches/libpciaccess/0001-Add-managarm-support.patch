@@ -1,0 +1,84 @@
+From 601d113786aa3ba0cda9d7525ea2007ca746b641 Mon Sep 17 00:00:00 2001
+From: Alexander <electrodeyt@gmail.com>
+Date: Sun, 29 Oct 2023 23:27:44 +0100
+Subject: [PATCH] Add managarm "support"
+
+---
+ src/common_init.c      |  2 +-
+ src/common_interface.c |  2 +-
+ src/linux_sysfs.c      | 10 ++++++++--
+ src/meson.build        |  2 +-
+ 4 files changed, 11 insertions(+), 5 deletions(-)
+
+diff --git a/src/common_init.c b/src/common_init.c
+index 1940cff..37ec6ac 100644
+--- a/src/common_init.c
++++ b/src/common_init.c
+@@ -55,7 +55,7 @@ pci_system_init( void )
+ {
+     int err = ENOSYS;
+ 
+-#ifdef __linux__
++#if defined(__linux__) || defined(__managarm__)
+     err = pci_system_linux_sysfs_create();
+ #elif defined(__FreeBSD__) || defined(__FreeBSD_kernel__) || defined(__DragonFly__)
+     err = pci_system_freebsd_create();
+diff --git a/src/common_interface.c b/src/common_interface.c
+index 6dbaa6b..7846ef3 100644
+--- a/src/common_interface.c
++++ b/src/common_interface.c
+@@ -39,7 +39,7 @@
+ #include "pciaccess.h"
+ #include "pciaccess_private.h"
+ 
+-#if defined(__linux__) || defined(__GLIBC__) || defined(__CYGWIN__)
++#if defined(__linux__) || defined(__GLIBC__) || defined(__CYGWIN__) || defined(__managarm__)
+ #include <byteswap.h>
+ 
+ #if __BYTE_ORDER == __BIG_ENDIAN
+diff --git a/src/linux_sysfs.c b/src/linux_sysfs.c
+index d62f48c..a2b96f0 100644
+--- a/src/linux_sysfs.c
++++ b/src/linux_sysfs.c
+@@ -462,8 +462,11 @@ pci_device_linux_sysfs_read( struct pci_device * dev, void * data,
+ 
+ 
+     while ( temp_size > 0 ) {
++#ifndef __managarm__
+ 	const ssize_t bytes = pread64( fd, data_bytes, temp_size, offset );
+-
++#else
++	const ssize_t bytes = pread( fd, data_bytes, temp_size, offset );
++#endif
+ 	/* If zero bytes were read, then we assume it's the end of the
+ 	 * config file.
+ 	 */
+@@ -522,8 +525,11 @@ pci_device_linux_sysfs_write( struct pci_device * dev, const void * data,
+ 
+ 
+     while ( temp_size > 0 ) {
++#ifndef __managarm__
+ 	const ssize_t bytes = pwrite64( fd, data_bytes, temp_size, offset );
+-
++#else
++	const ssize_t bytes = pwrite( fd, data_bytes, temp_size, offset );
++#endif
+ 	/* If zero bytes were written, then we assume it's the end of the
+ 	 * config file.
+ 	 */
+diff --git a/src/meson.build b/src/meson.build
+index 24eee04..3456e69 100644
+--- a/src/meson.build
++++ b/src/meson.build
+@@ -20,7 +20,7 @@
+ 
+ host = host_machine.system()
+ _pci_access_host_files = []
+-if host == 'linux'
++if host == 'linux' or host == 'managarm'
+   _pci_access_host_files += ['linux_sysfs.c', 'linux_devmem.c', 'common_vgaarb.c']
+ elif host == 'freebsd'
+   _pci_access_host_files += ['freebsd_pci.c', 'common_vgaarb_stub.c']
+-- 
+2.42.0
+
