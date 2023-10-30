@@ -1643,37 +1643,6 @@ packages:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc/kmscon']
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/kmscon.conf', '@THIS_COLLECT_DIR@/etc/kmscon/']
 
-  - name: lua
-    source:
-      subdir: ports
-      url: 'https://www.lua.org/ftp/lua-5.3.5.tar.gz'
-      format: 'tar.gz'
-      checksum: blake2b:8890fa70fcfb869296bc74c754dc30621a3786d4b38dd35ef9e57ca46ee4b3df12dac1b86109be0823847499ff6b0d95de11f446c4c22de440ae3bb704e5068b
-      extract_path: 'lua-5.3.5'
-      version: '5.3.5'
-    tools_required:
-      - system-gcc
-    pkgs_required:
-      - mlibc
-    revision: 5
-    configure:
-      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
-      - args:
-        - 'sed'
-        - '-i'
-        - 's|^#define LUA_ROOT "/usr/local/"$|#define LUA_ROOT "/usr/"|'
-        - 'src/luaconf.h'
-    build:
-      - args:
-        - 'make'
-        - 'generic'
-        - 'CC=@OPTION:arch-triple@-gcc'
-        - 'AR=@OPTION:arch-triple@-ar rcu'
-        - 'RANLIB=@OPTION:arch-triple@-ranlib'
-        - '-j@PARALLELISM@'
-      - args: ['make', 'install', 'INSTALL_TOP=@THIS_COLLECT_DIR@/usr']
-        quiet: true
-
   - name: mednafen
     source:
       subdir: 'ports'
