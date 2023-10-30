@@ -47,3 +47,53 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: procps
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Standard informational utilities and process-handling tools
+      description: The Procps-ng package contains programs for monitoring processes.
+      spdx: 'GPL-2.0-or-later LGPL-2.0-or-later LGPL-2.1-or-later'
+      website: 'https://gitlab.com/procps-ng/procps'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-process']
+    source:
+      subdir: ports
+      git: 'https://gitlab.com/procps-ng/procps.git'
+      tag: 'v4.0.4'
+      version: '4.0.4'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['./autogen.sh']
+    tools_required:
+      - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - ncurses
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--disable-static'
+        - '--disable-kill'
+        - '--docdir=/usr/share/doc/procps-ng-4.0.4'
+        - '--disable-numa'
+        - '--enable-colorwatch'
+        - '--disable-nls'
+        - '--disable-w'
+        environ:
+          ac_cv_func_malloc_0_nonnull: 'yes'
+          ac_cv_func_realloc_0_nonnull: 'yes'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
