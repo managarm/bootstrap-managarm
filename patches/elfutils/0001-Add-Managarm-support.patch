@@ -1,0 +1,113 @@
+From 35ff4bece8b47447b28ac8ac4f7cdb371b762492 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Mon, 30 Oct 2023 22:19:28 +0100
+Subject: [PATCH] Add Managarm support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ configure.ac       |  2 +-
+ libasm/Makefile.am |  2 +-
+ libdw/Makefile.am  |  2 +-
+ libelf/Makefile.am |  2 +-
+ src/Makefile.am    | 32 ++++++++++++++++----------------
+ 5 files changed, 20 insertions(+), 20 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 6e881fa..25fab84 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -636,7 +636,7 @@ CFLAGS="$old_CFLAGS"])
+ AS_IF([test "x$ac_cv_fno_addrsig" = "xyes"], CFLAGS="$CFLAGS -fno-addrsig")
+ 
+ saved_LIBS="$LIBS"
+-AC_SEARCH_LIBS([argp_parse], [argp])
++AC_SEARCH_LIBS([argp_parse], [argp], [], [], [-lintl])
+ LIBS="$saved_LIBS"
+ case "$ac_cv_search_argp_parse" in
+         no) AC_MSG_FAILURE([failed to find argp_parse]) ;;
+diff --git a/libasm/Makefile.am b/libasm/Makefile.am
+index 1e6b63e..d14b60d 100644
+--- a/libasm/Makefile.am
++++ b/libasm/Makefile.am
+@@ -55,7 +55,7 @@ libasm_pic_a_SOURCES =
+ am_libasm_pic_a_OBJECTS = $(libasm_a_SOURCES:.c=.os)
+ 
+ libasm_so_DEPS = ../lib/libeu.a ../libebl/libebl_pic.a ../libelf/libelf.so ../libdw/libdw.so
+-libasm_so_LDLIBS = $(libasm_so_DEPS)
++libasm_so_LDLIBS = $(libasm_so_DEPS) -lintl
+ if USE_LOCKS
+ libasm_so_LDLIBS += -lpthread
+ endif
+diff --git a/libdw/Makefile.am b/libdw/Makefile.am
+index e548f38..5e13077 100644
+--- a/libdw/Makefile.am
++++ b/libdw/Makefile.am
+@@ -110,7 +110,7 @@ libdw_so_LIBS = ../libebl/libebl_pic.a ../backends/libebl_backends_pic.a \
+ 		../libcpu/libcpu_pic.a libdw_pic.a ../libdwelf/libdwelf_pic.a \
+ 		../libdwfl/libdwfl_pic.a
+ libdw_so_DEPS = ../lib/libeu.a ../libelf/libelf.so
+-libdw_so_LDLIBS = $(libdw_so_DEPS) -ldl -lz $(argp_LDADD) $(fts_LIBS) $(obstack_LIBS) $(zip_LIBS) -pthread
++libdw_so_LDLIBS = $(libdw_so_DEPS) -ldl -lz $(argp_LDADD) $(fts_LIBS) $(obstack_LIBS) $(zip_LIBS) -pthread -lintl
+ libdw.so: $(srcdir)/libdw.map $(libdw_so_LIBS) $(libdw_so_DEPS)
+ 	$(AM_V_CCLD)$(LINK) $(dso_LDFLAGS) -o $@ \
+ 		-Wl,--soname,$@.$(VERSION),--enable-new-dtags \
+diff --git a/libelf/Makefile.am b/libelf/Makefile.am
+index aabce43..25d75ab 100644
+--- a/libelf/Makefile.am
++++ b/libelf/Makefile.am
+@@ -106,7 +106,7 @@ libelf_pic_a_SOURCES =
+ am_libelf_pic_a_OBJECTS = $(libelf_a_SOURCES:.c=.os)
+ 
+ libelf_so_DEPS = ../lib/libeu.a
+-libelf_so_LDLIBS = $(libelf_so_DEPS) -lz $(zstd_LIBS)
++libelf_so_LDLIBS = $(libelf_so_DEPS) -lz $(zstd_LIBS) -lintl
+ if USE_LOCKS
+ libelf_so_LDLIBS += -lpthread
+ endif
+diff --git a/src/Makefile.am b/src/Makefile.am
+index 6cc019d..d2f926a 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -67,23 +67,23 @@ ranlib_no_Wstack_usage = yes
+ ar_no_Wstack_usage = yes
+ unstrip_no_Wstack_usage = yes
+ 
+-readelf_LDADD = $(libdw) $(libebl) $(libelf) $(libeu) $(argp_LDADD)
++readelf_LDADD = $(libdw) $(libebl) $(libelf) $(libeu) $(argp_LDADD) -lintl
+ nm_LDADD = $(libdw) $(libebl) $(libelf) $(libeu) $(argp_LDADD) $(obstack_LIBS) \
+-	   $(demanglelib)
+-size_LDADD = $(libelf) $(libeu) $(argp_LDADD)
+-strip_LDADD = $(libebl) $(libelf) $(libdw) $(libeu) $(argp_LDADD)
+-elflint_LDADD  = $(libebl) $(libdw) $(libelf) $(libeu) $(argp_LDADD)
+-findtextrel_LDADD = $(libdw) $(libelf) $(libeu) $(argp_LDADD)
+-addr2line_LDADD = $(libdw) $(libelf) $(libeu) $(argp_LDADD) $(demanglelib)
+-elfcmp_LDADD = $(libebl) $(libdw) $(libelf) $(libeu) $(argp_LDADD)
+-objdump_LDADD  = $(libasm) $(libebl) $(libdw) $(libelf) $(libeu) $(argp_LDADD)
+-ranlib_LDADD = libar.a $(libelf) $(libeu) $(argp_LDADD) $(obstack_LIBS)
+-strings_LDADD = $(libelf) $(libeu) $(argp_LDADD)
+-ar_LDADD = libar.a $(libelf) $(libeu) $(argp_LDADD) $(obstack_LIBS)
+-unstrip_LDADD = $(libebl) $(libelf) $(libdw) $(libeu) $(argp_LDADD)
+-stack_LDADD = $(libebl) $(libelf) $(libdw) $(libeu) $(argp_LDADD) $(demanglelib)
+-elfcompress_LDADD = $(libebl) $(libelf) $(libdw) $(libeu) $(argp_LDADD)
+-elfclassify_LDADD = $(libelf) $(libdw) $(libeu) $(argp_LDADD)
++	   $(demanglelib) -lintl
++size_LDADD = $(libelf) $(libeu) $(argp_LDADD) -lintl
++strip_LDADD = $(libebl) $(libelf) $(libdw) $(libeu) $(argp_LDADD) -lintl
++elflint_LDADD  = $(libebl) $(libdw) $(libelf) $(libeu) $(argp_LDADD) -lintl
++findtextrel_LDADD = $(libdw) $(libelf) $(libeu) $(argp_LDADD) -lintl
++addr2line_LDADD = $(libdw) $(libelf) $(libeu) $(argp_LDADD) $(demanglelib) -lintl
++elfcmp_LDADD = $(libebl) $(libdw) $(libelf) $(libeu) $(argp_LDADD) -lintl
++objdump_LDADD  = $(libasm) $(libebl) $(libdw) $(libelf) $(libeu) $(argp_LDADD) -lintl
++ranlib_LDADD = libar.a $(libelf) $(libeu) $(argp_LDADD) $(obstack_LIBS) -lintl
++strings_LDADD = $(libelf) $(libeu) $(argp_LDADD) -lintl
++ar_LDADD = libar.a $(libelf) $(libeu) $(argp_LDADD) $(obstack_LIBS) -lintl
++unstrip_LDADD = $(libebl) $(libelf) $(libdw) $(libeu) $(argp_LDADD) -lintl
++stack_LDADD = $(libebl) $(libelf) $(libdw) $(libeu) $(argp_LDADD) $(demanglelib) -lintl
++elfcompress_LDADD = $(libebl) $(libelf) $(libdw) $(libeu) $(argp_LDADD) -lintl
++elfclassify_LDADD = $(libelf) $(libdw) $(libeu) $(argp_LDADD) -lintl
+ 
+ installcheck-binPROGRAMS: $(bin_PROGRAMS)
+ 	bad=0; pid=$$$$; list="$(bin_PROGRAMS)"; for p in $$list; do \
+-- 
+2.42.0
+
