@@ -341,6 +341,42 @@ packages:
           echo "INPUT(-lncursesw)" > @THIS_COLLECT_DIR@/usr/lib/libcursesw.so
           ln -sfv libncurses.so      @THIS_COLLECT_DIR@/usr/lib/libcurses.so
 
+  - name: obstack-standalone
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: A standalone library to implement GNU libc's obstack
+      description: A standalone library to implement GNU libc's obstack
+      spdx: 'GPL-2.0-only'
+      website: 'https://github.com/void-linux/musl-obstack'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-libs']
+    source:
+      subdir: ports
+      git: 'https://github.com/void-linux/musl-obstack.git'
+      tag: 'v1.2.3'
+      version: '1.2.3'
+      tools_required:
+        - host-autoconf-v2.71
+        - host-automake-v1.16
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['./bootstrap.sh']
+    tools_required:
+      - system-gcc
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--disable-static'
+        - '--enable-shared'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: readline
     labels: [aarch64]
     architecture: '@OPTION:arch@'
