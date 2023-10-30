@@ -303,6 +303,66 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: elfutils
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Libraries/utilities to handle ELF objects
+      description: Elfutils is a collection of utilities, including eu-ld (a linker), eu-nm (for listing symbols from object files), eu-size (for listing the section sizes of an object or archive file), eu-strip (for discarding  symbols), eu-readelf (to see the raw ELF file structures), and eu-elflint (to check for well-formed ELF files).
+      spdx: 'LGPL-3.0-or-later GPL-2.0-or-later GPL-3.0-or-later'
+      website: 'https://sourceware.org/elfutils/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
+    source:
+      subdir: ports
+      url: 'https://sourceware.org/elfutils/ftp/0.189/elfutils-0.189.tar.bz2'
+      format: 'tar.bz2'
+      extract_path: 'elfutils-0.189'
+      checksum: blake2b:30596271e14cf3408326abc38a9775b849b8cb0ee119a5455df9434a7d3b9a57afb15e0236a179a26c7bd400d303749964c9d6350c419f747784fd99d12517e0
+      version: '0.189'
+      patch-path-strip: 1
+      tools_required:
+        - host-autoconf-archive
+        - host-autoconf-v2.71
+        - host-automake-v1.16
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['autoreconf', '-fvi']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - bzip2
+      - xz-utils
+      - zlib
+      - zstd
+      - argp-standalone
+      - fts-standalone
+      - obstack-standalone
+      - libintl
+      - libiconv
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--build=x86_64-linux-gnu'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--program-prefix=eu-'
+        - '--disable-debuginfod'
+        - '--disable-libdebuginfod'
+        - '--disable-valgrind'
+        - '--with-bzlib'
+        - '--with-lzma'
+        - '--with-zstd'
+        - '--with-zlib'
+        - '--disable-nls'
+        - '--enable-thread-safety'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: fribidi
     labels: [aarch64]
     architecture: '@OPTION:arch@'
