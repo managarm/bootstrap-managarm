@@ -1,5 +1,6 @@
 packages:
   - name: htop
+    labels: [aarch64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: An interactive process viewer
