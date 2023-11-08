@@ -1,0 +1,81 @@
+From 10a44f7810e19e1346838dd5e7daa6f3376ebd4c Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Wed, 8 Nov 2023 02:38:22 +0100
+Subject: [PATCH 3/3] Add some missing includes and disable floppy support in
+ blkdev
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ disk-utils/blockdev.c | 2 ++
+ lib/blkdev.c          | 3 ++-
+ lib/pager.c           | 1 +
+ term-utils/agetty.c   | 1 +
+ term-utils/setterm.c  | 1 +
+ 5 files changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/disk-utils/blockdev.c b/disk-utils/blockdev.c
+index f425d15..1e16203 100644
+--- a/disk-utils/blockdev.c
++++ b/disk-utils/blockdev.c
+@@ -9,6 +9,8 @@
+ #include <string.h>
+ #include <unistd.h>
+ #include <sys/ioctl.h>
++#include <sys/mount.h>
++#include <linux/fs.h>
+ #include <errno.h>
+ 
+ #include "c.h"
+diff --git a/lib/blkdev.c b/lib/blkdev.c
+index c22853d..c4bfc89 100644
+--- a/lib/blkdev.c
++++ b/lib/blkdev.c
+@@ -114,7 +114,8 @@ blkdev_get_size(int fd, unsigned long long *bytes)
+ 		return 0;
+ #endif
+ 
+-#ifdef FDGETPRM
++//#ifdef FDGETPRM
++#if 0
+ 	{
+ 		struct floppy_struct this_floppy;
+ 
+diff --git a/lib/pager.c b/lib/pager.c
+index 747521e..94450c1 100644
+--- a/lib/pager.c
++++ b/lib/pager.c
+@@ -10,6 +10,7 @@
+ #include <string.h>
+ #include <err.h>
+ #include <sys/types.h>
++#include <sys/select.h>
+ #include <sys/stat.h>
+ #include <sys/wait.h>
+ #include <signal.h>
+diff --git a/term-utils/agetty.c b/term-utils/agetty.c
+index bf985a2..52dc861 100644
+--- a/term-utils/agetty.c
++++ b/term-utils/agetty.c
+@@ -20,6 +20,7 @@
+ #include <errno.h>
+ #include <sys/ioctl.h>
+ #include <sys/types.h>
++#include <sys/select.h>
+ #include <sys/stat.h>
+ #include <sys/wait.h>
+ #include <fcntl.h>
+diff --git a/term-utils/setterm.c b/term-utils/setterm.c
+index 22afc76..dba1c27 100644
+--- a/term-utils/setterm.c
++++ b/term-utils/setterm.c
+@@ -57,6 +57,7 @@
+ #include <sys/klog.h>
+ #include <sys/param.h>		/* for MAXPATHLEN */
+ #include <sys/time.h>
++#include <sys/select.h>
+ #include <termios.h>
+ #include <unistd.h>
+ 
+-- 
+2.42.0
+

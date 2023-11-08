@@ -805,7 +805,7 @@ packages:
       - libiconv
       - file
       - libxcrypt
-    revision: 6
+    revision: 7
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -954,7 +954,7 @@ packages:
       - libiconv
       - file
       - libxcrypt
-    revision: 7
+    revision: 8
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -975,7 +975,7 @@ packages:
         - '--disable-unshare'
         - '--disable-nsenter'
         - '--disable-setpriv'
-        - '--disable-eject'
+        - '--enable-eject'
         - '--disable-plymouth_support'
         - '--disable-fdformat'
         - '--disable-hwclock'
@@ -983,7 +983,7 @@ packages:
         - '--disable-hwclock-gplv3'
         - '--disable-wdctl'
         - '--disable-logger'
-        - '--disable-switch_root'
+        - '--enable-switch_root'
         - '--disable-pivot_root'
         - '--disable-chmem'
         - '--disable-ipcrm'
@@ -1005,12 +1005,12 @@ packages:
         - '--disable-swapon'
         - '--disable-lscpu'
         - '--disable-chcpu'
-        - '--disable-blockdev'
+        - '--enable-blockdev'
         - '--disable-prlimit'
         - '--disable-lsipc'
         - '--disable-lsns'
         - '--disable-readprofile'
-        - '--disable-dmesg'
+        - '--enable-dmesg'
         - '--disable-fincore'
         - '--disable-fsfreeze'
         - '--disable-blkdiscard'
