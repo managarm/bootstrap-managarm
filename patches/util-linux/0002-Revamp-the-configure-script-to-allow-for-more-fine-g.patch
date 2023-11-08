@@ -1,8 +1,9 @@
-From b07e4d05bb062d95ebc17e1a98b63dc31b82723f Mon Sep 17 00:00:00 2001
+From 4ab3b76533cfa09f90713940cfa9f375a982bbc4 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Tue, 16 Feb 2021 10:21:13 +0100
-Subject: [PATCH 2/2] Revamp the configure script to allow for more fine-grained
- control over the programs build. Make configure think that Managarm is Linux.
+Subject: [PATCH 2/3] Revamp the configure script to allow for more
+ fine-grained control over the programs build. Make configure think that
+ Managarm is Linux.
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
@@ -10,7 +11,7 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
  1 file changed, 216 insertions(+), 42 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index 2ac4c2bdf..345a3d319 100644
+index 2ac4c2b..345a3d3 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -212,6 +212,8 @@ bsd_os=no
@@ -465,5 +466,5 @@ index 2ac4c2bdf..345a3d319 100644
  
  
 -- 
-2.30.0
+2.42.0
 

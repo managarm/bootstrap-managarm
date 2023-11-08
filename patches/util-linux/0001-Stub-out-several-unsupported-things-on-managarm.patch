@@ -1,7 +1,7 @@
-From 3b0ef9e87835d779a439a00088907d2e6e71feca Mon Sep 17 00:00:00 2001
+From 1fd62d461931bec2e2ec50eccb3345edf26aa0dd Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Thu, 21 Jan 2021 12:23:48 +0100
-Subject: [PATCH 1/2] Stub out several unsupported things on managarm
+Subject: [PATCH 1/3] Stub out several unsupported things on managarm
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
@@ -18,7 +18,7 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
  10 files changed, 23 insertions(+), 2 deletions(-)
 
 diff --git a/disk-utils/cfdisk.c b/disk-utils/cfdisk.c
-index d96b6e9e0..3a5b20939 100644
+index 11f8b9a..bacba72 100644
 --- a/disk-utils/cfdisk.c
 +++ b/disk-utils/cfdisk.c
 @@ -22,6 +22,7 @@
@@ -30,7 +30,7 @@ index d96b6e9e0..3a5b20939 100644
  #ifdef HAVE_LIBMOUNT
  # include <libmount.h>	/* keep it optional for non-linux systems */
 diff --git a/include/namespace.h b/include/namespace.h
-index 2d0a56e02..75d0f439d 100644
+index 2d0a56e..75d0f43 100644
 --- a/include/namespace.h
 +++ b/include/namespace.h
 @@ -7,6 +7,7 @@
@@ -48,7 +48,7 @@ index 2d0a56e02..75d0f439d 100644
 +#endif /* !__managarm__ */
  #endif	/* UTIL_LINUX_NAMESPACE_H */
 diff --git a/include/path.h b/include/path.h
-index 2a4f80ecd..183a0d4a8 100644
+index 2a4f80e..183a0d4 100644
 --- a/include/path.h
 +++ b/include/path.h
 @@ -124,6 +124,7 @@ int ul_path_countf_dirents(struct path_cxt *pc, const char *path, ...)
@@ -66,7 +66,7 @@ index 2a4f80ecd..183a0d4a8 100644
 +#endif /* !__managarm__ */
  #endif /* UTIL_LINUX_PATH_H */
 diff --git a/lib/cpuset.c b/lib/cpuset.c
-index 2847db853..78ffd5f1b 100644
+index 2847db8..78ffd5f 100644
 --- a/lib/cpuset.c
 +++ b/lib/cpuset.c
 @@ -1,3 +1,4 @@
@@ -80,7 +80,7 @@ index 2847db853..78ffd5f1b 100644
  #endif
 +#endif
 diff --git a/lib/path.c b/lib/path.c
-index 75fa85305..fe3702970 100644
+index 75fa853..fe37029 100644
 --- a/lib/path.c
 +++ b/lib/path.c
 @@ -977,6 +977,7 @@ FILE *ul_prefix_fopen(const char *prefix, const char *path, const char *mode)
@@ -100,7 +100,7 @@ index 75fa85305..fe3702970 100644
  
  #ifdef TEST_PROGRAM_PATH
 diff --git a/libblkid/src/topology/ioctl.c b/libblkid/src/topology/ioctl.c
-index 3aba09e4f..76b750e20 100644
+index 3aba09e..76b750e 100644
 --- a/libblkid/src/topology/ioctl.c
 +++ b/libblkid/src/topology/ioctl.c
 @@ -16,6 +16,8 @@
@@ -113,7 +113,7 @@ index 3aba09e4f..76b750e20 100644
  
  /*
 diff --git a/login-utils/logindefs.c b/login-utils/logindefs.c
-index 97150dc28..35371ec3f 100644
+index 97150dc..35371ec 100644
 --- a/login-utils/logindefs.c
 +++ b/login-utils/logindefs.c
 @@ -26,7 +26,7 @@
@@ -126,7 +126,7 @@ index 97150dc28..35371ec3f 100644
  #include <sys/types.h>
  #include <pwd.h>
 diff --git a/login-utils/lslogins.c b/login-utils/lslogins.c
-index 8a6ef713f..2b56879c3 100644
+index 773d13a..90e617f 100644
 --- a/login-utils/lslogins.c
 +++ b/login-utils/lslogins.c
 @@ -25,7 +25,7 @@
@@ -139,7 +139,7 @@ index 8a6ef713f..2b56879c3 100644
  #include <grp.h>
  #include <shadow.h>
 diff --git a/misc-utils/lsblk.h b/misc-utils/lsblk.h
-index 87221271e..6ae1ebecc 100644
+index 8722127..6ae1ebe 100644
 --- a/misc-utils/lsblk.h
 +++ b/misc-utils/lsblk.h
 @@ -13,6 +13,8 @@
@@ -152,7 +152,7 @@ index 87221271e..6ae1ebecc 100644
  #include "list.h"
  #include "debug.h"
 diff --git a/term-utils/agetty.c b/term-utils/agetty.c
-index 191fa29c0..bf985a2f9 100644
+index 191fa29..bf985a2 100644
 --- a/term-utils/agetty.c
 +++ b/term-utils/agetty.c
 @@ -88,6 +88,14 @@
@@ -162,7 +162,7 @@ index 191fa29c0..bf985a2f9 100644
 +#elif defined __managarm__
 +#  define USE_SYSLOG
 +#  ifndef DEFAULT_VCTERM
-+#    define DEFAULT_VCTERM "linux"
++#    define DEFAULT_VCTERM "managarm"
 +#  endif
 +#  ifndef DEFAULT_STERM
 +#    define DEFAULT_STERM  "vt100"
@@ -171,5 +171,5 @@ index 191fa29c0..bf985a2f9 100644
  #  ifndef DEFAULT_VCTERM
  #    define DEFAULT_VCTERM "vt100"
 -- 
-2.30.0
+2.42.0
 
