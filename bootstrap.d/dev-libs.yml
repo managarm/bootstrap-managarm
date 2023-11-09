@@ -1606,11 +1606,18 @@ packages:
   - name: weston
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: 'A lightweight and functional Wayland compositor'
+      description: 'Weston is a Wayland compositor designed for correctness, reliability, predictability, and performance. Out of the box, Weston provides a very basic desktop, or a full-featured environment for non-desktop uses such as automotive, embedded, in-flight, industrial, kiosks, set-top boxes and TVs.'
+      spdx: 'MIT'
+      website: 'https://gitlab.freedesktop.org/wayland/weston'
+      maintainer: "no92 <leo@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/wayland/weston.git'
-      tag: '12.0.1'
-      version: '12.0.1'
+      tag: '12.0.2'
+      version: '12.0.2'
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -1636,7 +1643,6 @@ packages:
       - seatd
       - xcb-proto
       - xcb-util-cursor
-    revision: 2
     configure:
       - args:
         - 'meson'
