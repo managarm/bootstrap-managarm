@@ -178,7 +178,7 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
-  
+
   - name: xeyes
     labels: [aarch64]
     architecture: '@OPTION:arch@'
@@ -462,3 +462,47 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: igt-gpu-tools
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: IGT GPU Tools is a collection of tools for development and testing of the DRM drivers
+      spdx: 'MIT'
+      website: 'https://gitlab.freedesktop.org/drm/igt-gpu-tools/'
+      maintainer: "no92 <leo@managarm.org>"
+      categories: ['x11-apps']
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.freedesktop.org/drm/igt-gpu-tools.git'
+      tag: 'v1.28'
+      version: '1.28'
+    tools_required:
+      - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - libdrm
+      - libpciaccess
+      - procps
+      - elfutils
+      - pixman
+      - cairo
+      - eudev
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '-Dlibunwind=disabled'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
