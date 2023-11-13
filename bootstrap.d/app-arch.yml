@@ -13,6 +13,7 @@ packages:
       git: 'https://github.com/google/brotli.git'
       tag: 'v1.1.0'
       version: '1.1.0'
+    revision: 2
     tools_required:
       - system-gcc
       - host-cmake
@@ -53,7 +54,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 5
+    revision: 6
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       # Remove the test directory from the Makefile, as it tries to run (and fail on) the tests
@@ -91,7 +92,7 @@ packages:
       - mlibc
       - libiconv
       - libintl
-    revision: 2
+    revision: 3
     configure:
       # Fix a build issue when building with gcc 10 and higher
       - args: ['sed', '-i', '/The name/,+2 d', '@THIS_SOURCE_DIR@/src/global.c']
@@ -116,6 +117,7 @@ packages:
       website: 'https://www.gnu.org/software/gzip/'
       maintainer: "Dennis Bonke <dennis@managarm.org>"
       categories: ['app-arch']
+    revision: 2
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/gzip.git'
@@ -162,6 +164,7 @@ packages:
       git: 'https://github.com/libarchive/libarchive.git'
       tag: 'v3.7.2'
       version: '3.7.2'
+    revision: 2
     tools_required:
       - host-cmake
       - system-gcc
@@ -207,7 +210,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -248,7 +251,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -287,7 +290,7 @@ packages:
       - mlibc
       - bzip2
       - libiconv
-    revision: 5
+    revision: 6
     configure:
       # Fixup their makefile, thanks gentoo!
       - args: |
@@ -332,6 +335,7 @@ packages:
         - host-libtool
       regenerate:
         - args: ['./autogen.sh', '--no-po4a', '--no-doxygen']
+    revision: 2
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.15
@@ -374,7 +378,7 @@ packages:
     pkgs_required:
       - mlibc
       - bzip2
-    revision: 5
+    revision: 6
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -411,7 +415,7 @@ packages:
       - mlibc
       - zlib
       - xz-utils
-    revision: 2
+    revision: 3
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:

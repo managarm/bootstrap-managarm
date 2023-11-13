@@ -27,7 +27,7 @@ packages:
     pkgs_required:
       - mlibc
       - ncurses
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

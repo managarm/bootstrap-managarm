@@ -25,6 +25,7 @@ packages:
       - pango
       - libx11
       - openssl
+    revision: 2
     configure:
       - args:
         - 'meson'

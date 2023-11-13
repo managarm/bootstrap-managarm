@@ -28,7 +28,7 @@ packages:
       - libxext
       - mesa
       - wayland
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -79,7 +79,7 @@ packages:
       - libxt
       - libxkbfile
       - libiconv
-    revision: 8
+    revision: 9
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -126,6 +126,7 @@ packages:
       - libxi
       - libxrender
       - libxtst
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -164,6 +165,7 @@ packages:
       - mesa
       - xorg-util-macros
       - libx11
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -202,6 +204,7 @@ packages:
       - xorg-util-macros
       - libx11
       - libxkbfile
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -240,6 +243,7 @@ packages:
       - xorg-util-macros
       - libx11
       - libxmu
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -278,6 +282,7 @@ packages:
       - mlibc
       - xorg-util-macros
       - libxcb
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -314,6 +319,7 @@ packages:
       - mlibc
       - xorg-util-macros
       - libx11
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -352,6 +358,7 @@ packages:
       - libxmu
       - libx11
       - libxext
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -392,6 +399,7 @@ packages:
       - xorg-util-macros
       - libx11
       - xcb-util
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

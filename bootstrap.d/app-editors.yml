@@ -39,7 +39,7 @@ packages:
       - ncurses
       - libintl
       - zlib
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -72,6 +72,7 @@ packages:
       git: 'https://github.com/vim/vim.git'
       tag: 'v9.0.1897'
       version: '9.0.1897'
+    revision: 2
     tools_required:
       - system-gcc
       - host-pkg-config

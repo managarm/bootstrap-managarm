@@ -26,7 +26,7 @@ packages:
       - ncurses
       - readline
       - libiconv
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

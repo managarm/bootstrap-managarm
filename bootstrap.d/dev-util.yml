@@ -70,6 +70,7 @@ packages:
       - xz-utils
       - zlib
       - zstd
+    revision: 2
     configure:
       - args: ['sed', '-i', '/"lib64"/s/64//', '@THIS_SOURCE_DIR@/Modules/GNUInstallDirs.cmake']
       - args: ['cp', '-f', '@SOURCE_ROOT@/scripts/managarm.cmake', '@THIS_SOURCE_DIR@/Modules/Platform/']
@@ -114,6 +115,7 @@ packages:
     pkgs_required:
       - mlibc
       - glib
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -155,7 +157,7 @@ packages:
       - mlibc
       - libxml
       - python
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -188,6 +190,7 @@ packages:
       - host-cmake
     pkgs_required:
       - mlibc
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -208,7 +211,7 @@ packages:
     pkgs_required:
       - mlibc
       - glib
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -241,6 +244,7 @@ packages:
     pkgs_required:
       # This is only a build-time dependency.
       - mlibc
+    revision: 2
     configure:
       - args:
         - 'cmake'
