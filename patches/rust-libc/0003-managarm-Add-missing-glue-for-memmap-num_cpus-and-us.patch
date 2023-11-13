@@ -1,7 +1,7 @@
-From 76ea40bb587513310fc84d55cff1afb118964952 Mon Sep 17 00:00:00 2001
+From 3dcb11b0eb65260f9c4f5be14518ebe374f64d4f Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Wed, 2 Aug 2023 04:45:55 +0200
-Subject: [PATCH 3/6] managarm: Add missing glue for memmap, num_cpus and users
+Subject: [PATCH 3/7] managarm: Add missing glue for memmap, num_cpus and users
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---

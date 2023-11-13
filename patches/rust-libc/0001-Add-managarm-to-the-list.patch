@@ -1,7 +1,7 @@
-From db0ad329a3cf2bca4b407bca9e6a932e7631a3d4 Mon Sep 17 00:00:00 2001
+From 21ece9912bb3977001738753d49f7a61cc9c61d0 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Fri, 1 Sep 2023 16:27:12 +0200
-Subject: [PATCH 1/6] Add managarm to the list
+Subject: [PATCH 1/7] Add managarm to the list
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
