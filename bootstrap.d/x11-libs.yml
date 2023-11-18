@@ -1401,8 +1401,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxrandr.git'
-      tag: 'libXrandr-1.5.3'
-      version: '1.5.3'
+      tag: 'libXrandr-1.5.4'
+      version: '1.5.4'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
