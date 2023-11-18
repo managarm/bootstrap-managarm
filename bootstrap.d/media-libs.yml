@@ -447,8 +447,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/glvnd/libglvnd.git'
-      tag: 'v1.6.0'
-      version: '1.6.0'
+      tag: 'v1.7.0'
+      version: '1.7.0'
     tools_required:
       - system-gcc
       - host-pkg-config
