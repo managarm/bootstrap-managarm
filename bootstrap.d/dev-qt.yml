@@ -168,8 +168,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtdeclarative.git'
-      tag: 'v6.4.0'
-      version: '6.4.0'
+      tag: 'v6.6.0'
+      version: '6.6.0'
     tools_required:
       - system-gcc
       - host-cmake
@@ -183,7 +183,6 @@ packages:
       - qtsvg6
       - libxkbcommon
       - mesa
-    revision: 4
     configure:
       - args:
         - 'cmake'
