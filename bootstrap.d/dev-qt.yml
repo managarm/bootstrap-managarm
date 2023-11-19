@@ -3,8 +3,8 @@ sources:
     subdir: 'ports'
     # This may seem strange, but is actually correct
     git: 'https://code.qt.io/qt/qt5.git'
-    tag: 'v6.4.0'
-    version: '6.4.0'
+    tag: 'v6.6.0'
+    version: '6.6.0'
     regenerate:
       # Get the submodules that we'll need as a host tool
       - args: ['./init-repository', '-f', '--module-subset', 'qtbase,qtsvg,qtimageformats,qtshadertools,qtlanguageserver,qtdeclarative,qtwayland,qtmultimedia']
