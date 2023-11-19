@@ -1,4 +1,4 @@
-From e8912eccb24096955c0e77656c51d6fb90298b53 Mon Sep 17 00:00:00 2001
+From 5c30ffe95947283e3c4c8389c199c369fe4f5330 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Tue, 12 Apr 2022 15:50:25 +0200
 Subject: [PATCH] Add Managarm support
@@ -16,19 +16,18 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
  src/corelib/io/qstorageinfo_unix.cpp          |  3 +
  src/corelib/thread/qthread_unix.cpp           |  2 +-
  src/gui/configure.cmake                       |  4 +-
- src/network/kernel/qdnslookup_unix.cpp        |  2 +-
  src/network/kernel/qnetworkinterface_unix.cpp |  4 +
  .../kmsconvenience/qkmsdevice.cpp             |  1 +
- 14 files changed, 177 insertions(+), 8 deletions(-)
+ 13 files changed, 176 insertions(+), 7 deletions(-)
  create mode 100644 mkspecs/common/managarm.conf
  create mode 100644 mkspecs/managarm-g++/qmake.conf
  create mode 100644 mkspecs/managarm-g++/qplatformdefs.h
 
 diff --git a/cmake/QtBuild.cmake b/cmake/QtBuild.cmake
-index bb7049e7..ee547b21 100644
+index 1dc576d2..bbf77cd3 100644
 --- a/cmake/QtBuild.cmake
 +++ b/cmake/QtBuild.cmake
-@@ -314,6 +314,12 @@ elseif(LINUX)
+@@ -307,6 +307,12 @@ elseif(LINUX)
      elseif(CLANG)
          set(QT_DEFAULT_MKSPEC linux-clang)
      endif()
@@ -42,10 +41,10 @@ index bb7049e7..ee547b21 100644
      if(GCC)
          set(QT_DEFAULT_MKSPEC android-g++)
 diff --git a/cmake/QtPlatformSupport.cmake b/cmake/QtPlatformSupport.cmake
-index 22c6b9e0..4b61a10e 100644
+index 16a5a1fe..d178235a 100644
 --- a/cmake/QtPlatformSupport.cmake
 +++ b/cmake/QtPlatformSupport.cmake
-@@ -7,6 +7,7 @@ function(qt_set01 result)
+@@ -10,6 +10,7 @@ function(qt_set01 result)
  endfunction()
  
  qt_set01(LINUX CMAKE_SYSTEM_NAME STREQUAL "Linux")
@@ -246,10 +245,10 @@ index 00000000..91654548
 +
 +#endif // QPLATFORMDEFS_H
 diff --git a/src/corelib/global/qsystemdetection.h b/src/corelib/global/qsystemdetection.h
-index cbbe613e..072c219b 100644
+index ca94d552..d02ebe05 100644
 --- a/src/corelib/global/qsystemdetection.h
 +++ b/src/corelib/global/qsystemdetection.h
-@@ -129,6 +129,8 @@
+@@ -127,6 +127,8 @@
  #  define Q_OS_VXWORKS
  #elif defined(__HAIKU__)
  #  define Q_OS_HAIKU
@@ -259,7 +258,7 @@ index cbbe613e..072c219b 100644
  #else
  #  error "Qt has not been ported to this OS - see http://www.qt-project.org/"
 diff --git a/src/corelib/io/qstandardpaths_unix.cpp b/src/corelib/io/qstandardpaths_unix.cpp
-index e5122ff3..9b60f6b2 100644
+index 64d8a3fa..dba228d8 100644
 --- a/src/corelib/io/qstandardpaths_unix.cpp
 +++ b/src/corelib/io/qstandardpaths_unix.cpp
 @@ -160,11 +160,11 @@ static bool checkXdgRuntimeDir(const QString &xdgRuntimeDir)
@@ -277,7 +276,7 @@ index e5122ff3..9b60f6b2 100644
  
      return true;
 diff --git a/src/corelib/io/qstorageinfo_unix.cpp b/src/corelib/io/qstorageinfo_unix.cpp
-index 89b6dfea..34188433 100644
+index 20bddd87..75b2a81c 100644
 --- a/src/corelib/io/qstorageinfo_unix.cpp
 +++ b/src/corelib/io/qstorageinfo_unix.cpp
 @@ -64,6 +64,9 @@
@@ -291,10 +290,10 @@ index 89b6dfea..34188433 100644
  #  if defined(QT_LARGEFILE_SUPPORT)
  #    define QT_STATFSBUF struct statvfs64
 diff --git a/src/corelib/thread/qthread_unix.cpp b/src/corelib/thread/qthread_unix.cpp
-index 777aa362..8671eb19 100644
+index ee66e1c3..ba07f6bc 100644
 --- a/src/corelib/thread/qthread_unix.cpp
 +++ b/src/corelib/thread/qthread_unix.cpp
-@@ -675,7 +675,7 @@ void QThread::start(Priority priority)
+@@ -689,7 +689,7 @@ void QThread::start(Priority priority)
  
  
      if (d->stackSize > 0) {
@@ -304,42 +303,29 @@ index 777aa362..8671eb19 100644
  #else
          int code = ENOSYS; // stack size not supported, automatically fail
 diff --git a/src/gui/configure.cmake b/src/gui/configure.cmake
-index 6b05d4cc..55f877a3 100644
+index 02a80130..cdf3ee9a 100644
 --- a/src/gui/configure.cmake
 +++ b/src/gui/configure.cmake
-@@ -25,7 +25,7 @@ set_property(CACHE INPUT_libpng PROPERTY STRINGS undefined no qt system)
- 
+@@ -29,7 +29,7 @@ set_property(CACHE INPUT_libpng PROPERTY STRINGS undefined no qt system)
  
  #### Libraries
--qt_set01(X11_SUPPORTED LINUX OR HPUX OR FREEBSD OR NETBSD OR OPENBSD OR SOLARIS OR HURD) # special case
-+qt_set01(X11_SUPPORTED LINUX OR HPUX OR FREEBSD OR NETBSD OR OPENBSD OR SOLARIS OR HURD OR MANAGARM) # special case
+ qt_set01(X11_SUPPORTED LINUX OR HPUX OR FREEBSD OR NETBSD OR OPENBSD OR SOLARIS OR
+-    HURD)
++    HURD OR MANAGARM)
  qt_find_package(ATSPI2 PROVIDED_TARGETS PkgConfig::ATSPI2 MODULE_NAME gui QMAKE_LIB atspi)
  qt_find_package(DirectFB PROVIDED_TARGETS PkgConfig::DirectFB MODULE_NAME gui QMAKE_LIB directfb)
  qt_find_package(Libdrm PROVIDED_TARGETS Libdrm::Libdrm MODULE_NAME gui QMAKE_LIB drm)
-@@ -55,7 +55,7 @@ qt_find_package(WrapOpenGL PROVIDED_TARGETS WrapOpenGL::WrapOpenGL MODULE_NAME g
- qt_find_package(GLESv2 PROVIDED_TARGETS GLESv2::GLESv2 MODULE_NAME gui QMAKE_LIB opengl_es2)
+@@ -60,7 +60,7 @@ qt_find_package(GLESv2 PROVIDED_TARGETS GLESv2::GLESv2 MODULE_NAME gui QMAKE_LIB
  qt_find_package(Tslib PROVIDED_TARGETS PkgConfig::Tslib MODULE_NAME gui QMAKE_LIB tslib)
- qt_find_package(WrapVulkanHeaders PROVIDED_TARGETS WrapVulkanHeaders::WrapVulkanHeaders MODULE_NAME gui QMAKE_LIB vulkan MARK_OPTIONAL) # special case
+ qt_find_package(WrapVulkanHeaders PROVIDED_TARGETS WrapVulkanHeaders::WrapVulkanHeaders
+     MODULE_NAME gui QMAKE_LIB vulkan MARK_OPTIONAL)
 -if((LINUX) OR QT_FIND_ALL_PACKAGES_ALWAYS)
 +if((LINUX OR MANAGARM) OR QT_FIND_ALL_PACKAGES_ALWAYS)
      qt_find_package(Wayland PROVIDED_TARGETS Wayland::Server MODULE_NAME gui QMAKE_LIB wayland_server)
  endif()
  if((X11_SUPPORTED) OR QT_FIND_ALL_PACKAGES_ALWAYS)
-diff --git a/src/network/kernel/qdnslookup_unix.cpp b/src/network/kernel/qdnslookup_unix.cpp
-index 75f7c6c4..5597bb85 100644
---- a/src/network/kernel/qdnslookup_unix.cpp
-+++ b/src/network/kernel/qdnslookup_unix.cpp
-@@ -14,7 +14,7 @@
- #include <sys/types.h>
- #include <netinet/in.h>
- #include <arpa/nameser.h>
--#if !defined(Q_OS_OPENBSD)
-+#if !defined(Q_OS_OPENBSD) && !defined(Q_OS_MANAGARM)
- #  include <arpa/nameser_compat.h>
- #endif
- #include <resolv.h>
 diff --git a/src/network/kernel/qnetworkinterface_unix.cpp b/src/network/kernel/qnetworkinterface_unix.cpp
-index 51a266b2..08bb7125 100644
+index 082d83e9..49c5a8de 100644
 --- a/src/network/kernel/qnetworkinterface_unix.cpp
 +++ b/src/network/kernel/qnetworkinterface_unix.cpp
 @@ -25,6 +25,10 @@
@@ -354,7 +340,7 @@ index 51a266b2..08bb7125 100644
  #  include <arpa/inet.h>
  #  ifndef SIOCGIFBRDADDR
 diff --git a/src/platformsupport/kmsconvenience/qkmsdevice.cpp b/src/platformsupport/kmsconvenience/qkmsdevice.cpp
-index c7a1624e..df2ba09f 100644
+index 89b6df60..880b4a10 100644
 --- a/src/platformsupport/kmsconvenience/qkmsdevice.cpp
 +++ b/src/platformsupport/kmsconvenience/qkmsdevice.cpp
 @@ -12,6 +12,7 @@
@@ -366,5 +352,5 @@ index c7a1624e..df2ba09f 100644
  #define ARRAY_LENGTH(a) (sizeof (a) / sizeof (a)[0])
  
 -- 
-2.37.2
+2.42.0
 
