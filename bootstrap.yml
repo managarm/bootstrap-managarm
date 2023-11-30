@@ -72,7 +72,7 @@ sources:
   - name: binutils
     subdir: 'ports'
     git: 'https://github.com/managarm/binutils-gdb.git'
-    tag: 'managarm/binutils-2_40'
+    tag: 'managarm/binutils-2_40_2'
     version: '2.40'
     sources_required: ['gnuconfig']
     regenerate:
@@ -462,7 +462,7 @@ tools:
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     from_source: binutils
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -774,6 +774,7 @@ packages:
       - tool: system-gcc
     pkgs_required:
       - mlibc
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
