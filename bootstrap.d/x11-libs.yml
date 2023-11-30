@@ -698,11 +698,18 @@ packages:
   - name: libxcb
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: X C-language Bindings library
+      description: The libxcb package provides an interface to the X Window System protocol, which replaces the current Xlib interface. Xlib can also use XCB as a transport layer, allowing software to make requests and receive responses with both.
+      spdx: 'MIT'
+      website: 'https://gitlab.freedesktop.org/xorg/lib/libxcb'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['x11-libs']
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxcb.git'
-      tag: 'libxcb-1.15'
-      version: '1.15'
+      tag: 'libxcb-1.16'
+      version: '1.16'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -725,7 +732,6 @@ packages:
       - libxau
       - libxdmcp
       - xcb-proto
-    revision: 4
     configure:
       - args: ['sed', '-i', "s/pthread-stubs//", '@THIS_SOURCE_DIR@/configure']
       - args:
