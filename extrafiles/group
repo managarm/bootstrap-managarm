@@ -5,6 +5,7 @@ disk:x:6:
 daemon:x:8:
 lp:x:9:
 kmem:x:15:
+messagebus:x:18:
 lpadmin:x:19:
 dialout:x:20:
 cdrom:x:24:

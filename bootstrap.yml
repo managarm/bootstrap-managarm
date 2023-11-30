@@ -840,7 +840,7 @@ packages:
     source:
       subdir: meta-sources
       version: '1.0'
-    revision: 4
+    revision: 5
     configure: []
     build:
       # Create initial directories
