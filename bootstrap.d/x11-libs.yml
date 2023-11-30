@@ -555,11 +555,18 @@ packages:
   - name: libx11
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: X.Org X11 library
+      description: This package provides the core X11 library.
+      spdx: 'MIT'
+      website: 'https://gitlab.freedesktop.org/xorg/lib/libX11'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['x11-libs']
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libx11.git'
-      tag: 'libX11-1.8.6'
-      version: '1.8.6'
+      tag: 'libX11-1.8.7'
+      version: '1.8.7'
       tools_required:
         - host-autoconf-v2.71
         - host-automake-v1.15
@@ -582,7 +589,6 @@ packages:
       - xorg-proto
       - libxcb
       - libxtrans
-    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
