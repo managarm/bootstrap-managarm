@@ -674,6 +674,39 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: pciutils
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Various utilities dealing with the PCI bus
+      description: This package contains a set of programs for listing PCI devices, inspecting their status and setting their configuration registers.
+      spdx: 'GPL-2.0-only'
+      website: 'https://mj.ucw.cz/sw/pciutils/'
+      maintainer: "no92 <leo@managarm.org>"
+      categories: ['sys-apps']
+      replaces: ['mini-lspci']
+    source:
+      subdir: ports
+      url: 'https://mirrors.edge.kernel.org/pub/software/utils/pciutils/pciutils-3.10.0.tar.xz'
+      checksum: 'blake2b:555d095a33c9f17561c34fe8f2914cd1dbe2ac1e1f4f33b59e126258fc54a7823ac1c4f0957c7dc7a188621b978419848d93372fe28ad03aabdd152a610ba5ec'
+      format: tar.xz
+      extract_path: 'pciutils-3.10.0'
+      version: '3.10.0'
+    tools_required:
+      - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - eudev
+    configure:
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+    build:
+      - args: ['make', 'PREFIX=/usr', 'SHARED=yes', 'DNS=no', 'CROSS_COMPILE=@OPTION:arch-triple@-', '-j@PARALLELISM@']
+      - args: ['make', 'PREFIX=/usr', 'SHARED=yes', 'DNS=no', 'CROSS_COMPILE=@OPTION:arch-triple@-', 'DESTDIR=@THIS_COLLECT_DIR@', 'install', 'install-lib']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+
   - name: sed
     labels: [aarch64]
     architecture: '@OPTION:arch@'
