@@ -23,7 +23,7 @@ packages:
       - glib
       - gnutls
       - gsettings-desktop-schemas
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'meson'
@@ -83,7 +83,7 @@ packages:
       - libiconv
       - libintl
       - openssl
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -135,6 +135,7 @@ packages:
       - libidn2
       - libunistring
       - libiconv
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -181,6 +182,7 @@ packages:
       - libxml
       - sqlite
       - libpsl
+    revision: 2
     configure:
       - args:
         - 'meson'

@@ -1,7 +1,7 @@
-From 0a847578d17c102ec8b59fa7b056ed4bea3414cb Mon Sep 17 00:00:00 2001
+From e60b2abe51cc62e13e82aa5997fbb143dae21638 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Wed, 2 Aug 2023 04:43:10 +0200
-Subject: [PATCH 2/6] managarm: initial port
+Subject: [PATCH 2/7] managarm: initial port
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---

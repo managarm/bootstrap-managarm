@@ -56,7 +56,7 @@ tools:
     tools_required:
       - host-llvm-toolchain
       - host-python
-    revision: 2
+    revision: 3
     compile:
       - args: |
             cat << EOF > config.toml
@@ -136,6 +136,7 @@ packages:
       checksum: blake2b:b5d8dbc4b3ec1708b715be438c1a1f48d4f5f226885992af147c1aa6a8823bed318f77ef7cc92b265dadd26cf6088f0f39784fbfd2f9887c35de8e9def2c0558
       extract_path: 'lua-5.4.6'
       version: '5.4.6'
+    revision: 2
     tools_required:
       - system-gcc
     pkgs_required:
@@ -171,7 +172,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -200,7 +201,7 @@ packages:
       - bzip2
       - libxcrypt
       - zlib
-    revision: 6
+    revision: 7
     configure:
       - args: ['cp', '-rf', '@THIS_SOURCE_DIR@/../perl-cross/.', '@THIS_SOURCE_DIR@/']
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
@@ -236,6 +237,7 @@ packages:
     labels: [aarch64]
     architecture: '@OPTION:arch@'
     from_source: python
+    revision: 2
     tools_required:
       - host-pkg-config
       - host-python
@@ -299,7 +301,7 @@ packages:
       - mlibc
       - sqlite
       - zlib
-    revision: 2
+    revision: 3
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
@@ -358,7 +360,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

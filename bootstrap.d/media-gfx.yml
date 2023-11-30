@@ -14,7 +14,7 @@ packages:
     pkgs_required:
       - mlibc
       - gcc # Actually requires libstdc++.so in the system root, otherwise it links against the host libstdc++.so.6
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'cmake'

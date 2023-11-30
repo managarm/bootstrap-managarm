@@ -1,7 +1,7 @@
-From 1d9edce1c04c1c48e3c186c21133010b4a5a2c7c Mon Sep 17 00:00:00 2001
+From b9086e118dc20f88ce51bb0a984de17337a44931 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Wed, 2 Aug 2023 04:56:48 +0200
-Subject: [PATCH 4/6] managarm: alacritty updates
+Subject: [PATCH 4/7] managarm: alacritty updates
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---

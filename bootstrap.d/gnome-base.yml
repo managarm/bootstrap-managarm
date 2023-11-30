@@ -23,7 +23,7 @@ packages:
     pkgs_required:
       - mlibc
       - glib
-    revision: 3
+    revision: 4
     configure:
       - args: |
               sed -i -r 's:"(/system):"/org/gnome\1:g' @THIS_SOURCE_DIR@/schemas/*.in

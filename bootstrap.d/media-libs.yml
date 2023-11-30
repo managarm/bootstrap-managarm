@@ -24,6 +24,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -67,6 +68,7 @@ packages:
       - freetype
       - libxml
       - libiconv
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -98,6 +100,7 @@ packages:
       - libxi
       - mesa
       - glu
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -141,6 +144,7 @@ packages:
       - bzip2
       - libpng
       - zlib
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -172,7 +176,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 5
+    revision: 6
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -198,7 +202,7 @@ packages:
       - mlibc
       - glu
       - mesa
-    revision: 5
+    revision: 6
     configure:
       # These two seds lets the build system respect the GCC variable
       - args: ['sed', '-i', 's/CC = cc/CC = $(GCC)/g', '@THIS_SOURCE_DIR@/config/Makefile.linux']
@@ -232,6 +236,7 @@ packages:
       - mlibc
       - gcc # Actually requires libstdc++.so in the system root, otherwise it links against the host libstdc++.so.6
       - mesa
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -285,7 +290,7 @@ packages:
       - wayland
       - pango
       - libxext
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'meson'
@@ -329,7 +334,7 @@ packages:
     pkgs_required:
       - mlibc
       - glib
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'meson'
@@ -376,7 +381,7 @@ packages:
       - freetype
       - cairo
       - icu
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'meson'
@@ -421,7 +426,7 @@ packages:
       - mesa
       - xorg-proto
       - libx11
-    revision: 3
+    revision: 4
     configure:
       - args:
           - 'meson'
@@ -453,6 +458,7 @@ packages:
       - mlibc
       - libx11
       - libxext
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -498,7 +504,7 @@ packages:
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -538,7 +544,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -570,7 +576,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -606,6 +612,7 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -649,7 +656,7 @@ packages:
       - zlib
       - zstd
       - xz-utils
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -691,7 +698,7 @@ packages:
       - mlibc
       - libogg
       - libvorbis
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -733,7 +740,7 @@ packages:
     pkgs_required:
       - mlibc
       - libogg
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -776,6 +783,7 @@ packages:
       - freeglut
       - sdl2
       - libtiff
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -827,6 +835,7 @@ packages:
       - libglvnd
       - libexpat
       - zstd
+    revision: 2
     configure:
       - args: ['cp', '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file', 'meson.cross-file']
       - args:
@@ -896,6 +905,7 @@ packages:
       - wayland-protocols
       # This is only required for building.
       - vulkan-headers
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -952,6 +962,7 @@ packages:
       - libxrandr
       - libxrender
       - libxxf86vm
+    revision: 2
     configure:
       - args:
         - 'cmake'

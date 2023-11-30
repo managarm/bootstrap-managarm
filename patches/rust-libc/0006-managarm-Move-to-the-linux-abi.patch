@@ -1,7 +1,7 @@
-From 4bc5f7342f1f42c6f3b868694b8dd7c896ec5f08 Mon Sep 17 00:00:00 2001
+From 496e1bfb9ce427953582b023582ea895576a3070 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Fri, 1 Sep 2023 16:21:46 +0200
-Subject: [PATCH 6/6] managarm: Move to the linux abi
+Subject: [PATCH 6/7] managarm: Move to the linux abi
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
