@@ -2,11 +2,18 @@ packages:
   - name: xcb-proto
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: X C-language Bindings protocol headers
+      description: The xcb-proto package provides the XML-XCB protocol descriptions that libxcb uses to generate the majority of its code and API.
+      spdx: 'MIT'
+      website: 'https://gitlab.freedesktop.org/xorg/proto/xcbproto'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['x11-base']
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/proto/xcbproto.git'
-      tag: 'xcb-proto-1.15.2'
-      version: '1.15.2'
+      tag: 'xcb-proto-1.16.0'
+      version: '1.16.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -25,7 +32,6 @@ packages:
       - xorg-proto
       - libxau
       - libxdmcp
-    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
