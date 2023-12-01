@@ -1133,14 +1133,21 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
-  - name : mpc
+  - name: mpc
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: A library for multiprecision complex arithmetic with exact rounding
+      description: The MPC package contains a library for the arithmetic of complex numbers with arbitrarily high precision and correct rounding of the result.
+      spdx: 'LGPL-3.0-or-later'
+      website: 'https://www.multiprecision.org/mpc/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: ports
       git: 'https://gitlab.inria.fr/mpc/mpc.git'
-      tag: '1.2.1'
-      version: '1.2.1'
+      tag: '1.3.1'
+      version: '1.3.1'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1153,14 +1160,13 @@ packages:
       - mlibc
       - gmp
       - mpfr
-    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--disable-static'
-        - '--docdir=/usr/share/doc/mpc-1.1.0'
+        - '--docdir=/usr/share/doc/mpc-1.3.1'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
