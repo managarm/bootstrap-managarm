@@ -370,6 +370,13 @@ packages:
   - name: libdrm
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: X.Org libdrm library
+      description: Libdrm provides a userspace library for accessing the direct rendering manager (DRM) on operating systems that support the ioctl interface. Libdrm is a low-level library, typically used by graphics drivers such as the Mesa DRI drivers, the X drivers, libva and similar projects.
+      spdx: 'MIT'
+      website: 'https://gitlab.freedesktop.org/mesa/drm'
+      maintainer: "no92 <leo@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/mesa/drm'
@@ -379,7 +386,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 4
+    revision: 5
     configure:
       - args:
         - 'meson'
