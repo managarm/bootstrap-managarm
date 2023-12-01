@@ -293,6 +293,13 @@ packages:
   - name: gmp
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Library for arbitrary-precision arithmetic on different type of numbers
+      description: The GMP package contains math libraries. These have useful functions for arbitrary precision arithmetic.
+      spdx: 'LGPL-3.0-or-later'
+      website: 'https://gmplib.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: 'ports'
       hg: 'https://gmplib.org/repo/gmp-6.2/'
@@ -312,7 +319,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
