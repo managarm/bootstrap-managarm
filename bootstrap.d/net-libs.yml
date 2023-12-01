@@ -107,6 +107,46 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: libmbim
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Mobile Broadband Interface Model (MBIM) modem protocol helper library
+      description: The libmbim package contains a GLib-based library for talking to WWAN modems and devices which speak the Mobile Interface Broadband Model (MBIM) protocol.
+      spdx: 'LGPL-2.0-only'
+      website: 'https://gitlab.freedesktop.org/mobile-broadband/libmbim'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['net-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.freedesktop.org/mobile-broadband/libmbim.git'
+      tag: '1.30.0'
+      version: '1.30.0'
+    tools_required:
+      - system-gcc
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - glib
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--buildtype=debugoptimized'
+        - '-Dintrospection=false'
+        - '-Dbash_completion=false'
+        - '-Dman=false'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: libpsl
     architecture: '@OPTION:arch@'
     metadata:

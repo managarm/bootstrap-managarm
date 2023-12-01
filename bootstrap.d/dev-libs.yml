@@ -30,8 +30,8 @@ sources:
   - name: nss
     subdir: 'ports'
     git: 'https://github.com/nss-dev/nss.git'
-    tag: 'NSS_3_82_RTM'
-    version: '3.82.RTM'
+    tag: 'NSS_3_92_RTM'
+    version: '3.92.RTM'
 
 tools:
   - name: host-glib
@@ -293,6 +293,13 @@ packages:
   - name: gmp
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Library for arbitrary-precision arithmetic on different type of numbers
+      description: The GMP package contains math libraries. These have useful functions for arbitrary precision arithmetic.
+      spdx: 'LGPL-3.0-or-later'
+      website: 'https://gmplib.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: 'ports'
       hg: 'https://gmplib.org/repo/gmp-6.2/'
@@ -312,7 +319,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1126,14 +1133,21 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
-  - name : mpc
+  - name: mpc
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: A library for multiprecision complex arithmetic with exact rounding
+      description: The MPC package contains a library for the arithmetic of complex numbers with arbitrarily high precision and correct rounding of the result.
+      spdx: 'LGPL-3.0-or-later'
+      website: 'https://www.multiprecision.org/mpc/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: ports
       git: 'https://gitlab.inria.fr/mpc/mpc.git'
-      tag: '1.2.1'
-      version: '1.2.1'
+      tag: '1.3.1'
+      version: '1.3.1'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1146,14 +1160,13 @@ packages:
       - mlibc
       - gmp
       - mpfr
-    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--disable-static'
-        - '--docdir=/usr/share/doc/mpc-1.1.0'
+        - '--docdir=/usr/share/doc/mpc-1.3.1'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
@@ -1161,16 +1174,23 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
-  - name : mpfr
+  - name: mpfr
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Library for multiple-precision floating-point computations with exact rounding
+      description: The MPFR package contains functions for multiple precision math.
+      spdx: 'LGPL-3.0-or-later'
+      website: 'https://www.mpfr.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: 'ports'
-      url: 'https://ftp.gnu.org/gnu/mpfr/mpfr-4.1.0.tar.xz'
+      url: 'https://ftp.gnu.org/gnu/mpfr/mpfr-4.2.1.tar.xz'
       format: 'tar.xz'
-      checksum: blake2b:41d1be0c4b557760f12a4525ad3a84b6e2cd6f0927c935fcfba577ac0490e582d1ae4b581dce58e21e705cf9d7c88373054d7fb7a94bb32c69b339f99a25dc68
-      extract_path: 'mpfr-4.1.0'
-      version: '4.1.0'
+      checksum: blake2b:ad69f53bc910294647523e7613b18a683f1d0f3dd994168ab2a46b66d0371ffa9b8e7cb59495f898470aea69d343e83fc722f11babe4af7b3a12665a1e65860c
+      extract_path: 'mpfr-4.2.1'
+      version: '4.2.1'
       tools_required:
         - host-autoconf-archive
         - host-autoconf-v2.69
@@ -1188,7 +1208,6 @@ packages:
     pkgs_required:
       - mlibc
       - gmp
-    revision: 7
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1196,7 +1215,7 @@ packages:
         - '--prefix=/usr'
         - '--enable-static=no'
         - '--enable-shared=yes'
-        - '--docdir=/usr/share/doc/mpfr-4.1.0'
+        - '--docdir=/usr/share/doc/mpfr-4.2.1'
         - '--with-pic'
         environ:
           # MPFR's configuration script misdetects cross-compilations. Hence,
@@ -1275,7 +1294,6 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
     configure:
       # Disable installing two unneeded scripts.
       - args: ['sed', '-ri', '/^RELEASE/s/^/#/', '@THIS_SOURCE_DIR@/pr/src/misc/Makefile.in']
@@ -1322,7 +1340,6 @@ packages:
       - nspr
       - sqlite
       - zlib
-    revision: 4
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:

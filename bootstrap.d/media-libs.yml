@@ -612,7 +612,6 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
