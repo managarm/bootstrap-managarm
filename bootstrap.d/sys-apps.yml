@@ -1101,11 +1101,18 @@ packages:
   - name: xbps
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: The X Binary Package System (XBPS)
+      description: This package provides the XBPS package manager.
+      spdx: 'MIT'
+      website: 'https://voidlinux.org/xbps/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-apps']
     source:
       subdir: ports
       git: 'https://github.com/void-linux/xbps.git'
-      tag: '0.59.1'
-      version: '0.59.1'
+      tag: '0.59.2'
+      version: '0.59.2'
       tools_required:
         - host-pkg-config
     tools_required:
@@ -1115,7 +1122,6 @@ packages:
       - libarchive
       - openssl
       - zlib
-    revision: 11
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
