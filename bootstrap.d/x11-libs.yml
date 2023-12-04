@@ -1875,11 +1875,18 @@ packages:
   - name: pango
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Internationalized text layout and rendering library
+      description: Pango is a library for laying out and rendering text, with an emphasis on internationalization. It can be used anywhere that text layout is needed, though most of the work on Pango so far has been done in the context of the GTK+ widget toolkit.
+      spdx: 'LGPL-2.0-or-later'
+      website: 'https://gitlab.gnome.org/GNOME/pango'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['x11-libs']
     source:
       subdir: ports
       git: 'https://gitlab.gnome.org/GNOME/pango.git'
-      tag: '1.50.14'
-      version: '1.50.14'
+      tag: '1.51.1'
+      version: '1.51.1'
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -1900,7 +1907,6 @@ packages:
       - harfbuzz
       - libxft
       - pcre
-    revision: 3
     configure:
       - args:
         - 'meson'
