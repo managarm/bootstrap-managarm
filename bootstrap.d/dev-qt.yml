@@ -80,6 +80,7 @@ packages:
       - xcb-util-keysyms
       - xcb-util-wm
       - xcb-util-render-util
+      - xcb-util-cursor
       - openssl
       - wayland
       - wayland-protocols
