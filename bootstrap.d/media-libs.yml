@@ -264,9 +264,11 @@ packages:
       categories: ['media-libs']
     source:
       subdir: 'ports'
-      git: 'https://gitlab.freedesktop.org/gstreamer/gst-plugins-base.git'
-      tag: '1.19.1'
-      version: '1.19.1'
+      url: 'https://gstreamer.freedesktop.org/src/gst-plugins-base/gst-plugins-base-1.22.7.tar.xz'
+      format: 'tar.xz'
+      extract_path: 'gst-plugins-base-1.22.7'
+      checksum: blake2b:c6880858ed0dafef8102e097a380d771043051180cac220ead724a5861976f1e56f0d96939d271e806880fdb9473a31cfa7476d772ca9cc2c77d6c6163f5fef3
+      version: '1.22.7'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -285,12 +287,13 @@ packages:
       - libpng
       - libx11
       - glib
+      - gdk-pixbuf
+      - gtk+-3
       - zlib
       - libdrm
       - wayland
       - pango
       - libxext
-    revision: 6
     configure:
       - args:
         - 'meson'
@@ -304,7 +307,7 @@ packages:
         - '-Dorc=disabled'
         - '-Dexamples=disabled'
         - '-Dpackage-origin=https://managarm.org/'
-        - '-Dpackage-name="GStreamer 1.19.1 Managarm"'
+        - '-Dpackage-name="GStreamer 1.22.7 Managarm"'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
