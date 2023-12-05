@@ -354,6 +354,63 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: gst-plugins-good
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Basepack of plugins for GStreamer
+      description: The GStreamer Good Plug-ins is a set of plug-ins considered by the GStreamer developers to have good quality code, correct functionality, and the preferred license (LGPL for the plug-in code, LGPL or LGPL-compatible for the supporting library). A wide range of video and audio decoders, encoders, and filters are included.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://gstreamer.freedesktop.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
+    source:
+      subdir: 'ports'
+      url: 'https://gstreamer.freedesktop.org/src/gst-plugins-good/gst-plugins-good-1.22.7.tar.xz'
+      format: 'tar.xz'
+      extract_path: 'gst-plugins-good-1.22.7'
+      checksum: blake2b:0c05afb9dfc70305219df4887caf887cf666bf76e7c6fd660550c7e603950bbffbdc2ab24d73e5eb47cf5f7032b92bad1b26d7b6e5ee320273894d5dfbd9e152
+      version: '1.22.7'
+    tools_required:
+      - system-gcc
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+      - wayland-scanner
+    pkgs_required:
+      - mlibc
+      - gstreamer
+      - gst-plugins-base
+      - flac
+      - gdk-pixbuf
+      - libsoup
+      - libvpx
+      - cairo
+      - wayland
+      - wayland-protocols
+      - gtk+-3
+      - libjpeg-turbo
+      - libpng
+      - nettle
+      - libxml
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '--wrap-mode=nodownload'
+        - '-Dpackage-origin=https://managarm.org/'
+        - '-Dpackage-name="GStreamer 1.22.7 Managarm"'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: gstreamer
     architecture: '@OPTION:arch@'
     metadata:
