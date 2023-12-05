@@ -777,6 +777,52 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: libsndfile
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: C library for reading and writing files containing sampled sound
+      description: Libsndfile is a library of C routines for reading and writing files containing sampled audio data.
+      spdx: 'LGPL-2.1-only'
+      website: 'https://github.com/libsndfile/libsndfile'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
+    source:
+      subdir: 'ports'
+      url: 'https://github.com/libsndfile/libsndfile/releases/download/1.2.2/libsndfile-1.2.2.tar.xz'
+      format: 'tar.xz'
+      extract_path: 'libsndfile-1.2.2'
+      checksum: blake2b:bc8e49983d9ad9dfd98984e2ffef501c6f576480e556e9f9ef91c7d597524cc1bb8baed15dfef8e239f72c42136c524117029eb8271f3a2c9d607fee490279b5
+      version: '1.2.2'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['autoreconf', '-fvi']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - flac
+      - opus
+      - libvorbis
+      - sqlite
+      - alsa-lib
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--disable-static'
+        - '--enable-shared'
+        - '--docdir=/usr/share/doc/libsndfile-1.2.0'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: libtheora
     architecture: '@OPTION:arch@'
     source:
