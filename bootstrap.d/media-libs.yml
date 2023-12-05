@@ -795,6 +795,49 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: libvpx
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: WebM VP8 and VP9 Codec SDK
+      description: This package provides the reference implementations of the VP8 Codec, used in most current html5 video, and of the next-generation VP9 Codec.
+      spdx: 'BSD-3-Clause'
+      website: 'https://www.webmproject.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://chromium.googlesource.com/webm/libvpx.git'
+      tag: 'v1.13.1'
+      version: '1.13.1'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - nasm
+    configure:
+      # Fix ownership and permission of installed files.
+      - args: ['sed', '-i', 's/cp -p/cp/', '@THIS_SOURCE_DIR@/build/make/Makefile']
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--prefix=/usr'
+        - '--disable-static'
+        - '--enable-shared'
+        # Generic GNU target to disable optimizations
+        - '--force-target=generic-gnu'
+        - '--enable-pic'
+        - '--enable-vp8'
+        - '--enable-vp9'
+        - '--enable-multithread'
+        - '--enable-vp9-highbitdepth'
+        - '--disable-examples'
+        - '--disable-install-docs'
+        - '--disable-docs'
+    build:
+      - args: ['make', 'HAVE_GNU_STRIP=no', 'CC=@OPTION:arch-triple@-gcc', 'LD=@OPTION:arch-triple@-gcc', 'CXX=@OPTION:arch-triple@-g++', 'AR=@OPTION:arch-triple@-ar', 'NM=@OPTION:arch-triple@-nm', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: libwebp
     architecture: '@OPTION:arch@'
     metadata:
