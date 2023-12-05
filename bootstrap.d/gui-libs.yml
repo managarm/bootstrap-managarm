@@ -1,4 +1,45 @@
 packages:
+  - name: libwpe
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Platform-agnostic interfaces for WPE WebKit
+      description: The libwpe package contains a general purpose library for WPE WebKit and the WPE Renderer.
+      spdx: 'BSD-2-Clause'
+      website: 'https://wpewebkit.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['gui-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/WebPlatformForEmbedded/libwpe.git'
+      tag: '1.14.1'
+      version: '1.14.1'
+    tools_required:
+      - system-gcc
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - mesa
+      - libxkbcommon
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '-Denable-xkb=true'
+        - '-Dbuild-docs=false'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: wlroots
     architecture: '@OPTION:arch@'
     metadata:
