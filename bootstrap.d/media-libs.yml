@@ -36,6 +36,45 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: flac
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Free lossless audio encoder and decoder
+      description: FLAC is an audio CODEC similar to MP3, but lossless, meaning that audio is compressed without losing any information.
+      spdx: 'LGPL-2.1-only GPL-2.0-only'
+      website: 'https://github.com/xiph/flac'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/xiph/flac.git'
+      tag: '1.4.3'
+      version: '1.4.3'
+    tools_required:
+      - host-cmake
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - nasm
+      - libogg
+      - libiconv
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DWITH_ASM=ON'
+        - '-DBUILD_SHARED_LIBS=ON'
+        - '-DINSTALL_MANPAGES=OFF'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: fontconfig
     labels: [aarch64]
     architecture: '@OPTION:arch@'
