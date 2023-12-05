@@ -323,9 +323,11 @@ packages:
       categories: ['media-libs']
     source:
       subdir: 'ports'
-      git: 'https://gitlab.freedesktop.org/gstreamer/gstreamer.git'
-      tag: '1.19.1'
-      version: '1.19.1'
+      url: 'https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.22.7.tar.xz'
+      format: 'tar.xz'
+      extract_path: 'gstreamer-1.22.7'
+      checksum: blake2b:4bfbc1b75f85b0ebca22917ffab1ccdb0eba9deae6eee4ab076f492b6871ca5001018cd97c7b1b31948d29e0d08beb248fe28c29a0de754fe67db1c7cc5f4332
+      version: '1.22.7'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -334,10 +336,10 @@ packages:
     pkgs_required:
       - mlibc
       - glib
-    revision: 6
     configure:
       - args:
         - 'meson'
+        - 'setup'
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
@@ -352,7 +354,7 @@ packages:
         - '-Dgst_debug=false'
         - '-Dcheck=disabled'
         - '-Dpackage-origin=https://managarm.org/'
-        - '-Dpackage-name="GStreamer 1.19.1 Managarm"'
+        - '-Dpackage-name="GStreamer 1.22.7 Managarm"'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
