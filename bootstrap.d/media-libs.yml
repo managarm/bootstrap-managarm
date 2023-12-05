@@ -292,6 +292,70 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: gst-plugins-bad
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Less plugins for GStreamer
+      description: The GStreamer Bad Plug-ins package contains a set of plug-ins that aren't up to par compared to the rest. They might be close to being good quality, but they're missing something - be it a good code review, some documentation, a set of tests, a real live maintainer, or some actual wide use.
+      spdx: 'LGPL-2.0-only'
+      website: 'https://gstreamer.freedesktop.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
+    source:
+      subdir: 'ports'
+      url: 'https://gstreamer.freedesktop.org/src/gst-plugins-bad/gst-plugins-bad-1.22.7.tar.xz'
+      format: 'tar.xz'
+      extract_path: 'gst-plugins-bad-1.22.7'
+      checksum: blake2b:7f1e92f172fecac079c78c18fb026dd71d2145f014ef5543b40bc54fb2d0028b1eaf83389bc6c50a9097d65ce03a0157712016b4a78331590fe721e0fc50148a
+      version: '1.22.7'
+    tools_required:
+      - system-gcc
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+      - wayland-scanner
+    pkgs_required:
+      - mlibc
+      - gstreamer
+      - gst-plugins-base
+      - curl
+      - libsndfile
+      - libsoup
+      - libwebp
+      - libxkbcommon
+      - wayland
+      - wayland-protocols
+      - gtk+-3
+      - opus
+      - gst-plugins-good
+      - pango
+      - libxml
+      - openssl
+      - nettle
+      - libmodplug
+      - vulkan-headers
+      - libusb
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '--wrap-mode=nodownload'
+        - '-Dgpl=enabled'
+        - '-Dpackage-origin=https://managarm.org/'
+        - '-Dpackage-name="GStreamer 1.22.7 Managarm"'
+        - '-Dopenh264=disabled'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: gst-plugins-base
     architecture: '@OPTION:arch@'
     metadata:
