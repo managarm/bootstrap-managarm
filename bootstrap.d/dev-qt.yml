@@ -32,6 +32,7 @@ tools:
 
 packages:
   - name: qtbase6
+    stability_level: 'broken'
     architecture: '@OPTION:arch@'
     metadata:
       summary: The Qt6 base libraries
@@ -158,6 +159,7 @@ packages:
       - args: ['find', '@THIS_COLLECT_DIR@/', '-type', 'd', '-empty', '-print', '-exec', 'false', '{}', '+']
 
   - name: qtdeclarative6
+    stability_level: 'broken'
     architecture: '@OPTION:arch@'
     metadata:
       summary: The Qt6 declarative library
@@ -200,6 +202,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: qtimageformats6
+    stability_level: 'broken'
     architecture: '@OPTION:arch@'
     metadata:
       summary: The Qt6 imageformats library
@@ -243,6 +246,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: qtlanguageserver6
+    stability_level: 'broken'
     architecture: '@OPTION:arch@'
     metadata:
       summary: The Qt6 LSP library
@@ -279,6 +283,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: qtmultimedia6
+    stability_level: 'broken'
     architecture: '@OPTION:arch@'
     metadata:
       summary: The Qt6 multimedia library
@@ -323,6 +328,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: qtshadertools6
+    stability_level: 'broken'
     architecture: '@OPTION:arch@'
     metadata:
       summary: The Qt6 shadertools library
@@ -362,6 +368,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: qtsvg6
+    stability_level: 'broken'
     architecture: '@OPTION:arch@'
     metadata:
       summary: The Qt6 SVG library
@@ -399,6 +406,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: qtwayland6
+    stability_level: 'broken'
     architecture: '@OPTION:arch@'
     metadata:
       spdx: 'GPL-2.0-only GPL-3.0-only LGPL-3.0-only GFDL-1.3-only'

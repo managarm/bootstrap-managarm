@@ -42,6 +42,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libremines
+    stability_level: 'broken'
     architecture: '@OPTION:arch@'
     metadata:
       summary: Qt based minesweeper
