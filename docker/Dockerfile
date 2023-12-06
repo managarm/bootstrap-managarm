@@ -87,10 +87,14 @@ RUN apt-get update \
 		python3-xcbgen \
 		# Several programs use rsync
 		rsync \
+		# Used by webkitgtk
+		ruby \
 		# makeinfo is used in gnu build systems
 		texinfo \
 		# Provides 'mkimage', required to build Allwinner D1 images.
 		u-boot-tools \
+		# Used by webkitgtk
+		unifdef \
 		# Used by protobuf
 		unzip \
 		# We use wget to fetch some stuff further down
