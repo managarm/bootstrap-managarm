@@ -44,8 +44,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtbase.git'
-      tag: 'v6.6.0'
-      version: '6.6.0'
+      tag: 'v6.4.0'
+      version: '6.4.0'
     tools_required:
       - system-gcc
       - host-cmake
@@ -91,6 +91,7 @@ packages:
       - libxi
       - sqlite
       - brotli
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -153,10 +154,10 @@ packages:
     build:
       - args: ['cmake', '--build', '.', '--parallel', '@PARALLELISM@']
       - args: ['cmake', '--install', '.']
-      # Qt6 used to make some empty directories that we need to keep; this appears to no longer be the case.
-      # This command makes xbstrap error out if there are empty directories, since its not entirely guaranteed there wont be more again in the future,
-      # and chances are we will need to again place .keep files in them.
-      - args: ['find', '@THIS_COLLECT_DIR@/', '-type', 'd', '-empty', '-print', '-exec', 'false', '{}', '+']
+      # Touch a file in empty directories to keep xbps happy
+      - args: ['touch', '@THIS_COLLECT_DIR@/usr/lib/cmake/Qt6/QtBuildInternals/QtStandaloneTestTemplateProject/.keep']
+      - args: ['touch', '@THIS_COLLECT_DIR@/usr/lib/cmake/Qt6/macos/.keep']
+      - args: ['touch', '@THIS_COLLECT_DIR@/usr/lib/cmake/Qt6/ios/.keep']
 
   - name: qtdeclarative6
     stability_level: 'broken'
