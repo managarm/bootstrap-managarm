@@ -1,4 +1,4 @@
-From 05fcaf74de84dd3d5a9a348290e5cf87c32d09ef Mon Sep 17 00:00:00 2001
+From a03e5244cbe1f61997a44ea3d7b44b7e80b72e02 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Fri, 4 Nov 2022 17:14:03 +0100
 Subject: [PATCH] Add Managarm support
@@ -9,12 +9,12 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 6649dfc..bc8c54e 100644
+index 0007697..5dc10d8 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -18,7 +18,7 @@ find_package(Qt6 ${PROJECT_VERSION} CONFIG REQUIRED COMPONENTS
+@@ -14,7 +14,7 @@ find_package(Qt6 ${PROJECT_VERSION} CONFIG REQUIRED COMPONENTS
+     BuildInternals
  )
- qt_internal_project_setup()
  
 -if(NOT MACOS AND NOT QNX AND (ANDROID OR NOT LINUX))
 +if(NOT MACOS AND NOT QNX AND (ANDROID OR NOT LINUX) AND NOT MANAGARM)
@@ -22,5 +22,5 @@ index 6649dfc..bc8c54e 100644
      return()
  endif()
 -- 
-2.42.0
+2.37.2
 
