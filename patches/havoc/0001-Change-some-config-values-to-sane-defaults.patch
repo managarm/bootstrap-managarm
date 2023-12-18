@@ -1,0 +1,37 @@
+From bbc02777fc9fc29aea073aa4213bd7f31e14f02b Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Tue, 22 Feb 2022 04:34:12 +0100
+Subject: [PATCH] Change some config values to sane defaults
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ havoc.cfg | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/havoc.cfg b/havoc.cfg
+index abb3d59..9fca1c5 100644
+--- a/havoc.cfg
++++ b/havoc.cfg
+@@ -11,8 +11,8 @@ margin=no
+ 
+ [terminal]
+ # size of terminal
+-rows=16
+-columns=140
++rows=25
++columns=80
+ 
+ # number of lines to keep in scrollback
+ scrollback=1000
+@@ -22,7 +22,7 @@ scrollback=1000
+ size=18
+ 
+ # absolute path to a truetype font
+-path=/usr/share/fonts/TTF/DejaVuSansMono.ttf
++path=/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf
+ 
+ [bind]
+ # bind keys to actions
+-- 
+2.35.1
+

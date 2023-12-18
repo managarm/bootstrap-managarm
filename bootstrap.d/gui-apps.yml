@@ -1,4 +1,54 @@
 packages:
+  - name: havoc
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Minimal terminal emulator for wayland 
+      description: This package contains a minimalistic terminal emulator for wayland.
+      spdx: 'MIT'
+      website: 'https://github.com/ii8/havoc'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['gui-apps']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/ii8/havoc.git'
+      tag: '0.4.0'
+      version: '0.4.0'
+    tools_required:
+      - system-gcc
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+      - wayland-scanner
+    pkgs_required:
+      - mlibc
+      - wayland
+      - wayland-protocols
+      - libxkbcommon
+    configure:
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+    build:
+      - args: ['make']
+        environ:
+          PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
+          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
+          PREFIX: '/usr'
+          CC: "@OPTION:arch-triple@-gcc"
+          CXX: "@OPTION:arch-triple@-g++"
+          CPP: "@OPTION:arch-triple@-cpp"
+      - args: ['make', 'install']
+        environ:
+          PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
+          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
+          PREFIX: '/usr'
+          DESTDIR: '@THIS_COLLECT_DIR@'
+          CC: "@OPTION:arch-triple@-gcc"
+          CXX: "@OPTION:arch-triple@-g++"
+          CPP: "@OPTION:arch-triple@-cpp"
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/home/managarm/.config']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/root/.config']
+      - args: ['cp', '@THIS_SOURCE_DIR@/havoc.cfg', '@THIS_COLLECT_DIR@/home/managarm/.config/havoc.cfg']
+      - args: ['cp', '@THIS_SOURCE_DIR@/havoc.cfg', '@THIS_COLLECT_DIR@/root/.config/havoc.cfg']
+
   - name: swaybg
     architecture: '@OPTION:arch@'
     metadata:
