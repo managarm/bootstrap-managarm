@@ -64,7 +64,15 @@ packages:
         quiet: true
 
   - name: nyancat
+    labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: The famous nyancat
+      description: This package provides Nyancat in your terminal, rendered through ANSI escape sequences.
+      spdx: 'no-spdx: UoI-NCSA'
+      website: 'https://github.com/klange/nyancat'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['games-misc']
     source:
       subdir: 'ports'
       git: 'https://github.com/klange/nyancat.git'
