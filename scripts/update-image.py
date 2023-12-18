@@ -10,13 +10,14 @@ import shlex
 import shutil
 import subprocess
 import sys
+import tempfile
 import time
 import traceback
 import uuid
 from dataclasses import dataclass, field
 from enum import Enum
 from os import path
-from typing import Dict
+from typing import Dict, List
 
 elevation_method = None
 verbose = False
@@ -38,10 +39,11 @@ class MountInfo:
 
 
 class Partition:
-    def __init__(self, idx, type, uuid):
+    def __init__(self, idx, type, uuid, size):
         self.idx = idx
         self.type = type
         self.uuid = uuid
+        self.size = size
 
 
 # shlex.join is only available since Python 3.8
@@ -136,15 +138,17 @@ def get_partition_list(image):
             toks = params.split(", ")
             type_param = [i for i in toks if i.startswith("type=")]
             uuid_param = [i for i in toks if i.startswith("uuid=")]
+            size_param = [i for i in toks if i.startswith("size=")]
 
-            if len(type_param) != 1 or len(uuid_param) != 1:
+            if len(type_param) != 1 or len(uuid_param) != 1 or len(size_param) != 1:
                 continue
 
             type = type_param[0][5:]
             uuid = uuid_param[0][5:]
+            size = int(size_param[0][5:])
             idx = name[len(image) :]
 
-            partitions.append(Partition(idx, type, uuid))
+            partitions.append(Partition(idx, type, uuid, size))
 
     return partitions
 
@@ -179,11 +183,16 @@ class MountAction:
                 root_uuid = part.uuid
             elif part.type == EFI_SYSTEM_PART_TYPE:
                 efi_partition = part.idx
+                # image_create creates a 256MiB ESP partition, while older images
+                # have an ESP that's only 16MiB large.
+                if part.size < (128 * 1024 * 1024 / 512):
+                    raise RuntimeError("Your image's EFI partition is too small. "
+                                       "Update the image_create tool and recreate the image...")
 
         if global_mount_info:
             if not os.access(global_mount_info.blockdev, os.F_OK, effective_ids=True):
                 print(
-                    "update-image: Mount info exists put refers to a non-existant block"
+                    "update-image: Mount info exists, but refers to a nonexistent block"
                     " device, ignoring."
                 )
                 try:
@@ -193,17 +202,18 @@ class MountAction:
                     pass
                 global_mount_info = None
             else:
-                print("update-image: The image appears to already be mounted (mount info  exists)")
+                print("update-image: The image appears to already be mounted (mount info exists)")
                 return
+
+        if not efi_partition:
+            raise RuntimeError("No suitable EFI system partition found")
 
         if not root_partition:
             raise RuntimeError("No suitable root partition found")
 
         if verbose:
+            print(f"update-image: EFI partition is partition no. {efi_partition}")
             print(f"update-image: Root partition is partition no. {root_partition}")
-
-            if efi_partition:
-                print(f"update-image: EFI partition is partition no. {efi_partition}")
 
         if self.mount_using == "loopback":
             diskdev = run_elevated(["losetup", "-Pf", "--show", self.image])
@@ -233,8 +243,7 @@ class MountAction:
                 f"/dev/sda{root_partition}",
             ]
 
-            if efi_partition:
-                args += ["-m", f"/dev/sda{efi_partition}:/boot/efi"]
+            args += ["-m", f"/dev/sda{efi_partition}:/boot"]
 
             args.append(self.mountpoint)
 
@@ -248,9 +257,7 @@ class MountAction:
             cmds += "mount -t devtmpfs devtmpfs /devtmpfs\n"
             cmds += 'BLOCKDEV=$(losetup -Pf --show image | sed "s/dev/devtmpfs/")\n'
             cmds += f'mount "$BLOCKDEV"p{root_partition} /mnt\n'
-
-            if efi_partition:
-                cmds += f'mount "$BLOCKDEV"p{efi_partition} /mnt/boot/efi\n'
+            cmds += f'mount "$BLOCKDEV"p{efi_partition} /mnt/boot\n'
 
             cmds += 'echo "$BLOCKDEV" > /stuff/scripts/tmp-docker-blockdev\n'
             cmds += "tail -f /dev/null"
@@ -309,13 +316,13 @@ class MountAction:
         else:
             raise RuntimeError(f"Unknown mount method {self.mount_using}")
 
-        if efi_partition and self.mount_using != "docker":
-            efi_path = os.path.join(self.mountpoint, "boot", "efi")
+        if self.mount_using != "docker":
+            efi_path = os.path.join(self.mountpoint, "boot")
 
             print(f"update-image: EFI partition exists, mounting to {efi_path}")
             if not os.path.isdir(efi_path):
                 raise RuntimeError(
-                    "/boot/efi does not exist on mountpoint (or is not a directory)"
+                    "/boot does not exist on mountpoint (or is not a directory)"
                 )
 
             sep = ""
@@ -363,7 +370,6 @@ def generate_plan(arch, root_uuid, scriptdir):
         "boot/grub",
         "home",
         "boot/managarm",
-        "boot/efi",
     ]:
         yield FsAction.CREATE_DIR, x
 
@@ -376,22 +382,18 @@ def generate_plan(arch, root_uuid, scriptdir):
         yield FsAction.INSTALL, "usr/managarm/bin/eir-mb2", "boot/managarm", dict(strip=True)
         yield FsAction.INSTALL, "usr/managarm/bin/thor", "boot/managarm", dict(strip=True)
         yield FsAction.CP_SED, os.path.join(scriptdir, "grub.cfg"), \
-            "boot/grub", "@ROOT_UUID@", root_uuid
+            "boot/grub/", "@ROOT_UUID@", root_uuid
 
         yield (
             FsAction.CP,
             "tools/host-limine/share/limine/BOOTX64.EFI",
-            "boot/efi/EFI",
+            "boot/EFI/BOOT",
         )
-        yield FsAction.CP, "tools/host-limine/share/limine/limine-bios.sys", "boot/efi/"
+        yield FsAction.CP, "tools/host-limine/share/limine/limine-bios.sys", "boot/"
 
         yield FsAction.CP_SED, os.path.join(
             scriptdir, "limine.cfg"
         ), "boot/", "@ROOT_UUID@", root_uuid
-
-        yield FsAction.CP_SED, os.path.join(
-            scriptdir, "limine.cfg"
-        ), "boot/efi/", "@ROOT_UUID@", root_uuid
 
     yield FsAction.RSYNC, "bin"
     yield FsAction.RSYNC, "lib"
@@ -435,7 +437,6 @@ class UpdateFsAction:
 
     def run(self):
         root_uuid = None
-        has_efi = False
         is_docker = False
         needs_root = False
         target_mntpoint = self.mountpoint
@@ -443,7 +444,6 @@ class UpdateFsAction:
 
         if global_mount_info:
             root_uuid = global_mount_info.root_uuid
-            has_efi = global_mount_info.efi_idx is not None
 
             if global_mount_info.mount_using == "docker":
                 target_mntpoint = "/mnt"
@@ -478,20 +478,12 @@ class UpdateFsAction:
             if verbose:
                 print(f'update-image: Determined UUID for "{self.mountpoint}" is' f" {root_uuid}")
 
-            # We trust the user has mounted the efi partition if /boot/efi exists
-            has_efi = os.path.isdir(os.path.join(self.mountpoint, "boot/efi"))
-
             needs_root = not os.access(target_mntpoint, os.W_OK, effective_ids=True)
 
         print(
             "update-image: Updating the image",
             "requires" if needs_root else "doesn't require",
             "root",
-        )
-        print(
-            "update-image: Update target",
-            "has" if has_efi else "doesn't have",
-            "an EFI directory",
         )
 
         steps = [["set", "-ex"]]
@@ -584,12 +576,10 @@ class UnmountAction:
         blockdev = global_mount_info.blockdev
         mount_using = global_mount_info.mount_using
         mountpoint = global_mount_info.mountpoint
-        efi_partition = global_mount_info.efi_idx
 
-        if efi_partition:
-            efi_path = os.path.join(mountpoint, "boot", "efi")
-            if mount_using == "block" or mount_using == "loopback":
-                run_elevated(["umount", "-l", efi_path])
+        efi_path = os.path.join(mountpoint, "boot")
+        if mount_using == "block" or mount_using == "loopback":
+            run_elevated(["umount", "-l", efi_path])
 
         if mount_using == "loopback":
             run_elevated(["losetup", "-d", f"{blockdev}"])
@@ -609,10 +599,7 @@ class UnmountAction:
                     time.sleep(1)
         elif mount_using == "docker":
             cmds = "sync\n"
-
-            if efi_partition:
-                cmds += "umount /mnt/boot/efi\n"
-
+            cmds += "umount /mnt/boot\n"
             cmds += "umount /mnt\n"
             cmds += f"losetup -d {blockdev}\n"
             cmds += "umount /devtmpfs"
@@ -651,8 +638,8 @@ class UnmountAction:
         )
 
 
-def _is_boot_efi(x):
-    return x.startswith("boot/efi") or x.startswith("/boot/efi")
+def _is_boot(x):
+    return x.startswith("boot") or x.startswith("/boot")
 
 
 def logged_run(cmd, *args, **kwargs):
@@ -677,10 +664,14 @@ class RemakeImageAction:
     sysroot: str
     arch: str
 
-    _bootefi_files: Dict[str, bytes] = field(default_factory=dict, init=False)
+    _boot_files: Dict[str, bytes] = field(default_factory=dict, init=False)
+    _boot_dirs: List[str] = field(default_factory=list, init=False)
 
     def _create_dir(self, x):
-        os.makedirs(os.path.join(self.sysroot, x), exist_ok=True)
+        if _is_boot(x):
+            self._boot_dirs.append(x)
+        else:
+            os.makedirs(os.path.join(self.sysroot, x), exist_ok=True)
 
     def _ensure_links(self):
         ensure_sysroot_links(self.sysroot)
@@ -688,15 +679,22 @@ class RemakeImageAction:
     def _install(self, src, dst, strip=False, ignore_sysroot=False):
         if not ignore_sysroot:
             src = os.path.join(self.sysroot, src)
-        if _is_boot_efi(dst):
-            # XXX(arsen): this is fixable
-            assert not strip, "Can't strip into /boot/efi"
+        if _is_boot(dst):
+            with tempfile.NamedTemporaryFile('r+b') as tmpf:
+                actual_src = src
+                if strip:
+                    logged_check_call([
+                        f"tools/cross-binutils/bin/{self.arch}-strip",
+                        "-o", tmpf.name,
+                        src
+                    ])
+                    actual_src = tmpf.name
 
-            # XXX(arsen): I assume the path provided is a dir
-            dst = os.path.join(dst, os.path.basename(src))
-            with open(src, "rb") as fsrc:
-                self._bootefi_files[dst] = fsrc.read()
-                return
+                # XXX(arsen): I assume the path provided is a dir
+                dst = os.path.join(dst, os.path.basename(src))
+                with open(actual_src, "rb") as fsrc:
+                    self._boot_files[dst] = fsrc.read()
+                    return
 
         if os.path.isdir(dst):
             dst = os.path.join(dst, os.path.basename(src))
@@ -716,7 +714,7 @@ class RemakeImageAction:
         logged_check_call(installargs)
 
     def _cp_sed(self, src, dst, var, val):
-        if _is_boot_efi(dst):
+        if _is_boot(dst):
             dstopen = io.BytesIO
             if dst.endswith("/"):
                 dst = os.path.join(dst, os.path.basename(src))
@@ -737,7 +735,7 @@ class RemakeImageAction:
                 fdst.write(chunk.replace(var, val))
 
             if isinstance(fdst, io.BytesIO):
-                self._bootefi_files[dst] = fdst.getvalue()
+                self._boot_files[dst] = fdst.getvalue()
 
     def run(self):
         if not os.access(self.image, os.W_OK | os.R_OK):
@@ -781,11 +779,17 @@ class RemakeImageAction:
             logged_check_call(cmd)
 
         def setup_esp(start, size):
+            # image_create creates a 256MiB ESP partition, while older images
+            # have an ESP that's only 16MiB large.
+            if size < (128 * 1024 * 1024):
+                raise RuntimeError("Your image's EFI partition is too small. "
+                                   "Update the image_create tool and recreate the image...")
+
             # create the ESP
             cmd = [
                 mkfsvfat_command,
                 "-F",
-                "16",
+                "32",
                 "-n",
                 "ESP",
                 "-s",
@@ -801,14 +805,21 @@ class RemakeImageAction:
 
             # manipulate it using mtools
             dosimg = "{}@@{}".format(self.image, start * 512)
-            # create \EFI
+            # create \EFI\BOOT
             logged_check_call(["mmd", "-i", dosimg, "EFI"])
+            logged_check_call(["mmd", "-i", dosimg, "EFI/BOOT"])
 
-            # ... and populate it
-            for file, val in self._bootefi_files.items():
+            # ... and populate it, first with directories ...
+            for dir in self._boot_dirs:
+                if dir.startswith("/"):
+                    dir = dir[1:]
+                dir = dir[len("boot") :]
+                logged_check_call(["mmd", "-i", dosimg, dir])
+            # ... then with files
+            for file, val in self._boot_files.items():
                 if file.startswith("/"):
                     file = file[1:]
-                file = file[len("boot/efi") :]
+                file = file[len("boot") :]
                 logged_check_call(["mcopy", "-i", dosimg, "-", f"::{file}"], input=val)
 
         part_lines = (
@@ -895,7 +906,7 @@ parser.add_argument(
     "-m",
     "--mount-using",
     dest="mount_using",
-    choices=["loopback", "docker", "guestfs", "block", "remake"],
+    choices=["loopback", "docker", "guestfs", "block"],
     default="guestfs",
     help="How to mount the image (default: guestfs)",
 )
