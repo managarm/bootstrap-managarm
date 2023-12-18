@@ -841,7 +841,7 @@ packages:
     source:
       subdir: meta-sources
       version: '1.0'
-    revision: 5
+    revision: 6
     configure: []
     build:
       # Create initial directories
@@ -881,6 +881,8 @@ packages:
       - args: ['ln', '-svf', 'usr/bin', '@THIS_COLLECT_DIR@/bin']
       - args: ['ln', '-svf', 'usr/lib', '@THIS_COLLECT_DIR@/lib']
       - args: ['ln', '-svf', 'usr/sbin', '@THIS_COLLECT_DIR@/sbin']
+      # Link /var/run to /run
+      - args: ['ln', '-svf', 'var/run', '@THIS_COLLECT_DIR@/run']
       # Create a compatibility symlink for ld.so
       - args: ['ln', '-svf', '/usr/lib/ld.so', '@THIS_COLLECT_DIR@/lib/ld-init.so']
 
