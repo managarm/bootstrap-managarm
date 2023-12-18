@@ -36,6 +36,45 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: flac
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Free lossless audio encoder and decoder
+      description: FLAC is an audio CODEC similar to MP3, but lossless, meaning that audio is compressed without losing any information.
+      spdx: 'LGPL-2.1-only GPL-2.0-only'
+      website: 'https://github.com/xiph/flac'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/xiph/flac.git'
+      tag: '1.4.3'
+      version: '1.4.3'
+    tools_required:
+      - host-cmake
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - nasm
+      - libogg
+      - libiconv
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DWITH_ASM=ON'
+        - '-DBUILD_SHARED_LIBS=ON'
+        - '-DINSTALL_MANPAGES=OFF'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: fontconfig
     labels: [aarch64]
     architecture: '@OPTION:arch@'
@@ -253,6 +292,70 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: gst-plugins-bad
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Less plugins for GStreamer
+      description: The GStreamer Bad Plug-ins package contains a set of plug-ins that aren't up to par compared to the rest. They might be close to being good quality, but they're missing something - be it a good code review, some documentation, a set of tests, a real live maintainer, or some actual wide use.
+      spdx: 'LGPL-2.0-only'
+      website: 'https://gstreamer.freedesktop.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
+    source:
+      subdir: 'ports'
+      url: 'https://gstreamer.freedesktop.org/src/gst-plugins-bad/gst-plugins-bad-1.22.7.tar.xz'
+      format: 'tar.xz'
+      extract_path: 'gst-plugins-bad-1.22.7'
+      checksum: blake2b:7f1e92f172fecac079c78c18fb026dd71d2145f014ef5543b40bc54fb2d0028b1eaf83389bc6c50a9097d65ce03a0157712016b4a78331590fe721e0fc50148a
+      version: '1.22.7'
+    tools_required:
+      - system-gcc
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+      - wayland-scanner
+    pkgs_required:
+      - mlibc
+      - gstreamer
+      - gst-plugins-base
+      - curl
+      - libsndfile
+      - libsoup
+      - libwebp
+      - libxkbcommon
+      - wayland
+      - wayland-protocols
+      - gtk+-3
+      - opus
+      - gst-plugins-good
+      - pango
+      - libxml
+      - openssl
+      - nettle
+      - libmodplug
+      - vulkan-headers
+      - libusb
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '--wrap-mode=nodownload'
+        - '-Dgpl=enabled'
+        - '-Dpackage-origin=https://managarm.org/'
+        - '-Dpackage-name="GStreamer 1.22.7 Managarm"'
+        - '-Dopenh264=disabled'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: gst-plugins-base
     architecture: '@OPTION:arch@'
     metadata:
@@ -264,9 +367,11 @@ packages:
       categories: ['media-libs']
     source:
       subdir: 'ports'
-      git: 'https://gitlab.freedesktop.org/gstreamer/gst-plugins-base.git'
-      tag: '1.19.1'
-      version: '1.19.1'
+      url: 'https://gstreamer.freedesktop.org/src/gst-plugins-base/gst-plugins-base-1.22.7.tar.xz'
+      format: 'tar.xz'
+      extract_path: 'gst-plugins-base-1.22.7'
+      checksum: blake2b:c6880858ed0dafef8102e097a380d771043051180cac220ead724a5861976f1e56f0d96939d271e806880fdb9473a31cfa7476d772ca9cc2c77d6c6163f5fef3
+      version: '1.22.7'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -285,12 +390,13 @@ packages:
       - libpng
       - libx11
       - glib
+      - gdk-pixbuf
+      - gtk+-3
       - zlib
       - libdrm
       - wayland
       - pango
       - libxext
-    revision: 6
     configure:
       - args:
         - 'meson'
@@ -304,7 +410,64 @@ packages:
         - '-Dorc=disabled'
         - '-Dexamples=disabled'
         - '-Dpackage-origin=https://managarm.org/'
-        - '-Dpackage-name="GStreamer 1.19.1 Managarm"'
+        - '-Dpackage-name="GStreamer 1.22.7 Managarm"'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: gst-plugins-good
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Basepack of plugins for GStreamer
+      description: The GStreamer Good Plug-ins is a set of plug-ins considered by the GStreamer developers to have good quality code, correct functionality, and the preferred license (LGPL for the plug-in code, LGPL or LGPL-compatible for the supporting library). A wide range of video and audio decoders, encoders, and filters are included.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://gstreamer.freedesktop.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
+    source:
+      subdir: 'ports'
+      url: 'https://gstreamer.freedesktop.org/src/gst-plugins-good/gst-plugins-good-1.22.7.tar.xz'
+      format: 'tar.xz'
+      extract_path: 'gst-plugins-good-1.22.7'
+      checksum: blake2b:0c05afb9dfc70305219df4887caf887cf666bf76e7c6fd660550c7e603950bbffbdc2ab24d73e5eb47cf5f7032b92bad1b26d7b6e5ee320273894d5dfbd9e152
+      version: '1.22.7'
+    tools_required:
+      - system-gcc
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+      - wayland-scanner
+    pkgs_required:
+      - mlibc
+      - gstreamer
+      - gst-plugins-base
+      - flac
+      - gdk-pixbuf
+      - libsoup
+      - libvpx
+      - cairo
+      - wayland
+      - wayland-protocols
+      - gtk+-3
+      - libjpeg-turbo
+      - libpng
+      - nettle
+      - libxml
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '--wrap-mode=nodownload'
+        - '-Dpackage-origin=https://managarm.org/'
+        - '-Dpackage-name="GStreamer 1.22.7 Managarm"'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -323,9 +486,11 @@ packages:
       categories: ['media-libs']
     source:
       subdir: 'ports'
-      git: 'https://gitlab.freedesktop.org/gstreamer/gstreamer.git'
-      tag: '1.19.1'
-      version: '1.19.1'
+      url: 'https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.22.7.tar.xz'
+      format: 'tar.xz'
+      extract_path: 'gstreamer-1.22.7'
+      checksum: blake2b:4bfbc1b75f85b0ebca22917ffab1ccdb0eba9deae6eee4ab076f492b6871ca5001018cd97c7b1b31948d29e0d08beb248fe28c29a0de754fe67db1c7cc5f4332
+      version: '1.22.7'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -334,10 +499,10 @@ packages:
     pkgs_required:
       - mlibc
       - glib
-    revision: 6
     configure:
       - args:
         - 'meson'
+        - 'setup'
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
@@ -352,7 +517,7 @@ packages:
         - '-Dgst_debug=false'
         - '-Dcheck=disabled'
         - '-Dpackage-origin=https://managarm.org/'
-        - '-Dpackage-name="GStreamer 1.19.1 Managarm"'
+        - '-Dpackage-name="GStreamer 1.22.7 Managarm"'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -676,6 +841,52 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: libsndfile
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: C library for reading and writing files containing sampled sound
+      description: Libsndfile is a library of C routines for reading and writing files containing sampled audio data.
+      spdx: 'LGPL-2.1-only'
+      website: 'https://github.com/libsndfile/libsndfile'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
+    source:
+      subdir: 'ports'
+      url: 'https://github.com/libsndfile/libsndfile/releases/download/1.2.2/libsndfile-1.2.2.tar.xz'
+      format: 'tar.xz'
+      extract_path: 'libsndfile-1.2.2'
+      checksum: blake2b:bc8e49983d9ad9dfd98984e2ffef501c6f576480e556e9f9ef91c7d597524cc1bb8baed15dfef8e239f72c42136c524117029eb8271f3a2c9d607fee490279b5
+      version: '1.2.2'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['autoreconf', '-fvi']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - flac
+      - opus
+      - libvorbis
+      - sqlite
+      - alsa-lib
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--disable-static'
+        - '--enable-shared'
+        - '--docdir=/usr/share/doc/libsndfile-1.2.0'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: libtheora
     architecture: '@OPTION:arch@'
     source:
@@ -747,6 +958,49 @@ packages:
         - '--disable-static'
     build:
       - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: libvpx
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: WebM VP8 and VP9 Codec SDK
+      description: This package provides the reference implementations of the VP8 Codec, used in most current html5 video, and of the next-generation VP9 Codec.
+      spdx: 'BSD-3-Clause'
+      website: 'https://www.webmproject.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://chromium.googlesource.com/webm/libvpx.git'
+      tag: 'v1.13.1'
+      version: '1.13.1'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - nasm
+    configure:
+      # Fix ownership and permission of installed files.
+      - args: ['sed', '-i', 's/cp -p/cp/', '@THIS_SOURCE_DIR@/build/make/Makefile']
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--prefix=/usr'
+        - '--disable-static'
+        - '--enable-shared'
+        # Generic GNU target to disable optimizations
+        - '--force-target=generic-gnu'
+        - '--enable-pic'
+        - '--enable-vp8'
+        - '--enable-vp9'
+        - '--enable-multithread'
+        - '--enable-vp9-highbitdepth'
+        - '--disable-examples'
+        - '--disable-install-docs'
+        - '--disable-docs'
+    build:
+      - args: ['make', 'HAVE_GNU_STRIP=no', 'CC=@OPTION:arch-triple@-gcc', 'LD=@OPTION:arch-triple@-gcc', 'CXX=@OPTION:arch-triple@-g++', 'AR=@OPTION:arch-triple@-ar', 'NM=@OPTION:arch-triple@-nm', '-j@PARALLELISM@']
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
@@ -923,6 +1177,46 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+
+  - name: opus
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Open codec for interactive speech and music transmission over the Internet
+      description: Opus is a lossy audio compression format developed by the Internet Engineering Task Force (IETF) that is particularly suitable for interactive speech and audio transmission over the Internet. This package provides the Opus development library and headers.
+      spdx: 'BSD-3-Clause'
+      website: 'https://opus-codec.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.xiph.org/xiph/opus.git'
+      tag: 'v1.3.1'
+      version: '1.3.1'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['./autogen.sh']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--docdir=/usr/share/doc/opus-1.3.1'
+        - '--disable-static'
+        - '--disable-intrinsics'
+        - '--disable-doc'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: sdl2
     architecture: '@OPTION:arch@'
