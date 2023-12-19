@@ -1,4 +1,45 @@
 packages:
+  - name: libwpe
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Platform-agnostic interfaces for WPE WebKit
+      description: The libwpe package contains a general purpose library for WPE WebKit and the WPE Renderer.
+      spdx: 'BSD-2-Clause'
+      website: 'https://wpewebkit.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['gui-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/WebPlatformForEmbedded/libwpe.git'
+      tag: '1.14.1'
+      version: '1.14.1'
+    tools_required:
+      - system-gcc
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - mesa
+      - libxkbcommon
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '-Denable-xkb=true'
+        - '-Dbuild-docs=false'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: wlroots
     architecture: '@OPTION:arch@'
     metadata:
@@ -52,6 +93,50 @@ packages:
         - '--buildtype=debugoptimized'
         - '-Dexamples=false'
         - '-Dxwayland=enabled'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: wpebackend-fdo
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: WPE backend designed for Linux desktop systems
+      description: The wpebackend-fdo package contains the Freedesktop.org backend for WPE WebKit and the WPE renderer.
+      spdx: 'BSD-2-Clause'
+      website: 'https://wpewebkit.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['gui-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/Igalia/WPEBackend-fdo.git'
+      tag: '1.14.2'
+      version: '1.14.2'
+    tools_required:
+      - system-gcc
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+      - wayland-scanner
+    pkgs_required:
+      - mlibc
+      - libwpe
+      - wayland-protocols
+      - wayland
+      - libepoxy
+      - glib
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '-Dbuild_docs=false'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
