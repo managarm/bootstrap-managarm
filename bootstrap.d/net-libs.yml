@@ -281,7 +281,6 @@ packages:
       - sqlite
       - libpng
       - libxml
-      - atk
       - libwebp
       - gtk+-3
       - libsoup
