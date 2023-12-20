@@ -1,0 +1,26 @@
+From 9f45d4f4a58b7a71c1d8b233290b75d373e7012f Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Mon, 30 Oct 2023 20:43:47 +0100
+Subject: [PATCH] Add Managarm support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ local/signals.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/local/signals.c b/local/signals.c
+index caff420..23b5612 100644
+--- a/local/signals.c
++++ b/local/signals.c
+@@ -121,7 +121,7 @@ static const mapstruct sigtable[] = {
+ #define STATIC_ASSERT(x) typedef int XJOIN(static_assert_on_line_,__LINE__)[(x) ? 1 : -1]
+ 
+ /* sanity check */
+-#if defined(__linux__)
++#if defined(__linux__) || defined(__managarm__)
+ STATIC_ASSERT(number_of_signals == 31);
+ #elif defined(__FreeBSD_kernel__) || defined(__FreeBSD__)
+ STATIC_ASSERT(number_of_signals == 30);
+-- 
+2.42.0
+
