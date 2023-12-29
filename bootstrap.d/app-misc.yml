@@ -23,6 +23,7 @@ packages:
       - p11-kit
     sources_required:
       - nss
+    revision: 2
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args: ['cp', '@THIS_SOURCE_DIR@/../nss/lib/ckfw/builtins/certdata.txt', '@THIS_SOURCE_DIR@']
@@ -62,7 +63,7 @@ packages:
     pkgs_required:
       - mlibc
       - ncurses
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -96,7 +97,7 @@ packages:
     pkgs_required:
       - mlibc
       - ncurses
-    revision: 8
+    revision: 9
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -123,7 +124,7 @@ packages:
       commit: '58f9db8387118222b4c0cec079cffd88286fb495'
       # The version indicates the date of the commit it's based on
       version: '20230722'
-    revision: 2
+    revision: 3
     configure: []
     build:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/share/hwdata/']

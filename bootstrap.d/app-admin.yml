@@ -17,7 +17,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -50,7 +50,7 @@ packages:
       extract_path: 'sysstat-12.7.4'
       checksum: blake2b:3b74dcc785e88fd2de93ed30bc80b834f9a36e8f00136230497f681257a3b40eea200f5f364689de52c0d13bf1612b2e45cf4bb7e2a1ab9d74ed37ec3590ebf0
       version: '12.7.4'
-    revision: 2
+    revision: 3
     tools_required:
       - system-gcc
       - virtual: pkgconfig-for-target
