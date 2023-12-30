@@ -24,6 +24,7 @@ packages:
       - wayland
       - wayland-protocols
       - libxkbcommon
+    revision: 2
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -77,7 +78,7 @@ packages:
       - wayland
       - wayland-protocols
       - gdk-pixbuf
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'meson'
@@ -111,7 +112,7 @@ packages:
       git: 'https://github.com/no92/wlgears.git'
       tag: 'v0.1.0'
       version: '0.1.0'
-    revision: 4
+    revision: 5
     tools_required:
       - system-gcc
       - wayland-scanner

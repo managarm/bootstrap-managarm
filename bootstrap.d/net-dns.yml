@@ -31,7 +31,7 @@ packages:
       - mlibc
       - libunistring
       - libiconv
-    revision: 7
+    revision: 8
     configure:
       # Remove some files from the source directory if they exist.
       - args: |
