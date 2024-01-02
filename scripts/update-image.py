@@ -367,8 +367,9 @@ def generate_plan(arch, root_uuid, scriptdir):
         "run",
         "sys",
         "tmp",
-        "boot/grub",
         "home",
+        "boot",
+        "boot/grub",
         "boot/managarm",
     ]:
         yield FsAction.CREATE_DIR, x
