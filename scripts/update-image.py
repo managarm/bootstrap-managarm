@@ -639,6 +639,12 @@ class UnmountAction:
         )
 
 
+def add_dest_basename(src, dst):
+    if dst[-1] == '/':
+        dst += os.path.basename(src)
+    return dst
+
+
 def _is_boot(x):
     return (
         (x.startswith("boot/") or x.startswith("/boot/"))
@@ -683,7 +689,7 @@ class RemakeImageAction:
     def _install(self, src, dst, strip=False, ignore_sysroot=False):
         if not ignore_sysroot:
             src = os.path.join(self.sysroot, src)
-        if _is_boot(dst):
+        if _is_boot(add_dest_basename(src, dst)):
             with tempfile.NamedTemporaryFile('r+b') as tmpf:
                 actual_src = src
                 if strip:
@@ -718,7 +724,7 @@ class RemakeImageAction:
         logged_check_call(installargs)
 
     def _cp_sed(self, src, dst, var, val):
-        if _is_boot(dst):
+        if _is_boot(add_dest_basename(src, dst)):
             dstopen = io.BytesIO
             if dst.endswith("/"):
                 dst = os.path.join(dst, os.path.basename(src))
