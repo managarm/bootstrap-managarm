@@ -640,7 +640,10 @@ class UnmountAction:
 
 
 def _is_boot(x):
-    return x.startswith("boot") or x.startswith("/boot")
+    return (
+        (x.startswith("boot/") or x.startswith("/boot/"))
+        and (len(x) > 6 if x[0] == '/' else len(x) > 5)
+    )
 
 
 def logged_run(cmd, *args, **kwargs):
