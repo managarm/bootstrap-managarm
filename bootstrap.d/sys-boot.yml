@@ -8,11 +8,11 @@ sources:
 
   - name: limine
     subdir: 'ports'
-    url: 'https://github.com/limine-bootloader/limine/releases/download/v6.20231227.0/limine-6.20231227.0.tar.xz'
+    url: 'https://github.com/limine-bootloader/limine/releases/download/v6.20240107.0/limine-6.20240107.0.tar.xz'
     format: 'tar.xz'
-    checksum: blake2b:ff7c35fbe9b1ace85450b1e568b2acb8e8165d6465300e6401c2255390dfce981b1cba2cb3065614d422904c20b75c42bf6702884bdda0a9b0b7056df19ae1f8
-    extract_path: 'limine-6.20231227.0'
-    version: '6.20231227.0'
+    checksum: blake2b:9896f3870d99b3b8245bcc7ec4d56cd58ef7d62837d79f58fad9d52de9dd913d6ae7df622138986969faff12d873a0ad13707d6eed2608ad22d26c3c26ece83e
+    extract_path: 'limine-6.20240107.0'
+    version: '6.20240107.0'
 
 tools:
   - name: host-limine
@@ -46,7 +46,6 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
