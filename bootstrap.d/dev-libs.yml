@@ -1148,6 +1148,45 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: libxmlb
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Library to help create and query binary XML blobs
+      description: This package provides a library and a tool which help create and query binary XML blobs.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://github.com/hughsie/libxmlb'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/hughsie/libxmlb.git'
+      tag: '0.3.15'
+      version: '0.3.15'
+    tools_required:
+      - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - glib
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--buildtype=release'
+        - '-Dgtkdoc=false'
+        - '-Dintrospection=false'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+
   - name: libxslt
     architecture: '@OPTION:arch@'
     source:
