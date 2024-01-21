@@ -294,6 +294,47 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: graphene
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: A thin layer of types for graphic libraries
+      description: This package provides a thin layer of types for graphics libraries.
+      spdx: 'MIT'
+      website: 'https://ebassi.github.io/graphene/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/ebassi/graphene.git'
+      tag: '1.10.8'
+      version: '1.10.8'
+    tools_required:
+      - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - glib
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--buildtype=release'
+        - '-Dgtk_doc=false'
+        - '-Dintrospection=disabled'
+        - '-Dtests=false'
+        - '-Dinstalled_tests=false'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+
   - name: gst-plugins-bad
     architecture: '@OPTION:arch@'
     metadata:
