@@ -1,0 +1,42 @@
+From 896f9880f471a051a2ac474c542965a6dc906701 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Sun, 21 Jan 2024 15:45:52 +0100
+Subject: [PATCH] Add Managarm support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ src/as-system-info.c | 3 +++
+ src/meson.build      | 3 +--
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/src/as-system-info.c b/src/as-system-info.c
+index 73e4746..37002ed 100644
+--- a/src/as-system-info.c
++++ b/src/as-system-info.c
+@@ -409,6 +409,9 @@ as_get_physical_memory_total (void)
+ 	unsigned long physmem;
+ 	sysctl ((int[]){ CTL_HW, HW_PHYSMEM }, 2, &physmem, &(size_t){ sizeof (physmem) }, NULL, 0);
+ 	return physmem / MB_IN_BYTES;
++#elif defined(__managarm__)
++	// NOT IMPLEMENTED
++	return 0;
+ #else
+ #error "Implementation of as_get_physical_memory_total() missing for this OS."
+ #endif
+diff --git a/src/meson.build b/src/meson.build
+index e098fab..a709b5e 100644
+--- a/src/meson.build
++++ b/src/meson.build
+@@ -194,8 +194,7 @@ appstream_lib = library ('appstream',
+     soversion: as_api_level,
+     version: as_version,
+     dependencies: [aslib_deps],
+-    include_directories: [stemmer_inc_dirs,
+-                          root_inc_dir],
++    include_directories: [root_inc_dir],
+     install: true
+ )
+ 
+-- 
+2.43.0
+

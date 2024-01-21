@@ -91,6 +91,61 @@ tools:
       - args: ['make', 'install']
 
 packages:
+  - name: appstream
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Cross-distro effort for providing metadata for software in the Linux ecosystem
+      description: This package provides a library and tool that is useful for retrieving software metadata and making it easily accessible to programs which need it.
+      spdx: 'LGPL-2.1-or-later GPL-2.0-or-later'
+      website: 'https://www.freedesktop.org/wiki/Distributions/AppStream/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/ximion/appstream.git'
+      tag: 'v0.16.4'
+      version: '0.16.4'
+    tools_required:
+      - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - curl
+      - glib
+      - libxml
+      - libxmlb
+      - libyaml
+    configure:
+      - args: ['mkdir', '-pv', '@THIS_BUILD_DIR@/data']
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/data/org.freedesktop.appstream.cli.metainfo.xml', '@THIS_BUILD_DIR@/data/nol10n_withrelinfo_org.freedesktop.appstream.cli.metainfo.xml']
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--buildtype=release'
+        - '-Dapidocs=false'
+        - '-Ddocs=false'
+        - '-Dcompose=false'
+        - '-Dmaintainer=false'
+        - '-Dstatic-analysis=false'
+        - '-Dstemming=false'
+        - '-Dvapi=false'
+        - '-Dapt-support=false'
+        - '-Dinstall-docs=false'
+        - '-Dgir=false'
+        - '-Dqt=false'
+        - '-Dsystemd=false'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+
   - name: atk
     architecture: '@OPTION:arch@'
     metadata:
