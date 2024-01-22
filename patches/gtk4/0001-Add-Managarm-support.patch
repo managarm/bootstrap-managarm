@@ -1,0 +1,27 @@
+From 1048bcee7c52660b30c73b8b66464be2d59b6505 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Mon, 22 Jan 2024 19:44:13 +0100
+Subject: [PATCH] Add Managarm support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ gdk/wayland/gdkdisplay-wayland.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/gdk/wayland/gdkdisplay-wayland.c b/gdk/wayland/gdkdisplay-wayland.c
+index 80c7c99..f593547 100644
+--- a/gdk/wayland/gdkdisplay-wayland.c
++++ b/gdk/wayland/gdkdisplay-wayland.c
+@@ -30,7 +30,9 @@
+ #endif
+ 
+ #include <sys/mman.h>
++#ifndef __managarm__
+ #include <sys/syscall.h>
++#endif
+ 
+ #include <glib.h>
+ #include <gio/gio.h>
+-- 
+2.43.0
+
