@@ -710,6 +710,49 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
+  - name: libgee
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: GObject-based interfaces and classes for commonly used data structures
+      description: This package provides acollection library providing GObject based interfaces and classes for commonly used data structures.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://wiki.gnome.org/Projects/Libgee'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
+    source:
+      subdir: 'ports'
+      url: 'http://ftp.gnome.org/pub/gnome/sources/libgee/0.20/libgee-0.20.6.tar.xz'
+      format: 'tar.xz'
+      checksum: 'blake2b:cdb88719e0e1bceccefd6a824823e6e514bf1f4d6b8cf5330d6d83f781649312b23554c7dfc4a6b4eeb3bbcd81ca42843666d596b85634ff95fc90e90fea44bd'
+      extract_path: 'libgee-0.20.6'
+      version: '0.20.6'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['autoreconf', '-fvi']
+    tools_required:
+      - system-gcc
+      - host-vala
+    pkgs_required:
+      - mlibc
+      - glib
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--disable-static'
+        - '--enable-vala=yes'
+        - '--enable-introspection=no'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   # Updating to 1.47 broke libgcrypt, must be investigated
   - name: libgpg-error
     architecture: '@OPTION:arch@'
