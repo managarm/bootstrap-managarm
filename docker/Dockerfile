@@ -57,6 +57,8 @@ RUN apt-get update \
 		libglib2.0-dev \
 		# Used by gdk-pixbuf
 		libglib2.0-dev-bin \
+		# Used by gtksourceview5
+		libgtk-4-bin \
 		# Used by host-qt6
 		libgl-dev \
 		# Used by GTK4
