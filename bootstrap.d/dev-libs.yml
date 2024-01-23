@@ -8,10 +8,8 @@ sources:
   - name: gobject-introspection
     subdir: 'ports'
     git: 'https://gitlab.gnome.org/GNOME/gobject-introspection.git'
-    # New meson versions break old builds, but the fix isn't in a stable release yet
-    branch: 'main'
-    commit: '7368d58a2d615e7cade85afd3f88df65256b699f'
-    version: '1.70.0.managarm1'
+    tag: '1.78.1'
+    version: '1.78.1'
 
   - name: icu
     subdir: 'ports'
@@ -60,7 +58,6 @@ tools:
       - host-pkg-config
       - virtual: pkgconfig-for-host
         program_name: host-pkg-config
-    revision: 2
     configure:
       - args:
         - 'meson'
@@ -73,6 +70,8 @@ tools:
       - args: ['ninja']
     install:
       - args: ['ninja', 'install']
+      - args: ['cp', '-rpv', '@SOURCE_ROOT@/scripts/ldd-wrapper', '@PREFIX@/bin/']
+      - args: ['cp', '-rpv', '@SOURCE_ROOT@/scripts/run-wrapper', '@PREFIX@/bin/']
 
   - name: host-icu
     labels: [aarch64]

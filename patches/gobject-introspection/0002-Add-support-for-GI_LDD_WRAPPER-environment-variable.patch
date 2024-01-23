@@ -1,0 +1,28 @@
+From 32cf1a4dcc4147b5c08c894814d383fecf69eded Mon Sep 17 00:00:00 2001
+From: 48cf <32851089+48cf@users.noreply.github.com>
+Date: Tue, 23 Jan 2024 23:03:49 +0100
+Subject: [PATCH] Add support for GI_LDD_WRAPPER environment variable
+
+---
+ giscanner/shlibs.py | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/giscanner/shlibs.py b/giscanner/shlibs.py
+index 9f8ab5d..7b457a8 100644
+--- a/giscanner/shlibs.py
++++ b/giscanner/shlibs.py
+@@ -97,8 +97,11 @@ def _resolve_non_libtool(options, binary, libraries):
+             args.extend(libtool)
+             args.append('--mode=execute')
+         platform_system = platform.system()
++        ldd_wrapper_from_env = os.environ.get("GI_LDD_WRAPPER")
+         if options.ldd_wrapper:
+             args.extend([options.ldd_wrapper, binary.args[0]])
++        elif ldd_wrapper_from_env:
++            args.extend([ldd_wrapper_from_env, binary.args[0]])
+         elif platform_system == 'Darwin':
+             args.extend(['otool', '-L', binary.args[0]])
+         else:
+-- 
+2.43.0
+
