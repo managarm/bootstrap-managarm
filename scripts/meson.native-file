@@ -1,2 +1,3 @@
 [binaries]
 pkgconfig = 'host-pkg-config'
+vala = 'cross-valac'
