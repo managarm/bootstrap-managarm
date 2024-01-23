@@ -2,8 +2,8 @@ sources:
   - name: glib
     subdir: ports
     git: 'https://gitlab.gnome.org/GNOME/glib.git'
-    tag: '2.72.3'
-    version: '2.72.3'
+    tag: '2.78.4'
+    version: '2.78.4'
 
   - name: gobject-introspection
     subdir: 'ports'
@@ -45,7 +45,6 @@ tools:
         - '--prefix=@PREFIX@'
         - '--libdir=lib'
         - '@THIS_SOURCE_DIR@'
-    revision: 2
     compile:
       - args: ['ninja']
     install:
@@ -266,7 +265,6 @@ packages:
       - zlib
       - libiconv
       - libintl
-    revision: 8
     configure:
       - args:
         - 'meson'
@@ -276,6 +274,8 @@ packages:
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
         - '-Dxattr=false'
+        - '-Dtests=false'
+        - '-Dinstalled_tests=false'
         - '@THIS_SOURCE_DIR@'
         environ:
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
