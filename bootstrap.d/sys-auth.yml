@@ -21,7 +21,7 @@ packages:
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'meson'

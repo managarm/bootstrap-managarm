@@ -16,7 +16,7 @@ packages:
       - dbus
       - glib
       - libxml
-    revision: 4
+    revision: 5
     configure:
       - args:
           - 'meson'

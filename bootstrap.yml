@@ -774,7 +774,7 @@ packages:
       - tool: system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -820,7 +820,7 @@ packages:
         - args: ['git', '-C', '@THIS_SOURCE_DIR@', 'submodule', 'update', '--init']
         - args: ['./bootstrap.sh']
         - args: ['./b2', 'headers']
-    revision: 4
+    revision: 5
     configure: []
     build:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/include']
@@ -897,7 +897,7 @@ packages:
       branch: 'master'
     tools_required:
       - system-gcc
-    revision: 6
+    revision: 7
     configure:
       - args:
         - 'meson'
@@ -929,7 +929,7 @@ packages:
       subdir: 'ports'
       git: 'https://github.com/managarm/frigg.git'
       branch: 'master'
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'meson'
@@ -961,7 +961,7 @@ packages:
       - mpfr
       - mpc
       - zlib
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1007,7 +1007,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 9
+    revision: 10
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1041,7 +1041,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 7
+    revision: 8
     configure:
       - args:
         - 'meson'
@@ -1071,7 +1071,7 @@ packages:
       - system-gcc
     pkgs_required:
       - boost
-    revision: 6
+    revision: 7
     configure:
       - args:
         - 'meson'
@@ -1103,7 +1103,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 7
+    revision: 8
     configure:
       - args:
         - 'cmake'
@@ -1131,7 +1131,7 @@ packages:
       branch: 'master'
     tools_required:
       - system-gcc
-    revision: 7
+    revision: 8
     configure:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/include']
       - args:
@@ -1155,7 +1155,7 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
-    revision: 4
+    revision: 5
     configure:
       - args:
         - 'cmake'
@@ -1206,7 +1206,7 @@ packages:
     pkgs_required:
       - mlibc
       - mesa
-    revision: 7
+    revision: 8
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1246,7 +1246,6 @@ packages:
     pkgs_required:
       - frigg
       - mlibc-headers
-    revision: 2
     configure:
       - args: |
           sed -e 's|_BUILD_ROOT_|@BUILD_ROOT@|' @SOURCE_ROOT@/scripts/meson-kernel-@OPTION:arch-triple@.cross-file \
@@ -1298,7 +1297,6 @@ packages:
       - libdrm
       - libsmarter
       - protobuf
-    revision: 2
     configure:
       - args: |
           sed -e 's|_BUILD_ROOT_|@BUILD_ROOT@|' -e 's|_SYSROOT_DIR_|@SYSROOT_DIR@|' @SOURCE_ROOT@/scripts/meson-clang-@OPTION:arch-triple@.cross-file \
@@ -1340,7 +1338,6 @@ packages:
       - host-protoc
     pkgs_required:
       - linux-headers
-    revision: 2
     configure:
       - args:
         - 'meson'
@@ -1384,7 +1381,6 @@ packages:
       - linux-headers
       - mlibc-headers
       - frigg
-    revision: 2
     configure:
       - args:
         - 'meson'
@@ -1413,7 +1409,6 @@ packages:
     labels: [aarch64]
     architecture: '@OPTION:arch@'
     from_source: mlibc
-    revision: 3
     tools_required:
       - host-llvm-toolchain
       - host-managarm-tools
@@ -1456,7 +1451,7 @@ packages:
       - host-protoc
     pkgs_required:
       - mlibc
-    revision: 8
+    revision: 9
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1488,7 +1483,7 @@ packages:
       - mlibc
       - libexpat
       - libffi
-    revision: 4
+    revision: 5
     configure:
       - args:
         - 'meson'
@@ -1537,7 +1532,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1585,7 +1580,7 @@ packages:
     pkgs_required:
       - mlibc
       - libxkbcommon
-    revision: 4
+    revision: 5
     configure:
       - args:
         - 'cmake'
@@ -1627,7 +1622,7 @@ packages:
       - libdrm
       - libtsm
       - eudev
-    revision: 4
+    revision: 5
     configure:
       - args:
         - 'meson'

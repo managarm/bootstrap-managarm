@@ -111,7 +111,7 @@ packages:
     pkgs_required:
       - mlibc
       - glib
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'meson'
@@ -153,7 +153,7 @@ packages:
     pkgs_required:
       - mlibc
       - gmp
-    revision: 7
+    revision: 8
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -189,7 +189,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 4
+    revision: 5
     configure:
       - args:
         - 'cmake'
@@ -237,7 +237,7 @@ packages:
       - host-automake-v1.15
     pkgs_required:
       - mlibc
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -266,7 +266,7 @@ packages:
       - zlib
       - libiconv
       - libintl
-    revision: 7
+    revision: 8
     configure:
       - args:
         - 'meson'
@@ -319,7 +319,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 6
+    revision: 7
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -344,7 +344,7 @@ packages:
       - host-icu
     pkgs_required:
       - mlibc
-    revision: 4
+    revision: 5
     configure:
       - args: ['cp',
           '@THIS_SOURCE_DIR@/icu4c/source/config/mh-linux',
@@ -373,7 +373,7 @@ packages:
       - host-cmake
     pkgs_required:
       - mlibc
-    revision: 6
+    revision: 7
     configure:
       - args:
         - 'cmake'
@@ -415,7 +415,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -458,7 +458,7 @@ packages:
       - mlibc
       - openssl
       - zlib
-    revision: 7
+    revision: 8
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -500,7 +500,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/expat/configure'
@@ -537,7 +537,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -577,7 +577,7 @@ packages:
     pkgs_required:
       - mlibc
       - libgpg-error
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -625,7 +625,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 5
+    revision: 6
     configure:
       # libgpg-error does not know about managarm, teach it
       - args: ['cp', '-v', '@THIS_SOURCE_DIR@/src/syscfg/lock-obj-pub.x86_64-unknown-linux-gnu.h',
@@ -697,7 +697,7 @@ packages:
       - host-libtool
     pkgs_required:
       - mlibc
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -732,7 +732,7 @@ packages:
       - eudev
       - libevdev
       - mtdev
-    revision: 3
+    revision: 4
     configure:
       - args:
           - 'meson'
@@ -775,7 +775,7 @@ packages:
     pkgs_required:
       - mlibc
       - libiconv
-    revision: 7
+    revision: 8
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -875,7 +875,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -916,7 +916,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -957,7 +957,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1005,7 +1005,7 @@ packages:
     pkgs_required:
       - mlibc
       - eudev
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1038,7 +1038,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 8
+    revision: 9
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1073,7 +1073,7 @@ packages:
       - mlibc
       - zlib
       - libiconv
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1104,7 +1104,7 @@ packages:
     pkgs_required:
       - mlibc
       - libxml
-    revision: 3
+    revision: 4
     configure:
       # BLFS increases the recursion limit, apparently some packages need that to build their documentation.
       - args: ['sed', '-i', 's/3000/5000/', '@THIS_SOURCE_DIR@/libxslt/transform.c']
@@ -1160,7 +1160,7 @@ packages:
       - mlibc
       - gmp
       - mpfr
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1209,7 +1209,7 @@ packages:
     pkgs_required:
       - mlibc
       - gmp
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1254,7 +1254,7 @@ packages:
     pkgs_required:
       - mlibc
       - gmp
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1296,7 +1296,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       # Disable installing two unneeded scripts.
       - args: ['sed', '-ri', '/^RELEASE/s/^/#/', '@THIS_SOURCE_DIR@/pr/src/misc/Makefile.in']
@@ -1343,7 +1343,7 @@ packages:
       - nspr
       - sqlite
       - zlib
-    revision: 2
+    revision: 3
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -1449,7 +1449,7 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/Configure'
@@ -1500,7 +1500,7 @@ packages:
       - host-automake-v1.15
     pkgs_required:
       - mlibc
-    revision: 8
+    revision: 9
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1548,7 +1548,7 @@ packages:
       - ncurses
       - readline
       - zlib
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1588,7 +1588,7 @@ packages:
     pkgs_required:
       - mlibc
       - libiconv
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1615,7 +1615,7 @@ packages:
     tools_required:
       - system-gcc
       - wayland-scanner
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'meson'
@@ -1672,7 +1672,7 @@ packages:
       - seatd
       - xcb-proto
       - xcb-util-cursor
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'meson'
@@ -1718,7 +1718,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 7
+    revision: 8
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
