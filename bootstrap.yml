@@ -815,6 +815,36 @@ tools:
       - args: ['cp', '-Tr', 'usr/include', '@PREFIX@/include']
       - args: ['cp', '-Tr', 'usr/include', '@PREFIX@/src/linux-headers']
 
+  - name: host-mlibc
+    architecture: noarch
+    from_source: mlibc
+    tools_required:
+      - host-linux-headers
+      - host-frigg
+      - host-cxxshim
+      - virtual: pkgconfig-for-host
+        program_name: host-pkg-config
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--prefix=@PREFIX@'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '--wrap-mode=nofallback'
+        - '-Dmlibc_no_headers=true'
+        - '-Ddisable_crypt_option=true'
+        - '-Ddisable_iconv_option=true'
+        - '-Ddisable_intl_option=true'
+        - '-Dlinux_kernel_headers=@BUILD_ROOT@/tools/host-linux-headers/src/linux-headers'
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
+
 packages:
   - name: binutils
     architecture: '@OPTION:arch@'
