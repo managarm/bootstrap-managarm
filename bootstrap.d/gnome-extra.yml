@@ -1,0 +1,62 @@
+packages:
+  - name: gnome-calculator
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: A calculator application for GNOME
+      description: This package provides a powerful graphical calculator with financial, logical and scientific modes. It uses a multiple precision package to do its arithmetic to give a high degree of accuracy.
+      spdx: 'GPL-3.0-or-later'
+      website: 'https://wiki.gnome.org/Apps/Calculator'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['gnome-extra']
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.gnome.org/GNOME/gnome-calculator.git'
+      tag: '45.0.2'
+      version: '45.0.2'
+    tools_required:
+      - system-gcc
+      - wayland-scanner
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+      - host-vala
+    pkgs_required:
+      - mlibc
+      - glib
+      - gtk4
+      - libxml
+      - libsoup3
+      - libgee
+      - mpfr
+      - mpc
+      - libadwaita
+      - gtksourceview5
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--prefix=/usr'
+        - '--buildtype=release'
+        - '--wrap-mode=nodownload'
+        - '-Dgcalc=true'
+        - '-Dgci=true'
+        - '-Dapp=true'
+        - '-Ddoc=false'
+        - '@THIS_SOURCE_DIR@'
+        environ:
+          VALADIR: '@SYSROOT_DIR@/usr/share/vala/vapi'
+    build:
+      - args: ['ninja']
+        environ:
+          VALAC: 'cross-valac'
+          VALADIR: '@SYSROOT_DIR@/usr/share/vala/vapi'
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+    scripts:
+        post_install:
+          - args: ['glib-compile-schemas', '/usr/share/glib-2.0/schemas']
+          - args: ['gtk4-update-icon-cache', '-q', '-t', '-f', '/usr/share/icons/hicolor']
