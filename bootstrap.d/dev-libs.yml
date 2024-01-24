@@ -289,55 +289,6 @@ packages:
           - args: ['glib-compile-schemas /usr/share/glib-2.0/schemas']
           - args: ['gio-querymodules /usr/lib/gio/modules']
 
-  - name : gobject-introspection
-    default: false
-    from_source: gobject-introspection
-    tools_required:
-      - system-gcc
-      - host-pkg-config
-      - virtual: pkgconfig-for-target
-        triple: "@OPTION:arch-triple@"
-      - host-python
-      - host-gobject-introspection
-      - host-glib
-    pkgs_required:
-      - mlibc
-      - glib
-      - libffi
-      - cairo
-      - pcre2
-      - python
-    configure:
-      - args:
-        - 'meson'
-        - '--cross-file'
-        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@-goi.cross-file'
-        - '--prefix=/usr'
-        - '-Dgi_cross_ldd_wrapper=ldd-wrapper'
-        - '-Dgi_cross_use_prebuilt_gi=true'
-        - '-Dbuild_introspection_data=true'
-        - '-Dgi_cross_pkgconfig_sysroot_path=@SYSROOT_DIR@'
-        - '@THIS_SOURCE_DIR@'
-        environ:
-          PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
-          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
-          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
-          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
-    build:
-      - args: ['ninja', '-j@PARALLELISM@']
-        environ:
-          CC: 'x86_64-managarm-gcc'
-          CXX: 'x86_64-managarm-g++'
-          GI_CROSS_LAUNCHER: 'run-wrapper'
-          PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
-          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
-          LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-glib/lib:@BUILD_ROOT@/tools/host-gobject-introspection/lib/x86_64-linux-gnu'
-          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
-          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
-      - args: ['ninja', 'install']
-        environ:
-          DESTDIR: '@THIS_COLLECT_DIR@'
-
   - name: gmp
     labels: [aarch64]
     architecture: '@OPTION:arch@'
@@ -382,6 +333,56 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+
+  - name: gobject-introspection
+    from_source: gobject-introspection
+    tools_required:
+      - system-gcc
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+      - host-python
+      - host-gobject-introspection
+      - host-glib
+      - host-mlibc
+    pkgs_required:
+      - mlibc
+      - glib
+      - libffi
+      - cairo
+      - pcre2
+      - python
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@-goi.cross-file'
+        - '--prefix=/usr'
+        - '-Dgi_cross_ldd_wrapper=ldd-wrapper'
+        - '-Dgi_cross_use_prebuilt_gi=true'
+        - '-Dbuild_introspection_data=true'
+        - '-Dgi_cross_pkgconfig_sysroot_path=@SYSROOT_DIR@'
+        - '@THIS_SOURCE_DIR@'
+        environ:
+          PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
+          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
+    build:
+      - args: ['ninja']
+        environ:
+          CC: '@OPTION:arch-triple@-gcc'
+          CXX: '@OPTION:arch-triple@-g++'
+          GI_CROSS_LAUNCHER: 'run-wrapper'
+          PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
+          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
+          LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-glib/lib:@BUILD_ROOT@/tools/host-glib/lib/x86_64-linux-gnu:@BUILD_ROOT@/tools/host-gobject-introspection/lib/x86_64-linux-gnu'
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: icu
     labels: [aarch64]
