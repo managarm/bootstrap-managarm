@@ -309,6 +309,8 @@ packages:
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
+        environ:
+          LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-glib/lib:@BUILD_ROOT@/tools/host-glib/lib/x86_64-linux-gnu'
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
