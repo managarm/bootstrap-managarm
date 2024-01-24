@@ -250,6 +250,58 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: nghttp2
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: HTTP/2 C Library
+      description: This package provides an implementation of HTTP/2 and its header compression algorithm, HPACK.
+      spdx: 'MIT'
+      website: 'https://nghttp2.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['net-libs']
+    source:
+      subdir: ports
+      git: 'https://github.com/nghttp2/nghttp2.git'
+      tag: 'v1.46.0'
+      version: '1.46.0'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+        - host-xorg-macros
+      regenerate:
+        - args: ['autoreconf', '-fvi']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - openssl
+      - libevent
+      - libxml
+      - zlib
+      - c-ares
+      - boost
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--disable-static'
+        - '--enable-lib-only'
+        - '--docdir=/usr/share/doc/nghttp2-1.46.0'
+        - '--disable-examples'
+        - '--disable-failmalloc'
+        - '--disable-python-bindings'
+        - '--disable-werror'
+        - '--without-cython'
+        - '--enable-threads'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: webkitgtk
     architecture: '@OPTION:arch@'
     metadata:
