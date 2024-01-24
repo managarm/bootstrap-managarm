@@ -259,6 +259,7 @@ packages:
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
       - wayland-scanner
+      - host-glib
     pkgs_required:
       - mlibc
       - at-spi2-core
