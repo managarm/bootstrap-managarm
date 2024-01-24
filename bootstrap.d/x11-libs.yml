@@ -258,7 +258,6 @@ packages:
       - system-gcc
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
-      - host-glib
       - wayland-scanner
     pkgs_required:
       - mlibc

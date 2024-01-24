@@ -259,11 +259,12 @@ packages:
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
-      - pcre
+      - pcre2
       - libffi
       - zlib
       - libiconv
       - libintl
+    revision: 2
     configure:
       - args:
         - 'meson'
