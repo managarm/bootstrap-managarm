@@ -1,4 +1,34 @@
 packages:
+  - name: c-ares
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: C library that resolves names asynchronously
+      description: This package contains a C library for asynchronous DNS requests.
+      spdx: 'MIT'
+      website: 'https://c-ares.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['net-dns']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/c-ares/c-ares.git'
+      tag: 'cares-1_18_1'
+      version: '1.18.1'
+    tools_required:
+      - system-gcc
+      - host-cmake
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: libidn2
     architecture: '@OPTION:arch@'
     metadata:
