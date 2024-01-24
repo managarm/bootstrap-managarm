@@ -20,6 +20,8 @@ packages:
       - glib
       - gobject-introspection
       - libxml
+      - libxtst
+      - libxi
     revision: 5
     configure:
       - args:
