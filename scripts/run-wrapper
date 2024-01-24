@@ -8,6 +8,9 @@
 # The path passed in to the script must be a full path, otherwise
 # the patchelf call will fail.
 
+# Unset LD_LIBRARY_PATH to avoid loading Managarm libraries when running host tools.
+unset LD_LIBRARY_PATH
+
 _path="$1"
 shift 1
 
