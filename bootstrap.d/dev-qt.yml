@@ -90,7 +90,7 @@ packages:
       - libxi
       - sqlite
       - brotli
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'cmake'
@@ -185,7 +185,7 @@ packages:
       - qtsvg6
       - libxkbcommon
       - mesa
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'cmake'
@@ -227,7 +227,7 @@ packages:
       - libwebp
       - libtiff
       - zlib
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'cmake'
@@ -266,7 +266,7 @@ packages:
     pkgs_required:
       - mlibc
       - qtbase6
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'cmake'
@@ -308,7 +308,7 @@ packages:
       - libglvnd
       - gstreamer
       - gst-plugins-base
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'cmake'
@@ -350,7 +350,7 @@ packages:
       - qtbase6
       - mesa
       - libxkbcommon
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'cmake'
@@ -389,7 +389,7 @@ packages:
       - mlibc
       - qtbase6
       - zlib
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'cmake'
@@ -428,7 +428,7 @@ packages:
       - mesa
       - wayland
       - libxkbcommon
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'cmake'

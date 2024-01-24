@@ -22,7 +22,7 @@ packages:
       - mlibc
       - mesa
       - libxkbcommon
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -80,7 +80,7 @@ packages:
       - xcb-util-image
       - xcb-util-wm
       - xwayland
-    revision: 4
+    revision: 5
     configure:
       - args: 'sed -i s#{XBSTRAP_SYSTEM_ROOT}#@SYSROOT_DIR@# @THIS_SOURCE_DIR@/xwayland/meson.build'
       - args:
@@ -128,7 +128,7 @@ packages:
       - wayland
       - libepoxy
       - glib
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'

@@ -14,7 +14,6 @@ packages:
         - host-libtool
       regenerate:
         - args: ['autoreconf', '-fvi']
-    revision: 3
     tools_required:
       - system-gcc
       - host-libtool
@@ -22,6 +21,7 @@ packages:
       - mlibc
       - readline
       - zlib
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

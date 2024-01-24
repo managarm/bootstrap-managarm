@@ -49,6 +49,8 @@ RUN apt-get update \
 		libglib2.0-dev-bin \
 		# Used by host-qt6
 		libgl-dev \
+		# Used by GTK4
+		libgtk-4-bin \
 		# GMP, MPFR and MPC are used by gcc
 		libgmp-dev \
 		libmpc-dev \
@@ -89,6 +91,8 @@ RUN apt-get update \
 		rsync \
 		# Used by webkitgtk
 		ruby \
+		# Used by GTK4
+		sassc \
 		# makeinfo is used in gnu build systems
 		texinfo \
 		# Provides 'mkimage', required to build Allwinner D1 images.

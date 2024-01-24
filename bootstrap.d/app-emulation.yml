@@ -30,7 +30,7 @@ packages:
       - pixman
       - ncurses
       - nettle
-    revision: 10
+    revision: 11
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
