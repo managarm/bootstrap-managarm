@@ -734,6 +734,27 @@ tools:
     install:
       - args: ['ninja', 'install']
 
+  - name: host-cxxshim
+    architecture: noarch
+    source:
+      rolling_version: true
+      version: '0.0pl@ROLLING_ID@'
+      subdir: 'ports'
+      git: 'https://github.com/managarm/cxxshim.git'
+      branch: 'master'
+    configure:
+      - args:
+        - 'meson'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--prefix=@PREFIX@'
+        - '-Dinstall_headers=true'
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
+
   - name: host-hdoc
     labels: [aarch64]
     architecture: '@OPTION:arch@'
@@ -753,6 +774,71 @@ tools:
         - '--native-file'
         - '@SOURCE_ROOT@/scripts/meson.native-file'
         - '--prefix=@PREFIX@'
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
+
+  - name: host-linux-headers
+    architecture: noarch
+    from_source: linux-headers
+    configure:
+      - args: ['cp', '-Tr', '@THIS_SOURCE_DIR@', '.']
+    compile:
+      - args: |
+          LINUX_ARCH="@OPTION:arch@"
+          case "$LINUX_ARCH" in
+            "aarch64")
+              LINUX_ARCH="arm64"
+              ;;
+            "riscv64")
+              LINUX_ARCH="riscv"
+              ;;
+          esac
+          make ARCH="$LINUX_ARCH" headers_install
+      - args: ['find', 'usr/include', '-type', 'f', '!', '-name', '*.h', '-delete']
+    install:
+      # Sometimes, xbstrap does not clean collect dirs.  We don't want those
+      # cases to break.  If we don't do this special handling, and don't pass
+      # -T to GNU cp below, it might be the case that cp installs linux-headers
+      # into /usr/include/include or /usr/src/linux-headers/include.  GNU cp
+      # has -T, which disables this behavior, and instead lets us be specific
+      # about what we want our destination directory name to be.  This,
+      # however, also merges directories, so we want to clear any existing
+      # files.
+      - args: ['rm', '-rf', '@PREFIX@/src/linux-headers']
+      - args: ['rm', '-rf', '@PREFIX@/include']
+      # remove this file, as mlibc will override this file with one suited to mlibc
+      - args: ['rm', 'usr/include/linux/libc-compat.h']
+      - args: ['mkdir', '-p', '@PREFIX@/src']
+      - args: ['cp', '-Tr', 'usr/include', '@PREFIX@/include']
+      - args: ['cp', '-Tr', 'usr/include', '@PREFIX@/src/linux-headers']
+
+  - name: host-mlibc
+    architecture: noarch
+    from_source: mlibc
+    tools_required:
+      - host-linux-headers
+      - host-frigg
+      - host-cxxshim
+      - virtual: pkgconfig-for-host
+        program_name: host-pkg-config
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--prefix=@PREFIX@'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '--wrap-mode=nofallback'
+        - '-Dmlibc_no_headers=true'
+        - '-Ddisable_crypt_option=true'
+        - '-Ddisable_iconv_option=true'
+        - '-Ddisable_intl_option=true'
+        - '-Dlinux_kernel_headers=@BUILD_ROOT@/tools/host-linux-headers/src/linux-headers'
         - '@THIS_SOURCE_DIR@'
     compile:
       - args: ['ninja']

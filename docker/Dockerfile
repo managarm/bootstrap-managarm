@@ -73,6 +73,8 @@ RUN apt-get update \
 		ninja-build \
 		# To build the certificates, we need trust, provided by p11-kit
 		p11-kit \
+		# Used by scripts/run-wrapper
+		patchelf \
 		# Various build systems invoke pkg-config
 		pkg-config \
 		# Used by itstool
@@ -83,6 +85,8 @@ RUN apt-get update \
 		python3-pip \
 		python3-setuptools \
 		python3-wheel \
+		# Used by host-glib
+		python3-packaging \
 		# Used by managarm
 		python3-protobuf \
 		# Used by libxcb

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Basic script that naively mimicks ldd, required for g-ir-scanner
+
+x86_64-managarm-objdump -p $1 | awk '/NEEDED/{print $2" => /usr/lib/"$2}'

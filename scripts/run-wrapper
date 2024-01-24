@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# This script creates a temporary copy of the passed in executable
+# and changes the interpreter to the one provided in an environment
+# variable. It also sets up the LD_LIBRARY_PATH from a differently
+# named environment variable and executes the copied file.
+#
+# The path passed in to the script must be a full path, otherwise
+# the patchelf call will fail.
+
+_path="$1"
+shift 1
+
+if patchelf --print-interpreter "${_path}" | grep managarm 2>&1 >/dev/null; then
+    _temp=$(mktemp)
+    cp -p "${_path}" "${_temp}"
+    patchelf --set-interpreter "${RUN_WRAPPER_INTERP}" "${_temp}"
+    export LD_LIBRARY_PATH="${RUN_WRAPPER_LD_LIBRARY_PATH}"
+    _path="${_temp}"
+fi
+
+"${_path}" "$@"

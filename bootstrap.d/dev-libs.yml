@@ -2,16 +2,14 @@ sources:
   - name: glib
     subdir: ports
     git: 'https://gitlab.gnome.org/GNOME/glib.git'
-    tag: '2.72.3'
-    version: '2.72.3'
+    tag: '2.78.4'
+    version: '2.78.4'
 
   - name: gobject-introspection
     subdir: 'ports'
     git: 'https://gitlab.gnome.org/GNOME/gobject-introspection.git'
-    # New meson versions break old builds, but the fix isn't in a stable release yet
-    branch: 'main'
-    commit: '7368d58a2d615e7cade85afd3f88df65256b699f'
-    version: '1.70.0.managarm1'
+    tag: '1.78.1'
+    version: '1.78.1'
 
   - name: icu
     subdir: 'ports'
@@ -45,7 +43,6 @@ tools:
         - '--prefix=@PREFIX@'
         - '--libdir=lib'
         - '@THIS_SOURCE_DIR@'
-    revision: 2
     compile:
       - args: ['ninja']
     install:
@@ -61,7 +58,6 @@ tools:
       - host-pkg-config
       - virtual: pkgconfig-for-host
         program_name: host-pkg-config
-    revision: 2
     configure:
       - args:
         - 'meson'
@@ -74,6 +70,8 @@ tools:
       - args: ['ninja']
     install:
       - args: ['ninja', 'install']
+      - args: ['cp', '-rpv', '@SOURCE_ROOT@/scripts/ldd-wrapper', '@PREFIX@/bin/']
+      - args: ['cp', '-rpv', '@SOURCE_ROOT@/scripts/run-wrapper', '@PREFIX@/bin/']
 
   - name: host-icu
     labels: [aarch64]
@@ -266,7 +264,6 @@ packages:
       - zlib
       - libiconv
       - libintl
-    revision: 8
     configure:
       - args:
         - 'meson'
@@ -276,6 +273,8 @@ packages:
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
         - '-Dxattr=false'
+        - '-Dtests=false'
+        - '-Dinstalled_tests=false'
         - '@THIS_SOURCE_DIR@'
         environ:
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
@@ -289,6 +288,55 @@ packages:
         post_install:
           - args: ['glib-compile-schemas /usr/share/glib-2.0/schemas']
           - args: ['gio-querymodules /usr/lib/gio/modules']
+
+  - name : gobject-introspection
+    default: false
+    from_source: gobject-introspection
+    tools_required:
+      - system-gcc
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+      - host-python
+      - host-gobject-introspection
+      - host-glib
+    pkgs_required:
+      - mlibc
+      - glib
+      - libffi
+      - cairo
+      - pcre2
+      - python
+    configure:
+      - args:
+        - 'meson'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@-goi.cross-file'
+        - '--prefix=/usr'
+        - '-Dgi_cross_ldd_wrapper=ldd-wrapper'
+        - '-Dgi_cross_use_prebuilt_gi=true'
+        - '-Dbuild_introspection_data=true'
+        - '-Dgi_cross_pkgconfig_sysroot_path=@SYSROOT_DIR@'
+        - '@THIS_SOURCE_DIR@'
+        environ:
+          PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
+          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
+    build:
+      - args: ['ninja', '-j@PARALLELISM@']
+        environ:
+          CC: 'x86_64-managarm-gcc'
+          CXX: 'x86_64-managarm-g++'
+          GI_CROSS_LAUNCHER: 'run-wrapper'
+          PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
+          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
+          LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-glib/lib:@BUILD_ROOT@/tools/host-gobject-introspection/lib/x86_64-linux-gnu'
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: gmp
     labels: [aarch64]
