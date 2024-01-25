@@ -25,6 +25,21 @@ sources:
           '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
           '@THIS_SOURCE_DIR@/icu4c/source']
 
+  - name: libffi
+    subdir: 'ports'
+    git: 'https://github.com/libffi/libffi.git'
+    tag: 'v3.4.4'
+    version: '3.4.4'
+    tools_required:
+      - host-autoconf-v2.71
+      - host-automake-v1.11
+      - host-libtool
+    regenerate:
+      - args: ['./autogen.sh']
+      - args: ['cp',
+          '@BUILD_ROOT@/tools/host-automake-v1.11/share/automake-1.11/config.sub',
+          '@THIS_SOURCE_DIR@/']
+
   - name: nss
     subdir: 'ports'
     git: 'https://github.com/nss-dev/nss.git'
@@ -84,6 +99,19 @@ tools:
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/icu4c/source/configure'
+        - '--prefix=@PREFIX@'
+    compile:
+      - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'install']
+  
+  - name: host-libffi
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
+    from_source: libffi
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
         - '--prefix=@PREFIX@'
     compile:
       - args: ['make', '-j@PARALLELISM@']
@@ -630,20 +658,7 @@ packages:
   - name: libffi
     labels: [aarch64]
     architecture: '@OPTION:arch@'
-    source:
-      subdir: 'ports'
-      git: 'https://github.com/libffi/libffi.git'
-      tag: 'v3.4.4'
-      version: '3.4.4'
-      tools_required:
-        - host-autoconf-v2.71
-        - host-automake-v1.11
-        - host-libtool
-      regenerate:
-        - args: ['./autogen.sh']
-        - args: ['cp',
-            '@BUILD_ROOT@/tools/host-automake-v1.11/share/automake-1.11/config.sub',
-            '@THIS_SOURCE_DIR@/']
+    from_source: libffi
     tools_required:
       - system-gcc
     pkgs_required:
