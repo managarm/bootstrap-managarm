@@ -64,7 +64,8 @@ tools:
     tools_required:
       - host-llvm-toolchain
       - host-python
-    revision: 3
+      - host-libffi
+    revision: 4
     compile:
       - args: |
             cat << EOF > config.toml
