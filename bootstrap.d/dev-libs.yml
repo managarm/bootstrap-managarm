@@ -1912,6 +1912,73 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: totem-pl-parser
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Playlist parsing library
+      description: This package provides a simple GObject-based library used to parse multiple playlist formats.
+      spdx: 'LGPL-2.0-or-later'
+      website: 'https://developer.gnome.org/totem-pl-parser/stable/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.gnome.org/GNOME/totem-pl-parser.git'
+      tag: 'V_3_26_6'
+      version: '3.26.6'
+    tools_required:
+      - system-gcc
+      - wayland-scanner
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+      - host-mlibc
+      - host-gobject-introspection
+      - host-python
+    pkgs_required:
+      - mlibc
+      - glib
+      - libarchive
+      - libgcrypt
+      - libxml
+      - gobject-introspection
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--buildtype=release'
+        - '--wrap-mode=nodownload'
+        - '-Dintrospection=true'
+        - '-Denable-libarchive=yes'
+        - '-Denable-libgcrypt=yes'
+        - '@THIS_SOURCE_DIR@'
+        environ:
+          # Same as below
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
+    build:
+      - args: ['ninja']
+        environ:
+          # Make python load host libraries instead of the ones in the rootfs
+          LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-glib/lib:@BUILD_ROOT@/tools/host-glib/lib/x86_64-linux-gnu:@BUILD_ROOT@/tools/host-gobject-introspection/lib/x86_64-linux-gnu'
+          # Library path for our run-wrapper that allows it to load managarm libraries
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          # Similar to above, but using a nasty (but working) hack lets us use a Linux mlibc build to execute an
+          # executable that was cross-compiled for managarm
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
+          # This is a custom environment variable which tells g-ir-scanner what to use instead of ldd
+          # We point it at our native ldd-wrapper that's installed as part of host-gobject-introspection
+          GI_LDD_WRAPPER: ldd-wrapper
+          # This tells g-ir-scanner what program should be used for "cross-launching" the executables it builds
+          GI_CROSS_LAUNCHER: run-wrapper
+          # Path to the introspection data installed by other packages
+          GI_GIR_PATH: '@SYSROOT_DIR@/usr/share/gir-1.0'
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: wayland-protocols
     labels: [aarch64]
     architecture: '@OPTION:arch@'
