@@ -318,6 +318,70 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
+  - name: spidermonkey
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: SpiderMonkey is Mozilla's JavaScript and WebAssembly Engine, written in C++ and Rust.
+      description: SpiderMonkey is Mozilla's JavaScript and WebAssembly Engine, written in C++ and Rust.
+      spdx: 'MPL-2.0'
+      website: 'https://spidermonkey.dev/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-lang']
+    source:
+      subdir: 'ports'
+      url: 'https://archive.mozilla.org/pub/firefox/releases/115.7.0esr/source/firefox-115.7.0esr.source.tar.xz'
+      format: 'tar.xz'
+      checksum: blake2b:9cacd9cd7e9b9040f37843645bc6823d72b3b736a3c4dcef7706304ebeda718e36e98962d9d9c000b7507fdfda40bd19ca4c8267573dc623a9507a7f77b17b52
+      extract_path: 'firefox-115.7.0'
+      patch-path-strip: 1
+      version: '115.7.0esr'
+    tools_required:
+      - host-cargo
+      - system-gcc
+      - host-llvm-toolchain
+      - host-rust
+      - host-automake-v1.15
+    sources_required:
+      - rust-patched-libs
+    pkgs_required:
+      - mlibc
+      - readline
+      - zlib
+      - icu
+      - which
+      - llvm
+      - nss
+      - nspr
+    configure:
+      - args: ['cp',
+            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
+            '@THIS_SOURCE_DIR@/build/autoconf/']
+      - args:
+        - '@THIS_SOURCE_DIR@/js/src/configure'
+        - '--target=@OPTION:arch-triple@'
+        - '--with-toolchain-prefix=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--disable-debug-symbols'
+        - '--disable-jemalloc'
+        - '--enable-readline'
+        - '--enable-rust-simd'
+        - '--with-intl-api'
+        - '--with-system-icu'
+        - '--with-system-zlib'
+        environ:
+          CC: '@OPTION:arch-triple@-gcc'
+          CXX: '@OPTION:arch-triple@-g++'
+          HOST_CC: 'gcc'
+          HOST_CXX: 'g++'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['rm', '-v', '@THIS_COLLECT_DIR@/usr/lib/libjs_static.ajs']
+      - args: |
+            sed -i '/@NSPR_CFLAGS\@/d' @THIS_COLLECT_DIR@/usr/bin/js115-config
+
   - name: tcl
     architecture: '@OPTION:arch@'
     metadata:
