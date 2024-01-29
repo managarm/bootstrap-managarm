@@ -60,3 +60,43 @@ packages:
         post_install:
           - args: ['glib-compile-schemas', '/usr/share/glib-2.0/schemas']
           - args: ['gtk4-update-icon-cache', '-q', '-t', '-f', '/usr/share/icons/hicolor']
+
+  - name: yelp-xsl
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: A calculator application for GNOME
+      description: This package contains XSL stylesheets that are used by the Yelp help browser to format Docbook and Mallard documents.
+      spdx: 'GPL-2.0-or-later LGPL-2.1-or-later'
+      website: 'https://gitlab.gnome.org/GNOME/yelp-xsl'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['gnome-extra']
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.gnome.org/GNOME/yelp-xsl.git'
+      tag: '42.1'
+      version: '42.1'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+        - host-gettext
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            NOCONFIGURE: 'yes'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - libxslt
+      - itstool
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+    build:
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
