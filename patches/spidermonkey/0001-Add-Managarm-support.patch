@@ -1,0 +1,131 @@
+From e972b50dc759d9a68ebb2b9dfeab1aae7e82bcef Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Mon, 29 Jan 2024 20:46:26 +0100
+Subject: [PATCH] Add Managarm support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ build/moz.configure/init.configure              | 2 ++
+ build/moz.configure/toolchain.configure         | 5 +++--
+ js/src/wasm/WasmSignalHandlers.cpp              | 4 ++--
+ mozglue/misc/PlatformConditionVariable.h        | 2 +-
+ mozglue/misc/TimeStamp_posix.cpp                | 7 +++++++
+ python/mozbuild/mozbuild/configure/constants.py | 3 +++
+ 6 files changed, 18 insertions(+), 5 deletions(-)
+
+diff --git a/build/moz.configure/init.configure b/build/moz.configure/init.configure
+index 53bbc4203f..716008dbee 100644
+--- a/build/moz.configure/init.configure
++++ b/build/moz.configure/init.configure
+@@ -537,6 +537,8 @@ def split_triplet(triplet, allow_wasi=False):
+         canonical_os = canonical_kernel = "SunOS"
+     elif os.startswith("wasi") and allow_wasi:
+         canonical_os = canonical_kernel = "WASI"
++    elif os.startswith("managarm"):
++        canonical_os = canonical_kernel = "Managarm"
+     else:
+         raise ValueError("Unknown OS: %s" % os)
+ 
+diff --git a/build/moz.configure/toolchain.configure b/build/moz.configure/toolchain.configure
+index 3f91d71537..6079ba7cc6 100644
+--- a/build/moz.configure/toolchain.configure
++++ b/build/moz.configure/toolchain.configure
+@@ -2409,8 +2409,9 @@ def security_hardening_cflags(
+         # Enable only if hardening is not disabled and ASAN is
+         # not on as ASAN will catch the crashes for us
+         if compiler_is_gccish and not asan:
+-            flags.append("-fstack-protector-strong")
+-            ldflags.append("-fstack-protector-strong")
++            if target.os != "Managarm":
++                flags.append("-fstack-protector-strong")
++                ldflags.append("-fstack-protector-strong")
+ 
+             if (
+                 c_compiler.type == "clang"
+diff --git a/js/src/wasm/WasmSignalHandlers.cpp b/js/src/wasm/WasmSignalHandlers.cpp
+index 86e11df7f0..94b576d9dd 100644
+--- a/js/src/wasm/WasmSignalHandlers.cpp
++++ b/js/src/wasm/WasmSignalHandlers.cpp
+@@ -111,8 +111,8 @@ using mozilla::DebugOnly;
+ #      define R01_sig(p) ((p)->sc_frame.fixreg[1])
+ #      define R32_sig(p) ((p)->sc_frame.srr0)
+ #    endif
+-#  elif defined(__linux__) || defined(__sun)
+-#    if defined(__linux__)
++#  elif defined(__linux__) || defined(__sun) || defined(__managarm__)
++#    if defined(__linux__) || defined(__managarm__)
+ #      define EIP_sig(p) ((p)->uc_mcontext.gregs[REG_EIP])
+ #      define EBP_sig(p) ((p)->uc_mcontext.gregs[REG_EBP])
+ #      define ESP_sig(p) ((p)->uc_mcontext.gregs[REG_ESP])
+diff --git a/mozglue/misc/PlatformConditionVariable.h b/mozglue/misc/PlatformConditionVariable.h
+index 61fb06ade1..4f7410b5c9 100644
+--- a/mozglue/misc/PlatformConditionVariable.h
++++ b/mozglue/misc/PlatformConditionVariable.h
+@@ -54,7 +54,7 @@ class ConditionVariableImpl {
+ 
+   PlatformData* platformData();
+ 
+-#if !defined(XP_WIN) && !defined(__wasi__)
++#if !defined(XP_WIN) && !defined(__wasi__) && !defined(__managarm__)
+   void* platformData_[sizeof(pthread_cond_t) / sizeof(void*)];
+   static_assert(sizeof(pthread_cond_t) / sizeof(void*) != 0 &&
+                     sizeof(pthread_cond_t) % sizeof(void*) == 0,
+diff --git a/mozglue/misc/TimeStamp_posix.cpp b/mozglue/misc/TimeStamp_posix.cpp
+index 10c046d046..3c37b70fff 100644
+--- a/mozglue/misc/TimeStamp_posix.cpp
++++ b/mozglue/misc/TimeStamp_posix.cpp
+@@ -13,7 +13,9 @@
+ // obtained with this API; see TimeDuration::Resolution;
+ //
+ 
++#if !defined(__managarm__)
+ #include <sys/syscall.h>
++#endif
+ #include <time.h>
+ #include <unistd.h>
+ #include <string.h>
+@@ -251,8 +253,13 @@ static void* ComputeProcessUptimeThread(void* aTime) {
+   }
+ 
+   char threadStat[40];
++#if !defined(__managarm__)
+   SprintfLiteral(threadStat, "/proc/self/task/%d/stat",
+                  (pid_t)syscall(__NR_gettid));
++#else
++  SprintfLiteral(threadStat, "/proc/self/task/%d/stat",
++                 (pid_t)gettid());
++#endif
+ 
+   uint64_t threadJiffies = JiffiesSinceBoot(threadStat);
+   uint64_t selfJiffies = JiffiesSinceBoot("/proc/self/stat");
+diff --git a/python/mozbuild/mozbuild/configure/constants.py b/python/mozbuild/mozbuild/configure/constants.py
+index a36152651d..cbb68df191 100644
+--- a/python/mozbuild/mozbuild/configure/constants.py
++++ b/python/mozbuild/mozbuild/configure/constants.py
+@@ -24,6 +24,7 @@ OS = EnumString.subclass(
+     "SunOS",
+     "WINNT",
+     "WASI",
++    "Managarm",
+ )
+ 
+ Kernel = EnumString.subclass(
+@@ -37,6 +38,7 @@ Kernel = EnumString.subclass(
+     "SunOS",
+     "WINNT",
+     "WASI",
++    "Managarm",
+ )
+ 
+ CPU_bitness = {
+@@ -118,6 +120,7 @@ kernel_preprocessor_checks = {
+     "SunOS": "__sun__",
+     "WINNT": "_WIN32 || __CYGWIN__",
+     "WASI": "__wasi__",
++    "Managarm": "__managarm__",
+ }
+ 
+ assert sorted(kernel_preprocessor_checks.keys()) == sorted(Kernel.POSSIBLE_VALUES)
+-- 
+2.43.0
+
