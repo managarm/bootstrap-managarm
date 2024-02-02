@@ -22,7 +22,13 @@ def qemu_check_nic(qemu, args, nic):
     sys.exit(1)
 
 def do_qemu(args):
-    qemu = os.environ.get("QEMU", f"qemu-system-{args.arch}")
+    qemu = os.environ.get("QEMU")
+
+    if not qemu:
+        if not args.use_system_qemu and os.path.isfile(f"../build/tools/host-qemu/bin/qemu-system-{args.arch}"):
+            qemu = f"../build/tools/host-qemu/bin/qemu-system-{args.arch}"
+        else:
+            qemu = f"qemu-system-{args.arch}"
 
     # Determine if dmalog is available.
 
@@ -272,6 +278,7 @@ qemu_parser.add_argument("--mouse", action="store_true")
 qemu_parser.add_argument("--init-launch", type=str, default="weston")
 qemu_parser.add_argument("--pci-passthrough", type=str)
 qemu_parser.add_argument("--cmd", type=str)
+qemu_parser.add_argument("--use-system-qemu", action="store_true")
 
 # ---------------------------------------------------------------------------------------
 # gdb subcommand.

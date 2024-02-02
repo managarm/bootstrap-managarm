@@ -1843,6 +1843,7 @@ tasks:
       - '@OPTION:arch-triple@'
       - 'remake'
     workdir: '@BUILD_ROOT@'
+    containerless: true
 
   - name: xz-image
     tasks_required:

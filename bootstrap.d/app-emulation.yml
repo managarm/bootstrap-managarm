@@ -1,3 +1,25 @@
+sources:
+  - name: qemu
+    subdir: 'ports'
+    git: 'https://github.com/qemu/qemu.git'
+    tag: 'v8.1.4'
+    version: '8.1.4'
+
+tools:
+  - name: host-qemu
+    architecture: any
+    containerless: true
+    from_source: qemu
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--prefix=@PREFIX@'
+        - '--target-list=x86_64-softmmu,aarch64-softmmu,riscv64-softmmu'
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
+
 packages:
   - name: qemu
     architecture: '@OPTION:arch@'
@@ -8,11 +30,7 @@ packages:
       website: 'https://qemu.org/'
       maintainer: 'Kacper Słomiński <qookie@managarm.org>'
       categories: ['app-emulation']
-    source:
-      subdir: 'ports'
-      git: 'https://github.com/qemu/qemu.git'
-      tag: 'v6.2.0'
-      version: '6.2.0'
+    from_source: qemu
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -30,7 +48,6 @@ packages:
       - pixman
       - ncurses
       - nettle
-    revision: 11
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
