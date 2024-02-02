@@ -36,6 +36,48 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: exiv2
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: EXIF, IPTC and XMP metadata C++ library and command line utility
+      description: This package provides a C++ library and a command line utility for managing image and video metadata.
+      spdx: 'GPL-2.0-only'
+      website: 'https://exiv2.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
+    source:
+      subdir: ports
+      git: 'https://github.com/Exiv2/exiv2.git'
+      tag: 'v0.28.1'
+      version: '0.28.1'
+    tools_required:
+      - host-cmake
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - curl
+      - brotli
+    configure:
+      - args:
+        - 'cmake'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DBUILD_SHARED_LIBS=ON'
+        - '-DEXIV2_ENABLE_VIDEO=yes'
+        - '-DEXIV2_ENABLE_WEBREADY=yes'
+        - '-DEXIV2_ENABLE_CURL=yes'
+        - '-DEXIV2_BUILD_SAMPLES=no'
+        - '-DEXIV2_ENABLE_INIH=no'
+        - '@THIS_SOURCE_DIR@'
+        environ:
+          CC: '@OPTION:arch-triple@-gcc'
+          CXX: '@OPTION:arch-triple@-g++'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: flac
     architecture: '@OPTION:arch@'
     metadata:
