@@ -25,8 +25,8 @@ def do_qemu(args):
     qemu = os.environ.get("QEMU")
 
     if not qemu:
-        if not args.use_system_qemu and os.path.isfile(f"../build/tools/host-qemu/bin/qemu-system-{args.arch}"):
-            qemu = f"../build/tools/host-qemu/bin/qemu-system-{args.arch}"
+        if not args.use_system_qemu and os.path.isfile(f"tools/host-qemu/bin/qemu-system-{args.arch}"):
+            qemu = f"tools/host-qemu/bin/qemu-system-{args.arch}"
         else:
             qemu = f"qemu-system-{args.arch}"
 
