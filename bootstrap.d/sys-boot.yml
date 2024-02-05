@@ -19,8 +19,6 @@ tools:
     architecture: '@OPTION:arch@'
     from_source: limine
     containerless: true
-    tools_required:
-      - system-gcc
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -31,7 +29,6 @@ tools:
         - '--enable-bios'
         - '--enable-bios-cd'
         - '--enable-bios-pxe'
-        - 'TOOLCHAIN_FOR_TARGET=@OPTION:arch-triple@'
         - 'LDFLAGS=-static'
     compile:
       - args: ['make', '-j@PARALLELISM@']
