@@ -584,6 +584,7 @@ tools:
         - '--enable-languages=c,c++,lto'
         - '--enable-initfini-array'
         - '--enable-libstdcxx-filesystem-ts'
+        - '--disable-decimal-float'
         # -g blows up GCC's binary size.
         - 'CFLAGS=-O2'
         - 'CXXFLAGS=-O2'
@@ -650,6 +651,7 @@ tools:
         - '--disable-libssp'
         - '--disable-libsanitizer'
         - '--disable-libquadmath'
+        - '--disable-decimal-float'
         # -g blows up GCC's binary size.
         - 'CFLAGS=-O2'
         - 'CXXFLAGS=-O2'
