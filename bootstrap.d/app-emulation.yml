@@ -15,6 +15,9 @@ tools:
         - '@THIS_SOURCE_DIR@/configure'
         - '--prefix=@PREFIX@'
         - '--target-list=x86_64-softmmu,aarch64-softmmu,riscv64-softmmu'
+        - '--disable-werror'
+        environ:
+          CFLAGS: '-Wno-int-conversion'
     compile:
       - args: ['ninja']
     install:
