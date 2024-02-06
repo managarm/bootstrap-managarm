@@ -1264,7 +1264,8 @@ packages:
       - libxrandr
       - libxrender
       - libxxf86vm
-    revision: 4
+      - libxkbcommon
+    revision: 5
     configure:
       - args:
         - 'cmake'
