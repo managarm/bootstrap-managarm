@@ -7,7 +7,7 @@ sources:
 
 tools:
   - name: host-qemu
-    architecture: any
+    architecture: noarch
     containerless: true
     from_source: qemu
     configure:
