@@ -1571,6 +1571,7 @@ packages:
       - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
 
   - name: pcre2
+    labels: [aarch64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: Perl-compatible regular expression library
