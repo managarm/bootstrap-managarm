@@ -5,6 +5,8 @@ define_options:
 labels:
     match:
       - riscv64
+    ban:
+      - not-on-xbbs
 
 pkg_management:
     format: xbps

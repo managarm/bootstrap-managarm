@@ -2,6 +2,10 @@ define_options:
     arch: x86_64
     arch-triple: x86_64-managarm
 
+labels:
+    ban:
+      - not-on-xbbs
+
 pkg_management:
     format: xbps
 
