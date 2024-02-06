@@ -116,8 +116,8 @@ sources:
   - name: gcc
     subdir: 'ports'
     git: 'https://github.com/managarm/gcc.git'
-    tag: 'managarm/gcc-13.2.0'
-    version: '13.2.0'
+    tag: 'managarm/gcc-13.2.1'
+    version: '13.2.1'
     sources_required: ['gnuconfig']
     regenerate:
       - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.sub', '@THIS_SOURCE_DIR@/.']
@@ -509,7 +509,6 @@ tools:
     tools_required:
       - tool: cross-binutils
         recursive: true
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -572,7 +571,6 @@ tools:
     tools_required:
       - tool: cross-binutils
         recursive: true
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -630,7 +628,6 @@ tools:
     tools_required:
       - tool: cross-binutils
         recursive: true
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1047,7 +1044,6 @@ packages:
       - mpfr
       - mpc
       - zlib
-    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
