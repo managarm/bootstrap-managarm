@@ -289,7 +289,7 @@ def do_gdb(args):
     gdb_args = ["gdb"]
     if args.qemu:
         gdb_args += [
-            "--symbols=system-root/usr/managarm/bin/thor",
+            "--symbols=pkg-builds/managarm-kernel/kernel/thor/thor",
             "-ex",
             "target remote tcp:" + args.ip + ":1234",
         ]

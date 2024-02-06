@@ -1341,6 +1341,7 @@ packages:
         - '--buildtype=debugoptimized'
         - '--wrap-mode=nofallback'
         - '-Dbuild_kernel=true'
+        - '-Dstrip=true'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
