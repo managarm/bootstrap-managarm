@@ -1,0 +1,119 @@
+From 78469aeeebf265a0f3a5b1ea091331386c3cbae5 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Sun, 11 Feb 2024 14:02:19 +0100
+Subject: [PATCH] Add Managarm support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ configure.ac               |  7 ++++---
+ src/base/core.c            |  2 ++
+ src/test/Makefile.am       |  2 +-
+ src/util/linux_util.c      | 10 ++++++++++
+ src/util/subprocess_util.c |  1 +
+ 5 files changed, 18 insertions(+), 4 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index c308fc6..6b0f7f3 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -51,7 +51,7 @@ AC_SUBST( VERSION_VSUFFIX, [ddcutil_version_suffix] )
+ AC_ARG_VAR(DBG, [Turn on script debugging messages(0/1)])
+ dnl AC_MSG_NOTICE([DBG = |$DBG|])
+ 
+-AM_CONDITIONAL(WARNINGS_ARE_ERRORS_COND, [test "x$ddcutil_version_suffix" != "x"] )
++AM_CONDITIONAL(WARNINGS_ARE_ERRORS_COND, 0)
+ 
+ AS_IF( [test 0$DBG -ne 0], 
+    AC_MSG_NOTICE([debug messages enabled]),
+@@ -551,8 +551,9 @@ AC_TYPE_UINT8_T
+ ### Checks for standard library functions.
+ ###
+ 
+-AC_FUNC_MALLOC
+-AC_FUNC_REALLOC
++
++#AC_FUNC_MALLOC
++#AC_FUNC_REALLOC
+ AC_FUNC_STRERROR_R
+ AC_CHECK_FUNCS([clock_gettime memset nl_langinfo stpcpy strchr strdup strerror strrchr strtol])
+ 
+diff --git a/src/base/core.c b/src/base/core.c
+index c1e0b6d..9bade5f 100644
+--- a/src/base/core.c
++++ b/src/base/core.c
+@@ -33,7 +33,9 @@
+ #include <pthread_np.h>
+ #else
+ #include <sys/types.h>
++#ifndef __managarm__
+ #include <sys/syscall.h>
++#endif
+ #include <syslog.h>
+ #endif
+ 
+diff --git a/src/test/Makefile.am b/src/test/Makefile.am
+index 38f74f9..959d488 100644
+--- a/src/test/Makefile.am
++++ b/src/test/Makefile.am
+@@ -4,7 +4,7 @@ $(GLIB_CFLAGS)  \
+ -I$(top_srcdir)/src \
+ -I$(top_srcdir)/src/public 
+ 
+-AM_CFLAGS = -Wall -Werror
++AM_CFLAGS = -Wall
+ 
+ CLEANFILES = \
+ *expand 
+diff --git a/src/util/linux_util.c b/src/util/linux_util.c
+index cd0c178..261c07b 100644
+--- a/src/util/linux_util.c
++++ b/src/util/linux_util.c
+@@ -24,7 +24,9 @@
+ #ifdef TARGET_BSD
+ #include <pthread_np.h>
+ #else
++#ifndef __managarm__
+ #include <sys/syscall.h>
++#endif
+ #include <sys/types.h>
+ #include <syslog.h>
+ #endif
+@@ -333,7 +335,11 @@ intmax_t get_thread_id() {
+ #ifdef TARGET_BSD
+    int tid = pthread_getthreadid_np();
+ #else
++#ifndef __managarm__
+    pid_t tid = syscall(SYS_gettid);
++#else
++   pid_t tid = gettid();
++#endif
+ #endif
+    if (debug)
+       printf("(%s) Done.    Returning %ld\n", __func__, (intmax_t) tid);
+@@ -347,7 +353,11 @@ intmax_t get_thread_id() {
+  */
+ intmax_t get_process_id()
+ {
++#ifndef __managarm__
+    pid_t pid = syscall(SYS_getpid);
++#else
++   pid_t pid = getpid();
++#endif
+    return pid;
+ }
+ 
+diff --git a/src/util/subprocess_util.c b/src/util/subprocess_util.c
+index ff2e166..e517a23 100644
+--- a/src/util/subprocess_util.c
++++ b/src/util/subprocess_util.c
+@@ -15,6 +15,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <sys/wait.h>
+ /** \endcond */
+ 
+ #include "config.h"
+-- 
+2.43.0
+
