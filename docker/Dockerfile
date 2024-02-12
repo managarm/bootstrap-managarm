@@ -127,6 +127,27 @@ RUN apt-get update \
 		fdisk \
 		dosfstools \
 		mtools \
+		# Used by host-qt6 to enable the X11 backend
+		libxcb-xinerama0-dev \
+		libxcb-screensaver0-dev \
+		libxcb-composite0-dev \
+		libxcb-image0-dev \
+		libxcb-record0-dev \
+		libxcb-randr0-dev \
+		libxcb-present-dev \
+		libxcb-damage0-dev \
+		libxcb-cursor-dev \
+		libxcb-dri3-dev \
+		libxcb-dri2-0-dev \
+		libxcb-glx0-dev \
+		libxcb-xinput-dev \
+		libxcb-res0-dev \
+		libxcb-xf86dri0-dev \
+		libxcb-dpms0-dev \
+		libxcb-ewmh-dev \
+		libxcb-util0-dev \
+		libxcb-keysyms1-dev \
+		libxcb-icccm4-dev \
 		# Cleanup time
 		&& apt-get clean
 
