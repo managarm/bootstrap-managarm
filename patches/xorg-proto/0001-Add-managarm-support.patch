@@ -5,10 +5,24 @@ Subject: [PATCH] Add managarm support
 
 Signed-off-by: Dennisbonke <admin@dennisbonke.com>
 ---
- include/X11/Xos.h   | 2 +-
- include/X11/Xos_r.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ include/X11/Xfuncs.h | 2 +-
+ include/X11/Xos.h    | 2 +-
+ include/X11/Xos_r.h  | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
+diff --git a/include/X11/Xfuncs.h b/include/X11/Xfuncs.h
+index b23c283..89dbbb5 100644
+--- a/include/X11/Xfuncs.h
++++ b/include/X11/Xfuncs.h
+@@ -44,7 +44,7 @@ void bcopy();
+ #    define bcmp(b1,b2,len) memcmp(b1, b2, len)
+ #   else
+ #    include <string.h>
+-#    if defined(__SCO__) || defined(__sun) || defined(__UNIXWARE__) || defined(__CYGWIN__) || defined(_AIX) || defined(__APPLE__)
++#    if defined(__SCO__) || defined(__sun) || defined(__UNIXWARE__) || defined(__CYGWIN__) || defined(_AIX) || defined(__APPLE__) || defined(__managarm__)
+ #     include <strings.h>
+ #    endif
+ #    define _XFUNCS_H_INCLUDED_STRING_H
 diff --git a/include/X11/Xos.h b/include/X11/Xos.h
 index 75cc5b7..585a4a3 100644
 --- a/include/X11/Xos.h
