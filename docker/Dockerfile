@@ -83,6 +83,8 @@ RUN apt-get update \
 		patchelf \
 		# Various build systems invoke pkg-config
 		pkg-config \
+		# Used by host-kguiaddons
+		plasma-wayland-protocols \
 		# Used by itstool
 		python3-libxml2 \
 		# Used by mesa
