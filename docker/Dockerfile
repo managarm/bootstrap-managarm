@@ -41,6 +41,10 @@ RUN apt-get update \
 		help2man \
 		# Used by shared-mime-info
 		itstool \
+		# Used by host-karchive
+		libbz2-dev \
+		liblzma-dev \
+		libzstd-dev \
 		# Used by wayland-scanner
 		libexpat1-dev \
 		# Used by gtk+-2
