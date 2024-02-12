@@ -59,6 +59,8 @@ RUN apt-get update \
 		libssl-dev \
 		# Used by ace
 		libpng-dev \
+		# Used by host-qt6
+		libxkbcommon-x11-dev \
 		# Used by many gnu build steps
 		m4 \
 		# Required to build images for Android's fastboot protocol.
