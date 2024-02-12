@@ -8,17 +8,21 @@ sources:
 
   - name: limine
     subdir: 'ports'
-    url: 'https://github.com/limine-bootloader/limine/releases/download/v7.0.3/limine-7.0.3.tar.xz'
-    format: 'tar.xz'
-    checksum: blake2b:7450784d53ef86993f53c84da4f51ee8a1beb826153da8fa2cef1a0669688de370a53ced321a92276e4b53fb7c9c1081f71b4a4c7adf432b271d395e96f00595
-    extract_path: 'limine-7.0.3'
+    git: 'https://github.com/limine-bootloader/limine.git'
+    tag: 'v7.0.3'
     version: '7.0.3'
+    tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.16
+    regenerate:
+      - args: ['./bootstrap']
 
 tools:
   - name: host-limine
     architecture: '@OPTION:arch@'
     from_source: limine
     containerless: true
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -44,6 +48,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
