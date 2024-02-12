@@ -45,6 +45,8 @@ RUN apt-get update \
 		libbz2-dev \
 		liblzma-dev \
 		libzstd-dev \
+		# Used by host-knotifications
+		libcanberra-dev \
 		# Used by wayland-scanner
 		libexpat1-dev \
 		# Used by gtk+-2
