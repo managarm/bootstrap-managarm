@@ -115,6 +115,8 @@ RUN apt-get update \
 		unifdef \
 		# Used by protobuf
 		unzip \
+		# Used by host-kwindowsystem
+		wayland-protocols \
 		# We use wget to fetch some stuff further down
 		wget \
 		# Used by xcursor-themes
