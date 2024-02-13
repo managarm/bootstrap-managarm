@@ -116,8 +116,8 @@ sources:
   - name: gcc
     subdir: 'ports'
     git: 'https://github.com/managarm/gcc.git'
-    tag: 'managarm/gcc-13.2.2'
-    version: '13.2.2'
+    tag: 'managarm/gcc-13.2.3'
+    version: '13.2.3'
     sources_required: ['gnuconfig']
     regenerate:
       - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.sub', '@THIS_SOURCE_DIR@/.']
