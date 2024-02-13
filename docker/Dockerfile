@@ -39,6 +39,8 @@ RUN apt-get update \
 		groff \
 		# Used by libtool
 		help2man \
+		# Used by libdisplay-info
+		hwdata \
 		# Used by shared-mime-info
 		itstool \
 		# Used by host-karchive
