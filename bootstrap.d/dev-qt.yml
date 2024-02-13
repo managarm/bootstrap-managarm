@@ -385,8 +385,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtsvg.git'
-      tag: 'v6.4.0'
-      version: '6.4.0'
+      tag: 'v6.6.1'
+      version: '6.6.1'
     tools_required:
       - system-gcc
       - host-cmake
@@ -395,7 +395,6 @@ packages:
       - mlibc
       - qtbase6
       - zlib
-    revision: 6
     configure:
       - args:
         - 'cmake'
