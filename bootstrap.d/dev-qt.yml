@@ -346,8 +346,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtshadertools.git'
-      tag: 'v6.4.0'
-      version: '6.4.0'
+      tag: 'v6.6.1'
+      version: '6.6.1'
     tools_required:
       - system-gcc
       - host-cmake
@@ -357,7 +357,6 @@ packages:
       - qtbase6
       - mesa
       - libxkbcommon
-    revision: 6
     configure:
       - args:
         - 'cmake'
