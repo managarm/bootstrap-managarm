@@ -51,8 +51,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtbase.git'
-      tag: 'v6.4.0'
-      version: '6.4.0'
+      tag: 'v6.6.1'
+      version: '6.6.1'
     tools_required:
       - system-gcc
       - host-cmake
@@ -98,7 +98,8 @@ packages:
       - libxi
       - sqlite
       - brotli
-    revision: 6
+      - dbus
+      - at-spi2-core
     configure:
       - args:
         - 'cmake'
@@ -124,7 +125,7 @@ packages:
         - '-DQT_BUILD_EXAMPLES=OFF'
         - '-DQT_BUILD_TESTS=OFF'
         - '-DFEATURE_concurrent=ON'
-        - '-DFEATURE_dbus=OFF'
+        - '-DFEATURE_dbus=ON'
         - '-DFEATURE_gui=ON'
         - '-DFEATURE_network=ON'
         - '-DFEATURE_printsupport=ON'
@@ -144,7 +145,7 @@ packages:
         - '-DFEATURE_mtdev=ON'
         - '-DFEATURE_egl=ON'
         - '-DFEATURE_opengl=ON'
-        - '-DFEATURE_accessibility=OFF'
+        - '-DFEATURE_accessibility=ON'
         - '-DFEATURE_xlib=ON'
         - '-DFEATURE_xcb=ON'
         - '-DFEATURE_xcb_xlib=ON'
