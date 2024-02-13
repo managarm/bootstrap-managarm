@@ -41,6 +41,12 @@ RUN apt-get update \
 		help2man \
 		# Used by shared-mime-info
 		itstool \
+		# Used by host-karchive
+		libbz2-dev \
+		liblzma-dev \
+		libzstd-dev \
+		# Used by host-knotifications
+		libcanberra-dev \
 		# Used by wayland-scanner
 		libexpat1-dev \
 		# Used by gtk+-2
@@ -59,6 +65,8 @@ RUN apt-get update \
 		libssl-dev \
 		# Used by ace
 		libpng-dev \
+		# Used by host-qt6
+		libxkbcommon-x11-dev \
 		# Used by many gnu build steps
 		m4 \
 		# Required to build images for Android's fastboot protocol.
@@ -77,6 +85,8 @@ RUN apt-get update \
 		patchelf \
 		# Various build systems invoke pkg-config
 		pkg-config \
+		# Used by host-kguiaddons
+		plasma-wayland-protocols \
 		# Used by itstool
 		python3-libxml2 \
 		# Used by mesa
@@ -105,6 +115,8 @@ RUN apt-get update \
 		unifdef \
 		# Used by protobuf
 		unzip \
+		# Used by host-kwindowsystem
+		wayland-protocols \
 		# We use wget to fetch some stuff further down
 		wget \
 		# Used by xcursor-themes
@@ -121,6 +133,27 @@ RUN apt-get update \
 		fdisk \
 		dosfstools \
 		mtools \
+		# Used by host-qt6 to enable the X11 backend
+		libxcb-xinerama0-dev \
+		libxcb-screensaver0-dev \
+		libxcb-composite0-dev \
+		libxcb-image0-dev \
+		libxcb-record0-dev \
+		libxcb-randr0-dev \
+		libxcb-present-dev \
+		libxcb-damage0-dev \
+		libxcb-cursor-dev \
+		libxcb-dri3-dev \
+		libxcb-dri2-0-dev \
+		libxcb-glx0-dev \
+		libxcb-xinput-dev \
+		libxcb-res0-dev \
+		libxcb-xf86dri0-dev \
+		libxcb-dpms0-dev \
+		libxcb-ewmh-dev \
+		libxcb-util0-dev \
+		libxcb-keysyms1-dev \
+		libxcb-icccm4-dev \
 		# Cleanup time
 		&& apt-get clean
 
