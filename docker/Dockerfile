@@ -41,6 +41,8 @@ RUN apt-get update \
 		help2man \
 		# Used by libdisplay-info
 		hwdata \
+		# Used by libqalculate
+		intltool \
 		# Used by shared-mime-info
 		itstool \
 		# Used by host-karchive
