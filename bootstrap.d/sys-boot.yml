@@ -9,8 +9,8 @@ sources:
   - name: limine
     subdir: 'ports'
     git: 'https://github.com/limine-bootloader/limine.git'
-    tag: 'v7.0.3'
-    version: '7.0.3'
+    tag: 'v7.0.4'
+    version: '7.0.4'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.16
@@ -22,7 +22,6 @@ tools:
     architecture: '@OPTION:arch@'
     from_source: limine
     containerless: true
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -33,7 +32,6 @@ tools:
         - '--enable-bios'
         - '--enable-bios-cd'
         - '--enable-bios-pxe'
-        - 'LDFLAGS=-static'
     compile:
       - args: ['make', '-j@PARALLELISM@']
     install:
@@ -48,7 +46,6 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
