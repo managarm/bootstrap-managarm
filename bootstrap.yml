@@ -731,6 +731,27 @@ tools:
     install:
       - args: ['ninja', 'install']
 
+  - name: host-cshim
+    architecture: noarch
+    source:
+      rolling_version: true
+      version: '0.0pl@ROLLING_ID@'
+      subdir: 'ports'
+      git: 'https://github.com/managarm/cshim.git'
+      branch: 'trunk'
+    configure:
+      - args:
+        - 'meson'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--prefix=@PREFIX@'
+        - '-Dinstall_headers=true'
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
+
   - name: host-cxxshim
     architecture: noarch
     source:
@@ -818,9 +839,11 @@ tools:
     tools_required:
       - host-linux-headers
       - host-frigg
+      - host-cshim
       - host-cxxshim
       - virtual: pkgconfig-for-host
         program_name: host-pkg-config
+    revision: 2
     configure:
       - args:
         - 'meson'
