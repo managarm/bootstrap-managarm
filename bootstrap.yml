@@ -170,6 +170,8 @@ sources:
     regenerate:
       - args: ['ln', '-sf', '@SOURCE_ROOT@/managarm', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/bragi', '@THIS_SOURCE_DIR@/subprojects/']
+      - args: ['ln', '-sf', '@SOURCE_ROOT@/managarm/subprojects/hel', '@THIS_SOURCE_DIR@/subprojects']
+      - args: ['ln', '-sf', '@SOURCE_ROOT@/managarm/subprojects/helix', '@THIS_SOURCE_DIR@/subprojects']
 
   - name: wayland
     subdir: 'ports'
@@ -1453,6 +1455,7 @@ packages:
         - '--prefix=/usr'
         - '@THIS_SOURCE_DIR@'
         - '--wrap-mode=nofallback'
+        - '--force-fallback-for=bragi,hel'
         - '-Dheaders_only=true'
         - '-Ddisable_crypt_option=true'
         - '-Ddisable_iconv_option=true'
@@ -1497,6 +1500,7 @@ packages:
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
         - '--wrap-mode=nofallback'
+        - '--force-fallback-for=bragi,hel'
         - '-Dmlibc_no_headers=true'
         - '-Ddisable_crypt_option=true'
         - '-Ddisable_iconv_option=true'
