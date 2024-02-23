@@ -170,8 +170,6 @@ sources:
     regenerate:
       - args: ['ln', '-sf', '@SOURCE_ROOT@/managarm', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/bragi', '@THIS_SOURCE_DIR@/subprojects/']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/managarm/subprojects/hel', '@THIS_SOURCE_DIR@/subprojects']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/managarm/subprojects/helix', '@THIS_SOURCE_DIR@/subprojects']
 
   - name: wayland
     subdir: 'ports'
@@ -1330,6 +1328,32 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
+  - name: hel-headers
+    metadata:
+      summary: HEL IPC headers
+      description: This package provides hels IPC types
+      spdx: 'MIT'
+      website: 'https://managarm.org'
+      maintainer: "Alexander van der Grinten <avdgrinten@managarm.org>"
+    architecture: '@OPTION:arch@'
+    default: true
+    from_source: managarm
+    tools_required:
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--prefix=/usr'
+        - '@THIS_SOURCE_DIR@/subprojects/hel'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+
   - name: managarm-kernel
     metadata:
       summary: The Managarm kernel
@@ -1359,6 +1383,7 @@ packages:
               > ./meson-custom.cross-file
       - args:
         - 'meson'
+        - 'setup'
         - '--cross-file=@SOURCE_ROOT@/scripts/meson-kernel-common.cross-file'
         - '--cross-file=./meson-custom.cross-file'
         - '--prefix=/usr/managarm'
@@ -1411,6 +1436,7 @@ packages:
               > ./meson-custom.cross-file
       - args:
         - 'meson'
+        - 'setup'
         - '--cross-file=./meson-custom.cross-file'
         - '--prefix=/usr'
         - '--libdir=lib'
@@ -1455,7 +1481,6 @@ packages:
         - '--prefix=/usr'
         - '@THIS_SOURCE_DIR@'
         - '--wrap-mode=nofallback'
-        - '--force-fallback-for=bragi,hel'
         - '-Dheaders_only=true'
         - '-Ddisable_crypt_option=true'
         - '-Ddisable_iconv_option=true'
@@ -1490,6 +1515,7 @@ packages:
       - linux-headers
       - mlibc-headers
       - frigg
+      - hel-headers
     configure:
       - args:
         - 'meson'
@@ -1500,7 +1526,6 @@ packages:
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
         - '--wrap-mode=nofallback'
-        - '--force-fallback-for=bragi,hel'
         - '-Dmlibc_no_headers=true'
         - '-Ddisable_crypt_option=true'
         - '-Ddisable_iconv_option=true'
