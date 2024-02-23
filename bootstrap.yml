@@ -1508,7 +1508,6 @@ packages:
       - host-managarm-tools
       - bootstrap-system-gcc
       - host-protoc
-      - host-pkg-config
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
     pkgs_required:
