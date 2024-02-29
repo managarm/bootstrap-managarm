@@ -1,0 +1,25 @@
+From 3982fe0619a125722e4c2ee279cf060257ebcba8 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Sun, 11 Feb 2024 14:57:21 +0100
+Subject: [PATCH] Switch to a patched qtbase repo
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ .gitmodules | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/.gitmodules b/.gitmodules
+index 3d1fa11..f41f5cf 100644
+--- a/.gitmodules
++++ b/.gitmodules
+@@ -1,6 +1,6 @@
+ [submodule "qtbase"]
+ 	path = qtbase
+-	url = ../qtbase.git
++	url = https://github.com/Dennisbonke/qtbase.git
+ 	branch = 6.6.1
+ 	status = essential
+ [submodule "qtsvg"]
+-- 
+2.43.0
+

@@ -1,34 +1,25 @@
-From e8912eccb24096955c0e77656c51d6fb90298b53 Mon Sep 17 00:00:00 2001
+From 746b6ca08c9ed100b6fe27f1791e62ba1ea17f29 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
-Date: Tue, 12 Apr 2022 15:50:25 +0200
+Date: Tue, 13 Feb 2024 04:48:28 +0100
 Subject: [PATCH] Add Managarm support
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
- cmake/QtBuild.cmake                           |  6 ++
- cmake/QtPlatformSupport.cmake                 |  1 +
- mkspecs/common/managarm.conf                  | 52 +++++++++++
- mkspecs/common/posix/qplatformdefs.h          |  4 +-
- mkspecs/managarm-g++/qmake.conf               | 12 +++
- mkspecs/managarm-g++/qplatformdefs.h          | 88 +++++++++++++++++++
- src/corelib/global/qsystemdetection.h         |  2 +
- src/corelib/io/qstandardpaths_unix.cpp        |  4 +-
- src/corelib/io/qstorageinfo_unix.cpp          |  3 +
- src/corelib/thread/qthread_unix.cpp           |  2 +-
- src/gui/configure.cmake                       |  4 +-
- src/network/kernel/qdnslookup_unix.cpp        |  2 +-
- src/network/kernel/qnetworkinterface_unix.cpp |  4 +
- .../kmsconvenience/qkmsdevice.cpp             |  1 +
- 14 files changed, 177 insertions(+), 8 deletions(-)
- create mode 100644 mkspecs/common/managarm.conf
- create mode 100644 mkspecs/managarm-g++/qmake.conf
- create mode 100644 mkspecs/managarm-g++/qplatformdefs.h
+ cmake/QtBuild.cmake                           | 6 ++++++
+ cmake/QtPlatformSupport.cmake                 | 1 +
+ mkspecs/common/posix/qplatformdefs.h          | 4 ++--
+ src/corelib/global/qsystemdetection.h         | 2 ++
+ src/corelib/io/qstorageinfo_unix.cpp          | 3 +++
+ src/corelib/thread/qthread_unix.cpp           | 2 +-
+ src/gui/configure.cmake                       | 4 ++--
+ src/network/kernel/qnetworkinterface_unix.cpp | 4 ++++
+ 8 files changed, 21 insertions(+), 5 deletions(-)
 
 diff --git a/cmake/QtBuild.cmake b/cmake/QtBuild.cmake
-index bb7049e7..ee547b21 100644
+index 1dc576d2..bbf77cd3 100644
 --- a/cmake/QtBuild.cmake
 +++ b/cmake/QtBuild.cmake
-@@ -314,6 +314,12 @@ elseif(LINUX)
+@@ -307,6 +307,12 @@ elseif(LINUX)
      elseif(CLANG)
          set(QT_DEFAULT_MKSPEC linux-clang)
      endif()
@@ -42,75 +33,17 @@ index bb7049e7..ee547b21 100644
      if(GCC)
          set(QT_DEFAULT_MKSPEC android-g++)
 diff --git a/cmake/QtPlatformSupport.cmake b/cmake/QtPlatformSupport.cmake
-index 22c6b9e0..4b61a10e 100644
+index e20a5e15..8d01b2df 100644
 --- a/cmake/QtPlatformSupport.cmake
 +++ b/cmake/QtPlatformSupport.cmake
-@@ -7,6 +7,7 @@ function(qt_set01 result)
+@@ -10,6 +10,7 @@ function(qt_set01 result)
  endfunction()
  
  qt_set01(LINUX CMAKE_SYSTEM_NAME STREQUAL "Linux")
 +qt_set01(MANAGARM CMAKE_SYSTEM_NAME STREQUAL "managarm")
  qt_set01(HPUX CMAKE_SYSTEM_NAME STREQUAL "HPUX")
  qt_set01(ANDROID CMAKE_SYSTEM_NAME STREQUAL "Android")  # FIXME: How to identify this?
- qt_set01(NACL CMAKE_SYSTEM_NAME STREQUAL "NaCl") # FIXME: How to identify this?
-diff --git a/mkspecs/common/managarm.conf b/mkspecs/common/managarm.conf
-new file mode 100644
-index 00000000..e7ea7d13
---- /dev/null
-+++ b/mkspecs/common/managarm.conf
-@@ -0,0 +1,52 @@
-+#
-+# qmake configuration for common managarm
-+#
-+
-+QMAKE_PLATFORM         += managarm
-+
-+include(unix.conf)
-+
-+QMAKE_CFLAGS_THREAD    += -D_REENTRANT
-+QMAKE_CXXFLAGS_THREAD  += $$QMAKE_CFLAGS_THREAD
-+QMAKE_LFLAGS_GCSECTIONS = -Wl,--gc-sections
-+
-+QMAKE_LFLAGS_REL_RPATH  = -Wl,-z,origin
-+QMAKE_REL_RPATH_BASE    = $ORIGIN
-+
-+QMAKE_INCDIR            =
-+QMAKE_LIBDIR            =
-+QMAKE_INCDIR_X11        =
-+QMAKE_LIBDIR_X11        =
-+QMAKE_INCDIR_OPENGL     =
-+QMAKE_LIBDIR_OPENGL     =
-+QMAKE_INCDIR_OPENGL_ES2 = $$QMAKE_INCDIR_OPENGL
-+QMAKE_LIBDIR_OPENGL_ES2 = $$QMAKE_LIBDIR_OPENGL
-+QMAKE_INCDIR_EGL        =
-+QMAKE_LIBDIR_EGL        =
-+QMAKE_INCDIR_OPENVG     =
-+QMAKE_LIBDIR_OPENVG     =
-+
-+QMAKE_LIBS              =
-+QMAKE_LIBS_DYNLOAD      = -ldl
-+QMAKE_LIBS_X11          = -lXext -lX11 -lm
-+QMAKE_LIBS_EGL          = -lEGL
-+QMAKE_LIBS_OPENGL       = -lGL
-+QMAKE_LIBS_OPENGL_ES2   = -lGLESv2
-+QMAKE_LIBS_OPENVG       = -lOpenVG
-+QMAKE_LIBS_THREAD       = -lpthread
-+QMAKE_LIBS_VULKAN       =
-+
-+QMAKE_INCDIR_WAYLAND    =
-+QMAKE_LIBS_WAYLAND_CLIENT = -lwayland-client
-+QMAKE_LIBS_WAYLAND_SERVER = -lwayland-server
-+QMAKE_LIBDIR_WAYLAND    =
-+QMAKE_DEFINES_WAYLAND   =
-+QMAKE_WAYLAND_SCANNER   = wayland-scanner
-+
-+QMAKE_AR                = ar cqs
-+QMAKE_OBJCOPY           = objcopy
-+QMAKE_NM                = nm -P
-+QMAKE_RANLIB            =
-+
-+QMAKE_STRIP             = strip
-+QMAKE_STRIPFLAGS_LIB   += --strip-unneeded
+ qt_set01(INTEGRITY CMAKE_SYSTEM_NAME STREQUAL "Integrity") # FIXME: How to identify this?
 diff --git a/mkspecs/common/posix/qplatformdefs.h b/mkspecs/common/posix/qplatformdefs.h
 index ffae2ac3..3196f1b1 100644
 --- a/mkspecs/common/posix/qplatformdefs.h
@@ -133,123 +66,11 @@ index ffae2ac3..3196f1b1 100644
  #define QT_DIRENT               struct dirent64
  #define QT_READDIR              ::readdir64
  #define QT_READDIR_R            ::readdir64_r
-diff --git a/mkspecs/managarm-g++/qmake.conf b/mkspecs/managarm-g++/qmake.conf
-new file mode 100644
-index 00000000..8dc4ff15
---- /dev/null
-+++ b/mkspecs/managarm-g++/qmake.conf
-@@ -0,0 +1,12 @@
-+#
-+# qmake configuration for managarm-g++
-+#
-+
-+MAKEFILE_GENERATOR      = UNIX
-+CONFIG                 += incremental
-+QMAKE_INCREMENTAL_STYLE = sublib
-+
-+include(../common/linux.conf)
-+include(../common/gcc-base-unix.conf)
-+include(../common/g++-unix.conf)
-+load(qt_config)
-diff --git a/mkspecs/managarm-g++/qplatformdefs.h b/mkspecs/managarm-g++/qplatformdefs.h
-new file mode 100644
-index 00000000..91654548
---- /dev/null
-+++ b/mkspecs/managarm-g++/qplatformdefs.h
-@@ -0,0 +1,88 @@
-+/****************************************************************************
-+**
-+** Copyright (C) 2016 The Qt Company Ltd.
-+** Contact: https://www.qt.io/licensing/
-+**
-+** This file is part of the qmake spec of the Qt Toolkit.
-+**
-+** $QT_BEGIN_LICENSE:LGPL$
-+** Commercial License Usage
-+** Licensees holding valid commercial Qt licenses may use this file in
-+** accordance with the commercial license agreement provided with the
-+** Software or, alternatively, in accordance with the terms contained in
-+** a written agreement between you and The Qt Company. For licensing terms
-+** and conditions see https://www.qt.io/terms-conditions. For further
-+** information use the contact form at https://www.qt.io/contact-us.
-+**
-+** GNU Lesser General Public License Usage
-+** Alternatively, this file may be used under the terms of the GNU Lesser
-+** General Public License version 3 as published by the Free Software
-+** Foundation and appearing in the file LICENSE.LGPL3 included in the
-+** packaging of this file. Please review the following information to
-+** ensure the GNU Lesser General Public License version 3 requirements
-+** will be met: https://www.gnu.org/licenses/lgpl-3.0.html.
-+**
-+** GNU General Public License Usage
-+** Alternatively, this file may be used under the terms of the GNU
-+** General Public License version 2.0 or (at your option) the GNU General
-+** Public license version 3 or any later version approved by the KDE Free
-+** Qt Foundation. The licenses are as published by the Free Software
-+** Foundation and appearing in the file LICENSE.GPL2 and LICENSE.GPL3
-+** included in the packaging of this file. Please review the following
-+** information to ensure the GNU General Public License requirements will
-+** be met: https://www.gnu.org/licenses/gpl-2.0.html and
-+** https://www.gnu.org/licenses/gpl-3.0.html.
-+**
-+** $QT_END_LICENSE$
-+**
-+****************************************************************************/
-+
-+#ifndef QPLATFORMDEFS_H
-+#define QPLATFORMDEFS_H
-+
-+// Get Qt defines/settings
-+
-+#include "qglobal.h"
-+
-+// Set any POSIX/XOPEN defines at the top of this file to turn on specific APIs
-+
-+// 1) need to reset default environment if _BSD_SOURCE is defined
-+// 2) need to specify POSIX thread interfaces explicitly in glibc 2.0
-+// 3) it seems older glibc need this to include the X/Open stuff
-+#ifndef _GNU_SOURCE
-+#  define _GNU_SOURCE
-+#endif
-+
-+#include <unistd.h>
-+
-+
-+// We are hot - unistd.h should have turned on the specific APIs we requested
-+
-+// mlibc doesn't do features.h
-+//#include <features.h>
-+#include <pthread.h>
-+#include <dirent.h>
-+#include <fcntl.h>
-+#include <grp.h>
-+#include <pwd.h>
-+#include <signal.h>
-+
-+#include <sys/types.h>
-+#include <sys/ioctl.h>
-+#include <sys/ipc.h>
-+#include <sys/time.h>
-+#include <sys/shm.h>
-+#include <sys/socket.h>
-+#include <sys/stat.h>
-+#include <sys/wait.h>
-+#include <netinet/in.h>
-+
-+#define QT_USE_XOPEN_LFS_EXTENSIONS
-+#include "../common/posix/qplatformdefs.h"
-+
-+#if defined(_XOPEN_SOURCE) && (_XOPEN_SOURCE >= 500)
-+#define QT_SNPRINTF             ::snprintf
-+#define QT_VSNPRINTF            ::vsnprintf
-+#endif
-+
-+#endif // QPLATFORMDEFS_H
 diff --git a/src/corelib/global/qsystemdetection.h b/src/corelib/global/qsystemdetection.h
-index cbbe613e..072c219b 100644
+index 51881043..07ea4fe7 100644
 --- a/src/corelib/global/qsystemdetection.h
 +++ b/src/corelib/global/qsystemdetection.h
-@@ -129,6 +129,8 @@
+@@ -126,6 +126,8 @@
  #  define Q_OS_VXWORKS
  #elif defined(__HAIKU__)
  #  define Q_OS_HAIKU
@@ -258,26 +79,8 @@ index cbbe613e..072c219b 100644
  #elif defined(__MAKEDEPEND__)
  #else
  #  error "Qt has not been ported to this OS - see http://www.qt-project.org/"
-diff --git a/src/corelib/io/qstandardpaths_unix.cpp b/src/corelib/io/qstandardpaths_unix.cpp
-index e5122ff3..9b60f6b2 100644
---- a/src/corelib/io/qstandardpaths_unix.cpp
-+++ b/src/corelib/io/qstandardpaths_unix.cpp
-@@ -160,11 +160,11 @@ static bool checkXdgRuntimeDir(const QString &xdgRuntimeDir)
- 
-     // "and he MUST be the only one having read and write access to it. Its Unix access mode MUST be 0700."
-     if (metaData.permissions() != wantedPerms) {
--        qWarning("QStandardPaths: wrong permissions on runtime directory %ls, %s instead of %s",
-+        qWarning("QStandardPaths: wrong permissions on runtime directory %ls, %s instead of %s (Managarm ignores it!)",
-                  qUtf16Printable(xdgRuntimeDir),
-                  unixPermissionsText(metaData.permissions()).constData(),
-                  unixPermissionsText(wantedPerms).constData());
--        return false;
-+        // return false;
-     }
- 
-     return true;
 diff --git a/src/corelib/io/qstorageinfo_unix.cpp b/src/corelib/io/qstorageinfo_unix.cpp
-index 89b6dfea..34188433 100644
+index 20bddd87..75b2a81c 100644
 --- a/src/corelib/io/qstorageinfo_unix.cpp
 +++ b/src/corelib/io/qstorageinfo_unix.cpp
 @@ -64,6 +64,9 @@
@@ -291,55 +94,42 @@ index 89b6dfea..34188433 100644
  #  if defined(QT_LARGEFILE_SUPPORT)
  #    define QT_STATFSBUF struct statvfs64
 diff --git a/src/corelib/thread/qthread_unix.cpp b/src/corelib/thread/qthread_unix.cpp
-index 777aa362..8671eb19 100644
+index dee71305..5af632a8 100644
 --- a/src/corelib/thread/qthread_unix.cpp
 +++ b/src/corelib/thread/qthread_unix.cpp
-@@ -675,7 +675,7 @@ void QThread::start(Priority priority)
+@@ -689,7 +689,7 @@ void QThread::start(Priority priority)
  
  
      if (d->stackSize > 0) {
 -#if defined(_POSIX_THREAD_ATTR_STACKSIZE) && (_POSIX_THREAD_ATTR_STACKSIZE-0 > 0)
-+#if (defined(_POSIX_THREAD_ATTR_STACKSIZE) && (_POSIX_THREAD_ATTR_STACKSIZE-0 > 0)) || defined(__managarm__)
++#if defined(_POSIX_THREAD_ATTR_STACKSIZE) && (_POSIX_THREAD_ATTR_STACKSIZE-0 > 0) || defined(__managarm__)
          int code = pthread_attr_setstacksize(&attr, d->stackSize);
  #else
          int code = ENOSYS; // stack size not supported, automatically fail
 diff --git a/src/gui/configure.cmake b/src/gui/configure.cmake
-index 6b05d4cc..55f877a3 100644
+index 222073ad..5fecb185 100644
 --- a/src/gui/configure.cmake
 +++ b/src/gui/configure.cmake
-@@ -25,7 +25,7 @@ set_property(CACHE INPUT_libpng PROPERTY STRINGS undefined no qt system)
- 
+@@ -29,7 +29,7 @@ set_property(CACHE INPUT_libpng PROPERTY STRINGS undefined no qt system)
  
  #### Libraries
--qt_set01(X11_SUPPORTED LINUX OR HPUX OR FREEBSD OR NETBSD OR OPENBSD OR SOLARIS OR HURD) # special case
-+qt_set01(X11_SUPPORTED LINUX OR HPUX OR FREEBSD OR NETBSD OR OPENBSD OR SOLARIS OR HURD OR MANAGARM) # special case
+ qt_set01(X11_SUPPORTED LINUX OR HPUX OR FREEBSD OR NETBSD OR OPENBSD OR SOLARIS OR
+-    HURD)
++    HURD OR MANAGARM)
  qt_find_package(ATSPI2 PROVIDED_TARGETS PkgConfig::ATSPI2 MODULE_NAME gui QMAKE_LIB atspi)
  qt_find_package(DirectFB PROVIDED_TARGETS PkgConfig::DirectFB MODULE_NAME gui QMAKE_LIB directfb)
  qt_find_package(Libdrm PROVIDED_TARGETS Libdrm::Libdrm MODULE_NAME gui QMAKE_LIB drm)
-@@ -55,7 +55,7 @@ qt_find_package(WrapOpenGL PROVIDED_TARGETS WrapOpenGL::WrapOpenGL MODULE_NAME g
- qt_find_package(GLESv2 PROVIDED_TARGETS GLESv2::GLESv2 MODULE_NAME gui QMAKE_LIB opengl_es2)
+@@ -60,7 +60,7 @@ qt_find_package(GLESv2 PROVIDED_TARGETS GLESv2::GLESv2 MODULE_NAME gui QMAKE_LIB
  qt_find_package(Tslib PROVIDED_TARGETS PkgConfig::Tslib MODULE_NAME gui QMAKE_LIB tslib)
- qt_find_package(WrapVulkanHeaders PROVIDED_TARGETS WrapVulkanHeaders::WrapVulkanHeaders MODULE_NAME gui QMAKE_LIB vulkan MARK_OPTIONAL) # special case
+ qt_find_package(WrapVulkanHeaders PROVIDED_TARGETS WrapVulkanHeaders::WrapVulkanHeaders
+     MODULE_NAME gui QMAKE_LIB vulkan MARK_OPTIONAL)
 -if((LINUX) OR QT_FIND_ALL_PACKAGES_ALWAYS)
 +if((LINUX OR MANAGARM) OR QT_FIND_ALL_PACKAGES_ALWAYS)
      qt_find_package(Wayland PROVIDED_TARGETS Wayland::Server MODULE_NAME gui QMAKE_LIB wayland_server)
  endif()
  if((X11_SUPPORTED) OR QT_FIND_ALL_PACKAGES_ALWAYS)
-diff --git a/src/network/kernel/qdnslookup_unix.cpp b/src/network/kernel/qdnslookup_unix.cpp
-index 75f7c6c4..5597bb85 100644
---- a/src/network/kernel/qdnslookup_unix.cpp
-+++ b/src/network/kernel/qdnslookup_unix.cpp
-@@ -14,7 +14,7 @@
- #include <sys/types.h>
- #include <netinet/in.h>
- #include <arpa/nameser.h>
--#if !defined(Q_OS_OPENBSD)
-+#if !defined(Q_OS_OPENBSD) && !defined(Q_OS_MANAGARM)
- #  include <arpa/nameser_compat.h>
- #endif
- #include <resolv.h>
 diff --git a/src/network/kernel/qnetworkinterface_unix.cpp b/src/network/kernel/qnetworkinterface_unix.cpp
-index 51a266b2..08bb7125 100644
+index 082d83e9..49c5a8de 100644
 --- a/src/network/kernel/qnetworkinterface_unix.cpp
 +++ b/src/network/kernel/qnetworkinterface_unix.cpp
 @@ -25,6 +25,10 @@
@@ -353,18 +143,6 @@ index 51a266b2..08bb7125 100644
  #ifdef QT_LINUXBASE
  #  include <arpa/inet.h>
  #  ifndef SIOCGIFBRDADDR
-diff --git a/src/platformsupport/kmsconvenience/qkmsdevice.cpp b/src/platformsupport/kmsconvenience/qkmsdevice.cpp
-index c7a1624e..df2ba09f 100644
---- a/src/platformsupport/kmsconvenience/qkmsdevice.cpp
-+++ b/src/platformsupport/kmsconvenience/qkmsdevice.cpp
-@@ -12,6 +12,7 @@
- #include <QtCore/QLoggingCategory>
- 
- #include <errno.h>
-+#include <strings.h>
- 
- #define ARRAY_LENGTH(a) (sizeof (a) / sizeof (a)[0])
- 
 -- 
-2.37.2
+2.43.0
 

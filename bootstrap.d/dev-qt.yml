@@ -3,11 +3,14 @@ sources:
     subdir: 'ports'
     # This may seem strange, but is actually correct
     git: 'https://code.qt.io/qt/qt5.git'
-    tag: 'v6.4.0'
-    version: '6.4.0'
+    tag: 'v6.6.1'
+    version: '6.6.1'
     regenerate:
       # Get the submodules that we'll need as a host tool
-      - args: ['./init-repository', '-f', '--module-subset', 'qtbase,qtsvg,qtimageformats,qtshadertools,qtlanguageserver,qtdeclarative,qtwayland,qtmultimedia']
+      - args: ['./init-repository', '-f', '--module-subset', 'qtbase,qtsvg,qtimageformats,qtshadertools,qtlanguageserver,qtdeclarative,qtwayland,qtmultimedia,qttools,qt5compat,qtsensors,qtcharts,qtpositioning,qtspeech']
+      - args: |
+          cd @THIS_SOURCE_DIR@/qtbase
+          git pull origin 6.6.1
 
 tools:
   # We do a limited superbuild with only the needed modules of Qt6 to satisfy host tooling.
@@ -24,6 +27,11 @@ tools:
         - '-DBUILD_SHARED_LIBS=ON'
         - '-DQT_BUILD_EXAMPLES=OFF'
         - '-DQT_BUILD_TESTS=OFF'
+        - '-DFEATURE_xkbcommon=ON'
+        - '-DFEATURE_xkbcommon_x11=ON'
+        - '-DFEATURE_xlib=ON'
+        - '-DFEATURE_xcb=ON'
+        - '-DFEATURE_xcb_xlib=ON'
         - '@THIS_SOURCE_DIR@'
     compile:
       - args: ['cmake', '--build', '.', '--parallel', '@PARALLELISM@']
@@ -31,6 +39,45 @@ tools:
       - args: ['cmake', '--install', '.']
 
 packages:
+  - name: qt5compat
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Qt module containing the unsupported Qt 5 APIs
+      description: This package provides the Qt5 compatibility package, containing the unsupported Qt5 APIs.
+      spdx: 'GPL-2.0-only GPL-3.0-only LGPL-3.0-only FDL-1.3-only'
+      website: 'https://github.com/qt/qt5compat'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-qt']
+    source:
+      subdir: 'ports'
+      git: 'http://code.qt.io/qt/qt5compat.git'
+      tag: 'v6.6.1'
+      version: '6.6.1'
+    tools_required:
+      - system-gcc
+      - host-cmake
+      - host-qt6
+    pkgs_required:
+      - mlibc
+      - qtbase6
+      - qtdeclarative6
+      - qtshadertools6
+      - icu
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/host-qt6'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: qtbase6
     architecture: '@OPTION:arch@'
     metadata:
@@ -43,8 +90,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtbase.git'
-      tag: 'v6.4.0'
-      version: '6.4.0'
+      tag: 'v6.6.1'
+      version: '6.6.1'
     tools_required:
       - system-gcc
       - host-cmake
@@ -90,7 +137,8 @@ packages:
       - libxi
       - sqlite
       - brotli
-    revision: 6
+      - dbus
+      - at-spi2-core
     configure:
       - args:
         - 'cmake'
@@ -116,7 +164,7 @@ packages:
         - '-DQT_BUILD_EXAMPLES=OFF'
         - '-DQT_BUILD_TESTS=OFF'
         - '-DFEATURE_concurrent=ON'
-        - '-DFEATURE_dbus=OFF'
+        - '-DFEATURE_dbus=ON'
         - '-DFEATURE_gui=ON'
         - '-DFEATURE_network=ON'
         - '-DFEATURE_printsupport=ON'
@@ -136,7 +184,7 @@ packages:
         - '-DFEATURE_mtdev=ON'
         - '-DFEATURE_egl=ON'
         - '-DFEATURE_opengl=ON'
-        - '-DFEATURE_accessibility=OFF'
+        - '-DFEATURE_accessibility=ON'
         - '-DFEATURE_xlib=ON'
         - '-DFEATURE_xcb=ON'
         - '-DFEATURE_xcb_xlib=ON'
@@ -170,8 +218,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtdeclarative.git'
-      tag: 'v6.4.0'
-      version: '6.4.0'
+      tag: 'v6.6.1'
+      version: '6.6.1'
     tools_required:
       - system-gcc
       - host-cmake
@@ -185,7 +233,6 @@ packages:
       - qtsvg6
       - libxkbcommon
       - mesa
-    revision: 6
     configure:
       - args:
         - 'cmake'
@@ -213,8 +260,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtimageformats.git'
-      tag: 'v6.4.0'
-      version: '6.4.0'
+      tag: 'v6.6.1'
+      version: '6.6.1'
     tools_required:
       - system-gcc
       - host-cmake
@@ -227,7 +274,6 @@ packages:
       - libwebp
       - libtiff
       - zlib
-    revision: 6
     configure:
       - args:
         - 'cmake'
@@ -257,8 +303,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtlanguageserver.git'
-      tag: 'v6.4.0'
-      version: '6.4.0'
+      tag: 'v6.6.1'
+      version: '6.6.1'
     tools_required:
       - system-gcc
       - host-cmake
@@ -266,7 +312,6 @@ packages:
     pkgs_required:
       - mlibc
       - qtbase6
-    revision: 6
     configure:
       - args:
         - 'cmake'
@@ -294,8 +339,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtmultimedia.git'
-      tag: 'v6.4.0'
-      version: '6.4.0'
+      tag: 'v6.6.1'
+      version: '6.6.1'
     tools_required:
       - system-gcc
       - host-cmake
@@ -308,7 +353,6 @@ packages:
       - libglvnd
       - gstreamer
       - gst-plugins-base
-    revision: 6
     configure:
       - args:
         - 'cmake'
@@ -320,6 +364,43 @@ packages:
         - '-DFEATURE_gstreamer=ON'
         - '-DFEATURE_alsa=OFF'
         - '-DFEATURE_pulseaudio=OFF'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: qtsensors6
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Hardware sensor access library for the Qt6 framework
+      description: This package provides the hardware sensor access library for the Qt6 framework.
+      spdx: 'GPL-2.0-only GPL-3.0-only LGPL-3.0-only GFDL-1.3-only'
+      website: 'https://code.qt.io/cgit/qt/qtspeech.git/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-qt']
+    source:
+      subdir: 'ports'
+      git: 'http://code.qt.io/qt/qtsensors.git'
+      tag: 'v6.6.1'
+      version: '6.6.1'
+    tools_required:
+      - system-gcc
+      - host-cmake
+      - host-qt6
+    pkgs_required:
+      - mlibc
+      - qtbase6
+      - qtdeclarative6
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/host-qt6'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_BUILD_TYPE=Debug'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -339,8 +420,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtshadertools.git'
-      tag: 'v6.4.0'
-      version: '6.4.0'
+      tag: 'v6.6.1'
+      version: '6.6.1'
     tools_required:
       - system-gcc
       - host-cmake
@@ -350,13 +431,50 @@ packages:
       - qtbase6
       - mesa
       - libxkbcommon
-    revision: 6
     configure:
       - args:
         - 'cmake'
         - '-GNinja'
         - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/host-qt6'
         - '-DQT_FORCE_BUILD_TOOLS=ON'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: qtspeech6
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Text-to-speech library for the Qt6 framework
+      description: This package provides the text-to-speech library for the Qt6 framework.
+      spdx: 'GPL-2.0-only GPL-3.0-only LGPL-3.0-only GFDL-1.3-only'
+      website: 'https://code.qt.io/cgit/qt/qtspeech.git/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-qt']
+    source:
+      subdir: 'ports'
+      git: 'http://code.qt.io/qt/qtspeech.git'
+      tag: 'v6.6.1'
+      version: '6.6.1'
+    tools_required:
+      - system-gcc
+      - host-cmake
+      - host-qt6
+    pkgs_required:
+      - mlibc
+      - qtbase6
+      - qtdeclarative6
+      - qtmultimedia6
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/host-qt6'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_BUILD_TYPE=Debug'
@@ -379,8 +497,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtsvg.git'
-      tag: 'v6.4.0'
-      version: '6.4.0'
+      tag: 'v6.6.1'
+      version: '6.6.1'
     tools_required:
       - system-gcc
       - host-cmake
@@ -389,7 +507,6 @@ packages:
       - mlibc
       - qtbase6
       - zlib
-    revision: 6
     configure:
       - args:
         - 'cmake'
@@ -415,8 +532,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'http://code.qt.io/qt/qtwayland.git'
-      tag: 'v6.4.0'
-      version: '6.4.0'
+      tag: 'v6.6.1'
+      version: '6.6.1'
     tools_required:
       - system-gcc
       - host-cmake
@@ -428,7 +545,6 @@ packages:
       - mesa
       - wayland
       - libxkbcommon
-    revision: 6
     configure:
       - args:
         - 'cmake'
