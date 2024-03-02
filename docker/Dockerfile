@@ -68,6 +68,7 @@ RUN apt-get update \
 		# Used by ace
 		libpng-dev \
 		# Used by host-qt6
+		libx11-xcb-dev \
 		libxkbcommon-x11-dev \
 		# Used by many gnu build steps
 		m4 \
