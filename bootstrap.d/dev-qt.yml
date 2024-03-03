@@ -498,8 +498,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtsvg.git'
-      tag: 'v6.6.1'
-      version: '6.6.1'
+      tag: 'v6.6.2'
+      version: '6.6.2'
     tools_required:
       - system-gcc
       - host-cmake
