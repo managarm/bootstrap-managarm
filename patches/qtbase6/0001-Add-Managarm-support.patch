@@ -1,37 +1,43 @@
-From 746b6ca08c9ed100b6fe27f1791e62ba1ea17f29 Mon Sep 17 00:00:00 2001
+From 0749181b2fea154ad99e0495b0e03b3e585e5331 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Tue, 13 Feb 2024 04:48:28 +0100
 Subject: [PATCH] Add Managarm support
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
- cmake/QtBuild.cmake                           | 6 ++++++
- cmake/QtPlatformSupport.cmake                 | 1 +
- mkspecs/common/posix/qplatformdefs.h          | 4 ++--
- src/corelib/global/qsystemdetection.h         | 2 ++
- src/corelib/io/qstorageinfo_unix.cpp          | 3 +++
- src/corelib/thread/qthread_unix.cpp           | 2 +-
- src/gui/configure.cmake                       | 4 ++--
- src/network/kernel/qnetworkinterface_unix.cpp | 4 ++++
- 8 files changed, 21 insertions(+), 5 deletions(-)
+ cmake/QtMkspecHelpers.cmake                   |  6 ++
+ cmake/QtPlatformSupport.cmake                 |  1 +
+ mkspecs/common/managarm.conf                  | 52 +++++++++++
+ mkspecs/common/posix/qplatformdefs.h          |  4 +-
+ mkspecs/managarm-g++/qmake.conf               | 12 +++
+ mkspecs/managarm-g++/qplatformdefs.h          | 88 +++++++++++++++++++
+ src/corelib/global/qsystemdetection.h         |  2 +
+ src/corelib/io/qstorageinfo_unix.cpp          |  3 +
+ src/corelib/thread/qthread_unix.cpp           |  2 +-
+ src/gui/configure.cmake                       |  4 +-
+ src/network/kernel/qnetworkinterface_unix.cpp |  4 +
+ 11 files changed, 173 insertions(+), 5 deletions(-)
+ create mode 100644 mkspecs/common/managarm.conf
+ create mode 100644 mkspecs/managarm-g++/qmake.conf
+ create mode 100644 mkspecs/managarm-g++/qplatformdefs.h
 
-diff --git a/cmake/QtBuild.cmake b/cmake/QtBuild.cmake
-index 1dc576d2..bbf77cd3 100644
---- a/cmake/QtBuild.cmake
-+++ b/cmake/QtBuild.cmake
-@@ -307,6 +307,12 @@ elseif(LINUX)
-     elseif(CLANG)
-         set(QT_DEFAULT_MKSPEC linux-clang)
-     endif()
-+elseif(MANAGARM)
-+    if(GCC)
-+        set(QT_DEFAULT_MKSPEC managarm-g++)
-+    else()
-+        message(FATAL_ERROR "Unknown compiler in use!")
-+    endif()
- elseif(ANDROID)
-     if(GCC)
-         set(QT_DEFAULT_MKSPEC android-g++)
+diff --git a/cmake/QtMkspecHelpers.cmake b/cmake/QtMkspecHelpers.cmake
+index cd08daa2..1e14911b 100644
+--- a/cmake/QtMkspecHelpers.cmake
++++ b/cmake/QtMkspecHelpers.cmake
+@@ -48,6 +48,12 @@ macro(qt_internal_setup_platform_definitions_and_mkspec)
+         elseif(CLANG)
+             set(QT_DEFAULT_MKSPEC linux-clang)
+         endif()
++    elseif(MANAGARM)
++        if(GCC)
++            set(QT_DEFAULT_MKSPEC managarm-g++)
++        else()
++            message(FATAL_ERROR "Unknown compiler in use!")
++        endif()
+     elseif(ANDROID)
+         if(GCC)
+             set(QT_DEFAULT_MKSPEC android-g++)
 diff --git a/cmake/QtPlatformSupport.cmake b/cmake/QtPlatformSupport.cmake
 index e20a5e15..8d01b2df 100644
 --- a/cmake/QtPlatformSupport.cmake
@@ -44,6 +50,65 @@ index e20a5e15..8d01b2df 100644
  qt_set01(HPUX CMAKE_SYSTEM_NAME STREQUAL "HPUX")
  qt_set01(ANDROID CMAKE_SYSTEM_NAME STREQUAL "Android")  # FIXME: How to identify this?
  qt_set01(INTEGRITY CMAKE_SYSTEM_NAME STREQUAL "Integrity") # FIXME: How to identify this?
+diff --git a/mkspecs/common/managarm.conf b/mkspecs/common/managarm.conf
+new file mode 100644
+index 00000000..dfa52073
+--- /dev/null
++++ b/mkspecs/common/managarm.conf
+@@ -0,0 +1,52 @@
++#
++# qmake configuration for common managarm
++#
++
++QMAKE_PLATFORM         += managarm
++
++include(unix.conf)
++
++QMAKE_CFLAGS_THREAD    += -D_REENTRANT
++QMAKE_CXXFLAGS_THREAD  += $$QMAKE_CFLAGS_THREAD
++QMAKE_LFLAGS_GCSECTIONS = -Wl,--gc-sections
++
++QMAKE_LFLAGS_REL_RPATH  = -Wl,-z,origin
++QMAKE_REL_RPATH_BASE    = $ORIGIN
++
++QMAKE_INCDIR            =
++QMAKE_LIBDIR            =
++QMAKE_INCDIR_X11        =
++QMAKE_LIBDIR_X11        =
++QMAKE_INCDIR_OPENGL     =
++QMAKE_LIBDIR_OPENGL     =
++QMAKE_INCDIR_OPENGL_ES2 = $$QMAKE_INCDIR_OPENGL
++QMAKE_LIBDIR_OPENGL_ES2 = $$QMAKE_LIBDIR_OPENGL
++QMAKE_INCDIR_EGL        =
++QMAKE_LIBDIR_EGL        =
++QMAKE_INCDIR_OPENVG     =
++QMAKE_LIBDIR_OPENVG     =
++
++QMAKE_LIBS              =
++QMAKE_LIBS_DYNLOAD      = -ldl
++QMAKE_LIBS_X11          = -lXext -lX11 -lm
++QMAKE_LIBS_EGL          = -lEGL
++QMAKE_LIBS_OPENGL       = -lGL
++QMAKE_LIBS_OPENGL_ES2   = -lGLESv2
++QMAKE_LIBS_OPENVG       = -lOpenVG
++QMAKE_LIBS_THREAD       = -lpthread
++QMAKE_LIBS_VULKAN       =
++
++QMAKE_INCDIR_WAYLAND    =
++QMAKE_LIBS_WAYLAND_CLIENT = -lwayland-client
++QMAKE_LIBS_WAYLAND_SERVER = -lwayland-server
++QMAKE_LIBDIR_WAYLAND    =
++QMAKE_DEFINES_WAYLAND   =
++QMAKE_WAYLAND_SCANNER   = wayland-scanner
++
++QMAKE_AR                = ar cqs
++QMAKE_OBJCOPY           = objcopy
++QMAKE_NM                = nm -P
++QMAKE_RANLIB            =
++
++QMAKE_STRIP             = strip
++QMAKE_STRIPFLAGS_LIB   += --strip-unneeded
+\ No newline at end of file
 diff --git a/mkspecs/common/posix/qplatformdefs.h b/mkspecs/common/posix/qplatformdefs.h
 index ffae2ac3..3196f1b1 100644
 --- a/mkspecs/common/posix/qplatformdefs.h
@@ -66,6 +131,119 @@ index ffae2ac3..3196f1b1 100644
  #define QT_DIRENT               struct dirent64
  #define QT_READDIR              ::readdir64
  #define QT_READDIR_R            ::readdir64_r
+diff --git a/mkspecs/managarm-g++/qmake.conf b/mkspecs/managarm-g++/qmake.conf
+new file mode 100644
+index 00000000..6eb945c0
+--- /dev/null
++++ b/mkspecs/managarm-g++/qmake.conf
+@@ -0,0 +1,12 @@
++#
++# qmake configuration for managarm-g++
++#
++
++MAKEFILE_GENERATOR      = UNIX
++CONFIG                 += incremental
++QMAKE_INCREMENTAL_STYLE = sublib
++
++include(../common/linux.conf)
++include(../common/gcc-base-unix.conf)
++include(../common/g++-unix.conf)
++load(qt_config)
+\ No newline at end of file
+diff --git a/mkspecs/managarm-g++/qplatformdefs.h b/mkspecs/managarm-g++/qplatformdefs.h
+new file mode 100644
+index 00000000..91654548
+--- /dev/null
++++ b/mkspecs/managarm-g++/qplatformdefs.h
+@@ -0,0 +1,88 @@
++/****************************************************************************
++**
++** Copyright (C) 2016 The Qt Company Ltd.
++** Contact: https://www.qt.io/licensing/
++**
++** This file is part of the qmake spec of the Qt Toolkit.
++**
++** $QT_BEGIN_LICENSE:LGPL$
++** Commercial License Usage
++** Licensees holding valid commercial Qt licenses may use this file in
++** accordance with the commercial license agreement provided with the
++** Software or, alternatively, in accordance with the terms contained in
++** a written agreement between you and The Qt Company. For licensing terms
++** and conditions see https://www.qt.io/terms-conditions. For further
++** information use the contact form at https://www.qt.io/contact-us.
++**
++** GNU Lesser General Public License Usage
++** Alternatively, this file may be used under the terms of the GNU Lesser
++** General Public License version 3 as published by the Free Software
++** Foundation and appearing in the file LICENSE.LGPL3 included in the
++** packaging of this file. Please review the following information to
++** ensure the GNU Lesser General Public License version 3 requirements
++** will be met: https://www.gnu.org/licenses/lgpl-3.0.html.
++**
++** GNU General Public License Usage
++** Alternatively, this file may be used under the terms of the GNU
++** General Public License version 2.0 or (at your option) the GNU General
++** Public license version 3 or any later version approved by the KDE Free
++** Qt Foundation. The licenses are as published by the Free Software
++** Foundation and appearing in the file LICENSE.GPL2 and LICENSE.GPL3
++** included in the packaging of this file. Please review the following
++** information to ensure the GNU General Public License requirements will
++** be met: https://www.gnu.org/licenses/gpl-2.0.html and
++** https://www.gnu.org/licenses/gpl-3.0.html.
++**
++** $QT_END_LICENSE$
++**
++****************************************************************************/
++
++#ifndef QPLATFORMDEFS_H
++#define QPLATFORMDEFS_H
++
++// Get Qt defines/settings
++
++#include "qglobal.h"
++
++// Set any POSIX/XOPEN defines at the top of this file to turn on specific APIs
++
++// 1) need to reset default environment if _BSD_SOURCE is defined
++// 2) need to specify POSIX thread interfaces explicitly in glibc 2.0
++// 3) it seems older glibc need this to include the X/Open stuff
++#ifndef _GNU_SOURCE
++#  define _GNU_SOURCE
++#endif
++
++#include <unistd.h>
++
++
++// We are hot - unistd.h should have turned on the specific APIs we requested
++
++// mlibc doesn't do features.h
++//#include <features.h>
++#include <pthread.h>
++#include <dirent.h>
++#include <fcntl.h>
++#include <grp.h>
++#include <pwd.h>
++#include <signal.h>
++
++#include <sys/types.h>
++#include <sys/ioctl.h>
++#include <sys/ipc.h>
++#include <sys/time.h>
++#include <sys/shm.h>
++#include <sys/socket.h>
++#include <sys/stat.h>
++#include <sys/wait.h>
++#include <netinet/in.h>
++
++#define QT_USE_XOPEN_LFS_EXTENSIONS
++#include "../common/posix/qplatformdefs.h"
++
++#if defined(_XOPEN_SOURCE) && (_XOPEN_SOURCE >= 500)
++#define QT_SNPRINTF             ::snprintf
++#define QT_VSNPRINTF            ::vsnprintf
++#endif
++
++#endif // QPLATFORMDEFS_H
 diff --git a/src/corelib/global/qsystemdetection.h b/src/corelib/global/qsystemdetection.h
 index 51881043..07ea4fe7 100644
 --- a/src/corelib/global/qsystemdetection.h
@@ -80,7 +258,7 @@ index 51881043..07ea4fe7 100644
  #else
  #  error "Qt has not been ported to this OS - see http://www.qt-project.org/"
 diff --git a/src/corelib/io/qstorageinfo_unix.cpp b/src/corelib/io/qstorageinfo_unix.cpp
-index 20bddd87..75b2a81c 100644
+index e520b5be..c9ee27c6 100644
 --- a/src/corelib/io/qstorageinfo_unix.cpp
 +++ b/src/corelib/io/qstorageinfo_unix.cpp
 @@ -64,6 +64,9 @@
@@ -94,7 +272,7 @@ index 20bddd87..75b2a81c 100644
  #  if defined(QT_LARGEFILE_SUPPORT)
  #    define QT_STATFSBUF struct statvfs64
 diff --git a/src/corelib/thread/qthread_unix.cpp b/src/corelib/thread/qthread_unix.cpp
-index dee71305..5af632a8 100644
+index 6694235f..c7b1f7af 100644
 --- a/src/corelib/thread/qthread_unix.cpp
 +++ b/src/corelib/thread/qthread_unix.cpp
 @@ -689,7 +689,7 @@ void QThread::start(Priority priority)

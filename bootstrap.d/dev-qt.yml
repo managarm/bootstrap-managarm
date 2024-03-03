@@ -3,14 +3,14 @@ sources:
     subdir: 'ports'
     # This may seem strange, but is actually correct
     git: 'https://code.qt.io/qt/qt5.git'
-    tag: 'v6.6.1'
-    version: '6.6.1'
+    tag: 'v6.6.2'
+    version: '6.6.2'
     regenerate:
       # Get the submodules that we'll need as a host tool
       - args: ['./init-repository', '-f', '--module-subset', 'qtbase,qtsvg,qtimageformats,qtshadertools,qtlanguageserver,qtdeclarative,qtwayland,qtmultimedia,qttools,qt5compat,qtsensors,qtcharts,qtpositioning,qtspeech']
       - args: |
           cd @THIS_SOURCE_DIR@/qtbase
-          git pull origin 6.6.1
+          git pull origin 6.6.2
 
 tools:
   # We do a limited superbuild with only the needed modules of Qt6 to satisfy host tooling.
@@ -19,6 +19,7 @@ tools:
     from_source: qt6
     tools_required:
       - host-cmake
+      - wayland-scanner
     configure:
       - args:
         - 'cmake'
@@ -51,8 +52,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'http://code.qt.io/qt/qt5compat.git'
-      tag: 'v6.6.1'
-      version: '6.6.1'
+      tag: 'v6.6.2'
+      version: '6.6.2'
     tools_required:
       - system-gcc
       - host-cmake
@@ -90,8 +91,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtbase.git'
-      tag: 'v6.6.1'
-      version: '6.6.1'
+      tag: 'v6.6.2'
+      version: '6.6.2'
     tools_required:
       - system-gcc
       - host-cmake
@@ -218,8 +219,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtdeclarative.git'
-      tag: 'v6.6.1'
-      version: '6.6.1'
+      tag: 'v6.6.2'
+      version: '6.6.2'
     tools_required:
       - system-gcc
       - host-cmake
@@ -260,8 +261,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtimageformats.git'
-      tag: 'v6.6.1'
-      version: '6.6.1'
+      tag: 'v6.6.2'
+      version: '6.6.2'
     tools_required:
       - system-gcc
       - host-cmake
@@ -303,8 +304,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtlanguageserver.git'
-      tag: 'v6.6.1'
-      version: '6.6.1'
+      tag: 'v6.6.2'
+      version: '6.6.2'
     tools_required:
       - system-gcc
       - host-cmake
@@ -339,8 +340,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtmultimedia.git'
-      tag: 'v6.6.1'
-      version: '6.6.1'
+      tag: 'v6.6.2'
+      version: '6.6.2'
     tools_required:
       - system-gcc
       - host-cmake
@@ -383,8 +384,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'http://code.qt.io/qt/qtsensors.git'
-      tag: 'v6.6.1'
-      version: '6.6.1'
+      tag: 'v6.6.2'
+      version: '6.6.2'
     tools_required:
       - system-gcc
       - host-cmake
@@ -420,8 +421,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtshadertools.git'
-      tag: 'v6.6.1'
-      version: '6.6.1'
+      tag: 'v6.6.2'
+      version: '6.6.2'
     tools_required:
       - system-gcc
       - host-cmake
@@ -459,8 +460,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'http://code.qt.io/qt/qtspeech.git'
-      tag: 'v6.6.1'
-      version: '6.6.1'
+      tag: 'v6.6.2'
+      version: '6.6.2'
     tools_required:
       - system-gcc
       - host-cmake
@@ -497,8 +498,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtsvg.git'
-      tag: 'v6.6.1'
-      version: '6.6.1'
+      tag: 'v6.6.2'
+      version: '6.6.2'
     tools_required:
       - system-gcc
       - host-cmake
@@ -532,8 +533,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'http://code.qt.io/qt/qtwayland.git'
-      tag: 'v6.6.1'
-      version: '6.6.1'
+      tag: 'v6.6.2'
+      version: '6.6.2'
     tools_required:
       - system-gcc
       - host-cmake
