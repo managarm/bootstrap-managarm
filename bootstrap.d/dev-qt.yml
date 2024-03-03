@@ -460,8 +460,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'http://code.qt.io/qt/qtspeech.git'
-      tag: 'v6.6.1'
-      version: '6.6.1'
+      tag: 'v6.6.2'
+      version: '6.6.2'
     tools_required:
       - system-gcc
       - host-cmake
