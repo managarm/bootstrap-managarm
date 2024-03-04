@@ -865,6 +865,23 @@ tools:
     install:
       - args: ['ninja', 'install']
 
+  - name: host-icmake
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.com/fbb-git/icmake'
+      tag: '9.03.01'
+      regenerate:
+        - args: ['sed', '-i', 's#"usr/bin"#"bin"#', '@THIS_SOURCE_DIR@/icmake/INSTALL.im']
+    configure:
+      - args: ['@THIS_SOURCE_DIR@/icmake/icm_prepare', '@PREFIX@/']
+        workdir: '@THIS_SOURCE_DIR@/icmake'
+    compile:
+      - args: ['@THIS_SOURCE_DIR@/icmake/icm_bootstrap', 'x']
+        workdir: '@THIS_SOURCE_DIR@/icmake'
+    install:
+      - args: ['@THIS_SOURCE_DIR@/icmake/icm_install', 'strip', 'all', '/']
+        workdir: '@THIS_SOURCE_DIR@/icmake'
+
 packages:
   - name: binutils
     architecture: '@OPTION:arch@'
