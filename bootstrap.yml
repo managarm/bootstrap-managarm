@@ -86,11 +86,11 @@ sources:
     rolling_version: true
     version: '0.0pl@ROLLING_ID@'
 
-  - name: lai
+  - name: uacpi
     subdir: 'ports'
-    git: 'https://github.com/qword-os/lai.git'
+    git: 'https://github.com/UltraOS/uACPI.git'
     branch: 'master'
-    rolling_version: true
+    commit: 2116f62188d7f9a544d19e9f43416a76da40d03c
     version: '0.0pl@ROLLING_ID@'
 
   - name: libarch
@@ -142,7 +142,7 @@ sources:
     version: '0.0pl@ROLLING_ID@'
     sources_required:
       - cralgo
-      - lai
+      - uacpi
       - libarch
       - libasync
       - libsmarter
@@ -150,7 +150,7 @@ sources:
     regenerate:
       - args: ['mkdir', '-p', '@THIS_SOURCE_DIR@/subprojects']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cralgo', '@THIS_SOURCE_DIR@/subprojects/']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/lai', '@THIS_SOURCE_DIR@/subprojects/']
+      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/uacpi', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/libarch', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/libasync', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/libsmarter', '@THIS_SOURCE_DIR@/subprojects/']
