@@ -21,6 +21,7 @@ tools:
         - '--enable-virglrenderer'
         - '--enable-gtk'
         - '--enable-sdl'
+        - '--enable-trace-backends=log'
         environ:
           CFLAGS: '-Wno-int-conversion'
     compile:
