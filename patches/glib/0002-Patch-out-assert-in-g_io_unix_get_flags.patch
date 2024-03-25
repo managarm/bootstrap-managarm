@@ -1,4 +1,4 @@
-From fe2c4357d753d3a5baed7e2354f3542a1e87b46d Mon Sep 17 00:00:00 2001
+From eb6507b28a4704d451d004e4bcda16da187a0678 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Wed, 12 Oct 2022 02:54:15 +0200
 Subject: [PATCH 2/2] Patch out assert in g_io_unix_get_flags
@@ -11,10 +11,10 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
  1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/glib/giounix.c b/glib/giounix.c
-index ad3aba2..e0237fc 100644
+index 84e8135..d065074 100644
 --- a/glib/giounix.c
 +++ b/glib/giounix.c
-@@ -436,7 +436,10 @@ g_io_unix_get_flags (GIOChannel *channel)
+@@ -440,7 +440,10 @@ g_io_unix_get_flags (GIOChannel *channel)
          channel->is_writeable = TRUE;
          break;
        default:
@@ -27,5 +27,5 @@ index ad3aba2..e0237fc 100644
  
    return flags;
 -- 
-2.37.2
+2.43.0
 
