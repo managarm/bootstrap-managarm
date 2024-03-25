@@ -203,7 +203,6 @@ packages:
       - args: ['cmake', '--build', '.', '--parallel', '@PARALLELISM@']
       - args: ['cmake', '--install', '.']
       # Touch a file in empty directories to keep xbps happy
-      - args: ['touch', '@THIS_COLLECT_DIR@/usr/lib/cmake/Qt6/QtBuildInternals/QtStandaloneTestTemplateProject/.keep']
       - args: ['touch', '@THIS_COLLECT_DIR@/usr/lib/cmake/Qt6/macos/.keep']
       - args: ['touch', '@THIS_COLLECT_DIR@/usr/lib/cmake/Qt6/ios/.keep']
 
