@@ -12,6 +12,7 @@ imports:
   - file: bootstrap.d/dev-libs.yml
   - file: bootstrap.d/dev-util.yml
   - file: bootstrap.d/dev-qt.yml
+  - file: bootstrap.d/dev-vcs.yml
   - file: bootstrap.d/games-board.yml
   - file: bootstrap.d/games-emulation.yml
   - file: bootstrap.d/games-fps.yml
