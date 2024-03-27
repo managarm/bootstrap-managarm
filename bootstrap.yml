@@ -65,6 +65,8 @@ declare_options:
     default: x86_64
   - name: arch-triple
     default: x86_64-managarm
+  - name: compiler
+    default: ''
   - name: mount-using
     default: guestfs
 
@@ -1477,6 +1479,7 @@ packages:
     architecture: '@OPTION:arch@'
     from_source: mlibc
     tools_required:
+      - host-llvm-toolchain
       - host-managarm-tools
       - bootstrap-system-gcc
       - host-protoc
@@ -1492,7 +1495,7 @@ packages:
         - 'meson'
         - 'setup'
         - '--cross-file'
-        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:compiler@@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
