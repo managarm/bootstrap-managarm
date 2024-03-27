@@ -43,6 +43,7 @@ tools:
         - '--prefix=@PREFIX@'
         - '--libdir=lib'
         - '@THIS_SOURCE_DIR@'
+        isolate_network: false
     compile:
       - args: ['ninja']
     install:
@@ -62,11 +63,13 @@ tools:
     configure:
       - args:
         - 'meson'
+        - 'setup'
         - '--prefix=@PREFIX@'
         - '--native-file'
         - '@SOURCE_ROOT@/scripts/meson.native-file'
         - '-Dbuild_introspection_data=false'
         - '@THIS_SOURCE_DIR@'
+        isolate_network: false
     compile:
       - args: ['ninja']
     install:

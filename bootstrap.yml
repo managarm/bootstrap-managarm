@@ -797,6 +797,7 @@ tools:
         - '@SOURCE_ROOT@/scripts/meson.native-file'
         - '--prefix=@PREFIX@'
         - '@THIS_SOURCE_DIR@'
+        isolate_network: false
     compile:
       - args: ['ninja']
     install:
@@ -1209,6 +1210,7 @@ packages:
       version: '3.0.2'
       regenerate:
         - args: ['./update.sh']
+          isolate_network: false
     tools_required:
       - host-cmake
       - system-gcc

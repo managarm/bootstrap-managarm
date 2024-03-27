@@ -282,6 +282,7 @@ packages:
         - '--root'
         - '@THIS_COLLECT_DIR@/usr'
         - '-j@PARALLELISM@'
+        isolate_network: false
         environ: # Required to build libgit2
           CC: x86_64-managarm-gcc
       - args: ['rm', '-v', '@THIS_COLLECT_DIR@/usr/.crates.toml']
@@ -784,6 +785,7 @@ packages:
         - '--root'
         - '@THIS_COLLECT_DIR@/usr'
         - '-j@PARALLELISM@'
+        isolate_network: false
       - args: ['rm', '-v', '@THIS_COLLECT_DIR@/usr/.crates.toml']
       - args: ['rm', '-v', '@THIS_COLLECT_DIR@/usr/.crates2.json']
 
@@ -811,6 +813,7 @@ packages:
       regenerate:
         - args: ['autoreconf', '-fvi']
         - args: ['wget', 'https://raptor.dennisbonke.com/usb.ids', '-O', '@THIS_SOURCE_DIR@/usb.ids'] # Version 20230724
+          isolate_network: false
     tools_required:
       - system-gcc
     pkgs_required:
