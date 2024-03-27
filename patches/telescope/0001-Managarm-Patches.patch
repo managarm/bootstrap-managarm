@@ -1,0 +1,73 @@
+From 084d8d40a24a601c463955ac569183cfb085f96a Mon Sep 17 00:00:00 2001
+From: Alexander <electrodeyt@gmail.com>
+Date: Thu, 16 Jun 2022 00:31:32 +0200
+Subject: [PATCH] Managarm Patches
+
+---
+ control.c   | 14 ++++++++------
+ telescope.c |  9 +++++----
+ 2 files changed, 13 insertions(+), 10 deletions(-)
+
+diff --git a/control.c b/control.c
+index b2cba81..dc2cdcd 100644
+--- a/control.c
++++ b/control.c
+@@ -91,12 +91,14 @@ control_init(char *path)
+ 	}
+ 	umask(old_umask);
+ 
+-	if (chmod(path, S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP) == -1) {
+-		warn("%s: chmod", __func__);
+-		close(fd);
+-		(void)unlink(path);
+-		return (-1);
+-	}
++
++	// patched because chmod == nop
++	//if (chmod(path, S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP) == -1) {
++	//	warn("%s: chmod", __func__);
++	//	close(fd);
++	//	(void)unlink(path);
++	//	return (-1);
++	//}
+ 
+ 	return (fd);
+ }
+diff --git a/telescope.c b/telescope.c
+index 0a65f41..1991d1b 100644
+--- a/telescope.c
++++ b/telescope.c
+@@ -64,7 +64,7 @@ int			 operating;
+  * "Safe" (or "sandobox") mode.  If enabled, Telescope shouldn't write
+  * anything to the filesystem or execute external programs.
+  */
+-int			safe_mode;
++int			safe_mode = 0;
+ 
+ static struct imsgev	*iev_net;
+ 
+@@ -1047,8 +1047,8 @@ main(int argc, char * const *argv)
+ 
+ 	if (getenv("NO_COLOR") != NULL)
+ 		enable_colors = 0;
+-
+-	while ((ch = getopt_long(argc, argv, opts, longopts, NULL)) != -1) {
++	optind = 0;
++	while ((ch = getopt(argc, argv, opts)) != -1) {
+ 		switch (ch) {
+ 		case 'C':
+ 			exit(ui_print_colors());
+@@ -1128,8 +1128,9 @@ main(int argc, char * const *argv)
+ 		    "telescope already running?");
+ 	}
+ 
++
+ 	/* Start children. */
+-	if (socketpair(AF_UNIX, SOCK_STREAM, PF_UNSPEC, pipe2net) == -1)
++	if (socketpair(AF_UNIX, SOCK_STREAM, 0, pipe2net) == -1)
+ 		err(1, "socketpair");
+ 	start_child(PROC_NET, argv0, pipe2net[1]);
+ 	imsg_init(&net_ibuf.ibuf, pipe2net[0]);
+-- 
+2.36.1
+
