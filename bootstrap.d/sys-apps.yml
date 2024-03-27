@@ -79,7 +79,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 6
+    revision: 7
     configure:
       # Huge hack: coreutils does not compile the build-machine binary make-prime-list
       # using the build-machine compiler. Hence, build and invoke the binary manually here.
@@ -133,7 +133,7 @@ packages:
       - mlibc
       - glib
       - libexpat
-    revision: 6
+    revision: 7
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -187,7 +187,7 @@ packages:
       - host-automake-v1.15
     pkgs_required:
       - mlibc
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -225,7 +225,7 @@ packages:
       - mlibc
       - libdrm
       - json-c
-    revision: 6
+    revision: 7
     configure:
       - args:
         - 'meson'
@@ -266,7 +266,7 @@ packages:
       - rust-patched-libs
     pkgs_required:
       - mlibc
-    revision: 6
+    revision: 7
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
     build:
@@ -303,7 +303,7 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -340,7 +340,7 @@ packages:
       - host-python
     pkgs_required:
       - mlibc
-    revision: 6
+    revision: 7
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -386,7 +386,7 @@ packages:
       - host-automake-v1.16
     pkgs_required:
       - mlibc
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -428,7 +428,7 @@ packages:
     pkgs_required:
       - mlibc
       - pcre
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -464,7 +464,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 9
+    revision: 10
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -504,7 +504,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 5
+    revision: 6
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
@@ -542,7 +542,7 @@ packages:
     pkgs_required:
       - mlibc
       - ncurses
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -580,7 +580,7 @@ packages:
       - groff
       - less
       - libiconv
-    revision: 9
+    revision: 10
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -612,7 +612,7 @@ packages:
       version: '2017a'
     tools_required:
       - system-gcc
-    revision: 4
+    revision: 5
     configure: []
     build:
       - args: ['mkdir', '-pv', '@THIS_COLLECT_DIR@/usr/share/man']
@@ -642,7 +642,7 @@ packages:
     pkgs_required:
       - mlibc
       - pciids
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'meson'
@@ -666,7 +666,7 @@ packages:
       branch: 'master'
       commit: 'd27a0bd748310d8ace673a614f745303b444e00e'
       version: '7.2.0'
-    revision: 6
+    revision: 7
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -699,7 +699,7 @@ packages:
       - mlibc
       - eudev
       - zlib
-    revision: 3
+    revision: 4
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -729,7 +729,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 8
+    revision: 9
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -763,7 +763,7 @@ packages:
       - rust-patched-libs
     pkgs_required:
       - mlibc
-    revision: 10
+    revision: 11
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
     build:
@@ -811,7 +811,7 @@ packages:
       - mlibc
       - libusb
       - eudev
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -843,7 +843,7 @@ packages:
       - libiconv
       - file
       - libxcrypt
-    revision: 10
+    revision: 11
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -992,7 +992,7 @@ packages:
       - libiconv
       - file
       - libxcrypt
-    revision: 11
+    revision: 12
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1088,7 +1088,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 8
+    revision: 9
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1124,7 +1124,7 @@ packages:
       - libarchive
       - openssl
       - zlib
-    revision: 3
+    revision: 4
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:

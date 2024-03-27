@@ -16,7 +16,7 @@ packages:
       extract_path: 'linux-6.2.9'
       format: 'tar.xz'
       version: '6.2.9'
-    revision: 3
+    revision: 4
     configure:
       - args: ['cp', '-Tr', '@THIS_SOURCE_DIR@', '.']
     build:

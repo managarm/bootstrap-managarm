@@ -880,7 +880,7 @@ packages:
       - tool: system-gcc
     pkgs_required:
       - mlibc
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -926,7 +926,7 @@ packages:
         - args: ['git', '-C', '@THIS_SOURCE_DIR@', 'submodule', 'update', '--init']
         - args: ['./bootstrap.sh']
         - args: ['./b2', 'headers']
-    revision: 5
+    revision: 6
     configure: []
     build:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/include']
@@ -947,7 +947,7 @@ packages:
     source:
       subdir: meta-sources
       version: '1.0'
-    revision: 7
+    revision: 8
     configure: []
     build:
       # Create initial directories
@@ -1003,7 +1003,7 @@ packages:
       branch: 'master'
     tools_required:
       - system-gcc
-    revision: 7
+    revision: 8
     configure:
       - args:
         - 'meson'
@@ -1035,7 +1035,7 @@ packages:
       subdir: 'ports'
       git: 'https://github.com/managarm/frigg.git'
       branch: 'master'
-    revision: 6
+    revision: 7
     configure:
       - args:
         - 'meson'
@@ -1067,6 +1067,7 @@ packages:
       - mpfr
       - mpc
       - zlib
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1112,7 +1113,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 10
+    revision: 11
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1146,7 +1147,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 8
+    revision: 9
     configure:
       - args:
         - 'meson'
@@ -1176,7 +1177,7 @@ packages:
       - system-gcc
     pkgs_required:
       - boost
-    revision: 7
+    revision: 8
     configure:
       - args:
         - 'meson'
@@ -1208,7 +1209,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 8
+    revision: 9
     configure:
       - args:
         - 'cmake'
@@ -1236,7 +1237,7 @@ packages:
       branch: 'master'
     tools_required:
       - system-gcc
-    revision: 8
+    revision: 9
     configure:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/include']
       - args:
@@ -1260,7 +1261,7 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
-    revision: 6
+    revision: 7
     configure:
       - args:
         - 'cmake'
@@ -1311,7 +1312,7 @@ packages:
     pkgs_required:
       - mlibc
       - mesa
-    revision: 8
+    revision: 9
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1557,7 +1558,7 @@ packages:
       - host-protoc
     pkgs_required:
       - mlibc
-    revision: 9
+    revision: 10
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1589,7 +1590,7 @@ packages:
       - mlibc
       - libexpat
       - libffi
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'meson'
@@ -1638,7 +1639,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 6
+    revision: 7
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1686,7 +1687,7 @@ packages:
     pkgs_required:
       - mlibc
       - libxkbcommon
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'cmake'
@@ -1728,7 +1729,7 @@ packages:
       - libdrm
       - libtsm
       - eudev
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'meson'
@@ -1765,7 +1766,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 4
+    revision: 5
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args: 'echo @OPTION:arch-triple@-gcc -O2 -Wall > @THIS_BUILD_DIR@/src/conf-cc'

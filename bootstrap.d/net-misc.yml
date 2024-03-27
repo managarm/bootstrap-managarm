@@ -25,7 +25,7 @@ packages:
       - openssl
       - zlib
       - zstd
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -54,7 +54,7 @@ packages:
       version: '20230316'
     tools_required:
       - system-gcc
-    revision: 3
+    revision: 4
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -95,7 +95,7 @@ packages:
       - xxhash
       - zstd
       - popt
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -147,7 +147,7 @@ packages:
       - ncurses
       - readline
       - openssl
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -190,7 +190,7 @@ packages:
       - mlibc
       - pcre
       - openssl
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

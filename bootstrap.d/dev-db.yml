@@ -21,7 +21,7 @@ packages:
       - mlibc
       - readline
       - zlib
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
