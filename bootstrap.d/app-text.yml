@@ -1,0 +1,31 @@
+packages:
+  - name: iso-codes
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: ISO language, territory, currency, script codes and their translations
+      description: This package contains a list of country, language and currency names and it is used as a central database for accessing this data.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://salsa.debian.org/iso-codes-team/iso-codes'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['app-text']
+    source:
+      subdir: ports
+      url: 'https://ftp.debian.org/debian/pool/main/i/iso-codes/iso-codes_4.16.0.orig.tar.xz'
+      format: 'tar.xz'
+      extract_path: 'iso-codes-4.16.0'
+      checksum: blake2b:16baf4732392a976ab46efaa6c1c9bd19d3a08bd217f19c5e781db9ea81240b1adfb6063873ecbb97a5134ef990c9bfe98bc2bbecb791213afccb734f228fd4a
+      version: '4.16.0'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
