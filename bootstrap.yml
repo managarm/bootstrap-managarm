@@ -1328,6 +1328,32 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
+  - name: hel-headers
+    metadata:
+      summary: HEL IPC headers
+      description: This package provides hels IPC types
+      spdx: 'MIT'
+      website: 'https://managarm.org'
+      maintainer: "Alexander van der Grinten <avdgrinten@managarm.org>"
+    architecture: '@OPTION:arch@'
+    default: true
+    from_source: managarm
+    tools_required:
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--prefix=/usr'
+        - '@THIS_SOURCE_DIR@/subprojects/hel'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+
   - name: managarm-kernel
     metadata:
       summary: The Managarm kernel
@@ -1357,6 +1383,7 @@ packages:
               > ./meson-custom.cross-file
       - args:
         - 'meson'
+        - 'setup'
         - '--cross-file=@SOURCE_ROOT@/scripts/meson-kernel-common.cross-file'
         - '--cross-file=./meson-custom.cross-file'
         - '--prefix=/usr/managarm'
@@ -1409,6 +1436,7 @@ packages:
               > ./meson-custom.cross-file
       - args:
         - 'meson'
+        - 'setup'
         - '--cross-file=./meson-custom.cross-file'
         - '--prefix=/usr'
         - '--libdir=lib'
@@ -1480,13 +1508,13 @@ packages:
       - host-managarm-tools
       - bootstrap-system-gcc
       - host-protoc
-      - host-pkg-config
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - linux-headers
       - mlibc-headers
       - frigg
+      - hel-headers
     configure:
       - args:
         - 'meson'
