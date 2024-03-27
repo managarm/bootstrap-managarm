@@ -23,7 +23,7 @@ packages:
       - libxml
       - libxtst
       - libxi
-    revision: 5
+    revision: 6
     configure:
       - args:
           - 'meson'

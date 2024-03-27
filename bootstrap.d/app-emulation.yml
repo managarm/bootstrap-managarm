@@ -52,6 +52,7 @@ packages:
       - pixman
       - ncurses
       - nettle
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -69,3 +70,4 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+

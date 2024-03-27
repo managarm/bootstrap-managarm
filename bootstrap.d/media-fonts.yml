@@ -51,7 +51,7 @@ packages:
     pkgs_required:
       - freetype
       - fontconfig
-    revision: 5
+    revision: 6
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/ttf', '@THIS_SOURCE_DIR@/dejavu']
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/', '@THIS_BUILD_DIR@']
@@ -78,7 +78,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
