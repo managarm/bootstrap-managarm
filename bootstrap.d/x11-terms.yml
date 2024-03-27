@@ -43,5 +43,6 @@ packages:
         - '--root'
         - '@THIS_COLLECT_DIR@/usr'
         - '-j@PARALLELISM@'
+        isolate_network: false
         environ: # Required to build libgit2
           CC: x86_64-managarm-gcc

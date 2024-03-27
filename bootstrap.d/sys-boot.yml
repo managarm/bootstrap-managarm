@@ -16,6 +16,7 @@ sources:
       - host-automake-v1.16
     regenerate:
       - args: ['./bootstrap']
+        isolate_network: false
 
 tools:
   - name: host-limine
