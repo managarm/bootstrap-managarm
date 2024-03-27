@@ -49,3 +49,51 @@ packages:
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/profile', '@THIS_COLLECT_DIR@/etc']
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/bash.bashrc', '@THIS_COLLECT_DIR@/etc']
       - args: ['ln', '-sf', 'bash', '@THIS_COLLECT_DIR@/usr/bin/sh']
+
+  - name: zsh
+    metadata:
+      summary: 'UNIX Shell similar to the Korn shell'
+      description: 'Zsh is a shell designed for interactive use, although it is also a powerful scripting language. Many of the useful features of bash, ksh, and tcsh were incorporated into zsh; many original features were added.'
+      spdx: 'MIT'
+      website: 'https://zsh.sourceforge.io/'
+      maintainer: "no92 <no92.mail@gmail.com>"
+      categories: ['app-shells']
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
+    source:
+      subdir: 'ports'
+      git: 'https://git.code.sf.net/p/zsh/code'
+      branch: 'master'
+      tag: 'zsh-5.9'
+      version: '5.9'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.11
+      regenerate:
+        - args: ['./Util/preconfig']
+        - args: ['cp',
+            '@BUILD_ROOT@/tools/host-automake-v1.11/share/automake-1.11/config.sub',
+            '@THIS_SOURCE_DIR@/']
+    tools_required:
+      - host-yodl
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - gdbm
+      - pcre
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--quiet'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--sysconfdir=/etc/zsh'
+        - '--enable-etcdir=/etc/zsh'
+        - '--enable-gdbm'
+        - '--enable-pcre'
+    build:
+      - args: ['make', 'prep']
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
+        quiet: true
+

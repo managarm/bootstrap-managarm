@@ -127,8 +127,6 @@ RUN apt-get update \
 		x11-apps \
 		# Used by eudev
 		xsltproc \
-		# Used for building zsh documentation
-		yodl \
 		# Used by various programs, for example, it is used by file
 		zlib1g-dev \
 		# Used by the developers
