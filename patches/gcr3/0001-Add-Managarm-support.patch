@@ -1,0 +1,33 @@
+From cee296dd26c0e922b6c0b2325210912512fb28f7 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Wed, 24 Jan 2024 23:24:10 +0100
+Subject: [PATCH] Add Managarm support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ meson.build | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/meson.build b/meson.build
+index dd890a9..d125cee 100644
+--- a/meson.build
++++ b/meson.build
+@@ -52,8 +52,13 @@ if p11_system_config_modules == ''
+   error('Couldn\'t find location for pkcs11 module config')
+ endif
+ libsecret_dep = dependency('libsecret-1', version: '>= 0.20', required: get_option('ssh_agent'))
+-ssh_add_path = find_program('ssh-add', required: get_option('ssh_agent')).path()
+-ssh_agent_path = find_program('ssh-agent', required: get_option('ssh_agent')).path()
++if get_option('ssh_agent')
++  ssh_add_path = find_program('ssh-add', required: get_option('ssh_agent')).path()
++  ssh_agent_path = find_program('ssh-agent', required: get_option('ssh_agent')).path()
++else
++  ssh_add_path = ''
++  ssh_agent_path = ''
++endif
+ 
+ with_systemd = false
+ libsystemd_deps = []
+-- 
+2.43.0
+
