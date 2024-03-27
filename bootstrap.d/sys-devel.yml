@@ -195,8 +195,10 @@ packages:
       regenerate:
         # Pull a new bootstrap file that is actually competent, because the original bootstrap only checks out the last 365 days of gnulib, which ain't enough for us
         - args: ['wget', '-O', '@THIS_SOURCE_DIR@/bootstrap', 'https://raw.githubusercontent.com/gnulib-modules/bootstrap/3ee70612fc5e54384f39669c970714217cd5c476/bootstrap']
+          isolate_network: false
         - args: ['chmod', '0755', '@THIS_SOURCE_DIR@/bootstrap']
         - args: ['./bootstrap']
+          isolate_network: false
         - args: ['cp',
             '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
             '@THIS_SOURCE_DIR@/build-aux/']
@@ -270,6 +272,7 @@ packages:
         - host-libtool
       regenerate:
         - args: ['./bootstrap']
+          isolate_network: false
         - args: ['cp',
             '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
             '@THIS_SOURCE_DIR@/build-aux/']

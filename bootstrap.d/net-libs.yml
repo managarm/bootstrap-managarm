@@ -169,6 +169,7 @@ packages:
         - host-pkg-config
       regenerate:
         - args: ['./autogen.sh']
+          isolate_network: false
     tools_required:
       - system-gcc
     pkgs_required:

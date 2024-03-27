@@ -278,6 +278,7 @@ packages:
         - '-Dtests=false'
         - '-Dinstalled_tests=false'
         - '@THIS_SOURCE_DIR@'
+        isolate_network: false
         environ:
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
           PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
