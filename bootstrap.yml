@@ -1443,6 +1443,7 @@ packages:
       - host-managarm-tools
       - host-protoc
     pkgs_required:
+      - freestanding-headers
       - linux-headers
     configure:
       - args:
@@ -1457,6 +1458,7 @@ packages:
         - '-Ddisable_crypt_option=true'
         - '-Ddisable_iconv_option=true'
         - '-Ddisable_intl_option=true'
+        - '-Dfreestanding_headers=@SYSROOT_DIR@/usr/src/freestanding-headers'
         - '-Dlinux_kernel_headers=@SYSROOT_DIR@/usr/src/linux-headers'
     build:
       - args: ['ninja']
@@ -1484,6 +1486,7 @@ packages:
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
     pkgs_required:
+      - freestanding-headers
       - linux-headers
       - mlibc-headers
       - frigg
@@ -1501,6 +1504,7 @@ packages:
         - '-Ddisable_crypt_option=true'
         - '-Ddisable_iconv_option=true'
         - '-Ddisable_intl_option=true'
+        - '-Dfreestanding_headers=@SYSROOT_DIR@/usr/src/freestanding-headers'
         - '-Dlinux_kernel_headers=@SYSROOT_DIR@/usr/src/linux-headers'
         - '@THIS_SOURCE_DIR@'
     build:
@@ -1917,5 +1921,6 @@ tasks:
     args:
       - '@SOURCE_ROOT@/scripts/compile-mlibc-sysdeps.sh'
       - '@SOURCE_ROOT@/mlibc'
+      - '@SYSROOT_DIR@/usr/src/freestanding-headers'
       - '@SYSROOT_DIR@/usr/src/linux-headers'
     workdir: '@BUILD_ROOT@'
