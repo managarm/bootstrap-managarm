@@ -713,6 +713,7 @@ packages:
         - args: ['./gitsub.sh', 'pull']
         # Checkout current gnulib master, 044bf893acee0a55b22b4be0ede0e3ce010c480a, 29-08-2022.
         # This avoids random breakage in the future
+          isolate_network: false
         - args: ['git', 'checkout', '044bf893acee0a55b22b4be0ede0e3ce010c480a']
           workdir: '@THIS_SOURCE_DIR@/gnulib'
         - args: ['./autogen.sh']
@@ -919,6 +920,7 @@ packages:
         - host-libtool
       regenerate:
         - args: ['./bootstrap']
+          isolate_network: false
         - args: ['cp',
             '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
             '@THIS_SOURCE_DIR@/build-aux/']
@@ -960,6 +962,7 @@ packages:
         - host-libtool
       regenerate:
         - args: ['./bootstrap']
+          isolate_network: false
         - args: ['cp',
             '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
             '@THIS_SOURCE_DIR@/build-aux/']

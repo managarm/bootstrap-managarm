@@ -178,6 +178,7 @@ packages:
         - host-automake-v1.15
       regenerate:
         - args: ['./bootstrap']
+          isolate_network: false
         - args: ['cp',
             '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
             '@THIS_SOURCE_DIR@/build-aux/']
@@ -332,6 +333,7 @@ packages:
         - host-pkg-config
       regenerate:
         - args: ['./bootstrap']
+          isolate_network: false
         - args: ['cp',
             '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
             '@THIS_SOURCE_DIR@/build-aux/']
@@ -420,6 +422,7 @@ packages:
         - host-automake-v1.15
       regenerate:
         - args: ['./bootstrap']
+          isolate_network: false
         - args: ['cp',
             '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
             '@THIS_SOURCE_DIR@/build-aux/']
@@ -457,6 +460,7 @@ packages:
         - host-libtool
       regenerate:
         - args: ['./bootstrap']
+          isolate_network: false
         - args: ['cp',
             '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
             '@THIS_SOURCE_DIR@/build-aux/']
@@ -568,6 +572,7 @@ packages:
         - host-libtool
       regenerate:
         - args: ['./bootstrap']
+          isolate_network: false
         - args: ['cp',
             '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
             '@THIS_SOURCE_DIR@/build-aux/']
@@ -722,6 +727,7 @@ packages:
         - host-automake-v1.15
       regenerate:
         - args: ['./bootstrap']
+          isolate_network: false
         - args: ['cp',
             '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
             '@THIS_SOURCE_DIR@/build-aux/']
