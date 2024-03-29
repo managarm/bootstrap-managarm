@@ -1069,8 +1069,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/mesa/mesa.git'
-      tag: 'mesa-23.1.9'
-      version: '23.1.9'
+      tag: 'mesa-24.0.4'
+      version: '24.0.4'
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -1097,7 +1097,6 @@ packages:
       - libglvnd
       - libexpat
       - zstd
-    revision: 6
     configure:
       - args: ['cp', '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file', 'meson.cross-file']
       - args:
