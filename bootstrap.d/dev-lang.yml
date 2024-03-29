@@ -85,8 +85,10 @@ tools:
             llvm-config = "@BUILD_ROOT@/tools/host-llvm-toolchain/bin/llvm-config"
             EOF
       - args: ['python3', '@THIS_SOURCE_DIR@/x.py', 'build', '--stage', '2', '-j', '@PARALLELISM@']
+        isolate_network: false
     install:
       - args: ['python3', '@THIS_SOURCE_DIR@/x.py', 'install', '-j', '@PARALLELISM@']
+        isolate_network: false
 
   - name: host-cargo
     stability_level: 'broken'
@@ -120,6 +122,7 @@ tools:
         - '-j@PARALLELISM@'
         - '--root'
         - '@PREFIX@'
+        isolate_network: false
 
 packages:
   - name: lua

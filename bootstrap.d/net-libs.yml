@@ -169,6 +169,7 @@ packages:
         - host-pkg-config
       regenerate:
         - args: ['./autogen.sh']
+          isolate_network: false
     tools_required:
       - system-gcc
     pkgs_required:
@@ -338,6 +339,7 @@ packages:
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja', '-j6']
+        isolate_network: false
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'

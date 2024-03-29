@@ -25,6 +25,7 @@ packages:
               else
                   git -C gnulib pull --unshallow || true
               fi
+          isolate_network: false
         - args: ['./autogen.sh']
     tools_required:
       - host-autoconf-v2.69

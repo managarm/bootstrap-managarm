@@ -142,7 +142,7 @@ packages:
     architecture: '@OPTION:arch@'
     metadata:
       summary: GDK pixbuf xlib interface
-      description: This package provides a deprecated Xlib interface to gdk-pixbuf, which is needed for some applications which have not been ported to use the new interfaces yet. 
+      description: This package provides a deprecated Xlib interface to gdk-pixbuf, which is needed for some applications which have not been ported to use the new interfaces yet.
       spdx: 'LGPL-2.1'
       website: 'https://download.gnome.org/sources/gdk-pixbuf-xlib/'
       maintainer: "Alexander Richards <electrodeyt@gmail.com>"
@@ -1985,6 +1985,7 @@ packages:
         - host-autoconf-archive
       regenerate:
         - args: ['git', 'submodule', 'update', '--init']
+          isolate_network: false
         - args: ['./autogen.sh']
           environ:
             'NOCONFIGURE': 'yes'
@@ -2033,6 +2034,7 @@ packages:
         - host-autoconf-archive
       regenerate:
         - args: ['git', 'submodule', 'update', '--init']
+          isolate_network: false
         - args: ['autoreconf', '-fvi']
     tools_required:
       - system-gcc
@@ -2080,6 +2082,7 @@ packages:
         - host-autoconf-archive
       regenerate:
         - args: ['git', 'submodule', 'update', '--init']
+          isolate_network: false
         - args: ['autoreconf', '-fvi']
     tools_required:
       - system-gcc
@@ -2125,6 +2128,7 @@ packages:
         - host-autoconf-archive
       regenerate:
         - args: ['git', 'submodule', 'update', '--init']
+          isolate_network: false
         - args: ['autoreconf', '-fvi']
     tools_required:
       - system-gcc
@@ -2169,6 +2173,7 @@ packages:
         - host-autoconf-archive
       regenerate:
         - args: ['git', 'submodule', 'update', '--init']
+          isolate_network: false
         - args: ['autoreconf', '-fvi']
     tools_required:
       - system-gcc
@@ -2213,6 +2218,7 @@ packages:
         - host-autoconf-archive
       regenerate:
         - args: ['git', 'submodule', 'update', '--init']
+          isolate_network: false
         - args: ['autoreconf', '-fvi']
     tools_required:
       - system-gcc

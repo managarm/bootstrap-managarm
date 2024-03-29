@@ -20,6 +20,7 @@ packages:
         - host-pkg-config
       regenerate:
         - args: ['./bootstrap']
+          isolate_network: false
         - args: ['autoreconf', '-fvi']
     tools_required:
       - system-gcc

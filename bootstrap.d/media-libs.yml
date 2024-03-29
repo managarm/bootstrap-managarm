@@ -172,6 +172,7 @@ packages:
         - host-pkg-config
       regenerate:
         - args: ['./autogen.sh']
+          isolate_network: false
           environ:
             NOCONFIGURE: '1'
         - args: ['cp',
