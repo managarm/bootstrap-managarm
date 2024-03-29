@@ -83,8 +83,8 @@ sources:
   - name: cli11
     subdir: 'ports'
     git: 'https://github.com/CLIUtils/CLI11.git'
-    tag: 'v1.9.1'
-    version: 'v1.9.1'
+    tag: 'v2.4.1'
+    version: 'v2.4.1'
 
   - name: cralgo
     subdir: 'ports'
