@@ -1,4 +1,4 @@
-From 2ac82af89ae503c8743dcd96bca3dcbddccd1eea Mon Sep 17 00:00:00 2001
+From 7757db13f2a5a958a7819565b80ef018cb69ae32 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Thu, 23 Feb 2023 00:41:07 +0100
 Subject: [PATCH] managarm: initial port
@@ -10,14 +10,13 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
  src/lib.rs             |  10 +-
  src/sys/mod.rs         |  10 +-
  src/sys/resource.rs    |   2 +
- src/sys/signal.rs      |  16 +--
+ src/sys/signal.rs      |  18 ++--
  src/sys/socket/addr.rs |  26 +++--
  src/sys/socket/mod.rs  |   6 +-
  src/sys/termios.rs     |  54 +++++++++-
  src/sys/time.rs        |   3 +-
- src/sys/timerfd.rs     |   2 +-
- src/unistd.rs          |  30 ++++++
- 12 files changed, 350 insertions(+), 29 deletions(-)
+ src/unistd.rs          |  29 ++++++
+ 11 files changed, 349 insertions(+), 29 deletions(-)
 
 diff --git a/src/errno.rs b/src/errno.rs
 index 41420e8..aedf294 100644
@@ -415,7 +414,7 @@ index 76ceaf5..3457acd 100644
          ), repr(i32))]
      #[non_exhaustive]
 diff --git a/src/sys/signal.rs b/src/sys/signal.rs
-index f982b4e..5621b6f 100644
+index f982b4e..713b89b 100644
 --- a/src/sys/signal.rs
 +++ b/src/sys/signal.rs
 @@ -99,13 +99,13 @@ libc_enum!{
@@ -480,6 +479,15 @@ index f982b4e..5621b6f 100644
  #[cfg(feature = "signal")]
  const SIGNALS: [Signal; 31] = [
      SIGHUP,
+@@ -422,7 +422,7 @@ pub const SIGPOLL : Signal = SIGIO;
+ pub const SIGUNUSED : Signal = SIGSYS;
+ 
+ cfg_if! {
+-    if #[cfg(target_os = "redox")] {
++    if #[cfg(any(target_os = "redox", target_os = "managarm"))] {
+         type SaFlags_t = libc::c_ulong;
+     } else if #[cfg(target_env = "uclibc")] {
+         type SaFlags_t = libc::c_ulong;
 diff --git a/src/sys/socket/addr.rs b/src/sys/socket/addr.rs
 index 4b8ab09..f23da26 100644
 --- a/src/sys/socket/addr.rs
@@ -786,21 +794,8 @@ index c1ab67b..f43cf63 100644
      bitflags! {
          /// Flags that are used for arming the timer.
          pub struct TimerSetTimeFlags: libc::c_int {
-diff --git a/src/sys/timerfd.rs b/src/sys/timerfd.rs
-index 18acbae..0005b24 100644
---- a/src/sys/timerfd.rs
-+++ b/src/sys/timerfd.rs
-@@ -57,7 +57,7 @@ impl FromRawFd for TimerFd {
- libc_enum! {
-     /// The type of the clock used to mark the progress of the timer. For more
-     /// details on each kind of clock, please refer to [timerfd_create(2)](https://man7.org/linux/man-pages/man2/timerfd_create.2.html).
--    #[repr(i32)]
-+    #[repr(i64)]
-     #[non_exhaustive]
-     pub enum ClockId {
-         /// A settable system-wide real-time clock.
 diff --git a/src/unistd.rs b/src/unistd.rs
-index d6ccdf1..af3b4a0 100644
+index d6ccdf1..07116a2 100644
 --- a/src/unistd.rs
 +++ b/src/unistd.rs
 @@ -1132,6 +1132,7 @@ feature! {
@@ -811,15 +806,7 @@ index d6ccdf1..af3b4a0 100644
            target_os = "emscripten",
            target_os = "freebsd",
            target_os = "illumos",
-@@ -1550,6 +1551,7 @@ pub fn getgroups() -> Result<Vec<Gid>> {
- pub fn setgroups(groups: &[Gid]) -> Result<()> {
-     cfg_if! {
-         if #[cfg(any(target_os = "dragonfly",
-+                     target_os = "managarm",
-                      target_os = "freebsd",
-                      target_os = "illumos",
-                      target_os = "ios",
-@@ -1886,6 +1888,14 @@ feature! {
+@@ -1886,6 +1887,14 @@ feature! {
  /// - [pathconf(2)](https://pubs.opengroup.org/onlinepubs/9699919799/functions/pathconf.html)
  /// - [limits.h](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/limits.h.html)
  /// - [unistd.h](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/unistd.h.html)
@@ -834,7 +821,7 @@ index d6ccdf1..af3b4a0 100644
  #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
  #[repr(i32)]
  #[non_exhaustive]
-@@ -2082,6 +2092,17 @@ feature! {
+@@ -2082,6 +2091,17 @@ feature! {
  /// - [sysconf(3)](https://pubs.opengroup.org/onlinepubs/9699919799/functions/sysconf.html)
  /// - [unistd.h](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/unistd.h.html)
  /// - [limits.h](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/limits.h.html)
@@ -852,7 +839,7 @@ index d6ccdf1..af3b4a0 100644
  #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
  #[repr(i32)]
  #[non_exhaustive]
-@@ -2875,6 +2896,7 @@ pub struct User {
+@@ -2875,6 +2895,7 @@ pub struct User {
      /// Login class
      #[cfg(not(any(target_os = "android",
                    target_os = "fuchsia",
@@ -860,7 +847,7 @@ index d6ccdf1..af3b4a0 100644
                    target_os = "illumos",
                    target_os = "linux",
                    target_os = "solaris")))]
-@@ -2883,6 +2905,7 @@ pub struct User {
+@@ -2883,6 +2904,7 @@ pub struct User {
      /// Last password change
      #[cfg(not(any(target_os = "android",
                    target_os = "fuchsia",
@@ -868,7 +855,7 @@ index d6ccdf1..af3b4a0 100644
                    target_os = "illumos",
                    target_os = "linux",
                    target_os = "solaris")))]
-@@ -2891,6 +2914,7 @@ pub struct User {
+@@ -2891,6 +2913,7 @@ pub struct User {
      /// Expiration time of account
      #[cfg(not(any(target_os = "android",
                    target_os = "fuchsia",
@@ -876,7 +863,7 @@ index d6ccdf1..af3b4a0 100644
                    target_os = "illumos",
                    target_os = "linux",
                    target_os = "solaris")))]
-@@ -2913,18 +2937,21 @@ impl From<&libc::passwd> for User {
+@@ -2913,18 +2936,21 @@ impl From<&libc::passwd> for User {
                  gid: Gid::from_raw(pw.pw_gid),
                  #[cfg(not(any(target_os = "android",
                                target_os = "fuchsia",
@@ -898,7 +885,7 @@ index d6ccdf1..af3b4a0 100644
                                target_os = "illumos",
                                target_os = "linux",
                                target_os = "solaris")))]
-@@ -2960,18 +2987,21 @@ impl From<User> for libc::passwd {
+@@ -2960,18 +2986,21 @@ impl From<User> for libc::passwd {
              pw_gid: u.gid.0,
              #[cfg(not(any(target_os = "android",
                            target_os = "fuchsia",
@@ -921,5 +908,5 @@ index d6ccdf1..af3b4a0 100644
                            target_os = "linux",
                            target_os = "solaris")))]
 -- 
-2.39.1
+2.44.0
 

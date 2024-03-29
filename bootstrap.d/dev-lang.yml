@@ -48,7 +48,6 @@ tools:
       - args: ['make', 'install']
 
   - name: host-rust
-    stability_level: 'broken'
     architecture: noarch
     from_source: rust
     sources_required:
@@ -56,7 +55,7 @@ tools:
     tools_required:
       - host-llvm-toolchain
       - host-python
-    revision: 3
+    revision: 4
     compile:
       - args: |
             cat << EOF > config.toml
@@ -91,7 +90,6 @@ tools:
         isolate_network: false
 
   - name: host-cargo
-    stability_level: 'broken'
     architecture: noarch
     source:
       subdir: 'ports'
