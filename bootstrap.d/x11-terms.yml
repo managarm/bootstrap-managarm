@@ -1,6 +1,5 @@
 packages:
   - name: alacritty
-    stability_level: 'broken'
     architecture: '@OPTION:arch@'
     metadata:
       summary: GPU-accelerated terminal emulator
@@ -24,7 +23,7 @@ packages:
       - fontconfig
       - freetype
       - wayland
-    revision: 6
+    revision: 7
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
     build:

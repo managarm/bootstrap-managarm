@@ -267,7 +267,7 @@ packages:
       - rust-patched-libs
     pkgs_required:
       - mlibc
-    revision: 7
+    revision: 8
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
     build:
@@ -750,7 +750,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: ripgrep
-    stability_level: 'broken'
     architecture: '@OPTION:arch@'
     metadata:
       summary: a search tool that combines the usability of ag with the raw speed of grep
@@ -770,7 +769,7 @@ packages:
       - rust-patched-libs
     pkgs_required:
       - mlibc
-    revision: 11
+    revision: 12
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
     build:
