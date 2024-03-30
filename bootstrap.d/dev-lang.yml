@@ -22,16 +22,16 @@ sources:
   - name: rust
     subdir: 'ports'
     git: 'https://github.com/rust-lang/rust.git'
-    tag: '1.72.1'
-    version: '1.72.1'
+    tag: '1.77.1'
+    version: '1.77.1'
 
   - name: host-bootstrap-cargo
     subdir: 'ports'
-    url: 'https://static.rust-lang.org/dist/2023-06-01/cargo-1.70.0-x86_64-unknown-linux-gnu.tar.xz'
+    url: 'https://static.rust-lang.org/dist/cargo-1.75.0-x86_64-unknown-linux-gnu.tar.xz'
     format: 'tar.xz'
-    checksum: blake2b:1c08994d28af4db6f69ce74a9cd90bbd9f66f011742d4f04f669ef5b8bf3942cc400d596e4698276fb9ef33b2bdbca5e006590ae49633f518c70ad54122e0e30
-    extract_path: 'cargo-1.70.0-x86_64-unknown-linux-gnu'
-    version: '1.70.0'
+    checksum: blake2b:cc2c5ffab3396b462415dfb0f275b2cb121a145284d065474e95ecdb49ce4cc6d20cf59c6eb317bdf4d26a80491ed0ed7c369960182155da42459169fffa0844
+    extract_path: 'cargo-1.75.0-x86_64-unknown-linux-gnu'
+    version: '1.75.0'
 
 tools:
   - name: host-python
@@ -55,38 +55,45 @@ tools:
     tools_required:
       - host-llvm-toolchain
       - host-python
-    revision: 4
+    revision: 1
     compile:
       - args: |
             cat << EOF > config.toml
-            changelog-seen = 2
+            change-id = 102579
 
             [llvm]
             targets = "X86"
             download-ci-llvm = false
 
             [build]
-            target = ["x86_64-unknown-managarm-system", "x86_64-unknown-linux-gnu"]
+            target = ["x86_64-unknown-managarm-mlibc", "x86_64-unknown-linux-gnu"]
             build-dir = "@THIS_BUILD_DIR@"
             docs = false
 
             [install]
             prefix = "@PREFIX@"
+            sysconfdir = "etc"
 
             [rust]
             codegen-tests = false
-            deny-warnings = false # work around rust-num-cpus warning
+            deny-warnings = false
 
             [target.x86_64-unknown-linux-gnu]
             llvm-config = "@BUILD_ROOT@/tools/host-llvm-toolchain/bin/llvm-config"
 
-            [target.x86_64-unknown-managarm-system]
+            [target.x86_64-unknown-managarm-mlibc]
             llvm-config = "@BUILD_ROOT@/tools/host-llvm-toolchain/bin/llvm-config"
             EOF
       - args: ['python3', '@THIS_SOURCE_DIR@/x.py', 'build', '--stage', '2', '-j', '@PARALLELISM@']
+        cargo_home: false
+        environ:
+          CARGO_HOME: '@THIS_BUILD_DIR@/cargo-home'
         isolate_network: false
     install:
       - args: ['python3', '@THIS_SOURCE_DIR@/x.py', 'install', '-j', '@PARALLELISM@']
+        cargo_home: false
+        environ:
+          CARGO_HOME: '@THIS_BUILD_DIR@/cargo-home'
         isolate_network: false
 
   - name: host-cargo
