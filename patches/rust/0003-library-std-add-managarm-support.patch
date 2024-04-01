@@ -1,0 +1,437 @@
+From 603f9596d3ddb8dbb2195d74a803bdad2198c3b1 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Fri, 1 Sep 2023 16:49:14 +0200
+Subject: [PATCH 3/3] library/std: add managarm support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ library/std/build.rs                          |   1 +
+ library/std/src/os/managarm/fs.rs             | 148 ++++++++++++++++++
+ library/std/src/os/managarm/mod.rs            |   6 +
+ library/std/src/os/managarm/raw.rs            |  74 +++++++++
+ library/std/src/os/mod.rs                     |   2 +
+ library/std/src/os/unix/mod.rs                |   2 +
+ library/std/src/sys/pal/unix/args.rs          |   1 +
+ library/std/src/sys/pal/unix/env.rs           |  11 ++
+ library/std/src/sys/pal/unix/fs.rs            |   1 +
+ library/std/src/sys/pal/unix/os.rs            |   4 +-
+ library/std/src/sys/pal/unix/thread.rs        |   3 +-
+ .../std/src/sys/pal/unix/thread_local_dtor.rs |   3 +-
+ library/unwind/src/lib.rs                     |   4 +
+ src/tools/clippy/clippy_lints/src/attrs.rs    |   1 +
+ 14 files changed, 258 insertions(+), 3 deletions(-)
+ create mode 100644 library/std/src/os/managarm/fs.rs
+ create mode 100644 library/std/src/os/managarm/mod.rs
+ create mode 100644 library/std/src/os/managarm/raw.rs
+
+diff --git a/library/std/build.rs b/library/std/build.rs
+index 60c097db..20ddd0dd 100644
+--- a/library/std/build.rs
++++ b/library/std/build.rs
+@@ -36,6 +36,7 @@ fn main() {
+         || target.contains("uefi")
+         || target.contains("teeos")
+         || target.contains("zkvm")
++        || target.contains("managarm")
+         // See src/bootstrap/synthetic_targets.rs
+         || env::var("RUSTC_BOOTSTRAP_SYNTHETIC_TARGET").is_ok()
+     {
+diff --git a/library/std/src/os/managarm/fs.rs b/library/std/src/os/managarm/fs.rs
+new file mode 100644
+index 00000000..58205f11
+--- /dev/null
++++ b/library/std/src/os/managarm/fs.rs
+@@ -0,0 +1,148 @@
++#![stable(feature = "metadata_ext", since = "1.1.0")]
++
++use crate::fs::Metadata;
++use crate::sys_common::AsInner;
++
++#[allow(deprecated)]
++use crate::os::managarm::raw;
++
++/// OS-specific extensions to [`fs::Metadata`].
++///
++/// [`fs::Metadata`]: crate::fs::Metadata
++#[stable(feature = "metadata_ext", since = "1.1.0")]
++pub trait MetadataExt {
++    /// Gain a reference to the underlying `stat` structure which contains
++    /// the raw information returned by the OS.
++    ///
++    /// The contents of the returned `stat` are **not** consistent across
++    /// Unix platforms. The `os::unix::fs::MetadataExt` trait contains the
++    /// cross-Unix abstractions contained within the raw stat.
++    #[stable(feature = "metadata_ext", since = "1.1.0")]
++    #[deprecated(
++        since = "1.8.0",
++        note = "deprecated in favor of the accessor \
++                  methods of this trait"
++    )]
++    #[allow(deprecated)]
++    fn as_raw_stat(&self) -> &raw::stat;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_dev(&self) -> u64;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_ino(&self) -> u64;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_mode(&self) -> u32;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_nlink(&self) -> u64;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_uid(&self) -> u32;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_gid(&self) -> u32;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_rdev(&self) -> u64;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_size(&self) -> u64;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_atime(&self) -> i64;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_atime_nsec(&self) -> i64;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_mtime(&self) -> i64;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_mtime_nsec(&self) -> i64;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_ctime(&self) -> i64;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_ctime_nsec(&self) -> i64;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_blksize(&self) -> u64;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_blocks(&self) -> u64;
++}
++
++#[stable(feature = "metadata_ext", since = "1.1.0")]
++impl MetadataExt for Metadata {
++    #[allow(deprecated)]
++    fn as_raw_stat(&self) -> &raw::stat {
++        unsafe { &*(self.as_inner().as_inner() as *const libc::stat as *const raw::stat) }
++    }
++
++    fn st_dev(&self) -> u64 {
++        self.as_inner().as_inner().st_dev as u64
++    }
++
++    fn st_ino(&self) -> u64 {
++        self.as_inner().as_inner().st_ino as u64
++    }
++
++    fn st_mode(&self) -> u32 {
++        self.as_inner().as_inner().st_mode as u32
++    }
++
++    fn st_nlink(&self) -> u64 {
++        self.as_inner().as_inner().st_nlink as u64
++    }
++
++    fn st_uid(&self) -> u32 {
++        self.as_inner().as_inner().st_uid as u32
++    }
++
++    fn st_gid(&self) -> u32 {
++        self.as_inner().as_inner().st_gid as u32
++    }
++
++    fn st_rdev(&self) -> u64 {
++        self.as_inner().as_inner().st_rdev as u64
++    }
++
++    fn st_size(&self) -> u64 {
++        self.as_inner().as_inner().st_size as u64
++    }
++
++    fn st_atime(&self) -> i64 {
++        self.as_inner().as_inner().st_atime as i64
++    }
++
++    fn st_atime_nsec(&self) -> i64 {
++        self.as_inner().as_inner().st_atime_nsec as i64
++    }
++
++    fn st_mtime(&self) -> i64 {
++        self.as_inner().as_inner().st_mtime as i64
++    }
++
++    fn st_mtime_nsec(&self) -> i64 {
++        self.as_inner().as_inner().st_mtime_nsec as i64
++    }
++
++    fn st_ctime(&self) -> i64 {
++        self.as_inner().as_inner().st_ctime as i64
++    }
++
++    fn st_ctime_nsec(&self) -> i64 {
++        self.as_inner().as_inner().st_ctime_nsec as i64
++    }
++
++    fn st_blksize(&self) -> u64 {
++        self.as_inner().as_inner().st_blksize as u64
++    }
++
++    fn st_blocks(&self) -> u64 {
++        self.as_inner().as_inner().st_blocks as u64
++    }
++}
+diff --git a/library/std/src/os/managarm/mod.rs b/library/std/src/os/managarm/mod.rs
+new file mode 100644
+index 00000000..869966bb
+--- /dev/null
++++ b/library/std/src/os/managarm/mod.rs
+@@ -0,0 +1,6 @@
++//! Managarm-specific definitions
++
++#![stable(feature = "raw_ext", since = "1.1.0")]
++
++pub mod fs;
++pub mod raw;
+diff --git a/library/std/src/os/managarm/raw.rs b/library/std/src/os/managarm/raw.rs
+new file mode 100644
+index 00000000..ce950064
+--- /dev/null
++++ b/library/std/src/os/managarm/raw.rs
+@@ -0,0 +1,74 @@
++#![stable(feature = "raw_ext", since = "1.1.0")]
++#![deprecated(
++    since = "1.8.0",
++    note = "these type aliases are no longer supported by \
++              the standard library, the `libc` crate on \
++              crates.io should be used instead for the correct \
++              definitions"
++)]
++#![allow(deprecated)]
++
++#[stable(feature = "pthread_t", since = "1.8.0")]
++pub type pthread_t = usize; // TODO: This is completely wrong tbh
++
++#[stable(feature = "raw_ext", since = "1.1.0")]
++pub type dev_t = libc::dev_t;
++
++#[stable(feature = "raw_ext", since = "1.1.0")]
++pub type ino_t = libc::ino_t;
++
++#[stable(feature = "raw_ext", since = "1.1.0")]
++pub type mode_t = libc::mode_t;
++
++#[stable(feature = "raw_ext", since = "1.1.0")]
++pub type nlink_t = libc::nlink_t;
++
++#[stable(feature = "raw_ext", since = "1.1.0")]
++pub type off_t = libc::off_t;
++
++#[stable(feature = "raw_ext", since = "1.1.0")]
++pub type time_t = libc::time_t;
++
++#[stable(feature = "raw_ext", since = "1.1.0")]
++pub type blkcnt_t = libc::blkcnt_t;
++
++#[stable(feature = "raw_ext", since = "1.1.0")]
++pub type blksize_t = libc::blksize_t;
++
++#[repr(C)]
++#[derive(Clone)]
++#[stable(feature = "raw_ext", since = "1.1.0")]
++pub struct stat {
++    #[stable(feature = "raw_ext", since = "1.1.0")]
++    pub st_dev: libc::dev_t,
++    #[stable(feature = "raw_ext", since = "1.1.0")]
++    pub st_ino: libc::ino_t,
++    #[stable(feature = "raw_ext", since = "1.1.0")]
++    pub st_mode: libc::mode_t,
++    #[stable(feature = "raw_ext", since = "1.1.0")]
++    pub st_nlink: libc::nlink_t,
++    #[stable(feature = "raw_ext", since = "1.1.0")]
++    pub st_uid: libc::uid_t,
++    #[stable(feature = "raw_ext", since = "1.1.0")]
++    pub st_gid: libc::gid_t,
++    #[stable(feature = "raw_ext", since = "1.1.0")]
++    pub st_rdev: libc::dev_t,
++    #[stable(feature = "raw_ext", since = "1.1.0")]
++    pub st_size: libc::off_t,
++    #[stable(feature = "raw_ext", since = "1.1.0")]
++    pub st_atime: libc::time_t,
++    #[stable(feature = "raw_ext", since = "1.1.0")]
++    pub st_atime_nsec: libc::c_long,
++    #[stable(feature = "raw_ext", since = "1.1.0")]
++    pub st_mtime: libc::time_t,
++    #[stable(feature = "raw_ext", since = "1.1.0")]
++    pub st_mtime_nsec: libc::c_long,
++    #[stable(feature = "raw_ext", since = "1.1.0")]
++    pub st_ctime: libc::time_t,
++    #[stable(feature = "raw_ext", since = "1.1.0")]
++    pub st_ctime_nsec: libc::c_long,
++    #[stable(feature = "raw_ext", since = "1.1.0")]
++    pub st_blksize: libc::blksize_t,
++    #[stable(feature = "raw_ext", since = "1.1.0")]
++    pub st_blocks: libc::blkcnt_t,
++}
+diff --git a/library/std/src/os/mod.rs b/library/std/src/os/mod.rs
+index 6e11b92b..4478107c 100644
+--- a/library/std/src/os/mod.rs
++++ b/library/std/src/os/mod.rs
+@@ -129,6 +129,8 @@ pub mod windows {}
+ pub mod l4re;
+ #[cfg(target_os = "macos")]
+ pub mod macos;
++#[cfg(target_os = "managarm")]
++pub mod managarm;
+ #[cfg(target_os = "netbsd")]
+ pub mod netbsd;
+ #[cfg(target_os = "nto")]
+diff --git a/library/std/src/os/unix/mod.rs b/library/std/src/os/unix/mod.rs
+index 5ba8719e..da1af8ca 100644
+--- a/library/std/src/os/unix/mod.rs
++++ b/library/std/src/os/unix/mod.rs
+@@ -67,6 +67,8 @@ mod platform {
+     pub use crate::os::linux::*;
+     #[cfg(target_os = "macos")]
+     pub use crate::os::macos::*;
++    #[cfg(target_os = "managarm")]
++    pub use crate::os::managarm::*;
+     #[cfg(target_os = "netbsd")]
+     pub use crate::os::netbsd::*;
+     #[cfg(target_os = "nto")]
+diff --git a/library/std/src/sys/pal/unix/args.rs b/library/std/src/sys/pal/unix/args.rs
+index 78e82d9c..dad71a32 100644
+--- a/library/std/src/sys/pal/unix/args.rs
++++ b/library/std/src/sys/pal/unix/args.rs
+@@ -73,6 +73,7 @@ fn next_back(&mut self) -> Option<OsString> {
+     target_os = "aix",
+     target_os = "nto",
+     target_os = "hurd",
++    target_os = "managarm",
+ ))]
+ mod imp {
+     use super::Args;
+diff --git a/library/std/src/sys/pal/unix/env.rs b/library/std/src/sys/pal/unix/env.rs
+index 3d4ba509..7a16a103 100644
+--- a/library/std/src/sys/pal/unix/env.rs
++++ b/library/std/src/sys/pal/unix/env.rs
+@@ -261,3 +261,14 @@ pub mod os {
+     pub const EXE_SUFFIX: &str = "";
+     pub const EXE_EXTENSION: &str = "";
+ }
++
++#[cfg(target_os = "managarm")]
++pub mod os {
++    pub const FAMILY: &str = "unix";
++    pub const OS: &str = "managarm";
++    pub const DLL_PREFIX: &str = "lib";
++    pub const DLL_SUFFIX: &str = ".so";
++    pub const DLL_EXTENSION: &str = "so";
++    pub const EXE_SUFFIX: &str = "";
++    pub const EXE_EXTENSION: &str = "";
++}
+diff --git a/library/std/src/sys/pal/unix/fs.rs b/library/std/src/sys/pal/unix/fs.rs
+index 6d0b892e..7e24f36e 100644
+--- a/library/std/src/sys/pal/unix/fs.rs
++++ b/library/std/src/sys/pal/unix/fs.rs
+@@ -954,6 +954,7 @@ pub fn file_type(&self) -> io::Result<FileType> {
+         target_os = "aix",
+         target_os = "nto",
+         target_os = "hurd",
++        target_os = "managarm",
+     ))]
+     pub fn ino(&self) -> u64 {
+         self.entry.d_ino as u64
+diff --git a/library/std/src/sys/pal/unix/os.rs b/library/std/src/sys/pal/unix/os.rs
+index 881b3a25..973a0f48 100644
+--- a/library/std/src/sys/pal/unix/os.rs
++++ b/library/std/src/sys/pal/unix/os.rs
+@@ -48,6 +48,7 @@
+             target_os = "fuchsia",
+             target_os = "l4re",
+             target_os = "hurd",
++            target_os = "managarm",
+         ),
+         link_name = "__errno_location"
+     )]
+@@ -407,7 +408,8 @@ pub fn current_exe() -> io::Result<PathBuf> {
+     target_os = "linux",
+     target_os = "hurd",
+     target_os = "android",
+-    target_os = "emscripten"
++    target_os = "emscripten",
++    target_os = "managarm"
+ ))]
+ pub fn current_exe() -> io::Result<PathBuf> {
+     match crate::fs::read_link("/proc/self/exe") {
+diff --git a/library/std/src/sys/pal/unix/thread.rs b/library/std/src/sys/pal/unix/thread.rs
+index 7e4a01a5..6ed30d75 100644
+--- a/library/std/src/sys/pal/unix/thread.rs
++++ b/library/std/src/sys/pal/unix/thread.rs
+@@ -130,7 +130,7 @@ pub fn set_name(name: &CStr) {
+         }
+     }
+ 
+-    #[cfg(target_os = "linux")]
++    #[cfg(any(target_os = "linux", target_os = "managarm"))]
+     pub fn set_name(name: &CStr) {
+         const TASK_COMM_LEN: usize = 16;
+ 
+@@ -297,6 +297,7 @@ fn drop(&mut self) {
+     target_os = "tvos",
+     target_os = "watchos",
+     target_os = "nto",
++    target_os = "managarm"
+ ))]
+ fn truncate_cstr<const MAX_WITH_NUL: usize>(cstr: &CStr) -> [libc::c_char; MAX_WITH_NUL] {
+     let mut result = [0; MAX_WITH_NUL];
+diff --git a/library/std/src/sys/pal/unix/thread_local_dtor.rs b/library/std/src/sys/pal/unix/thread_local_dtor.rs
+index 4bf8f206..3beb8fd9 100644
+--- a/library/std/src/sys/pal/unix/thread_local_dtor.rs
++++ b/library/std/src/sys/pal/unix/thread_local_dtor.rs
+@@ -19,7 +19,8 @@
+     target_os = "redox",
+     target_os = "hurd",
+     target_os = "netbsd",
+-    target_os = "dragonfly"
++    target_os = "dragonfly",
++    target_os = "managarm"
+ ))]
+ // FIXME: The Rust compiler currently omits weakly function definitions (i.e.,
+ // __cxa_thread_atexit_impl) and its metadata from LLVM IR.
+diff --git a/library/unwind/src/lib.rs b/library/unwind/src/lib.rs
+index f5988a4d..76fdd8ef 100644
+--- a/library/unwind/src/lib.rs
++++ b/library/unwind/src/lib.rs
+@@ -162,3 +162,7 @@
+ #[cfg(target_os = "hurd")]
+ #[link(name = "gcc_s")]
+ extern "C" {}
++
++#[cfg(target_os = "managarm")]
++#[link(name = "gcc_s")]
++extern "C" {}
+diff --git a/src/tools/clippy/clippy_lints/src/attrs.rs b/src/tools/clippy/clippy_lints/src/attrs.rs
+index da384228..53b5cd81 100644
+--- a/src/tools/clippy/clippy_lints/src/attrs.rs
++++ b/src/tools/clippy/clippy_lints/src/attrs.rs
+@@ -39,6 +39,7 @@
+     "redox",
+     "solaris",
+     "vxworks",
++    "managarm",
+ ];
+ 
+ // NOTE: windows is excluded from the list because it's also a valid target family.
+-- 
+2.44.0
+

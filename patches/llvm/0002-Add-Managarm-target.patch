@@ -1,7 +1,7 @@
-From a789a978ca1913ac1571330b4e00015e2859bf4b Mon Sep 17 00:00:00 2001
+From f5b7848eedd41f86fcff3e2d6be6e1390758ff08 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Sat, 2 Apr 2022 19:44:10 +0200
-Subject: [PATCH 2/2] Add Managarm target
+Subject: [PATCH 2/3] Add Managarm target
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
@@ -125,7 +125,7 @@ index a268f2fa8..fcc5eb38c 100644
        TC = std::make_unique<toolchains::Solaris>(*this, Target, Args);
        break;
 diff --git a/clang/lib/Driver/ToolChains/Gnu.cpp b/clang/lib/Driver/ToolChains/Gnu.cpp
-index 4f2340316..73a0b6303 100644
+index 4f2340316..a9d5be19f 100644
 --- a/clang/lib/Driver/ToolChains/Gnu.cpp
 +++ b/clang/lib/Driver/ToolChains/Gnu.cpp
 @@ -249,6 +249,8 @@ static const char *getLDMOption(const llvm::Triple &T, const ArgList &Args) {
@@ -143,7 +143,7 @@ index 4f2340316..73a0b6303 100644
        "aarch64-none-linux-gnu", "aarch64-linux-gnu", "aarch64-redhat-linux",
 -      "aarch64-suse-linux"};
 +      "aarch64-suse-linux",
-+      "aarch64-managarm", "aarch64-managarm-system", "aarch64-managarm-kernel"};
++      "aarch64-managarm", "aarch64-managarm-mlibc", "aarch64-managarm-kernel"};
    static const char *const AArch64beLibDirs[] = {"/lib"};
    static const char *const AArch64beTriples[] = {"aarch64_be-none-linux-gnu",
                                                   "aarch64_be-linux-gnu"};
@@ -153,7 +153,7 @@ index 4f2340316..73a0b6303 100644
        "x86_64-slackware-linux", "x86_64-unknown-linux",
 -      "x86_64-amazon-linux"};
 +      "x86_64-amazon-linux",
-+      "x86_64-managarm", "x86_64-managarm-system", "x86_64-managarm-kernel"};
++      "x86_64-managarm", "x86_64-managarm-mlibc", "x86_64-managarm-kernel"};
    static const char *const X32Triples[] = {"x86_64-linux-gnux32",
                                             "x86_64-pc-linux-gnux32"};
    static const char *const X32LibDirs[] = {"/libx32", "/lib"};
@@ -165,7 +165,7 @@ index 4f2340316..73a0b6303 100644
 +                                               "riscv64-unknown-elf",
 +                                               "riscv64-managarm",
 +                                               "riscv64-managarm-kernel",
-+                                               "riscv64-managarm-system"};
++                                               "riscv64-managarm-mlibc"};
  
    static const char *const SPARCv8LibDirs[] = {"/lib32", "/lib"};
    static const char *const SPARCv8Triples[] = {"sparc-linux-gnu",
@@ -663,7 +663,7 @@ index 000000000..2d87decd8
 +
 +#endif // LLVM_CLANG_LIB_DRIVER_TOOLCHAINS_MANAGARM_H
 diff --git a/llvm/include/llvm/TargetParser/Triple.h b/llvm/include/llvm/TargetParser/Triple.h
-index 59513fa2f..21a54c99b 100644
+index 59513fa2f..fd55ba8e1 100644
 --- a/llvm/include/llvm/TargetParser/Triple.h
 +++ b/llvm/include/llvm/TargetParser/Triple.h
 @@ -196,6 +196,7 @@ public:
@@ -679,15 +679,15 @@ index 59513fa2f..21a54c99b 100644
      Mesh,
      Amplification,
 +    Kernel,
-+    System,
++    Mlibc,
  
 -    LastEnvironmentType = Amplification
-+    LastEnvironmentType = System
++    LastEnvironmentType = Mlibc
    };
    enum ObjectFormatType {
      UnknownObjectFormat,
 diff --git a/llvm/lib/TargetParser/Triple.cpp b/llvm/lib/TargetParser/Triple.cpp
-index a68035989..e5a69141e 100644
+index a68035989..41d1b0481 100644
 --- a/llvm/lib/TargetParser/Triple.cpp
 +++ b/llvm/lib/TargetParser/Triple.cpp
 @@ -227,6 +227,7 @@ StringRef Triple::getOSTypeName(OSType Kind) {
@@ -710,7 +710,7 @@ index a68035989..e5a69141e 100644
    case MuslEABIHF: return "musleabihf";
    case MuslX32: return "muslx32";
    case Simulator: return "simulator";
-+  case System: return "system";
++  case Mlibc: return "mlibc";
    case Pixel: return "pixel";
    case Vertex: return "vertex";
    case Geometry: return "geometry";
@@ -727,10 +727,10 @@ index a68035989..e5a69141e 100644
        .StartsWith("simulator", Triple::Simulator)
        .StartsWith("macabi", Triple::MacABI)
 +      .StartsWith("kernel", Triple::Kernel)
-+      .StartsWith("system", Triple::System)
++      .StartsWith("mlibc", Triple::Mlibc)
        .StartsWith("pixel", Triple::Pixel)
        .StartsWith("vertex", Triple::Vertex)
        .StartsWith("geometry", Triple::Geometry)
 -- 
-2.40.0
+2.44.0
 

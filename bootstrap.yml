@@ -416,6 +416,7 @@ tools:
       - binutils
     tools_required:
       - host-cmake
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1269,7 +1270,7 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
-    revision: 7
+    revision: 8
     configure:
       - args:
         - 'cmake'

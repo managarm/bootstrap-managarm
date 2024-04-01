@@ -1,4 +1,4 @@
-From a0adb87e15263f87e70708aba71282420c5a9db0 Mon Sep 17 00:00:00 2001
+From c22fbcaa76bae28c8fa951207bc489e3b079b82d Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Mon, 26 Feb 2024 21:04:48 +0100
 Subject: [PATCH 3/3] More managarm additions
@@ -30,5 +30,5 @@ index 6e68fb905..9346d4180 100644
    const char *aPath = "/proc/self/exe";
    if (sys::fs::exists(aPath)) {
 -- 
-2.43.2
+2.44.0
 
