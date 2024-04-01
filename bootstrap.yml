@@ -111,8 +111,8 @@ sources:
   - name: llvm
     subdir: 'ports'
     git: 'https://github.com/llvm/llvm-project'
-    tag: 'llvmorg-16.0.6'
-    version: '16.0.6'
+    tag: 'llvmorg-18.1.2'
+    version: '18.1.2'
 
   - name: gcc
     subdir: 'ports'
@@ -416,12 +416,14 @@ tools:
       - binutils
     tools_required:
       - host-cmake
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
         - '-GNinja'
         - '-DCMAKE_INSTALL_PREFIX=@PREFIX@'
+        - '-DCMAKE_C_COMPILER=gcc'
+        - '-DCMAKE_CXX_COMPILER=g++'
 
         # LLVM configuration options.
         # We really have to build LLVM in Release mode.
@@ -1270,7 +1272,7 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
-    revision: 8
+    revision: 1
     configure:
       - args:
         - 'cmake'
