@@ -49,3 +49,39 @@ packages:
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/profile', '@THIS_COLLECT_DIR@/etc']
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/bash.bashrc', '@THIS_COLLECT_DIR@/etc']
       - args: ['ln', '-sf', 'bash', '@THIS_COLLECT_DIR@/usr/bin/sh']
+
+  - name: fish
+    metadata:
+      summary: Friendly interactive SHell
+      description: Smart and user-friendly portable command line shell.
+      spdx: 'GPL-2.0-only'
+      website: 'https://fishshell.com/'
+      maintainer: "Matt Taylor <mstaveleytaylor@gmail.com>"
+    architecture: '@OPTION:arch@'
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/fish-shell/fish-shell.git'
+      tag: '3.4.1'
+      version: '3.4.1'
+    tools_required:
+      - system-gcc
+      - host-cmake
+    pkgs_required:
+      - mlibc
+      - libintl
+      - ncurses
+      - pcre2
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_BUILD_TYPE=Release'
+        - '-DFISH_USE_SYSTEM_PCRE2=yes'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
