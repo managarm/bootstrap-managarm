@@ -4,11 +4,12 @@ import argparse
 import os
 import sys
 
-our_version = 16
-
+our_version_major = 18
+our_version_minor = 1
+our_version_patch = 2
 
 def do_version():
-    return "{}.0.6".format(our_version)
+    return "{}.{}.{}".format(our_version_major, our_version_minor, our_version_patch)
 
 
 def do_components():
@@ -107,11 +108,11 @@ def do_shared_mode():
 
 
 def do_libs():
-    return "-lLLVM-{}".format(our_version)
+    return "-lLLVM-{}".format(our_version_major)
 
 
 def do_system_libs():
-    return "-lLLVM-{}".format(our_version)
+    return "-lLLVM-{}".format(our_version_major)
 
 
 def do_cppflags():
