@@ -63,7 +63,6 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://git.code.sf.net/p/zsh/code'
-      branch: 'master'
       tag: 'zsh-5.9'
       version: '5.9'
       tools_required:
