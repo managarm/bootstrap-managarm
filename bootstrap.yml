@@ -94,6 +94,13 @@ sources:
     commit: d3e47b0749c2e91e69cccffcaa518b751f554662
     version: '0.0pl@ROLLING_ID@'
 
+  - name: lil
+    subdir: 'ports'
+    git: 'https://github.com/no92/lil.git'
+    branch: 'kbl'
+    rolling_version: true
+    version: '0.0pl@ROLLING_ID@'
+
   - name: libarch
     subdir: 'ports'
     git: 'https://github.com/managarm/libarch.git'
@@ -148,6 +155,7 @@ sources:
       - libarch
       - libasync
       - libsmarter
+      - lil
       - bragi
     regenerate:
       - args: ['mkdir', '-p', '@THIS_SOURCE_DIR@/subprojects']
@@ -156,6 +164,7 @@ sources:
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/libarch', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/libasync', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/libsmarter', '@THIS_SOURCE_DIR@/subprojects/']
+      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/lil', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/bragi', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['mkdir', '-p', '@SOURCE_ROOT@/ports/libarch/subprojects']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/managarm', '@SOURCE_ROOT@/ports/libarch/subprojects/']
@@ -1061,6 +1070,26 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
+  - name: lil
+    from_source: lil
+    tools_required:
+      - system-gcc
+    configure:
+      - args:
+        - 'meson'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          'DESTDIR': '@THIS_COLLECT_DIR@'
+        quiet: true
+
   - name: gcc
     labels: [aarch64]
     architecture: '@OPTION:arch@'
@@ -1413,6 +1442,7 @@ packages:
       - libasync
       - libdrm
       - libsmarter
+      - lil
       - protobuf
     configure:
       - args: |
@@ -1425,7 +1455,7 @@ packages:
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
         - '--wrap-mode=nofallback'
-        - '--force-fallback-for=cli11'
+        - '--force-fallback-for=cli11,lil'
         - '-Dbuild_drivers=true'
         - '@THIS_SOURCE_DIR@'
         isolate_network: false
