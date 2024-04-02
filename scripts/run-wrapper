@@ -12,14 +12,21 @@
 unset LD_LIBRARY_PATH
 
 _path="$1"
+_runwrapper="$(realpath "$0")"
 shift 1
 
-if patchelf --print-interpreter "${_path}" | grep managarm 2>&1 >/dev/null; then
-    _temp=$(mktemp)
-    cp -p "${_path}" "${_temp}"
-    patchelf --set-interpreter "${RUN_WRAPPER_INTERP}" "${_temp}"
-    export LD_LIBRARY_PATH="${RUN_WRAPPER_LD_LIBRARY_PATH}"
-    _path="${_temp}"
+if file $_path | grep ELF >/dev/null; then
+    if patchelf --print-interpreter "${_path}" | grep managarm 2>&1 >/dev/null; then
+        _temp=$(mktemp)
+        cp -p "${_path}" "${_temp}"
+        patchelf --set-interpreter "${RUN_WRAPPER_INTERP}" "${_temp}"
+        export LD_LIBRARY_PATH="${RUN_WRAPPER_LD_LIBRARY_PATH}"
+        _path="${_temp}"
+    fi
+else
+    sed -i "/exec /s|exec |exec ${_runwrapper} |" "${_path}"
+    bash "${_path}" "$@"
+    exit 0
 fi
 
 "${_path}" "$@"

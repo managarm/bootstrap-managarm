@@ -74,7 +74,7 @@ tools:
       - host-pkg-config
       - virtual: pkgconfig-for-host
         program_name: host-pkg-config
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -441,7 +441,7 @@ packages:
       - cairo
       - pcre2
       - python
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
