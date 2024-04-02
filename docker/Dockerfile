@@ -55,10 +55,12 @@ RUN apt-get update \
 		libexpat1-dev \
 		# Used by gtk+-2
 		libgdk-pixbuf2.0-bin \
-		# Used by vala
-		libglib2.0-dev \
+		# Used by various gobject tools
+		libgirepository1.0-dev \
 		# Used by gdk-pixbuf
 		libglib2.0-dev-bin \
+		# Used by vala
+		libglib2.0-dev \
 		# Used by gtksourceview5
 		libgtk-4-bin \
 		# Used by host-qt6
@@ -103,6 +105,8 @@ RUN apt-get update \
 		pkg-config \
 		# Used by host-kguiaddons
 		plasma-wayland-protocols \
+		# Used by various gobject tools
+		python3-gi \
 		# Used by itstool
 		python3-libxml2 \
 		# Used by mesa
