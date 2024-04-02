@@ -80,6 +80,12 @@ sources:
       - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.sub', '@THIS_SOURCE_DIR@/.']
       - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.guess', '@THIS_SOURCE_DIR@/.']
 
+  - name: cli11
+    subdir: 'ports'
+    git: 'https://github.com/CLIUtils/CLI11.git'
+    tag: 'v2.4.1'
+    version: 'v2.4.1'
+
   - name: cralgo
     subdir: 'ports'
     git: 'https://github.com/managarm/cralgo.git'
@@ -149,6 +155,7 @@ sources:
       - libasync
       - libsmarter
       - bragi
+      - cli11
     regenerate:
       - args: ['mkdir', '-p', '@THIS_SOURCE_DIR@/subprojects']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cralgo', '@THIS_SOURCE_DIR@/subprojects/']
@@ -159,6 +166,7 @@ sources:
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/bragi', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['mkdir', '-p', '@SOURCE_ROOT@/ports/libarch/subprojects']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/managarm', '@SOURCE_ROOT@/ports/libarch/subprojects/']
+      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cli11', '@THIS_SOURCE_DIR@/subprojects/']
 
   - name: mlibc
     git: 'https://github.com/managarm/mlibc.git'
@@ -1426,11 +1434,9 @@ packages:
         - '--prefix=/usr'
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
-        - '--wrap-mode=nofallback'
-        - '--force-fallback-for=cli11'
+        - '--wrap-mode=nodownload'
         - '-Dbuild_drivers=true'
         - '@THIS_SOURCE_DIR@'
-        isolate_network: false
         environ:
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
           PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
