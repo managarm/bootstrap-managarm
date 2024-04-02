@@ -69,14 +69,20 @@ RUN apt-get update \
 		libgmp-dev \
 		libmpc-dev \
 		libmpfr-dev \
+		# Used by host-kio
+		libmount-dev \
 		# Used by cmake
 		libssl-dev \
 		# Used by ace
 		libpng-dev \
+		# Used by host-solid
+		libudev-dev \
 		# Used by host-qt6
 		libwayland-dev \
 		libx11-xcb-dev \
 		libxkbcommon-x11-dev \
+		# Used by host-kwindowsystem
+		libxfixes-dev \
 		# Used by many gnu build steps
 		m4 \
 		# Required to build images for Android's fastboot protocol.
