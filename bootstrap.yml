@@ -7,6 +7,7 @@ imports:
   - file: bootstrap.d/app-emulation.yml
   - file: bootstrap.d/app-misc.yml
   - file: bootstrap.d/app-shells.yml
+  - file: bootstrap.d/app-text.yml
   - file: bootstrap.d/dev-db.yml
   - file: bootstrap.d/dev-lang.yml
   - file: bootstrap.d/dev-libs.yml
@@ -18,6 +19,7 @@ imports:
   - file: bootstrap.d/games-misc.yml
   - file: bootstrap.d/games-simulation.yml
   - file: bootstrap.d/gnome-base.yml
+  - file: bootstrap.d/gnome-extra.yml
   - file: bootstrap.d/gui-apps.yml
   - file: bootstrap.d/gui-libs.yml
   - file: bootstrap.d/gui-wm.yml
@@ -1709,6 +1711,7 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      - args: ['patchelf', '--set-soname', 'libz.so.1.2.12', '@THIS_COLLECT_DIR@/usr/lib/libz.so.1.2.12']
       # This fails on ci, and needs further investigation.
       # - args:
       #   - '@THIS_SOURCE_DIR@/contrib/minizip/configure'

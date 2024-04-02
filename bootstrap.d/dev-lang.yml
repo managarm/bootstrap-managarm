@@ -25,6 +25,14 @@ sources:
     tag: '1.77.1'
     version: '1.77.1'
 
+  - name: vala
+    subdir: 'ports'
+    url: 'https://download.gnome.org/sources/vala/0.56/vala-0.56.14.tar.xz'
+    format: 'tar.xz'
+    checksum: blake2b:db6ccca635122ff2089cd61fd8335376eed435f15d9bd7c20837829fe5acc8df49a51194e3bc17d0c24567240cf2519348cc2b0a7b177b971dc037ed39e893de
+    extract_path: 'vala-0.56.14'
+    version: '0.56.14'
+
   - name: host-bootstrap-cargo
     subdir: 'ports'
     url: 'https://static.rust-lang.org/dist/cargo-1.75.0-x86_64-unknown-linux-gnu.tar.xz'
@@ -55,7 +63,8 @@ tools:
     tools_required:
       - host-llvm-toolchain
       - host-python
-    revision: 1
+      - host-libffi
+    revision: 2
     compile:
       - args: |
             cat << EOF > config.toml
@@ -128,6 +137,27 @@ tools:
         - '--root'
         - '@PREFIX@'
         isolate_network: false
+
+  - name: host-vala
+    architecture: noarch
+    from_source: vala
+    tools_required:
+      - host-glib
+      - virtual: pkgconfig-for-host
+        program_name: host-pkg-config
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--prefix=@PREFIX@'
+        - '--disable-valadoc'
+        environ:
+          PKG_CONFIG: host-pkg-config
+    compile:
+      - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'install']
+      - args: ['cp', '-pv', '@SOURCE_ROOT@/scripts/cross-valac', '@PREFIX@/bin']
+      - args: ['cp', '-pv', '@SOURCE_ROOT@/scripts/cross-vapigen', '@PREFIX@/bin']
 
 packages:
   - name: lua

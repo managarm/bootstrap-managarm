@@ -53,8 +53,12 @@ RUN apt-get update \
 		libexpat1-dev \
 		# Used by gtk+-2
 		libgdk-pixbuf2.0-bin \
+		# Used by vala
+		libglib2.0-dev \
 		# Used by gdk-pixbuf
 		libglib2.0-dev-bin \
+		# Used by gtksourceview5
+		libgtk-4-bin \
 		# Used by host-qt6
 		libgl-dev \
 		# Used by GTK4
