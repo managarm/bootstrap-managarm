@@ -1,12 +1,25 @@
-From 9537981b6df92bef25464d30b093f7dc89e5d2f0 Mon Sep 17 00:00:00 2001
+From 2134932cfd182aa50b1f0db1fad729c3dce09dd8 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Mon, 26 Sep 2022 01:11:05 +0200
 Subject: [PATCH] Add managarm-specific changes
 
 ---
- sway/main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/stringop.h | 1 +
+ sway/main.c        | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
+diff --git a/include/stringop.h b/include/stringop.h
+index 19a50f23..89a0f12f 100644
+--- a/include/stringop.h
++++ b/include/stringop.h
+@@ -1,6 +1,7 @@
+ #ifndef _SWAY_STRINGOP_H
+ #define _SWAY_STRINGOP_H
+ 
++#include <stdarg.h>
+ #include <stdbool.h>
+ #include <stddef.h>
+ #include "list.h"
 diff --git a/sway/main.c b/sway/main.c
 index 85bc2f1c..f88948e0 100644
 --- a/sway/main.c
@@ -21,5 +34,5 @@ index 85bc2f1c..f88948e0 100644
  
  	// Since wayland requires XDG_RUNTIME_DIR to be set, abort with just the
 -- 
-2.39.2
+2.43.2
 

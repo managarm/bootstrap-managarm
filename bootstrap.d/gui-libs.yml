@@ -53,8 +53,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/wlroots/wlroots/'
-      tag: '0.16.2'
-      version: '0.16.2'
+      tag: '0.17.2'
+      version: '0.17.2'
     tools_required:
       - system-gcc
       - host-libtool
@@ -69,6 +69,7 @@ packages:
     pkgs_required:
       - mlibc
       - eudev
+      - libdisplay-info
       - libdrm
       - libinput
       - libxcb
@@ -80,7 +81,7 @@ packages:
       - xcb-util-image
       - xcb-util-wm
       - xwayland
-    revision: 6
+    revision: 1
     configure:
       - args: 'sed -i s#{XBSTRAP_SYSTEM_ROOT}#@SYSROOT_DIR@# @THIS_SOURCE_DIR@/xwayland/meson.build'
       - args:
@@ -92,6 +93,7 @@ packages:
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
         - '--buildtype=debugoptimized'
+        - '-Dbackends=drm,libinput'
         - '-Dexamples=false'
         - '-Dxwayland=enabled'
         - '@THIS_SOURCE_DIR@'
