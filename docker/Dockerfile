@@ -107,6 +107,8 @@ RUN apt-get update \
 		plasma-wayland-protocols \
 		# Used by various gobject tools
 		python3-gi \
+		# Used by libei
+		python3-jinja2 \
 		# Used by itstool
 		python3-libxml2 \
 		# Used by mesa
