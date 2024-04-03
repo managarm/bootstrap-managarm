@@ -143,6 +143,8 @@ RUN apt-get update \
 		wget \
 		# Used by xcursor-themes
 		x11-apps \
+		# Used by mutter
+		xcvt \
 		# Used by eudev
 		xsltproc \
 		# Used by various programs, for example, it is used by file
