@@ -1,7 +1,7 @@
-From 9f4c2489374c435c477f378cb834f13c36d58d89 Mon Sep 17 00:00:00 2001
+From 1291db9fe3e336c83c3a7c8a40bc83152b4cb0cd Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Sun, 31 Mar 2024 19:21:57 +0200
-Subject: [PATCH 2/3] meta: add patched libraries
+Subject: [PATCH 2/4] meta: add patched libraries
 
 ---
  Cargo.lock             | 2 --

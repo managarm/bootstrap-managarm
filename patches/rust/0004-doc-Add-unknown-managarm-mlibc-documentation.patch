@@ -1,0 +1,98 @@
+From d2a16d97d256e44cdd5cbad17e2c1c117328cb53 Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Mon, 1 Apr 2024 12:45:22 +0200
+Subject: [PATCH 4/4] doc: Add `*-unknown-managarm-mlibc` documentation
+
+---
+ src/doc/rustc/src/SUMMARY.md                  |  1 +
+ src/doc/rustc/src/platform-support.md         |  1 +
+ .../rustc/src/platform-support/managarm.md    | 53 +++++++++++++++++++
+ 3 files changed, 55 insertions(+)
+ create mode 100644 src/doc/rustc/src/platform-support/managarm.md
+
+diff --git a/src/doc/rustc/src/SUMMARY.md b/src/doc/rustc/src/SUMMARY.md
+index 1998b008..fe7b219a 100644
+--- a/src/doc/rustc/src/SUMMARY.md
++++ b/src/doc/rustc/src/SUMMARY.md
+@@ -55,6 +55,7 @@
+     - [\*-nto-qnx-\*](platform-support/nto-qnx.md)
+     - [*-unikraft-linux-musl](platform-support/unikraft-linux-musl.md)
+     - [*-unknown-hermit](platform-support/hermit.md)
++    - [\*-unknown-managarm-mlibc](platform-support/managarm.md)
+     - [\*-unknown-netbsd\*](platform-support/netbsd.md)
+     - [*-unknown-openbsd](platform-support/openbsd.md)
+     - [\*-unknown-uefi](platform-support/unknown-uefi.md)
+diff --git a/src/doc/rustc/src/platform-support.md b/src/doc/rustc/src/platform-support.md
+index f648a60b..3fcb98fc 100644
+--- a/src/doc/rustc/src/platform-support.md
++++ b/src/doc/rustc/src/platform-support.md
+@@ -373,6 +373,7 @@ target | std | host | notes
+ [`x86_64-unknown-hermit`](platform-support/hermit.md) | ✓ |  | x86_64 Hermit
+ `x86_64-unknown-l4re-uclibc` | ? |  |
+ [`x86_64-unknown-linux-ohos`](platform-support/openharmony.md) | ✓ |  | x86_64 OpenHarmony |
++[`x86_64-unknown-managarm-mlibc`](platform-support/managarm.md) |   |   | x86_64 managarm
+ [`x86_64-unknown-openbsd`](platform-support/openbsd.md) | ✓ | ✓ | 64-bit OpenBSD
+ `x86_64-uwp-windows-gnu` | ✓ |  |
+ `x86_64-uwp-windows-msvc` | ✓ |  |
+diff --git a/src/doc/rustc/src/platform-support/managarm.md b/src/doc/rustc/src/platform-support/managarm.md
+new file mode 100644
+index 00000000..79cbdbb3
+--- /dev/null
++++ b/src/doc/rustc/src/platform-support/managarm.md
+@@ -0,0 +1,53 @@
++# `*-unknown-managarm-mlibc`
++
++**Tier: 3**
++
++## Target Maintainers
++
++- [@no92](https://github.com/no92)
++- [@64](https://github.com/64)
++- [@Dennisbonke](https://github.com/Dennisbonke)
++
++## Requirements
++
++This target is cross-compiled. There is currently no support for `std` yet. It generates binaries in the ELF format.
++
++## Building the target
++
++For now, building a patched LLVM with [our patches located here](https://github.com/managarm/bootstrap-managarm/tree/master/patches/llvm) is necessary.
++
++Once that is done, set up your `config.toml` like this:
++
++```toml
++change-id = 102579
++
++[llvm]
++targets = "X86"
++download-ci-llvm = false
++
++[build]
++target = ["x86_64-unknown-managarm-mlibc", "x86_64-unknown-linux-gnu"]
++
++[target.x86_64-unknown-linux-gnu]
++llvm-config = "/path/to/your/llvm/bin/llvm-config"
++
++[target.x86_64-unknown-managarm-mlibc]
++llvm-config = "/path/to/your/llvm/bin/llvm-config"
++```
++
++## Building Rust programs
++
++Build a `x86_64-managarm-gcc` using our [gcc fork](https://github.com/managarm/gcc).
++
++```toml
++[build]
++rustc = "/path/to/the/rust-prefix/bin/rustc"
++target = "x86_64-unknown-managarm-mlibc"
++
++[target.x86_64-unknown-managarm-mlibc]
++linker = "/path/to/the/managarm-gcc/bin/x86_64-managarm-gcc"
++```
++
++## Testing
++
++This target does not support running the Rust testsuite yet.
+-- 
+2.44.0
+
