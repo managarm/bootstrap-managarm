@@ -1,7 +1,7 @@
-From 603f9596d3ddb8dbb2195d74a803bdad2198c3b1 Mon Sep 17 00:00:00 2001
+From 3b095184b3a4f6c19d824757bdfdf72ead99fab3 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Fri, 1 Sep 2023 16:49:14 +0200
-Subject: [PATCH 3/3] library/std: add managarm support
+Subject: [PATCH 3/4] library/std: add managarm support
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
