@@ -121,6 +121,7 @@ packages:
       - libpng
       - shared-mime-info
       - libx11
+      - gobject-introspection
     revision: 7
     configure:
       - args:
