@@ -1282,6 +1282,8 @@ packages:
     pkgs_required:
       - mlibc
       - glib
+      - xz-utils
+      - zstd
     configure:
       - args:
         - 'meson'
