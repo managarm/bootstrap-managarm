@@ -132,19 +132,6 @@ sources:
       - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.sub', '@THIS_SOURCE_DIR@/.']
       - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.guess', '@THIS_SOURCE_DIR@/.']
 
-  - name: protobuf
-    subdir: 'ports'
-    git: 'https://github.com/google/protobuf.git'
-    tag: 'v3.1.0'
-    version: '3.1.0'
-    tools_required:
-      - host-autoconf-v2.69
-      - host-automake-v1.11
-      - host-libtool
-    regenerate:
-      - args: ['./autogen.sh']
-        isolate_network: false
-
   - name: managarm
     git: 'https://github.com/managarm/managarm.git'
     branch: 'master'
@@ -367,8 +354,6 @@ tools:
     from_source: managarm
     tools_required:
       - host-frigg
-      - tool: host-protoc
-        recursive: true
       - virtual: pkgconfig-for-host
         program_name: host-pkg-config
     revision: 2
@@ -501,23 +486,6 @@ tools:
             tf=$(basename $f | sed 's/@OPTION:arch-triple@/@OPTION:arch-triple@-kernel/')
             ln -sf $(basename $f) @PREFIX@/bin/$tf
           done
-
-  - name: host-protoc
-    labels: [aarch64, riscv64]
-    architecture: noarch
-    exports_shared_libs: true
-    from_source: protobuf
-    revision: 3
-    configure:
-      - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--prefix=@PREFIX@'
-        # -g blows up the binary size.
-        - 'CXXFLAGS=-O2'
-    compile:
-      - args: ['make', '-j@PARALLELISM@']
-    install:
-      - args: ['make', 'install']
 
   - name: kernel-gcc
     labels: [aarch64, riscv64]
@@ -1407,7 +1375,6 @@ packages:
     tools_required:
       - host-llvm-toolchain
       - host-managarm-tools
-      - host-protoc
       - kernel-gcc
       - host-pkg-config
       - virtual: pkgconfig-for-target
@@ -1454,7 +1421,6 @@ packages:
       - host-llvm-toolchain
       - host-managarm-tools
       - host-pkg-config
-      - host-protoc
       - system-gcc
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
@@ -1467,7 +1433,6 @@ packages:
       - libasync
       - libdrm
       - libsmarter
-      - protobuf
     configure:
       - args: |
           sed -e 's|_BUILD_ROOT_|@BUILD_ROOT@|' -e 's|_SYSROOT_DIR_|@SYSROOT_DIR@|' @SOURCE_ROOT@/scripts/meson-clang-@OPTION:arch-triple@.cross-file \
@@ -1505,7 +1470,6 @@ packages:
     tools_required:
       # These are not strictly necessary.
       - host-managarm-tools
-      - host-protoc
     pkgs_required:
       - linux-headers
     configure:
@@ -1543,7 +1507,6 @@ packages:
     tools_required:
       - host-managarm-tools
       - bootstrap-system-gcc
-      - host-protoc
       - host-pkg-config
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
@@ -1583,7 +1546,6 @@ packages:
       - host-llvm-toolchain
       - host-managarm-tools
       - bootstrap-system-gcc
-      - host-protoc
       - host-hdoc
       - host-pkg-config
       - virtual: pkgconfig-for-target
@@ -1611,30 +1573,6 @@ packages:
     build:
       - args: ['hdoc']
         workdir: '@THIS_BUILD_DIR@'
-
-  - name: protobuf
-    labels: [aarch64]
-    architecture: '@OPTION:arch@'
-    from_source: protobuf
-    tools_required:
-      - system-gcc
-      - host-protoc
-    pkgs_required:
-      - mlibc
-    revision: 10
-    configure:
-      - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--host=@OPTION:arch-triple@'
-        - '--prefix=/usr'
-        # protobuf needs a host protoc when cross-compiling.
-        - '--with-protoc=protoc'
-    build:
-      - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'install']
-        environ:
-          DESTDIR: '@THIS_COLLECT_DIR@'
-        quiet: true
 
   - name: wayland
     labels: [aarch64]
