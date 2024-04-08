@@ -1,0 +1,26 @@
+From 79fc6fbcbba49d2192f7b5fda68f9c9c37884da9 Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Mon, 8 Apr 2024 23:09:00 +0200
+Subject: [PATCH] Stop clearing the screen
+
+---
+ icmake/scripts/ib/main | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/icmake/scripts/ib/main b/icmake/scripts/ib/main
+index 6ede05b..0804eea 100644
+--- a/icmake/scripts/ib/main
++++ b/icmake/scripts/ib/main
+@@ -34,9 +34,6 @@ void main(int argc, list argv, list envp)
+         g_option = _c;
+     #endif
+ 
+-    if (g_option == _c)             // clear the screen before compilation
+-        system("tput clear");       // starts
+-
+                                     // compile all sources except MAIN
+     build_libraries();              // if PRECOMP then precompiles headers 
+ 
+-- 
+2.44.0
+

@@ -893,6 +893,7 @@ tools:
       tag: '9.03.01'
       regenerate:
         - args: ['sed', '-i', 's#"usr/bin"#"bin"#', '@THIS_SOURCE_DIR@/icmake/INSTALL.im']
+    revision: 2
     configure:
       - args: ['@THIS_SOURCE_DIR@/icmake/icm_prepare', '@PREFIX@/']
         workdir: '@THIS_SOURCE_DIR@/icmake'
