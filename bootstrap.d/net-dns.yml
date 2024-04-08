@@ -16,6 +16,8 @@ packages:
     tools_required:
       - system-gcc
       - host-cmake
+    pkgs_required:
+      - mlibc
     configure:
       - args:
         - 'cmake'

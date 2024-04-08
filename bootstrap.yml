@@ -588,6 +588,7 @@ tools:
     tools_required:
       - tool: cross-binutils
         recursive: true
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -645,6 +646,7 @@ tools:
     tools_required:
       - tool: cross-binutils
         recursive: true
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -891,6 +893,7 @@ tools:
       tag: '9.03.01'
       regenerate:
         - args: ['sed', '-i', 's#"usr/bin"#"bin"#', '@THIS_SOURCE_DIR@/icmake/INSTALL.im']
+    revision: 2
     configure:
       - args: ['@THIS_SOURCE_DIR@/icmake/icm_prepare', '@PREFIX@/']
         workdir: '@THIS_SOURCE_DIR@/icmake'
@@ -1125,7 +1128,7 @@ packages:
       - mpfr
       - mpc
       - zlib
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
