@@ -29,6 +29,7 @@ packages:
       - libgcrypt
       - gobject-introspection
       - libxslt
+    revision: 2
     configure:
       - args:
           - 'meson'
@@ -41,6 +42,7 @@ packages:
           - '-Dgtk_doc=false'
           - '-Dintrospection=true'
           - '-Dvapi=true'
+          - '-Dmanpage=false'
           - '@THIS_SOURCE_DIR@'
         environ:
           # Same as below
