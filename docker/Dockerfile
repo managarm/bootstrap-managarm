@@ -41,6 +41,8 @@ RUN apt-get update \
 		help2man \
 		# Used by libdisplay-info
 		hwdata \
+		# Used by libqalculate
+		intltool \
 		# Used by shared-mime-info
 		itstool \
 		# Used by host-karchive
@@ -53,10 +55,12 @@ RUN apt-get update \
 		libexpat1-dev \
 		# Used by gtk+-2
 		libgdk-pixbuf2.0-bin \
-		# Used by vala
-		libglib2.0-dev \
+		# Used by various gobject tools
+		libgirepository1.0-dev \
 		# Used by gdk-pixbuf
 		libglib2.0-dev-bin \
+		# Used by vala
+		libglib2.0-dev \
 		# Used by gtksourceview5
 		libgtk-4-bin \
 		# Used by host-qt6
@@ -67,14 +71,20 @@ RUN apt-get update \
 		libgmp-dev \
 		libmpc-dev \
 		libmpfr-dev \
+		# Used by host-kio
+		libmount-dev \
 		# Used by cmake
 		libssl-dev \
 		# Used by ace
 		libpng-dev \
+		# Used by host-solid
+		libudev-dev \
 		# Used by host-qt6
 		libwayland-dev \
 		libx11-xcb-dev \
 		libxkbcommon-x11-dev \
+		# Used by host-kwindowsystem
+		libxfixes-dev \
 		# Used by many gnu build steps
 		m4 \
 		# Required to build images for Android's fastboot protocol.
@@ -95,6 +105,10 @@ RUN apt-get update \
 		pkg-config \
 		# Used by host-kguiaddons
 		plasma-wayland-protocols \
+		# Used by various gobject tools
+		python3-gi \
+		# Used by libei
+		python3-jinja2 \
 		# Used by itstool
 		python3-libxml2 \
 		# Used by mesa
@@ -127,6 +141,8 @@ RUN apt-get update \
 		wget \
 		# Used by xcursor-themes
 		x11-apps \
+		# Used by mutter
+		xcvt \
 		# Used by eudev
 		xsltproc \
 		# Used by various programs, for example, it is used by file
