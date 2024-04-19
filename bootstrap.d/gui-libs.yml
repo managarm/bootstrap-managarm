@@ -114,6 +114,7 @@ packages:
           - args: ['glib-compile-schemas', '/usr/share/glib-2.0/schemas']
 
   - name: gtksourceview5
+    stability_level: 'broken' # Downstream user of gtk4 and that is broken
     architecture: '@OPTION:arch@'
     metadata:
       summary: A text widget implementing syntax highlighting and other features
@@ -142,7 +143,7 @@ packages:
       - gtk4
       - libxml
       - fribidi
-      - fontconfig 
+      - fontconfig
       - pango
       - pcre2
       - gobject-introspection
