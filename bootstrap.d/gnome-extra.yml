@@ -1,5 +1,6 @@
 packages:
   - name: gnome-calculator
+    stability_level: 'broken' # Downstream user of gtksourceview5 and that is broken
     architecture: '@OPTION:arch@'
     metadata:
       summary: A calculator application for GNOME
