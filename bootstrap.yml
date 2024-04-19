@@ -773,6 +773,7 @@ tools:
       - host-xxd
       - virtual: pkgconfig-for-host
         program_name: host-pkg-config
+    revision: 2
     configure:
       - args:
         - 'meson'

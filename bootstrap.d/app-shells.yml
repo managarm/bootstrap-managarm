@@ -80,6 +80,8 @@ packages:
       - mlibc
       - gdbm
       - pcre
+      - ncurses
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

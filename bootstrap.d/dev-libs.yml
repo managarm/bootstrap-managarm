@@ -51,10 +51,20 @@ tools:
     labels: [aarch64]
     architecture: noarch
     exports_aclocal: true
+    exports_shared_libs: true
     from_source: glib
+    tools_required:
+      - host-libffi
+      - host-pkg-config
+      - virtual: pkgconfig-for-host
+        program_name: host-pkg-config
+    revision: 2
     configure:
       - args:
         - 'meson'
+        - 'setup'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
         - '--prefix=@PREFIX@'
         - '--libdir=lib'
         - '@THIS_SOURCE_DIR@'
@@ -67,6 +77,7 @@ tools:
   - name: host-gobject-introspection
     architecture: noarch
     exports_aclocal: true
+    exports_shared_libs: true
     from_source: gobject-introspection
     tools_required:
       - host-python

@@ -1,0 +1,73 @@
+From 1f87ba332286ff5596056a2509a18560d7a6cafe Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Tue, 9 Apr 2024 22:21:13 +0200
+Subject: [PATCH 3/3] LLVM 18 support
+
+---
+ src/frontend/Frontend.cpp    |  2 +-
+ src/indexer/MatcherUtils.cpp | 10 +++++-----
+ src/indexer/Matchers.hpp     |  2 +-
+ 3 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/src/frontend/Frontend.cpp b/src/frontend/Frontend.cpp
+index b90e757..3583bce 100644
+--- a/src/frontend/Frontend.cpp
++++ b/src/frontend/Frontend.cpp
+@@ -179,7 +179,7 @@ hdoc::frontend::Frontend::Frontend(int argc, char** argv, hdoc::types::Config* c
+ 
+       // If we have found the beginning of the include list, filter it to only lines that have include paths.
+       if (searchListFound == true) {
+-        if (line.startswith(" ")) {
++        if (line.starts_with(" ")) {
+           cfg->includePaths.emplace_back(std::string(line.trim()));
+         }
+       }
+diff --git a/src/indexer/MatcherUtils.cpp b/src/indexer/MatcherUtils.cpp
+index d4e0e3a..674df26 100644
+--- a/src/indexer/MatcherUtils.cpp
++++ b/src/indexer/MatcherUtils.cpp
+@@ -21,23 +21,23 @@
+ /// generated in a non-VFS-aware way can be wrong.
+ /// This function is similar to one defined in clang, and gets the canonical path in a
+ /// VFS-aware way.
+-static llvm::Optional<std::string> getCanonicalPath(const clang::Decl* d) {
++static std::optional<std::string> getCanonicalPath(const clang::Decl* d) {
+   const auto& sourceManager = d->getASTContext().getSourceManager();
+-  const auto* fileEntry     = sourceManager.getFileEntryForID(sourceManager.getFileID(d->getLocation()));
++  const auto fileEntry      = sourceManager.getFileEntryRefForID(sourceManager.getFileID(d->getLocation()));
+ 
+   if (!fileEntry) {
+-    return llvm::None;
++    return std::nullopt;
+   }
+ 
+   llvm::SmallString<128> path = fileEntry->getName();
+   if (!llvm::sys::path::is_absolute(path)) {
+     if (auto ec = sourceManager.getFileManager().getVirtualFileSystem().makeAbsolute(path)) {
+       spdlog::warn("Could not turn relative path '{}' to absolute: {}", path.c_str(), ec.message().c_str());
+-      return llvm::None;
++      return std::nullopt;
+     }
+   }
+ 
+-  if (auto dir = sourceManager.getFileManager().getDirectory(llvm::sys::path::parent_path(path))) {
++  if (auto dir = sourceManager.getFileManager().getDirectoryRef(llvm::sys::path::parent_path(path))) {
+     const llvm::StringRef  dirName = sourceManager.getFileManager().getCanonicalName(*dir);
+     llvm::SmallString<128> realPath;
+     llvm::sys::path::append(realPath, dirName, llvm::sys::path::filename(path));
+diff --git a/src/indexer/Matchers.hpp b/src/indexer/Matchers.hpp
+index c1b542f..b584d69 100644
+--- a/src/indexer/Matchers.hpp
++++ b/src/indexer/Matchers.hpp
+@@ -26,7 +26,7 @@ AST_MATCHER_P2(clang::Decl, shouldBeIgnored, std::vector<std::string>, ignoreLis
+     return false;
+   }
+ 
+-  auto fileEntry = sourceManager.getFileEntryForID(sourceManager.getFileID(expansionLoc));
++  auto fileEntry = sourceManager.getFileEntryRefForID(sourceManager.getFileID(expansionLoc));
+   if (!fileEntry) {
+     return false;
+   }
+-- 
+2.44.0
+

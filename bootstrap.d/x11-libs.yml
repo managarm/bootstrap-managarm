@@ -141,8 +141,6 @@ packages:
     build:
       - args: ['ninja']
         environ:
-          # Make python load host libraries instead of the ones in the rootfs
-          LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-glib/lib:@BUILD_ROOT@/tools/host-glib/lib/x86_64-linux-gnu:@BUILD_ROOT@/tools/host-gobject-introspection/lib/x86_64-linux-gnu'
           # Library path for our run-wrapper that allows it to load managarm libraries
           RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
           # Similar to above, but using a nasty (but working) hack lets us use a Linux mlibc build to execute an
@@ -341,8 +339,6 @@ packages:
     build:
       - args: ['ninja']
         environ:
-          # Make python load host libraries instead of the ones in the rootfs
-          LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-glib/lib:@BUILD_ROOT@/tools/host-glib/lib/x86_64-linux-gnu:@BUILD_ROOT@/tools/host-gobject-introspection/lib/x86_64-linux-gnu'
           # Library path for our run-wrapper that allows it to load managarm libraries
           RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
           # Similar to above, but using a nasty (but working) hack lets us use a Linux mlibc build to execute an
@@ -358,8 +354,6 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
-          # Make python load host libraries instead of the ones in the rootfs
-          LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-glib/lib:@BUILD_ROOT@/tools/host-glib/lib/x86_64-linux-gnu:@BUILD_ROOT@/tools/host-gobject-introspection/lib/x86_64-linux-gnu'
           # Library path for our run-wrapper that allows it to load managarm libraries
           RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
           # Similar to above, but using a nasty (but working) hack lets us use a Linux mlibc build to execute an
@@ -1990,8 +1984,6 @@ packages:
     build:
       - args: ['ninja']
         environ:
-          # Make python load host libraries instead of the ones in the rootfs
-          LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-glib/lib:@BUILD_ROOT@/tools/host-glib/lib/x86_64-linux-gnu:@BUILD_ROOT@/tools/host-gobject-introspection/lib/x86_64-linux-gnu'
           # Library path for our run-wrapper that allows it to load managarm libraries
           RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
           # Similar to above, but using a nasty (but working) hack lets us use a Linux mlibc build to execute an

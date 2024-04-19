@@ -1,7 +1,7 @@
-From a2718b523036a8aa99ef70f5518cd59d85aae95a Mon Sep 17 00:00:00 2001
+From aaf188861f717568aa44732fc8d2ad20cf38f534 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Thu, 3 Aug 2023 01:12:58 +0200
-Subject: [PATCH 2/2] LLVM 16 support
+Subject: [PATCH 2/3] LLVM 16 support
 
 ---
  src/frontend/Frontend.cpp | 4 ++--
@@ -25,5 +25,5 @@ index 36f25d3..b90e757 100644
        spdlog::error("Failed to determine the system include paths ({}, {}).", rc, errMsg);
        return;
 -- 
-2.40.1
+2.44.0
 
