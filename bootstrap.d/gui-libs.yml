@@ -197,6 +197,7 @@ packages:
           - args: ['gtk4-update-icon-cache', '-q', '-t', '-f', '/usr/share/icons/hicolor']
 
   - name: libadwaita
+    stability_level: 'broken' # Appstream is also broken
     architecture: '@OPTION:arch@'
     metadata:
       summary: Building blocks for modern GNOME applications
