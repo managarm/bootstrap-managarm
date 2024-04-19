@@ -329,7 +329,7 @@ packages:
         - '--prefix=/usr'
         - '--buildtype=release'
         - '-Dgtk_doc=false'
-        - '-Dintrospection=enabled'
+        - '-Dintrospection=disabled' # Broken because random segfault generating introspection files
         - '-Dtests=false'
         - '-Dinstalled_tests=false'
         - '@THIS_SOURCE_DIR@'
