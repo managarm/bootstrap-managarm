@@ -325,7 +325,7 @@ packages:
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
         - '-Dprint_backends=file'
-        - '-Dintrospection=true'
+        - '-Dintrospection=false' # Gobject introspection is broken again
         - '-Dx11_backend=true'
         - '-Dbroadway_backend=true'
         - '-Dwayland_backend=true'
