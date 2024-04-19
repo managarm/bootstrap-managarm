@@ -131,6 +131,7 @@ tools:
 
 packages:
   - name: appstream
+    stability_level: 'broken' # Broken because exe_wrapper or something
     architecture: '@OPTION:arch@'
     metadata:
       summary: Cross-distro effort for providing metadata for software in the Linux ecosystem
