@@ -99,7 +99,7 @@ sources:
     subdir: 'ports'
     git: 'https://github.com/UltraOS/uACPI.git'
     branch: 'master'
-    commit: d3e47b0749c2e91e69cccffcaa518b751f554662
+    commit: f6bc1b16c603eb80a21bc43256c091681420cf7d
     version: '0.0pl@ROLLING_ID@'
 
   - name: libarch
