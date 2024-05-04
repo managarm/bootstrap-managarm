@@ -782,7 +782,6 @@ tools:
         - '--prefix=@PREFIX@'
         - '@THIS_SOURCE_DIR@'
         isolate_network: false
-    revision: 2
     compile:
       - args: ['ninja']
     install:
