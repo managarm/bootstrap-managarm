@@ -800,11 +800,11 @@ packages:
       categories: ['sys-apps']
     source:
       subdir: 'ports'
-      url: 'https://github.com/gregkh/usbutils/archive/v015/usbutils-015.tar.gz'
+      url: 'https://github.com/gregkh/usbutils/archive/v017/usbutils-017.tar.gz'
       format: 'tar.gz'
-      checksum: blake2b:6056947e3df829e988b9429827c69234a90b7ad1be666d54566211bc6c8e09e74372543059827a39cab2badd1df71deff1147503bef3850a38bffefe3b2ae0e2
-      extract_path: 'usbutils-015'
-      version: '015'
+      checksum: blake2b:1dc37f50bd214cd1612819c5814e5a6fe01609b21830e40f03c163a1e100f8d041e93defc0981da8a8a2a8c8a07283a09d3e37101e9ae1d61fd2842809ebcc0e
+      extract_path: 'usbutils-017'
+      version: '017'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -820,7 +820,6 @@ packages:
       - mlibc
       - libusb
       - eudev
-    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
