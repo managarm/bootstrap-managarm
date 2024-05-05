@@ -635,7 +635,7 @@ packages:
       subdir: 'ports'
       git: 'https://github.com/libexpat/libexpat.git'
       tag: 'R_2_5_0'
-      version: '2.5.0'
+      version: '2.6.2'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -650,7 +650,6 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/expat/configure'
