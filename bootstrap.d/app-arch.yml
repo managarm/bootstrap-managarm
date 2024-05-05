@@ -163,8 +163,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/libarchive/libarchive.git'
-      tag: 'v3.7.2'
-      version: '3.7.2'
+      tag: 'v3.7.3'
+      version: '3.7.3'
     tools_required:
       - host-cmake
       - system-gcc
@@ -177,7 +177,6 @@ packages:
       - libexpat
       - libxml
       - zstd
-    revision: 5
     configure:
       - args:
         - 'cmake'
