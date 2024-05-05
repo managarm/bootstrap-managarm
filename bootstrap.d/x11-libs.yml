@@ -102,8 +102,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.gnome.org/GNOME/gdk-pixbuf.git'
-      tag: '2.42.10'
-      version: '2.42.10'
+      tag: '2.42.11'
+      version: '2.42.11'
     tools_required:
       - system-gcc
       - host-libtool
@@ -122,7 +122,6 @@ packages:
       - shared-mime-info
       - libx11
       - gobject-introspection
-    revision: 7
     configure:
       - args:
         - 'meson'
