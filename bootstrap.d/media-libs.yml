@@ -399,7 +399,7 @@ packages:
       - libmodplug
       - vulkan-headers
       - libusb
-    revision: 4
+    revision: 5
     configure:
       - args:
         - 'meson'

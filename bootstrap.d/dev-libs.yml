@@ -1165,11 +1165,11 @@ packages:
       categories: ['dev-libs']
     source:
       subdir: 'ports'
-      url: 'https://github.com/libusb/libusb/releases/download/v1.0.26/libusb-1.0.26.tar.bz2'
+      url: 'https://github.com/libusb/libusb/releases/download/v1.0.27/libusb-1.0.27.tar.bz2'
       format: 'tar.bz2'
-      checksum: blake2b:0cc397ecf4de0066abbff9b286a9e4fcd48658698d5e0d6b736abf56b48c1b55a05f15fff7be53fd33f767621e0c25d87275a47e05a4bcb44c4b8ac9221cd081
-      extract_path: 'libusb-1.0.26'
-      version: '1.0.26'
+      checksum: blake2b:bec2eb053159ffa719c794d234f8e99b895a4fae336b862a3197b88deb3d307a53ebb98d2aa993a2f390f14264f796b96ac47274c19f56db30440484ee336c8a
+      extract_path: 'libusb-1.0.27'
+      version: '1.0.27'
       patch-path-strip: 1
       tools_required:
         - host-autoconf-v2.69
@@ -1186,7 +1186,6 @@ packages:
     pkgs_required:
       - mlibc
       - eudev
-    revision: 7
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
