@@ -1,4 +1,4 @@
-From 79e757a57444fabd3647fc4a187345ab780502c0 Mon Sep 17 00:00:00 2001
+From abeca84c833d0119b0f506a06e67d98e68ad76f1 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Wed, 15 Jun 2022 13:08:10 +0200
 Subject: [PATCH] Add managarm-specific changes
@@ -8,18 +8,18 @@ Subject: [PATCH] Add managarm-specific changes
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/json_tokener.c b/json_tokener.c
-index 0c09b66..d74153a 100644
+index 9926563..a9696eb 100644
 --- a/json_tokener.c
 +++ b/json_tokener.c
-@@ -327,7 +327,7 @@ struct json_object *json_tokener_parse_ex(struct json_tokener *tok, const char *
+@@ -342,7 +342,7 @@ struct json_object *json_tokener_parse_ex(struct json_tokener *tok, const char *
  		if (newloc == NULL)
  		{
  			freelocale(duploc);
 -			return NULL;
 +			// return NULL;
  		}
- 		uselocale(newloc);
- 	}
+ #ifdef NEWLOCALE_NEEDS_FREELOCALE
+ 		// Older versions of FreeBSD (<12.4) don't free the locale
 -- 
-2.36.1
+2.45.0
 

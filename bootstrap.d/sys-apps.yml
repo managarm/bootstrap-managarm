@@ -225,7 +225,7 @@ packages:
       - mlibc
       - libdrm
       - json-c
-    revision: 7
+    revision: 8
     configure:
       - args:
         - 'meson'
