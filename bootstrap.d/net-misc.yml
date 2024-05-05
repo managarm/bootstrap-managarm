@@ -47,14 +47,13 @@ packages:
     default: true
     source:
       subdir: ports
-      url: 'https://github.com/Mic92/iana-etc/releases/download/20230316/iana-etc-20230316.tar.gz'
+      url: 'https://github.com/Mic92/iana-etc/releases/download/20240318/iana-etc-20240318.tar.gz'
       format: 'tar.gz'
-      checksum: blake2b:aacae80527f0259f23675995075d78cb50da3ebab269f786ee36c6a6a4907fd79f640795a73e8a50cb9f9748c3a187b6aca5dcb41486d12527c272576a24be27
-      extract_path: 'iana-etc-20230316'
-      version: '20230316'
+      checksum: blake2b:658ab8d1c390f5fa412b71821c8a6ddc956588dc38e3a703283f21dfd7d5b6b3987b3e15311034d941153ed26adac9d2baea1c15819eb0c7ea1f5b6054a217bf
+      extract_path: 'iana-etc-20240318'
+      version: '20240318'
     tools_required:
       - system-gcc
-    revision: 4
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
