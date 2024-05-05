@@ -1,4 +1,4 @@
-From 50b8ee7f62941422cba786451a6faaee9239eab3 Mon Sep 17 00:00:00 2001
+From 51d2a3e79a1770b6d4f67c1e36e1adddf1fc9228 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Thu, 23 Sep 2021 23:56:13 +0200
 Subject: [PATCH] Don't build the documentation
@@ -11,26 +11,26 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
  1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index b2bf6de..299a38f 100644
+index 87966a9..f5e6578 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -62,7 +62,6 @@ UTILS = $(INSTALLABLE) \
- LDLIBS=libgif.a -lm
- 
- all: libgif.so libgif.a libutil.so libutil.a $(UTILS)
+@@ -90,7 +90,6 @@ endif
+ all: $(LIBGIFSO) libgif.a $(LIBUTILSO) libutil.a $(UTILS)
+ ifeq ($(UNAME), Darwin)
+ else
 -	$(MAKE) -C doc
+ endif
  
  $(UTILS):: libgif.a libutil.a
- 
-@@ -89,7 +88,7 @@ check: all
- 
- # Installation/uninstallation
- 
+@@ -132,7 +131,7 @@ reflow:
+ ifeq ($(UNAME), Darwin)
+ install: all install-bin install-include install-lib
+ else
 -install: all install-bin install-include install-lib install-man
 +install: all install-bin install-include install-lib
+ endif
+ 
  install-bin: $(INSTALLABLE)
- 	$(INSTALL) -d "$(DESTDIR)$(BINDIR)"
- 	$(INSTALL) $^ "$(DESTDIR)$(BINDIR)"
 -- 
-2.33.0
+2.45.0
 

@@ -211,13 +211,12 @@ packages:
     source:
       subdir: ports
       git: 'https://git.code.sf.net/p/giflib/code'
-      tag: '5.2.1'
-      version: '5.2.1'
+      tag: '5.2.2'
+      version: '5.2.2'
     tools_required:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 9
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
