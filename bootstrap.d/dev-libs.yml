@@ -900,8 +900,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/libinput/libinput.git'
-      tag: '1.24.0'
-      version: '1.24.0'
+      tag: '1.25.0'
+      version: '1.25.0'
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -912,7 +912,6 @@ packages:
       - eudev
       - libevdev
       - mtdev
-    revision: 5
     configure:
       - args:
           - 'meson'
