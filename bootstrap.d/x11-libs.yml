@@ -566,6 +566,43 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: libpciaccess
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Generic PCI access library
+      description: This package provides a generic PCI access library, which can be used to directly access PCI devices from userspace.
+      spdx: 'MIT'
+      website: 'https://gitlab.freedesktop.org/xorg/lib/libpciaccess'
+      maintainer: "Alexander Richards <electrodeyt@gmail.com>"
+    source:  
+      subdir: ports
+      git: 'https://gitlab.freedesktop.org/xorg/lib/libpciaccess.git'
+      tag: 'libpciaccess-0.18.1'
+      version: '0.18.1'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - zlib
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+
   - name: libsm
     labels: [aarch64]
     architecture: '@OPTION:arch@'
