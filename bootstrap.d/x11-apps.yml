@@ -209,6 +209,9 @@ packages:
     pkgs_required:
       - mlibc
       - libx11
+      - libxcb
+      - libxext
+      - libxi
       - libxmu
       - libxrender
       - libxt
