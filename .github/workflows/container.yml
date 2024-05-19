@@ -36,6 +36,7 @@ jobs:
                 ln -s /proc/self/fd/0 buildenv-bundle/rootfs/dev/stdin
                 ln -s /proc/self/fd/1 buildenv-bundle/rootfs/dev/stdout
                 ln -s /proc/self/fd/2 buildenv-bundle/rootfs/dev/stderr
+                ln -s /proc/self/fd buildenv-bundle/rootfs/dev/fd
                 touch buildenv-bundle/rootfs/dev/{full,null,zero}
                 touch buildenv-bundle/rootfs/dev/tty
                 touch buildenv-bundle/rootfs/dev/{random,urandom}
