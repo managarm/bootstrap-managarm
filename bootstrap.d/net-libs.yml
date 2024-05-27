@@ -160,8 +160,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/rockdaboot/libpsl.git'
-      tag: '0.21.2'
-      version: '0.21.2'
+      tag: '0.21.5'
+      version: '0.21.5'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -177,7 +177,6 @@ packages:
       - libidn2
       - libunistring
       - libiconv
-    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -224,7 +223,7 @@ packages:
       - libxml
       - sqlite
       - libpsl
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'meson'
@@ -284,6 +283,7 @@ packages:
       - libpsl
       - zlib
       - gobject-introspection
+    revision: 1
     configure:
       - args:
         - 'meson'

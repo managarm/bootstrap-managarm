@@ -517,14 +517,13 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/json-c/json-c.git'
-      tag: 'json-c-0.16-20220414'
-      version: '0.16'
+      tag: 'json-c-0.17-20230812'
+      version: '0.17'
     tools_required:
       - system-gcc
       - host-cmake
     pkgs_required:
       - mlibc
-    revision: 8
     configure:
       - args:
         - 'cmake'
@@ -636,7 +635,7 @@ packages:
       subdir: 'ports'
       git: 'https://github.com/libexpat/libexpat.git'
       tag: 'R_2_5_0'
-      version: '2.5.0'
+      version: '2.6.2'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -651,7 +650,6 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/expat/configure'
@@ -715,7 +713,7 @@ packages:
     pkgs_required:
       - mlibc
       - libgpg-error
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -793,8 +791,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://dev.gnupg.org/source/libgpg-error.git'
-      tag: 'libgpg-error-1.45'
-      version: '1.45'
+      tag: 'libgpg-error-1.48'
+      version: '1.48'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -806,7 +804,6 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 7
     configure:
       # libgpg-error does not know about managarm, teach it
       - args: ['cp', '-v', '@THIS_SOURCE_DIR@/src/syscfg/lock-obj-pub.x86_64-unknown-linux-gnu.h',
@@ -817,6 +814,7 @@ packages:
         - '--prefix=/usr'
         - '--disable-nls'
         - '--disable-doc'
+        - '--enable-install-gpg-error-config'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
@@ -902,8 +900,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/libinput/libinput.git'
-      tag: '1.24.0'
-      version: '1.24.0'
+      tag: '1.25.0'
+      version: '1.25.0'
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -914,7 +912,6 @@ packages:
       - eudev
       - libevdev
       - mtdev
-    revision: 5
     configure:
       - args:
           - 'meson'
@@ -1168,11 +1165,11 @@ packages:
       categories: ['dev-libs']
     source:
       subdir: 'ports'
-      url: 'https://github.com/libusb/libusb/releases/download/v1.0.26/libusb-1.0.26.tar.bz2'
+      url: 'https://github.com/libusb/libusb/releases/download/v1.0.27/libusb-1.0.27.tar.bz2'
       format: 'tar.bz2'
-      checksum: blake2b:0cc397ecf4de0066abbff9b286a9e4fcd48658698d5e0d6b736abf56b48c1b55a05f15fff7be53fd33f767621e0c25d87275a47e05a4bcb44c4b8ac9221cd081
-      extract_path: 'libusb-1.0.26'
-      version: '1.0.26'
+      checksum: blake2b:bec2eb053159ffa719c794d234f8e99b895a4fae336b862a3197b88deb3d307a53ebb98d2aa993a2f390f14264f796b96ac47274c19f56db30440484ee336c8a
+      extract_path: 'libusb-1.0.27'
+      version: '1.0.27'
       patch-path-strip: 1
       tools_required:
         - host-autoconf-v2.69
@@ -1189,7 +1186,6 @@ packages:
     pkgs_required:
       - mlibc
       - eudev
-    revision: 7
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
