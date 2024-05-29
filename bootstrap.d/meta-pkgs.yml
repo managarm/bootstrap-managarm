@@ -46,7 +46,8 @@ packages:
       - man-db
       - man-pages-posix
       - iproute2
-    revision: 4
+      - dhcpcd
+    revision: 5
     configure: []
     build: []
 
