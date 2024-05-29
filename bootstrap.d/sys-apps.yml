@@ -79,7 +79,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 8
+    revision: 9
     configure:
       # Huge hack: coreutils does not compile the build-machine binary make-prime-list
       # using the build-machine compiler. Hence, build and invoke the binary manually here.
@@ -94,7 +94,7 @@ packages:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
-        - '--enable-no-install-program=kill'
+        - '--enable-no-install-program=kill,uptime'
         - 'CFLAGS=-DSLOW_BUT_NO_HACKS -Wno-error'
         environ:
           gl_cv_have_proc_uptime: 'yes'

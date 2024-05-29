@@ -109,6 +109,85 @@ sources:
         recursive: true
 
 packages:
+  - name: argp-standalone
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Standalone argp library for use with musl and mlibc
+      description: Standalone argp library for use with musl and mlibc
+      spdx: 'GPL-2.0-only GPL-3.0-only'
+      website: 'https://github.com/argp-standalone/argp-standalone'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-libs']
+    source:
+      subdir: ports
+      git: 'https://github.com/argp-standalone/argp-standalone.git'
+      tag: '1.5.0'
+      version: '1.5.0'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['autoreconf', '-fvi']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - libintl
+    configure:
+      - args:
+          - 'meson'
+          - 'setup'
+          - '--cross-file'
+          - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+          - '--prefix=/usr'
+          - '-Dbuildtype=release'
+          - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['mkdir', '-pv', '@THIS_COLLECT_DIR@/usr/include']
+      - args: ['cp', '-v', '@THIS_SOURCE_DIR@/argp.h', '@THIS_COLLECT_DIR@/usr/include']
+
+  - name: fts-standalone
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Standalone fts library for use with musl and mlibc
+      description: Standalone fts library for use with musl and mlibc
+      spdx: 'BSD'
+      website: 'https://github.com/pullmoll/musl-fts'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-libs']
+    source:
+      subdir: ports
+      git: 'https://github.com/pullmoll/musl-fts.git'
+      tag: 'v1.2.7'
+      version: '1.2.7'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['./bootstrap.sh']
+    tools_required:
+      - system-gcc
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--disable-static'
+        - '--enable-shared'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: gdbm
     labels: [aarch64]
     architecture: '@OPTION:arch@'
@@ -261,6 +340,42 @@ packages:
           rm -vf                     @THIS_COLLECT_DIR@/usr/lib/libcursesw.so
           echo "INPUT(-lncursesw)" > @THIS_COLLECT_DIR@/usr/lib/libcursesw.so
           ln -sfv libncurses.so      @THIS_COLLECT_DIR@/usr/lib/libcurses.so
+
+  - name: obstack-standalone
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: A standalone library to implement GNU libc's obstack
+      description: A standalone library to implement GNU libc's obstack
+      spdx: 'GPL-2.0-only'
+      website: 'https://github.com/void-linux/musl-obstack'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-libs']
+    source:
+      subdir: ports
+      git: 'https://github.com/void-linux/musl-obstack.git'
+      tag: 'v1.2.3'
+      version: '1.2.3'
+      tools_required:
+        - host-autoconf-v2.71
+        - host-automake-v1.16
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['./bootstrap.sh']
+    tools_required:
+      - system-gcc
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--disable-static'
+        - '--enable-shared'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: readline
     labels: [aarch64]
