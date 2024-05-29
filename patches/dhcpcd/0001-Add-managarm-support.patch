@@ -1,0 +1,275 @@
+From 9995559d20b1e91b54b8f9a6c896be97f13b7a4b Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Sun, 19 May 2024 22:35:30 +0200
+Subject: [PATCH] Add managarm support
+
+---
+ configure           | 14 +++++++-------
+ src/bpf.c           |  4 ++--
+ src/dhcpcd.c        |  2 +-
+ src/if-linux-wext.c |  2 +-
+ src/if-linux.c      | 13 ++++++++++++-
+ src/if.c            |  2 +-
+ src/if.h            |  2 +-
+ src/ipv4.h          |  2 +-
+ src/ipv6.h          |  2 +-
+ src/logerr.c        |  2 +-
+ src/privsep-linux.c |  2 ++
+ src/route.h         |  2 +-
+ 12 files changed, 31 insertions(+), 18 deletions(-)
+
+diff --git a/configure b/configure
+index 19eb431..b5f3b77 100755
+--- a/configure
++++ b/configure
+@@ -238,7 +238,7 @@ if [ -z "$OS" ]; then
+ 
+ 	# Work with cpu-kernel-os, ie Debian
+ 	case "$VENDOR" in
+-	linux*|kfreebsd*) OS=$VENDOR; VENDOR= ;;
++	linux*|kfreebsd*|managarm*) OS=$VENDOR; VENDOR= ;;
+ 	esac
+ 	case "$REST" in
+ 	gnu/kfreebsd*)		OS="kfreebsd"; VENDOR= ;;
+@@ -357,7 +357,7 @@ else
+ 	ALLOW_USR_LIBS=true
+ fi
+ case "$OS" in
+-linux*|solaris*|sunos*|kfreebsd*) ;;
++linux*|managarm*|solaris*|sunos*|kfreebsd*) ;;
+ *)
+ 	# There might be more than one ...
+ 	for LDELFN in /libexec/ld-elf.so.[0-9]*; do
+@@ -468,7 +468,7 @@ netbsd*)
+ 	echo "CPPFLAGS+=	-D_OPENBSD_SOURCE" >>$CONFIG_MK
+ 	echo "DHCPCD_SRCS+=	if-bsd.c" >>$CONFIG_MK
+ 	;;
+-linux*)
++linux*|managarm*)
+ 	echo "CPPFLAGS+=	-D_GNU_SOURCE" >>$CONFIG_MK
+ 	# Large File Support, should be fine for 32-bit systems.
+ 	# But if this is the case, why is it not set by default?
+@@ -585,7 +585,7 @@ if [ "$PRIVSEP" = yes ]; then
+ 		echo "PRIVSEP_SRCS+=	privsep-bpf.c" >>$CONFIG_MK
+ 	fi
+ 	case "$OS" in
+-	linux*)		 echo "PRIVSEP_SRCS+=	privsep-linux.c" >>$CONFIG_MK;;
++	linux*|managarm*)		 echo "PRIVSEP_SRCS+=	privsep-linux.c" >>$CONFIG_MK;;
+ 	solaris*|sunos*) echo "PRIVSEP_SRCS+=	privsep-sun.c" >>$CONFIG_MK;;
+ 	*)		 echo "PRIVSEP_SRCS+=	privsep-bsd.c" >>$CONFIG_MK;;
+ 	esac
+@@ -665,7 +665,7 @@ else
+ 	echo "EMBEDDEDINSTALL=	_embeddedinstall" >>$CONFIG_MK
+ fi
+ 
+-if [ "$OS" = linux ]; then
++if [ "$OS" = linux ] || [ "$OS" = "managarm" ]; then
+ 	printf "Testing for nl80211 ... "
+ 	cat <<EOF >_nl80211.c
+ #include <linux/nl80211.h>
+@@ -673,7 +673,7 @@ int main(void) {
+ 	return 0;
+ }
+ EOF
+-	if $XCC _nl80211.c -o _nl80211 2>&3; then
++	if $XCC _nl80211.c -o _nl80211 2>&3 && [ "$OS" != "managarm" ]; then
+ 		echo "yes"
+ 		echo "#define	HAVE_NL80211_H" >>$CONFIG_H
+ 	else
+@@ -1548,7 +1548,7 @@ if [ "$DEV" != no ] && [ "$UDEV" != no ]; then
+ 		echo "yes"
+ 	elif [ -n "$LIBUDEV_LIBS" ]; then
+ 		case "$OS" in
+-		linux*)	echo "yes";;
++		linux*|managarm*) echo "yes";;
+ 		*)	echo "yes (disabled)"
+ 			# FreeBSD libudev fails to return a udev device
+ 			# with udev_device_new_from_subsystem_sysname
+diff --git a/src/bpf.c b/src/bpf.c
+index 21b73af..c9976bd 100644
+--- a/src/bpf.c
++++ b/src/bpf.c
+@@ -35,7 +35,7 @@
+ #include <netinet/in.h>
+ #include <netinet/if_ether.h>
+ 
+-#ifdef __linux__
++#if defined(__linux__) || defined(__managarm__)
+ /* Special BPF snowflake. */
+ #include <linux/filter.h>
+ #define	bpf_insn		sock_filter
+@@ -140,7 +140,7 @@ bpf_frame_bcast(const struct interface *ifp, const void *frame)
+ 	}
+ }
+ 
+-#ifndef __linux__
++#if !defined(__linux__) && !defined(__managarm__)
+ /* Linux is a special snowflake for opening, attaching and reading BPF.
+  * See if-linux.c for the Linux specific BPF functions. */
+ 
+diff --git a/src/dhcpcd.c b/src/dhcpcd.c
+index 6a4c972..6cd74d7 100644
+--- a/src/dhcpcd.c
++++ b/src/dhcpcd.c
+@@ -774,7 +774,7 @@ dhcpcd_handlecarrier(struct interface *ifp, int carrier, unsigned int flags)
+ 			loginfox("%s: carrier acquired", ifp->name);
+ 	}
+ 
+-#if !defined(__linux__) && !defined(__NetBSD__)
++#if !defined(__linux__) && !defined(__NetBSD__) && !defined(__managarm__)
+ 	/* BSD does not emit RTM_NEWADDR or RTM_CHGADDR when the
+ 	 * hardware address changes so we have to go
+ 	 * through the disovery process to work it out. */
+diff --git a/src/if-linux-wext.c b/src/if-linux-wext.c
+index a7a2689..545fda4 100644
+--- a/src/if-linux-wext.c
++++ b/src/if-linux-wext.c
+@@ -65,7 +65,7 @@ int if_getssid_wext(const char *ifname, uint8_t *ssid);
+ int
+ if_getssid_wext(const char *ifname, uint8_t *ssid)
+ {
+-#ifdef SIOCGIWESSID
++#if defined(SIOCGIWESSID) && !defined(__managarm__)
+ 	int s, retval;
+ 	struct iwreq iwr;
+ 
+diff --git a/src/if-linux.c b/src/if-linux.c
+index fd05147..c04734e 100644
+--- a/src/if-linux.c
++++ b/src/if-linux.c
+@@ -54,7 +54,7 @@
+ /* musl has its own definition of struct ethhdr, so only include
+  * netinet/if_ether.h on systems with GLIBC.  For the ARPHRD constants,
+  * we must include linux/if_arp.h instead. */
+-#if defined(__GLIBC__)
++#if defined(__GLIBC__) || defined(__managarm__)
+ #include <netinet/if_ether.h>
+ #else
+ #include <linux/if_arp.h>
+@@ -175,6 +175,13 @@ if_machinearch(char *str, size_t len)
+ 
+ 	return snprintf(str, len, "%s", mproc);
+ }
++#elif defined(__managarm__)
++static const char *mproc = "x86_64";
++int if_machinearch(char *str, size_t len)
++{
++
++	return snprintf(str, len, "%s", mproc);
++}
+ #else
+ static const char *mproc =
+ #if defined(__alpha__)
+@@ -368,6 +375,9 @@ if_vimaster(__unused struct dhcpcd_ctx *ctx, __unused const char *ifname)
+ unsigned short
+ if_vlanid(const struct interface *ifp)
+ {
++#if defined(__managarm__)
++	return 0;
++#else
+ 	struct vlan_ioctl_args v;
+ 
+ 	memset(&v, 0, sizeof(v));
+@@ -376,6 +386,7 @@ if_vlanid(const struct interface *ifp)
+ 	if (ioctl(ifp->ctx->pf_inet_fd, SIOCGIFVLAN, &v) != 0)
+ 		return 0; /* 0 means no VLANID */
+ 	return (unsigned short)v.u.VID;
++#endif
+ }
+ 
+ int
+diff --git a/src/if.c b/src/if.c
+index b00f5e6..6131655 100644
+--- a/src/if.c
++++ b/src/if.c
+@@ -659,7 +659,7 @@ if_discover(struct dhcpcd_ctx *ctx, struct ifaddrs **ifaddrs,
+ 			active = if_check_arphrd(ifp, active, if_noconf);
+ #endif
+ 		}
+-#ifdef __linux__
++#if defined(__linux__) || defined(__managarm__)
+ 		else {
+ 			struct ifreq ifr = { .ifr_flags = 0 };
+ 
+diff --git a/src/if.h b/src/if.h
+index d24fbc9..9a80731 100644
+--- a/src/if.h
++++ b/src/if.h
+@@ -257,7 +257,7 @@ int if_machinearch(char *, size_t);
+ struct interface *if_findifpfromcmsg(struct dhcpcd_ctx *,
+     struct msghdr *, int *);
+ 
+-#ifdef __linux__
++#if defined(__linux__) || defined(__managarm__)
+ int if_linksocket(struct sockaddr_nl *, int, int);
+ int if_getnetlink(struct dhcpcd_ctx *, struct iovec *, int, int,
+     int (*)(struct dhcpcd_ctx *, void *, struct nlmsghdr *), void *);
+diff --git a/src/ipv4.h b/src/ipv4.h
+index 6c0ac8e..650d873 100644
+--- a/src/ipv4.h
++++ b/src/ipv4.h
+@@ -76,7 +76,7 @@
+ #define IN_ARE_ADDR_EQUAL(a, b)		((a)->s_addr == (b)->s_addr)
+ #define IN_IS_ADDR_UNSPECIFIED(a)	((a)->s_addr == INADDR_ANY)
+ 
+-#ifdef __linux__
++#if defined(__linux__) || defined(__managarm__)
+ #define IP_LIFETIME
+ #endif
+ 
+diff --git a/src/ipv6.h b/src/ipv6.h
+index 1fe1d5c..c2e8ffd 100644
+--- a/src/ipv6.h
++++ b/src/ipv6.h
+@@ -35,7 +35,7 @@
+ #include "config.h"
+ #include "if.h"
+ 
+-#ifndef __linux__
++#if !defined(__linux__) && !defined(__managarm__)
+ #  if !defined(__QNX__) && !defined(__sun)
+ #    include <sys/endian.h>
+ #  endif
+diff --git a/src/logerr.c b/src/logerr.c
+index 7a650e8..6e89251 100644
+--- a/src/logerr.c
++++ b/src/logerr.c
+@@ -72,7 +72,7 @@ static struct logctx _logctx = {
+ 	.log_pid = 0,
+ };
+ 
+-#if defined(__linux__)
++#if defined(__linux__) || defined(__managarm__)
+ /* Poor man's getprogname(3). */
+ static char *_logprog;
+ static const char *
+diff --git a/src/privsep-linux.c b/src/privsep-linux.c
+index ee2e22d..a6b519b 100644
+--- a/src/privsep-linux.c
++++ b/src/privsep-linux.c
+@@ -29,7 +29,9 @@
+ #include <sys/ioctl.h>
+ #include <sys/prctl.h>
+ #include <sys/socket.h>
++#ifdef __linux__
+ #include <sys/syscall.h>
++#endif
+ #include <sys/termios.h>	/* For TCGETS */
+ 
+ #include <linux/audit.h>
+diff --git a/src/route.h b/src/route.h
+index 45f0e1a..fd4bc74 100644
+--- a/src/route.h
++++ b/src/route.h
+@@ -55,7 +55,7 @@
+ /* Some systems have route metrics.
+  * OpenBSD route priority is not this. */
+ #ifndef HAVE_ROUTE_METRIC
+-# if defined(__linux__)
++# if defined(__linux__) || defined(__managarm__)
+ #  define HAVE_ROUTE_METRIC 1
+ # endif
+ #endif
+-- 
+2.44.0
+
