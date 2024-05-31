@@ -14,7 +14,7 @@ main_subparsers = main_parser.add_subparsers()
 # ---------------------------------------------------------------------------------------
 
 def qemu_check_nic(qemu, args, nic):
-    out = subprocess.check_output([qemu] + args + ["-net", "nic,model=?"], encoding="ascii")
+    out = subprocess.check_output([qemu] + args + ["-nic", "?"], encoding="ascii")
     for line in out.splitlines():
         if line == nic:
             return True
@@ -166,6 +166,9 @@ def do_qemu(args):
     elif args.nic == "virtio":
         qemu_check_nic(qemu, qemu_args, "virtio-net-pci")
         qemu_args += ["-device", "virtio-net,disable-modern=on,netdev=net0"]
+    elif args.nic == "usb":
+        qemu_check_nic(qemu, qemu_args, "usb-net")
+        qemu_args += ["-device", "usb-net,netdev=net0"]
 
     if args.pci_passthrough:
         qemu_args += ["-device", f"vfio-pci,host={args.pci_passthrough}"]
@@ -271,7 +274,7 @@ qemu_parser.add_argument(
     default="virtio",
 )
 qemu_parser.add_argument("--net-bridge", action="store_true")
-qemu_parser.add_argument("--nic", choices=["i8254x", "virtio", "rtl8139", "none"], default="virtio")
+qemu_parser.add_argument("--nic", choices=["i8254x", "virtio", "rtl8139", "usb", "none"], default="virtio")
 qemu_parser.add_argument("--gfx", choices=["bga", "virtio", "vmware"], default="default")
 qemu_parser.add_argument("--ps2", action="store_true")
 qemu_parser.add_argument("--mouse", action="store_true")
