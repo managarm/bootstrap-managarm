@@ -1048,6 +1048,45 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
+  - name: libnl
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Libraries providing APIs to netlink protocol based Linux kernel interfaces
+      description: The libnl suite is a collection of libraries providing APIs to netlink protocol based Linux kernel interfaces.
+      spdx: 'LGPL-2.1-only'
+      website: 'https://www.infradead.org/~tgr/libnl/'
+      maintainer: 'Dennis Bonke <dennis@managarm.org>'
+      categories: ['dev-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/thom311/libnl.git'
+      tag: 'libnl3_9_0'
+      version: '3.9.0'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['./autogen.sh']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+    revision: 1
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--sysconfdir=/etc'
+        - '--disable-static'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   # The mirroring task doesn't respect stability_level, comment out the port for now.
   #- name: libotf
   #  stability_level: 'broken' # Apparently salsa.debian.org is returning 403.

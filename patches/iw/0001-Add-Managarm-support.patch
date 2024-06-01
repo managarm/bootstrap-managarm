@@ -1,0 +1,65 @@
+From e008b521a42b014efc1cc6d43564da6501ac5d90 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Sat, 1 Jun 2024 15:17:27 +0200
+Subject: [PATCH] Add Managarm support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ Makefile       | 2 +-
+ measurements.c | 1 +
+ nan.c          | 1 +
+ util.c         | 1 +
+ 4 files changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index 17be33f..7a23300 100644
+--- a/Makefile
++++ b/Makefile
+@@ -123,7 +123,7 @@ install: iw iw.8.gz
+ 	$(Q)$(INSTALL) -m 755 iw $(DESTDIR)$(SBINDIR)
+ 	@$(NQ) ' INST iw.8'
+ 	$(Q)$(MKDIR) $(DESTDIR)$(MANDIR)/man8/
+-	$(Q)$(INSTALL) -m 644 iw.8.gz $(DESTDIR)$(MANDIR)/man8/
++	$(Q)$(INSTALL) -m 644 iw.8 $(DESTDIR)$(MANDIR)/man8/
+ 
+ clean:
+ 	$(Q)rm -f iw *.o *~ *.gz version.c *-stamp nl80211-commands.inc
+diff --git a/measurements.c b/measurements.c
+index 89cbbfe..d35a299 100644
+--- a/measurements.c
++++ b/measurements.c
+@@ -3,6 +3,7 @@
+ #include "nl80211.h"
+ #include "iw.h"
+ #include <unistd.h>
++#include <strings.h>
+ 
+ SECTION(measurement);
+ 
+diff --git a/nan.c b/nan.c
+index 1d8d795..12d5aa7 100644
+--- a/nan.c
++++ b/nan.c
+@@ -1,6 +1,7 @@
+ #include <net/if.h>
+ #include <errno.h>
+ #include <string.h>
++#include <strings.h>
+ 
+ #include <netlink/genl/genl.h>
+ #include <netlink/genl/family.h>
+diff --git a/util.c b/util.c
+index d36dbdc..a4aa220 100644
+--- a/util.c
++++ b/util.c
+@@ -2,6 +2,7 @@
+ #include <netlink/attr.h>
+ #include <errno.h>
+ #include <stdbool.h>
++#include <strings.h>
+ #include "iw.h"
+ #include "nl80211.h"
+ 
+-- 
+2.45.1
+
