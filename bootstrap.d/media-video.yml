@@ -1,0 +1,34 @@
+packages:
+  - name: gnome-video-effects
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Effects for Cheese, the webcam video and picture application
+      description: This package contains a collection of GStreamer effects.
+      spdx: 'GPL-2.0-only'
+      website: 'https://wiki.gnome.org/Projects/GnomeVideoEffects'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-video']
+    source:
+      subdir: ports
+      git: 'https://gitlab.gnome.org/GNOME/gnome-video-effects.git'
+      tag: '0.6.0'
+      version: '0.6.0'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=release'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'

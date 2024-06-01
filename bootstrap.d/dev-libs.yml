@@ -406,6 +406,76 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: gjs
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Javascript bindings for GNOME
+      description: This package provides a set of Javascript bindings for GNOME.
+      spdx: 'MIT'
+      website: 'https://wiki.gnome.org/Projects/Gjs'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.gnome.org/GNOME/gjs.git'
+      tag: '1.78.3'
+      version: '1.78.3'
+    tools_required:
+      - system-gcc
+      - wayland-scanner
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+      - host-mlibc
+      - host-gobject-introspection
+      - host-python
+      - host-glib
+    pkgs_required:
+      - mlibc
+      - cairo
+      - dbus
+      - spidermonkey
+      - gtk+-3
+      - gtk4
+      - gobject-introspection
+      - readline
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--buildtype=release'
+        - '--wrap-mode=nodownload'
+        - '-Dinstalled_tests=false'
+        - '-Dskip_dbus_tests=true'
+        - '-Dskip_gtk_tests=true'
+        - '@THIS_SOURCE_DIR@'
+        environ:
+          # Same as below
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
+    build:
+      - args: ['ninja']
+        environ:
+          # Make python load host libraries instead of the ones in the rootfs
+          LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-glib/lib:@BUILD_ROOT@/tools/host-glib/lib/x86_64-linux-gnu:@BUILD_ROOT@/tools/host-gobject-introspection/lib/x86_64-linux-gnu'
+          # Library path for our run-wrapper that allows it to load managarm libraries
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          # Similar to above, but using a nasty (but working) hack lets us use a Linux mlibc build to execute an
+          # executable that was cross-compiled for managarm
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
+          # This is a custom environment variable which tells g-ir-scanner what to use instead of ldd
+          # We point it at our native ldd-wrapper that's installed as part of host-gobject-introspection
+          GI_LDD_WRAPPER: ldd-wrapper
+          # This tells g-ir-scanner what program should be used for "cross-launching" the executables it builds
+          GI_CROSS_LAUNCHER: run-wrapper
+          # Path to the introspection data installed by other packages
+          GI_GIR_PATH: '@SYSROOT_DIR@/usr/share/gir-1.0'
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: glib
     labels: [aarch64]
     architecture: '@OPTION:arch@'
@@ -594,6 +664,67 @@ packages:
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: json-glib
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Library providing GLib serialization and deserialization for the JSON format
+      description: This package contains a library providing serialization and deserialization support for the JavaScript Object Notation (JSON) format described by RFC 4627.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://wiki.gnome.org/Projects/JsonGlib'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['gui-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.gnome.org/GNOME/json-glib.git'
+      tag: '1.8.0-actual'
+      version: '1.8.0'
+    tools_required:
+      - system-gcc
+      - wayland-scanner
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+      - host-mlibc
+      - host-gobject-introspection
+      - host-python
+    pkgs_required:
+      - mlibc
+      - glib
+      - gobject-introspection
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--buildtype=release'
+        - '--wrap-mode=nodownload'
+        - '@THIS_SOURCE_DIR@'
+        environ:
+          # Same as below
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
+    build:
+      - args: ['ninja']
+        environ:
+          # Make python load host libraries instead of the ones in the rootfs
+          LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-glib/lib:@BUILD_ROOT@/tools/host-glib/lib/x86_64-linux-gnu:@BUILD_ROOT@/tools/host-gobject-introspection/lib/x86_64-linux-gnu'
+          # Library path for our run-wrapper that allows it to load managarm libraries
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          # Similar to above, but using a nasty (but working) hack lets us use a Linux mlibc build to execute an
+          # executable that was cross-compiled for managarm
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
+          # This is a custom environment variable which tells g-ir-scanner what to use instead of ldd
+          # We point it at our native ldd-wrapper that's installed as part of host-gobject-introspection
+          GI_LDD_WRAPPER: ldd-wrapper
+          # This tells g-ir-scanner what program should be used for "cross-launching" the executables it builds
+          GI_CROSS_LAUNCHER: run-wrapper
+          # Path to the introspection data installed by other packages
+          GI_GIR_PATH: '@SYSROOT_DIR@/usr/share/gir-1.0'
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
@@ -796,6 +927,92 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+
+  - name: libgdata
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: GLib-based library for accessing online service APIs using the GData protocol
+      description: This package contains a GLib-based library for accessing online service APIs using the GData protocol, most notably, Google's services. It provides APIs to access the common Google services and has full asynchronous support.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://wiki.gnome.org/Projects/libgdata'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.gnome.org/GNOME/libgdata.git'
+      tag: '0.18.1'
+      version: '0.18.1'
+    tools_required:
+      - system-gcc
+      - wayland-scanner
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+      - host-vala
+      - host-mlibc
+      - host-gobject-introspection
+      - host-python
+    pkgs_required:
+      - mlibc
+      - glib
+      - json-glib
+      - libxml
+      - libsoup
+      - gcr3
+      - gnome-online-accounts
+      - gobject-introspection
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--buildtype=release'
+        - '--wrap-mode=nodownload'
+        - '-Dgtk_doc=false'
+        - '-Dalways_build_tests=false'
+        - '-Dgtk=disabled'
+        - '-Dgnome=enabled'
+        - '-Dgoa=enabled'
+        - '-Doauth1=disabled'
+        - '-Dinstalled_tests=false'
+        - '-Dman=true'
+        - '-Dvapi=true'
+        - '@THIS_SOURCE_DIR@'
+        environ:
+          # Same as below
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
+          VALADIR: '@SYSROOT_DIR@/usr/share/vala/vapi'
+          # Wrapper to add our valadir
+          VAPIGEN: 'cross-vapigen'
+          # Wrapper to add our valadir
+          VALAC: 'cross-valac'
+    build:
+      - args: ['ninja']
+        environ:
+          # Make python load host libraries instead of the ones in the rootfs
+          LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-glib/lib:@BUILD_ROOT@/tools/host-glib/lib/x86_64-linux-gnu:@BUILD_ROOT@/tools/host-gobject-introspection/lib/x86_64-linux-gnu'
+          # Library path for our run-wrapper that allows it to load managarm libraries
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          # Similar to above, but using a nasty (but working) hack lets us use a Linux mlibc build to execute an
+          # executable that was cross-compiled for managarm
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
+          # This is a custom environment variable which tells g-ir-scanner what to use instead of ldd
+          # We point it at our native ldd-wrapper that's installed as part of host-gobject-introspection
+          GI_LDD_WRAPPER: ldd-wrapper
+          # This tells g-ir-scanner what program should be used for "cross-launching" the executables it builds
+          GI_CROSS_LAUNCHER: run-wrapper
+          # Path to the introspection data installed by other packages
+          GI_GIR_PATH: '@SYSROOT_DIR@/usr/share/gir-1.0'
+          VALADIR: '@SYSROOT_DIR@/usr/share/vala/vapi'
+          # Wrapper to add our valadir
+          VALAC: 'cross-valac'
+          # Wrapper to add our valadir
+          VAPIGEN: 'cross-vapigen'
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libgee
     architecture: '@OPTION:arch@'
@@ -1127,6 +1344,84 @@ packages:
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: libportal
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Flatpak portal library
+      description: This package provides a library that contains GIO-style async APIs for most Flatpak portals.
+      spdx: 'LGPL-3.0-only'
+      website: 'https://github.com/flatpak/libportal'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/flatpak/libportal.git'
+      tag: '0.7.1'
+      version: '0.7.1'
+    tools_required:
+      - system-gcc
+      - wayland-scanner
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+      - host-vala
+      - host-mlibc
+      - host-gobject-introspection
+      - host-python
+    pkgs_required:
+      - mlibc
+      - glib
+      - gtk+-3
+      - gtk4
+      - gobject-introspection
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--buildtype=release'
+        - '--wrap-mode=nodownload'
+        - '-Dintrospection=true'
+        - '-Dvapi=true'
+        - '-Ddocs=false'
+        - '-Dportal-tests=false'
+        - '@THIS_SOURCE_DIR@'
+        environ:
+          # Same as below
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
+          VALADIR: '@SYSROOT_DIR@/usr/share/vala/vapi'
+          # Wrapper to add our valadir
+          VAPIGEN: 'cross-vapigen'
+          # Wrapper to add our valadir
+          VALAC: 'cross-valac'
+    build:
+      - args: ['ninja']
+        environ:
+          # Make python load host libraries instead of the ones in the rootfs
+          LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-glib/lib:@BUILD_ROOT@/tools/host-glib/lib/x86_64-linux-gnu:@BUILD_ROOT@/tools/host-gobject-introspection/lib/x86_64-linux-gnu'
+          # Library path for our run-wrapper that allows it to load managarm libraries
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          # Similar to above, but using a nasty (but working) hack lets us use a Linux mlibc build to execute an
+          # executable that was cross-compiled for managarm
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
+          # This is a custom environment variable which tells g-ir-scanner what to use instead of ldd
+          # We point it at our native ldd-wrapper that's installed as part of host-gobject-introspection
+          GI_LDD_WRAPPER: ldd-wrapper
+          # This tells g-ir-scanner what program should be used for "cross-launching" the executables it builds
+          GI_CROSS_LAUNCHER: run-wrapper
+          # Path to the introspection data installed by other packages
+          GI_GIR_PATH: '@SYSROOT_DIR@/usr/share/gir-1.0'
+          VALADIR: '@SYSROOT_DIR@/usr/share/vala/vapi'
+          # Wrapper to add our valadir
+          VALAC: 'cross-valac'
+          # Wrapper to add our valadir
+          VAPIGEN: 'cross-vapigen'
+      - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
@@ -1922,6 +2217,73 @@ packages:
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: totem-pl-parser
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Playlist parsing library
+      description: This package provides a simple GObject-based library used to parse multiple playlist formats.
+      spdx: 'LGPL-2.0-or-later'
+      website: 'https://developer.gnome.org/totem-pl-parser/stable/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.gnome.org/GNOME/totem-pl-parser.git'
+      tag: 'V_3_26_6'
+      version: '3.26.6'
+    tools_required:
+      - system-gcc
+      - wayland-scanner
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+      - host-mlibc
+      - host-gobject-introspection
+      - host-python
+    pkgs_required:
+      - mlibc
+      - glib
+      - libarchive
+      - libgcrypt
+      - libxml
+      - gobject-introspection
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--buildtype=release'
+        - '--wrap-mode=nodownload'
+        - '-Dintrospection=true'
+        - '-Denable-libarchive=yes'
+        - '-Denable-libgcrypt=yes'
+        - '@THIS_SOURCE_DIR@'
+        environ:
+          # Same as below
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
+    build:
+      - args: ['ninja']
+        environ:
+          # Make python load host libraries instead of the ones in the rootfs
+          LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-glib/lib:@BUILD_ROOT@/tools/host-glib/lib/x86_64-linux-gnu:@BUILD_ROOT@/tools/host-gobject-introspection/lib/x86_64-linux-gnu'
+          # Library path for our run-wrapper that allows it to load managarm libraries
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          # Similar to above, but using a nasty (but working) hack lets us use a Linux mlibc build to execute an
+          # executable that was cross-compiled for managarm
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
+          # This is a custom environment variable which tells g-ir-scanner what to use instead of ldd
+          # We point it at our native ldd-wrapper that's installed as part of host-gobject-introspection
+          GI_LDD_WRAPPER: ldd-wrapper
+          # This tells g-ir-scanner what program should be used for "cross-launching" the executables it builds
+          GI_CROSS_LAUNCHER: run-wrapper
+          # Path to the introspection data installed by other packages
+          GI_GIR_PATH: '@SYSROOT_DIR@/usr/share/gir-1.0'
+      - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 

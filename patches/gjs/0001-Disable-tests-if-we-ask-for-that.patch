@@ -1,0 +1,33 @@
+From 81bfc3765c6ef014c8391697a2bb1ceb75641bc9 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Mon, 29 Jan 2024 21:09:00 +0100
+Subject: [PATCH] Disable tests if we ask for that
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ meson.build | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/meson.build b/meson.build
+index e6b298f..e3e4d36 100644
+--- a/meson.build
++++ b/meson.build
+@@ -679,11 +679,13 @@ endif
+ 
+ ### Tests and test setups ######################################################
+ 
+-subdir('installed-tests')
++if get_option('installed_tests')
++    subdir('installed-tests')
++endif
+ 
+ # Note: The test program in test/ needs to be ported
+ #       to Windows before we can build it on Windows.
+-if host_machine.system() != 'windows'
++if host_machine.system() != 'windows' and host_machine.system() != 'managarm'
+     subdir('test')
+ endif
+ 
+-- 
+2.43.0
+
