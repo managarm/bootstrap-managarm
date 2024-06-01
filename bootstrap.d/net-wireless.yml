@@ -1,0 +1,32 @@
+packages:
+  - name: iw
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: nl80211 configuration utility for wireless devices using the mac80211 stack
+      description: iw is a new nl80211 based CLI configuration utility for wireless devices. It supports all new drivers that have been added to the kernel recently. The old tool iwconfig, which uses Wireless Extensions interface, is deprecated and it's strongly recommended to switch to iw and nl80211.
+      spdx: 'ISC'
+      website: 'https://wireless.wiki.kernel.org/en/users/Documentation/iw'
+      maintainer: 'Dennis Bonke <dennis@managarm.org>'
+      categories: ['net-wireless']
+    source:
+      subdir: ports
+      git: 'https://git.kernel.org/pub/scm/linux/kernel/git/jberg/iw.git'
+      tag: 'v6.9'
+      version: '6.9'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - libnl
+    revision: 1
+    configure:
+      # libnl does not seem to support out-of-tree builds, so we just copy
+      # the source tree into the build directory instead
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+        environ:
+          CC: '@OPTION:arch-triple@-gcc'
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
