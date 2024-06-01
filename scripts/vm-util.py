@@ -4,6 +4,7 @@ import argparse
 import os
 import shlex
 import subprocess
+import string
 import sys
 
 main_parser = argparse.ArgumentParser()
@@ -243,8 +244,16 @@ def do_qemu(args):
             "chardev:posix-gdbsocket",
         ]
 
-    # TODO: Add passthrough devices via:
-    #       -device usb-host,vendorid=0x17ef,productid=0x602d
+    if args.usb_passthrough:
+        for device in args.usb_passthrough:
+            if (len(device) != 9 or device[4] != ':'
+                or not all(c in string.hexdigits for c in device[0:4])
+                or not all(c in string.hexdigits for c in device[5:9])):
+
+                print(f"Invalid USB passthrough device '{device}'")
+                sys.exit(1)
+
+            qemu_args += ["-device", f"usb-host,vendorid=0x{device[0:4]},productid=0x{device[5:9]}"]
 
     # TODO: Support virtio-console via:
     #       -chardev file,id=virtio-trace,path=virtio-trace.bin
@@ -280,6 +289,7 @@ qemu_parser.add_argument("--ps2", action="store_true")
 qemu_parser.add_argument("--mouse", action="store_true")
 qemu_parser.add_argument("--init-launch", type=str, default="weston")
 qemu_parser.add_argument("--pci-passthrough", type=str)
+qemu_parser.add_argument("--usb-passthrough", type=str, action='append')
 qemu_parser.add_argument("--cmd", type=str)
 qemu_parser.add_argument("--use-system-qemu", action="store_true")
 
