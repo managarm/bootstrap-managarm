@@ -431,11 +431,7 @@ packages:
       website: 'https://gitlab.freedesktop.org/mesa/drm'
       maintainer: "no92 <leo@managarm.org>"
       categories: ['dev-libs']
-    source:
-      subdir: 'ports'
-      git: 'https://gitlab.freedesktop.org/mesa/drm'
-      tag: 'libdrm-2.4.115'
-      version: '2.4.115'
+    from_source: 'libdrm'
     tools_required:
       - system-gcc
     pkgs_required:

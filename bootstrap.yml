@@ -117,6 +117,12 @@ sources:
     rolling_version: true
     version: '0.0pl@ROLLING_ID@'
 
+  - name: libdrm
+    subdir: 'ports'
+    git: 'https://gitlab.freedesktop.org/mesa/drm'
+    tag: 'libdrm-2.4.115'
+    version: '2.4.115'
+
   - name: llvm
     subdir: 'ports'
     git: 'https://github.com/llvm/llvm-project'
@@ -170,6 +176,7 @@ sources:
     regenerate:
       - args: ['ln', '-sf', '@SOURCE_ROOT@/managarm', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/bragi', '@THIS_SOURCE_DIR@/subprojects/']
+      - args: ['ln', '-sf', '@BUILD_ROOT@/packages/libdrm-headers/usr/src/libdrm-headers', '@THIS_SOURCE_DIR@/subprojects/']
 
   - name: wayland
     subdir: 'ports'
@@ -1226,6 +1233,18 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
+  - name: libdrm-headers
+    architecture: '@OPTION:arch@'
+    from_source: 'libdrm'
+    build:
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/src/libdrm-headers']
+      - args: |
+          cat << EOF > @THIS_COLLECT_DIR@/usr/src/libdrm-headers/meson.build
+          project('libdrm-headers')
+          libdrm_dep = declare_dependency(include_directories: include_directories('include'))
+          EOF
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/include', '@THIS_COLLECT_DIR@/usr/src/libdrm-headers/include']
+
   # Deprecated in favor of openssl
   - name: libressl
     source:
@@ -1514,6 +1533,7 @@ packages:
     pkgs_required:
       - linux-headers
       - mlibc-headers
+      - libdrm-headers
       - frigg
     configure:
       - args:
