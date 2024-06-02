@@ -22,6 +22,31 @@ def qemu_check_nic(qemu, args, nic):
     print("QEMU does not support {} NICs".format(nic), file=sys.stderr)
     sys.exit(1)
 
+def qemu_process_usb_passthrough(device, pcap):
+    usb_aliases = {
+        "cp2102": "10c4:ea60",
+        "ft232": "0403:6001",
+    }
+
+    if device in usb_aliases:
+        devid = usb_aliases[device]
+    else:
+        devid = device
+
+    if (len(devid) != 9 or devid[4] != ':'
+        or not all(c in string.hexdigits for c in devid[0:4])
+        or not all(c in string.hexdigits for c in devid[5:9])):
+
+        print(f"Invalid USB passthrough device '{devid}'")
+        sys.exit(1)
+
+    devstr = f"usb-host,vendorid=0x{devid[0:4]},productid=0x{devid[5:9]}"
+
+    if pcap:
+        devstr += f",pcap={device}.pcap"
+
+    return ["-device", devstr]
+
 def do_qemu(args):
     qemu = os.environ.get("QEMU")
 
@@ -246,14 +271,11 @@ def do_qemu(args):
 
     if args.usb_passthrough:
         for device in args.usb_passthrough:
-            if (len(device) != 9 or device[4] != ':'
-                or not all(c in string.hexdigits for c in device[0:4])
-                or not all(c in string.hexdigits for c in device[5:9])):
+            qemu_args += qemu_process_usb_passthrough(device, False)
 
-                print(f"Invalid USB passthrough device '{device}'")
-                sys.exit(1)
-
-            qemu_args += ["-device", f"usb-host,vendorid=0x{device[0:4]},productid=0x{device[5:9]}"]
+    if args.usb_passthrough_pcap:
+        for device in args.usb_passthrough_pcap:
+            qemu_args += qemu_process_usb_passthrough(device, True)
 
     # TODO: Support virtio-console via:
     #       -chardev file,id=virtio-trace,path=virtio-trace.bin
@@ -290,6 +312,7 @@ qemu_parser.add_argument("--mouse", action="store_true")
 qemu_parser.add_argument("--init-launch", type=str, default="weston")
 qemu_parser.add_argument("--pci-passthrough", type=str)
 qemu_parser.add_argument("--usb-passthrough", type=str, action='append')
+qemu_parser.add_argument("--usb-passthrough-pcap", type=str, action='append')
 qemu_parser.add_argument("--cmd", type=str)
 qemu_parser.add_argument("--use-system-qemu", action="store_true")
 
