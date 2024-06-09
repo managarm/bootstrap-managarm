@@ -105,7 +105,7 @@ packages:
       categories: ['games-misc']
     source:
       subdir: 'ports'
-      url: 'https://electrode.codes/managarm-mirrors/openttd-opengfx/opengfx-7.1-all.zip'
+      url: 'https://github.com/managarm/managarm-mirrors/raw/openttd-opengfx/opengfx-7.1-all.zip'
       format: 'raw'
       filename: 'opengfx-7.1-all.zip'
       checksum: blake2b:337f15bf0f6d3c111a3ae1ca84601568a452922b2ced09f76d1fd5902c1a3da62153df35da490979b68c8d2a35d936a1fc6b7c06c18f934ae58a6e3535de315a
@@ -135,7 +135,7 @@ packages:
       categories: ['games-misc']
     source:
       subdir: 'ports'
-      url: 'https://electrode.codes/managarm-mirrors/openttd-openmsx/openmsx-0.4.2-all.zip'
+      url: 'https://github.com/managarm/managarm-mirrors/raw/openttd-openmsx/openmsx-0.4.2-all.zip'
       format: 'raw'
       filename: 'openmsx-0.4.2-all.zip'
       checksum: blake2b:4f72f7ab383ec64889a96e410b4d23e90058143cda812173dab24b6db474e5c1192c99e57f7620fab5f4c7a0b1599e5437025cb476ef1c4fe3ea6c91a8961466
@@ -165,7 +165,7 @@ packages:
       categories: ['games-misc']
     source:
       subdir: 'ports'
-      url: 'https://electrode.codes/managarm-mirrors/openttd-opensfx/opensfx-1.0.3-all.zip'
+      url: 'https://github.com/managarm/managarm-mirrors/raw/openttd-opensfx/opensfx-1.0.3-all.zip'
       format: 'raw'
       filename: 'opensfx-1.0.3-all.zip'
       checksum: blake2b:d2eb7f9734d048fc9ef9938805ed573751cfa0fce9ab3561b671cde10f408905442949a911c13024365aafaf525a5fa974cd43dc57de09352c8404025e0909a0
