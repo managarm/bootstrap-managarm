@@ -28,8 +28,8 @@ def qemu_process_usb_passthrough(device, pcap):
         "ft232": "0403:6001",
     }
 
-    if device in usb_aliases:
-        devid = usb_aliases[device]
+    if device.casefold() in usb_aliases:
+        devid = usb_aliases[device.casefold()]
     else:
         devid = device
 
