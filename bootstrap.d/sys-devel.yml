@@ -61,6 +61,28 @@ tools:
     install:
       - args: ['make', 'install']
 
+  - name: host-mold
+    labels: [aarch64, riscv64]
+    architecture: noarch
+    source:
+      subdir: ports
+      git: 'https://github.com/rui314/mold.git'
+      tag: 'v2.32.0'
+      version: '2.32.0'
+    tools_required:
+      - host-cmake
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=@PREFIX@'
+        - '-DCMAKE_BUILD_TYPE=Release'
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['cmake', '--build', '.', '--parallel', '@PARALLELISM@']
+    install:
+      - args: ['cmake', '--install', '.']
+
 packages:
   - name: bc
     architecture: '@OPTION:arch@'
