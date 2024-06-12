@@ -1,0 +1,25 @@
+From 062e822258f30361d2fa29c75da8b055258331b9 Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Wed, 12 Jun 2024 21:36:11 +0200
+Subject: [PATCH] Add managarm support
+
+---
+ configure.ac | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/configure.ac b/configure.ac
+index 314481d..0c5e3af 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -17,7 +17,7 @@ AC_DISABLE_STATIC
+ LT_INIT
+ CHECK_GCC_FVISIBILITY
+ case "$host" in
+-*-*-linux* | *-*-uclinux*) ;;
++*-*-linux* | *-*-uclinux* | *-*-managarm* ) ;;
+ *) AC_MSG_ERROR([Linux only, dude!]);;
+ esac
+ 
+-- 
+2.45.1
+
