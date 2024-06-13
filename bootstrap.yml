@@ -173,6 +173,7 @@ sources:
       - libdrm
       - managarm
       - bragi
+      - libdrm-headers
     regenerate:
       - args: ['ln', '-sf', '@SOURCE_ROOT@/managarm', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/bragi', '@THIS_SOURCE_DIR@/subprojects/']
