@@ -41,6 +41,28 @@ def qemu_process_usb_passthrough(device, pcap):
         print(f"Invalid USB passthrough device '{devid}'")
         sys.exit(1)
 
+    out = subprocess.check_output([
+        "udevadm", "trigger", "--verbose", "--dry-run", "--subsystem-match=usb",
+        f"--attr-match=idVendor={devid[0:4]}", f"--attr-match=idProduct={devid[5:9]}"
+    ]).splitlines()
+
+    if len(out) < 1:
+        print(f"USB passthrough device {devid} not found")
+        sys.exit(1)
+
+    attrs = subprocess.check_output(["udevadm", "info", out[0]]).splitlines()
+    uaccess_verified = False
+    for attr in attrs:
+        if not attr.startswith(b"E: CURRENT_TAGS="):
+            continue
+        if b"uaccess" in attr:
+            uaccess_verified = True
+            break
+
+    if not uaccess_verified:
+        print(f"USB passthrough device {devid} is not tagged 'uaccess' in udev")
+        sys.exit(1)
+
     devstr = f"usb-host,vendorid=0x{devid[0:4]},productid=0x{devid[5:9]}"
 
     if pcap:
