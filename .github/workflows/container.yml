@@ -5,11 +5,14 @@ on: [push, pull_request, workflow_dispatch]
 jobs:
     build-rootfs:
         name: Build cbuildrt rootfs
-        runs-on: ubuntu-22.04
+        runs-on: ubuntu-24.04
+        container: fedora:40
         steps:
           - name: Install prerequisites
             run: |
-                sudo apt-get install umoci
+                dnf -y install dnf-plugins-core wget docker skopeo
+                dnf -y copr enable ganto/umoci
+                dnf -y install umoci
           - name: Install rsync-ssl
             run: |
                 wget https://raw.githubusercontent.com/WayneD/rsync/c3f7414c450faaf6a8281cc4a4403529aeb7d859/rsync-ssl
