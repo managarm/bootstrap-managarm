@@ -203,7 +203,7 @@ def do_qemu(args):
     # Add networking.
     if args.net_bridge:
         qemu_args += ["-netdev", "tap,id=net0"]
-    else:
+    elif args.nic != "none":
         qemu_args += ["-netdev", "user,id=net0"]
 
     if args.nic == "i8254x":
