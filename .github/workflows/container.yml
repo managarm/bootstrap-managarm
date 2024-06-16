@@ -10,7 +10,7 @@ jobs:
         steps:
           - name: Install prerequisites
             run: |
-                dnf -y install dnf-plugins-core wget docker skopeo
+                dnf -y install dnf-plugins-core wget docker skopeo rsync
                 dnf -y copr enable ganto/umoci
                 dnf -y install umoci
           - name: Install rsync-ssl
