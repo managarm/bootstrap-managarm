@@ -26,10 +26,11 @@ def qemu_process_usb_passthrough(device, pcap):
     usb_aliases = {
         "cp2102": "10c4:ea60",
         "ft232": "0403:6001",
+        "ax88179": "0b95:1790",
     }
 
-    if device in usb_aliases:
-        devid = usb_aliases[device]
+    if device.casefold() in usb_aliases:
+        devid = usb_aliases[device.casefold()]
     else:
         devid = device
 
@@ -38,6 +39,28 @@ def qemu_process_usb_passthrough(device, pcap):
         or not all(c in string.hexdigits for c in devid[5:9])):
 
         print(f"Invalid USB passthrough device '{devid}'")
+        sys.exit(1)
+
+    out = subprocess.check_output([
+        "udevadm", "trigger", "--verbose", "--dry-run", "--subsystem-match=usb",
+        f"--attr-match=idVendor={devid[0:4]}", f"--attr-match=idProduct={devid[5:9]}"
+    ]).splitlines()
+
+    if len(out) < 1:
+        print(f"USB passthrough device {devid} not found")
+        sys.exit(1)
+
+    attrs = subprocess.check_output(["udevadm", "info", out[0]]).splitlines()
+    uaccess_verified = False
+    for attr in attrs:
+        if not attr.startswith(b"E: CURRENT_TAGS="):
+            continue
+        if b"uaccess" in attr:
+            uaccess_verified = True
+            break
+
+    if not uaccess_verified:
+        print(f"USB passthrough device {devid} is not tagged 'uaccess' in udev")
         sys.exit(1)
 
     devstr = f"usb-host,vendorid=0x{devid[0:4]},productid=0x{devid[5:9]}"
@@ -180,7 +203,7 @@ def do_qemu(args):
     # Add networking.
     if args.net_bridge:
         qemu_args += ["-netdev", "tap,id=net0"]
-    else:
+    elif args.nic != "none":
         qemu_args += ["-netdev", "user,id=net0"]
 
     if args.nic == "i8254x":
