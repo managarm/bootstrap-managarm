@@ -1,0 +1,31 @@
+From f0239f4a7ee220abee872ae43a66bb50da599516 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Tue, 2 Apr 2024 22:44:30 +0200
+Subject: [PATCH 3/4] m4: Take the scanner, compiler and generator from the
+ environment
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ m4/introspection.m4 | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/m4/introspection.m4 b/m4/introspection.m4
+index b0ccd68..400121b 100644
+--- a/m4/introspection.m4
++++ b/m4/introspection.m4
+@@ -102,9 +102,9 @@ m4_define([_GOBJECT_INTROSPECTION_CHECK_INTERNAL],
+     INTROSPECTION_GIRDIR=
+     INTROSPECTION_TYPELIBDIR=
+     if test "x$found_introspection" = "xyes"; then
+-       INTROSPECTION_SCANNER=$PKG_CONFIG_SYSROOT_DIR`$PKG_CONFIG --variable=g_ir_scanner gobject-introspection-1.0`
+-       INTROSPECTION_COMPILER=$PKG_CONFIG_SYSROOT_DIR`$PKG_CONFIG --variable=g_ir_compiler gobject-introspection-1.0`
+-       INTROSPECTION_GENERATE=$PKG_CONFIG_SYSROOT_DIR`$PKG_CONFIG --variable=g_ir_generate gobject-introspection-1.0`
++       INTROSPECTION_SCANNER=$INTROSPECTION_SCANNER_ENV
++       INTROSPECTION_COMPILER=$INTROSPECTION_COMPILER_ENV
++       INTROSPECTION_GENERATE=$INTROSPECTION_GENERATE_ENV
+        INTROSPECTION_GIRDIR=`$PKG_CONFIG --define-variable=datadir="${_GI_EXP_DATADIR}" --variable=girdir gobject-introspection-1.0`
+        INTROSPECTION_TYPELIBDIR="$($PKG_CONFIG --define-variable=libdir="${_GI_EXP_LIBDIR}" --variable=typelibdir gobject-introspection-1.0)"
+        INTROSPECTION_CFLAGS=`$PKG_CONFIG --cflags gobject-introspection-1.0`
+-- 
+2.45.1
+

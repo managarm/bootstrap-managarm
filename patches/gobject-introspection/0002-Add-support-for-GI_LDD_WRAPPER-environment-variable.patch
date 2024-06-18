@@ -1,8 +1,9 @@
-From 32cf1a4dcc4147b5c08c894814d383fecf69eded Mon Sep 17 00:00:00 2001
+From 178261c3ae1d5f1e0b1d00de5224d22072c98269 Mon Sep 17 00:00:00 2001
 From: 48cf <32851089+48cf@users.noreply.github.com>
 Date: Tue, 23 Jan 2024 23:03:49 +0100
-Subject: [PATCH] Add support for GI_LDD_WRAPPER environment variable
+Subject: [PATCH 2/4] Add support for GI_LDD_WRAPPER environment variable
 
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
  giscanner/shlibs.py | 3 +++
  1 file changed, 3 insertions(+)
@@ -24,5 +25,5 @@ index 9f8ab5d..7b457a8 100644
              args.extend(['otool', '-L', binary.args[0]])
          else:
 -- 
-2.43.0
+2.45.1
 

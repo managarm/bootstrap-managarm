@@ -1,0 +1,27 @@
+From 3bb6d75e5e2b6bfec45e23a3b03b84e209f7b6a6 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Tue, 18 Jun 2024 16:17:12 +0200
+Subject: [PATCH 4/4] Graphene workaround
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ giscanner/ccompiler.py | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/giscanner/ccompiler.py b/giscanner/ccompiler.py
+index 2912fe0..42eff5b 100644
+--- a/giscanner/ccompiler.py
++++ b/giscanner/ccompiler.py
+@@ -250,7 +250,8 @@ class CCompiler(object):
+                     else:
+                         args.append('-Wl,-rpath,' + library_path)
+ 
+-            runtime_paths.append(library_path)
++            if 'system-root' not in library_path: # Managarm workaround, might break self-hosting?
++                runtime_paths.append(library_path)
+ 
+         for library in libraries + extra_libraries:
+             if self.check_is_msvc():
+-- 
+2.45.1
+
