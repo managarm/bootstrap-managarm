@@ -1492,6 +1492,7 @@ packages:
     pkgs_required:
       - libdrm-headers
       - linux-headers
+    revision: 2
     configure:
       - args: ['ln', '-sf', '@SYSROOT_DIR@/usr/src/libdrm-headers', '@THIS_SOURCE_DIR@/subprojects/']
       - args:
@@ -1512,7 +1513,7 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
-        quiet: true
+        # quiet: true
 
   - name: mlibc
     metadata:
@@ -1536,6 +1537,7 @@ packages:
       - mlibc-headers
       - libdrm-headers
       - frigg
+    revision: 2
     configure:
       - args: ['ln', '-sf', '@SYSROOT_DIR@/usr/src/libdrm-headers', '@THIS_SOURCE_DIR@/subprojects/']
       - args:
@@ -1558,7 +1560,7 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
-        quiet: true
+        # quiet: true
       - args: ['ln', '-sf', 'crt0.o', '@THIS_COLLECT_DIR@/usr/lib/crt1.o']
 
   - name: mlibc-docs
