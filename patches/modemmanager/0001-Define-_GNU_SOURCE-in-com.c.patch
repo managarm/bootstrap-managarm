@@ -1,0 +1,24 @@
+From 34723f4b7f486b06e10570cdba9eb47f12d2419e Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Wed, 14 Jan 2026 22:38:58 +0100
+Subject: [PATCH] Define _GNU_SOURCE in com.c
+
+---
+ libqcdm/src/com.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/libqcdm/src/com.c b/libqcdm/src/com.c
+index d6283e0..3b63c82 100644
+--- a/libqcdm/src/com.c
++++ b/libqcdm/src/com.c
+@@ -15,6 +15,7 @@
+  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  */
+ 
++#define _GNU_SOURCE
+ #include <errno.h>
+ #include <termios.h>
+ #include <fcntl.h>
+-- 
+2.51.0
+
