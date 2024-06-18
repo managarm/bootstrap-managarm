@@ -176,7 +176,6 @@ sources:
     regenerate:
       - args: ['ln', '-sf', '@SOURCE_ROOT@/managarm', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/bragi', '@THIS_SOURCE_DIR@/subprojects/']
-      - args: ['ln', '-sf', '@BUILD_ROOT@/packages/libdrm-headers/usr/src/libdrm-headers', '@THIS_SOURCE_DIR@/subprojects/']
 
   - name: wayland
     subdir: 'ports'
@@ -1494,6 +1493,7 @@ packages:
       - libdrm-headers
       - linux-headers
     configure:
+      - args: ['ln', '-sf', '@SYSROOT_DIR@/usr/src/libdrm-headers', '@THIS_SOURCE_DIR@/subprojects/']
       - args:
         - 'meson'
         - 'setup'
@@ -1537,6 +1537,7 @@ packages:
       - libdrm-headers
       - frigg
     configure:
+      - args: ['ln', '-sf', '@SYSROOT_DIR@/usr/src/libdrm-headers', '@THIS_SOURCE_DIR@/subprojects/']
       - args:
         - 'meson'
         - 'setup'
