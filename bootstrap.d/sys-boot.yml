@@ -23,6 +23,7 @@ tools:
     architecture: '@OPTION:arch@'
     from_source: limine
     containerless: true
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

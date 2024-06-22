@@ -1579,7 +1579,9 @@ packages:
       - linux-headers
       - mlibc-headers
       - frigg
+    revision: 2
     configure:
+      - args: ['ln', '-sf', '@SYSROOT_DIR@/usr/src/libdrm-headers', '@THIS_SOURCE_DIR@/subprojects/']
       - args:
         - 'meson'
         - 'setup'
