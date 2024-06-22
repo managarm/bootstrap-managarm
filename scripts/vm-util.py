@@ -14,6 +14,14 @@ main_subparsers = main_parser.add_subparsers()
 # qemu subcommand.
 # ---------------------------------------------------------------------------------------
 
+def qemu_check_device(qemu, args, dev):
+    out = subprocess.check_output([qemu] + args + ["-device", "?"], encoding="ascii")
+    for line in out.splitlines():
+        if line.startswith(f"name \"{dev}\""):
+            return True
+    print("QEMU does not support device {}".format(dev), file=sys.stderr)
+    sys.exit(1)
+
 def qemu_check_nic(qemu, args, nic):
     out = subprocess.check_output([qemu] + args + ["-nic", "?"], encoding="ascii")
     for line in out.splitlines():
@@ -300,6 +308,14 @@ def do_qemu(args):
         for device in args.usb_passthrough_pcap:
             qemu_args += qemu_process_usb_passthrough(device, True)
 
+    if args.usb_redir:
+        qemu_check_device(qemu, qemu_args, 'usb-redir')
+
+        for num, server in enumerate(args.usb_redir):
+            [host, port] = server.rsplit(':', 1)
+            qemu_args += ["-chardev", f"socket,id=usb-redir-chardev{num},port={port},host={host}"]
+            qemu_args += ["-device", f"usb-redir,chardev=usb-redir-chardev{num},id=usb-redir{num},bus=xhci.0"]
+
     # TODO: Support virtio-console via:
     #       -chardev file,id=virtio-trace,path=virtio-trace.bin
     #       -device virtio-serial -device virtconsole,chardev=virtio-trace
@@ -336,6 +352,7 @@ qemu_parser.add_argument("--init-launch", type=str, default="weston")
 qemu_parser.add_argument("--pci-passthrough", type=str)
 qemu_parser.add_argument("--usb-passthrough", type=str, action='append')
 qemu_parser.add_argument("--usb-passthrough-pcap", type=str, action='append')
+qemu_parser.add_argument("--usb-redir", type=str, action='append')
 qemu_parser.add_argument("--cmd", type=str)
 qemu_parser.add_argument("--use-system-qemu", action="store_true")
 
