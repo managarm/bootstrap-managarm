@@ -5,6 +5,12 @@ sources:
     tag: 'v6.3.0'
     version: '6.3.0'
 
+  - name: kwindowsystem
+    subdir: 'ports'
+    git: 'https://github.com/KDE/kwindowsystem.git'
+    tag: 'v6.3.0'
+    version: '6.3.0'
+
 tools:
   - name: host-ecm
     architecture: noarch
@@ -22,3 +28,60 @@ tools:
       - args: ['cmake', '--build', '.', '--parallel', '@PARALLELISM@']
     install:
       - args: ['cmake', '--install', '.']
+
+packages:
+  - name: kwindowsystem
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Framework providing access to properties and features of the window manager
+      description: This package provides a framework providing access to properties and features of the window manager.
+      spdx: 'LGPL-2.1-only LGPL-3.0-only MIT'
+      website: 'https://develop.kde.org/products/frameworks/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['kde-frameworks']
+    from_source: kwindowsystem
+    tools_required:
+      - system-gcc
+      - host-cmake
+      - host-qt6
+      - host-ecm
+      - wayland-scanner
+    pkgs_required:
+      - mlibc
+      - qtbase6
+      - qtdeclarative6
+      - qtwayland6
+      - plasma-wayland-protocols
+      - wayland-protocols
+      - libx11
+      - libxcb
+      - libxfixes
+      - xorg-proto
+      - xcb-util-keysyms
+      - libice
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=/usr/lib/qt6/qml'
+        - '-DKDE_INSTALL_QTPLUGINDIR=/usr/lib/qt6/plugins'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '-DKWINDOWSYSTEM_WAYLAND=TRUE'
+        - '-DKWINDOWSYSTEM_X11=TRUE'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
