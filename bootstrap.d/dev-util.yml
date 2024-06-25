@@ -35,6 +35,26 @@ tools:
       - args: ['make', 'install']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/scripts/managarm.cmake', '@PREFIX@/share/cmake-3.26/Modules/Platform/']
 
+  - name: host-lxqt-build-tools
+    architecture: noarch
+    source:
+      subdir: ports
+      git: 'https://github.com/lxqt/lxqt-build-tools.git'
+      tag: '2.0.0'
+      version: '2.0.0'
+    tools_required:
+      - host-qt6
+      - host-cmake
+    configure:
+      - args:
+        - 'cmake'
+        - '-DCMAKE_INSTALL_PREFIX=@PREFIX@'
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'install']
+
   # We could run an external pkg-config; however, we need the aclocal files.
   # The easiest way to ensure that they are available is to just install pkg-config.
   - name: host-pkg-config
