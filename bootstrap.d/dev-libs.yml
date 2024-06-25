@@ -1970,6 +1970,41 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: plasma-wayland-protocols
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Plasma Specific Protocols for Wayland
+      description: This package provides the Plasma Specific Protocols for Wayland
+      spdx: 'LGPL-2.1-only'
+      website: 'https://invent.kde.org/libraries/plasma-wayland-protocols'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/KDE/plasma-wayland-protocols.git'
+      tag: 'v1.13.0'
+      version: '1.13.0'
+    tools_required:
+      - system-gcc
+      - wayland-scanner
+      - host-cmake
+      - host-ecm
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: popt
     architecture: '@OPTION:arch@'
     source:
