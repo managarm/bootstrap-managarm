@@ -1,0 +1,24 @@
+sources:
+  - name: extra-cmake-modules
+    subdir: 'ports'
+    git: 'https://github.com/KDE/extra-cmake-modules.git'
+    tag: 'v6.3.0'
+    version: '6.3.0'
+
+tools:
+  - name: host-ecm
+    architecture: noarch
+    from_source: extra-cmake-modules
+    tools_required:
+      - host-cmake
+      - host-ninja
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=@PREFIX@'
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['cmake', '--build', '.', '--parallel', '@PARALLELISM@']
+    install:
+      - args: ['cmake', '--install', '.']
