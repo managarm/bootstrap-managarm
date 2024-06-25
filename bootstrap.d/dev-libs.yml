@@ -1169,6 +1169,44 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: libqtxdg
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Qt implementation of freedesktop.org xdg specs
+      description: This package provides a Qt implementation of freedesktop.org xdg specs.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://lxqt-project.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
+    source:
+      subdir: ports
+      git: 'https://github.com/lxqt/libqtxdg.git'
+      tag: '4.0.0'
+      version: '4.0.0'
+    tools_required:
+      - host-cmake
+      - system-gcc
+      - host-lxqt-build-tools
+    pkgs_required:
+      - mlibc
+      - glib
+      - qtbase6
+      - qtsvg6
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_BUILD_TYPE=Release'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DBUILD_SHARED_LIBS=ON'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: libtasn
     labels: [aarch64]
     architecture: '@OPTION:arch@'
