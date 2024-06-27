@@ -1,0 +1,44 @@
+From da6e2a73f6e41a333f5c71ec0597d4c0b12a61a9 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Sun, 11 Feb 2024 14:26:03 +0100
+Subject: [PATCH] Add Managarm support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ src/lib/CMakeLists.txt         | 2 +-
+ src/lib/io/kfilesystemtype.cpp | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/src/lib/CMakeLists.txt b/src/lib/CMakeLists.txt
+index 00ab870..f59f516 100644
+--- a/src/lib/CMakeLists.txt
++++ b/src/lib/CMakeLists.txt
+@@ -20,7 +20,7 @@ if(UNIX)
+     endif()
+     check_dladdr()
+ 
+-    add_feature_info(dladdr ${HAVE_DLADDR} "Can resolve shared library paths and by extension libexec paths at runtime using dladdr() API")
++#    add_feature_info(dladdr ${HAVE_DLADDR} "Can resolve shared library paths and by extension libexec paths at runtime using dladdr() API")
+ endif()
+ 
+ set(ACCOUNTS_SERVICE_ICON_DIR "/var/lib/AccountsService/icons" CACHE STRING "Accounts Services icon storage directory")
+diff --git a/src/lib/io/kfilesystemtype.cpp b/src/lib/io/kfilesystemtype.cpp
+index fe3631f..26d7cd1 100644
+--- a/src/lib/io/kfilesystemtype.cpp
++++ b/src/lib/io/kfilesystemtype.cpp
+@@ -75,10 +75,10 @@ KFileSystemType::Type determineFileSystemTypeImpl(const QByteArray &path)
+     return kde_typeFromName(buf.f_fstypename);
+ }
+ 
+-#elif defined(Q_OS_LINUX) || defined(Q_OS_HURD)
++#elif defined(Q_OS_LINUX) || defined(Q_OS_HURD) || defined(Q_OS_MANAGARM)
+ #include <sys/statfs.h>
+ 
+-#ifdef Q_OS_LINUX
++#if defined Q_OS_LINUX || defined(Q_OS_MANAGARM)
+ #include <linux/magic.h> // A lot of the filesystem superblock MAGIC numbers
+ #include <sys/stat.h>
+ #endif
+-- 
+2.45.2
+
