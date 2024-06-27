@@ -5,6 +5,12 @@ sources:
     tag: 'v6.3.0'
     version: '6.3.0'
 
+  - name: kconfig
+    subdir: 'ports'
+    git: 'https://github.com/KDE/kconfig.git'
+    tag: 'v6.3.0'
+    version: '6.3.0'
+
   - name: kwindowsystem
     subdir: 'ports'
     git: 'https://github.com/KDE/kwindowsystem.git'
@@ -28,6 +34,37 @@ tools:
       - args: ['cmake', '--build', '.', '--parallel', '@PARALLELISM@']
     install:
       - args: ['cmake', '--install', '.']
+
+  - name: host-kconfig
+    architecture: noarch
+    from_source: kconfig
+    tools_required:
+      - host-cmake
+      - host-qt6
+      - host-ecm
+      - host-ninja
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=@PREFIX@'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=@PREFIX@/lib/qt6/qml'
+        - '-DKDE_INSTALL_LIBEXECDIR_KF=@PREFIX@/libexec'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '-DKCONFIG_USE_DBUS=TRUE'
+        - '-DKCONFIG_USE_QML=TRUE'
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
 
 packages:
   - name: kwindowsystem
