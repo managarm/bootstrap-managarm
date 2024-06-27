@@ -172,3 +172,47 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
       - args: ['ln', '-sfv', '/usr/libexec/p11-kit/trust-extract-compat', '@THIS_COLLECT_DIR@/usr/bin/update-ca-certificates']
+
+  - name: qca
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Qt Cryptographic Architecture (QCA)
+      description: This package provides the Qt Cryptographic Architecture (QCA).
+      spdx: 'LGPL-2.1-only'
+      website: 'https://userbase.kde.org/QCA'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['app-crypt']
+    from_source: qca
+    tools_required:
+      - system-gcc
+      - host-cmake
+      - host-qt6
+      - host-ecm
+    pkgs_required:
+      - mlibc
+      - qtbase6
+      - qt5compat
+      - libgcrypt
+      - nss
+      - openssl
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DBUILD_WITH_QT6=ON'
+        - '-DQCA_FEATURE_INSTALL_DIR=/usr/lib/qt6/mkspecs/features'
+        - '-DQCA_PLUGINS_INSTALL_DIR=/usr/lib/qt6/plugins'
+        - '-DUSE_RELATIVE_PATHS=ON'
+        - '-DBUILD_TESTS=OFF'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: |
+          sed -i '/INTERFACE_INCLUDE_DIRECTORIES/s|"/usr|"${CMAKE_SYSROOT}/usr|g' @THIS_COLLECT_DIR@/usr/lib/cmake/Qca-qt6/Qca-qt6Targets.cmake
