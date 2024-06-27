@@ -57,3 +57,82 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+
+  - name: konversation
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: User friendly IRC Client
+      description: This package provides an User friendly IRC Client.
+      spdx: 'GPL-2.0-only'
+      website: 'https://konversation.kde.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['net-irc']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/KDE/konversation.git'
+      tag: 'v24.05.1'
+      version: '24.05.1'
+    tools_required:
+      - system-gcc
+      - host-cmake
+      - host-qt6
+      - host-ecm
+      - host-kconfig
+    pkgs_required:
+      - mlibc
+      - qt5compat
+      - qtbase6
+      - qtmultimedia6
+      - qtsvg6
+      - qca
+      - karchive
+      - kbookmarks
+      - kcodecs
+      - kcompletion
+      - kconfig
+      - kconfigwidgets
+      - kcoreaddons
+      - kcrash
+      - kdbusaddons
+      - kglobalaccel
+      - ki18n
+      - kidletime
+      - kio
+      - kitemviews
+      - knewstuff
+      - knotifications
+      - knotifyconfig
+      - kparts
+      - kservice
+      - kstatusnotifieritem
+      - ktextwidgets
+      - kwallet
+      - kwidgetsaddons
+      - kwindowsystem
+      - kxmlgui
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=/usr/lib/qt6/qml'
+        - '-DKDE_INSTALL_PLUGINDIR=/usr/lib/qt6/plugins'
+        - '-DKDE_INSTALL_QTPLUGINDIR=/usr/lib/qt6/plugins'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '-DKF6_HOST_TOOLING=@BUILD_ROOT@/tools/host-kconfig/lib/x86_64-linux-gnu/cmake/'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
