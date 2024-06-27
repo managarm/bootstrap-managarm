@@ -1,4 +1,10 @@
 sources:
+  - name: breeze-icons
+    subdir: 'ports'
+    git: 'https://github.com/KDE/breeze-icons.git'
+    tag: 'v6.3.0'
+    version: '6.3.0'
+
   - name: extra-cmake-modules
     subdir: 'ports'
     git: 'https://github.com/KDE/extra-cmake-modules.git'
@@ -84,6 +90,37 @@ sources:
     version: '6.3.0'
 
 tools:
+  - name: host-breeze-icons
+    architecture: noarch
+    from_source: breeze-icons
+    tools_required:
+      - host-cmake
+      - host-qt6
+      - host-ecm
+      - host-ninja
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=@PREFIX@'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=@PREFIX@/lib/qt6/qml'
+        - '-DKDE_INSTALL_LIBEXECDIR_KF=@PREFIX@/libexec'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '-DBINARY_ICONS_RESOURCE=ON'
+        - '-DSKIP_INSTALL_ICONS=OFF'
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
+
   - name: host-ecm
     architecture: noarch
     from_source: extra-cmake-modules
