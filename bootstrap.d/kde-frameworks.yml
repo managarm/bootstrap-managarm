@@ -119,6 +119,12 @@ sources:
     tag: 'v6.3.0'
     version: '6.3.0'
 
+  - name: kirigami
+    subdir: 'ports'
+    git: 'https://github.com/KDE/kirigami.git'
+    tag: 'v6.3.0'
+    version: '6.3.0'
+
   - name: kitemviews
     subdir: 'ports'
     git: 'https://github.com/KDE/kitemviews.git'
@@ -1173,6 +1179,54 @@ packages:
         - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
         - '-DWITH_WAYLAND=TRUE'
         - '-DWITH_X11=TRUE'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: kirigami
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Lightweight user interface framework for mobile and convergent applications
+      description: This package provides a lightweight user interface framework for mobile and convergent applications.
+      spdx: 'LGPL-2.0-or-later'
+      website: 'https://techbase.kde.org/Kirigami'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['kde-frameworks']
+    from_source: kirigami
+    tools_required:
+      - system-gcc
+      - host-cmake
+      - host-qt6
+      - host-ecm
+    pkgs_required:
+      - mlibc
+      - qtbase6
+      - qtdeclarative6
+      - qtsvg6
+      - qt5compat
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=/usr/lib/qt6/qml'
+        - '-DKDE_INSTALL_PLUGINDIR=/usr/lib/qt6/plugins'
+        - '-DKDE_INSTALL_QTPLUGINDIR=/usr/lib/qt6/plugins'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '-DBUILD_EXAMPLES=OFF'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
