@@ -95,6 +95,12 @@ sources:
     tag: 'v6.3.0'
     version: '6.3.0'
 
+  - name: kidletime
+    subdir: 'ports'
+    git: 'https://github.com/KDE/kidletime.git'
+    tag: 'v6.3.0'
+    version: '6.3.0'
+
   - name: knotifications
     subdir: 'ports'
     git: 'https://github.com/KDE/knotifications.git'
@@ -895,6 +901,61 @@ packages:
         - '-DKDE_INSTALL_QTPLUGINDIR=/usr/lib/qt6/plugins'
         ### end ecm.class
         - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: kidletime
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Framework for detection and notification of device idle time
+      description: This package provides a framework for detection and notification of device idle time.
+      spdx: 'LGPL-2.0-or-later'
+      website: 'https://develop.kde.org/products/frameworks/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['kde-frameworks']
+    from_source: kidletime
+    tools_required:
+      - system-gcc
+      - host-cmake
+      - host-qt6
+      - host-ecm
+      - wayland-scanner
+    pkgs_required:
+      - mlibc
+      - qtbase6
+      - qtwayland6
+      - wayland
+      - libx11
+      - libxcb
+      - libxext
+      - libxscrnsaver
+      - plasma-wayland-protocols
+      - wayland-protocols
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=/usr/lib/qt6/qml'
+        - '-DKDE_INSTALL_PLUGINDIR=/usr/lib/qt6/plugins'
+        - '-DKDE_INSTALL_QTPLUGINDIR=/usr/lib/qt6/plugins'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '-DWITH_WAYLAND=TRUE'
+        - '-DWITH_X11=TRUE'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
