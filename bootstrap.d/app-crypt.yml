@@ -1,3 +1,34 @@
+sources:
+  - name: qca
+    subdir: 'ports'
+    git: 'https://github.com/KDE/qca.git'
+    tag: 'v2.3.9'
+    version: '2.3.9'
+
+tools:
+  - name: host-qca
+    architecture: noarch
+    from_source: qca
+    tools_required:
+      - host-cmake
+      - host-qt6
+      - host-ninja
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=@PREFIX@/usr'
+        - '-DBUILD_WITH_QT6=ON'
+        - '-DQCA_FEATURE_INSTALL_DIR=@PREFIX@/usr/lib/qt6/mkspecs/features'
+        - '-DQCA_PLUGINS_INSTALL_DIR=@PREFIX@/usr/lib/qt6/plugins'
+        - '-DUSE_RELATIVE_PATHS=ON'
+        - '-DBUILD_TESTS=OFF'
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
+
 packages:
   - name: libsecret
     architecture: '@OPTION:arch@'
