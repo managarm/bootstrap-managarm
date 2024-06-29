@@ -23,6 +23,7 @@ tools:
     architecture: '@OPTION:arch@'
     from_source: limine
     containerless: true
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -33,6 +34,7 @@ tools:
         - '--enable-bios'
         - '--enable-bios-cd'
         - '--enable-bios-pxe'
+        - 'LDFLAGS=-static'
     compile:
       - args: ['make', '-j@PARALLELISM@']
     install:
