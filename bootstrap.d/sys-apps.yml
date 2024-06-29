@@ -510,6 +510,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
+      - libmnl
     revision: 6
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
