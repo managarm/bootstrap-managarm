@@ -23,6 +23,9 @@ imports:
   - file: bootstrap.d/gui-apps.yml
   - file: bootstrap.d/gui-libs.yml
   - file: bootstrap.d/gui-wm.yml
+  - file: bootstrap.d/kde-frameworks.yml
+  - file: bootstrap.d/kde-plasma.yml
+  - file: bootstrap.d/lxqt-base.yml
   - file: bootstrap.d/media-fonts.yml
   - file: bootstrap.d/media-gfx.yml
   - file: bootstrap.d/media-libs.yml

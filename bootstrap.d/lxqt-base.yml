@@ -1,0 +1,82 @@
+packages:
+  - name: liblxqt
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Common base library for the LXQt desktop environment
+      description: This package provides the core utility library for all LXQt components.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://lxqt-project.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['lxqt-base']
+    source:
+      subdir: ports
+      git: 'https://github.com/lxqt/liblxqt.git'
+      tag: '2.0.0'
+      version: '2.0.0'
+    tools_required:
+      - host-cmake
+      - system-gcc
+      - host-lxqt-build-tools
+    pkgs_required:
+      - mlibc
+      - libqtxdg
+      - qtbase6
+      - kwindowsystem
+      - libx11
+      - libxscrnsaver
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_BUILD_TYPE=Release'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DBUILD_SHARED_LIBS=ON'
+        - '-DBUILD_BACKLIGHT_LINUX_BACKEND=OFF'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: lxqt-notificationd
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: LXQt notification daemon and library
+      description: The lxqt-notificationd package is the LXQt notification daemon.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://lxqt-project.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['lxqt-base']
+    source:
+      subdir: ports
+      git: 'https://github.com/lxqt/lxqt-notificationd.git'
+      tag: '2.0.1'
+      version: '2.0.1'
+    tools_required:
+      - host-cmake
+      - system-gcc
+      - host-lxqt-build-tools
+      - host-qt6
+    pkgs_required:
+      - mlibc
+      - libqtxdg
+      - liblxqt
+      - layer-shell-qt
+      - kwindowsystem
+      - qtbase6
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DBUILD_SHARED_LIBS=ON'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'

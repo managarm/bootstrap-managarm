@@ -1,0 +1,29 @@
+From 7dbf497370dac35a8e2dba6b64eb13989f1ab4fb Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Fri, 29 Apr 2022 20:12:56 +0200
+Subject: [PATCH] Add support for NINJAJOBS
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ src/ninja.cc | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/src/ninja.cc b/src/ninja.cc
+index 471a023..5c1cb3f 100644
+--- a/src/ninja.cc
++++ b/src/ninja.cc
+@@ -227,6 +227,11 @@ void Usage(const BuildConfig& config) {
+ 
+ /// Choose a default value for the -j (parallelism) flag.
+ int GuessParallelism() {
++  int   j = 0;
++  char* jobs = getenv( "NINJAJOBS" );
++  if ( jobs != NULL ) j = atoi( jobs );
++  if ( j > 0 ) return j;
++
+   switch (int processors = GetProcessorCount()) {
+   case 0:
+   case 1:
+-- 
+2.36.0
+

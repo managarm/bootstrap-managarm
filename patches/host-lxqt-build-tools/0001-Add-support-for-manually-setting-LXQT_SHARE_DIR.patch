@@ -1,0 +1,30 @@
+From 6516b28be148235b3008e570c760cea0659ed0a6 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Tue, 25 Jun 2024 12:15:42 +0200
+Subject: [PATCH] Add support for manually setting LXQT_SHARE_DIR
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ CMakeLists.txt | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 6ba401f..c1011b0 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -33,7 +33,11 @@ endif()
+ 
+ set(LXQT_LIBRARY_NAME "lxqt" CACHE STRING "lxqt")
+ set(LXQT_RELATIVE_SHARE_DIR "${LXQT_LIBRARY_NAME}")
+-set(LXQT_SHARE_DIR "${CMAKE_INSTALL_FULL_DATAROOTDIR}/${LXQT_RELATIVE_SHARE_DIR}")
++
++if (NOT DEFINED LXQT_SHARE_DIR)
++    set(LXQT_SHARE_DIR "${CMAKE_INSTALL_FULL_DATAROOTDIR}/${LXQT_RELATIVE_SHARE_DIR}")
++endif()
++
+ set(LXQT_RELATIVE_TRANSLATIONS_DIR "${LXQT_LIBRARY_NAME}/translations")
+ set(LXQT_TRANSLATIONS_DIR "${LXQT_SHARE_DIR}/translations")
+ set(LXQT_GRAPHICS_DIR "${LXQT_SHARE_DIR}/graphics")
+-- 
+2.45.2
+
