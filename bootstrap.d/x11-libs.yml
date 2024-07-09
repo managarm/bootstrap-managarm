@@ -312,7 +312,7 @@ packages:
       - gsettings-desktop-schemas
       - dbus
       - libxinerama
-    revision: 7
+    revision: 8
     configure:
       - args:
         - 'meson'
@@ -325,7 +325,7 @@ packages:
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
         - '-Dprint_backends=file'
-        - '-Dintrospection=false' # Gobject introspection is broken again
+        - '-Dintrospection=true' # Gobject introspection is broken again
         - '-Dx11_backend=true'
         - '-Dbroadway_backend=true'
         - '-Dwayland_backend=true'
