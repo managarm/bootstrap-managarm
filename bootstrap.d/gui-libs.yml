@@ -1,6 +1,5 @@
 packages:
   - name: gtk4
-    stability_level: 'broken' # Downstream user of graphene and that is broken
     architecture: '@OPTION:arch@'
     metadata:
       summary: GTK is a multi-platform toolkit for creating graphical user interfaces
@@ -52,6 +51,7 @@ packages:
       - libxinerama
       - gobject-introspection
       - gst-plugins-good
+    revision: 1
     configure:
       - args:
         - 'meson'
