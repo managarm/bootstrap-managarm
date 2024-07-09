@@ -320,6 +320,7 @@ packages:
       - mlibc
       - glib
       - gobject-introspection
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -329,7 +330,7 @@ packages:
         - '--prefix=/usr'
         - '--buildtype=release'
         - '-Dgtk_doc=false'
-        - '-Dintrospection=disabled' # Broken because random segfault generating introspection files
+        - '-Dintrospection=enabled'
         - '-Dtests=false'
         - '-Dinstalled_tests=false'
         - '@THIS_SOURCE_DIR@'
