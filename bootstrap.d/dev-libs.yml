@@ -163,7 +163,7 @@ packages:
         - 'meson'
         - 'setup'
         - '--cross-file'
-        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@-appstream.cross-file'
         - '--prefix=/usr'
         - '--buildtype=release'
         - '-Dapidocs=false'
