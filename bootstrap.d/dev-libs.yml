@@ -85,7 +85,7 @@ tools:
       - host-pkg-config
       - virtual: pkgconfig-for-host
         program_name: host-pkg-config
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'meson'
