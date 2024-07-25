@@ -143,13 +143,13 @@ packages:
       - brotli
       - dbus
       - at-spi2-core
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
         - '-GNinja'
         - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/host-qt6'
-        - '-DCMAKE_INSTALL_PREFIX=@THIS_COLLECT_DIR@/usr'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_BUILD_TYPE=Debug'
         - '-DINSTALL_BINDIR=bin'
@@ -204,8 +204,14 @@ packages:
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
           PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
     build:
-      - args: ['cmake', '--build', '.', '--parallel', '@PARALLELISM@']
-      - args: ['cmake', '--install', '.']
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+      # Qt6 used to make some empty directories that we need to keep; this appears to no longer be the case.
+      # This command makes xbstrap error out if there are empty directories, since its not entirely guaranteed there wont be more again in the future,
+      # and chances are we will need to again place .keep files in them.
+      - args: ['find', '@THIS_COLLECT_DIR@/', '-type', 'd', '-empty', '-print', '-exec', 'false', '{}', '+']
 
   - name: qtdeclarative6
     architecture: '@OPTION:arch@'
