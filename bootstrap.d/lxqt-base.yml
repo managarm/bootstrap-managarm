@@ -73,6 +73,7 @@ packages:
       - args:
         - 'cmake'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/host-qt6'
         - '-DCMAKE_BUILD_TYPE=Debug'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DBUILD_SHARED_LIBS=ON'
