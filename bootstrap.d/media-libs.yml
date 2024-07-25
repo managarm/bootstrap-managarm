@@ -665,6 +665,56 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: libcanberra
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Portable sound event library
+      description: libcanberra is an implementation of the XDG Sound Theme and Name Specifications, for generating event sounds on free desktops, such as GNOME.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'http://0pointer.de/lennart/projects/libcanberra/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
+    source:
+      subdir: 'ports'
+      url: 'https://0pointer.de/lennart/projects/libcanberra/libcanberra-0.30.tar.xz'
+      format: 'tar.xz'
+      extract_path: 'libcanberra-0.30'
+      checksum: blake2b:c90c6863738b103c256eeb0907060a0f74b73ef50ac0728d2114aa558a7a1ad7cbae4184860573d3fac0032eba77327a4de94c459b99a81c3dc19da0e98adfda
+      version: '0.30'
+      patch-path-strip: 1
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['autoreconf', '-fvi']
+    tools_required:
+      - system-gcc
+      - host-libtool
+    pkgs_required:
+      - mlibc
+      - libvorbis
+      - alsa-lib
+      - gtk+-3
+      - gtk+-2
+      - gstreamer
+      - libtool
+    revision: 1
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--disable-static'
+        - '--enable-shared'
+        - '--disable-oss'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'docdir=@THIS_COLLECT_DIR@/usr/share/doc/libcanberra-0.30', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: libdisplay-info
     labels: [aarch64]
     architecture: '@OPTION:arch@'
