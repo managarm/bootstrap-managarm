@@ -132,6 +132,7 @@ tools:
 packages:
   - name: appstream
     architecture: '@OPTION:arch@'
+    stability_level: 'broken' # networking issues
     metadata:
       summary: Cross-distro effort for providing metadata for software in the Linux ecosystem
       description: This package provides a library and tool that is useful for retrieving software metadata and making it easily accessible to programs which need it.

@@ -1,6 +1,7 @@
 packages:
   - name: gnome-calculator
     architecture: '@OPTION:arch@'
+    stability_level: 'broken' # Downstream user of graphene and that is broken
     metadata:
       summary: A calculator application for GNOME
       description: This package provides a powerful graphical calculator with financial, logical and scientific modes. It uses a multiple precision package to do its arithmetic to give a high degree of accuracy.
