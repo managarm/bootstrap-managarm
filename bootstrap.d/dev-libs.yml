@@ -1990,6 +1990,8 @@ packages:
       - wayland-scanner
       - host-cmake
       - host-ecm
+    pkgs_required:
+      - mlibc
     revision: 1
     configure:
       - args:

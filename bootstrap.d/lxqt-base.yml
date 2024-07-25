@@ -17,6 +17,7 @@ packages:
       - host-cmake
       - system-gcc
       - host-lxqt-build-tools
+      - host-qt6
     pkgs_required:
       - mlibc
       - libqtxdg
@@ -29,7 +30,8 @@ packages:
       - args:
         - 'cmake'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
-        - '-DCMAKE_BUILD_TYPE=Release'
+        - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/host-qt6'
+        - '-DCMAKE_BUILD_TYPE=Debug'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DBUILD_SHARED_LIBS=ON'
         - '-DBUILD_BACKLIGHT_LINUX_BACKEND=OFF'
@@ -71,6 +73,7 @@ packages:
       - args:
         - 'cmake'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/host-qt6'
         - '-DCMAKE_BUILD_TYPE=Debug'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DBUILD_SHARED_LIBS=ON'
