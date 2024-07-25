@@ -53,6 +53,23 @@ tools:
     install:
       - args: ['make', 'install']
 
+  - name: host-tzdb
+    architecture: '@OPTION:arch@'
+    source:
+      subdir: 'ports'
+      url: 'https://data.iana.org/time-zones/releases/tzdb-2024a.tar.lz'
+      format: 'tar.xz'
+      checksum: blake2b:91d6c55c4f860ced760df84a1751174f1eb8ea83939b44d3a206dccbc9bac1713fbcde70391deaa4ed01d95e6de08bc0b751d296bebdf5d9ca0b4534942694cf
+      extract_path: 'tzdb-2024a'
+      version: '2024a'
+    configure:
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+      - args: ['sed', '-i', 's/sbin/bin/g', '@THIS_BUILD_DIR@/Makefile']
+    compile:
+      - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'TOPDIR=@PREFIX@', 'install']
+
 packages:
   - name: cmake
     architecture: '@OPTION:arch@'
