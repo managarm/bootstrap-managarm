@@ -718,6 +718,13 @@ packages:
   - name: libdisplay-info
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Simple framework for writing Vulkan layers
+      description: libdisplay-info is a simple framework for writing Vulkan layers.
+      spdx: 'MIT'
+      website: 'https://gitlab.freedesktop.org/emersion/libdisplay-info'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/emersion/libdisplay-info.git'
