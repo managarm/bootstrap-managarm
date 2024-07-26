@@ -1049,6 +1049,35 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
+  - name: libtool
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: A shared library tool for developers
+      description: This package provides a shared library tool for developers.
+      spdx: 'GPL-2.0-only'
+      website: 'https://www.gnu.org/software/libtool/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
+    from_source: libtool
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+    revision: 1
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--enable-ltdl-install'
+        - '--enable-shared'
+        - '--disable-static'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: libnl
     architecture: '@OPTION:arch@'
     metadata:
