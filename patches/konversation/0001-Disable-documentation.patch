@@ -1,0 +1,42 @@
+From 48bc8e65c4562afdc2ee39360afd0abfe24c43d7 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Fri, 26 Jul 2024 16:59:49 +0200
+Subject: [PATCH] Disable documentation
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ CMakeLists.txt | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 123f7ac..0614faf 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -55,7 +55,7 @@ find_package(KF6 REQUIRED COMPONENTS
+     CoreAddons
+     Crash
+     DBusAddons
+-    DocTools
++#    DocTools
+     I18n
+     IdleTime
+     ItemViews
+@@ -93,13 +93,13 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
+ 
+ add_subdirectory(src)
+ add_subdirectory(data)
+-add_subdirectory(doc)
++#add_subdirectory(doc)
+ 
+ if(BUILD_TESTING)
+     add_subdirectory(tests)
+ endif()
+ 
+ ki18n_install(po)
+-kdoctools_install(po)
++#kdoctools_install(po)
+ 
+ feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)
+-- 
+2.45.2
+
