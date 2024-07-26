@@ -52,6 +52,7 @@ packages:
       - qtdeclarative6
       - qtwayland6
       - plasma-wayland-protocols
+      - wayland
       - wayland-protocols
       - libx11
       - libxcb
