@@ -1,0 +1,61 @@
+packages:
+  - name: kcalc
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: KDE calculator
+      description: This package provides a calculator offering everything a scientific calculator does, and more.
+      spdx: 'GPL-2.0-only'
+      website: 'https://apps.kde.org/kcalc/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['kde-apps']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/KDE/kcalc.git'
+      tag: 'v24.02.0'
+      version: '24.02.0'
+    tools_required:
+      - system-gcc
+      - host-cmake
+      - host-qt6
+      - host-ecm
+      - host-kconfig
+      - host-pkg-config
+    pkgs_required:
+      - mlibc
+      - qtbase6
+      - qt5compat
+      - gmp
+      - mpfr
+      - kconfig
+      - kconfigwidgets
+      - kcoreaddons
+      - kcrash
+      - kguiaddons
+      - ki18n
+      - knotifications
+      - kwidgetsaddons
+      - kxmlgui
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=/usr/lib/qt6/qml'
+        - '-DKDE_INSTALL_PLUGINDIR=/usr/lib/qt6/plugins'
+        - '-DKDE_INSTALL_QTPLUGINDIR=/usr/lib/qt6/plugins'
+        ### end ecm.class
+        - '-DKF6_HOST_TOOLING=@BUILD_ROOT@/tools/host-kconfig/lib/x86_64-linux-gnu/cmake/'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
