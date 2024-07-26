@@ -1061,6 +1061,7 @@ packages:
     pkgs_required:
       - mlibc
       - qtbase6
+      - qtdeclarative6
       - libintl
       - iso-codes
     revision: 1
