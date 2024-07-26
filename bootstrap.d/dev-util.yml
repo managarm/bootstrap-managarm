@@ -93,6 +93,7 @@ tools:
       - args: ['make', 'install']
 
   - name: host-tzdb
+    stability_level: 'broken' # XXX xbstrap does not handle tar.lz?
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
