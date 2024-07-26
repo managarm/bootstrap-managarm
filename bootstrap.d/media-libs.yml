@@ -697,7 +697,6 @@ packages:
       - libvorbis
       - alsa-lib
       - gtk+-3
-      - gtk+-2
       - gstreamer
       - libtool
     revision: 1
@@ -709,6 +708,7 @@ packages:
         - '--disable-static'
         - '--enable-shared'
         - '--disable-oss'
+        - '--disable-gtk'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'docdir=@THIS_COLLECT_DIR@/usr/share/doc/libcanberra-0.30', 'install']
