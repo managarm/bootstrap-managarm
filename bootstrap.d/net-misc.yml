@@ -105,6 +105,97 @@ packages:
       - args: ['cp', '@THIS_BUILD_DIR@/services', '@THIS_COLLECT_DIR@/etc/']
       - args: ['cp', '@THIS_BUILD_DIR@/protocols', '@THIS_COLLECT_DIR@/etc/']
 
+  - name: networkmanager
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: A set of co-operative tools that make networking simple and straightforward
+      description: NetworkManager is a set of co-operative tools that make networking simple and straightforward. Whether you use WiFi, wired, 3G, or Bluetooth, NetworkManager allows you to quickly move from one network to another. Once a network has been configured and joined once, it can be detected and re-joined automatically the next time it's available.
+      spdx: 'GPL-2.0-or-later LGPL-2.1-or-later'
+      website: 'https://wiki.gnome.org/Projects/NetworkManager'
+      maintainer: 'Dennis Bonke <dennis@managarm.org>'
+      categories: ['net-misc']
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.freedesktop.org/NetworkManager/NetworkManager.git'
+      tag: '1.48.0'
+      version: '1.48.0'
+    tools_required:
+      - host-pkg-config
+      - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - libndp
+      - curl
+      - dhcpcd
+      - glib
+      - libpsl
+      - newt
+      - nss
+      - readline
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '-Dlibaudit=no'
+        - '-Dnmtui=true'
+        - '-Dovs=false'
+        - '-Dppp=false'
+        - '-Dselinux=false'
+        - '-Dsession_tracking=no'
+        - '-Dmodem_manager=false' # Needs mobile-broadband-provider-info
+        - '-Dsystemdsystemunitdir=no'
+        - '-Dsystemd_journal=false'
+        - '-Dqt=false'
+        - '-Dpolkit=false'
+        - '-Debpf=false'
+        - '-Dintrospection=false'
+        - '-Dvapi=false'
+        - '-Dsystem_ca_path=/etc/ssl/certs'
+        - '-Ddbus_conf_dir=/usr/share/dbus-1/system.d'
+        - '-Dmodify_system=true'
+        - '-Dconfig_plugins_default=keyfile'
+        - '-Difcfg_rh=false'
+        - '-Difupdown=false'
+        - '-Dconfig_dhcp_default=dhcpcd'
+        - '-Dcrypto=nss'
+        - '-Dreadline=libreadline'
+        - '-Dteamdctl=false'
+        - '-Dtests=no'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['mkdir', '-pv', '@THIS_COLLECT_DIR@/etc/NetworkManager/conf.d']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/networkmanager/NetworkManager.conf', '@THIS_COLLECT_DIR@/etc/NetworkManager/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/networkmanager/no-dns-update.conf', '@THIS_COLLECT_DIR@/etc/NetworkManager/conf.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/networkmanager/dhcp.conf', '@THIS_COLLECT_DIR@/etc/NetworkManager/conf.d/']
+      - args: ['touch', '@THIS_COLLECT_DIR@/usr/lib/NetworkManager/dispatcher.d/pre-down.d/.keep']
+      - args: ['touch', '@THIS_COLLECT_DIR@/usr/lib/NetworkManager/dispatcher.d/no-wait.d/.keep']
+      - args: ['touch', '@THIS_COLLECT_DIR@/usr/lib/NetworkManager/dispatcher.d/pre-up.d/.keep']
+      - args: ['touch', '@THIS_COLLECT_DIR@/usr/lib/NetworkManager/system-connections/.keep']
+      - args: ['touch', '@THIS_COLLECT_DIR@/usr/lib/NetworkManager/dispatcher.d/.keep']
+      - args: ['touch', '@THIS_COLLECT_DIR@/usr/lib/NetworkManager/conf.d/.keep']
+      - args: ['touch', '@THIS_COLLECT_DIR@/usr/lib/NetworkManager/VPN/.keep']
+      - args: ['touch', '@THIS_COLLECT_DIR@/etc/NetworkManager/dispatcher.d/pre-down.d/.keep']
+      - args: ['touch', '@THIS_COLLECT_DIR@/etc/NetworkManager/dispatcher.d/no-wait.d/.keep']
+      - args: ['touch', '@THIS_COLLECT_DIR@/etc/NetworkManager/dispatcher.d/pre-up.d/.keep']
+      - args: ['touch', '@THIS_COLLECT_DIR@/etc/NetworkManager/system-connections/.keep']
+      - args: ['touch', '@THIS_COLLECT_DIR@/etc/NetworkManager/dnsmasq.d/.keep']
+      - args: ['touch', '@THIS_COLLECT_DIR@/etc/NetworkManager/dnsmasq-shared.d/.keep']
+      - args: ['touch', '@THIS_COLLECT_DIR@/var/lib/NetworkManager/.keep']
+
   - name: rsync
     architecture: '@OPTION:arch@'
     source:

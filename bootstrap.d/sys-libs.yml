@@ -411,6 +411,49 @@ packages:
       - args: ['patchelf', '--set-soname', 'libreadline.so.8', '@THIS_COLLECT_DIR@/usr/lib/libreadline.so.8']
       - args: ['patchelf', '--set-soname', 'libhistory.so.8', '@THIS_COLLECT_DIR@/usr/lib/libhistory.so.8']
 
+  - name: slang
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Multi-platform library designed to allow a developer to create robust software
+      description: S-Lang (slang) is an interpreted language that may be embedded into an application to make the application extensible. It provides facilities required by interactive applications such as display/screen management, keyboard input and keymaps.
+      spdx: 'CJK'
+      website: 'https://www.jedsoft.org/slang/'
+      maintainer: 'Dennis Bonke <dennis@managarm.org>'
+      categories: ['sys-libs']
+    source:
+      subdir: ports
+      git: 'git://git.jedsoft.org/git/slang.git'
+      tag: 'v2.2.3'
+      version: '2.2.3'
+      tools_required:
+        - host-automake-v1.16
+      regenerate:
+        - args: ['cp',
+            '@BUILD_ROOT@/tools/host-automake-v1.16/share/automake-1.16/config.sub',
+            '@THIS_SOURCE_DIR@/autoconf/']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - libpng
+      - readline
+    revision: 1
+    configure:
+      # slang does not seem to support out-of-tree builds, so we just copy
+      # the source tree into the build directory instead
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+      - args:
+        - './configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--sysconfdir=/etc'
+        - '--with-readline=gnu'
+    build:
+      - args: ['make', '-j1']
+      - args: ['make', 'install_doc_dir=@THIS_COLLECT_DIR@/usr/share/doc/slang-2.3.3', 'SLSH_DOC_DIR=@THIS_COLLECT_DIR@/usr/share/doc/slang-2.3.3/slsh', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name : tzdata
     labels: [aarch64]
     architecture: noarch
