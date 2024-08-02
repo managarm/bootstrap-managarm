@@ -573,6 +573,42 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
+  - name: jansson
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: C library for encoding, decoding and manipulating JSON data
+      description: This package contains a library used to encode, decode, and manipulate JSON data.
+      spdx: 'MIT'
+      website: 'https://www.digip.org/jansson/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
+    source:
+      subdir: ports
+      git: 'https://github.com/akheron/jansson.git'
+      tag: 'v2.14'
+      version: '2.14'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+      regenerate:
+        - args: ['autoreconf', '-fvi']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--disable-static'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: json-c
     architecture: '@OPTION:arch@'
     source:
