@@ -393,7 +393,7 @@ def generate_plan(arch, root_uuid, scriptdir):
         yield FsAction.CP, "tools/host-limine/share/limine/limine-bios.sys", "boot/"
 
         yield FsAction.CP_SED, os.path.join(
-            scriptdir, "limine.cfg"
+            scriptdir, "limine.conf"
         ), "boot/", "@ROOT_UUID@", root_uuid
 
     yield FsAction.RSYNC, "bin"
