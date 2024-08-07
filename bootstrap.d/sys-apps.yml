@@ -503,9 +503,9 @@ packages:
       categories: ['sys-apps']
     source:
       subdir: ports
-      git: 'https://git.kernel.org/pub/scm/network/iproute2/iproute2.git'
-      tag: 'v6.2.0'
-      version: '6.2.0'
+      git: 'https://github.com/iproute2/iproute2.git'
+      tag: 'v6.9.0'
+      version: '6.9.0'
     tools_required:
       - system-gcc
     pkgs_required:
