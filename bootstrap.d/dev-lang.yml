@@ -106,6 +106,7 @@ tools:
         isolate_network: false
 
   - name: host-cargo
+    stability_level: 'broken' # Rust updates?
     architecture: noarch
     source:
       subdir: 'ports'
