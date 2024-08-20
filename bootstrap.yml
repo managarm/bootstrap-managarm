@@ -176,6 +176,7 @@ sources:
       - libsmarter
       - bragi
       - cli11
+      - freebsd-e1000
     regenerate:
       - args: ['mkdir', '-p', '@THIS_SOURCE_DIR@/subprojects']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cralgo', '@THIS_SOURCE_DIR@/subprojects/']
@@ -187,6 +188,7 @@ sources:
       - args: ['mkdir', '-p', '@SOURCE_ROOT@/ports/libarch/subprojects']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/managarm', '@SOURCE_ROOT@/ports/libarch/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cli11', '@THIS_SOURCE_DIR@/subprojects/']
+      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/freebsd-e1000', '@THIS_SOURCE_DIR@/subprojects/']
 
   - name: mlibc
     git: 'https://github.com/managarm/mlibc.git'
@@ -217,6 +219,13 @@ sources:
     branch: 'master'
     commit: '63acb96f92473ceb5e21d873d7c0aee266b3d6d3'
     version: '20230121'
+
+  - name: freebsd-e1000
+    subdir: 'ports'
+    git: 'https://github.com/managarm/freebsd-e1000.git'
+    branch: 'import'
+    rolling_version: true
+    version: '0.0pl@ROLLING_ID@'
 
 tools:
   - name: host-autoconf-v2.64
