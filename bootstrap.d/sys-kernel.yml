@@ -11,12 +11,12 @@ packages:
       categories: ['sys-kernel']
     source:
       subdir: 'ports'
-      url: 'https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.2.9.tar.xz'
-      checksum: 'blake2b:0e7ad5502767cb74fa0fea79884ce753be0421a56bbbe0a6cb66add5839b3329298671725595c0624886d9d2836c4e9d4bd152acefb2b3df1cf7a1013e0178ba'
-      extract_path: 'linux-6.2.9'
+      url: 'https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.9.3.tar.xz'
+      checksum: 'blake2b:8d8fe931d304458bcaa8c8b9572a5354ad272d88d1e0642e76b37247ce13bf70c49c8de6d8843fbb3037ee074ebc6cc94f0cc2b5b7e7187385a9dd0b0e2e250d'
+      extract_path: 'linux-6.9.3'
       format: 'tar.xz'
-      version: '6.2.9'
-    revision: 4
+      version: '6.9.3'
+    revision: 1
     configure:
       - args: ['cp', '-Tr', '@THIS_SOURCE_DIR@', '.']
     build:
