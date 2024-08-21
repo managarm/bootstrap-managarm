@@ -1480,6 +1480,7 @@ packages:
       - host-llvm-toolchain
       - host-managarm-tools
       - host-pkg-config
+      - host-mold
       - system-gcc
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
