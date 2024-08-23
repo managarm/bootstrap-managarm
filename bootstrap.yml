@@ -1114,6 +1114,9 @@ packages:
     from_source: lil
     tools_required:
       - system-gcc
+    pkgs_required:
+      - mlibc-headers
+    revision: 1
     configure:
       - args:
         - 'meson'
