@@ -11,12 +11,14 @@ tools:
     architecture: noarch
     containerless: true
     from_source: qemu
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--prefix=@PREFIX@'
         - '--target-list=x86_64-softmmu,aarch64-softmmu,riscv64-softmmu'
         - '--disable-werror'
+        - '--extra-cflags=-march=native'
         - '--enable-opengl'
         - '--enable-virglrenderer'
         - '--enable-gtk'
