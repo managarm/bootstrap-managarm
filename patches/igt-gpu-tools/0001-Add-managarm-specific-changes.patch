@@ -1,0 +1,767 @@
+From fc70e5ebc2f61931f598b4f2619c07124adab944 Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Sun, 25 Aug 2024 03:26:13 +0200
+Subject: [PATCH] Add managarm-specific changes
+
+---
+ benchmarks/gem_syslatency.c     |   2 +
+ include/drm-uapi/drm.h          |   2 +-
+ lib/dmabuf_sync_file.h          |   2 +-
+ lib/drmtest.c                   |   2 +
+ lib/i915/gem_engine_topology.c  |   6 +-
+ lib/i915/perf.c                 |   3 +-
+ lib/igt_aux.c                   |   4 +-
+ lib/igt_core.h                  |   6 ++
+ lib/igt_halffloat.c             |  12 ++++
+ lib/igt_kmod.c                  | 118 ++++++++++++++++++++++++++++++++
+ lib/igt_kmod.h                  |   2 +
+ lib/igt_ktap.c                  |   2 +
+ lib/igt_managarm.h              |  15 ++++
+ lib/igt_perf.c                  |  44 +++++++++++-
+ lib/igt_perf.h                  |   2 +
+ lib/igt_x86.c                   |   6 ++
+ lib/intel_mmio.c                |   2 +-
+ lib/ioctl_wrappers.c            |   2 +
+ lib/xe/xe_ioctl.c               |   2 +
+ meson.build                     |   2 +-
+ runner/executor.c               |   2 +-
+ runner/job_list.c               |   1 +
+ tests/intel/gem_close_race.c    |   2 +
+ tests/intel/gem_exec_fair.c     |   2 +
+ tests/intel/gem_exec_schedule.c |   6 ++
+ tests/intel/gem_pread.c         |   4 ++
+ tests/intel/gem_pwrite.c        |   4 ++
+ tests/intel/gem_userptr_blits.c |   6 ++
+ tests/intel/i915_pm_rpm.c       |   2 +-
+ tests/intel/perf.c              |   1 +
+ tests/meson.build               |   2 +-
+ tools/intel_guc_logger.c        |   2 +
+ tools/intel_gvtg_test.c         |   1 +
+ 33 files changed, 260 insertions(+), 11 deletions(-)
+ create mode 100644 lib/igt_managarm.h
+
+diff --git a/benchmarks/gem_syslatency.c b/benchmarks/gem_syslatency.c
+index 312c428..df5ba8c 100644
+--- a/benchmarks/gem_syslatency.c
++++ b/benchmarks/gem_syslatency.c
+@@ -52,6 +52,8 @@
+ 
+ #ifdef __FreeBSD__
+ #include "igt_freebsd.h"
++#elif defined(__managarm__)
++#include "igt_managarm.h"
+ #endif
+ 
+ static volatile int done;
+diff --git a/include/drm-uapi/drm.h b/include/drm-uapi/drm.h
+index 5e54c3a..349f532 100644
+--- a/include/drm-uapi/drm.h
++++ b/include/drm-uapi/drm.h
+@@ -35,7 +35,7 @@
+ #ifndef _DRM_H_
+ #define _DRM_H_
+ 
+-#if   defined(__linux__)
++#if   defined(__linux__) || defined(__managarm__)
+ 
+ #include <linux/types.h>
+ #include <asm/ioctl.h>
+diff --git a/lib/dmabuf_sync_file.h b/lib/dmabuf_sync_file.h
+index d642ff3..8016e6c 100644
+--- a/lib/dmabuf_sync_file.h
++++ b/lib/dmabuf_sync_file.h
+@@ -6,7 +6,7 @@
+ #ifndef DMABUF_SYNC_FILE_H
+ #define DMABUF_SYNC_FILE_H
+ 
+-#ifdef __linux__
++#if defined(__linux__) || defined(__managarm__)
+ #include <linux/dma-buf.h>
+ #endif
+ #include <sys/poll.h>
+diff --git a/lib/drmtest.c b/lib/drmtest.c
+index e1da66c..a92acd5 100644
+--- a/lib/drmtest.c
++++ b/lib/drmtest.c
+@@ -41,7 +41,9 @@
+ #include <unistd.h>
+ #include <sys/wait.h>
+ #include <sys/types.h>
++#if defined(__linux__)
+ #include <sys/syscall.h>
++#endif
+ #include <sys/utsname.h>
+ #include <termios.h>
+ #include <pthread.h>
+diff --git a/lib/i915/gem_engine_topology.c b/lib/i915/gem_engine_topology.c
+index 7c6cd9b..7cef74f 100644
+--- a/lib/i915/gem_engine_topology.c
++++ b/lib/i915/gem_engine_topology.c
+@@ -23,7 +23,9 @@
+ 
+ #include <fcntl.h>
+ #include <sys/stat.h>
++#if defined(__linux__)
+ #include <sys/syscall.h>
++#endif
+ #include <unistd.h>
+ 
+ #include "drmtest.h"
+@@ -688,6 +690,7 @@ void dyn_sysfs_engines(int i915, int engines, const char *file,
+ 	int len;
+ 
+ 	lseek(engines, 0, SEEK_SET);
++	/*
+ 	while ((len = syscall(SYS_getdents64, engines, buf, sizeof(buf))) > 0) {
+ 		void *ptr = buf;
+ 
+@@ -719,11 +722,12 @@ void dyn_sysfs_engines(int i915, int engines, const char *file,
+ 					igt_require(fstatat(engine, file, &st, 0) == 0);
+ 				}
+ 
+-				errno = 0; /* start afresh */
++				errno = 0;
+ 				test(i915, engine);
+ 			}
+ 
+ 			close(engine);
+ 		}
+ 	}
++	*/
+ }
+diff --git a/lib/i915/perf.c b/lib/i915/perf.c
+index ddadb53..a3c0bae 100644
+--- a/lib/i915/perf.c
++++ b/lib/i915/perf.c
+@@ -29,7 +29,8 @@
+ #include <fcntl.h>
+ #include <sys/ioctl.h>
+ #include <sys/stat.h>
+-#ifdef __linux__
++#include <sys/wait.h>
++#if defined(__linux__) || defined(__managarm__)
+ #include <sys/sysmacros.h>
+ #endif
+ #include <sys/types.h>
+diff --git a/lib/igt_aux.c b/lib/igt_aux.c
+index 18edc5e..73d9401 100644
+--- a/lib/igt_aux.c
++++ b/lib/igt_aux.c
+@@ -46,7 +46,9 @@
+ #include <sys/resource.h>
+ #include <sys/time.h>
+ #include <sys/types.h>
++#if defined(__linux__)
+ #include <sys/syscall.h>
++#endif
+ #include <sys/utsname.h>
+ #include <termios.h>
+ #include <assert.h>
+@@ -59,7 +61,7 @@
+ #endif
+ 
+ #include <dirent.h>
+-#ifdef __linux__
++#if defined(__linux__) || defined(__managarm__)
+ #  include <libudev.h>
+ #endif
+ 
+diff --git a/lib/igt_core.h b/lib/igt_core.h
+index 26bb0cb..56444d0 100644
+--- a/lib/igt_core.h
++++ b/lib/igt_core.h
+@@ -47,12 +47,18 @@
+ 
+ #ifdef __FreeBSD__
+ #include "igt_freebsd.h"
++#elif defined(__managarm__)
++#include "igt_managarm.h"
+ #endif
+ 
+ #ifndef IGT_LOG_DOMAIN
+ #define IGT_LOG_DOMAIN (NULL)
+ #endif
+ 
++#if defined(__managarm__)
++#include <setjmp.h>
++#define	jmp_buf	sigjmp_buf
++#endif
+ 
+ #ifndef STATIC_ANALYSIS_BUILD
+ #if defined(__clang_analyzer__) || defined(__COVERITY__) || defined(__KLOCWORK__)
+diff --git a/lib/igt_halffloat.c b/lib/igt_halffloat.c
+index 08ab05f..580c62b 100644
+--- a/lib/igt_halffloat.c
++++ b/lib/igt_halffloat.c
+@@ -203,7 +203,13 @@ static void (*resolve_float_to_half(void))(const float *f, uint16_t *h, unsigned
+ }
+ 
+ void igt_float_to_half(const float *f, uint16_t *h, unsigned int num)
++#if defined(__linux__)
+ 	__attribute__((ifunc("resolve_float_to_half")));
++#else
++{
++	float_to_half(f, h, num);
++}
++#endif
+ 
+ static void (*resolve_half_to_float(void))(const uint16_t *h, float *f, unsigned int num)
+ {
+@@ -214,7 +220,13 @@ static void (*resolve_half_to_float(void))(const uint16_t *h, float *f, unsigned
+ }
+ 
+ void igt_half_to_float(const uint16_t *h, float *f, unsigned int num)
++#if defined(__linux__)
+ 	__attribute__((ifunc("resolve_half_to_float")));
++#else
++{
++	half_to_float(h, f, num);
++}
++#endif
+ 
+ #else
+ 
+diff --git a/lib/igt_kmod.c b/lib/igt_kmod.c
+index 6205871..2c7b3e4 100644
+--- a/lib/igt_kmod.c
++++ b/lib/igt_kmod.c
+@@ -33,6 +33,8 @@
+ #include "igt_sysfs.h"
+ #include "igt_taints.h"
+ 
++#if defined(__linux__)
++
+ /**
+  * SECTION:igt_kmod
+  * @short_description: Wrappers around libkmod for module loading/unloading
+@@ -1023,3 +1025,119 @@ void igt_kselftests(const char *module_name,
+ 
+ 	igt_ktest_fini(&tst);
+ }
++
++#elif defined(__managarm__)
++
++struct kmod_module {
++	size_t size;
++};
++
++bool
++igt_kmod_is_loaded(const char *mod_name)
++{
++	return false;
++}
++
++void
++igt_kmod_list_loaded(void)
++{
++}
++
++bool
++igt_kmod_has_param(const char *mod_name, const char *param)
++{
++	return false;
++}
++
++int
++igt_kmod_load(const char *mod_name, const char *opts)
++{
++	return -ENOSYS;
++}
++
++int
++igt_kmod_unload(const char *mod_name, unsigned int flags)
++{
++	return -ENOSYS;
++}
++
++int
++igt_intel_driver_load(const char *opts, const char *driver) {
++	return -ENOSYS;
++}
++
++int
++igt_intel_driver_unload(const char *driver) {
++	return -ENOSYS;
++}
++
++int
++igt_audio_driver_unload(char **whom)
++{
++	return -ENOSYS;
++}
++
++int
++igt_amdgpu_driver_load(const char *opts)
++{
++	return -ENOSYS;
++}
++
++int
++igt_amdgpu_driver_unload(void)
++{
++	return -ENOSYS;
++}
++
++void
++igt_kselftests(const char *module_name,
++    const char *module_options,
++    const char *result_option,
++    const char *filter)
++{
++}
++
++int
++igt_kselftest_init(struct igt_kselftest *tst,
++    const char *module_name)
++{
++	return -ENOSYS;
++}
++
++int
++igt_kselftest_begin(struct igt_kselftest *tst)
++{
++	return -ENOSYS;
++}
++
++void
++igt_kselftest_get_tests(struct kmod_module *kmod,
++    const char *filter,
++    struct igt_list_head *tests)
++{
++}
++
++int
++igt_kselftest_execute(struct igt_ktest *tst,
++    struct igt_kselftest_list *tl,
++    const char *module_options,
++    const char *result)
++{
++	return -ENOSYS;
++}
++
++void igt_kunit(const char *module_name, const char *name, const char *opts) {
++	return;
++}
++
++void
++igt_kselftest_end(struct igt_kselftest *tst)
++{
++}
++
++void
++igt_kselftest_fini(struct igt_kselftest *tst)
++{
++}
++
++#endif
+diff --git a/lib/igt_kmod.h b/lib/igt_kmod.h
+index 990e530..263b622 100644
+--- a/lib/igt_kmod.h
++++ b/lib/igt_kmod.h
+@@ -24,7 +24,9 @@
+ #ifndef IGT_KMOD_H
+ #define IGT_KMOD_H
+ 
++#if defined(__linux__)
+ #include <libkmod.h>
++#endif
+ 
+ #include "igt_list.h"
+ 
+diff --git a/lib/igt_ktap.c b/lib/igt_ktap.c
+index ecdcb8d..8ea5da2 100644
+--- a/lib/igt_ktap.c
++++ b/lib/igt_ktap.c
+@@ -5,7 +5,9 @@
+ 
+ #include <ctype.h>
+ #include <limits.h>
++#if defined(__linux__)
+ #include <libkmod.h>
++#endif
+ #include <pthread.h>
+ #include <errno.h>
+ 
+diff --git a/lib/igt_managarm.h b/lib/igt_managarm.h
+new file mode 100644
+index 0000000..ae3a3c8
+--- /dev/null
++++ b/lib/igt_managarm.h
+@@ -0,0 +1,15 @@
++#if !defined(IGT_MANAGARM_H)
++
++#if !defined(__managarm__)
++#error "This header is only for managarm."
++#endif
++
++#define IGT_MANAGARM_H
++
++#include <sys/sysmacros.h>
++#include <pthread.h>
++
++#define	pthread_sigqueue(pid, signo, value)	\
++	sigqueue(pid, signo, value)
++
++#endif
+diff --git a/lib/igt_perf.c b/lib/igt_perf.c
+index ffe078a..98053d7 100644
+--- a/lib/igt_perf.c
++++ b/lib/igt_perf.c
+@@ -5,7 +5,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <sys/stat.h>
+-#ifdef __linux__
++#if defined(__linux__) || defined(__managarm__)
+ #include <sys/sysinfo.h>
+ #include <sys/sysmacros.h>
+ #endif
+@@ -45,6 +45,46 @@ static char *bus_address(int i915, char *path, int pathlen)
+ 	return path;
+ }
+ 
++#if defined(__managarm__)
++
++uint64_t igt_perf_type_id(const char *device) {
++	return -ENOSYS;
++}
++
++int igt_perf_open(uint64_t type, uint64_t config) {
++	return -ENOSYS;
++}
++
++int igt_perf_open_group(uint64_t type, uint64_t config, int group) {
++	return -ENOSYS;
++}
++
++const char *i915_perf_device(int i915, char *buf, int buflen) {
++	return strerror(ENOSYS);
++}
++
++uint64_t i915_perf_type_id(int i915) {
++	return -ENOSYS;
++}
++
++int perf_igfx_open(uint64_t config) {
++	return -ENOSYS;
++}
++
++int perf_igfx_open_group(uint64_t config, int group) {
++	return -ENOSYS;
++}
++
++int perf_i915_open(int i915, uint64_t config) {
++	return -ENOSYS;
++}
++
++int perf_i915_open_group(int i915, uint64_t config, int group) {
++	return -ENOSYS;
++}
++
++#else
++
+ const char *i915_perf_device(int i915, char *buf, int buflen)
+ {
+ 	char *s;
+@@ -170,3 +210,5 @@ int igt_perf_open_group(uint64_t type, uint64_t config, int group)
+ 	return _perf_open(type, config, group,
+ 			  PERF_FORMAT_TOTAL_TIME_ENABLED | PERF_FORMAT_GROUP);
+ }
++
++#endif
+diff --git a/lib/igt_perf.h b/lib/igt_perf.h
+index 4d86e31..32487f6 100644
+--- a/lib/igt_perf.h
++++ b/lib/igt_perf.h
+@@ -33,6 +33,7 @@
+ 
+ #include "igt_gt.h"
+ 
++#ifdef __linux__
+ static inline int
+ perf_event_open(struct perf_event_attr *attr,
+ 		pid_t pid,
+@@ -52,6 +53,7 @@ perf_event_open(struct perf_event_attr *attr,
+     attr->size = sizeof(*attr);
+     return syscall(__NR_perf_event_open, attr, pid, cpu, group_fd, flags);
+ }
++#endif
+ 
+ uint64_t igt_perf_type_id(const char *device);
+ int igt_perf_events_dir(int i915);
+diff --git a/lib/igt_x86.c b/lib/igt_x86.c
+index 6ac700d..d9a0bb1 100644
+--- a/lib/igt_x86.c
++++ b/lib/igt_x86.c
+@@ -293,7 +293,13 @@ static void (*resolve_memcpy_from_wc(void))(void *, const void *, unsigned long)
+ }
+ 
+ void igt_memcpy_from_wc(void *dst, const void *src, unsigned long len)
++#if defined(__managarm__)
++{
++	memcpy_from_wc(dst, src, len);
++}
++#else
+ 	__attribute__((ifunc("resolve_memcpy_from_wc")));
++#endif
+ 
+ #else
+ void igt_memcpy_from_wc(void *dst, const void *src, unsigned long len)
+diff --git a/lib/intel_mmio.c b/lib/intel_mmio.c
+index 10b07aa..57c5d30 100644
+--- a/lib/intel_mmio.c
++++ b/lib/intel_mmio.c
+@@ -236,7 +236,7 @@ intel_register_access_init(struct intel_mmio_data *mmio_data, struct pci_device
+ 	/* Find where the forcewake lock is. Forcewake doesn't exist
+ 	 * gen < 6, but the debugfs should do the right things for us.
+ 	 */
+-	ret = igt_open_forcewake_handle(fd);
++	ret = -1; //igt_open_forcewake_handle(fd);
+ 	if (ret == -1)
+ 		mmio_data->key = FAKEKEY;
+ 	else
+diff --git a/lib/ioctl_wrappers.c b/lib/ioctl_wrappers.c
+index 146973f..1dbc43b 100644
+--- a/lib/ioctl_wrappers.c
++++ b/lib/ioctl_wrappers.c
+@@ -42,7 +42,9 @@
+ #include <unistd.h>
+ #include <sys/wait.h>
+ #include <sys/types.h>
++#if defined(__linux__)
+ #include <sys/syscall.h>
++#endif
+ #include <sys/utsname.h>
+ #include <termios.h>
+ #include <errno.h>
+diff --git a/lib/xe/xe_ioctl.c b/lib/xe/xe_ioctl.c
+index 730dcfd..9a2f820 100644
+--- a/lib/xe/xe_ioctl.c
++++ b/lib/xe/xe_ioctl.c
+@@ -25,7 +25,9 @@
+ #include <sys/ioctl.h>
+ #include <sys/mman.h>
+ #include <sys/stat.h>
++#if defined(__linux__)
+ #include <sys/syscall.h>
++#endif
+ #include <sys/types.h>
+ #include <sys/utsname.h>
+ #include <sys/wait.h>
+diff --git a/meson.build b/meson.build
+index b35a00f..02e5441 100644
+--- a/meson.build
++++ b/meson.build
+@@ -124,7 +124,7 @@ endif
+ build_info += 'With libdrm: ' + ','.join(libdrm_info)
+ 
+ pciaccess = dependency('pciaccess', version : '>=0.10')
+-libkmod = dependency('libkmod')
++libkmod = dependency('libkmod', required: false)
+ libprocps = dependency('libprocps', required : false)
+ libproc2 = dependency('libproc2', required : false)
+ if libprocps.found()
+diff --git a/runner/executor.c b/runner/executor.c
+index d3e6296..3e0ebf8 100644
+--- a/runner/executor.c
++++ b/runner/executor.c
+@@ -2,7 +2,7 @@
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <glib.h>
+-#ifdef __linux__
++#if defined(__linux__) || defined(__managarm__)
+ #include <linux/watchdog.h>
+ #endif
+ #if HAVE_OPING
+diff --git a/runner/job_list.c b/runner/job_list.c
+index e6ea836..adb3d8a 100644
+--- a/runner/job_list.c
++++ b/runner/job_list.c
+@@ -9,6 +9,7 @@
+ #include <string.h>
+ #include <sys/stat.h>
+ #include <sys/types.h>
++#include <sys/wait.h>
+ #include <unistd.h>
+ 
+ #include "job_list.h"
+diff --git a/tests/intel/gem_close_race.c b/tests/intel/gem_close_race.c
+index cef0ff0..7be3103 100644
+--- a/tests/intel/gem_close_race.c
++++ b/tests/intel/gem_close_race.c
+@@ -39,7 +39,9 @@
+ #include <sys/stat.h>
+ #include <sys/ioctl.h>
+ #include <sys/time.h>
++#if defined(__linux__)
+ #include <sys/syscall.h>
++#endif
+ 
+ #include "drm.h"
+ #include "i915/gem.h"
+diff --git a/tests/intel/gem_exec_fair.c b/tests/intel/gem_exec_fair.c
+index 5ad13f9..f2d3db7 100644
+--- a/tests/intel/gem_exec_fair.c
++++ b/tests/intel/gem_exec_fair.c
+@@ -10,7 +10,9 @@
+ #include <sys/ioctl.h>
+ #include <sys/mman.h>
+ #include <sys/resource.h>
++#if defined(__linux__)
+ #include <sys/syscall.h>
++#endif
+ #include <sched.h>
+ #include <signal.h>
+ #include <unistd.h>
+diff --git a/tests/intel/gem_exec_schedule.c b/tests/intel/gem_exec_schedule.c
+index c94988d..902b726 100644
+--- a/tests/intel/gem_exec_schedule.c
++++ b/tests/intel/gem_exec_schedule.c
+@@ -29,7 +29,9 @@
+ #include <sys/poll.h>
+ #include <sys/ioctl.h>
+ #include <sys/mman.h>
++#if defined(__linux__)
+ #include <sys/syscall.h>
++#endif
+ #include <sched.h>
+ #include <signal.h>
+ #include <unistd.h>
+@@ -2887,7 +2889,11 @@ static void test_pi_ringfull(int fd, const intel_ctx_cfg_t *cfg,
+ 
+ static int userfaultfd(int flags)
+ {
++#if defined(__linux__)
+ 	return syscall(SYS_userfaultfd, flags);
++#elif defined(__managarm__)
++	return -ENOSYS;
++#endif
+ }
+ 
+ struct ufd_thread {
+diff --git a/tests/intel/gem_pread.c b/tests/intel/gem_pread.c
+index 6f50785..d84d192 100644
+--- a/tests/intel/gem_pread.c
++++ b/tests/intel/gem_pread.c
+@@ -98,7 +98,11 @@ static void pread_self(int i915)
+ 
+ static int userfaultfd(int flags)
+ {
++#if defined(__linux__)
+ 	return syscall(SYS_userfaultfd, flags);
++#elif defined(__managarm__)
++	return -ENOSYS;
++#endif
+ }
+ 
+ struct ufd_thread {
+diff --git a/tests/intel/gem_pwrite.c b/tests/intel/gem_pwrite.c
+index e2b48b8..f508b62 100644
+--- a/tests/intel/gem_pwrite.c
++++ b/tests/intel/gem_pwrite.c
+@@ -350,7 +350,11 @@ static void test_random(int fd)
+ 
+ static int userfaultfd(int flags)
+ {
++#if defined(__linux__)
+ 	return syscall(SYS_userfaultfd, flags);
++#elif defined(__managarm__)
++	return -ENOSYS;
++#endif
+ }
+ 
+ struct ufd_thread {
+diff --git a/tests/intel/gem_userptr_blits.c b/tests/intel/gem_userptr_blits.c
+index 14f8332..f661b2b 100644
+--- a/tests/intel/gem_userptr_blits.c
++++ b/tests/intel/gem_userptr_blits.c
+@@ -48,7 +48,9 @@
+ #include <sys/ioctl.h>
+ #include <sys/mman.h>
+ #include <sys/stat.h>
++#if defined(__linux__)
+ #include <sys/syscall.h>
++#endif
+ #include <sys/time.h>
+ #include <glib.h>
+ #include <signal.h>
+@@ -2572,7 +2574,11 @@ static void *ufd_thread(void *arg)
+ 
+ static int userfaultfd(int flags)
+ {
++#if defined(__linux__)
+ 	return syscall(SYS_userfaultfd, flags);
++#elif defined(__managarm__)
++	return -ENOSYS;
++#endif
+ }
+ 
+ static bool has_userptr_probe(int fd)
+diff --git a/tests/intel/i915_pm_rpm.c b/tests/intel/i915_pm_rpm.c
+index 17413ff..d2dc80f 100644
+--- a/tests/intel/i915_pm_rpm.c
++++ b/tests/intel/i915_pm_rpm.c
+@@ -228,7 +228,7 @@
+  * Run type: FULL
+  */
+ 
+-#if defined(__linux__)
++#if defined(__linux__) || defined(__managarm__)
+ #include <linux/i2c.h>
+ #include <linux/i2c-dev.h>
+ #elif defined(__FreeBSD__)
+diff --git a/tests/intel/perf.c b/tests/intel/perf.c
+index 3565d61..00968a8 100644
+--- a/tests/intel/perf.c
++++ b/tests/intel/perf.c
+@@ -33,6 +33,7 @@
+ #include <sys/time.h>
+ #include <sys/times.h>
+ #include <sys/types.h>
++#include <sys/wait.h>
+ #include <dirent.h>
+ #include <time.h>
+ #include <poll.h>
+diff --git a/tests/meson.build b/tests/meson.build
+index 7201958..ccbb197 100644
+--- a/tests/meson.build
++++ b/tests/meson.build
+@@ -213,7 +213,7 @@ intel_i915_progs = [
+ 	'gem_watchdog',
+ 	'gem_workarounds',
+ 	'perf',
+-	'perf_pmu',
++	# 'perf_pmu',
+ 	'i915_fb_tiling',
+ 	'i915_getparams_basic',
+ 	'i915_pm_freq_api',
+diff --git a/tools/intel_guc_logger.c b/tools/intel_guc_logger.c
+index 5f1de8d..942fdff 100644
+--- a/tools/intel_guc_logger.c
++++ b/tools/intel_guc_logger.c
+@@ -35,7 +35,9 @@
+ #include <sys/poll.h>
+ #include <sys/wait.h>
+ #include <sys/types.h>
++#if defined(__linux__)
+ #include <sys/syscall.h>
++#endif
+ #include <sys/mman.h>
+ #include <assert.h>
+ #include <pthread.h>
+diff --git a/tools/intel_gvtg_test.c b/tools/intel_gvtg_test.c
+index ad5ee6a..ec18588 100644
+--- a/tools/intel_gvtg_test.c
++++ b/tools/intel_gvtg_test.c
+@@ -44,6 +44,7 @@
+ #include <sys/ioctl.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
++#include <sys/wait.h>
+ #include <string.h>
+ #include <stdlib.h>
+ #include <signal.h>
+-- 
+2.45.1
+
