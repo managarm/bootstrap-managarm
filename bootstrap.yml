@@ -1803,7 +1803,7 @@ packages:
       - libdrm
       - libtsm
       - eudev
-    revision: 6
+    revision: 7
     configure:
       - args:
         - 'meson'
