@@ -1003,7 +1003,7 @@ packages:
     source:
       subdir: meta-sources
       version: '1.0'
-    revision: 8
+    revision: 9
     configure: []
     build:
       # Create initial directories
@@ -1038,6 +1038,8 @@ packages:
       # Install a default passwd, group and resolv.conf
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/passwd', '@THIS_COLLECT_DIR@/etc']
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/group', '@THIS_COLLECT_DIR@/etc']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/shadow', '@THIS_COLLECT_DIR@/etc']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/gshadow', '@THIS_COLLECT_DIR@/etc']
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/resolv.conf', '@THIS_COLLECT_DIR@/etc']
       # Link /bin, /lib and /sbin to their /usr counterparts
       - args: ['ln', '-svf', 'usr/bin', '@THIS_COLLECT_DIR@/bin']
