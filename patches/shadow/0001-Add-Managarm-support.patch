@@ -1,0 +1,141 @@
+From 3ac0eb16ceed2fe416b5af55f4b24db454cfcec4 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Thu, 5 Sep 2024 00:27:05 +0200
+Subject: [PATCH] Add Managarm support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ Makefile.am     |  2 +-
+ autogen.sh      |  2 ++
+ lib/encrypt.c   |  1 +
+ libmisc/utmp.c  |  3 +++
+ src/Makefile.am | 10 ++++------
+ src/login.c     |  6 ++++++
+ 6 files changed, 17 insertions(+), 7 deletions(-)
+
+diff --git a/Makefile.am b/Makefile.am
+index 8851f5d..5a58c54 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -2,5 +2,5 @@
+ 
+ EXTRA_DIST = NEWS README TODO shadow.spec.in
+ 
+-SUBDIRS = po man libmisc lib src \
++SUBDIRS = po libmisc lib src \
+ 	contrib doc etc
+diff --git a/autogen.sh b/autogen.sh
+index 336463c..12393e0 100755
+--- a/autogen.sh
++++ b/autogen.sh
+@@ -2,6 +2,8 @@
+ 
+ autoreconf -v -f --install || exit 1
+ 
++exit 0
++
+ ./configure \
+ 	CFLAGS="-O2 -Wall" \
+ 	--enable-man \
+diff --git a/lib/encrypt.c b/lib/encrypt.c
+index 4247f24..2486f6b 100644
+--- a/lib/encrypt.c
++++ b/lib/encrypt.c
+@@ -34,6 +34,7 @@
+ 
+ #ident "$Id$"
+ 
++#include <crypt.h>
+ #include <unistd.h>
+ #include <stdio.h>
+ 
+diff --git a/libmisc/utmp.c b/libmisc/utmp.c
+index ba69cf6..51277cd 100644
+--- a/libmisc/utmp.c
++++ b/libmisc/utmp.c
+@@ -47,6 +47,9 @@
+ #include <netdb.h>
+ #include <stdio.h>
+ 
++#include <fcntl.h>
++#include <netinet/in.h>
++
+ #ident "$Id$"
+ 
+ 
+diff --git a/src/Makefile.am b/src/Makefile.am
+index f175928..9c24dc5 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -23,14 +23,12 @@ AM_CPPFLAGS = \
+ # and installation would be much simpler (just two directories,
+ # $prefix/bin and $prefix/sbin, no install-data hacks...)
+ 
+-bin_PROGRAMS   = groups login
+-sbin_PROGRAMS  = nologin
+-ubin_PROGRAMS  = faillog lastlog chage chfn chsh expiry gpasswd newgrp passwd
++ubin_PROGRAMS  = faillog lastlog chage chfn chsh expiry gpasswd newgrp passwd groups login
+ if ENABLE_SUBIDS
+ ubin_PROGRAMS += newgidmap newuidmap
+ endif
+ if WITH_SU
+-bin_PROGRAMS  += su
++ubin_PROGRAMS  += su
+ endif
+ usbin_PROGRAMS = \
+ 	chgpasswd \
+@@ -44,6 +42,7 @@ usbin_PROGRAMS = \
+ 	grpunconv \
+ 	logoutd \
+ 	newusers \
++	nologin \
+ 	pwck \
+ 	pwconv \
+ 	pwunconv \
+@@ -56,10 +55,9 @@ usbin_PROGRAMS = \
+ noinst_PROGRAMS = id sulogin
+ 
+ suidusbins     =
+-suidbins       =
+ suidubins      = chage chfn chsh expiry gpasswd newgrp
+ if WITH_SU
+-suidbins      += su
++suidubins      += su
+ endif
+ if !WITH_TCB
+ suidubins += passwd
+diff --git a/src/login.c b/src/login.c
+index 00508cd..af876c9 100644
+--- a/src/login.c
++++ b/src/login.c
+@@ -713,6 +713,8 @@ int main (int argc, char **argv)
+ 	}
+ 
+       top:
++// This triggers a frigg assert?
++#ifndef __managarm__
+ 	/* only allow ALARM sec. for login */
+ 	timeout = getdef_unum ("LOGIN_TIMEOUT", ALARM);
+ 	snprintf (tmsg, sizeof tmsg,
+@@ -721,6 +723,7 @@ int main (int argc, char **argv)
+ 	if (timeout > 0) {
+ 		(void) alarm (timeout);
+ 	}
++#endif
+ 
+ 	environ = newenvp;	/* make new environment active */
+ 	delay   = getdef_unum ("FAIL_DELAY", 1);
+@@ -1109,7 +1112,10 @@ int main (int argc, char **argv)
+ 	assert (NULL != username);
+ 	assert (NULL != pwd);
+ 
++// Broken, see above
++#ifndef __managarm__
+ 	(void) alarm (0);		/* turn off alarm clock */
++#endif
+ 
+ #ifndef USE_PAM			/* PAM does this */
+ 	/*
+-- 
+2.45.2
+

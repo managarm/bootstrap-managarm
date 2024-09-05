@@ -751,6 +751,72 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: shadow
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Utilities to deal with user accounts
+      description: The package contains programs for handling passwords in a secure way.
+      spdx: 'BSD-2-Clause BSD-3-Clause BSD-4-Clause 0BSD Unlicense GPL-2.0-or-later'
+      website: 'https://github.com/shadow-maint/shadow'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-apps']
+    source:
+      subdir: ports
+      git: 'https://github.com/shadow-maint/shadow.git'
+      tag: '4.8.1'
+      version: '4.8.1'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-pkg-config
+        - host-libtool
+        - host-gettext
+      regenerate:
+        - args: ['./autogen.sh']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - libxcrypt
+      - libiconv
+      - libintl
+    revision: 1
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-managarm'
+        - '--prefix=/usr'
+        - '--exec-prefix=/usr'
+        - '--sysconfdir=/etc'
+        - '--disable-static'
+        - '--enable-shared'
+        - '--disable-nls'
+        - '--without-audit'
+        - '--without-libpam'
+        - '--without-btrfs'
+        - '--without-selinux'
+        - '--without-acl'
+        - '--without-attr'
+        - '--without-skey'
+        - '--without-tcb'
+        - '--without-libcrack'
+        - '--without-nscd'
+        - '--without-sssd'
+        - '--with-group-name-max-length=32'
+        - '--disable-man'
+        - '--with-bcrypt'
+        - '--with-yescrypt'
+        - '--without-libbsd'
+        environ:
+          ac_cv_func_fsync: 'no'
+          ac_cv_header_sys_capability_h: 'no'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'pamddir=', 'exec_prefix=/usr', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: ripgrep
     stability_level: 'broken' # Rust updates?
     architecture: '@OPTION:arch@'
