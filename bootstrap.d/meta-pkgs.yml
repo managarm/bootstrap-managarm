@@ -49,7 +49,8 @@ packages:
       - dhcpcd
       - procps
       - htop
-    revision: 6
+      - shadow
+    revision: 7
     configure: []
     build: []
 
