@@ -1,4 +1,4 @@
-From 3ac0eb16ceed2fe416b5af55f4b24db454cfcec4 Mon Sep 17 00:00:00 2001
+From 75191d74de4142b85753901d40142a6a2aefe249 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Thu, 5 Sep 2024 00:27:05 +0200
 Subject: [PATCH] Add Managarm support
@@ -7,11 +7,12 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
  Makefile.am     |  2 +-
  autogen.sh      |  2 ++
+ etc/login.defs  |  8 ++++----
  lib/encrypt.c   |  1 +
  libmisc/utmp.c  |  3 +++
  src/Makefile.am | 10 ++++------
  src/login.c     |  6 ++++++
- 6 files changed, 17 insertions(+), 7 deletions(-)
+ 7 files changed, 21 insertions(+), 11 deletions(-)
 
 diff --git a/Makefile.am b/Makefile.am
 index 8851f5d..5a58c54 100644
@@ -37,6 +38,39 @@ index 336463c..12393e0 100755
  ./configure \
  	CFLAGS="-O2 -Wall" \
  	--enable-man \
+diff --git a/etc/login.defs b/etc/login.defs
+index a2f8cd5..ab11b64 100644
+--- a/etc/login.defs
++++ b/etc/login.defs
+@@ -127,7 +127,7 @@ SU_NAME		su
+ #   Directory where mailboxes reside, _or_ name of file, relative to the
+ #   home directory.  If you _do_ define both, MAIL_DIR takes precedence.
+ #
+-MAIL_DIR	/var/spool/mail
++MAIL_DIR	/var/mail
+ #MAIL_FILE	.mail
+ 
+ #
+@@ -158,8 +158,8 @@ ENV_HZ		HZ=100
+ # *REQUIRED*  The default PATH settings, for superuser and normal users.
+ #
+ # (they are minimal, add the rest in the shell startup files)
+-ENV_SUPATH	PATH=/sbin:/bin:/usr/sbin:/usr/bin
+-ENV_PATH	PATH=/bin:/usr/bin
++ENV_SUPATH	PATH=/usr/sbin:/usr/bin
++ENV_PATH	PATH=/usr/bin
+ 
+ #
+ # Terminal permissions
+@@ -332,7 +332,7 @@ CHFN_RESTRICT		rwh
+ # Note: If you use PAM, it is recommended to use a value consistent with
+ # the PAM modules configuration.
+ #
+-#ENCRYPT_METHOD DES
++ENCRYPT_METHOD YESCRYPT
+ 
+ #
+ # Only works if ENCRYPT_METHOD is set to SHA256 or SHA512.
 diff --git a/lib/encrypt.c b/lib/encrypt.c
 index 4247f24..2486f6b 100644
 --- a/lib/encrypt.c
@@ -64,7 +98,7 @@ index ba69cf6..51277cd 100644
  
  
 diff --git a/src/Makefile.am b/src/Makefile.am
-index f175928..9c24dc5 100644
+index f175928..fda013b 100644
 --- a/src/Makefile.am
 +++ b/src/Makefile.am
 @@ -23,14 +23,12 @@ AM_CPPFLAGS = \
@@ -74,7 +108,7 @@ index f175928..9c24dc5 100644
 -bin_PROGRAMS   = groups login
 -sbin_PROGRAMS  = nologin
 -ubin_PROGRAMS  = faillog lastlog chage chfn chsh expiry gpasswd newgrp passwd
-+ubin_PROGRAMS  = faillog lastlog chage chfn chsh expiry gpasswd newgrp passwd groups login
++ubin_PROGRAMS  = faillog lastlog chage chfn chsh expiry gpasswd newgrp passwd login
  if ENABLE_SUBIDS
  ubin_PROGRAMS += newgidmap newuidmap
  endif

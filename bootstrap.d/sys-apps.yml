@@ -781,11 +781,11 @@ packages:
       - libxcrypt
       - libiconv
       - libintl
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--exec-prefix=/usr'
         - '--sysconfdir=/etc'
