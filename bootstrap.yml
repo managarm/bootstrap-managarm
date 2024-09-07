@@ -863,6 +863,7 @@ tools:
         - '-Ddisable_iconv_option=true'
         - '-Ddisable_intl_option=true'
         - '-Dlinux_kernel_headers=@BUILD_ROOT@/tools/host-linux-headers/src/linux-headers'
+        - '-Duse_freestnd_hdrs=enabled'
         - '@THIS_SOURCE_DIR@'
     compile:
       - args: ['ninja']
