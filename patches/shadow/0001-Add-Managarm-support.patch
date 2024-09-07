@@ -67,7 +67,7 @@ index a2f8cd5..ab11b64 100644
  # the PAM modules configuration.
  #
 -#ENCRYPT_METHOD DES
-+ENCRYPT_METHOD YESCRYPT
++#ENCRYPT_METHOD YESCRYPT
  
  #
  # Only works if ENCRYPT_METHOD is set to SHA256 or SHA512.
