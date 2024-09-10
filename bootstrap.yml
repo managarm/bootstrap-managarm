@@ -870,6 +870,8 @@ tools:
       - args: ['ninja', 'install']
 
   - name: host-icmake
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://gitlab.com/fbb-git/icmake'
