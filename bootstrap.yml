@@ -890,6 +890,8 @@ tools:
         workdir: '@THIS_SOURCE_DIR@/icmake'
 
   - name: host-yodl
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
       git: 'https://gitlab.com/fbb-git/yodl'
