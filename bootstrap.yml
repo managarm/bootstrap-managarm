@@ -1266,6 +1266,7 @@ packages:
         quiet: true
 
   - name: libdrm-headers
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     from_source: 'libdrm'
     build:
