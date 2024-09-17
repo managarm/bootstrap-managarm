@@ -2079,7 +2079,7 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxcb-util.git'
-      tag: 'xcb-util-0.4.1'
+      tag: 'xcb-util-0.4.1-gitlab'
       version: '0.4.1'
       tools_required:
         - host-autoconf-v2.69
@@ -2106,7 +2106,7 @@ packages:
       - libx11
       - libxtrans
       - libxcb
-    revision: 6
+    revision: 7
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -2222,7 +2222,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxcb-keysyms.git'
-      tag: 'xcb-util-keysyms-0.4.1'
+      branch: 'master'
+      commit: 'ef5cb393d27511ba511c68a54f8ff7b9aab4a384'
       version: '0.4.1'
       tools_required:
         - host-autoconf-v2.69
@@ -2245,7 +2246,7 @@ packages:
       - libxcb
       - xorg-util-macros
       - xorg-proto
-    revision: 6
+    revision: 7
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -2267,7 +2268,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxcb-render-util.git'
-      tag: 'xcb-util-renderutil-0.3.10'
+      branch: 'master'
+      commit: '5ad9853d6ddcac394d42dd2d4e34436b5db9da39'
       version: '0.3.10'
       tools_required:
         - host-autoconf-v2.69
@@ -2290,7 +2292,7 @@ packages:
       - libxcb
       - xorg-util-macros
       - xorg-proto
-    revision: 6
+    revision: 7
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
