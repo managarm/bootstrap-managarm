@@ -2128,7 +2128,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxcb-cursor.git'
-      tag: 'xcb-util-cursor-0.1.4'
+      branch: 'master'
+      commit: '4929f6051658ba5424b41703a1fb63f9db896065'
       version: '0.1.4'
       tools_required:
         - host-autoconf-v2.69
@@ -2154,7 +2155,7 @@ packages:
       - xcb-util-render-util
       - xorg-proto
       - xcb-util
-    revision: 6
+    revision: 7
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -2176,7 +2177,7 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxcb-image.git'
-      tag: 'xcb-util-image-0.4.1'
+      tag: 'xcb-util-image-0.4.1-gitlab'
       version: '0.4.1'
       tools_required:
         - host-autoconf-v2.69
@@ -2200,7 +2201,7 @@ packages:
       - xorg-util-macros
       - xorg-proto
       - xcb-util
-    revision: 6
+    revision: 7
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
