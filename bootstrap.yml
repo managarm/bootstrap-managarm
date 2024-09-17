@@ -104,7 +104,7 @@ sources:
     subdir: 'ports'
     git: 'https://github.com/UltraOS/uACPI.git'
     branch: 'master'
-    commit: edc5e219eb7ccefcfc8d0618018fabd51e83444f
+    commit: 72c356d97c4d04ef114ff4a87c9d77c32a997f30
     version: '0.0pl@ROLLING_ID@'
 
   - name: lil
