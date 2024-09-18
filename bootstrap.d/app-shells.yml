@@ -50,6 +50,42 @@ packages:
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/bash.bashrc', '@THIS_COLLECT_DIR@/etc']
       - args: ['ln', '-sf', 'bash', '@THIS_COLLECT_DIR@/usr/bin/sh']
 
+  - name: dash
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Debian Almquist SHell
+      description: This package provides the Debian Almquist SHell, the default shell on debian.
+      spdx: 'BSD'
+      website: 'http://gondor.apana.org.au/~herbert/dash/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['app-shells']
+    source:
+      subdir: 'ports'
+      git: 'https://git.kernel.org/pub/scm/utils/dash/dash.git'
+      tag: 'v0.5.12'
+      version: '0.5.12'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+      regenerate:
+        - args: ['./autogen.sh']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+    revision: 1
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--enable-fnmatch'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: zsh
     metadata:
       summary: 'UNIX Shell similar to the Korn shell'
