@@ -1,4 +1,4 @@
-From 75191d74de4142b85753901d40142a6a2aefe249 Mon Sep 17 00:00:00 2001
+From f5125393a86ec3cceebbe7052b983fca7fe68b39 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Thu, 5 Sep 2024 00:27:05 +0200
 Subject: [PATCH] Add Managarm support
@@ -7,12 +7,12 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
  Makefile.am     |  2 +-
  autogen.sh      |  2 ++
- etc/login.defs  |  8 ++++----
+ etc/login.defs  | 10 +++++-----
  lib/encrypt.c   |  1 +
  libmisc/utmp.c  |  3 +++
  src/Makefile.am | 10 ++++------
  src/login.c     |  6 ++++++
- 7 files changed, 21 insertions(+), 11 deletions(-)
+ 7 files changed, 22 insertions(+), 12 deletions(-)
 
 diff --git a/Makefile.am b/Makefile.am
 index 8851f5d..5a58c54 100644
@@ -39,7 +39,7 @@ index 336463c..12393e0 100755
  	CFLAGS="-O2 -Wall" \
  	--enable-man \
 diff --git a/etc/login.defs b/etc/login.defs
-index a2f8cd5..ab11b64 100644
+index a2f8cd5..5296301 100644
 --- a/etc/login.defs
 +++ b/etc/login.defs
 @@ -127,7 +127,7 @@ SU_NAME		su
@@ -62,6 +62,15 @@ index a2f8cd5..ab11b64 100644
  
  #
  # Terminal permissions
+@@ -188,7 +188,7 @@ TTYPERM		0600
+ #
+ # Prefix these values with "0" to get octal, "0x" to get hexadecimal.
+ #
+-ERASECHAR	0177
++ERASECHAR	010
+ KILLCHAR	025
+ #ULIMIT		2097152
+ 
 @@ -332,7 +332,7 @@ CHFN_RESTRICT		rwh
  # Note: If you use PAM, it is recommended to use a value consistent with
  # the PAM modules configuration.
@@ -98,7 +107,7 @@ index ba69cf6..51277cd 100644
  
  
 diff --git a/src/Makefile.am b/src/Makefile.am
-index f175928..fda013b 100644
+index f175928..9c24dc5 100644
 --- a/src/Makefile.am
 +++ b/src/Makefile.am
 @@ -23,14 +23,12 @@ AM_CPPFLAGS = \
@@ -171,5 +180,5 @@ index 00508cd..af876c9 100644
  #ifndef USE_PAM			/* PAM does this */
  	/*
 -- 
-2.45.2
+2.45.1
 
