@@ -51,6 +51,7 @@ imports:
   - file: bootstrap.d/sys-firmware.y4.yml
   - file: bootstrap.d/sys-kernel.y4.yml
   - file: bootstrap.d/sys-libs.y4.yml
+  - file: bootstrap.d/sys-power.y4.yml
   - file: bootstrap.d/sys-process.y4.yml
   - file: bootstrap.d/tasks.y4.yml
   - file: bootstrap.d/www-client.y4.yml

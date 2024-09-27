@@ -1,0 +1,25 @@
+From a7fb0c192f6a0a32cea4a709f791fabf8793f0ed Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Tue, 1 Jul 2025 11:43:36 +0200
+Subject: [PATCH] Disable user namespacing
+
+---
+ src/upower.service.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/upower.service.in b/src/upower.service.in
+index f4c6b88..a7ff401 100644
+--- a/src/upower.service.in
++++ b/src/upower.service.in
+@@ -45,7 +45,7 @@ SystemCallFilter=@system-service
+ SystemCallFilter=ioprio_get
+ 
+ # Namespaces
+-PrivateUsers=yes
++PrivateUsers=no
+ RestrictNamespaces=yes
+ 
+ # Locked memory
+-- 
+2.49.0
+
