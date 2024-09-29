@@ -26,7 +26,7 @@ packages:
       - ncurses
       - readline
       - libiconv
-    revision: 10
+    revision: 11
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -46,6 +46,8 @@ packages:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc/']
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/.bashrc', '@THIS_COLLECT_DIR@/root']
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/.bashrc', '@THIS_COLLECT_DIR@/home/managarm']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/.bash_profile', '@THIS_COLLECT_DIR@/root']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/.bash_profile', '@THIS_COLLECT_DIR@/home/managarm']
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/profile', '@THIS_COLLECT_DIR@/etc']
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/bash.bashrc', '@THIS_COLLECT_DIR@/etc']
       - args: ['ln', '-sf', 'bash', '@THIS_COLLECT_DIR@/usr/bin/sh']
