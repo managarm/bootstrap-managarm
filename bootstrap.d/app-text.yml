@@ -10,10 +10,10 @@ packages:
       categories: ['app-text']
     source:
       subdir: ports
-      url: 'https://ftp.debian.org/debian/pool/main/i/iso-codes/iso-codes_4.16.0.orig.tar.xz'
-      format: 'tar.xz'
-      extract_path: 'iso-codes-4.16.0'
-      checksum: blake2b:16baf4732392a976ab46efaa6c1c9bd19d3a08bd217f19c5e781db9ea81240b1adfb6063873ecbb97a5134ef990c9bfe98bc2bbecb791213afccb734f228fd4a
+      url: 'https://salsa.debian.org/iso-codes-team/iso-codes/-/archive/v4.16.0/iso-codes-v4.16.0.tar.gz'
+      format: 'tar.gz'
+      extract_path: 'iso-codes-v4.16.0'
+      checksum: blake2b:8fcdb3c12c502c1e14169765db9c9dd7778fc5d4bb0da37aa6b27efeebd5ce9f3e825e5b1a7ae8d659babf2d6b9124af08b40ed8a2a1235e88df50be9c204ca5
       version: '4.16.0'
     tools_required:
       - system-gcc
