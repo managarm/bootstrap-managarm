@@ -447,7 +447,7 @@ tools:
       - binutils
     tools_required:
       - host-cmake
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -462,7 +462,7 @@ tools:
         - '-DCMAKE_BUILD_TYPE=Release'
         - '-DLLVM_LINK_LLVM_DYLIB=ON'
         - '-DLLVM_TARGETS_TO_BUILD=X86;AArch64;RISCV'
-        - '-DLLVM_ENABLE_PROJECTS=clang;clang-tools-extra'
+        - '-DLLVM_ENABLE_PROJECTS=clang;clang-tools-extra;lld'
 
         # clang configuration options.
         - '-DDEFAULT_SYSROOT=@SYSROOT_DIR@'
