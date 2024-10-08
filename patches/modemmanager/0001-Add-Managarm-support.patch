@@ -1,0 +1,38 @@
+From b11885c2054f62a5db2d6122802deded561fe6e4 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Tue, 18 Jun 2024 21:27:13 +0200
+Subject: [PATCH] Add Managarm support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ libqcdm/src/com.c         | 1 +
+ src/mm-port-serial-qcdm.c | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/libqcdm/src/com.c b/libqcdm/src/com.c
+index d6283e0..3b63c82 100644
+--- a/libqcdm/src/com.c
++++ b/libqcdm/src/com.c
+@@ -15,6 +15,7 @@
+  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  */
+ 
++#define _GNU_SOURCE
+ #include <errno.h>
+ #include <termios.h>
+ #include <fcntl.h>
+diff --git a/src/mm-port-serial-qcdm.c b/src/mm-port-serial-qcdm.c
+index 08f2430..91262bf 100644
+--- a/src/mm-port-serial-qcdm.c
++++ b/src/mm-port-serial-qcdm.c
+@@ -18,6 +18,7 @@
+ #include <stdlib.h>
+ #include <unistd.h>
+ #include <string.h>
++#include <endian.h>
+ 
+ #include <ModemManager.h>
+ #include <mm-errors-types.h>
+-- 
+2.45.2
+

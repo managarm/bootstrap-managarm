@@ -105,6 +105,115 @@ packages:
       - args: ['cp', '@THIS_BUILD_DIR@/services', '@THIS_COLLECT_DIR@/etc/']
       - args: ['cp', '@THIS_BUILD_DIR@/protocols', '@THIS_COLLECT_DIR@/etc/']
 
+  - name: modemmanager
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Modem and mobile broadband management libraries
+      description: ModemManager provides a unified high level API for communicating with mobile broadband modems, regardless of the protocol used to communicate with the actual device.
+      spdx: 'GPL-2.0-or-later'
+      website: 'https://www.freedesktop.org/wiki/Software/ModemManager/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['net-misc']
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.freedesktop.org/mobile-broadband/ModemManager.git'
+      tag: '1.22.0'
+      version: '1.22.0'
+    tools_required:
+      - system-gcc
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+      - host-mlibc
+      - host-gobject-introspection
+      - host-python
+      - host-glib
+      - host-vala
+    pkgs_required:
+      - mlibc
+      - glib
+      - libgudev
+      - libmbim
+      - libqmi
+      - gobject-introspection
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--buildtype=debugoptimized'
+        - '-Dintrospection=true'
+        - '-Dbash_completion=false'
+        - '-Dudev=true'
+        - '-Dqrtr=false'
+        - '-Dman=false'
+        - '-Dsystemd_journal=false'
+        - '-Dpolkit=no'
+        - '-Dvapi=true'
+        - '-Dsystemd_suspend_resume=false'
+        - '-Dsystemdsystemunitdir=no'
+        - '@THIS_SOURCE_DIR@'
+        environ:
+          # Same as below
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
+          # Wrapper to add our valadir
+          VAPIGEN: 'cross-vapigen'
+          # Wrapper to add our valadir
+          VALAC: 'cross-valac'
+    build:
+      - args: ['ninja']
+        environ:
+          # Make python load host libraries instead of the ones in the rootfs
+          LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-glib/lib:@BUILD_ROOT@/tools/host-glib/lib/x86_64-linux-gnu:@BUILD_ROOT@/tools/host-gobject-introspection/lib/x86_64-linux-gnu'
+          # Library path for our run-wrapper that allows it to load managarm libraries
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          # Similar to above, but using a nasty (but working) hack lets us use a Linux mlibc build to execute an
+          # executable that was cross-compiled for managarm
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
+          # This is a custom environment variable which tells g-ir-scanner what to use instead of ldd
+          # We point it at our native ldd-wrapper that's installed as part of host-gobject-introspection
+          GI_LDD_WRAPPER: ldd-wrapper
+          # This tells g-ir-scanner what program should be used for "cross-launching" the executables it builds
+          GI_CROSS_LAUNCHER: run-wrapper
+          # Path to the introspection data installed by other packages
+          GI_GIR_PATH: '@SYSROOT_DIR@/usr/share/gir-1.0'
+          VALADIR: '@SYSROOT_DIR@/usr/share/vala/vapi'
+          # Wrapper to add our valadir
+          VALAC: 'cross-valac'
+          # Wrapper to add our valadir
+          VAPIGEN: 'cross-vapigen'
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+          # Make python load host libraries instead of the ones in the rootfs
+          LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-glib/lib:@BUILD_ROOT@/tools/host-glib/lib/x86_64-linux-gnu:@BUILD_ROOT@/tools/host-gobject-introspection/lib/x86_64-linux-gnu'
+          # Library path for our run-wrapper that allows it to load managarm libraries
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          # Similar to above, but using a nasty (but working) hack lets us use a Linux mlibc build to execute an
+          # executable that was cross-compiled for managarm
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
+          # This is a custom environment variable which tells g-ir-scanner what to use instead of ldd
+          # We point it at our native ldd-wrapper that's installed as part of host-gobject-introspection
+          GI_LDD_WRAPPER: ldd-wrapper
+          # This tells g-ir-scanner what program should be used for "cross-launching" the executables it builds
+          GI_CROSS_LAUNCHER: run-wrapper
+          # Path to the introspection data installed by other packages
+          GI_GIR_PATH: '@SYSROOT_DIR@/usr/share/gir-1.0'
+          VALADIR: '@SYSROOT_DIR@/usr/share/vala/vapi'
+          # Wrapper to add our valadir
+          VALAC: 'cross-valac'
+          # Wrapper to add our valadir
+          VAPIGEN: 'cross-vapigen'
+      - args: ['touch', '@THIS_COLLECT_DIR@/etc/ModemManager/.keep']
+      - args: ['touch', '@THIS_COLLECT_DIR@/etc/ModemManager/connection.d/.keep']
+      - args: ['touch', '@THIS_COLLECT_DIR@/etc/ModemManager/fcc-unlock.d/.keep']
+      - args: ['touch', '@THIS_COLLECT_DIR@/usr/lib/ModemManager/connection.d/.keep']
+      - args: ['touch', '@THIS_COLLECT_DIR@/usr/lib/ModemManager/fcc-unlock.d/.keep']
+
   - name: rsync
     architecture: '@OPTION:arch@'
     source:
