@@ -1,0 +1,402 @@
+From e6d362b82d61af2603006893cc8900d4b73bbabb Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Fri, 2 Aug 2024 16:30:25 +0200
+Subject: [PATCH] Add initial Managarm support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ meson.build                                   | 37 +++++++-----
+ src/c-stdaux/src/c-stdaux-generic.h           |  2 +-
+ src/libnm-glib-aux/nm-random-utils.c          |  2 +
+ src/libnm-glib-aux/nm-shared-utils.c          |  6 ++
+ src/libnm-platform/nm-linux-platform.c        | 11 +++-
+ src/libnm-systemd-core/meson.build            |  1 +
+ .../sd-adapt-core/nm-sd-adapt-core.h          |  2 +
+ .../src/libsystemd-network/sd-dhcp6-client.c  |  2 +-
+ .../src/libsystemd/sd-id128/hmac.c            | 60 +++++++++++++++++++
+ .../src/libsystemd/sd-id128/hmac.h            | 12 ++++
+ .../src/libsystemd/sd-id128/id128-util.c      |  2 +
+ .../src/libsystemd/sd-id128/sd-id128.c        |  4 ++
+ .../sd-adapt-shared/nm-sd-adapt-shared.h      |  4 ++
+ .../src/basic/missing_syscall.h               |  5 ++
+ src/nmcli/polkit-agent.c                      |  2 +
+ tools/create-exports-NetworkManager.sh        |  2 +-
+ 16 files changed, 134 insertions(+), 20 deletions(-)
+ create mode 100644 src/libnm-systemd-core/src/libsystemd/sd-id128/hmac.c
+ create mode 100644 src/libnm-systemd-core/src/libsystemd/sd-id128/hmac.h
+
+diff --git a/meson.build b/meson.build
+index da78cdb..13cb181 100644
+--- a/meson.build
++++ b/meson.build
+@@ -256,22 +256,27 @@ libudev_dep = dependency('libudev', version: '>= 175')
+ dbus_dep = dependency('dbus-1', version: '>= 1.1')
+ libndp_dep = dependency('libndp')
+ 
+-jansson_dep = dependency('jansson', version: '>= 2.7', required: false)
+-config_h.set10('WITH_JANSSON', jansson_dep.found())
+-
+-jansson_msg = 'no'
+-if jansson_dep.found()
+-  jansson_libdir = jansson_dep.get_variable(pkgconfig: 'libdir')
+-  res = run_command(find_program('eu-readelf', 'readelf'), '-d', join_paths(jansson_libdir, 'libjansson.so'), check: false)
+-  jansson_soname = ''
+-  foreach line: res.stdout().split('\n')
+-    if line.strip().contains('SONAME')
+-       jansson_soname = line.split('[')[1].split(']')[0]
+-    endif
+-  endforeach
+-  assert(jansson_soname != '', 'Unable to determine Jansson SONAME')
+-  config_h.set_quoted('JANSSON_SONAME', jansson_soname)
+-  jansson_msg = 'yes (soname: ' + jansson_soname + ')'
++if target_machine.system() != 'managarm'
++  jansson_dep = dependency('jansson', version: '>= 2.7', required: false)
++  config_h.set10('WITH_JANSSON', jansson_dep.found())
++
++  jansson_msg = 'no'
++  if jansson_dep.found()
++    jansson_libdir = jansson_dep.get_variable(pkgconfig: 'libdir')
++    res = run_command(find_program('eu-readelf', 'readelf'), '-d', join_paths(jansson_libdir, 'libjansson.so'), check: false)
++    jansson_soname = ''
++    foreach line: res.stdout().split('\n')
++      if line.strip().contains('SONAME')
++         jansson_soname = line.split('[')[1].split(']')[0]
++      endif
++    endforeach
++    assert(jansson_soname != '', 'Unable to determine Jansson SONAME')
++    config_h.set_quoted('JANSSON_SONAME', jansson_soname)
++    jansson_msg = 'yes (soname: ' + jansson_soname + ')'
++  endif
++else
++  jansson_dep = dependency('jansson', version: '>= 99999999', required: false)
++  jansson_msg = 'no'
+ endif
+ 
+ libsystemd_dep = dependency('libsystemd', version: '>= 209', required: false)
+diff --git a/src/c-stdaux/src/c-stdaux-generic.h b/src/c-stdaux/src/c-stdaux-generic.h
+index 6f87fd4..51d6e08 100644
+--- a/src/c-stdaux/src/c-stdaux-generic.h
++++ b/src/c-stdaux/src/c-stdaux-generic.h
+@@ -60,7 +60,7 @@ extern "C" {
+ #  define C_COMPILER_MSVC 1
+ #endif
+ 
+-#if defined(__linux__)
++#if defined(__linux__) || defined(__managarm__)
+ #  define C_OS_LINUX 1
+ #endif
+ 
+diff --git a/src/libnm-glib-aux/nm-random-utils.c b/src/libnm-glib-aux/nm-random-utils.c
+index bbc5536..5a6950f 100644
+--- a/src/libnm-glib-aux/nm-random-utils.c
++++ b/src/libnm-glib-aux/nm-random-utils.c
+@@ -9,7 +9,9 @@
+ 
+ #include <fcntl.h>
+ #include <sys/auxv.h>
++#ifndef __managarm__
+ #include <sys/syscall.h>
++#endif
+ #include <poll.h>
+ 
+ #if USE_SYS_RANDOM_H
+diff --git a/src/libnm-glib-aux/nm-shared-utils.c b/src/libnm-glib-aux/nm-shared-utils.c
+index 421e4d1..5127ab5 100644
+--- a/src/libnm-glib-aux/nm-shared-utils.c
++++ b/src/libnm-glib-aux/nm-shared-utils.c
+@@ -13,7 +13,9 @@
+ #include <arpa/inet.h>
+ #include <poll.h>
+ #include <fcntl.h>
++#ifndef __managarm__
+ #include <sys/syscall.h>
++#endif
+ #include <net/if.h>
+ #include <net/ethernet.h>
+ #include <pthread.h>
+@@ -138,7 +140,11 @@ nm_utils_inet6_interface_identifier_to_token(const NMUtilsIPv6IfaceId *iid,
+ pid_t
+ nm_utils_gettid(void)
+ {
++#ifndef __managarm__
+     return (pid_t) syscall(SYS_gettid);
++#else
++    return gettid();
++#endif
+ }
+ 
+ /* Used for asserting that this function is called on the main-thread.
+diff --git a/src/libnm-platform/nm-linux-platform.c b/src/libnm-platform/nm-linux-platform.c
+index 5b595a9..b7cc59b 100644
+--- a/src/libnm-platform/nm-linux-platform.c
++++ b/src/libnm-platform/nm-linux-platform.c
+@@ -11683,12 +11683,19 @@ nm_linux_platform_new(NMDedupMultiIndex *multi_idx,
+                       gboolean           netns_support,
+                       gboolean           cache_tc)
+ {
++    nm_log_info(LOGD_CORE, "nm_linux_platform_new 1?");
+     gboolean use_udev = FALSE;
+ 
++#ifndef __managarm__
+     if (nmp_netns_is_initial() && path_is_read_only_fs("/sys") == FALSE)
+         use_udev = TRUE;
++#else
++    use_udev = TRUE;
++    netns_support = FALSE;
++#endif
++    nm_log_info(LOGD_CORE, "nm_linux_platform_new 2?");
+ 
+-    return g_object_new(NM_TYPE_LINUX_PLATFORM,
++    NMPlatform *ret = g_object_new(NM_TYPE_LINUX_PLATFORM,
+                         NM_PLATFORM_MULTI_IDX,
+                         multi_idx,
+                         NM_PLATFORM_LOG_WITH_PTR,
+@@ -11700,6 +11707,8 @@ nm_linux_platform_new(NMDedupMultiIndex *multi_idx,
+                         NM_PLATFORM_CACHE_TC,
+                         cache_tc,
+                         NULL);
++    nm_log_info(LOGD_CORE, "nm_linux_platform_new 3?");
++    return ret;
+ }
+ 
+ static void
+diff --git a/src/libnm-systemd-core/meson.build b/src/libnm-systemd-core/meson.build
+index 15e1c8a..adfa0ae 100644
+--- a/src/libnm-systemd-core/meson.build
++++ b/src/libnm-systemd-core/meson.build
+@@ -16,6 +16,7 @@ libnm_systemd_core = static_library(
+     'src/libsystemd/sd-event/sd-event.c',
+     'src/libsystemd/sd-id128/id128-util.c',
+     'src/libsystemd/sd-id128/sd-id128.c',
++    'src/libsystemd/sd-id128/hmac.c',
+     'nm-sd.c',
+     'sd-adapt-core/netif-util.c',
+     'sd-adapt-core/nm-sd-adapt-core.c',
+diff --git a/src/libnm-systemd-core/sd-adapt-core/nm-sd-adapt-core.h b/src/libnm-systemd-core/sd-adapt-core/nm-sd-adapt-core.h
+index 9cb5574..2165657 100644
+--- a/src/libnm-systemd-core/sd-adapt-core/nm-sd-adapt-core.h
++++ b/src/libnm-systemd-core/sd-adapt-core/nm-sd-adapt-core.h
+@@ -37,7 +37,9 @@
+ #include <sys/auxv.h>
+ #endif
+ #include <unistd.h>
++#ifndef __managarm__
+ #include <sys/syscall.h>
++#endif
+ #include <sys/ioctl.h>
+ 
+ #define HAVE_EPOLL_PWAIT2 0
+diff --git a/src/libnm-systemd-core/src/libsystemd-network/sd-dhcp6-client.c b/src/libnm-systemd-core/src/libsystemd-network/sd-dhcp6-client.c
+index 7c20116..5904656 100644
+--- a/src/libnm-systemd-core/src/libsystemd-network/sd-dhcp6-client.c
++++ b/src/libnm-systemd-core/src/libsystemd-network/sd-dhcp6-client.c
+@@ -7,7 +7,7 @@
+ 
+ #include <errno.h>
+ #include <sys/ioctl.h>
+-#ifdef __GLIBC__
++#if defined __GLIBC__ || defined __managarm__
+ #include <linux/if_arp.h>
+ #endif
+ #include <linux/if_infiniband.h>
+diff --git a/src/libnm-systemd-core/src/libsystemd/sd-id128/hmac.c b/src/libnm-systemd-core/src/libsystemd/sd-id128/hmac.c
+new file mode 100644
+index 0000000..a5f66d5
+--- /dev/null
++++ b/src/libnm-systemd-core/src/libsystemd/sd-id128/hmac.c
+@@ -0,0 +1,60 @@
++/* SPDX-License-Identifier: LGPL-2.1-or-later */
++
++#include <assert.h>
++#include <string.h>
++
++#include "hmac.h"
++#include "sha256.h"
++
++#define HMAC_BLOCK_SIZE 64
++#define INNER_PADDING_BYTE 0x36
++#define OUTER_PADDING_BYTE 0x5c
++
++void hmac_sha256(const void *key,
++                 size_t key_size,
++                 const void *input,
++                 size_t input_size,
++                 uint8_t res[static SHA256_DIGEST_SIZE]) {
++
++        uint8_t inner_padding[HMAC_BLOCK_SIZE] = { };
++        uint8_t outer_padding[HMAC_BLOCK_SIZE] = { };
++        uint8_t replacement_key[SHA256_DIGEST_SIZE];
++        struct sha256_ctx hash;
++
++        assert(key);
++        assert(key_size > 0);
++        assert(res);
++
++        /* Implement algorithm as described by FIPS 198. */
++
++        /* The key needs to be block size length or less, hash it if it's longer. */
++        if (key_size > HMAC_BLOCK_SIZE) {
++                sha256_direct(key, key_size, replacement_key);
++                key = replacement_key;
++                key_size = SHA256_DIGEST_SIZE;
++        }
++
++        /* First, copy the key into the padding arrays. If it's shorter than
++         * the block size, the arrays are already initialized to 0. */
++        memcpy(inner_padding, key, key_size);
++        memcpy(outer_padding, key, key_size);
++
++        /* Then, XOR the provided key and any padding leftovers with the fixed
++         * padding bytes as defined in FIPS 198. */
++        for (size_t i = 0; i < HMAC_BLOCK_SIZE; i++) {
++                inner_padding[i] ^= INNER_PADDING_BYTE;
++                outer_padding[i] ^= OUTER_PADDING_BYTE;
++        }
++
++        /* First pass: hash the inner padding array and the input. */
++        sha256_init_ctx(&hash);
++        sha256_process_bytes(inner_padding, HMAC_BLOCK_SIZE, &hash);
++        sha256_process_bytes(input, input_size, &hash);
++        sha256_finish_ctx(&hash, res);
++
++        /* Second pass: hash the outer padding array and the result of the first pass. */
++        sha256_init_ctx(&hash);
++        sha256_process_bytes(outer_padding, HMAC_BLOCK_SIZE, &hash);
++        sha256_process_bytes(res, SHA256_DIGEST_SIZE, &hash);
++        sha256_finish_ctx(&hash, res);
++}
+diff --git a/src/libnm-systemd-core/src/libsystemd/sd-id128/hmac.h b/src/libnm-systemd-core/src/libsystemd/sd-id128/hmac.h
+new file mode 100644
+index 0000000..e58c183
+--- /dev/null
++++ b/src/libnm-systemd-core/src/libsystemd/sd-id128/hmac.h
+@@ -0,0 +1,12 @@
++/* SPDX-License-Identifier: LGPL-2.1-or-later */
++#pragma once
++
++#include <stdint.h>
++#include <stdlib.h>
++
++#include "sha256.h"
++
++/* Unoptimized implementation based on FIPS 198. 'res' has to be allocated by
++ * the caller. Prefer external OpenSSL functions, and use this only when
++ * linking to OpenSSL is not desirable (eg: libsystemd.so). */
++void hmac_sha256(const void *key, size_t key_size, const void *input, size_t input_size, uint8_t res[static SHA256_DIGEST_SIZE]);
+diff --git a/src/libnm-systemd-core/src/libsystemd/sd-id128/id128-util.c b/src/libnm-systemd-core/src/libsystemd/sd-id128/id128-util.c
+index 5817305..41cca04 100644
+--- a/src/libnm-systemd-core/src/libsystemd/sd-id128/id128-util.c
++++ b/src/libnm-systemd-core/src/libsystemd/sd-id128/id128-util.c
+@@ -204,6 +204,7 @@ void id128_hash_func(const sd_id128_t *p, struct siphash *state) {
+ int id128_compare_func(const sd_id128_t *a, const sd_id128_t *b) {
+         return memcmp(a, b, sizeof(sd_id128_t));
+ }
++#endif
+ 
+ sd_id128_t id128_make_v4_uuid(sd_id128_t id) {
+         /* Stolen from generate_random_uuid() of drivers/char/random.c
+@@ -218,6 +219,7 @@ sd_id128_t id128_make_v4_uuid(sd_id128_t id) {
+         return id;
+ }
+ 
++#if 0
+ DEFINE_HASH_OPS(id128_hash_ops, sd_id128_t, id128_hash_func, id128_compare_func);
+ DEFINE_HASH_OPS_WITH_KEY_DESTRUCTOR(id128_hash_ops_free, sd_id128_t, id128_hash_func, id128_compare_func, free);
+ 
+diff --git a/src/libnm-systemd-core/src/libsystemd/sd-id128/sd-id128.c b/src/libnm-systemd-core/src/libsystemd/sd-id128/sd-id128.c
+index ff0db77..5f3e1af 100644
+--- a/src/libnm-systemd-core/src/libsystemd/sd-id128/sd-id128.c
++++ b/src/libnm-systemd-core/src/libsystemd/sd-id128/sd-id128.c
+@@ -345,6 +345,8 @@ _public_ int sd_id128_randomize(sd_id128_t *ret) {
+         return 0;
+ }
+ 
++#endif
++
+ _public_ int sd_id128_get_app_specific(sd_id128_t base, sd_id128_t app_id, sd_id128_t *ret) {
+         assert_cc(sizeof(sd_id128_t) < SHA256_DIGEST_SIZE); /* Check that we don't need to pad with zeros. */
+         union {
+@@ -375,6 +377,8 @@ _public_ int sd_id128_get_machine_app_specific(sd_id128_t app_id, sd_id128_t *re
+         return sd_id128_get_app_specific(id, app_id, ret);
+ }
+ 
++#if 0
++
+ _public_ int sd_id128_get_boot_app_specific(sd_id128_t app_id, sd_id128_t *ret) {
+         sd_id128_t id;
+         int r;
+diff --git a/src/libnm-systemd-shared/sd-adapt-shared/nm-sd-adapt-shared.h b/src/libnm-systemd-shared/sd-adapt-shared/nm-sd-adapt-shared.h
+index 83916fb..2662813 100644
+--- a/src/libnm-systemd-shared/sd-adapt-shared/nm-sd-adapt-shared.h
++++ b/src/libnm-systemd-shared/sd-adapt-shared/nm-sd-adapt-shared.h
+@@ -38,7 +38,9 @@
+ 
+ #if (NETWORKMANAGER_COMPILATION) & NM_NETWORKMANAGER_COMPILATION_WITH_SYSTEMD
+ 
++#ifndef __managarm__
+ #include <sys/syscall.h>
++#endif
+ #include <sys/ioctl.h>
+ #include <pthread.h>
+ 
+@@ -71,6 +73,8 @@ raw_getpid(void)
+ {
+ #if defined(__alpha__)
+     return (pid_t) syscall(__NR_getxpid);
++#elif defined(__managarm__)
++    return getpid();
+ #else
+     return (pid_t) syscall(__NR_getpid);
+ #endif
+diff --git a/src/libnm-systemd-shared/src/basic/missing_syscall.h b/src/libnm-systemd-shared/src/basic/missing_syscall.h
+index 149c5b4..1994bb5 100644
+--- a/src/libnm-systemd-shared/src/basic/missing_syscall.h
++++ b/src/libnm-systemd-shared/src/basic/missing_syscall.h
+@@ -11,7 +11,9 @@
+ #include <linux/time_types.h>
+ #endif
+ #include <signal.h>
++#ifndef __managarm__
+ #include <sys/syscall.h>
++#endif
+ #include <sys/types.h>
+ #include <sys/wait.h>
+ #include <unistd.h>
+@@ -374,6 +376,9 @@ static inline int missing_pidfd_open(pid_t pid, unsigned flags) {
+ static inline int missing_rt_sigqueueinfo(pid_t tgid, int sig, siginfo_t *info) {
+ #  if defined __NR_rt_sigqueueinfo && __NR_rt_sigqueueinfo >= 0
+         return syscall(__NR_rt_sigqueueinfo, tgid, sig, info);
++#elif defined __managarm__
++        // Ignored?
++        return 0;
+ #  else
+ #    error "__NR_rt_sigqueueinfo not defined"
+ #  endif
+diff --git a/src/nmcli/polkit-agent.c b/src/nmcli/polkit-agent.c
+index 8b74b33..810bc55 100644
+--- a/src/nmcli/polkit-agent.c
++++ b/src/nmcli/polkit-agent.c
+@@ -83,6 +83,8 @@ nmc_polkit_agent_fini(NmCli *nmc)
+ gboolean
+ nmc_start_polkit_agent_start_try(NmCli *nmc)
+ {
++    // HACK: fuck polkit?
++    return TRUE;
+     gs_free_error GError *error = NULL;
+ 
+     /* We don't register polkit agent at all when running non-interactively */
+diff --git a/tools/create-exports-NetworkManager.sh b/tools/create-exports-NetworkManager.sh
+index 855d837..2540576 100755
+--- a/tools/create-exports-NetworkManager.sh
++++ b/tools/create-exports-NetworkManager.sh
+@@ -1,6 +1,6 @@
+ #!/bin/bash
+ 
+-set -e
++#set -e
+ set -o pipefail
+ 
+ die() {
+-- 
+2.45.2
+

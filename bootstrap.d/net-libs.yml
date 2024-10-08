@@ -148,6 +148,48 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: libndp
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Library for Neighbor Discovery Protocol
+      description: This package provides a wrapper for IPv6 Neighbor Discovery Protocol. It also provides a tool named ndptool for sending and receiving NDP messages.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'http://libndp.org/'
+      maintainer: 'Dennis Bonke <dennis@managarm.org>'
+      categories: ['net-libs']
+    source:
+      subdir: ports
+      git: 'https://github.com/jpirko/libndp.git'
+      tag: 'v1.8'
+      version: '1.8'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['./autogen.sh']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+    revision: 1
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--sysconfdir=/etc'
+        - '--localstatedir=/var'
+        - '--disable-static'
+        environ:
+          ac_cv_func_malloc_0_nonnull: 'yes'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: libpsl
     architecture: '@OPTION:arch@'
     metadata:
