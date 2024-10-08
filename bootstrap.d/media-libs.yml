@@ -1,3 +1,40 @@
+sources:
+  - name: freetype
+    subdir: 'ports'
+    git: 'https://gitlab.freedesktop.org/freetype/freetype.git'
+    tag: 'VER-2-13-1'
+    version: '2.13.1'
+    tools_required:
+      - host-autoconf-v2.69
+      - host-automake-v1.15
+      - host-libtool
+      - host-pkg-config
+    regenerate:
+      - args: ['./autogen.sh']
+        isolate_network: false
+        environ:
+          NOCONFIGURE: '1'
+      - args: ['cp',
+          '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
+          '@THIS_SOURCE_DIR@/builds/unix/']
+
+tools:
+  - name: host-freetype
+    from_source: freetype
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--prefix=@PREFIX@'
+        - '--disable-static'
+        - '--with-harfbuzz=no'
+        - '--with-zlib=no'
+        - '--with-png=no'
+        - '--with-bzip2=no'
+    compile:
+      - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'install']
+
 packages:
   - name: alsa-lib
     architecture: '@OPTION:arch@'
@@ -160,24 +197,7 @@ packages:
   - name: freetype
     labels: [aarch64]
     architecture: '@OPTION:arch@'
-    source:
-      subdir: 'ports'
-      git: 'https://gitlab.freedesktop.org/freetype/freetype.git'
-      tag: 'VER-2-13-1'
-      version: '2.13.1'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
-        - host-libtool
-        - host-pkg-config
-      regenerate:
-        - args: ['./autogen.sh']
-          isolate_network: false
-          environ:
-            NOCONFIGURE: '1'
-        - args: ['cp',
-            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
-            '@THIS_SOURCE_DIR@/builds/unix/']
+    from_source: freetype
     tools_required:
       - system-gcc
     pkgs_required:
