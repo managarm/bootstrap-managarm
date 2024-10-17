@@ -1,0 +1,69 @@
+sources:
+  - name: 'linux-firmware'
+    subdir: 'ports'
+    url: 'https://cdn.kernel.org/pub/linux/kernel/firmware/linux-firmware-20230804.tar.xz'
+    checksum: 'blake2b:48eca78ab97ef5ac335dd2bfd043cf3e67c52c68cb8b3eb152725e04838a7662dafa9745add6fc786bf87d275809b51a07496fbdaf4607a89e2787388fe1d1cd'
+    extract_path: 'linux-firmware-20230804'
+    format: 'tar.xz'
+    version: '20230804'
+
+packages:
+  - name: amd-ucode
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: AMD CPU microcode files
+      description: This package provides microcode update files for AMD CPUs.
+      spdx: 'linux-fw-redistributable'
+      website: 'https://kernel.org'
+      maintainer: "Alexander Richards <electrodeyt@gmail.com>"
+      categories: ['sys-kernel']
+    from_source: linux-firmware
+    build:
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/lib/firmware/']
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/amd-ucode', '@THIS_COLLECT_DIR@/usr/lib/firmware']
+      - args: ['cp', '@THIS_SOURCE_DIR@/LICENSE.amd-ucode', '@THIS_COLLECT_DIR@/usr/lib/firmware']
+
+  - name: linux-firmware-amdgpu
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: AMDGPU firmware files
+      description: This package provides firmware files for GPUs supported by the linux amdgpu driver.
+      spdx: 'linux-fw-redistributable'
+      website: 'https://kernel.org'
+      maintainer: "Alexander Richards <electrodeyt@gmail.com>"
+      categories: ['sys-kernel']
+    from_source: linux-firmware
+    build:
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/lib/firmware/']
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/amdgpu', '@THIS_COLLECT_DIR@/usr/lib/firmware']
+      - args: ['cp', '@THIS_SOURCE_DIR@/LICENSE.amdgpu', '@THIS_COLLECT_DIR@/usr/lib/firmware']
+
+  - name: linux-firmware-i915
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Intel GPU firmware files
+      description: This package provides firmware files for GPUs supported by the linux i915 driver.
+      spdx: 'linux-fw-redistributable'
+      website: 'https://kernel.org'
+      maintainer: "Alexander Richards <electrodeyt@gmail.com>"
+      categories: ['sys-kernel']
+    from_source: linux-firmware
+    build:
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/lib/firmware/']
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/i915', '@THIS_COLLECT_DIR@/usr/lib/firmware']
+      - args: ['cp', '@THIS_SOURCE_DIR@/LICENSE.i915', '@THIS_COLLECT_DIR@/usr/lib/firmware']
+
+  - name: linux-firmware-radeon
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Radeon GPU firmware files
+      description: This package provides firmware files for GPUs supported by the linux radeon driver.
+      spdx: 'linux-fw-redistributable'
+      website: 'https://kernel.org'
+      maintainer: "Alexander Richards <electrodeyt@gmail.com>"
+      categories: ['sys-kernel']
+    from_source: linux-firmware
+    build:
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/lib/firmware/']
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/radeon', '@THIS_COLLECT_DIR@/usr/lib/firmware']
+      - args: ['cp', '@THIS_SOURCE_DIR@/LICENSE.radeon', '@THIS_COLLECT_DIR@/usr/lib/firmware']
