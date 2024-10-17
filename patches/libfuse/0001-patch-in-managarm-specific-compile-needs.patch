@@ -1,0 +1,80 @@
+From fbe2f27f8748a581641f8a88258e712e294bb8e1 Mon Sep 17 00:00:00 2001
+From: ikbenlike <thewatcheriswatchinu@gmail.com>
+Date: Mon, 14 Nov 2022 04:52:35 +0100
+Subject: [PATCH] patch in managarm-specific compile needs
+
+---
+ lib/fuse_i.h           | 2 ++
+ lib/meson.build        | 2 ++
+ util/install_helper.sh | 4 ++--
+ util/mount.fuse.c      | 2 ++
+ 4 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/lib/fuse_i.h b/lib/fuse_i.h
+index 42f0e5f..6c917d7 100644
+--- a/lib/fuse_i.h
++++ b/lib/fuse_i.h
+@@ -9,6 +9,8 @@
+ #include "fuse.h"
+ #include "fuse_lowlevel.h"
+ 
++#include <pthread.h>
++
+ struct mount_opts;
+ 
+ struct fuse_req {
+diff --git a/lib/meson.build b/lib/meson.build
+index ef0e11e..ff29bfe 100644
+--- a/lib/meson.build
++++ b/lib/meson.build
+@@ -6,6 +6,8 @@ libfuse_sources = ['fuse.c', 'fuse_i.h', 'fuse_loop.c', 'fuse_loop_mt.c',
+ 
+ if host_machine.system().startswith('linux')
+    libfuse_sources += [ 'mount.c' ]
++elif host_machine.system().startswith('managarm')
++   libfuse_sources += [ 'mount.c' ]
+ else
+    libfuse_sources += [ 'mount_bsd.c' ]
+ endif
+diff --git a/util/install_helper.sh b/util/install_helper.sh
+index 33f4a42..e2ca716 100755
+--- a/util/install_helper.sh
++++ b/util/install_helper.sh
+@@ -28,12 +28,12 @@ install -D -m 644 "${MESON_SOURCE_ROOT}/util/fuse.conf" \
+ 	"${DESTDIR}${sysconfdir}/fuse.conf"
+ 
+ if $useroot; then
+-    chown root:root "${DESTDIR}${bindir}/fusermount3"
++    #chown root:root "${DESTDIR}${bindir}/fusermount3"
+     chmod u+s "${DESTDIR}${bindir}/fusermount3"
+ 
+     if test ! -e "${DESTDIR}/dev/fuse"; then
+         mkdir -p "${DESTDIR}/dev"
+-        mknod "${DESTDIR}/dev/fuse" -m 0666 c 10 229
++        #mknod "${DESTDIR}/dev/fuse" -m 0666 c 10 229
+     fi
+ fi
+ 
+diff --git a/util/mount.fuse.c b/util/mount.fuse.c
+index a6e5629..2ae26a2 100644
+--- a/util/mount.fuse.c
++++ b/util/mount.fuse.c
+@@ -347,6 +347,7 @@ int main(int argc, char *argv[])
+ 		}
+ 	}
+ 
++#ifndef __managarm__
+ 	if (drop_privileges) {
+ 		uint64_t required_caps = CAP_TO_MASK(CAP_SETPCAP) |
+ 				CAP_TO_MASK(CAP_SYS_ADMIN);
+@@ -356,6 +357,7 @@ int main(int argc, char *argv[])
+ 			exit(1);
+ 		}
+ 	}
++#endif
+ 
+ 	if (dev)
+ 		options = add_option("dev", options);
+-- 
+2.38.1
+
