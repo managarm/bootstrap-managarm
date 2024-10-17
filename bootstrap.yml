@@ -867,7 +867,7 @@ tools:
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
         - '--wrap-mode=nofallback'
-        - '-Dmlibc_no_headers=true'
+        - '-Dno_headers=true'
         - '-Dlinux_kernel_headers=@BUILD_ROOT@/tools/host-linux-headers/src/linux-headers'
         - '@THIS_SOURCE_DIR@'
     compile:
@@ -1592,7 +1592,7 @@ packages:
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
         - '--wrap-mode=nofallback'
-        - '-Dmlibc_no_headers=true'
+        - '-Dno_headers=true'
         - '-Dlinux_kernel_headers=@SYSROOT_DIR@/usr/src/linux-headers'
         - '@THIS_SOURCE_DIR@'
     build:
@@ -1631,7 +1631,7 @@ packages:
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
         - '--wrap-mode=nofallback'
-        - '-Dmlibc_no_headers=true'
+        - '-Dno_headers=true'
         - '-Dlinux_kernel_headers=@SYSROOT_DIR@/usr/src/linux-headers'
         - '@THIS_SOURCE_DIR@'
     build:
