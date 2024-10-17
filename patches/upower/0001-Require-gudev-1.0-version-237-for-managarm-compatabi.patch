@@ -1,0 +1,25 @@
+From a8d0d09bce568e9aeb62b7b432466263479a1f01 Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Fri, 27 Sep 2024 15:08:20 +0200
+Subject: [PATCH] Require gudev-1.0 version >= 237 for managarm compatability
+
+---
+ meson.build | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/meson.build b/meson.build
+index aff36e4..ee758e6 100644
+--- a/meson.build
++++ b/meson.build
+@@ -79,7 +79,7 @@ gobject_introspection = dependency('gobject-introspection-1.0', required: get_op
+ 
+ 
+ if os_backend == 'linux'
+-  gudev_dep = dependency('gudev-1.0', version: '>= 238')
++  gudev_dep = dependency('gudev-1.0', version: '>= 237')
+   idevice_dep = dependency('libimobiledevice-1.0',
+                            version : '>= 0.9.7',
+                            required : get_option('idevice'))
+-- 
+2.46.1
+
