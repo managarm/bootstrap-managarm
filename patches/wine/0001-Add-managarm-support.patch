@@ -1,0 +1,99 @@
+From f07b3895767beda7b19751042f9595a3891c6c3b Mon Sep 17 00:00:00 2001
+From: Qwinci <32550582+Qwinci@users.noreply.github.com>
+Date: Fri, 16 Feb 2024 00:25:36 +0200
+Subject: [PATCH] Add managarm support
+
+---
+ dlls/ntdll/unix/signal_x86_64.c | 39 +++++++++++++++++++++++++++++++++
+ dlls/ntdll/unix/system.c        |  4 ++--
+ 2 files changed, 41 insertions(+), 2 deletions(-)
+
+diff --git a/dlls/ntdll/unix/signal_x86_64.c b/dlls/ntdll/unix/signal_x86_64.c
+index ab54490..1e10a9b 100644
+--- a/dlls/ntdll/unix/signal_x86_64.c
++++ b/dlls/ntdll/unix/signal_x86_64.c
+@@ -75,6 +75,11 @@
+ #include "unix_private.h"
+ #include "wine/debug.h"
+ 
++#ifdef __managarm__
++#include <hel.h>
++#include <hel-syscalls.h>
++#endif
++
+ WINE_DEFAULT_DEBUG_CHANNEL(unwind);
+ WINE_DECLARE_DEBUG_CHANNEL(seh);
+ 
+@@ -292,6 +297,38 @@ static inline XMM_SAVE_AREA32 *FPU_sig( const ucontext_t *context )
+ 
+ #define XState_sig(context)  NULL
+ 
++#elif defined(__managarm__)
++
++#ifndef FP_XSTATE_MAGIC1
++#define FP_XSTATE_MAGIC1 0x46505853
++#endif
++
++#define RAX_sig(context)     ((context)->uc_mcontext.gregs[REG_RAX])
++#define RBX_sig(context)     ((context)->uc_mcontext.gregs[REG_RBX])
++#define RCX_sig(context)     ((context)->uc_mcontext.gregs[REG_RCX])
++#define RDX_sig(context)     ((context)->uc_mcontext.gregs[REG_RDX])
++#define RSI_sig(context)     ((context)->uc_mcontext.gregs[REG_RSI])
++#define RDI_sig(context)     ((context)->uc_mcontext.gregs[REG_RDI])
++#define RBP_sig(context)     ((context)->uc_mcontext.gregs[REG_RBP])
++#define R8_sig(context)      ((context)->uc_mcontext.gregs[REG_R8])
++#define R9_sig(context)      ((context)->uc_mcontext.gregs[REG_R9])
++#define R10_sig(context)     ((context)->uc_mcontext.gregs[REG_R10])
++#define R11_sig(context)     ((context)->uc_mcontext.gregs[REG_R11])
++#define R12_sig(context)     ((context)->uc_mcontext.gregs[REG_R12])
++#define R13_sig(context)     ((context)->uc_mcontext.gregs[REG_R13])
++#define R14_sig(context)     ((context)->uc_mcontext.gregs[REG_R14])
++#define R15_sig(context)     ((context)->uc_mcontext.gregs[REG_R15])
++#define CS_sig(context)      (*((WORD *)&(context)->uc_mcontext.gregs[REG_CSGSFS] + 0))
++#define GS_sig(context)      (*((WORD *)&(context)->uc_mcontext.gregs[REG_CSGSFS] + 1))
++#define FS_sig(context)      (*((WORD *)&(context)->uc_mcontext.gregs[REG_CSGSFS] + 2))
++#define RSP_sig(context)     ((context)->uc_mcontext.gregs[REG_RSP])
++#define RIP_sig(context)     ((context)->uc_mcontext.gregs[REG_RIP])
++#define EFL_sig(context)     ((context)->uc_mcontext.gregs[REG_EFL])
++#define TRAP_sig(context)    ((context)->uc_mcontext.gregs[REG_TRAPNO])
++#define ERROR_sig(context)   ((context)->uc_mcontext.gregs[REG_ERR])
++#define FPU_sig(context)     ((XMM_SAVE_AREA32 *)((context)->uc_mcontext.fpregs))
++#define XState_sig(fpu)      (((unsigned int *)fpu->Reserved4)[12] == FP_XSTATE_MAGIC1 ? (XSTATE *)(fpu + 1) : NULL)
++
+ #else
+ #error You must define the signal context functions for your platform
+ #endif
+@@ -2496,6 +2533,8 @@ void call_init_thunk( LPTHREAD_START_ROUTINE entry, void *arg, BOOL suspend, TEB
+        thread's gsbase.  Have each thread record its gsbase pointer into its
+        TEB so alloc_tls_slot() can find it. */
+     teb->Instrumentation[0] = thread_data->pthread_teb;
++#elif defined(__managarm__)
++    helWriteGsBase(teb);
+ #else
+ # error Please define setting %gs for your architecture
+ #endif
+diff --git a/dlls/ntdll/unix/system.c b/dlls/ntdll/unix/system.c
+index 879a589..24228ac 100644
+--- a/dlls/ntdll/unix/system.c
++++ b/dlls/ntdll/unix/system.c
+@@ -1369,7 +1369,7 @@ static NTSTATUS create_cpuset_info(SYSTEM_CPU_SET_INFORMATION *info)
+     return STATUS_SUCCESS;
+ }
+ 
+-#if defined(linux) || defined(__APPLE__)
++#if defined(linux) || defined(__APPLE__) || defined(__managarm__)
+ 
+ static void copy_smbios_string( char **buffer, const char *s, size_t len )
+ {
+@@ -1561,7 +1561,7 @@ static NTSTATUS create_smbios_tables( SYSTEM_FIRMWARE_TABLE_INFORMATION *sfti, U
+ 
+ #endif
+ 
+-#ifdef linux
++#if defined(linux) || defined(__managarm__)
+ 
+ static size_t get_smbios_string( const char *path, char *str, size_t size )
+ {
+-- 
+2.43.1
+
