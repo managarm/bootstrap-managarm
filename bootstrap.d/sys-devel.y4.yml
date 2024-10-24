@@ -25,6 +25,40 @@ sources:
     format: 'tar.gz'
     version: '0.22.3'
 
+  - name: binutils
+    subdir: 'ports'
+    git: 'https://github.com/managarm/binutils-gdb.git'
+    tag: 'managarm/binutils-2_40_2'
+    version: '2.40'
+    sources_required: ['gnuconfig']
+    regenerate:
+      - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.sub', '@THIS_SOURCE_DIR@/.']
+      - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.guess', '@THIS_SOURCE_DIR@/.']
+
+  - name: llvm
+    subdir: 'ports'
+    git: 'https://github.com/llvm/llvm-project'
+    tag: 'llvmorg-18.1.2'
+    version: '18.1.2'
+
+  - name: gcc
+    subdir: 'ports'
+    git: 'https://github.com/managarm/gcc.git'
+    tag: 'managarm/gcc-13.2.3'
+    version: '13.2.3'
+    sources_required: ['gnuconfig']
+    regenerate:
+      - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.sub', '@THIS_SOURCE_DIR@/.']
+      - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.guess', '@THIS_SOURCE_DIR@/.']
+
+  - name: gnuconfig
+    subdir: 'ports'
+    git: 'https://git.savannah.gnu.org/git/config.git'
+    branch: 'master'
+    commit: '63acb96f92473ceb5e21d873d7c0aee266b3d6d3'
+    version: '20230121'
+
+
 tools:
   - name: host-bison
     labels: [aarch64]
@@ -320,3 +354,119 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
       - args: ['rm', '-r', '@THIS_COLLECT_DIR@/usr/lib']
+
+  - name: llvm
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
+    from_source: llvm
+    tools_required:
+      - host-cmake
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - zlib
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        # We really have to build LLVM in Release mode.
+        # Building it in debug mode produces tens of GiB of debugging info.
+        - '-DCMAKE_BUILD_TYPE=Release'
+        - '-DLLVM_LINK_LLVM_DYLIB=ON'
+        # RTTI affects the ABI. Hence, we enable it.
+        - '-DLLVM_ENABLE_RTTI=ON'
+        - '-DLLVM_TARGETS_TO_BUILD=X86;AArch64'
+        - '-DLLVM_TARGET_ARCH=@OPTION:arch@'
+        - '-DLLVM_DEFAULT_TARGET_TRIPLE=@OPTION:arch-triple@'
+        - '-DLLVM_HOST_TRIPLE=@OPTION:arch-triple@'
+        # Disable linking against ncurses, which we do not build with -fPIC.
+        - '-DLLVM_ENABLE_TERMINFO=OFF'
+        # Suppress developer warnings
+        - '-Wno-dev'
+        - '@THIS_SOURCE_DIR@/llvm'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+
+  - name: gcc
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
+    from_source: gcc
+    tools_required:
+      - tool: system-gcc
+      - host-automake-v1.15
+    pkgs_required:
+      - mlibc
+      - gmp
+      - mpfr
+      - mpc
+      - zlib
+    revision: 3
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--with-pkgversion=managarm'
+        - '--with-bugurl=https://github.com/managarm/bootstrap-managarm/issues/'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--target=@OPTION:arch-triple@'
+        - '--with-sysroot=/'
+        - '--with-build-sysroot=@SYSROOT_DIR@'
+        - '--enable-languages=c,c++'
+        - '--enable-initfini-array'
+        - '--disable-nls'
+        - '--enable-lto'
+        - '--with-system-zlib'
+        # -g blows up GCC's binary size.
+        - 'CFLAGS=-O2'
+        - 'CXXFLAGS=-O2'
+    build:
+      - args: ['make', 'all-gcc', 'all-target-libgcc', 'all-target-libstdc++-v3', '-j@PARALLELISM@']
+      - args: ['make', 'install-gcc', 'install-target-libgcc', 'install-target-libstdc++-v3']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+      - args: ['ln', '-sf', 'gcc', '@THIS_COLLECT_DIR@/usr/bin/cc']
+
+  - name: binutils
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Tools necessary to build programs
+      description: This package provides various tools commonly used during package development, including the GNU linker and the GNU assembler. This package also includes libbfd and libopcodes.
+      spdx: 'GPL-3.0-or-later'
+      website: 'https://www.gnu.org/software/binutils/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-devel']
+    from_source: binutils
+    tools_required:
+      - tool: system-gcc
+    pkgs_required:
+      - mlibc
+    revision: 5
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--with-pkgversion=managarm'
+        - '--with-bugurl=https://github.com/managarm/bootstrap-managarm/issues/'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--target=@OPTION:arch-triple@'
+        - '--with-sysroot=/'
+        - '--disable-nls'
+        # On recent compilers, binutils 2.26 causes implicit-fallthrough warnings, among others.
+        - '--disable-werror'
+        # -g blows up the binary size.
+        - 'CFLAGS=-O2'
+    build:
+      #- args: ['make', '-j@PARALLELISM@', 'all-binutils', 'all-gas', 'all-ld']
+      - args: ['make', 'all-binutils', 'all-gas', 'all-ld']
+      - args: ['make', 'install-binutils', 'install-gas', 'install-ld']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true

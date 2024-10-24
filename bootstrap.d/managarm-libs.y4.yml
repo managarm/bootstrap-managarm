@@ -1,0 +1,201 @@
+sources:
+  - name: cralgo
+    subdir: 'ports'
+    git: 'https://github.com/managarm/cralgo.git'
+    branch: 'master'
+    rolling_version: true
+    version: '0.0pl@ROLLING_ID@'
+
+  - name: lil
+    subdir: 'ports'
+    git: 'https://github.com/managarm/lil.git'
+    branch: 'master'
+    rolling_version: true
+    version: '0.0pl@ROLLING_ID@'
+
+  - name: libarch
+    subdir: 'ports'
+    git: 'https://github.com/managarm/libarch.git'
+    branch: 'master'
+    rolling_version: true
+    version: '0.0pl@ROLLING_ID@'
+
+  - name: bragi
+    subdir: 'ports'
+    git: 'https://github.com/managarm/bragi.git'
+    branch: 'master'
+    rolling_version: true
+    version: '0.0pl@ROLLING_ID@'
+  
+packages:
+  - name: fafnir
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
+    source:
+      rolling_version: true
+      version: '0.0pl@ROLLING_ID@'
+      subdir: 'ports'
+      git: 'https://github.com/managarm/fafnir.git'
+      branch: 'master'
+    tools_required:
+      - system-gcc
+    revision: 8
+    configure:
+      - args:
+        - 'meson'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+
+  - name: frigg
+    metadata:
+      summary: Lightweight C++ utilities and algorithms for system programming
+      description: This package provides utility header files for freestanding C++ applications.
+      spdx: 'MIT'
+      maintainer: "Alexander van der Grinten <avdgrinten@managarm.org>"
+      categories: ['sys-libs']
+    labels: [aarch64, riscv64]
+    architecture: '@OPTION:arch@'
+    source:
+      rolling_version: true
+      version: '0.0pl@ROLLING_ID@'
+      subdir: 'ports'
+      git: 'https://github.com/managarm/frigg.git'
+      branch: 'master'
+    revision: 7
+    configure:
+      - args:
+        - 'meson'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        # Install to /usr/share to avoid conflicts with standard C++ headers.
+        - '--includedir=share/frigg/include'
+        - '--buildtype=debugoptimized'
+        # We don't have a test stage in frigg
+        - '-Dbuild_tests=disabled'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+
+  - name: lil
+    from_source: lil
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc-headers
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          'DESTDIR': '@THIS_COLLECT_DIR@'
+        quiet: true
+
+  - name: lewis
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
+    source:
+      rolling_version: true
+      version: '0.0pl@ROLLING_ID@'
+      subdir: 'ports'
+      git: 'https://github.com/managarm/lewis.git'
+      branch: 'master'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+    revision: 9
+    configure:
+      - args:
+        - 'meson'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '@THIS_SOURCE_DIR@'
+        isolate_network: false
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+
+  - name: libasync
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/managarm/libasync.git'
+      branch: 'master'
+      rolling_version: true
+      version: '0.0pl@ROLLING_ID@'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - boost
+    revision: 8
+    configure:
+      - args:
+        - 'meson'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '-Dinstall_headers=true'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+
+  - name: libsmarter
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
+    source:
+      rolling_version: true
+      version: '0.0pl@ROLLING_ID@'
+      subdir: 'ports'
+      git: 'https://github.com/avdgrinten/libsmarter.git'
+      branch: 'master'
+    tools_required:
+      - system-gcc
+    revision: 9
+    configure:
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/include']
+      - args:
+        - 'meson'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
