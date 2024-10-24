@@ -2243,3 +2243,39 @@ packages:
           LIBDIR: '/usr/lib'
           MANDIR: '/usr/share/man/man1'
       - args: ['rm', '-v', '@THIS_COLLECT_DIR@/usr/lib/libxxhash.a']
+
+  - name: libtsm
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Terminal emulator state machine
+      description: LibTSM provides a state machine for DEC VT100-VT520 compatible terminal emulators.
+      spdx: 'MIT'
+      website: 'https://github.com/Aetf/libtsm'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/Aetf/libtsm.git'
+      tag: 'v4.0.2'
+      version: '4.0.2'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - libxkbcommon
+    revision: 6
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_BUILD_TYPE=Release'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
