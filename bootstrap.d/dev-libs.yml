@@ -46,6 +46,17 @@ sources:
     tag: 'NSS_3_92_RTM'
     version: '3.92.RTM'
 
+  - name: wayland
+    subdir: 'ports'
+    url: 'https://gitlab.freedesktop.org/wayland/wayland/-/releases/1.22.0/downloads/wayland-1.22.0.tar.xz'
+    checksum: 'blake2b:b0bb366e7f3494813d1574228ae5dd48eccde035120d6dd8709e3a24738681ab9dd9ba6a13924b6a35982d331fa8911fa7346911da9f618be9c9109da0288629'
+    extract_path: 'wayland-1.22.0'
+    patch-path-strip: 1
+    format: 'tar.xz'
+    tag: '1.22.0'
+    version: '1.22.0'
+
+
 tools:
   - name: host-glib
     labels: [aarch64]

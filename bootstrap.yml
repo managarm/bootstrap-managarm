@@ -80,12 +80,6 @@ declare_options:
     default: guestfs
 
 sources:
-  - name: libdrm
-    subdir: 'ports'
-    git: 'https://gitlab.freedesktop.org/mesa/drm'
-    tag: 'libdrm-2.4.115'
-    version: '2.4.115'
-
   - name: libtool
     subdir: 'ports'
     git: 'https://git.savannah.gnu.org/git/libtool.git'
@@ -105,16 +99,6 @@ sources:
       - args: ['cp',
           '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.guess',
           '@THIS_SOURCE_DIR@/build-aux/']
-
-  - name: wayland
-    subdir: 'ports'
-    url: 'https://gitlab.freedesktop.org/wayland/wayland/-/releases/1.22.0/downloads/wayland-1.22.0.tar.xz'
-    checksum: 'blake2b:b0bb366e7f3494813d1574228ae5dd48eccde035120d6dd8709e3a24738681ab9dd9ba6a13924b6a35982d331fa8911fa7346911da9f618be9c9109da0288629'
-    extract_path: 'wayland-1.22.0'
-    patch-path-strip: 1
-    format: 'tar.xz'
-    tag: '1.22.0'
-    version: '1.22.0'
 
 
 tools:
