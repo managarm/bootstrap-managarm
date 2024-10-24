@@ -29,6 +29,7 @@ imports:
   - file: bootstrap.d/lxqt-base.yml
   - file: bootstrap.d/managarm-libc.yml
   - file: bootstrap.d/managarm-libs.yml
+  - file: bootstrap.d/managarm-system.yml
   - file: bootstrap.d/media-fonts.yml
   - file: bootstrap.d/media-gfx.yml
   - file: bootstrap.d/media-libs.yml
@@ -89,19 +90,6 @@ sources:
       - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.sub', '@THIS_SOURCE_DIR@/.']
       - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.guess', '@THIS_SOURCE_DIR@/.']
 
-  - name: cli11
-    subdir: 'ports'
-    git: 'https://github.com/CLIUtils/CLI11.git'
-    tag: 'v2.4.1'
-    version: 'v2.4.1'
-
-  - name: uacpi
-    subdir: 'ports'
-    git: 'https://github.com/UltraOS/uACPI.git'
-    branch: 'master'
-    commit: 72c356d97c4d04ef114ff4a87c9d77c32a997f30
-    version: '0.0pl@ROLLING_ID@'
-
   - name: libdrm
     subdir: 'ports'
     git: 'https://gitlab.freedesktop.org/mesa/drm'
@@ -144,35 +132,6 @@ sources:
       - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.sub', '@THIS_SOURCE_DIR@/.']
       - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.guess', '@THIS_SOURCE_DIR@/.']
 
-  - name: managarm
-    git: 'https://github.com/managarm/managarm.git'
-    branch: 'master'
-    rolling_version: true
-    version: '0.0pl@ROLLING_ID@'
-    sources_required:
-      - cralgo
-      - uacpi
-      - libarch
-      - libasync
-      - libsmarter
-      - lil
-      - bragi
-      - cli11
-      - freebsd-e1000
-    regenerate:
-      - args: ['mkdir', '-p', '@THIS_SOURCE_DIR@/subprojects']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cralgo', '@THIS_SOURCE_DIR@/subprojects/']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/uacpi', '@THIS_SOURCE_DIR@/subprojects/']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/libarch', '@THIS_SOURCE_DIR@/subprojects/']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/libasync', '@THIS_SOURCE_DIR@/subprojects/']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/libsmarter', '@THIS_SOURCE_DIR@/subprojects/']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/lil', '@THIS_SOURCE_DIR@/subprojects/']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/bragi', '@THIS_SOURCE_DIR@/subprojects/']
-      - args: ['mkdir', '-p', '@SOURCE_ROOT@/ports/libarch/subprojects']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/managarm', '@SOURCE_ROOT@/ports/libarch/subprojects/']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cli11', '@THIS_SOURCE_DIR@/subprojects/']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/freebsd-e1000', '@THIS_SOURCE_DIR@/subprojects/']
-
   - name: wayland
     subdir: 'ports'
     url: 'https://gitlab.freedesktop.org/wayland/wayland/-/releases/1.22.0/downloads/wayland-1.22.0.tar.xz'
@@ -190,12 +149,6 @@ sources:
     commit: '63acb96f92473ceb5e21d873d7c0aee266b3d6d3'
     version: '20230121'
 
-  - name: freebsd-e1000
-    subdir: 'ports'
-    git: 'https://github.com/managarm/freebsd-e1000.git'
-    branch: 'import'
-    rolling_version: true
-    version: '0.0pl@ROLLING_ID@'
 
 tools:
   - name: host-autoconf-v2.64
@@ -358,28 +311,6 @@ tools:
       # Stop aclocal from complaining.
       - args: ['ln', '-sf', '@PREFIX@/share/aclocal-1.16', '@PREFIX@/share/aclocal']
 
-  - name: host-managarm-tools
-    labels: [aarch64, riscv64]
-    architecture: noarch
-    from_source: managarm
-    tools_required:
-      - host-frigg
-      - virtual: pkgconfig-for-host
-        program_name: host-pkg-config
-    revision: 3
-    configure:
-      - args:
-        - 'meson'
-        - '--native-file'
-        - '@SOURCE_ROOT@/scripts/meson.native-file'
-        - '--prefix=@PREFIX@'
-        - '-Dbuild_tools=true'
-        - '@THIS_SOURCE_DIR@'
-        isolate_network: false
-    compile:
-      - args: ['ninja']
-    install:
-      - args: ['ninja', 'install']
 
   - name: host-libtool
     labels: [aarch64, riscv64]
@@ -996,104 +927,6 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
-        quiet: true
-
-  - name: managarm-kernel
-    metadata:
-      summary: The Managarm kernel
-      description: This package provides the Managarm kernel.
-      spdx: 'MIT'
-      website: 'https://managarm.org'
-      maintainer: "Alexander van der Grinten <avdgrinten@managarm.org>"
-      categories: ['sys-kernel']
-    labels: [aarch64, riscv64]
-    architecture: '@OPTION:arch@'
-    default: true
-    from_source: managarm
-    tools_required:
-      - host-llvm-toolchain
-      - host-managarm-tools
-      - kernel-gcc
-      - host-pkg-config
-      - virtual: pkgconfig-for-target
-        triple: "@OPTION:arch-triple@"
-    pkgs_required:
-      - frigg
-      - mlibc-headers
-    configure:
-      - args: |
-          sed -e 's|_BUILD_ROOT_|@BUILD_ROOT@|' @SOURCE_ROOT@/scripts/meson-kernel-@OPTION:arch-triple@.cross-file \
-              > ./meson-custom.cross-file
-      - args:
-        - 'meson'
-        - '--cross-file=@SOURCE_ROOT@/scripts/meson-kernel-common.cross-file'
-        - '--cross-file=./meson-custom.cross-file'
-        - '--prefix=/usr/managarm'
-        - '--libdir=lib'
-        - '--buildtype=debugoptimized'
-        - '--wrap-mode=nofallback'
-        - '-Dbuild_kernel=true'
-        - '-Dstrip=true'
-        - '@THIS_SOURCE_DIR@'
-        isolate_network: false
-    build:
-      - args: ['ninja']
-      - args: ['ninja', 'install']
-        environ:
-          DESTDIR: '@THIS_COLLECT_DIR@'
-        quiet: true
-
-  - name: managarm-system
-    metadata:
-      summary: The Managarm userspace
-      description: This package provides the Managarm userspace components, various drivers and the POSIX emulation layer.
-      spdx: 'MIT'
-      website: 'https://managarm.org'
-      maintainer: "Alexander van der Grinten <avdgrinten@managarm.org>"
-      categories: ['sys-kernel']
-    labels: [aarch64]
-    architecture: '@OPTION:arch@'
-    default: true
-    from_source: managarm
-    tools_required:
-      - host-llvm-toolchain
-      - host-managarm-tools
-      - host-pkg-config
-      - host-mold
-      - system-gcc
-      - virtual: pkgconfig-for-target
-        triple: "@OPTION:arch-triple@"
-    pkgs_required:
-      - mlibc
-      - eudev
-      - fafnir
-      - frigg
-      - lewis
-      - libasync
-      - libdrm
-      - libsmarter
-      - lil
-    configure:
-      - args: |
-          sed -e 's|_BUILD_ROOT_|@BUILD_ROOT@|' -e 's|_SYSROOT_DIR_|@SYSROOT_DIR@|' @SOURCE_ROOT@/scripts/meson-clang-@OPTION:arch-triple@.cross-file \
-              > ./meson-custom.cross-file
-      - args:
-        - 'meson'
-        - '--cross-file=./meson-custom.cross-file'
-        - '--prefix=/usr'
-        - '--libdir=lib'
-        - '--buildtype=debugoptimized'
-        - '--wrap-mode=nodownload'
-        - '-Dbuild_drivers=true'
-        - '@THIS_SOURCE_DIR@'
-        environ:
-          PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
-          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
-    build:
-      - args: ['ninja']
-      - args: ['ninja', 'install']
-        environ:
-          'DESTDIR': '@THIS_COLLECT_DIR@'
         quiet: true
 
   - name: runit
