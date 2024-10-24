@@ -748,46 +748,6 @@ packages:
       # Create a compatibility symlink for ld.so
       - args: ['ln', '-svf', '/usr/lib/ld.so', '@THIS_COLLECT_DIR@/lib/ld-init.so']
 
-  - name: gcc
-    labels: [aarch64]
-    architecture: '@OPTION:arch@'
-    from_source: gcc
-    tools_required:
-      - tool: system-gcc
-      - host-automake-v1.15
-    pkgs_required:
-      - mlibc
-      - gmp
-      - mpfr
-      - mpc
-      - zlib
-    revision: 3
-    configure:
-      - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--with-pkgversion=managarm'
-        - '--with-bugurl=https://github.com/managarm/bootstrap-managarm/issues/'
-        - '--host=@OPTION:arch-triple@'
-        - '--prefix=/usr'
-        - '--target=@OPTION:arch-triple@'
-        - '--with-sysroot=/'
-        - '--with-build-sysroot=@SYSROOT_DIR@'
-        - '--enable-languages=c,c++'
-        - '--enable-initfini-array'
-        - '--disable-nls'
-        - '--enable-lto'
-        - '--with-system-zlib'
-        # -g blows up GCC's binary size.
-        - 'CFLAGS=-O2'
-        - 'CXXFLAGS=-O2'
-    build:
-      - args: ['make', 'all-gcc', 'all-target-libgcc', 'all-target-libstdc++-v3', '-j@PARALLELISM@']
-      - args: ['make', 'install-gcc', 'install-target-libgcc', 'install-target-libstdc++-v3']
-        environ:
-          DESTDIR: '@THIS_COLLECT_DIR@'
-        quiet: true
-      - args: ['ln', '-sf', 'gcc', '@THIS_COLLECT_DIR@/usr/bin/cc']
-
   # Deprecated in favor of openssl
   - name: libressl
     source:
