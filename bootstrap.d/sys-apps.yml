@@ -1216,3 +1216,52 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/xbps.conf', '@THIS_COLLECT_DIR@/usr/share/xbps.d/']
+
+  - name: kmscon
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
+    default: true
+    metadata:
+      summary: Terminal emulator based on KMS/DRM
+      description: Kmscon is a simple KMS/DRM based terminal emulator.
+      spdx: 'MIT'
+      website: 'https://github.com/Aetf/kmscon'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-apps']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/Aetf/kmscon.git'
+      tag: 'v9.0.0'
+      version: '9.0.0'
+    tools_required:
+      - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - libxkbcommon
+      - libdrm
+      - libtsm
+      - eudev
+    revision: 7
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--buildtype=debugoptimized'
+        - '-Dsession_dummy=enabled'
+        - '-Dsession_terminal=enabled'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc/kmscon']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/kmscon.conf', '@THIS_COLLECT_DIR@/etc/kmscon/']
