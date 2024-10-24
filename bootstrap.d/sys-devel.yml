@@ -399,3 +399,40 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
       - args: ['ln', '-sf', 'gcc', '@THIS_COLLECT_DIR@/usr/bin/cc']
+
+  - name: binutils
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Tools necessary to build programs
+      description: This package provides various tools commonly used during package development, including the GNU linker and the GNU assembler. This package also includes libbfd and libopcodes.
+      spdx: 'GPL-3.0-or-later'
+      website: 'https://www.gnu.org/software/binutils/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-devel']
+    from_source: binutils
+    tools_required:
+      - tool: system-gcc
+    pkgs_required:
+      - mlibc
+    revision: 5
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--with-pkgversion=managarm'
+        - '--with-bugurl=https://github.com/managarm/bootstrap-managarm/issues/'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--target=@OPTION:arch-triple@'
+        - '--with-sysroot=/'
+        - '--disable-nls'
+        # On recent compilers, binutils 2.26 causes implicit-fallthrough warnings, among others.
+        - '--disable-werror'
+        # -g blows up the binary size.
+        - 'CFLAGS=-O2'
+    build:
+      #- args: ['make', '-j@PARALLELISM@', 'all-binutils', 'all-gas', 'all-ld']
+      - args: ['make', 'all-binutils', 'all-gas', 'all-ld']
+      - args: ['make', 'install-binutils', 'install-gas', 'install-ld']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
