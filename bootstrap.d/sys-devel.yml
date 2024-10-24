@@ -25,6 +25,40 @@ sources:
     format: 'tar.gz'
     version: '0.22.3'
 
+  - name: binutils
+    subdir: 'ports'
+    git: 'https://github.com/managarm/binutils-gdb.git'
+    tag: 'managarm/binutils-2_40_2'
+    version: '2.40'
+    sources_required: ['gnuconfig']
+    regenerate:
+      - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.sub', '@THIS_SOURCE_DIR@/.']
+      - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.guess', '@THIS_SOURCE_DIR@/.']
+
+  - name: llvm
+    subdir: 'ports'
+    git: 'https://github.com/llvm/llvm-project'
+    tag: 'llvmorg-18.1.2'
+    version: '18.1.2'
+
+  - name: gcc
+    subdir: 'ports'
+    git: 'https://github.com/managarm/gcc.git'
+    tag: 'managarm/gcc-13.2.3'
+    version: '13.2.3'
+    sources_required: ['gnuconfig']
+    regenerate:
+      - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.sub', '@THIS_SOURCE_DIR@/.']
+      - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.guess', '@THIS_SOURCE_DIR@/.']
+
+  - name: gnuconfig
+    subdir: 'ports'
+    git: 'https://git.savannah.gnu.org/git/config.git'
+    branch: 'master'
+    commit: '63acb96f92473ceb5e21d873d7c0aee266b3d6d3'
+    version: '20230121'
+
+
 tools:
   - name: host-bison
     labels: [aarch64]
