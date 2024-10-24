@@ -466,3 +466,59 @@ packages:
       - args: ['/usr/sbin/zic', '-d', '@THIS_COLLECT_DIR@/usr/share/zoneinfo', '-p', 'America/New_York']
       # Default to UTC for localtime, this should be fixed, but that is pending xbstrap support.
       - args: ['ln', '-sf', '/usr/share/zoneinfo/UTC', '@THIS_COLLECT_DIR@/etc/localtime']
+
+  - name: zlib
+    metadata:
+      summary: Standard (de)compression library
+      description: This package provides some common compression and decompression functions used by various programs.
+      spdx: 'Zlib'
+      website: 'https://zlib.net'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-libs']
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/madler/zlib.git'
+      tag: 'v1.2.12'
+      version: '1.2.12'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['autoreconf', '-fvi']
+          workdir: '@THIS_SOURCE_DIR@/contrib/minizip'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+    revision: 7
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--prefix=/usr'
+        environ:
+          CHOST: '@OPTION:arch-triple@'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+      - args: ['patchelf', '--set-soname', 'libz.so.1.2.12', '@THIS_COLLECT_DIR@/usr/lib/libz.so.1.2.12']
+      # This fails on ci, and needs further investigation.
+      # - args:
+      #   - '@THIS_SOURCE_DIR@/contrib/minizip/configure'
+      #   - '--host=@OPTION:arch-triple@'
+      #   - '--prefix=/usr'
+      #   - '--disable-static'
+      #   environ:
+      #     CHOST: '@OPTION:arch-triple@'
+      #     prefix: '/usr'
+      # - args: ['make', '-j@PARALLELISM@']
+      # - args: ['make', 'install']
+      #   environ:
+      #     DESTDIR: '@THIS_COLLECT_DIR@'
+      #   quiet: true
