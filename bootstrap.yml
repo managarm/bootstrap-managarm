@@ -687,37 +687,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
-  - name: boost
-    labels: [aarch64]
-    architecture: noarch
-    metadata:
-      summary: Boost development headers
-      description: This package provides the Boost headers for C++.
-      spdx: 'BSL-1.0'
-      website: 'https://boost.org'
-      maintainer: "Dennis Bonke <dennis@managarm.org>"
-      categories: ['dev-libs']
-    source:
-      subdir: 'ports'
-      git: 'https://github.com/boostorg/boost.git'
-      tag: 'boost-1.62.0'
-      version: '1.62.0'
-      regenerate:
-        - args: |
-            if ! git -C '@THIS_SOURCE_DIR@' remote | grep -q origin; then
-              git -C '@THIS_SOURCE_DIR@' remote add origin https://github.com/boostorg/boost.git
-            fi
-        - args: ['git', '-C', '@THIS_SOURCE_DIR@', 'submodule', 'update', '--init']
-          isolate_network: false
-        - args: ['./bootstrap.sh']
-        - args: ['./b2', 'headers']
-    revision: 6
-    configure: []
-    build:
-      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/include']
-      - args: ['cp', '-r', '--dereference', '@THIS_SOURCE_DIR@/boost',
-            '@THIS_COLLECT_DIR@/usr/include']
-
   - name: core-files
     labels: [aarch64]
     architecture: noarch
