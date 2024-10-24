@@ -820,45 +820,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
-  - name: llvm
-    labels: [aarch64]
-    architecture: '@OPTION:arch@'
-    from_source: llvm
-    tools_required:
-      - host-cmake
-      - system-gcc
-    pkgs_required:
-      - mlibc
-      - zlib
-    revision: 1
-    configure:
-      - args:
-        - 'cmake'
-        - '-GNinja'
-        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
-        - '-DCMAKE_INSTALL_PREFIX=/usr'
-        # We really have to build LLVM in Release mode.
-        # Building it in debug mode produces tens of GiB of debugging info.
-        - '-DCMAKE_BUILD_TYPE=Release'
-        - '-DLLVM_LINK_LLVM_DYLIB=ON'
-        # RTTI affects the ABI. Hence, we enable it.
-        - '-DLLVM_ENABLE_RTTI=ON'
-        - '-DLLVM_TARGETS_TO_BUILD=X86;AArch64'
-        - '-DLLVM_TARGET_ARCH=@OPTION:arch@'
-        - '-DLLVM_DEFAULT_TARGET_TRIPLE=@OPTION:arch-triple@'
-        - '-DLLVM_HOST_TRIPLE=@OPTION:arch-triple@'
-        # Disable linking against ncurses, which we do not build with -fPIC.
-        - '-DLLVM_ENABLE_TERMINFO=OFF'
-        # Suppress developer warnings
-        - '-Wno-dev'
-        - '@THIS_SOURCE_DIR@/llvm'
-    build:
-      - args: ['ninja']
-      - args: ['ninja', 'install']
-        environ:
-          DESTDIR: '@THIS_COLLECT_DIR@'
-        quiet: true
-
   - name: kmscube
     source:
       rolling_version: true
