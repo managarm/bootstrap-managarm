@@ -27,6 +27,7 @@ imports:
   - file: bootstrap.d/kde-frameworks.yml
   - file: bootstrap.d/kde-plasma.yml
   - file: bootstrap.d/lxqt-base.yml
+  - file: bootstrap.d/managarm-base.yml
   - file: bootstrap.d/managarm-build.yml
   - file: bootstrap.d/managarm-libc.yml
   - file: bootstrap.d/managarm-libs.yml
@@ -82,67 +83,6 @@ declare_options:
     default: guestfs
 
 packages:
-  - name: core-files
-    labels: [aarch64]
-    architecture: noarch
-    metadata:
-      summary: Managarm base filesystem layout
-      description: This package provides the base filesystem layout that Managarm uses, includes various directories, essential files and symlinks.
-      spdx: 'MIT'
-      website: 'https://managarm.org'
-      maintainer: "Dennis Bonke <dennis@managarm.org>"
-      categories: ['sys-apps']
-    default: true
-    source:
-      subdir: meta-sources
-      version: '1.0'
-    revision: 9
-    configure: []
-    build:
-      # Create initial directories
-      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc']
-      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/run']
-      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/root']
-      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/dev']
-      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/sys']
-      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/proc']
-      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/tmp']
-      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/home/managarm']
-      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr']
-      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/share']
-      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/var']
-      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/bin']
-      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/lib']
-      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/sbin']
-      # xbps does not install empty directories, .keep files fixes this
-      - args: ['touch', '@THIS_COLLECT_DIR@/etc/.keep']
-      - args: ['touch', '@THIS_COLLECT_DIR@/run/.keep']
-      - args: ['touch', '@THIS_COLLECT_DIR@/root/.keep']
-      - args: ['touch', '@THIS_COLLECT_DIR@/dev/.keep']
-      - args: ['touch', '@THIS_COLLECT_DIR@/sys/.keep']
-      - args: ['touch', '@THIS_COLLECT_DIR@/proc/.keep']
-      - args: ['touch', '@THIS_COLLECT_DIR@/tmp/.keep']
-      - args: ['touch', '@THIS_COLLECT_DIR@/home/managarm/.keep']
-      - args: ['touch', '@THIS_COLLECT_DIR@/var/.keep']
-      - args: ['touch', '@THIS_COLLECT_DIR@/usr/bin/.keep']
-      - args: ['touch', '@THIS_COLLECT_DIR@/usr/sbin/.keep']
-      - args: ['touch', '@THIS_COLLECT_DIR@/usr/lib/.keep']
-      - args: ['touch', '@THIS_COLLECT_DIR@/usr/share/.keep']
-      # Install a default passwd, group and resolv.conf
-      - args: ['cp', '@SOURCE_ROOT@/extrafiles/passwd', '@THIS_COLLECT_DIR@/etc']
-      - args: ['cp', '@SOURCE_ROOT@/extrafiles/group', '@THIS_COLLECT_DIR@/etc']
-      - args: ['cp', '@SOURCE_ROOT@/extrafiles/shadow', '@THIS_COLLECT_DIR@/etc']
-      - args: ['cp', '@SOURCE_ROOT@/extrafiles/gshadow', '@THIS_COLLECT_DIR@/etc']
-      - args: ['cp', '@SOURCE_ROOT@/extrafiles/resolv.conf', '@THIS_COLLECT_DIR@/etc']
-      # Link /bin, /lib and /sbin to their /usr counterparts
-      - args: ['ln', '-svf', 'usr/bin', '@THIS_COLLECT_DIR@/bin']
-      - args: ['ln', '-svf', 'usr/lib', '@THIS_COLLECT_DIR@/lib']
-      - args: ['ln', '-svf', 'usr/sbin', '@THIS_COLLECT_DIR@/sbin']
-      # Link /var/run to /run
-      - args: ['ln', '-svf', 'var/run', '@THIS_COLLECT_DIR@/run']
-      # Create a compatibility symlink for ld.so
-      - args: ['ln', '-svf', '/usr/lib/ld.so', '@THIS_COLLECT_DIR@/lib/ld-init.so']
-
   - name: kmscube
     source:
       rolling_version: true
