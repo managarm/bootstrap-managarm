@@ -143,38 +143,6 @@ packages:
       # Create a compatibility symlink for ld.so
       - args: ['ln', '-svf', '/usr/lib/ld.so', '@THIS_COLLECT_DIR@/lib/ld-init.so']
 
-  # Deprecated in favor of openssl
-  - name: libressl
-    source:
-      subdir: 'ports'
-      git: 'https://github.com/libressl-portable/portable.git'
-      tag: 'v3.0.2'
-      version: '3.0.2'
-      regenerate:
-        - args: ['./update.sh']
-          isolate_network: false
-    tools_required:
-      - host-cmake
-      - system-gcc
-    pkgs_required:
-      - mlibc
-    revision: 9
-    configure:
-      - args:
-        - 'cmake'
-        - '-GNinja'
-        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
-        - '-DCMAKE_INSTALL_PREFIX=/usr'
-        - '-DLIBRESSL_APPS=OFF'
-        - '-DBUILD_SHARED_LIBS=ON'
-        - '@THIS_SOURCE_DIR@'
-    build:
-      - args: ['ninja']
-      - args: ['ninja', 'install']
-        environ:
-          DESTDIR: '@THIS_COLLECT_DIR@'
-        quiet: true
-
   - name: kmscube
     source:
       rolling_version: true
