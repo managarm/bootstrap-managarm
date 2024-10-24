@@ -1638,45 +1638,6 @@ packages:
       - args: ['hdoc']
         workdir: '@THIS_BUILD_DIR@'
 
-  - name: wayland
-    labels: [aarch64]
-    architecture: '@OPTION:arch@'
-    from_source: wayland
-    tools_required:
-      - host-pkg-config
-      - system-gcc
-      - wayland-scanner
-      - host-libtool
-      - virtual: pkgconfig-for-target
-        triple: "@OPTION:arch-triple@"
-      - virtual: pkgconfig-for-host
-        program_name: host-pkg-config
-    pkgs_required:
-      - mlibc
-      - libexpat
-      - libffi
-    revision: 7
-    configure:
-      - args:
-        - 'meson'
-        - '--native-file'
-        - '@SOURCE_ROOT@/scripts/meson.native-file'
-        - '--cross-file'
-        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
-        - '--prefix=/usr'
-        - '--buildtype=debugoptimized'
-        - '-Ddtd_validation=false'
-        - '-Ddocumentation=false'
-        - '-Dscanner=true'
-        - '@THIS_SOURCE_DIR@'
-        environ:
-          PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
-    build:
-      - args: ['ninja']
-      - args: ['ninja', 'install']
-        environ:
-          DESTDIR: '@THIS_COLLECT_DIR@'
-
   - name: runit
     stability_level: broken
     source:
