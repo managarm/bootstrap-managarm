@@ -15,6 +15,13 @@ sources:
         environ:
           'NOCONFIGURE': 'yes'
 
+  - name: libdrm
+    subdir: 'ports'
+    git: 'https://gitlab.freedesktop.org/mesa/drm'
+    tag: 'libdrm-2.4.115'
+    version: '2.4.115'
+
+
 tools:
   - name: host-xtrans
     labels: [aarch64]

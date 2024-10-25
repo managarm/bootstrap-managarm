@@ -110,6 +110,31 @@ tools:
     install:
       - args: ['make', 'TOPDIR=@PREFIX@', 'install']
 
+  - name: wayland-scanner
+    labels: [aarch64]
+    architecture: noarch
+    from_source: wayland
+    tools_required:
+      - virtual: pkgconfig-for-host
+        program_name: host-pkg-config
+    configure:
+      - args:
+        - 'meson'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--prefix=@PREFIX@'
+        - '-Ddtd_validation=false'
+        - '-Ddocumentation=false'
+        - '-Dscanner=true'
+        - '-Dlibraries=false'
+        - '-Dtests=false'
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
+
+
 packages:
   - name: cmake
     architecture: '@OPTION:arch@'
