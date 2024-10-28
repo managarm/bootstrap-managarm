@@ -1,3 +1,7 @@
+!<tag:y4.managarm.org:preamble>
+import:
+  - !managarm
+---
 sources:
   - name: cli11
     subdir: 'ports'
@@ -149,7 +153,9 @@ packages:
       - libasync
       - libdrm
       - libsmarter
-      - lil
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: lil
     configure:
       - args: |
           sed -e 's|_BUILD_ROOT_|@BUILD_ROOT@|' -e 's|_SYSROOT_DIR_|@SYSROOT_DIR@|' @SOURCE_ROOT@/scripts/meson-clang-@OPTION:arch-triple@.cross-file \
