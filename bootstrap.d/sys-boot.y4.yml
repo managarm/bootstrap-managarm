@@ -1,3 +1,7 @@
+!<tag:y4.managarm.org:preamble>
+import:
+  - !managarm
+---
 sources:
   - name: image_create
     subdir: 'ports'
@@ -30,11 +34,13 @@ tools:
         - '--prefix=@PREFIX@'
         - '--enable-uefi-ia32'
         - '--enable-uefi-x86-64'
+        - '--enable-uefi-aarch64'
         - '--enable-uefi-cd'
         - '--enable-bios'
         - '--enable-bios-cd'
         - '--enable-bios-pxe'
         - 'LDFLAGS=-static'
+        - 'TOOLCHAIN_FOR_TARGET=llvm'
     compile:
       - args: ['make', '-j@PARALLELISM@']
     install:
@@ -55,12 +61,30 @@ packages:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
-        - '--enable-uefi-ia32'
-        - '--enable-uefi-x86-64'
-        - '--enable-uefi-cd'
-        - '--enable-bios'
-        - '--enable-bios-cd'
-        - '--enable-bios-pxe'
+        # TODO(qookie): splice_if flattening the to-be-spliced list would help here
+        # x86_64 flags
+        - !managarm::arch_dep
+          arch: [x86_64]
+          item: '--enable-uefi-ia32'
+        - !managarm::arch_dep
+          arch: [x86_64]
+          item: '--enable-uefi-x86-64'
+        - !managarm::arch_dep
+          arch: [x86_64]
+          item: '--enable-uefi-cd'
+        - !managarm::arch_dep
+          arch: [x86_64]
+          item: '--enable-bios'
+        - !managarm::arch_dep
+          arch: [x86_64]
+          item: '--enable-bios-cd'
+        - !managarm::arch_dep
+          arch: [x86_64]
+          item: '--enable-bios-pxe'
+        # aarch64 flags
+        - !managarm::arch_dep
+          arch: [aarch64]
+          item: '--enable-uefi-aarch64'
         - 'TOOLCHAIN_FOR_TARGET=@OPTION:arch-triple@'
     build:
       - args: ['make', '-j@PARALLELISM@']
