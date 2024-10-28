@@ -194,6 +194,7 @@ packages:
 
   - name: lz4
     architecture: '@OPTION:arch@'
+    labels: [aarch64]
     metadata:
       summary: Extremely Fast Compression algorithm
       description: This package provides tools to compress and decompress files in .lz4 format.

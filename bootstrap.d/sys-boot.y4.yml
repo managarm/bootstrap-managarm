@@ -21,6 +21,7 @@ sources:
 tools:
   - name: host-limine
     architecture: '@OPTION:arch@'
+    labels: [aarch64]
     from_source: limine
     containerless: true
     configure:
@@ -42,6 +43,7 @@ tools:
 
 packages:
   - name: limine
+    labels: [aarch64]
     architecture: '@OPTION:arch@'
     from_source: limine
     tools_required:
