@@ -1,3 +1,7 @@
+!<tag:y4.managarm.org:preamble>
+import:
+  - !managarm
+---
 sources:
   - name: glib
     subdir: ports
@@ -249,7 +253,11 @@ packages:
         - '--prefix=/usr'
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
-        - '-Dintrospection=false'
+        - !managarm::arch_ite
+          arch: [x86_64]
+          # Disabled on all architectures for now
+          then: '-Dintrospection=false'
+          else: '-Dintrospection=false'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -866,7 +874,11 @@ packages:
         - '--prefix=/usr'
         - '--disable-static'
         - '--enable-vala=yes'
-        - '--enable-introspection=no'
+        - !managarm::arch_ite
+          arch: [x86_64]
+          # Disabled on all architectures for now
+          then: '--enable-introspection=no'
+          else: '--enable-introspection=no'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
@@ -1546,7 +1558,11 @@ packages:
         - '--prefix=/usr'
         - '--buildtype=release'
         - '-Dgtkdoc=false'
-        - '-Dintrospection=false'
+        - !managarm::arch_ite
+          arch: [x86_64]
+          # Disabled on all architectures for now
+          then: '-Dintrospection=false'
+          else: '-Dintrospection=false'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']

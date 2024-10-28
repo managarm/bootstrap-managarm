@@ -1,3 +1,7 @@
+!<tag:y4.managarm.org:preamble>
+import:
+  - !managarm
+---
 packages:
   - name: glib-networking
     architecture: '@OPTION:arch@'
@@ -138,7 +142,11 @@ packages:
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
         - '--buildtype=debugoptimized'
-        - '-Dintrospection=false'
+        - !managarm::arch_ite
+          arch: [x86_64]
+          # Disabled on all architectures for now
+          then: '-Dintrospection=false'
+          else: '-Dintrospection=false'
         - '-Dbash_completion=false'
         - '-Dman=false'
         - '@THIS_SOURCE_DIR@'
@@ -232,7 +240,11 @@ packages:
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
         - '--buildtype=debugoptimized'
-        - '-Dintrospection=disabled'
+        - !managarm::arch_ite
+          arch: [x86_64]
+          # Disabled on all architectures for now
+          then: '-Dintrospection=disabled'
+          else: '-Dintrospection=disabled'
         - '-Dinstalled_tests=false'
         - '-Dsysprof=disabled'
         - '-Dgtk_doc=false'
@@ -269,8 +281,12 @@ packages:
       - host-pkg-config
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
-      - host-mlibc
-      - host-gobject-introspection
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-mlibc
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-gobject-introspection
       - host-python
       - host-vala
       - host-glib
@@ -283,7 +299,9 @@ packages:
       - brotli
       - libpsl
       - zlib
-      - gobject-introspection
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: gobject-introspection
     configure:
       - args:
         - 'meson'
@@ -293,7 +311,10 @@ packages:
         - '--prefix=/usr'
         - '--wrap-mode=nofallback'
         - '--buildtype=debugoptimized'
-        - '-Dintrospection=enabled'
+        - !managarm::arch_ite
+          arch: [x86_64]
+          then: '-Dintrospection=enabled'
+          else: '-Dintrospection=disabled'
         - '-Dinstalled_tests=false'
         - '-Dsysprof=disabled'
         - '-Dvapi=enabled'

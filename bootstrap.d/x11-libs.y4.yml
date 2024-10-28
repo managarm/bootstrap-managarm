@@ -1,3 +1,7 @@
+!<tag:y4.managarm.org:preamble>
+import:
+  - !managarm
+---
 sources:
   - name: libxtrans
     subdir: ports
@@ -117,8 +121,12 @@ packages:
       - host-pkg-config
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
-      - host-mlibc
-      - host-gobject-introspection
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-mlibc
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-gobject-introspection
       - host-python
       - host-glib
     pkgs_required:
@@ -128,7 +136,9 @@ packages:
       - libpng
       - shared-mime-info
       - libx11
-      - gobject-introspection
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: gobject-introspection
     revision: 7
     configure:
       - args:
@@ -136,7 +146,10 @@ packages:
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
-        - '-Dintrospection=enabled'
+        - !managarm::arch_ite
+          arch: [x86_64]
+          then: '-Dintrospection=enabled'
+          else: '-Dintrospection=disabled'
         - '-Dman=false'
         - '-Dgtk_doc=false'
         - '-Ddocs=false'
@@ -289,8 +302,12 @@ packages:
         triple: "@OPTION:arch-triple@"
       - wayland-scanner
       - host-glib
-      - host-mlibc
-      - host-gobject-introspection
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-mlibc
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-gobject-introspection
       - host-python
     pkgs_required:
       - mlibc
@@ -319,6 +336,9 @@ packages:
       - gsettings-desktop-schemas
       - dbus
       - libxinerama
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: gobject-introspection
     revision: 8
     configure:
       - args:
@@ -332,7 +352,10 @@ packages:
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
         - '-Dprint_backends=file'
-        - '-Dintrospection=true' # Gobject introspection is broken again
+        - !managarm::arch_ite
+          arch: [x86_64]
+          then: '-Dintrospection=true'
+          else: '-Dintrospection=false'
         - '-Dx11_backend=true'
         - '-Dbroadway_backend=true'
         - '-Dwayland_backend=true'
@@ -1989,8 +2012,12 @@ packages:
       - host-glib
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
-      - host-mlibc
-      - host-gobject-introspection
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-mlibc
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-gobject-introspection
       - host-python
     pkgs_required:
       - mlibc
@@ -2006,6 +2033,9 @@ packages:
       - harfbuzz
       - libxft
       - pcre
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: gobject-introspection
     revision: 5
     configure:
       - args:
@@ -2014,7 +2044,10 @@ packages:
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
         - '--buildtype=release'
-        - '-Dintrospection=enabled'
+        - !managarm::arch_ite
+          arch: [x86_64]
+          then: '-Dintrospection=enabled'
+          else: '-Dintrospection=disabled'
         - '--wrap-mode=nofallback'
         - '@THIS_SOURCE_DIR@'
         environ:
