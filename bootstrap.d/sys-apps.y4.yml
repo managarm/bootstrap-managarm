@@ -43,6 +43,7 @@ tools:
       - args: ['make', 'install']
 
   - name: host-hwdata
+    architecture: noarch
     source:
       subdir: 'ports'
       git: 'https://github.com/vcrhonek/hwdata.git'

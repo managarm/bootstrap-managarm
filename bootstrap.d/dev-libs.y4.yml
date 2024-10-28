@@ -528,6 +528,7 @@ packages:
         quiet: true
 
   - name: gobject-introspection
+    architecture: '@OPTION:arch@'
     from_source: gobject-introspection
     tools_required:
       - system-gcc

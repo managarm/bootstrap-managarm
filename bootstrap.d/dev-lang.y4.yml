@@ -162,6 +162,7 @@ tools:
 
 packages:
   - name: lua
+    architecture: '@OPTION:arch@'
     metadata:
       summary: Lua is a scripting language.
       description: Lua is a powerful, efficient, lightweight, embeddable scripting language.

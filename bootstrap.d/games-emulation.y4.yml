@@ -1,5 +1,6 @@
 packages:
   - name: mednafen
+    architecture: 'OPTION:arch@'
     source:
       subdir: 'ports'
       url: 'https://mednafen.github.io/releases/files/mednafen-1.24.0-UNSTABLE.tar.xz'
