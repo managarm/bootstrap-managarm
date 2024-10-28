@@ -395,6 +395,19 @@ def generate_plan(arch, root_uuid, scriptdir):
         yield FsAction.CP_SED, os.path.join(
             scriptdir, "limine.conf"
         ), "boot/", "@ROOT_UUID@", root_uuid
+    elif arch == "aarch64-managarm":
+        # TODO(qookie): Install an appropriate eir once we have one
+        yield FsAction.INSTALL, "usr/managarm/bin/thor", "boot/managarm"
+
+        yield (
+            FsAction.CP,
+            "tools/host-limine/share/limine/BOOTAA64.EFI",
+            "boot/EFI/BOOT",
+        )
+
+        yield FsAction.CP_SED, os.path.join(
+            scriptdir, "limine.conf"
+        ), "boot/", "@ROOT_UUID@", root_uuid
 
     yield FsAction.RSYNC, "bin"
     yield FsAction.RSYNC, "lib"
