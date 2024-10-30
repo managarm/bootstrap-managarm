@@ -232,6 +232,8 @@ def do_qemu(args):
     elif args.nic == "usb":
         qemu_check_nic(qemu, qemu_args, "usb-net")
         qemu_args += ["-device", "usb-net,netdev=net0"]
+    elif args.nic == "none":
+        qemu_args += ["-net", "none"]
 
     if args.pci_passthrough:
         qemu_args += ["-device", f"vfio-pci,host={args.pci_passthrough}"]
