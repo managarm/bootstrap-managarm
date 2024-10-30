@@ -508,7 +508,7 @@ packages:
         quiet: true
 
   - name: kmscube
-    architecture: 'OPTION:arch@'
+    architecture: '@OPTION:arch@'
     source:
       rolling_version: true
       version: '0.0pl@ROLLING_ID@'
