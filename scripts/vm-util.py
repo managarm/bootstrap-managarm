@@ -173,6 +173,11 @@ def do_qemu(args):
             f"bochs init.launch=headless init.command={args.cmd}",
         ]
 
+    if args.uefi:
+        qemu_args += ["-drive", f"if=pflash,format=raw,file=tools/ovmf/OVMF_CODE_{args.arch}.fd,readonly=on"]
+        qemu_args += ["-chardev", "file,id=uefi-load-base,path=uefi-load-base.addr"]
+        qemu_args += ["-device", "isa-debugcon,iobase=0xCB7,chardev=uefi-load-base"]
+
     # Add USB HCDs.
     qemu_args += [
         "-device",
@@ -356,6 +361,7 @@ qemu_parser.add_argument("--pci-passthrough", type=str)
 qemu_parser.add_argument("--usb-passthrough", type=str, action='append')
 qemu_parser.add_argument("--usb-passthrough-pcap", type=str, action='append')
 qemu_parser.add_argument("--usb-redir", type=str, action='append')
+qemu_parser.add_argument("--uefi", action="store_true")
 qemu_parser.add_argument("--cmd", type=str)
 qemu_parser.add_argument("--qmp", action="store_true")
 qemu_parser.add_argument("--use-system-qemu", action="store_true")
