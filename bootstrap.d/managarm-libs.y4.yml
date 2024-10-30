@@ -91,6 +91,7 @@ packages:
         quiet: true
 
   - name: lil
+    architecture: 'OPTION:arch@'
     from_source: lil
     tools_required:
       - system-gcc

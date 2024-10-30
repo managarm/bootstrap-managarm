@@ -1,3 +1,7 @@
+!<tag:y4.managarm.org:preamble>
+import:
+  - !managarm
+---
 sources:
   - name: qca
     subdir: 'ports'
@@ -49,8 +53,12 @@ packages:
       - system-gcc
       - virtual: pkgconfig-for-target
         triple: '@OPTION:arch-triple@'
-      - host-mlibc
-      - host-gobject-introspection
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-mlibc
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-gobject-introspection
       - host-python
       - host-glib
       - host-vala
@@ -58,7 +66,9 @@ packages:
       - mlibc
       - glib
       - libgcrypt
-      - gobject-introspection
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: gobject-introspection
       - libxslt
     revision: 2
     configure:
@@ -71,7 +81,10 @@ packages:
           - '--wrap-mode=nofallback'
           - '--sysconfdir=/etc'
           - '-Dgtk_doc=false'
-          - '-Dintrospection=true'
+          - !managarm::arch_ite
+            arch: [x86_64]
+            then: '-Dintrospection=true'
+            else: '-Dintrospection=false'
           - '-Dvapi=true'
           - '-Dmanpage=false'
           - '@THIS_SOURCE_DIR@'

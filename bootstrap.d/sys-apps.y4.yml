@@ -1,3 +1,7 @@
+!<tag:y4.managarm.org:preamble>
+import:
+  - !managarm
+---
 sources:
   - name: file
     subdir: ports
@@ -43,6 +47,7 @@ tools:
       - args: ['make', 'install']
 
   - name: host-hwdata
+    architecture: noarch
     source:
       subdir: 'ports'
       git: 'https://github.com/vcrhonek/hwdata.git'
@@ -1298,6 +1303,11 @@ packages:
         - '--disable-mtd-probe'
         - '--disable-rule-generator'
         - '--enable-introspection=no'
+        - !managarm::arch_ite
+          arch: [x86_64]
+          # Disabled on all architectures for now
+          then: '--enable-introspection=no'
+          else: '--enable-introspection=no'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']

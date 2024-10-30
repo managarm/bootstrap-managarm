@@ -35,13 +35,17 @@ tasks:
       if [ "@OPTION:mount-using@" == guestfs ]; then
           elevation=-g # Use libguestfs for root-less image creation.
       fi
+      if [ "@OPTION:arch@" == x86_64 ]; then
+          biosboot=-b # Install the BIOS bootloader only on x86_64.
+      fi
       @SOURCE_ROOT@/ports/image_create/image_create.sh \
       -oimage \
       -s4G \
       -pgpt \
       -text2 \
       -llimine \
-      -be \
+      -e \
+      $biosboot \
       $elevation
     environ:
       'LIMINE_PATH': '@BUILD_ROOT@/tools/host-limine/share/limine'

@@ -1,0 +1,27 @@
+import:
+  - !std
+rule:
+  !arch_dep :
+    !std::fn
+    args: [!arg ]
+    return:
+      !std::splice_if
+      - item: !std::get [!arg , item]
+        if:
+          !std::contains
+          list: !std::get [!arg , arch]
+          item: !std::opt arch
+    extends: !!map
+
+  !arch_ite :
+    !std::fn
+    args: [!arg ]
+    return:
+      !std::ite
+      if:
+        !std::contains
+        list: !std::get [!arg , arch]
+        item: !std::opt arch
+      then: !std::get [!arg , then]
+      else: !std::get [!arg , else]
+    extends: !!map

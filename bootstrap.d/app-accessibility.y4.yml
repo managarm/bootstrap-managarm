@@ -1,3 +1,7 @@
+!<tag:y4.managarm.org:preamble>
+import:
+  - !managarm
+---
 packages:
   - name: at-spi2-core
     architecture: '@OPTION:arch@'
@@ -11,15 +15,21 @@ packages:
       - system-gcc
       - virtual: pkgconfig-for-target
         triple: '@OPTION:arch-triple@'
-      - host-mlibc
-      - host-gobject-introspection
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-mlibc
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-gobject-introspection
       - host-python
       - host-glib
     pkgs_required:
       - mlibc
       - dbus
       - glib
-      - gobject-introspection
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: gobject-introspection
       - libxml
       - libxtst
       - libxi
@@ -33,7 +43,10 @@ packages:
           - '--prefix=/usr'
           - '--sysconfdir=/etc'
           - '-Dsystemd_user_dir=/tmp'
-          - '-Dintrospection=enabled'
+          - !managarm::arch_ite
+            arch: [x86_64]
+            then: '-Dintrospection=enabled'
+            else: '-Dintrospection=disabled'
           - '@THIS_SOURCE_DIR@'
         environ:
           # Same as below

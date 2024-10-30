@@ -1,3 +1,7 @@
+!<tag:y4.managarm.org:preamble>
+import:
+  - !managarm
+---
 packages:
   - name: alsa-lib
     architecture: '@OPTION:arch@'
@@ -312,14 +316,20 @@ packages:
       - system-gcc
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
-      - host-mlibc
-      - host-gobject-introspection
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-mlibc
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-gobject-introspection
       - host-python
       - host-glib
     pkgs_required:
       - mlibc
       - glib
-      - gobject-introspection
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: gobject-introspection
     revision: 2
     configure:
       - args:
@@ -330,7 +340,11 @@ packages:
         - '--prefix=/usr'
         - '--buildtype=release'
         - '-Dgtk_doc=false'
-        - '-Dintrospection=disabled'
+        - !managarm::arch_ite
+          arch: [x86_64]
+          # Disabled on all architectures for now
+          then: '-Dintrospection=disabled'
+          else: '-Dintrospection=disabled'
         - '-Dtests=false'
         - '-Dinstalled_tests=false'
         - '@THIS_SOURCE_DIR@'
@@ -473,7 +487,11 @@ packages:
         - '--prefix=/usr'
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
-        - '-Dintrospection=disabled'
+        - !managarm::arch_ite
+          arch: [x86_64]
+          # Disabled on all architectures for now
+          then: '-Dintrospection=disabled'
+          else: '-Dintrospection=disabled'
         - '--wrap-mode=nodownload'
         - '-Dorc=disabled'
         - '-Dexamples=disabled'
@@ -578,7 +596,11 @@ packages:
         - '--prefix=/usr'
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
-        - '-Dintrospection=disabled'
+        - !managarm::arch_ite
+          arch: [x86_64]
+          # Disabled on all architectures for now
+          then: '-Dintrospection=disabled'
+          else: '-Dintrospection=disabled'
         - '-Dptp-helper-setuid-user=false'
         - '-Dptp-helper-setuid-group=false'
         - '-Dptp-helper-permissions=none'
@@ -608,8 +630,12 @@ packages:
       - host-pkg-config
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
-      - host-mlibc
-      - host-gobject-introspection
+      - !managarm::arch_dep
+        item: host-mlibc
+        arch: [x86_64]
+      - !managarm::arch_dep
+        item: host-gobject-introspection
+        arch: [x86_64]
       - host-python
       - host-glib
     pkgs_required:
@@ -620,7 +646,9 @@ packages:
       - freetype
       - cairo
       - icu
-      - gobject-introspection
+      - !managarm::arch_dep
+        item: gobject-introspection
+        arch: [x86_64]
     revision: 11
     configure:
       - args:
@@ -638,7 +666,10 @@ packages:
         - '-Dicu=enabled'
         - '-Dfreetype=enabled'
         - '-Dcairo=enabled'
-        - '-Dintrospection=enabled'
+        - !managarm::arch_ite
+          arch: [x86_64]
+          then: '-Dintrospection=enabled'
+          else: '-Dintrospection=disabled'
         - '-Ddocs=disabled'
         - '-Dtests=disabled' # Disabled due to a linking error
         - '@THIS_SOURCE_DIR@'

@@ -1,3 +1,7 @@
+!<tag:y4.managarm.org:preamble>
+import:
+  - !managarm
+---
 sources:
   - name: glib
     subdir: ports
@@ -249,7 +253,11 @@ packages:
         - '--prefix=/usr'
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
-        - '-Dintrospection=false'
+        - !managarm::arch_ite
+          arch: [x86_64]
+          # Disabled on all architectures for now
+          then: '-Dintrospection=false'
+          else: '-Dintrospection=false'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -528,6 +536,7 @@ packages:
         quiet: true
 
   - name: gobject-introspection
+    architecture: '@OPTION:arch@'
     from_source: gobject-introspection
     tools_required:
       - system-gcc
@@ -865,7 +874,11 @@ packages:
         - '--prefix=/usr'
         - '--disable-static'
         - '--enable-vala=yes'
-        - '--enable-introspection=no'
+        - !managarm::arch_ite
+          arch: [x86_64]
+          # Disabled on all architectures for now
+          then: '--enable-introspection=no'
+          else: '--enable-introspection=no'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
@@ -1111,6 +1124,7 @@ packages:
 
   - name: libmnl
     architecture: '@OPTION:arch@'
+    labels: [aarch64]
     metadata:
       summary: libmnl is a minimalistic user-space library oriented to Netlink developers
       description: There are a lot of common tasks in parsing, validating, constructing of both the Netlink header and TLVs that are repetitive and easy to get wrong. This library aims to provide simple helpers that allows you to re-use code and to avoid re-inventing the wheel.
@@ -1544,7 +1558,11 @@ packages:
         - '--prefix=/usr'
         - '--buildtype=release'
         - '-Dgtkdoc=false'
-        - '-Dintrospection=false'
+        - !managarm::arch_ite
+          arch: [x86_64]
+          # Disabled on all architectures for now
+          then: '-Dintrospection=false'
+          else: '-Dintrospection=false'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']

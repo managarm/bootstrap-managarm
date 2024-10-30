@@ -7,7 +7,7 @@ on:
 jobs:
     build:
         name: Build
-        runs-on: ubuntu-20.04
+        runs-on: ubuntu-24.04
         if: github.repository_owner == 'managarm' && github.ref == 'refs/heads/master'
         steps:
             - name: Checkout repository
@@ -16,7 +16,7 @@ jobs:
                 path: src
             - name: Install prerequisites
               run: |
-                  pip3 install xbstrap
+                  pip3 install xbstrap y4
                   xbstrap prereqs cbuildrt xbps
             - name: Download and unpack rootfs
               run: |

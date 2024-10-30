@@ -100,6 +100,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: runit
+    architecture: 'OPTION:arch@'
     stability_level: broken
     source:
       subdir: ports

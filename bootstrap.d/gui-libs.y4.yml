@@ -1,3 +1,7 @@
+!<tag:y4.managarm.org:preamble>
+import:
+  - !managarm
+---
 packages:
   - name: gtk4
     stability_level: 'broken' # Downstream user of graphene and that is broken
@@ -19,8 +23,12 @@ packages:
       - wayland-scanner
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
-      - host-mlibc
-      - host-gobject-introspection
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-mlibc
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-gobject-introspection
       - host-python
       - host-glib
     pkgs_required:
@@ -50,7 +58,9 @@ packages:
       - libxfixes
       - fontconfig
       - libxinerama
-      - gobject-introspection
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-gobject-introspection
       - gst-plugins-good
     revision: 1
     configure:
@@ -62,7 +72,10 @@ packages:
         - '--prefix=/usr'
         - '--buildtype=release'
         - '--wrap-mode=nodownload'
-        - '-Dintrospection=enabled'
+        - !managarm::arch_ite
+          arch: [x86_64]
+          then: '-Dintrospection=enabled'
+          else: '-Dintrospection=disabled'
         - '-Dbroadway-backend=true'
         - '-Dwayland-backend=true'
         - '-Dx11-backend=true'
@@ -135,8 +148,12 @@ packages:
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
       - host-vala
-      - host-mlibc
-      - host-gobject-introspection
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-mlibc
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-gobject-introspection
       - host-python
     pkgs_required:
       - mlibc
@@ -147,7 +164,9 @@ packages:
       - fontconfig
       - pango
       - pcre2
-      - gobject-introspection
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: gobject-introspection
     revision: 1
     configure:
       - args:
@@ -159,7 +178,10 @@ packages:
         - '--buildtype=release'
         - '--wrap-mode=nodownload'
         - '-Dinstall_tests=false'
-        - '-Dintrospection=enabled'
+        - !managarm::arch_ite
+          arch: [x86_64]
+          then: '-Dintrospection=enabled'
+          else: '-Dintrospection=disabled'
         - '-Dvapi=true'
         - '-Dgtk_doc=false'
         - '-Dsysprof=false'
@@ -219,8 +241,12 @@ packages:
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
       - host-vala
-      - host-mlibc
-      - host-gobject-introspection
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-mlibc
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-gobject-introspection
       - host-python
     pkgs_required:
       - mlibc
@@ -228,7 +254,9 @@ packages:
       - gtk4
       - appstream
       - fribidi
-      - gobject-introspection
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: gobject-introspection
     revision: 1
     configure:
       - args:
@@ -242,7 +270,10 @@ packages:
         - '--buildtype=release'
         - '--wrap-mode=nodownload'
         - '-Dprofiling=false'
-        - '-Dintrospection=enabled'
+        - !managarm::arch_ite
+          arch: [x86_64]
+          then: '-Dintrospection=enabled'
+          else: '-Dintrospection=disabled'
         - '-Dvapi=true'
         - '-Dgtk_doc=false'
         - '-Dtests=false'

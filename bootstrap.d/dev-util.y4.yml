@@ -62,6 +62,7 @@ tools:
       - args: ['make', 'install']
 
   - name: host-ninja
+    architecture: noarch
     from_source: ninja
     configure:
       - args:
