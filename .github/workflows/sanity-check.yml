@@ -5,16 +5,13 @@ on: [push, pull_request]
 jobs:
     compute-graph:
         name: Compute graph
-        runs-on: ubuntu-20.04
+        runs-on: ubuntu-24.04
         steps:
           - name: Install prerequisites
-            # Note: the default jsonschema is too old.
-            #       xbstrap should fix this by demanding a recent version.
             run: |
                 sudo apt-get install jq
                 sudo pip3 install setuptools
-                sudo pip3 install -U jsonschema
-                sudo pip3 install xbstrap
+                sudo pip3 install xbstrap y4
           - name: Prepare directories
             run: |
                 mkdir src/
