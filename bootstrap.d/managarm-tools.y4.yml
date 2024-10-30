@@ -97,3 +97,25 @@ tools:
           fi
           mkdir -p @PREFIX@/bin
           cp "@THIS_BUILD_DIR@/BaseTools/Source/C/bin/GenFw" "@PREFIX@/bin/"
+
+  - name: lil-utils
+    labels: [aarch64, riscv64]
+    architecture: noarch
+    from_source: lil
+    revision: 1
+    containerless: true
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--prefix=@PREFIX@'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '-Dbuild_utils=true'
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
