@@ -13,3 +13,70 @@ tools:
       - args: ['make', 'iasl']
     install:
       - args: ['make', 'install', 'PREFIX=@PREFIX@']
+
+  - name: ovmf
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
+    source:
+      subdir: ports
+      git: 'https://github.com/tianocore/edk2.git'
+      tag: 'edk2-stable202408'
+      submodules: true
+    tools_required:
+      - host-llvm-toolchain
+      - host-python
+      - host-iasl
+    configure:
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+    compile:
+      - args: |
+          OVMF_ARCH=""
+          OVMF_PKG=""
+          case "@OPTION:arch@" in
+            "x86_64")
+              OVMF_ARCH="X64"
+              OVMF_PKG="OvmfPkg/OvmfPkgX64"
+              ;;
+            "aarch64")
+              OVMF_ARCH="AARCH64"
+              OVMF_PKG="ArmVirtPkg/ArmVirtQemu"
+              ;;
+            "riscv64")
+              OVMF_ARCH="RISCV64"
+              OVMF_PKG="OvmfPkg/RiscVVirt/RiscVVirtQemu"
+              ;;
+            *)
+              echo "Unhandled architecture"
+              exit 1
+              ;;
+          esac
+          . @THIS_BUILD_DIR@/edksetup.sh
+          make -C @THIS_BUILD_DIR@/BaseTools
+          build -a $OVMF_ARCH -b RELEASE -p $OVMF_PKG.dsc -t CLANGDWARF
+        environ:
+          PYTHON_COMMAND: 'python3'
+    install:
+      - args: |
+          ARCH="@OPTION:arch@"
+          TRUNCATE_SIZE=""
+          case "$ARCH" in
+            "x86_64")
+              OVMF_PATH="OvmfX64/RELEASE_CLANGDWARF/FV/OVMF_CODE.fd"
+              ;;
+            "aarch64")
+              OVMF_PATH="ArmVirtQemu-AARCH64/RELEASE_CLANGDWARF/FV/QEMU_EFI.fd"
+              TRUNCATE_SIZE="64M"
+              ;;
+            "riscv64")
+              OVMF_PATH="RiscVVirtQemu/RELEASE_CLANGDWARF/FV/RISCV_VIRT_CODE.fd"
+              TRUNCATE_SIZE="32M"
+              ;;
+            *)
+              echo "Unhandled architecture"
+              exit 1
+              ;;
+          esac
+          cp "@THIS_BUILD_DIR@/Build/$OVMF_PATH" @PREFIX@/OVMF_CODE_@OPTION:arch@.fd
+          if [[ ! -z $TRUNCATE_SIZE ]]; then
+            truncate -s $TRUNCATE_SIZE @PREFIX@/OVMF_CODE_@OPTION:arch@.fd
+          fi

@@ -92,6 +92,8 @@ tasks:
     args: ['xz', '--fast', '--keep', '@BUILD_ROOT@/image']
 
   - name: qemu
+    tools_required:
+      - ovmf
     tasks_required:
       - task: make-image
         order_only: true
