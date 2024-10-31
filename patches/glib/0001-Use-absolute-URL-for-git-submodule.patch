@@ -1,0 +1,24 @@
+From 309cda83875d3a0acf6c328b006edda7c5e34960 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Kacper=20S=C5=82omi=C5=84ski?=
+ <kacper.slominski72@gmail.com>
+Date: Thu, 31 Oct 2024 23:47:22 +0100
+Subject: [PATCH] Use absolute URL for git submodule
+
+---
+ .gitmodules | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/.gitmodules b/.gitmodules
+index 749950b..c1f97ee 100644
+--- a/.gitmodules
++++ b/.gitmodules
+@@ -1,5 +1,5 @@
+ [submodule "subprojects/gvdb"]
+ 	path = subprojects/gvdb
+-	url = ../../GNOME/gvdb.git
++	url = https://gitlab.gnome.org/GNOME/gvdb.git
+ 	branch = 0854af0fdb6d527a8d1999835ac2c5059976c210
+ 	shallow = true
+-- 
+2.45.2
+

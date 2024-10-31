@@ -93,7 +93,7 @@ tools:
       - host-pkg-config
       - virtual: pkgconfig-for-host
         program_name: host-pkg-config
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -463,7 +463,7 @@ packages:
       - zlib
       - libiconv
       - libintl
-    revision: 4
+    revision: 5
     configure:
       - args:
         - 'meson'
