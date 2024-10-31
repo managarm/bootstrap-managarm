@@ -387,8 +387,8 @@ packages:
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/gawk.git'
-      tag: 'gawk-5.2.2'
-      version: '5.2.2'
+      tag: 'gawk-5.3.1'
+      version: '5.3.1'
       tools_required:
         - host-autoconf-v2.71
         - host-automake-v1.16
@@ -403,7 +403,7 @@ packages:
       - host-automake-v1.16
     pkgs_required:
       - mlibc
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
