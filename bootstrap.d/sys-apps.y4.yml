@@ -543,19 +543,26 @@ packages:
   - name: less
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Excellent text file viewer
+      description: This package contains a text file viewer.
+      spdx: 'GPL-3-only BSD-2-Clause'
+      website: 'https://www.greenwoodsoftware.com/less/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-apps']
     source:
       subdir: ports
-      url: 'https://www.greenwoodsoftware.com/less/less-643.tar.gz'
+      url: 'http://www.greenwoodsoftware.com/less/less-668.tar.gz'
       format: 'tar.gz'
-      checksum: blake2b:6dc60dc2e8db05afdae466877a1d26a3008ff5378bbbf2fbdf9efc4f87c0fcfde5703d44a24d4355c98d3a5f438bdb51173150f2a69f801d9c8e4a7401d71b53
-      extract_path: 'less-643'
-      version: '643'
+      checksum: blake2b:0f6a85a1c66577dd2a28682a6f8399e42fdbe9fc1498b2e89c6bb7c47109e8d3ab934abe5dd998b2c8dfacfb174ad9daeb79b3d4c13df22fa035ea792b2eaf5e
+      extract_path: 'less-668'
+      version: '668'
     tools_required:
       - system-gcc
     pkgs_required:
       - mlibc
       - ncurses
-    revision: 5
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
