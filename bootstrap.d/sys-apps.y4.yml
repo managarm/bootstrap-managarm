@@ -740,6 +740,13 @@ packages:
   - name: sed
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Super-useful stream editor
+      description: This package contains a stream editor.
+      spdx: 'GPL-3.0-or-later'
+      website: 'https://www.gnu.org/software/sed/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-apps']
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/sed.git'
