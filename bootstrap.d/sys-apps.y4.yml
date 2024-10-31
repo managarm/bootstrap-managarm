@@ -68,13 +68,20 @@ packages:
   - name: coreutils
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Standard GNU utilities (chmod, cp, dd, ls, sort, tr, head, wc, who,...)
+      description: This package contains the basic utility programs needed by every operating system.
+      spdx: 'GPL-3.0-or-later'
+      website: 'https://www.gnu.org/software/coreutils/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-apps']
     source:
       subdir: 'ports'
-      url: 'https://ftp.gnu.org/gnu/coreutils/coreutils-9.3.tar.xz'
+      url: 'https://ftp.gnu.org/gnu/coreutils/coreutils-9.5.tar.xz'
       format: tar.xz
-      checksum: 'blake2b:11502cd2dbeef150d0d4cece2546bf6b835941b94456c258f6058338f0477f22e68e88934d075b08fe51ee4d1c0c50cb23d8084ac06a457d6e8975f01643b1cd'
-      extract_path: 'coreutils-9.3'
-      version: '9.3'
+      checksum: 'blake2b:6fd3a77697c9e85f31415c6ad66559faf18acc7d346677a89d4a999c2027886551e78842a7283e7b3b44fe8ef2fde04ba2f88df32a7844d5f69d45bcb7a04b6f'
+      extract_path: 'coreutils-9.5'
+      version: '9.5'
       tools_required:
         - host-automake-v1.15
       regenerate:
@@ -85,7 +92,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 9
+    revision: 1
     configure:
       # Huge hack: coreutils does not compile the build-machine binary make-prime-list
       # using the build-machine compiler. Hence, build and invoke the binary manually here.
