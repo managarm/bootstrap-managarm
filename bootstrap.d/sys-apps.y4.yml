@@ -329,11 +329,18 @@ packages:
   - name: findutils
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: GNU utilities for finding files
+      description: This package contains programs to find files. Programs are provided to search through all the files in a directory tree and to create, maintain, and search a database.
+      spdx: 'GPL-3.0-or-later'
+      website: 'https://www.gnu.org/software/findutils/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-apps']
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/findutils.git'
-      tag: 'v4.9.0'
-      version: '4.9.0'
+      tag: 'v4.10.0'
+      version: '4.10.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -350,7 +357,7 @@ packages:
       - host-python
     pkgs_required:
       - mlibc
-    revision: 7
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
