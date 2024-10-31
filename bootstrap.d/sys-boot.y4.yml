@@ -27,7 +27,8 @@ tools:
     architecture: '@OPTION:arch@'
     labels: [aarch64]
     from_source: limine
-    containerless: true
+    tools_required:
+      - host-llvm-toolchain
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

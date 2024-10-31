@@ -32,9 +32,6 @@ tasks:
     tools_required:
       - host-limine
     args: |
-      if [ "@OPTION:mount-using@" == guestfs ]; then
-          elevation=-g # Use libguestfs for root-less image creation.
-      fi
       if [ "@OPTION:arch@" == x86_64 ]; then
           biosboot=-b # Install the BIOS bootloader only on x86_64.
       fi
@@ -44,17 +41,18 @@ tasks:
       -pgpt \
       -text2 \
       -llimine \
+      -a@OPTION:arch@ \
       -e \
-      $biosboot \
-      $elevation
+      $biosboot
     environ:
-      'LIMINE_PATH': '@BUILD_ROOT@/tools/host-limine/share/limine'
+      'LIMINE_BIN_DIR': '@BUILD_ROOT@/tools/host-limine/share/limine'
+      'LIMINE_TOOL': '@BUILD_ROOT@/tools/host-limine/share/limine/limine'
       'GPT_TYPE': '64212B3B-56A1-4DFB-971E-BC8CD027996A'
     workdir: '@BUILD_ROOT@'
-    containerless: true
 
   - name: make-image
     tools_required:
+      - cross-binutils
       - host-limine
     pkgs_required:
       - managarm-kernel
@@ -72,6 +70,7 @@ tasks:
 
   - name: remake-image
     tools_required:
+      - cross-binutils
       - host-limine
     pkgs_required:
       - managarm-kernel
@@ -84,7 +83,6 @@ tasks:
       - '@OPTION:arch-triple@'
       - 'remake'
     workdir: '@BUILD_ROOT@'
-    containerless: true
 
   - name: xz-image
     tasks_required:
