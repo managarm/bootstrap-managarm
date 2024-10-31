@@ -47,6 +47,7 @@ tools:
       - args: ['make', 'install']
 
   - name: host-hwdata
+    labels: [aarch64]
     architecture: noarch
     source:
       subdir: 'ports'
