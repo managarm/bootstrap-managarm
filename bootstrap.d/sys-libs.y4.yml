@@ -193,24 +193,31 @@ packages:
   - name: gdbm
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Standard GNU database libraries
+      description: This package contains the GNU Database Manager. It is a library of database functions that uses extensible hashing and works like the standard UNIX dbm. The library provides primitives for storing key/data pairs, searching and retrieving the data by its key and deleting a key along with its data.
+      spdx: 'GPL-3.0-only'
+      website: 'https://www.gnu.org/software/gdbm/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-libs']
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/gdbm.git'
-      tag: 'v1.23'
-      version: '1.23'
+      tag: 'v1.24'
+      version: '1.24'
       tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
+        - host-autoconf-v2.71
+        - host-automake-v1.16
         - host-libtool
       regenerate:
         - args: ['./bootstrap']
     tools_required:
-      - host-autoconf-v2.69
-      - host-automake-v1.15
+      - host-autoconf-v2.71
+      - host-automake-v1.16
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 7
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
