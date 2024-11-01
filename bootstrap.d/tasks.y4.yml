@@ -51,10 +51,8 @@ tasks:
     workdir: '@BUILD_ROOT@'
 
   - name: make-image
-    tools_required:
-      - cross-binutils
-      - host-limine
     pkgs_required:
+      - limine
       - managarm-kernel
       - managarm-system
     tasks_required:
@@ -69,10 +67,8 @@ tasks:
     containerless: true
 
   - name: remake-image
-    tools_required:
-      - cross-binutils
-      - host-limine
     pkgs_required:
+      - limine
       - managarm-kernel
       - managarm-system
     tasks_required:

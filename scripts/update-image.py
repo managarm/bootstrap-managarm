@@ -387,10 +387,10 @@ def generate_plan(arch, root_uuid, scriptdir):
 
         yield (
             FsAction.CP,
-            "tools/host-limine/share/limine/BOOTX64.EFI",
+            "system-root/usr/share/limine/BOOTX64.EFI",
             "boot/EFI/BOOT",
         )
-        yield FsAction.CP, "tools/host-limine/share/limine/limine-bios.sys", "boot/"
+        yield FsAction.CP, "system-root/usr/share/limine/limine-bios.sys", "boot/"
 
         yield FsAction.CP_SED, os.path.join(
             scriptdir, "limine.conf"
@@ -401,7 +401,7 @@ def generate_plan(arch, root_uuid, scriptdir):
 
         yield (
             FsAction.CP,
-            "tools/host-limine/share/limine/BOOTAA64.EFI",
+            "system-root/usr/share/limine/BOOTAA64.EFI",
             "boot/EFI/BOOT",
         )
 
@@ -505,23 +505,12 @@ class UpdateFsAction:
         def plan_create_dir(dir):
             steps.append(["mkdir", "-p", os.path.join(target_mntpoint, dir)])
 
-        def plan_install(source, dest, strip=False, ignore_sysroot=False):
+        def plan_install(source, dest, ignore_sysroot=False):
             if not ignore_sysroot:
                 source = os.path.join(self.sysroot, source)
             target = os.path.join(target_mntpoint, dest)
 
-            if strip:
-                steps.append(
-                    [
-                        "install",
-                        "-s",
-                        f"--strip-program=tools/cross-binutils/bin/{self.arch}-strip",
-                        source,
-                        target,
-                    ]
-                )
-            else:
-                steps.append(["install", source, target])
+            steps.append(["install", source, target])
 
         def plan_rsync(dir):
             source = os.path.join(self.sysroot, dir)
@@ -699,19 +688,12 @@ class RemakeImageAction:
     def _ensure_links(self):
         ensure_sysroot_links(self.sysroot)
 
-    def _install(self, src, dst, strip=False, ignore_sysroot=False):
+    def _install(self, src, dst, ignore_sysroot=False):
         if not ignore_sysroot:
             src = os.path.join(self.sysroot, src)
         if _is_boot(add_dest_basename(src, dst)):
             with tempfile.NamedTemporaryFile('r+b') as tmpf:
                 actual_src = src
-                if strip:
-                    logged_check_call([
-                        f"tools/cross-binutils/bin/{self.arch}-strip",
-                        "-o", tmpf.name,
-                        src
-                    ])
-                    actual_src = tmpf.name
 
                 # XXX(arsen): I assume the path provided is a dir
                 dst = os.path.join(dst, os.path.basename(src))
@@ -727,11 +709,6 @@ class RemakeImageAction:
             return
 
         installargs = ["install"]
-        if strip:
-            installargs += [
-                "-s",
-                f"--strip-program=tools/cross-binutils/bin/{self.arch}-strip",
-            ]
 
         installargs += [src, dst]
         logged_check_call(installargs)
