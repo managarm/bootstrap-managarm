@@ -3,7 +3,7 @@ c = 'clang'
 cpp = 'clang++'
 strip = 'riscv64-managarm-strip'
 objcopy = 'riscv64-managarm-objcopy'
-pkgconfig = 'riscv64-managarm-pkg-config'
+pkg-config = 'riscv64-managarm-pkg-config'
 
 [constants]
 # clang needs an additional flag to enable sized allocation/deallocation.

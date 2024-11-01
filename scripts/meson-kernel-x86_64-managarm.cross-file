@@ -3,7 +3,7 @@ c = 'clang'
 cpp = 'clang++'
 ar = 'x86_64-managarm-ar'
 strip = 'x86_64-managarm-strip'
-pkgconfig = 'x86_64-managarm-pkg-config'
+pkg-config = 'x86_64-managarm-pkg-config'
 
 [constants]
 # common args that c and cxx need

@@ -4,7 +4,7 @@ c = 'x86_64-managarm-gcc'
 cpp = 'x86_64-managarm-g++'
 ar = 'x86_64-managarm-ar'
 strip = 'x86_64-managarm-strip'
-pkgconfig = 'x86_64-managarm-pkg-config'
+pkg-config = 'x86_64-managarm-pkg-config'
 exe_wrapper = 'true'
 # sed adds binaries here.
 

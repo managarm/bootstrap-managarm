@@ -3,7 +3,7 @@ c = 'riscv64-managarm-gcc'
 cpp = 'riscv64-managarm-g++'
 ar = 'riscv64-managarm-ar'
 strip = 'riscv64-managarm-strip'
-pkgconfig = 'riscv64-managarm-pkg-config'
+pkg-config = 'riscv64-managarm-pkg-config'
 # sed adds binaries here.
 
 [host_machine]

@@ -4,7 +4,7 @@ c = 'aarch64-managarm-gcc'
 cpp = 'aarch64-managarm-g++'
 ar = 'aarch64-managarm-ar'
 strip = 'aarch64-managarm-strip'
-pkgconfig = 'aarch64-managarm-pkg-config'
+pkg-config = 'aarch64-managarm-pkg-config'
 # sed adds binaries here.
 
 [host_machine]
