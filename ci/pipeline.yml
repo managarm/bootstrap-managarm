@@ -14,7 +14,6 @@ jobs:
       - icu
 
   - name: image
-    capabilities: ["fuse"]
     tasks:
       - useful-image-dependencies
       - initialize-empty-image
