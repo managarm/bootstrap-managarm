@@ -26,7 +26,42 @@ sources:
     branch: 'master'
     rolling_version: true
     version: '0.0pl@ROLLING_ID@'
-  
+
+  - name: freestnd-c-hdrs
+    rolling_version: true
+    version: '0.0pl@ROLLING_ID@'
+    subdir: 'ports'
+    git: 'https://github.com/osdev0/freestnd-c-hdrs.git'
+    branch: 'trunk'
+
+  - name: freestnd-cxx-hdrs
+    rolling_version: true
+    version: '0.0pl@ROLLING_ID@'
+    subdir: 'ports'
+    git: 'https://github.com/osdev0/freestnd-cxx-hdrs.git'
+    branch: 'trunk'
+
+tools:
+  - name: host-freestnd-c-hdrs
+    architecture: noarch
+    from_source: freestnd-c-hdrs
+    configure:
+      - args: ['cp', '-rpv', '@THIS_SOURCE_DIR@/.', './']
+    compile:
+      - args: ['make']
+    install:
+      - args: ['make', 'install', 'PREFIX=@PREFIX@']
+
+  - name: host-freestnd-cxx-hdrs
+    architecture: noarch
+    from_source: freestnd-cxx-hdrs
+    configure:
+      - args: ['cp', '-rpv', '@THIS_SOURCE_DIR@/.', './']
+    compile:
+      - args: ['make']
+    install:
+      - args: ['make', 'install', 'PREFIX=@PREFIX@']
+
 packages:
   - name: fafnir
     labels: [aarch64]
@@ -55,6 +90,28 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+
+  - name: freestnd-c-hdrs
+    architecture: '@OPTION:arch@'
+    from_source: freestnd-c-hdrs
+    configure:
+      - args: ['cp', '-rpv', '@THIS_SOURCE_DIR@/.', './']
+    build:
+      - args: ['make', 'install', 'PREFIX=/usr']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: freestnd-cxx-hdrs
+    architecture: '@OPTION:arch@'
+    from_source: freestnd-cxx-hdrs
+    pkgs_required:
+      - freestnd-c-hdrs
+    configure:
+      - args: ['cp', '-rpv', '@THIS_SOURCE_DIR@/.', './']
+    build:
+      - args: ['make', 'install', 'PREFIX=/usr']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: frigg
     metadata:
