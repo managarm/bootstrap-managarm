@@ -37,7 +37,7 @@ tasks:
       fi
       @SOURCE_ROOT@/ports/image_create/image_create.sh \
       -oimage \
-      -s4G \
+      -s@OPTION:image-size@ \
       -pgpt \
       -text2 \
       -llimine \

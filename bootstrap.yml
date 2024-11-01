@@ -81,3 +81,5 @@ declare_options:
     default: x86_64-managarm
   - name: mount-using
     default: guestfs
+  - name: image-size
+    default: 4G
