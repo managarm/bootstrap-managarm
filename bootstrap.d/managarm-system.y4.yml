@@ -178,3 +178,11 @@ packages:
         environ:
           'DESTDIR': '@THIS_COLLECT_DIR@'
         quiet: true
+    tasks:
+    - name: clang-tidy
+      args:
+      - 'run-clang-tidy'
+      - '-config-file'
+      - '@SOURCE_ROOT@/managarm/.clang-tidy'
+      - '-quiet'
+      - '\.(h|c|cpp|hpp)$'
