@@ -1,0 +1,45 @@
+From 793adf8e8f4a8b3ebb79dffc7e63caea715b523e Mon Sep 17 00:00:00 2001
+From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
+Date: Sat, 2 Nov 2024 23:07:59 +0100
+Subject: [PATCH 3/3] llvm: Add managarm kernel triple
+
+---
+ llvm/include/llvm/TargetParser/Triple.h | 1 +
+ llvm/lib/TargetParser/Triple.cpp        | 2 ++
+ 2 files changed, 3 insertions(+)
+
+diff --git a/llvm/include/llvm/TargetParser/Triple.h b/llvm/include/llvm/TargetParser/Triple.h
+index b2cab148da46..96f234b753c0 100644
+--- a/llvm/include/llvm/TargetParser/Triple.h
++++ b/llvm/include/llvm/TargetParser/Triple.h
+@@ -293,6 +293,7 @@ public:
+     OpenCL,
+     OpenHOS,
+     Mlibc,
++    Kernel,
+ 
+     PAuthTest,
+ 
+diff --git a/llvm/lib/TargetParser/Triple.cpp b/llvm/lib/TargetParser/Triple.cpp
+index 5c28a3b7674b..07df6368c1b6 100644
+--- a/llvm/lib/TargetParser/Triple.cpp
++++ b/llvm/lib/TargetParser/Triple.cpp
+@@ -359,6 +359,7 @@ StringRef Triple::getEnvironmentTypeName(EnvironmentType Kind) {
+   case PAuthTest:
+     return "pauthtest";
+   case Mlibc: return "mlibc";
++  case Kernel: return "kernel";
+   }
+ 
+   llvm_unreachable("Invalid EnvironmentType!");
+@@ -741,6 +742,7 @@ static Triple::EnvironmentType parseEnvironment(StringRef EnvironmentName) {
+       .StartsWith("ohos", Triple::OpenHOS)
+       .StartsWith("pauthtest", Triple::PAuthTest)
+       .StartsWith("mlibc", Triple::Mlibc)
++      .StartsWith("kernel", Triple::Kernel)
+       .Default(Triple::UnknownEnvironment);
+ }
+ 
+-- 
+2.30.2
+
