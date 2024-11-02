@@ -124,6 +124,48 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
+  - name: managarm-kernel-uefi
+    metadata:
+      summary: eir for UEFI
+      description: This package provides eir-uefi.
+      spdx: 'MIT'
+      website: 'https://managarm.org'
+      maintainer: "Marvin Friedrich <contact@marvinf.com>"
+      categories: ['sys-kernel']
+    architecture: '@OPTION:arch@'
+    default: true
+    from_source: managarm
+    tools_required:
+      - host-llvm-toolchain
+      - host-managarm-tools
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - frigg
+      - mlibc-headers
+      - freestnd-c-hdrs
+      - freestnd-cxx-hdrs
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file=@SOURCE_ROOT@/scripts/meson-kernel-common.cross-file'
+        - '--cross-file=@SOURCE_ROOT@/scripts/meson-kernel-uefi-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr/managarm'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '--wrap-mode=nofallback'
+        - '-Dbuild_kernel=true'
+        - '-Dbuild_uefi=true'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+
   - name: managarm-system
     metadata:
       summary: The Managarm userspace

@@ -5,6 +5,7 @@ import os
 import shlex
 import subprocess
 import string
+import struct
 import sys
 
 main_parser = argparse.ArgumentParser()
@@ -172,6 +173,11 @@ def do_qemu(args):
             "-append",
             f"bochs init.launch=headless init.command={args.cmd}",
         ]
+
+    if args.uefi:
+        qemu_args += ["-drive", f"if=pflash,format=raw,file=tools/ovmf/OVMF_CODE_{args.arch}.fd,readonly=on"]
+        qemu_args += ["-chardev", "file,id=uefi-load-base,path=uefi-load-base.addr"]
+        qemu_args += ["-device", "isa-debugcon,iobase=0xCB7,chardev=uefi-load-base"]
 
     # Add USB HCDs.
     qemu_args += [
@@ -356,6 +362,7 @@ qemu_parser.add_argument("--pci-passthrough", type=str)
 qemu_parser.add_argument("--usb-passthrough", type=str, action='append')
 qemu_parser.add_argument("--usb-passthrough-pcap", type=str, action='append')
 qemu_parser.add_argument("--usb-redir", type=str, action='append')
+qemu_parser.add_argument("--uefi", action="store_true")
 qemu_parser.add_argument("--cmd", type=str)
 qemu_parser.add_argument("--qmp", action="store_true")
 qemu_parser.add_argument("--use-system-qemu", action="store_true")
@@ -372,6 +379,51 @@ def do_gdb(args):
             "--symbols=pkg-builds/managarm-kernel/kernel/thor/thor",
             "-ex",
             "target remote tcp:" + args.ip + ":1234",
+        ]
+    elif args.uefi:
+        try:
+            import pefile
+        except ImportError:
+            print("error: please install the 'pefile' python module")
+            sys.exit(1)
+
+        with open("uefi-load-base.addr", mode="rb") as f:
+            f.seek(0, os.SEEK_END)
+            if f.tell() < 8:
+                print("error: no UEFI image base address found")
+                sys.exit(1)
+            f.seek(-8, os.SEEK_END)
+            image_base = struct.unpack("P", f.read())[0]
+
+        eir_path = "pkg-builds/managarm-kernel-uefi/kernel/eir/protos/uefi/eir-uefi"
+        with open(eir_path, "rb") as f:
+            data = f.read()
+        pe = pefile.PE(data=data)
+        sections = {}
+
+        st_offset = pe.FILE_HEADER.PointerToSymbolTable + (pe.FILE_HEADER.NumberOfSymbols * 18)
+
+        for section in pe.sections:
+            name = section.Name.strip(b"\x00").decode("utf-8")
+
+            if name.startswith("/"):
+                offset = int(name[1:])
+                new_name = pe.get_string_from_data(st_offset + offset, data).decode("ascii")
+                name = new_name
+
+            if name.startswith("."):
+                sections[name] = section.VirtualAddress + image_base
+
+        sections_str = " -s ".join(" ".join((f"\"{name}\"", f"{address:#x}")) for name, address in sections.items() if name != ".text")
+        pe_symbols = f"add-symbol-file {eir_path} {sections[".text"]:#x} -s {sections_str}"
+
+        gdb_args += [
+            "-ex", "target remote tcp:" + args.ip + ":1234",
+            "-ex", "set confirm off",
+            "-ex", "set substitute-path ../../../src ../src",
+            "-ex", pe_symbols,
+            "-ex", "set confirm on",
+            "-ex", "set eir_gdb_ready=1"
         ]
     elif args.kernel:
         gdb_args += ["-ex", "target remote tcp:" + args.ip + ":5678"]
@@ -393,6 +445,7 @@ gdb_parser.add_argument("--ip", type=str, default="localhost")
 
 gdb_group = gdb_parser.add_mutually_exclusive_group(required=True)
 gdb_group.add_argument("--qemu", action="store_true")
+gdb_group.add_argument("--uefi", action="store_true")
 gdb_group.add_argument("--kernel", action="store_true")
 gdb_group.add_argument("--posix", action="store_true")
 
