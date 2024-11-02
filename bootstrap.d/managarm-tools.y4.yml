@@ -1,6 +1,7 @@
 tools:
   - name: host-iasl
-    architecture: '@OPTION:arch@'
+    labels: [aarch64, riscv64]
+    architecture: noarch
     source:
       subdir: ports
       checksum: 'blake2b:6f4b4e329e87875eb14cf45b36f6213943b4c7da6fa7345ec2e888d567b067d243717cdf86b543e64120c27c3ef378eeedbae80fcc620140d549bc7a6fb53f5e'
@@ -15,7 +16,7 @@ tools:
       - args: ['make', 'install', 'PREFIX=@PREFIX@']
 
   - name: ovmf
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
