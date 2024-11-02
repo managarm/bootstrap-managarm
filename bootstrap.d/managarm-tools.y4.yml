@@ -1,0 +1,15 @@
+tools:
+  - name: host-iasl
+    architecture: '@OPTION:arch@'
+    source:
+      subdir: ports
+      checksum: 'blake2b:6f4b4e329e87875eb14cf45b36f6213943b4c7da6fa7345ec2e888d567b067d243717cdf86b543e64120c27c3ef378eeedbae80fcc620140d549bc7a6fb53f5e'
+      url: https://github.com/user-attachments/files/17171017/acpica-unix2-20240927.tar.gz
+      format: tar.gz
+      extract_path: 'acpica-unix2-20240927'
+    configure:
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+    compile:
+      - args: ['make', 'iasl']
+    install:
+      - args: ['make', 'install', 'PREFIX=@PREFIX@']

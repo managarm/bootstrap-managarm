@@ -32,6 +32,7 @@ imports:
   - file: bootstrap.d/managarm-libc.y4.yml
   - file: bootstrap.d/managarm-libs.y4.yml
   - file: bootstrap.d/managarm-system.y4.yml
+  - file: bootstrap.d/managarm-tools.y4.yml
   - file: bootstrap.d/media-fonts.y4.yml
   - file: bootstrap.d/media-gfx.y4.yml
   - file: bootstrap.d/media-libs.y4.yml
