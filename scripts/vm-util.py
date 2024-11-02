@@ -210,6 +210,8 @@ def do_qemu(args):
         elif args.boot_drive == "usb":
             # Use EHCI for now since XHCI hangs on boot.
             qemu_args += ["-device", "usb-storage,drive=boot-drive,bus=ehci.0"]
+        elif args.boot_drive == "nvme":
+            qemu_args += ["-device", "nvme,serial=deadbeef,drive=boot-drive"]
         else:
             assert args.boot_drive == "ide"
             qemu_args += ["-device", "ide-hd,drive=boot-drive,bus=ide.0"]
@@ -351,7 +353,7 @@ qemu_parser.add_argument("--no-smp", action="store_true")
 qemu_parser.add_argument("--virtual-boot", action="store_true")
 qemu_parser.add_argument(
     "--boot-drive",
-    choices=["virtio", "virtio-legacy", "ahci", "usb", "ide"],
+    choices=["virtio", "virtio-legacy", "ahci", "usb", "ide", "nvme"],
     default="virtio",
 )
 qemu_parser.add_argument("--net-bridge", action="store_true")
