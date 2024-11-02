@@ -326,6 +326,10 @@ def do_qemu(args):
             qemu_args += ["-chardev", f"socket,id=usb-redir-chardev{num},port={port},host={host}"]
             qemu_args += ["-device", f"usb-redir,chardev=usb-redir-chardev{num},id=usb-redir{num},bus=xhci.0"]
 
+    if args.usb_serial:
+        qemu_args += ["-chardev", "file,path=serial.log,id=usb-serial"]
+        qemu_args += ["-device", "usb-serial,chardev=usb-serial,bus=xhci.0"]
+
     if args.qmp:
         qemu_args += ["-qmp", "tcp:0.0.0.0:4444,server"]
 
@@ -366,6 +370,7 @@ qemu_parser.add_argument("--pci-passthrough", type=str)
 qemu_parser.add_argument("--usb-passthrough", type=str, action='append')
 qemu_parser.add_argument("--usb-passthrough-pcap", type=str, action='append')
 qemu_parser.add_argument("--usb-redir", type=str, action='append')
+qemu_parser.add_argument("--usb-serial", action='store_true')
 qemu_parser.add_argument("--uefi", action="store_true")
 qemu_parser.add_argument("--cmd", type=str)
 qemu_parser.add_argument("--qmp", action="store_true")
