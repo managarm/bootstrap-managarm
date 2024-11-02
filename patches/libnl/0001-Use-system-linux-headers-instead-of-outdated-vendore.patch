@@ -1,0 +1,33 @@
+From ca81716bcabe07b864c7dac04501d8079ac625dc Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Sat, 2 Nov 2024 01:52:40 +0100
+Subject: [PATCH] Use system linux headers instead of outdated vendored headers
+
+---
+ Makefile.am | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/Makefile.am b/Makefile.am
+index 1e76649..0d93393 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -380,7 +380,6 @@ EXTRA_DIST += \
+ ###############################################################################
+ 
+ default_includes = \
+-	-I$(srcdir)/include/linux-private \
+ 	-I$(srcdir)/include \
+ 	-I$(builddir)/include \
+ 	$(NULL)
+@@ -495,8 +494,6 @@ lib_libnl_route_3_la_SOURCES = \
+ 	lib/route/pktloc.c \
+ 	lib/route/qdisc.c \
+ 	lib/route/qdisc/blackhole.c \
+-	lib/route/qdisc/cbq.c \
+-	lib/route/qdisc/dsmark.c \
+ 	lib/route/qdisc/fifo.c \
+ 	lib/route/qdisc/fq_codel.c \
+ 	lib/route/qdisc/hfsc.c \
+-- 
+2.47.0
+
