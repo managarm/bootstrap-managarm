@@ -2,8 +2,8 @@ sources:
   - name: qemu
     subdir: 'ports'
     git: 'https://github.com/qemu/qemu.git'
-    tag: 'v8.1.4'
-    version: '8.1.4'
+    tag: 'v9.1.1'
+    version: '9.1.1'
 
 tools:
   - name: host-qemu
@@ -11,7 +11,7 @@ tools:
     architecture: noarch
     containerless: true
     from_source: qemu
-    revision: 2
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -59,7 +59,7 @@ packages:
       - pixman
       - ncurses
       - nettle
-    revision: 2
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

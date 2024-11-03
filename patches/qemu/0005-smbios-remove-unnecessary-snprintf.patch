@@ -1,0 +1,32 @@
+From 60c4f5d4716e9048111772cea0e62e7edb655748 Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Sun, 3 Nov 2024 22:25:49 +0100
+Subject: [PATCH 5/5] smbios: remove unnecessary snprintf
+
+---
+ hw/smbios/smbios.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/hw/smbios/smbios.c b/hw/smbios/smbios.c
+index 6b3d015..1609e1a 100644
+--- a/hw/smbios/smbios.c
++++ b/hw/smbios/smbios.c
+@@ -814,7 +814,6 @@ static void smbios_build_type_9_table(Error **errp)
+ 
+ static void smbios_build_type_11_table(void)
+ {
+-    char count_str[128];
+     size_t i;
+ 
+     if (type11.nvalues == 0) {
+@@ -823,7 +822,6 @@ static void smbios_build_type_11_table(void)
+ 
+     SMBIOS_BUILD_TABLE_PRE(11, T11_BASE, true); /* required */
+ 
+-    snprintf(count_str, sizeof(count_str), "%zu", type11.nvalues);
+     t->count = type11.nvalues;
+ 
+     for (i = 0; i < type11.nvalues; i++) {
+-- 
+2.47.0
+

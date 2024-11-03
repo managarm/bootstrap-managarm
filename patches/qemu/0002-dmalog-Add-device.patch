@@ -1,7 +1,7 @@
-From 39faec5de4fda8e9d15fea32a8a3de32604bd316 Mon Sep 17 00:00:00 2001
+From b46f13478bfa60da71769f543029c25c1c34cb46 Mon Sep 17 00:00:00 2001
 From: Matteo Semenzato <mattew8898@gmail.com>
 Date: Sun, 6 Aug 2023 23:29:54 +0200
-Subject: [PATCH 2/3] dmalog: Add device
+Subject: [PATCH 2/5] dmalog: Add device
 
 ---
  hw/misc/Kconfig     |   4 +
@@ -11,18 +11,20 @@ Subject: [PATCH 2/3] dmalog: Add device
  create mode 100644 hw/misc/dmalog.c
 
 diff --git a/hw/misc/Kconfig b/hw/misc/Kconfig
-index 6996d26..7f84d1c 100644
+index 1e08785..52dee72 100644
 --- a/hw/misc/Kconfig
 +++ b/hw/misc/Kconfig
-@@ -186,4 +186,8 @@ config AXP2XX_PMU
+@@ -58,6 +58,10 @@ config ARM11SCU
+ config MOS6522
      bool
-     depends on I2C
  
 +config DMALOG
 +	bool
 +	default y
 +
- source macio/Kconfig
+ config MACIO
+     bool
+     select CUDA
 diff --git a/hw/misc/dmalog.c b/hw/misc/dmalog.c
 new file mode 100644
 index 0000000..d7938d6
@@ -369,7 +371,7 @@ index 0000000..d7938d6
 +}
 +type_init(pci_dmalog_register_types)
 diff --git a/hw/misc/meson.build b/hw/misc/meson.build
-index 892f8b9..4250eb9 100644
+index 2ca8717..7f13ec9 100644
 --- a/hw/misc/meson.build
 +++ b/hw/misc/meson.build
 @@ -1,6 +1,7 @@
@@ -379,7 +381,7 @@ index 892f8b9..4250eb9 100644
 +system_ss.add(when: 'CONFIG_DMALOG', if_true: files('dmalog.c'))
  system_ss.add(when: 'CONFIG_ISA_DEBUG', if_true: files('debugexit.c'))
  system_ss.add(when: 'CONFIG_ISA_TESTDEV', if_true: files('pc-testdev.c'))
- system_ss.add(when: 'CONFIG_PCA9552', if_true: files('pca9552.c'))
+ system_ss.add(when: 'CONFIG_PCI_TESTDEV', if_true: files('pci-testdev.c'))
 -- 
-2.43.0
+2.47.0
 
