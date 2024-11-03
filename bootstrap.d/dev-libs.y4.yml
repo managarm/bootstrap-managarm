@@ -2392,7 +2392,7 @@ packages:
           isolate_network: false
         - args: ['./bootstrap.sh']
         - args: ['./b2', 'headers']
-    revision: 6
+    revision: 7
     configure: []
     build:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/include']
