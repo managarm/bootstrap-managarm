@@ -210,6 +210,8 @@ def do_qemu(args):
         elif args.boot_drive == "usb":
             # Use EHCI for now since XHCI hangs on boot.
             qemu_args += ["-device", "usb-storage,drive=boot-drive,bus=ehci.0"]
+        elif args.boot_drive == "nvme":
+            qemu_args += ["-device", "nvme,serial=deadbeef,drive=boot-drive"]
         else:
             assert args.boot_drive == "ide"
             qemu_args += ["-device", "ide-hd,drive=boot-drive,bus=ide.0"]
@@ -232,6 +234,8 @@ def do_qemu(args):
     elif args.nic == "usb":
         qemu_check_nic(qemu, qemu_args, "usb-net")
         qemu_args += ["-device", "usb-net,netdev=net0"]
+    elif args.nic == "none":
+        qemu_args += ["-net", "none"]
 
     if args.pci_passthrough:
         qemu_args += ["-device", f"vfio-pci,host={args.pci_passthrough}"]
@@ -322,6 +326,10 @@ def do_qemu(args):
             qemu_args += ["-chardev", f"socket,id=usb-redir-chardev{num},port={port},host={host}"]
             qemu_args += ["-device", f"usb-redir,chardev=usb-redir-chardev{num},id=usb-redir{num},bus=xhci.0"]
 
+    if args.usb_serial:
+        qemu_args += ["-chardev", "file,path=serial.log,id=usb-serial"]
+        qemu_args += ["-device", "usb-serial,chardev=usb-serial,bus=xhci.0"]
+
     if args.qmp:
         qemu_args += ["-qmp", "tcp:0.0.0.0:4444,server"]
 
@@ -349,7 +357,7 @@ qemu_parser.add_argument("--no-smp", action="store_true")
 qemu_parser.add_argument("--virtual-boot", action="store_true")
 qemu_parser.add_argument(
     "--boot-drive",
-    choices=["virtio", "virtio-legacy", "ahci", "usb", "ide"],
+    choices=["virtio", "virtio-legacy", "ahci", "usb", "ide", "nvme"],
     default="virtio",
 )
 qemu_parser.add_argument("--net-bridge", action="store_true")
@@ -362,6 +370,7 @@ qemu_parser.add_argument("--pci-passthrough", type=str)
 qemu_parser.add_argument("--usb-passthrough", type=str, action='append')
 qemu_parser.add_argument("--usb-passthrough-pcap", type=str, action='append')
 qemu_parser.add_argument("--usb-redir", type=str, action='append')
+qemu_parser.add_argument("--usb-serial", action='store_true')
 qemu_parser.add_argument("--uefi", action="store_true")
 qemu_parser.add_argument("--cmd", type=str)
 qemu_parser.add_argument("--qmp", action="store_true")
