@@ -1,3 +1,7 @@
+!<tag:y4.managarm.org:preamble>
+import:
+  - !managarm
+---
 tasks:
   - name: useful-image-dependencies
     pkgs_required:
@@ -54,7 +58,13 @@ tasks:
     pkgs_required:
       - limine
       - managarm-kernel
+      - !managarm::arch_dep
+        arch: [x86_46]
+        item: managarm-kernel-uefi
       - managarm-system
+    tools_required:
+      - tool: host-limine
+        expose: false
     tasks_required:
       - update-initrd
     args:
@@ -70,7 +80,13 @@ tasks:
     pkgs_required:
       - limine
       - managarm-kernel
+      - !managarm::arch_dep
+        arch: [x86_46]
+        item: managarm-kernel-uefi
       - managarm-system
+    tools_required:
+      - tool: host-limine
+        expose: false
     tasks_required:
       - update-initrd
     args:
