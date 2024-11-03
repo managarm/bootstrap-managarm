@@ -39,7 +39,7 @@ tools:
           - 'MdePkg/Library/MipiSysTLib/mipisyst'
           - 'RedfishPkg/Library/JsonLib/jansson'
           - 'SecurityPkg/DeviceSecurity/SpdmLib/libspdm'
-          - 'SoftFloat'
+          - 'ArmPkg/Library/ArmSoftFloatLib/berkeley-softfloat-3'
           isolate_network: false
     tools_required:
       - host-llvm-toolchain
