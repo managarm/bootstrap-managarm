@@ -1,0 +1,26 @@
+From f8cf4816b6ab27f4ba1f8e932d3a12f9af88eacc Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Sun, 3 Nov 2024 22:25:14 +0100
+Subject: [PATCH 4/5] smbios: zero-terminate strings read from files
+
+---
+ hw/smbios/smbios.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/hw/smbios/smbios.c b/hw/smbios/smbios.c
+index a394514..6b3d015 100644
+--- a/hw/smbios/smbios.c
++++ b/hw/smbios/smbios.c
+@@ -1285,6 +1285,9 @@ static int save_opt_one(void *opaque,
+             g_byte_array_append(data, (guint8 *)buf, ret);
+         }
+ 
++        const guint8 zero = 0;
++        g_byte_array_append(data, &zero, 1);
++
+         qemu_close(fd);
+ 
+         *opt->dest = g_renew(char *, *opt->dest, (*opt->ndest) + 1);
+-- 
+2.47.0
+
