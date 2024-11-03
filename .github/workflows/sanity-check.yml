@@ -4,6 +4,9 @@ on: [push, pull_request]
 
 jobs:
     compute-graph:
+        strategy:
+            matrix:
+                arch: [x86_64, aarch64, riscv64]
         name: Compute graph
         runs-on: ubuntu-24.04
         steps:
@@ -23,8 +26,8 @@ jobs:
           - name: Compute xbstrap-pipeline graph
             run: |
                 set -x
-                cp ../src/ci/pipeline.yml .
-                echo '{"pkg_management": {"format": "xbps"}}' > bootstrap-site.yml
+                cp ../src/xbbs/${{ matrix.arch }}/pipeline.yml .
+                cp ../src/xbbs/${{ matrix.arch }}/bootstrap-site.yml .
                 xbstrap init ../src
                 xbstrap rolling-versions fetch
                 xbstrap rolling-versions determine --json | jq '{"commits":map_values({"rolling_id":.})}' > new-bootstrap-commits.yml
