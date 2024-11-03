@@ -91,7 +91,7 @@ tools:
       - args: ['ln', '-sf', '@PREFIX@/share/aclocal-1.11', '@PREFIX@/share/aclocal']
 
   - name: host-autoconf-archive
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: noarch
     exports_aclocal: true
     source:
