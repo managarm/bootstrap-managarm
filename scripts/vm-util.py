@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import json
 import os
 import shlex
 import shutil
@@ -163,17 +164,45 @@ def do_qemu(args):
         qemu_args += ["-smp", "4"]
 
     if args.virtual_boot:
+        esp_uuid = None
+
+        out = subprocess.check_output(['sfdisk', '-dJ', 'image'], encoding="ascii")
+        for part in json.loads(out)['partitiontable']['partitions']:
+            if part['type'].upper() == "C12A7328-F81F-11D2-BA4B-00A0C93EC93B":
+                esp_uuid = part['uuid'].upper()
+                break
+
+        if not esp_uuid:
+            print(f"error: no EFI System Partition found in image!")
+            sys.exit(1)
+
+        tmp_config = tempfile.NamedTemporaryFile(mode='w+', suffix='.conf')
+        if args.uefi:
+            tmp_config.write(f"""limine:config:
+timeout: 0
+/managarm headless (UEFI)
+    image_path: guid({esp_uuid}):/managarm/eir-uefi
+    protocol: efi_chainload
+    cmdline: bochs init.launch=headless init.command={args.cmd} plainfb.force=1
+""")
+        else:
+            tmp_config.write(f"""limine:config:
+timeout: 0
+/managarm headless
+    kernel_path: guid({esp_uuid}):/managarm/eir-mb2
+    protocol: multiboot2
+    cmdline: bochs init.launch=headless init.command={args.cmd} plainfb.force=1
+    module_path: guid({esp_uuid}):/managarm/initrd.cpio
+""")
+        tmp_config.flush()
+
         qemu_args += [
             "-chardev",
             "file,id=serial,path=serial.out",
             "-serial",
             "chardev:serial",
-            "-kernel",
-            "system-root/usr/managarm/bin/eir-mb1",
-            "-initrd",
-            "system-root/usr/managarm/bin/thor,initrd.cpio",
-            "-append",
-            f"bochs init.launch=headless init.command={args.cmd}",
+            "-smbios",
+            f"type=11,path={tmp_config.name}",
         ]
 
     if args.uefi:
