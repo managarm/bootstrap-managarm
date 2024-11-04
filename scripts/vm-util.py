@@ -3,10 +3,12 @@
 import argparse
 import os
 import shlex
+import shutil
 import subprocess
 import string
 import struct
 import sys
+import tempfile
 
 main_parser = argparse.ArgumentParser()
 main_subparsers = main_parser.add_subparsers()
@@ -175,7 +177,12 @@ def do_qemu(args):
         ]
 
     if args.uefi:
+        # create a temporary OVMF_VARS.fd, as it likes to corrupt them, thus preventing boot, sigh
+        tmp_ovmf_vars = tempfile.NamedTemporaryFile(suffix='.fd')
+        shutil.copyfile(f"tools/ovmf/OVMF_VARS_{args.arch}.fd", tmp_ovmf_vars.name)
+
         qemu_args += ["-drive", f"if=pflash,format=raw,file=tools/ovmf/OVMF_CODE_{args.arch}.fd,readonly=on"]
+        qemu_args += ["-drive", f"if=pflash,format=raw,file={tmp_ovmf_vars.name}"]
         qemu_args += ["-chardev", "file,id=uefi-load-base,path=uefi-load-base.addr"]
         qemu_args += ["-device", "isa-debugcon,iobase=0xCB7,chardev=uefi-load-base"]
 
