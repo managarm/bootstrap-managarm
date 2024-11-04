@@ -321,9 +321,12 @@ class MountAction:
 
             print(f"update-image: EFI partition exists, mounting to {efi_path}")
             if not os.path.isdir(efi_path):
-                raise RuntimeError(
-                    "/boot does not exist on mountpoint (or is not a directory)"
-                )
+                if self.mount_using == "block" or self.mount_using == "loopback":
+                    run_elevated(["mkdir", efi_path])
+                else:
+                    raise RuntimeError(
+                        "/boot does not exist on mountpoint (or is not a directory)"
+                    )
 
             sep = ""
             if diskdev and diskdev[-1].isdigit():
@@ -390,6 +393,12 @@ def generate_plan(arch, root_uuid, scriptdir):
             FsAction.CP,
             "system-root/usr/share/limine/BOOTX64.EFI",
             "boot/EFI/BOOT",
+        )
+
+        yield (
+            FsAction.CP,
+            "tools/host-limine/share/limine/limine-bios.sys",
+            "boot/",
         )
 
         yield FsAction.CP_SED, os.path.join(
