@@ -234,5 +234,7 @@ packages:
       - 'run-clang-tidy'
       - '-config-file'
       - '@SOURCE_ROOT@/managarm/.clang-tidy'
+      # suppress clang's "x warnings generated" spam
+      - '-extra-arg=-fno-caret-diagnostics'
       - '-quiet'
       - '\.(h|c|cpp|hpp)$'
