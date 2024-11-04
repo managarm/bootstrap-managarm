@@ -186,6 +186,13 @@ def do_qemu(args):
         qemu_args += ["-chardev", "file,id=uefi-load-base,path=uefi-load-base.addr"]
         qemu_args += ["-device", "isa-debugcon,iobase=0xCB7,chardev=uefi-load-base"]
 
+    if args.ovmf_logs:
+        if not args.uefi:
+            print("OVMF logs without --uefi is useless")
+            sys.exit(1)
+        qemu_args += ["-chardev", "file,id=ovmf-logs,path=ovmf.log"]
+        qemu_args += ["-device", "isa-debugcon,iobase=0x402,chardev=ovmf-logs"]
+
     # Add USB HCDs.
     qemu_args += [
         "-device",
@@ -379,6 +386,7 @@ qemu_parser.add_argument("--usb-passthrough-pcap", type=str, action='append')
 qemu_parser.add_argument("--usb-redir", type=str, action='append')
 qemu_parser.add_argument("--usb-serial", action='store_true')
 qemu_parser.add_argument("--uefi", action="store_true")
+qemu_parser.add_argument("--ovmf-logs", action="store_true")
 qemu_parser.add_argument("--cmd", type=str)
 qemu_parser.add_argument("--qmp", action="store_true")
 qemu_parser.add_argument("--use-system-qemu", action="store_true")
