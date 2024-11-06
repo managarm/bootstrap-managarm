@@ -1,24 +1,24 @@
-From a8b3170f892ee5eb0f93faae803b1db839f67191 Mon Sep 17 00:00:00 2001
+From d501a9af0261875c1f702aaf2e1f04356076f2a3 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Fri, 6 Sep 2024 21:18:39 +0200
-Subject: [PATCH 2/3] clang: Add managarm OS target
+Subject: [PATCH 2/5] [clang] Add managarm OS target
 
 ---
  clang/lib/Basic/Targets.cpp              |   6 +
  clang/lib/Basic/Targets/OSTargets.h      |  30 +++
  clang/lib/Driver/CMakeLists.txt          |   1 +
  clang/lib/Driver/Driver.cpp              |   4 +
- clang/lib/Driver/ToolChains/Managarm.cpp | 232 +++++++++++++++++++++++
+ clang/lib/Driver/ToolChains/Managarm.cpp | 227 +++++++++++++++++++++++
  clang/lib/Driver/ToolChains/Managarm.h   |  55 ++++++
- 6 files changed, 328 insertions(+)
+ 6 files changed, 323 insertions(+)
  create mode 100644 clang/lib/Driver/ToolChains/Managarm.cpp
  create mode 100644 clang/lib/Driver/ToolChains/Managarm.h
 
 diff --git a/clang/lib/Basic/Targets.cpp b/clang/lib/Basic/Targets.cpp
-index 29133f9ee8fc..9747a4e8b14e 100644
+index 0021d33c45..18b06085dd 100644
 --- a/clang/lib/Basic/Targets.cpp
 +++ b/clang/lib/Basic/Targets.cpp
-@@ -160,6 +160,9 @@ std::unique_ptr<TargetInfo> AllocateTarget(const llvm::Triple &Triple,
+@@ -159,6 +159,9 @@ std::unique_ptr<TargetInfo> AllocateTarget(const llvm::Triple &Triple,
          return std::make_unique<OHOSTargetInfo<AArch64leTargetInfo>>(Triple,
                                                                       Opts);
        }
@@ -28,7 +28,7 @@ index 29133f9ee8fc..9747a4e8b14e 100644
      case llvm::Triple::NetBSD:
        return std::make_unique<NetBSDTargetInfo<AArch64leTargetInfo>>(Triple,
                                                                       Opts);
-@@ -646,6 +649,9 @@ std::unique_ptr<TargetInfo> AllocateTarget(const llvm::Triple &Triple,
+@@ -637,6 +640,9 @@ std::unique_ptr<TargetInfo> AllocateTarget(const llvm::Triple &Triple,
        return std::make_unique<PS5OSTargetInfo<X86_64TargetInfo>>(Triple, Opts);
      case llvm::Triple::Hurd:
        return std::make_unique<HurdTargetInfo<X86_64TargetInfo>>(Triple, Opts);
@@ -39,7 +39,7 @@ index 29133f9ee8fc..9747a4e8b14e 100644
        return std::make_unique<X86_64TargetInfo>(Triple, Opts);
      }
 diff --git a/clang/lib/Basic/Targets/OSTargets.h b/clang/lib/Basic/Targets/OSTargets.h
-index 357c1965057c..257d399b21df 100644
+index 75f53e96ce..5423eb2459 100644
 --- a/clang/lib/Basic/Targets/OSTargets.h
 +++ b/clang/lib/Basic/Targets/OSTargets.h
 @@ -373,6 +373,36 @@ public:
@@ -80,7 +80,7 @@ index 357c1965057c..257d399b21df 100644
  template <typename Target>
  class LLVM_LIBRARY_VISIBILITY NetBSDTargetInfo : public OSTargetInfo<Target> {
 diff --git a/clang/lib/Driver/CMakeLists.txt b/clang/lib/Driver/CMakeLists.txt
-index 32a4378ab499..b31fc7e0c87e 100644
+index 4fd10bf671..67e9d90ae6 100644
 --- a/clang/lib/Driver/CMakeLists.txt
 +++ b/clang/lib/Driver/CMakeLists.txt
 @@ -65,6 +65,7 @@ add_clang_library(clangDriver
@@ -92,7 +92,7 @@ index 32a4378ab499..b31fc7e0c87e 100644
    ToolChains/MinGW.cpp
    ToolChains/MSP430.cpp
 diff --git a/clang/lib/Driver/Driver.cpp b/clang/lib/Driver/Driver.cpp
-index ecae475f75da..bc8b9f18aa71 100644
+index df802450ad..d41f2d8491 100644
 --- a/clang/lib/Driver/Driver.cpp
 +++ b/clang/lib/Driver/Driver.cpp
 @@ -32,6 +32,7 @@
@@ -103,7 +103,7 @@ index ecae475f75da..bc8b9f18aa71 100644
  #include "ToolChains/MinGW.h"
  #include "ToolChains/MipsLinux.h"
  #include "ToolChains/NaCl.h"
-@@ -6401,6 +6402,9 @@ const ToolChain &Driver::getToolChain(const ArgList &Args,
+@@ -6438,6 +6439,9 @@ const ToolChain &Driver::getToolChain(const ArgList &Args,
      case llvm::Triple::Fuchsia:
        TC = std::make_unique<toolchains::Fuchsia>(*this, Target, Args);
        break;
@@ -115,10 +115,10 @@ index ecae475f75da..bc8b9f18aa71 100644
        break;
 diff --git a/clang/lib/Driver/ToolChains/Managarm.cpp b/clang/lib/Driver/ToolChains/Managarm.cpp
 new file mode 100644
-index 000000000000..ade2515ea82d
+index 0000000000..51abd8459f
 --- /dev/null
 +++ b/clang/lib/Driver/ToolChains/Managarm.cpp
-@@ -0,0 +1,232 @@
+@@ -0,0 +1,227 @@
 +//===--- Managarm.h - Managarm ToolChain Implementations --------*- C++ -*-===//
 +//
 +//                     The LLVM Compiler Infrastructure
@@ -130,19 +130,14 @@ index 000000000000..ade2515ea82d
 +
 +#include "Managarm.h"
 +#include "Arch/ARM.h"
-+#include "Arch/Mips.h"
-+#include "Arch/PPC.h"
 +#include "Arch/RISCV.h"
 +#include "CommonArgs.h"
 +#include "clang/Config/config.h"
-+#include "clang/Driver/Distro.h"
 +#include "clang/Driver/Driver.h"
 +#include "clang/Driver/Options.h"
 +#include "clang/Driver/SanitizerArgs.h"
 +#include "llvm/Option/ArgList.h"
-+#include "llvm/ProfileData/InstrProf.h"
 +#include "llvm/Support/Path.h"
-+#include <system_error>
 +
 +using namespace clang::driver;
 +using namespace clang::driver::toolchains;
@@ -162,11 +157,11 @@ index 000000000000..ade2515ea82d
 +
 +  case llvm::Triple::x86_64:
 +    // We don't want this for x32, otherwise it will match x86_64 libs
-+    return "x86_64-managarm";
++    return "x86_64-managarm-" + TargetTriple.getEnvironmentName().str();
 +  case llvm::Triple::aarch64:
-+    return "aarch64-managarm";
++    return "aarch64-managarm-" + TargetTriple.getEnvironmentName().str();
 +  case llvm::Triple::riscv64:
-+    return "riscv64-managarm";
++    return "riscv64-managarm-" + TargetTriple.getEnvironmentName().str();
 +  }
 +  return TargetTriple.str();
 +}
@@ -353,7 +348,7 @@ index 000000000000..ade2515ea82d
 +}
 diff --git a/clang/lib/Driver/ToolChains/Managarm.h b/clang/lib/Driver/ToolChains/Managarm.h
 new file mode 100644
-index 000000000000..2082e2c615f2
+index 0000000000..2082e2c615
 --- /dev/null
 +++ b/clang/lib/Driver/ToolChains/Managarm.h
 @@ -0,0 +1,55 @@
@@ -413,5 +408,5 @@ index 000000000000..2082e2c615f2
 +
 +#endif // LLVM_CLANG_LIB_DRIVER_TOOLCHAINS_MANAGARM_H
 -- 
-2.30.2
+2.47.0
 
