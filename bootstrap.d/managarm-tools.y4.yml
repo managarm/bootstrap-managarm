@@ -72,7 +72,7 @@ tools:
           esac
           . @THIS_BUILD_DIR@/edksetup.sh
           make -C @THIS_BUILD_DIR@/BaseTools
-          build -a $OVMF_ARCH -b RELEASE -p $OVMF_PKG.dsc -t CLANGDWARF
+          build -a $OVMF_ARCH -b DEBUG -p $OVMF_PKG.dsc -t CLANGDWARF
         environ:
           PYTHON_COMMAND: 'python3'
     install:
@@ -81,14 +81,17 @@ tools:
           TRUNCATE_SIZE=""
           case "$ARCH" in
             "x86_64")
-              OVMF_PATH="OvmfX64/RELEASE_CLANGDWARF/FV/OVMF_CODE.fd"
+              OVMF_CODE="OvmfX64/DEBUG_CLANGDWARF/FV/OVMF_CODE.fd"
+              OVMF_VARS="OvmfX64/DEBUG_CLANGDWARF/FV/OVMF_VARS.fd"
               ;;
             "aarch64")
-              OVMF_PATH="ArmVirtQemu-AARCH64/RELEASE_CLANGDWARF/FV/QEMU_EFI.fd"
+              OVMF_CODE="ArmVirtQemu-AARCH64/DEBUG_CLANGDWARF/FV/QEMU_EFI.fd"
+              OVMF_VARS="ArmVirtQemu-AARCH64/DEBUG_CLANGDWARF/FV/QEMU_VARS.fd"
               TRUNCATE_SIZE="64M"
               ;;
             "riscv64")
-              OVMF_PATH="RiscVVirtQemu/RELEASE_CLANGDWARF/FV/RISCV_VIRT_CODE.fd"
+              OVMF_CODE="RiscVVirtQemu/DEBUG_CLANGDWARF/FV/RISCV_VIRT_CODE.fd"
+              OVMF_VARS="RiscVVirtQemu/DEBUG_CLANGDWARF/FV/RISCV_VIRT_VARS.fd"
               TRUNCATE_SIZE="32M"
               ;;
             *)
@@ -96,7 +99,9 @@ tools:
               exit 1
               ;;
           esac
-          cp "@THIS_BUILD_DIR@/Build/$OVMF_PATH" @PREFIX@/OVMF_CODE_@OPTION:arch@.fd
+          cp "@THIS_BUILD_DIR@/Build/$OVMF_CODE" @PREFIX@/OVMF_CODE_@OPTION:arch@.fd
+          cp "@THIS_BUILD_DIR@/Build/$OVMF_VARS" @PREFIX@/OVMF_VARS_@OPTION:arch@.fd
           if [[ ! -z $TRUNCATE_SIZE ]]; then
             truncate -s $TRUNCATE_SIZE @PREFIX@/OVMF_CODE_@OPTION:arch@.fd
+            truncate -s $TRUNCATE_SIZE @PREFIX@/OVMF_VARS_@OPTION:arch@.fd
           fi

@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 
 import argparse
+import json
 import os
 import shlex
+import shutil
 import subprocess
 import string
 import struct
 import sys
+import tempfile
 
 main_parser = argparse.ArgumentParser()
 main_subparsers = main_parser.add_subparsers()
@@ -161,23 +164,63 @@ def do_qemu(args):
         qemu_args += ["-smp", "4"]
 
     if args.virtual_boot:
+        esp_uuid = None
+
+        out = subprocess.check_output(['sfdisk', '-dJ', 'image'], encoding="ascii")
+        for part in json.loads(out)['partitiontable']['partitions']:
+            if part['type'].upper() == "C12A7328-F81F-11D2-BA4B-00A0C93EC93B":
+                esp_uuid = part['uuid'].upper()
+                break
+
+        if not esp_uuid:
+            print(f"error: no EFI System Partition found in image!")
+            sys.exit(1)
+
+        tmp_config = tempfile.NamedTemporaryFile(mode='w+', suffix='.conf')
+        if args.uefi:
+            tmp_config.write(f"""limine:config:
+timeout: 0
+/managarm headless (UEFI)
+    image_path: guid({esp_uuid}):/managarm/eir-uefi
+    protocol: efi_chainload
+    cmdline: bochs init.launch=headless init.command={args.cmd} plainfb.force=1
+""")
+        else:
+            tmp_config.write(f"""limine:config:
+timeout: 0
+/managarm headless
+    kernel_path: guid({esp_uuid}):/managarm/eir-mb2
+    protocol: multiboot2
+    cmdline: bochs init.launch=headless init.command={args.cmd} plainfb.force=1
+    module_path: guid({esp_uuid}):/managarm/initrd.cpio
+""")
+        tmp_config.flush()
+
         qemu_args += [
             "-chardev",
             "file,id=serial,path=serial.out",
             "-serial",
             "chardev:serial",
-            "-kernel",
-            "system-root/usr/managarm/bin/eir-mb1",
-            "-initrd",
-            "system-root/usr/managarm/bin/thor,initrd.cpio",
-            "-append",
-            f"bochs init.launch=headless init.command={args.cmd}",
+            "-smbios",
+            f"type=11,path={tmp_config.name}",
         ]
 
     if args.uefi:
+        # create a temporary OVMF_VARS.fd, as it likes to corrupt them, thus preventing boot, sigh
+        tmp_ovmf_vars = tempfile.NamedTemporaryFile(suffix='.fd')
+        shutil.copyfile(f"tools/ovmf/OVMF_VARS_{args.arch}.fd", tmp_ovmf_vars.name)
+
         qemu_args += ["-drive", f"if=pflash,format=raw,file=tools/ovmf/OVMF_CODE_{args.arch}.fd,readonly=on"]
+        qemu_args += ["-drive", f"if=pflash,format=raw,file={tmp_ovmf_vars.name}"]
         qemu_args += ["-chardev", "file,id=uefi-load-base,path=uefi-load-base.addr"]
         qemu_args += ["-device", "isa-debugcon,iobase=0xCB7,chardev=uefi-load-base"]
+
+    if args.ovmf_logs:
+        if not args.uefi:
+            print("OVMF logs without --uefi is useless")
+            sys.exit(1)
+        qemu_args += ["-chardev", "file,id=ovmf-logs,path=ovmf.log"]
+        qemu_args += ["-device", "isa-debugcon,iobase=0x402,chardev=ovmf-logs"]
 
     # Add USB HCDs.
     qemu_args += [
@@ -372,6 +415,7 @@ qemu_parser.add_argument("--usb-passthrough-pcap", type=str, action='append')
 qemu_parser.add_argument("--usb-redir", type=str, action='append')
 qemu_parser.add_argument("--usb-serial", action='store_true')
 qemu_parser.add_argument("--uefi", action="store_true")
+qemu_parser.add_argument("--ovmf-logs", action="store_true")
 qemu_parser.add_argument("--cmd", type=str)
 qemu_parser.add_argument("--qmp", action="store_true")
 qemu_parser.add_argument("--use-system-qemu", action="store_true")

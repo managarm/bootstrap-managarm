@@ -382,7 +382,6 @@ def generate_plan(arch, root_uuid, scriptdir):
     yield FsAction.INSTALL, "initrd.cpio", "boot/managarm", dict(ignore_sysroot=True)
 
     if arch == "x86_64-managarm":
-        yield FsAction.INSTALL, "usr/managarm/bin/eir-mb1", "boot/managarm"
         yield FsAction.INSTALL, "usr/managarm/bin/eir-mb2", "boot/managarm"
         yield FsAction.INSTALL, "usr/managarm/bin/eir-uefi", "boot/managarm"
         yield FsAction.INSTALL, "usr/managarm/bin/thor", "boot/managarm"
