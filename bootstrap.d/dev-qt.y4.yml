@@ -19,6 +19,7 @@ tools:
   - name: host-qt6
     architecture: noarch
     from_source: qt6
+    revision: 2
     tools_required:
       - host-cmake
       - wayland-scanner
