@@ -190,20 +190,41 @@ class MountAction:
                                        "Update the image_create tool and recreate the image...")
 
         if global_mount_info:
+            valid = True
+
+            # Does the image/device still exist?
             if not os.access(global_mount_info.blockdev, os.F_OK, effective_ids=True):
                 print(
                     "update-image: Mount info exists, but refers to a nonexistent block"
-                    " device, ignoring."
+                    " device"
                 )
+                valid = False
+
+            # Is anything mounted at the mountpoint?
+            findmnt_res = subprocess.run(
+                ["findmnt", global_mount_info.mountpoint],
+                stdout=subprocess.DEVNULL
+            )
+            if findmnt_res.returncode != 0:
+                print(
+                    "update-image: Mount info exists, but the mountpoint has nothing"
+                    " mounted there"
+                )
+                valid = False
+
+            if valid:
+                print(
+                    "update-image: The image appears to already be mounted (mount info"
+                    " exists and seems to make sense)"
+                )
+                return
+            else:
+                print("update-image: Ignoring and removing stale mount info as it's not valid")
                 try:
-                    script_dir = os.path.realpath(os.path.dirname(sys.argv[0]))
-                    os.remove(os.path.join(script_dir, "update-image-mount-info"))
+                    os.remove("update-image-mount-info")
                 except FileNotFoundError:
                     pass
                 global_mount_info = None
-            else:
-                print("update-image: The image appears to already be mounted (mount info exists)")
-                return
 
         if not efi_partition:
             raise RuntimeError("No suitable EFI system partition found")
