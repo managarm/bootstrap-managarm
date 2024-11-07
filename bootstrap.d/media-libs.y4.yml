@@ -1306,6 +1306,7 @@ packages:
       - libglvnd
       - libexpat
       - zstd
+    revision: 2
     configure:
       - args: ['cp', '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file', 'meson.cross-file']
       - args:
