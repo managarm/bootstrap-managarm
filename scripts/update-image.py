@@ -372,6 +372,8 @@ def generate_plan(arch, root_uuid, scriptdir):
         "tmp",
         "home",
         "boot",
+        "boot/EFI",
+        "boot/EFI/BOOT",
         "boot/grub",
         "boot/managarm",
     ]:
@@ -813,9 +815,6 @@ class RemakeImageAction:
 
             # manipulate it using mtools
             dosimg = "{}@@{}".format(self.image, start * 512)
-            # create \EFI\BOOT
-            logged_check_call(["mmd", "-i", dosimg, "EFI"])
-            logged_check_call(["mmd", "-i", dosimg, "EFI/BOOT"])
 
             # ... and populate it, first with directories ...
             for dir in self._boot_dirs:
