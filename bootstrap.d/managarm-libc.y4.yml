@@ -143,7 +143,7 @@ tools:
       - args: ['ninja']
     install:
       - args: ['ninja', 'install']
-  
+
 packages:
   - name: libdrm-headers
     labels: [aarch64, riscv64]
@@ -241,6 +241,7 @@ packages:
       - args: ['ln', '-sf', 'crt0.o', '@THIS_COLLECT_DIR@/usr/lib/crt1.o']
 
   - name: mlibc-docs
+    stability_level: 'broken' # host-hdoc is broken
     labels: [aarch64]
     architecture: '@OPTION:arch@'
     from_source: mlibc
