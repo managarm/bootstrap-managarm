@@ -10,6 +10,7 @@ import string
 import struct
 import sys
 import tempfile
+import yaml
 
 main_parser = argparse.ArgumentParser()
 main_subparsers = main_parser.add_subparsers()
@@ -81,6 +82,50 @@ def qemu_process_usb_passthrough(device, pcap):
         devstr += f",pcap={device}.pcap"
 
     return ["-device", devstr]
+
+qemu_pci_bridges = 0
+
+def qemu_parse_device_spec(yml):
+    args = []
+
+    def parse_device(yml, *, bus_id=None, device_id=None):
+        global qemu_pci_bridges
+
+        args = []
+        devtype = yml.get('type', 'device')
+
+        print(f"Constructing '{yml['name']}' of type '{devtype}'")
+
+        if devtype == 'pci-bridge':
+            qemu_pci_bridges += 1
+            args += ['-device', f'pci-bridge,id={yml['name']},chassis_nr={qemu_pci_bridges}']
+
+            for i, device in enumerate(yml.get('devices', [])):
+                args += parse_device(device, bus_id=yml['name'], device_id=i)
+        elif devtype == 'pci-multifunction-device':
+            multifunction_property_set = False
+
+            for i, func in enumerate(yml.get('functions', [])):
+                properties = f'vfio-pci,host={func['host']}'
+                if bus_id:
+                    properties += f',bus={bus_id}'
+                if i == 0:
+                    properties += ',multifunction=on'
+                assert device_id is not None
+                properties += f',addr={device_id:02x}.{i}'
+                args += ['-device', properties]
+        elif devtype == 'pci-device':
+            args += ['-device', f'vfio-pci,host={yml['host']},id={yml['name']}']
+        else:
+            print(f"error: unsupported device-spec device kind {devtype}")
+            sys.exit(1)
+
+        return args
+
+    for device in yml:
+        args += parse_device(device)
+
+    return args
 
 def do_qemu(args):
     qemu = os.environ.get("QEMU")
@@ -280,6 +325,10 @@ timeout: 0
     elif args.nic == "none":
         qemu_args += ["-net", "none"]
 
+    if args.device_spec:
+        spec = yaml.load(args.device_spec, Loader=yaml.SafeLoader)
+        qemu_args += qemu_parse_device_spec(spec)
+
     if args.pci_passthrough:
         qemu_args += ["-device", f"vfio-pci,host={args.pci_passthrough}"]
 
@@ -409,6 +458,7 @@ qemu_parser.add_argument("--gfx", choices=["bga", "virtio", "vmware"], default="
 qemu_parser.add_argument("--ps2", action="store_true")
 qemu_parser.add_argument("--mouse", action="store_true")
 qemu_parser.add_argument("--init-launch", type=str, default="weston")
+qemu_parser.add_argument("--device-spec", type=argparse.FileType('r'))
 qemu_parser.add_argument("--pci-passthrough", type=str)
 qemu_parser.add_argument("--usb-passthrough", type=str, action='append')
 qemu_parser.add_argument("--usb-passthrough-pcap", type=str, action='append')
