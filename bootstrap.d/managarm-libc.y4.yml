@@ -54,6 +54,7 @@ tools:
       - args: ['cp', '@THIS_BUILD_DIR@/xxd', '@PREFIX@/bin/']
 
   - name: host-hdoc
+    stability_level: 'broken' # host-hdoc is broken
     labels: [aarch64]
     architecture: '@OPTION:arch@'
     source:
