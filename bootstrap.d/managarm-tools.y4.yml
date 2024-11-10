@@ -22,6 +22,8 @@ tools:
       subdir: ports
       git: 'https://github.com/tianocore/edk2.git'
       tag: 'edk2-stable202408'
+      version: '2024.08'
+      patch_keep_crlf: true
       # don't judge, submodules are borked so we gotta do it manually
       # which is why we need to run this in regenerate instead of checkout
       regenerate:
@@ -45,7 +47,7 @@ tools:
       - host-llvm-toolchain
       - host-python
       - host-iasl
-    revision: 2
+    revision: 1
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     compile:
