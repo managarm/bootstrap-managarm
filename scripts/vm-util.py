@@ -468,7 +468,7 @@ def do_gdb(args):
                 sections[name] = section.VirtualAddress + image_base
 
         sections_str = " -s ".join(" ".join((f"\"{name}\"", f"{address:#x}")) for name, address in sections.items() if name != ".text")
-        pe_symbols = f"add-symbol-file {eir_path} {sections[".text"]:#x} -s {sections_str}"
+        pe_symbols = f"add-symbol-file {eir_path} {sections['.text']:#x} -s {sections_str}"
 
         gdb_args += [
             "-ex", "target remote tcp:" + args.ip + ":1234",
