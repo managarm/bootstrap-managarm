@@ -490,13 +490,16 @@ def do_gdb(args):
             print("error: please install the 'pefile' python module")
             sys.exit(1)
 
-        with open("uefi-load-base.addr", mode="rb") as f:
-            f.seek(0, os.SEEK_END)
-            if f.tell() < 8:
-                print("error: no UEFI image base address found")
-                sys.exit(1)
-            f.seek(-8, os.SEEK_END)
-            image_base = struct.unpack("P", f.read())[0]
+        if args.uefi_base:
+            image_base = int(args.uefi_base, 16)
+        else:
+            with open("uefi-load-base.addr", mode="rb") as f:
+                f.seek(0, os.SEEK_END)
+                if f.tell() < 8:
+                    print("error: no UEFI image base address found")
+                    sys.exit(1)
+                f.seek(-8, os.SEEK_END)
+                image_base = struct.unpack("P", f.read())[0]
 
         eir_path = "pkg-builds/managarm-kernel-uefi/kernel/eir/protos/uefi/eir-uefi"
         with open(eir_path, "rb") as f:
@@ -545,6 +548,7 @@ def do_gdb(args):
 gdb_parser = main_subparsers.add_parser("gdb")
 gdb_parser.set_defaults(_fn=do_gdb)
 gdb_parser.add_argument("--ip", type=str, default="localhost")
+gdb_parser.add_argument("--uefi-base", type=str)
 
 gdb_group = gdb_parser.add_mutually_exclusive_group(required=True)
 gdb_group.add_argument("--qemu", action="store_true")
