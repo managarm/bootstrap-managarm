@@ -13,6 +13,7 @@ tasks:
 
   - name: update-initrd
     pkgs_required:
+      - gcc
       - managarm-kernel
       - managarm-system
     tasks_required:
@@ -56,10 +57,11 @@ tasks:
 
   - name: make-image
     pkgs_required:
+      - core-files
       - limine
       - managarm-kernel
       - !managarm::arch_dep
-        arch: [x86_46]
+        arch: [x86_64]
         item: managarm-kernel-uefi
       - managarm-system
     tools_required:
@@ -78,10 +80,11 @@ tasks:
 
   - name: remake-image
     pkgs_required:
+      - core-files
       - limine
       - managarm-kernel
       - !managarm::arch_dep
-        arch: [x86_46]
+        arch: [x86_64]
         item: managarm-kernel-uefi
       - managarm-system
     tools_required:
