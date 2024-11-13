@@ -406,6 +406,7 @@ def generate_plan(arch, root_uuid, scriptdir):
 
     if arch == "x86_64-managarm":
         yield FsAction.INSTALL, "usr/managarm/bin/eir-mb2", "boot/managarm"
+        yield FsAction.INSTALL, "usr/managarm/bin/eir-limine", "boot/managarm"
         yield FsAction.INSTALL, "usr/managarm/bin/eir-uefi", "boot/managarm"
         yield FsAction.CP_SED, os.path.join(scriptdir, "grub.cfg"), \
             "boot/grub/", "@ROOT_UUID@", root_uuid
