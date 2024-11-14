@@ -257,8 +257,9 @@ timeout: 0
 
         qemu_args += ["-drive", f"if=pflash,format=raw,file=tools/ovmf/OVMF_CODE_{args.arch}.fd,readonly=on"]
         qemu_args += ["-drive", f"if=pflash,format=raw,file={tmp_ovmf_vars.name}"]
-        qemu_args += ["-chardev", "file,id=uefi-load-base,path=uefi-load-base.addr"]
-        qemu_args += ["-device", "isa-debugcon,iobase=0xCB7,chardev=uefi-load-base"]
+        if args.arch == "x86_64":
+            qemu_args += ["-chardev", "file,id=uefi-load-base,path=uefi-load-base.addr"]
+            qemu_args += ["-device", "isa-debugcon,iobase=0xCB7,chardev=uefi-load-base"]
 
     if args.ovmf_logs:
         if not args.uefi:
