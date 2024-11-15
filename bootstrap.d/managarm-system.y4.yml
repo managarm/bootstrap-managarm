@@ -147,6 +147,9 @@ packages:
       - host-llvm-toolchain
       - host-managarm-tools
       - host-pkg-config
+      - !managarm::arch_dep
+        arch: [riscv64]
+        item: ovmf
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
     pkgs_required:
