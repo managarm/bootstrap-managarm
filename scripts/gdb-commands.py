@@ -85,5 +85,38 @@ class LoadPE(gdb.Command):
 
 		gdb.execute(pe_symbols)
 
+class EfiGuidPrinter:
+	_table = {
+		'5B1B31A1-9562-11D2-8E3F-00A0C969723B': 'EFI_LOADED_IMAGE_PROTOCOL_GUID',
+		'8868E871-E4F1-11D3-BC22-0080C73C8881': 'EFI_ACPI_20_TABLE_GUID',
+		'9042A9DE-23DC-4A38-96FB-7ADED080516A': 'EFI_GRAPHICS_OUTPUT_PROTOCOL_GUID',
+		'964E5B22-6459-11D2-8E39-00A0C969723B': 'EFI_SIMPLE_FILE_SYSTEM_PROTOCOL_GUID',
+		'B1B621D5-F19C-41A5-830B-D9152C69AAE0': 'EFI_DTB_TABLE_GUID',
+	}
+
+	def __init__(self, val):
+		self.val = val
+
+	def to_string(self):
+		Data1 = int(self.val['data1'])
+		Data2 = int(self.val['data2'])
+		Data3 = int(self.val['data3'])
+		Data4 = self.val['data4']
+		guid = f'{Data1:08X}-{Data2:04X}-'
+		guid += f'{Data3:04X}-'
+		guid += f'{int(Data4[0]):02X}{int(Data4[1]):02X}-'
+		guid += f'{int(Data4[2]):02X}{int(Data4[3]):02X}'
+		guid += f'{int(Data4[4]):02X}{int(Data4[5]):02X}'
+		guid += f'{int(Data4[6]):02X}{int(Data4[7]):02X}'
+
+		return self._table.get(guid, guid)
+
+def lookup_type(val):
+	if str(val.type) == 'efi_guid':
+		return EfiGuidPrinter(val)
+	return None
+
+gdb.pretty_printers.append(lookup_type)
+
 FindUefiMain()
 LoadPE()
