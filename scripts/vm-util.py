@@ -481,6 +481,7 @@ def do_gdb(args):
 
     src_path = os.path.dirname(os.path.realpath("bootstrap.link"))
     with open('.gdbinit', 'w+') as f:
+        f.write(f"source {src_path}/scripts/gdb-commands.py\n")
         f.write(f"set substitute-path ../../../src {src_path}\n")
         f.write(f"set substitute-path /var/lib/managarm-buildenv/build/ ./\n")
         f.write(f"set sysroot system-root\n")
@@ -509,34 +510,16 @@ def do_gdb(args):
                 f.seek(-8, os.SEEK_END)
                 image_base = struct.unpack("P", f.read())[0]
 
-        eir_path = "pkg-builds/managarm-kernel-uefi/kernel/eir/protos/uefi/eir-uefi"
-        with open(eir_path, "rb") as f:
-            data = f.read()
-        pe = pefile.PE(data=data)
-        sections = {}
+        eir_path_pe = "pkg-builds/managarm-kernel-uefi/kernel/eir/protos/uefi/eir-uefi"
+        eir_path_debug = "pkg-builds/managarm-kernel-uefi/kernel/eir/protos/uefi/eir-uefi-elf"
 
-        st_offset = pe.FILE_HEADER.PointerToSymbolTable + (pe.FILE_HEADER.NumberOfSymbols * 18)
-
-        for section in pe.sections:
-            name = section.Name.strip(b"\x00").decode("utf-8")
-
-            if name.startswith("/"):
-                offset = int(name[1:])
-                new_name = pe.get_string_from_data(st_offset + offset, data).decode("ascii")
-                name = new_name
-
-            if name.startswith("."):
-                sections[name] = section.VirtualAddress + image_base
-
-        sections_str = " -s ".join(" ".join((f"\"{name}\"", f"{address:#x}")) for name, address in sections.items() if name != ".text")
-        pe_symbols = f"add-symbol-file {eir_path} {sections['.text']:#x} -s {sections_str}"
+        if not os.access(eir_path_debug, os.R_OK):
+            eir_path_debug = eir_path_pe
 
         gdb_args += [
+            "-ex", f"loadpe {image_base:#x} {eir_path_pe} {eir_path_debug}",
             "-ex", "target remote tcp:" + args.ip + ":1234",
-            "-ex", "set confirm off",
-            "-ex", pe_symbols,
-            "-ex", "set confirm on",
-            "-ex", "set eir_gdb_ready=1"
+            "-ex", "find-uefi-main"
         ]
     elif args.kernel:
         gdb_args += ["-ex", "target remote tcp:" + args.ip + ":5678"]
