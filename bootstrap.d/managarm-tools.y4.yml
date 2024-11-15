@@ -47,7 +47,7 @@ tools:
       - host-llvm-toolchain
       - host-python
       - host-iasl
-    revision: 1
+    revision: 2
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     compile:
@@ -107,3 +107,5 @@ tools:
             truncate -s $TRUNCATE_SIZE @PREFIX@/OVMF_CODE_@OPTION:arch@.fd
             truncate -s $TRUNCATE_SIZE @PREFIX@/OVMF_VARS_@OPTION:arch@.fd
           fi
+          mkdir @PREFIX@/bin
+          cp "@THIS_BUILD_DIR@/BaseTools/Source/C/bin/GenFw" "@PREFIX@/bin/"
