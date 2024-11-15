@@ -478,6 +478,13 @@ qemu_parser.add_argument("--use-system-qemu", action="store_true")
 
 def do_gdb(args):
     gdb_args = ["gdb"]
+
+    src_path = os.path.dirname(os.path.realpath("bootstrap.link"))
+    with open('.gdbinit', 'w+') as f:
+        f.write(f"set substitute-path ../../../src {src_path}\n")
+        f.write(f"set substitute-path /var/lib/managarm-buildenv/build/ ./\n")
+        f.write(f"set sysroot system-root\n")
+
     if args.qemu:
         gdb_args += [
             "--symbols=pkg-builds/managarm-kernel/kernel/thor/thor",
@@ -527,7 +534,6 @@ def do_gdb(args):
         gdb_args += [
             "-ex", "target remote tcp:" + args.ip + ":1234",
             "-ex", "set confirm off",
-            "-ex", "set substitute-path ../../../src ../src",
             "-ex", pe_symbols,
             "-ex", "set confirm on",
             "-ex", "set eir_gdb_ready=1"
@@ -537,8 +543,6 @@ def do_gdb(args):
     else:
         assert args.posix
         gdb_args += [
-            "-ex",
-            "set sysroot system-root",
             "-ex",
             "target remote tcp:" + args.ip + ":5679",
         ]
