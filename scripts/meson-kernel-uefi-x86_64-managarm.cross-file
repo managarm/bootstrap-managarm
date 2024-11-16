@@ -7,12 +7,15 @@ pkgconfig = 'x86_64-managarm-pkg-config'
 strip = 'true'
 
 [built-in options]
-c_args = ['-target', 'x86_64-unknown-windows', '-ffreestanding', '-fno-stack-protector', '-fshort-wchar', '-mno-red-zone', '-mno-mmx', '-mno-sse', '-gdwarf']
+c_args = ['-target', 'x86_64-unknown-windows', '-mno-red-zone', '-mno-mmx', '-mno-sse']
 cpp_args = c_args
-cpp_link_args = ['-target', 'x86_64-unknown-windows', '-nostdlib', '-Wl,-entry:eirUefiMain', '-Wl,-subsystem:efi_application', '-gdwarf', '-Wl,-lld-allow-duplicate-weak']
+cpp_link_args = ['-target', 'x86_64-unknown-windows']
 
 [host_machine]
 system = 'uefi'
 cpu_family = 'x86_64'
 cpu = 'x86_64'
 endian = 'little'
+
+[properties]
+native_pe_toolchain = true

@@ -129,6 +129,8 @@ packages:
       - 'run-clang-tidy'
       - '-config-file'
       - '@SOURCE_ROOT@/managarm/.clang-tidy'
+      # suppress clang's "x warnings generated" spam
+      - '-extra-arg=-fno-caret-diagnostics'
       - '-quiet'
       - '\.(h|c|cpp|hpp)$'
 
@@ -147,6 +149,9 @@ packages:
       - host-llvm-toolchain
       - host-managarm-tools
       - host-pkg-config
+      - !managarm::arch_dep
+        arch: [riscv64]
+        item: ovmf
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
     pkgs_required:
@@ -173,6 +178,16 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+    tasks:
+    - name: clang-tidy
+      args:
+      - 'run-clang-tidy'
+      - '-config-file'
+      - '@SOURCE_ROOT@/managarm/.clang-tidy'
+      # suppress clang's "x warnings generated" spam
+      - '-extra-arg=-fno-caret-diagnostics'
+      - '-quiet'
+      - '\.(h|c|cpp|hpp)$'
 
   - name: managarm-system
     metadata:
