@@ -395,7 +395,7 @@ packages:
         quiet: true
 
   - name: gcc
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     from_source: gcc
     tools_required:

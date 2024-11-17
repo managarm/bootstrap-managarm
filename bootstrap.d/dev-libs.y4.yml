@@ -491,7 +491,7 @@ packages:
           - args: ['gio-querymodules /usr/lib/gio/modules']
 
   - name: gmp
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: Library for arbitrary-precision arithmetic on different type of numbers
@@ -1653,7 +1653,7 @@ packages:
         quiet: true
 
   - name: mpc
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: A library for multiprecision complex arithmetic with exact rounding
@@ -1695,7 +1695,7 @@ packages:
         quiet: true
 
   - name: mpfr
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: Library for multiple-precision floating-point computations with exact rounding
