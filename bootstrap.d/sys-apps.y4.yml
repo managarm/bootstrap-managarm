@@ -1288,12 +1288,11 @@ packages:
         - host-pkg-config
       regenerate:
         - args: ['./autogen.sh']
-        - args: ['cp', '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub', '@THIS_SOURCE_DIR@/']
     tools_required:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
