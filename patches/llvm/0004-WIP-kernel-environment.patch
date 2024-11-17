@@ -1,7 +1,7 @@
-From 5f2b6a823fc5cc8c9e6323ec234925adc1abd749 Mon Sep 17 00:00:00 2001
+From 5045e500406b216f3a77d4b410c0d31117f63e0c Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Tue, 5 Nov 2024 01:44:16 +0100
-Subject: [PATCH 4/5] WIP: kernel environment
+Subject: [PATCH 4/4] WIP: kernel environment
 
 ---
  llvm/include/llvm/TargetParser/Triple.h | 1 +
@@ -9,7 +9,7 @@ Subject: [PATCH 4/5] WIP: kernel environment
  2 files changed, 3 insertions(+)
 
 diff --git a/llvm/include/llvm/TargetParser/Triple.h b/llvm/include/llvm/TargetParser/Triple.h
-index 818c3a9b5b..aba538520a 100644
+index 3ff75723b3..82824b9eee 100644
 --- a/llvm/include/llvm/TargetParser/Triple.h
 +++ b/llvm/include/llvm/TargetParser/Triple.h
 @@ -299,6 +299,7 @@ public:

@@ -1,7 +1,7 @@
-From 58495a0e8e4d9fa54a1650578b1293eeae54c1b7 Mon Sep 17 00:00:00 2001
+From 3faf84c1dfb842b6005bb276ede5e2cc6a96883b Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Tue, 5 Nov 2024 01:43:57 +0100
-Subject: [PATCH 3/5] [clang] Add managarm tests
+Subject: [PATCH 3/4] [clang] Add managarm tests
 
 ---
  .../lib/aarch64-managarm-mlibc/.keep          |   0
