@@ -1,7 +1,7 @@
-From b595a6ed1c04effeb0bc17e2ca96144e75d45b4d Mon Sep 17 00:00:00 2001
+From 64877c4be998e2a159462154d027bd417cf502f3 Mon Sep 17 00:00:00 2001
 From: Andreas Hampicke <ahampicke@gmail.com>
 Date: Wed, 3 Jan 2018 21:03:42 +0100
-Subject: [PATCH 1/3] eudev: managarm specific changes
+Subject: [PATCH 1/4] eudev: managarm specific changes
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
@@ -15,19 +15,19 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
  7 files changed, 10 insertions(+), 15 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index 0c0f795..8f56301 100644
+index 85a524a..ffe800e 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -49,7 +49,7 @@ AC_CHECK_HEADERS(
+@@ -48,7 +48,7 @@ AC_CHECK_HEADERS(
  AC_CHECK_HEADERS(
-         [mtd/mtd-user.h],
-         [],
--        [AC_MSG_ERROR([*** KERNEL header not found])]
-+        [AC_MSG_WARN([*** KERNEL header not found])]
+ 	[mtd/mtd-user.h],
+ 	[],
+-	[AC_MSG_ERROR([*** KERNEL header not found])]
++	[AC_MSG_WARN([*** KERNEL header not found])]
  )
  
  AC_CHECK_HEADERS(
-@@ -66,7 +66,7 @@ AC_TYPE_PID_T
+@@ -65,7 +65,7 @@ AC_TYPE_PID_T
  AC_CHECK_MEMBERS([struct stat.st_rdev])
  AC_CHECK_DECLS([getrandom, gettid, name_to_handle_at, accept4, mkostemp, ppoll, strndupa], [], [],
  [[#include <fcntl.h>
@@ -37,16 +37,16 @@ index 0c0f795..8f56301 100644
  #include <signal.h>
  #include <stdlib.h>
 @@ -241,7 +241,7 @@ AC_CHECK_DECL([unshare],
-         [AC_DEFINE(HAVE_UNSHARE, 1, [Define if unshare is declared])],
-         [AC_CHECK_DECL([SYS_unshare],
-                 [ ] ,
--                [AC_MSG_ERROR([*** unshare nor SYS_unshare found.])],
-+                [AC_MSG_WARN([*** unshare nor SYS_unshare found.])],
-                 [#include <syscall.h>])],
-         [#include <sched.h>])
+ 	[AC_DEFINE(HAVE_UNSHARE, 1, [Define if unshare is declared])],
+ 	[AC_CHECK_DECL([SYS_unshare],
+ 		[ ] ,
+-		[AC_MSG_ERROR([*** unshare nor SYS_unshare found.])],
++		[AC_MSG_WARN([*** unshare nor SYS_unshare found.])],
+ 		[#include <syscall.h>])],
+ 	[#include <sched.h>])
  
 diff --git a/src/shared/missing.h b/src/shared/missing.h
-index 3a83c91..ac98eb8 100644
+index 1967840..1a0ce90 100644
 --- a/src/shared/missing.h
 +++ b/src/shared/missing.h
 @@ -22,11 +22,14 @@
@@ -114,7 +114,7 @@ index 04c871a..a9df1cf 100644
  #include "terminal-util.h"
  #include "time-util.h"
 diff --git a/src/shared/util.c b/src/shared/util.c
-index 0779476..685130c 100644
+index 64598c1..fc9023d 100644
 --- a/src/shared/util.c
 +++ b/src/shared/util.c
 @@ -36,11 +36,9 @@
@@ -139,7 +139,7 @@ index 0779476..685130c 100644
  
          pgsz = (size_t) r;
 diff --git a/src/shared/util.h b/src/shared/util.h
-index 5c1dc48..daf1421 100644
+index 43feec4..3fb7a5e 100644
 --- a/src/shared/util.h
 +++ b/src/shared/util.h
 @@ -20,6 +20,7 @@
@@ -151,5 +151,5 @@ index 5c1dc48..daf1421 100644
  #include <time.h>
  #include <stdlib.h>
 -- 
-2.36.0
+2.47.0
 

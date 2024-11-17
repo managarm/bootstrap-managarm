@@ -1274,7 +1274,7 @@ packages:
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/kmscon.conf', '@THIS_COLLECT_DIR@/etc/kmscon/']
 
   - name: eudev
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
@@ -1288,11 +1288,12 @@ packages:
         - host-pkg-config
       regenerate:
         - args: ['./autogen.sh']
+        - args: ['cp', '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub', '@THIS_SOURCE_DIR@/']
     tools_required:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 11
+    revision: 12
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
