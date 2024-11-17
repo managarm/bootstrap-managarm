@@ -1076,7 +1076,8 @@ packages:
       - libiconv
       - file
       - libxcrypt
-    revision: 12
+      - pcre2
+    revision: 13
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
