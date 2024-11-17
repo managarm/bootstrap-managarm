@@ -25,7 +25,7 @@ sources:
 tools:
   - name: host-limine
     architecture: '@OPTION:arch@'
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     from_source: limine
     tools_required:
       - host-llvm-toolchain
@@ -36,6 +36,7 @@ tools:
         - '--enable-uefi-ia32'
         - '--enable-uefi-x86-64'
         - '--enable-uefi-aarch64'
+        - '--enable-uefi-riscv64'
         - '--enable-uefi-cd'
         - '--enable-bios'
         - '--enable-bios-cd'
@@ -50,7 +51,7 @@ tools:
 
 packages:
   - name: limine
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     from_source: limine
     tools_required:
@@ -86,6 +87,10 @@ packages:
         - !managarm::arch_dep
           arch: [aarch64]
           item: '--enable-uefi-aarch64'
+        # riscv64 flags
+        - !managarm::arch_dep
+          arch: [riscv64]
+          item: '--enable-uefi-riscv64'
         - 'TOOLCHAIN_FOR_TARGET=@OPTION:arch-triple@'
     build:
       - args: ['make', '-j@PARALLELISM@']
