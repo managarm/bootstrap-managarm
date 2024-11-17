@@ -1,21 +1,22 @@
-From d501a9af0261875c1f702aaf2e1f04356076f2a3 Mon Sep 17 00:00:00 2001
+From 80bd6cc08d6ff8806e293d97f6c723081ec481fc Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Fri, 6 Sep 2024 21:18:39 +0200
-Subject: [PATCH 2/5] [clang] Add managarm OS target
+Subject: [PATCH 2/4] [clang] Add managarm OS target
 
 ---
- clang/lib/Basic/Targets.cpp              |   6 +
+ clang/lib/Basic/Targets.cpp              |   9 +
  clang/lib/Basic/Targets/OSTargets.h      |  30 +++
  clang/lib/Driver/CMakeLists.txt          |   1 +
  clang/lib/Driver/Driver.cpp              |   4 +
+ clang/lib/Driver/ToolChains/Gnu.cpp      |   2 +
  clang/lib/Driver/ToolChains/Managarm.cpp | 227 +++++++++++++++++++++++
  clang/lib/Driver/ToolChains/Managarm.h   |  55 ++++++
- 6 files changed, 323 insertions(+)
+ 7 files changed, 328 insertions(+)
  create mode 100644 clang/lib/Driver/ToolChains/Managarm.cpp
  create mode 100644 clang/lib/Driver/ToolChains/Managarm.h
 
 diff --git a/clang/lib/Basic/Targets.cpp b/clang/lib/Basic/Targets.cpp
-index 0021d33c45..18b06085dd 100644
+index 0021d33c45..b2be3803b2 100644
 --- a/clang/lib/Basic/Targets.cpp
 +++ b/clang/lib/Basic/Targets.cpp
 @@ -159,6 +159,9 @@ std::unique_ptr<TargetInfo> AllocateTarget(const llvm::Triple &Triple,
@@ -28,7 +29,17 @@ index 0021d33c45..18b06085dd 100644
      case llvm::Triple::NetBSD:
        return std::make_unique<NetBSDTargetInfo<AArch64leTargetInfo>>(Triple,
                                                                       Opts);
-@@ -637,6 +640,9 @@ std::unique_ptr<TargetInfo> AllocateTarget(const llvm::Triple &Triple,
+@@ -451,6 +454,9 @@ std::unique_ptr<TargetInfo> AllocateTarget(const llvm::Triple &Triple,
+         return std::make_unique<OHOSTargetInfo<RISCV64TargetInfo>>(Triple,
+                                                                    Opts);
+       }
++    case llvm::Triple::Managarm:
++      return std::make_unique<ManagarmTargetInfo<RISCV64TargetInfo>>(Triple,
++                                                                     Opts);
+     default:
+       return std::make_unique<RISCV64TargetInfo>(Triple, Opts);
+     }
+@@ -637,6 +643,9 @@ std::unique_ptr<TargetInfo> AllocateTarget(const llvm::Triple &Triple,
        return std::make_unique<PS5OSTargetInfo<X86_64TargetInfo>>(Triple, Opts);
      case llvm::Triple::Hurd:
        return std::make_unique<HurdTargetInfo<X86_64TargetInfo>>(Triple, Opts);
@@ -92,7 +103,7 @@ index 4fd10bf671..67e9d90ae6 100644
    ToolChains/MinGW.cpp
    ToolChains/MSP430.cpp
 diff --git a/clang/lib/Driver/Driver.cpp b/clang/lib/Driver/Driver.cpp
-index df802450ad..d41f2d8491 100644
+index 93e85f7dff..f9261b412e 100644
 --- a/clang/lib/Driver/Driver.cpp
 +++ b/clang/lib/Driver/Driver.cpp
 @@ -32,6 +32,7 @@
@@ -103,7 +114,7 @@ index df802450ad..d41f2d8491 100644
  #include "ToolChains/MinGW.h"
  #include "ToolChains/MipsLinux.h"
  #include "ToolChains/NaCl.h"
-@@ -6438,6 +6439,9 @@ const ToolChain &Driver::getToolChain(const ArgList &Args,
+@@ -6437,6 +6438,9 @@ const ToolChain &Driver::getToolChain(const ArgList &Args,
      case llvm::Triple::Fuchsia:
        TC = std::make_unique<toolchains::Fuchsia>(*this, Target, Args);
        break;
@@ -113,6 +124,19 @@ index df802450ad..d41f2d8491 100644
      case llvm::Triple::Solaris:
        TC = std::make_unique<toolchains::Solaris>(*this, Target, Args);
        break;
+diff --git a/clang/lib/Driver/ToolChains/Gnu.cpp b/clang/lib/Driver/ToolChains/Gnu.cpp
+index 8397f1121e..53b326f6e7 100644
+--- a/clang/lib/Driver/ToolChains/Gnu.cpp
++++ b/clang/lib/Driver/ToolChains/Gnu.cpp
+@@ -228,6 +228,8 @@ static const char *getLDMOption(const llvm::Triple &T, const ArgList &Args) {
+       return "elf_iamcu";
+     return "elf_i386";
+   case llvm::Triple::aarch64:
++    if (T.isOSManagarm())
++      return "aarch64managarm";
+     return "aarch64linux";
+   case llvm::Triple::aarch64_be:
+     return "aarch64linuxb";
 diff --git a/clang/lib/Driver/ToolChains/Managarm.cpp b/clang/lib/Driver/ToolChains/Managarm.cpp
 new file mode 100644
 index 0000000000..51abd8459f

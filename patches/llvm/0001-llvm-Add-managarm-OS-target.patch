@@ -1,15 +1,15 @@
-From 4abf6abfcd5711de7fc24af4f08f259798996440 Mon Sep 17 00:00:00 2001
+From 9d681fdec1f5f86244dd0ba429f35805e1ddde61 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Fri, 6 Sep 2024 21:17:53 +0200
-Subject: [PATCH 1/5] [llvm] Add managarm OS target
+Subject: [PATCH 1/4] [llvm] Add managarm OS target
 
 ---
  llvm/include/llvm/ADT/bit.h                |  2 +-
- llvm/include/llvm/TargetParser/Triple.h    |  2 ++
+ llvm/include/llvm/TargetParser/Triple.h    |  6 ++++++
  llvm/lib/Support/Unix/Path.inc             | 13 ++++++++-----
  llvm/lib/TargetParser/Triple.cpp           |  4 ++++
  llvm/unittests/TargetParser/TripleTest.cpp | 18 ++++++++++++++++++
- 5 files changed, 33 insertions(+), 6 deletions(-)
+ 5 files changed, 37 insertions(+), 6 deletions(-)
 
 diff --git a/llvm/include/llvm/ADT/bit.h b/llvm/include/llvm/ADT/bit.h
 index c42b5e686b..7a36ef2eb5 100644
@@ -25,7 +25,7 @@ index c42b5e686b..7a36ef2eb5 100644
  #elif defined(_AIX)
  #include <sys/machine.h>
 diff --git a/llvm/include/llvm/TargetParser/Triple.h b/llvm/include/llvm/TargetParser/Triple.h
-index 779bd9017d..818c3a9b5b 100644
+index 779bd9017d..3ff75723b3 100644
 --- a/llvm/include/llvm/TargetParser/Triple.h
 +++ b/llvm/include/llvm/TargetParser/Triple.h
 @@ -207,6 +207,7 @@ public:
@@ -44,6 +44,17 @@ index 779bd9017d..818c3a9b5b 100644
  
      PAuthTest,
  
+@@ -821,6 +823,10 @@ public:
+ 
+   bool isVulkanOS() const { return getOS() == Triple::Vulkan; }
+ 
++  bool isOSManagarm() const {
++    return getOS() == Triple::Managarm;
++  }
++
+   bool isShaderStageEnvironment() const {
+     EnvironmentType Env = getEnvironment();
+     return Env == Triple::Pixel || Env == Triple::Vertex ||
 diff --git a/llvm/lib/Support/Unix/Path.inc b/llvm/lib/Support/Unix/Path.inc
 index 44097bad7b..f7e5d8748b 100644
 --- a/llvm/lib/Support/Unix/Path.inc
