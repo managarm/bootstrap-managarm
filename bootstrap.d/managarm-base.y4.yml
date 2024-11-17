@@ -1,6 +1,6 @@
 packages:
   - name: core-files
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: noarch
     metadata:
       summary: Managarm base filesystem layout
