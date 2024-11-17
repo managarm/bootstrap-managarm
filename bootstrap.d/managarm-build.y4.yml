@@ -71,13 +71,16 @@ tools:
       git: 'https://git.savannah.gnu.org/git/automake.git'
       tag: 'v1.11.6'
       version: '1.11.6'
+      sources_required: ['gnuconfig']
       tools_required:
         - host-autoconf-v2.69
       regenerate:
+        - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.sub', '@THIS_SOURCE_DIR@/lib/']
+        - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.guess', '@THIS_SOURCE_DIR@/lib/']
         - args: ['./bootstrap']
     tools_required:
       - host-autoconf-v2.69
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -113,13 +116,16 @@ tools:
       git: 'https://git.savannah.gnu.org/git/automake.git'
       tag: 'v1.15.1'
       version: '1.15.1'
+      sources_required: ['gnuconfig']
       tools_required:
         - host-autoconf-v2.69
       regenerate:
+        - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.sub', '@THIS_SOURCE_DIR@/lib/']
+        - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.guess', '@THIS_SOURCE_DIR@/lib/']
         - args: ['./bootstrap']
     tools_required:
       - host-autoconf-v2.69
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -141,12 +147,16 @@ tools:
       git: 'https://git.savannah.gnu.org/git/automake.git'
       tag: 'v1.16.5'
       version: '1.16.5'
+      sources_required: ['gnuconfig']
       tools_required:
        - host-autoconf-v2.71
       regenerate:
+       - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.sub', '@THIS_SOURCE_DIR@/lib/']
+       - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.guess', '@THIS_SOURCE_DIR@/lib/']
        - args: ['./bootstrap']
     tools_required:
       - host-autoconf-v2.71
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
