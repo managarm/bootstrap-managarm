@@ -204,7 +204,7 @@ packages:
       website: 'https://managarm.org'
       maintainer: "Alexander van der Grinten <avdgrinten@managarm.org>"
       categories: ['sys-libs']
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     from_source: mlibc
     tools_required:

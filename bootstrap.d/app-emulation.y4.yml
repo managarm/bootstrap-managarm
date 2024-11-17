@@ -7,7 +7,7 @@ sources:
 
 tools:
   - name: host-qemu
-    labels: [not-on-xbbs]
+    labels: [aarch64,  riscv64, not-on-xbbs]
     architecture: noarch
     containerless: true
     from_source: qemu

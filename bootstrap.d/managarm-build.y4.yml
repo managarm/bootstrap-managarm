@@ -319,7 +319,7 @@ tools:
           - args: ['make', 'install-target-libstdc++-v3']
 
   - name: system-gcc
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     from_source: gcc
     tools_required:
@@ -377,7 +377,7 @@ tools:
           - args: ['make', 'install-target-libstdc++-v3']
 
   - name: bootstrap-system-gcc
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     from_source: gcc
     tools_required:
