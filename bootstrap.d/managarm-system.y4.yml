@@ -133,6 +133,14 @@ packages:
       - '-extra-arg=-fno-caret-diagnostics'
       - '-quiet'
       - '\.(h|c|cpp|hpp)$'
+    - name: clang-format
+      args:
+      - 'ninja'
+      - 'clang-format'
+    - name: clang-format-check
+      args:
+      - 'ninja'
+      - 'clang-format-check'
 
   - name: managarm-kernel-uefi
     metadata:
