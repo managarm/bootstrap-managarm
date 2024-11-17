@@ -1,0 +1,49 @@
+From bef87489ebc2bc6e128acbae1f1dca414c0bd48a Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Sun, 17 Nov 2024 13:31:22 +0100
+Subject: [PATCH 4/4] shared/missing: ignore syscall numbers unless they are
+ used
+
+---
+ src/shared/missing.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/shared/missing.h b/src/shared/missing.h
+index d71f4a3..7612b73 100644
+--- a/src/shared/missing.h
++++ b/src/shared/missing.h
+@@ -46,6 +46,7 @@
+ /* If RLIMIT_RTTIME is not defined, then we cannot use RLIMIT_NLIMITS as is */
+ #define _RLIMIT_MAX (RLIMIT_RTTIME+1 > RLIMIT_NLIMITS ? RLIMIT_RTTIME+1 : RLIMIT_NLIMITS)
+ 
++#if !HAVE_DECL_GETRANDOM
+ #ifndef __NR_getrandom
+ #  if defined __x86_64__
+ #    define __NR_getrandom 318
+@@ -69,7 +70,6 @@
+ #  endif
+ #endif
+ 
+-#if !HAVE_DECL_GETRANDOM
+ static inline int getrandom(void *buffer, size_t count, unsigned flags) {
+         return syscall(__NR_getrandom, buffer, count, flags);
+ }
+@@ -125,6 +125,7 @@ static inline pid_t gettid(void) {
+ #define MAX_HANDLE_SZ 128
+ #endif
+ 
++#if !HAVE_DECL_NAME_TO_HANDLE_AT
+ #ifndef __NR_name_to_handle_at
+ #  if defined(__x86_64__)
+ #    define __NR_name_to_handle_at 303
+@@ -139,7 +140,6 @@ static inline pid_t gettid(void) {
+ #  endif
+ #endif
+ 
+-#if !HAVE_DECL_NAME_TO_HANDLE_AT
+ struct file_handle {
+         unsigned int handle_bytes;
+         int handle_type;
+-- 
+2.47.0
+
