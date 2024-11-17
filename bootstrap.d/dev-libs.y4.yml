@@ -2369,7 +2369,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: boost
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: noarch
     metadata:
       summary: Boost development headers

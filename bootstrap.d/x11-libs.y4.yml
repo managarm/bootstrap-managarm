@@ -452,7 +452,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libdrm
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: X.Org libdrm library

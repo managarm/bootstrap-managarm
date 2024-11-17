@@ -1,0 +1,23 @@
+[binaries]
+c = 'clang'
+cpp = 'clang++'
+ar = 'riscv64-managarm-ar'
+strip = 'riscv64-managarm-strip'
+pkg-config = 'riscv64-managarm-pkg-config'
+
+[constants]
+# common args that c and cxx need
+args = ['-fdebug-default-version=4', '-target', 'riscv64-managarm', '-march=rv64gc', '--gcc-toolchain=_BUILD_ROOT_/tools/system-gcc']
+cxx = args + [ '-fsized-deallocation' ]
+
+[built-in options]
+c_args = args
+c_link_args = args
+cpp_args = cxx
+cpp_link_args = cxx
+
+[host_machine]
+system = 'managarm'
+cpu_family = 'riscv64'
+cpu = 'cortex-a72'
+endian = 'little'
