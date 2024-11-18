@@ -365,7 +365,7 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
