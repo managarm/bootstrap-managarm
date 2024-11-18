@@ -205,7 +205,7 @@ packages:
       website: 'https://managarm.org'
       maintainer: "Alexander van der Grinten <avdgrinten@managarm.org>"
       categories: ['sys-kernel']
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     default: true
     from_source: managarm

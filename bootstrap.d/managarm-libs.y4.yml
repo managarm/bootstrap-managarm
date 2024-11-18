@@ -64,7 +64,7 @@ tools:
 
 packages:
   - name: fafnir
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       rolling_version: true
@@ -172,7 +172,7 @@ packages:
         quiet: true
 
   - name: lewis
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       rolling_version: true
@@ -203,7 +203,7 @@ packages:
         quiet: true
 
   - name: libasync
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
@@ -234,7 +234,7 @@ packages:
         quiet: true
 
   - name: libsmarter
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       rolling_version: true
