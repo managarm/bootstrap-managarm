@@ -437,6 +437,17 @@ def generate_plan(arch, root_uuid, scriptdir):
         yield FsAction.CP_SED, os.path.join(
             scriptdir, "limine.conf"
         ), "boot/", "@ROOT_UUID@", root_uuid
+    elif arch == "riscv64-managarm":
+        yield FsAction.INSTALL, "usr/managarm/bin/eir-limine", "boot/managarm"
+        yield (
+            FsAction.CP,
+            "system-root/usr/share/limine/BOOTRISCV64.EFI",
+            "boot/EFI/BOOT",
+        )
+
+        yield FsAction.CP_SED, os.path.join(
+            scriptdir, "limine.conf"
+        ), "boot/", "@ROOT_UUID@", root_uuid
 
     yield FsAction.RSYNC, "bin"
     yield FsAction.RSYNC, "lib"
@@ -975,7 +986,7 @@ parser.add_argument(
     "-t",
     "--triple",
     dest="arch",
-    choices=["x86_64-managarm", "aarch64-managarm"],
+    choices=["x86_64-managarm", "aarch64-managarm", "riscv64-managarm"],
     default="x86_64-managarm",
     help="Target system triple (needed for the update-fs step, default: x86_64-managarm)",
 )
