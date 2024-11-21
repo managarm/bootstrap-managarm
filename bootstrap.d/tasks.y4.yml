@@ -61,7 +61,7 @@ tasks:
       - limine
       - managarm-kernel
       - !managarm::arch_dep
-        arch: [x86_64]
+        arch: [x86_64, riscv64]
         item: managarm-kernel-uefi
       - managarm-system
     tools_required:
@@ -84,7 +84,7 @@ tasks:
       - limine
       - managarm-kernel
       - !managarm::arch_dep
-        arch: [x86_64]
+        arch: [x86_64, riscv64]
         item: managarm-kernel-uefi
       - managarm-system
     tools_required:

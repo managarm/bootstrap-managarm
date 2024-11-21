@@ -439,6 +439,7 @@ def generate_plan(arch, root_uuid, scriptdir):
         ), "boot/", "@ROOT_UUID@", root_uuid
     elif arch == "riscv64-managarm":
         yield FsAction.INSTALL, "usr/managarm/bin/eir-limine", "boot/managarm"
+        yield FsAction.INSTALL, "usr/managarm/bin/eir-uefi", "boot/managarm"
         yield (
             FsAction.CP,
             "system-root/usr/share/limine/BOOTRISCV64.EFI",

@@ -180,8 +180,9 @@ def do_qemu(args):
     elif args.arch == "riscv64":
         # Use the virt machine and -kernel, similar to aarch64.
         qemu_args += ["-machine", "virt"]
-        qemu_args += ["-kernel", "system-root/usr/managarm/bin/eir-virt"]
         qemu_args += ["-serial", "stdio"]
+        if not args.uefi:
+            qemu_args += ["-kernel", "system-root/usr/managarm/bin/eir-virt"]
     else:
         assert args.arch == "x86_64"
         qemu_args += ["-debugcon", "stdio"]
@@ -279,31 +280,30 @@ timeout: 0
     ]
 
     # Add the boot medium.
-    if args.arch != "riscv64":
-        qemu_args += ["-drive", "id=boot-drive,file=image,format=raw,if=none"]
+    qemu_args += ["-drive", "id=boot-drive,file=image,format=raw,if=none"]
 
-        if args.boot_drive == "virtio":
-            qemu_args += ["-device", "virtio-blk-pci,drive=boot-drive"]
-        elif args.boot_drive == "virtio-legacy":
-            qemu_args += [
-                "-device",
-                "virtio-blk-pci,disable-modern=on,drive=boot-drive",
-            ]
-        elif args.boot_drive == "ahci":
-            qemu_args += [
-                "-device",
-                "ahci,id=ahci",
-                "-device",
-                "ide-hd,drive=boot-drive,bus=ahci.0",
-            ]
-        elif args.boot_drive == "usb":
-            # Use EHCI for now since XHCI hangs on boot.
-            qemu_args += ["-device", "usb-storage,drive=boot-drive,bus=ehci.0"]
-        elif args.boot_drive == "nvme":
-            qemu_args += ["-device", "nvme,serial=deadbeef,drive=boot-drive"]
-        else:
-            assert args.boot_drive == "ide"
-            qemu_args += ["-device", "ide-hd,drive=boot-drive,bus=ide.0"]
+    if args.boot_drive == "virtio":
+        qemu_args += ["-device", "virtio-blk-pci,drive=boot-drive"]
+    elif args.boot_drive == "virtio-legacy":
+        qemu_args += [
+            "-device",
+            "virtio-blk-pci,disable-modern=on,drive=boot-drive",
+        ]
+    elif args.boot_drive == "ahci":
+        qemu_args += [
+            "-device",
+            "ahci,id=ahci",
+            "-device",
+            "ide-hd,drive=boot-drive,bus=ahci.0",
+        ]
+    elif args.boot_drive == "usb":
+        # Use EHCI for now since XHCI hangs on boot.
+        qemu_args += ["-device", "usb-storage,drive=boot-drive,bus=ehci.0"]
+    elif args.boot_drive == "nvme":
+        qemu_args += ["-device", "nvme,serial=deadbeef,drive=boot-drive"]
+    else:
+        assert args.boot_drive == "ide"
+        qemu_args += ["-device", "ide-hd,drive=boot-drive,bus=ide.0"]
 
     # Add networking.
     if args.net_bridge:

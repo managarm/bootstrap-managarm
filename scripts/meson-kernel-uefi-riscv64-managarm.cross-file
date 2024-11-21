@@ -1,0 +1,44 @@
+[binaries]
+c = 'clang'
+cpp = 'clang++'
+c_ld = 'lld'
+cpp_ld = 'lld'
+pkgconfig = 'riscv64-managarm-pkg-config'
+strip = 'true'
+
+[built-in options]
+c_args = [
+	'-target', 'riscv64-linux-gnu',
+	'-march=rva22u64',
+	'-mcmodel=medany',
+	'-msmall-data-limit=0',
+	'-mno-relax',
+	'-fno-stack-protector',
+	'-fno-asynchronous-unwind-tables',
+	'-fno-unwind-tables',
+	'-fpack-struct=8',
+	'-flto']
+cpp_args = c_args
+cpp_link_args = [
+	'-target', 'riscv64-linux-gnu',
+	'-march=rva22u64',
+	'-mcmodel=medany',
+	'-msmall-data-limit=0',
+	'-mno-relax',
+	'-Wl,-melf64lriscv,--oformat=elf64-littleriscv,--no-relax',
+	'-fno-strict-aliasing',
+	'-fno-asynchronous-unwind-tables',
+	'-fno-unwind-tables',
+	'-fpack-struct=8',
+	'-flto',
+	'-Wl,-q,--gc-sections,-static,-pie,--no-dynamic-linker,-z,text']
+
+[host_machine]
+system = 'linux'
+cpu_family = 'riscv64'
+cpu = 'riscv64'
+endian = 'little'
+
+[properties]
+native_pe_toolchain = false
+pecoff_header_size = 0x240
