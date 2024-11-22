@@ -1,1 +1,6 @@
-jobs: []
+jobs:
+  - name: image
+    tasks:
+      - initialize-empty-image
+      - remake-image
+      - xz-image
