@@ -160,6 +160,7 @@ packages:
       website: 'https://managarm.org'
       maintainer: "Marvin Friedrich <contact@marvinf.com>"
       categories: ['sys-kernel']
+    labels: [riscv64]
     architecture: '@OPTION:arch@'
     default: true
     from_source: managarm

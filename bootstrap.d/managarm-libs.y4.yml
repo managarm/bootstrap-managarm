@@ -92,6 +92,7 @@ packages:
         quiet: true
 
   - name: freestnd-c-hdrs
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     from_source: freestnd-c-hdrs
     configure:
@@ -102,6 +103,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: freestnd-cxx-hdrs
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     from_source: freestnd-cxx-hdrs
     pkgs_required:
