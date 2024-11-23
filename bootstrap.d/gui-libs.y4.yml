@@ -379,7 +379,7 @@ packages:
         program_name: host-pkg-config
     pkgs_required:
       - mlibc
-      - eudev
+      - systemd-utils
       - libdisplay-info
       - libdrm
       - libinput
@@ -392,7 +392,7 @@ packages:
       - xcb-util-image
       - xcb-util-wm
       - xwayland
-    revision: 2
+    revision: 3
     configure:
       - args: 'sed -i s#{XBSTRAP_SYSTEM_ROOT}#@SYSROOT_DIR@# @THIS_SOURCE_DIR@/xwayland/meson.build'
       - args:

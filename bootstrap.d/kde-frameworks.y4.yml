@@ -776,8 +776,8 @@ packages:
       - mlibc
       - qtbase6
       - qtdeclarative6
-      - eudev
-    revision: 2
+      - systemd-utils
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -2034,8 +2034,8 @@ packages:
       - qtbase6
       - qtdeclarative6
       - util-linux-libs
-      - eudev
-    revision: 2
+      - systemd-utils
+    revision: 3
     configure:
       - args:
         - 'cmake'
