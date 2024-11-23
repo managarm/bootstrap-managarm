@@ -179,7 +179,7 @@ def do_qemu(args):
         qemu_args += ["-serial", "stdio"]
     elif args.arch == "riscv64":
         # Use the virt machine and -kernel, similar to aarch64.
-        qemu_args += ["-machine", "virt"]
+        qemu_args += ["-machine", "virt,acpi=off"]
         qemu_args += ["-serial", "stdio"]
         if not args.uefi:
             qemu_args += ["-kernel", "system-root/usr/managarm/bin/eir-virt"]
@@ -199,7 +199,8 @@ def do_qemu(args):
             cpu_model = "cortex-a72"
     else:
         assert args.arch == "riscv64"
-        cpu_model = "rv64"
+        cpu_model = "rva22s64"
+        cpu_extras = ["sv48=on", "svadu=on", "svade=off"]
 
     if cpu_extras:
         qemu_args += ["-cpu", cpu_model + "," + ",".join(cpu_extras)]
