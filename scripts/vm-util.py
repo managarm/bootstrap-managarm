@@ -98,7 +98,7 @@ def qemu_parse_device_spec(yml):
 
         if devtype == 'pci-bridge':
             qemu_pci_bridges += 1
-            args += ['-device', f'pci-bridge,id={yml['name']},chassis_nr={qemu_pci_bridges}']
+            args += ['-device', f"pci-bridge,id={yml['name']},chassis_nr={qemu_pci_bridges}"]
 
             for i, device in enumerate(yml.get('devices', [])):
                 args += parse_device(device, bus_id=yml['name'], device_id=i)
@@ -106,7 +106,7 @@ def qemu_parse_device_spec(yml):
             multifunction_property_set = False
 
             for i, func in enumerate(yml.get('functions', [])):
-                properties = f'vfio-pci,host={func['host']}'
+                properties = f"vfio-pci,host={func['host']}"
                 if bus_id:
                     properties += f',bus={bus_id}'
                 if i == 0:
@@ -115,7 +115,7 @@ def qemu_parse_device_spec(yml):
                 properties += f',addr={device_id:02x}.{i}'
                 args += ['-device', properties]
         elif devtype == 'pci-device':
-            args += ['-device', f'vfio-pci,host={yml['host']},id={yml['name']}']
+            args += ['-device', f"vfio-pci,host={yml['host']},id={yml['name']}"]
         else:
             print(f"error: unsupported device-spec device kind {devtype}")
             sys.exit(1)
