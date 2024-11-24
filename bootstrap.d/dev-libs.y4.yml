@@ -911,11 +911,11 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 7
+    revision: 8
     configure:
       # libgpg-error does not know about managarm, teach it
       - args: ['cp', '-v', '@THIS_SOURCE_DIR@/src/syscfg/lock-obj-pub.x86_64-unknown-linux-gnu.h',
-          '@THIS_SOURCE_DIR@/src/syscfg/lock-obj-pub.managarm.h']
+          '@THIS_SOURCE_DIR@/src/syscfg/lock-obj-pub.managarm-mlibc.h']
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=@OPTION:arch-triple@'
