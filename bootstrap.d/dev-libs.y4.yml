@@ -63,8 +63,8 @@ sources:
   - name: libtool
     subdir: 'ports'
     git: 'https://git.savannah.gnu.org/git/libtool.git'
-    tag: 'v2.4.6'
-    version: '2.4.6'
+    tag: 'v2.5.4'
+    version: '2.5.4'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.15
