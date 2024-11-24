@@ -128,6 +128,11 @@ def qemu_parse_device_spec(yml):
     return args
 
 def do_qemu(args):
+    # Default to --uefi for RISC-V.
+    if args.arch == "riscv64":
+        if args.uefi is None:
+            args.uefi = True
+
     qemu = os.environ.get("QEMU")
 
     if not qemu:
@@ -466,7 +471,7 @@ qemu_parser.add_argument("--usb-passthrough", type=str, action='append')
 qemu_parser.add_argument("--usb-passthrough-pcap", type=str, action='append')
 qemu_parser.add_argument("--usb-redir", type=str, action='append')
 qemu_parser.add_argument("--usb-serial", action='store_true')
-qemu_parser.add_argument("--uefi", action="store_true")
+qemu_parser.add_argument("--uefi", action=argparse.BooleanOptionalAction)
 qemu_parser.add_argument("--ovmf-logs", action="store_true")
 qemu_parser.add_argument("--cmd", type=str)
 qemu_parser.add_argument("--qmp", action="store_true")
