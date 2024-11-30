@@ -13,8 +13,8 @@ sources:
   - name: limine
     subdir: 'ports'
     git: 'https://github.com/limine-bootloader/limine.git'
-    tag: 'v8.4.1'
-    version: '8.4.1'
+    tag: 'v8.5.0'
+    version: '8.5.0'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.16
