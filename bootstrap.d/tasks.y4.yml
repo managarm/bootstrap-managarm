@@ -145,6 +145,8 @@ tasks:
       - '--io-timeout=30'
       - '--expect'
       - "launching '/usr/libexec/weston-desktop-shell'"
+    environ:
+      QFLAGS: '-snapshot -display none'
     workdir: '@BUILD_ROOT@'
     containerless: true
 
