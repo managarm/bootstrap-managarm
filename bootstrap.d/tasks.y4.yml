@@ -141,6 +141,8 @@ tasks:
       - 'qemu'
       - '--arch'
       - '@OPTION:arch@'
+      - '--timeout=1200'
+      - '--io-timeout=30'
       - '--expect'
       - "launching '/usr/libexec/weston-desktop-shell'"
     workdir: '@BUILD_ROOT@'

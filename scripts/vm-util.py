@@ -136,8 +136,8 @@ class QemuRunner:
         self.launch_time = None
         self.last_io_time = None
 
-        self.timeout = 20 * 60
-        self.io_timeout = 30
+        self.timeout = None
+        self.io_timeout = None
 
     async def run(self, qemu, qemu_args, *, expect_all, expect_none):
         print("Running {}".format(shlex.join([qemu] + qemu_args)))
@@ -165,13 +165,19 @@ class QemuRunner:
             assert pending
 
             now = time.time()
-            until_timeout = min(
-                self.timeout - (now - self.launch_time),
-                self.io_timeout - (now - self.last_io_time),
-            )
-            if until_timeout < 0:
-                self.proc.terminate()
+            pending_timeouts = []
+            if self.timeout is not None:
+                pending_timeouts.append(self.timeout - (now - self.launch_time))
+            if self.io_timeout is not None:
+                pending_timeouts.append(self.io_timeout - (now - self.last_io_time))
+
+            if not pending_timeouts:
                 until_timeout = None
+            else:
+                until_timeout = min(pending_timeouts)
+                if until_timeout < 0:
+                    self.proc.terminate()
+                    until_timeout = None
 
             done, pending = await asyncio.wait(pending, timeout=until_timeout)
             if done:
@@ -197,7 +203,10 @@ class QemuRunner:
                 if not sep:
                     break
                 buf = tail
-                line = head.decode("utf-8").strip()
+                try:
+                    line = head.decode("utf-8").strip()
+                except UnicodeDecodeError:
+                    continue
 
                 if expect_all is not None:
                     expect_all = [expr for expr in expect_all if not expr.search(line)]
@@ -533,6 +542,10 @@ timeout: 0
         expect_none = [re.compile(expr) for expr in args.expect_not]
 
     runner = QemuRunner()
+    if args.timeout is not None:
+        runner.timeout = args.timeout
+    if args.io_timeout is not None:
+        runner.io_timeout = args.io_timeout
     asyncio.run(runner.run(qemu, qemu_args, expect_all=expect_all, expect_none=expect_none))
 
 
@@ -565,6 +578,8 @@ qemu_parser.add_argument("--ovmf-logs", action="store_true")
 qemu_parser.add_argument("--cmd", type=str)
 qemu_parser.add_argument("--qmp", action="store_true")
 qemu_parser.add_argument("--use-system-qemu", action="store_true")
+qemu_parser.add_argument("--timeout", type=int)
+qemu_parser.add_argument("--io-timeout", type=int)
 qemu_parser.add_argument("--expect", action="append")
 qemu_parser.add_argument("--expect-not", action="append")
 
