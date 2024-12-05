@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
 
+import asyncio
 import argparse
 import json
 import os
+import re
 import shlex
 import shutil
 import subprocess
 import string
 import struct
 import sys
+import time
 import tempfile
 import yaml
 
@@ -126,6 +129,87 @@ def qemu_parse_device_spec(yml):
         args += parse_device(device)
 
     return args
+
+class QemuRunner:
+    def __init__(self):
+        self.proc = None
+        self.launch_time = None
+        self.last_io_time = None
+
+        self.timeout = 20 * 60
+        self.io_timeout = 30
+
+    async def run(self, qemu, qemu_args, *, expect_all, expect_none):
+        print("Running {}".format(shlex.join([qemu] + qemu_args)))
+        self.proc = await asyncio.create_subprocess_exec(
+            qemu,
+            *qemu_args,
+            stdout=subprocess.PIPE
+        )
+        self.launch_time = time.time()
+        self.last_io_time = time.time()
+        try:
+            await asyncio.gather(
+                self.do_wait(),
+                self.process_stdout(expect_all=expect_all, expect_none=expect_none)
+            )
+        finally:
+            if self.proc.returncode is None:
+                self.proc.terminate()
+
+    async def do_wait(self):
+        task = asyncio.create_task(self.proc.wait())
+
+        pending = {task}
+        while True:
+            assert pending
+
+            now = time.time()
+            until_timeout = min(
+                self.timeout - (now - self.launch_time),
+                self.io_timeout - (now - self.last_io_time),
+            )
+            if until_timeout < 0:
+                self.proc.terminate()
+                until_timeout = None
+
+            done, pending = await asyncio.wait(pending, timeout=until_timeout)
+            if done:
+                break
+
+    async def process_stdout(self, *, expect_all, expect_none):
+        buf = bytes()
+        while True:
+            chunk = await self.proc.stdout.read(4096)
+            if not chunk:
+                break
+
+            self.last_io_time = time.time()
+
+            # Echo the chunk to stdout.
+            sys.stdout.buffer.write(chunk)
+            sys.stdout.buffer.flush()
+
+            # Split the chunk into lines, analyze each line.
+            buf += chunk
+            while True:
+                head, sep, tail = buf.partition(b"\n")
+                if not sep:
+                    break
+                buf = tail
+                line = head.decode("utf-8").strip()
+
+                if expect_all is not None:
+                    expect_all = [expr for expr in expect_all if not expr.search(line)]
+                    if not expect_all:
+                        self.proc.terminate()
+                for expr in expect_none:
+                    if expr.search(line):
+                        raise RuntimeError(f"Expected no line to be present that matches regexp '{expr.pattern}'")
+
+        if expect_all is not None and expect_all:
+            missing = ", ".join(f"'{expr.pattern}'" for expr in expect_all)
+            raise RuntimeError(f"Expected lines matching regexps {missing}")
 
 def do_qemu(args):
     # Default to --uefi for RISC-V.
@@ -440,11 +524,16 @@ timeout: 0
     if "QFLAGS" in os.environ:
         qemu_args += shlex.split(os.environ["QFLAGS"])
 
-    print("Running {}".format(shlex.join([qemu, *qemu_args])))
-    try:
-        subprocess.check_call([qemu] + qemu_args)
-    except subprocess.CalledProcessError:
-        sys.exit(1)
+    # Compile --expect and --expect-not into lists of regexp.
+    expect_all = None
+    if args.expect:
+        expect_all = [re.compile(expr) for expr in args.expect]
+    expect_none = []
+    if args.expect_not:
+        expect_none = [re.compile(expr) for expr in args.expect_not]
+
+    runner = QemuRunner()
+    asyncio.run(runner.run(qemu, qemu_args, expect_all=expect_all, expect_none=expect_none))
 
 
 qemu_parser = main_subparsers.add_parser("qemu")
@@ -476,6 +565,8 @@ qemu_parser.add_argument("--ovmf-logs", action="store_true")
 qemu_parser.add_argument("--cmd", type=str)
 qemu_parser.add_argument("--qmp", action="store_true")
 qemu_parser.add_argument("--use-system-qemu", action="store_true")
+qemu_parser.add_argument("--expect", action="append")
+qemu_parser.add_argument("--expect-not", action="append")
 
 # ---------------------------------------------------------------------------------------
 # gdb subcommand.

@@ -128,13 +128,21 @@ tasks:
     containerless: true
 
   - name: test-image
+    tools_required:
+      - tool: ovmf
+        expose: false
     tasks_required:
       - task: make-image
         order_only: true
       - task: remake-image
         order_only: true
     args:
-      - '@SOURCE_ROOT@/scripts/test-image.py'
+      - '@SOURCE_ROOT@/scripts/vm-util.py'
+      - 'qemu'
+      - '--arch'
+      - '@OPTION:arch@'
+      - '--expect'
+      - "launching '/usr/libexec/weston-desktop-shell'"
     workdir: '@BUILD_ROOT@'
     containerless: true
 
