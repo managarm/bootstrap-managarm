@@ -542,10 +542,12 @@ timeout: 0
         expect_none = [re.compile(expr) for expr in args.expect_not]
 
     runner = QemuRunner()
+    # Adjust for the fact that non-KVM runs are much slower.
+    timeout_factor = 1 if have_kvm else 3
     if args.timeout is not None:
-        runner.timeout = args.timeout
+        runner.timeout = timeout_factor * args.timeout
     if args.io_timeout is not None:
-        runner.io_timeout = args.io_timeout
+        runner.io_timeout = timeout_factor * args.io_timeout
     asyncio.run(runner.run(qemu, qemu_args, expect_all=expect_all, expect_none=expect_none))
 
 
