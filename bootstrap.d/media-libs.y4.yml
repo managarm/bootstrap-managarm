@@ -81,7 +81,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: fontconfig
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -162,7 +162,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: freetype
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
@@ -618,7 +618,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: harfbuzz
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
@@ -789,7 +789,7 @@ packages:
         quiet: true
 
   - name: libepoxy
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
@@ -822,7 +822,7 @@ packages:
         quiet: true
 
   - name: libglvnd
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
@@ -862,7 +862,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libjpeg-turbo
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: MMX, SSE, and SSE2 SIMD accelerated JPEG library
@@ -970,7 +970,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libpng
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
@@ -1273,7 +1273,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: mesa
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'

@@ -191,7 +191,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: gdbm
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -227,7 +227,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxcrypt
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
@@ -265,7 +265,7 @@ packages:
         quiet: true
 
   - name: mtdev
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
@@ -300,7 +300,7 @@ packages:
         quiet: true
 
   - name: ncurses
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
@@ -382,7 +382,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: readline
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -412,7 +412,7 @@ packages:
       - args: ['patchelf', '--set-soname', 'libhistory.so.8', '@THIS_COLLECT_DIR@/usr/lib/libhistory.so.8']
 
   - name : tzdata
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: noarch
     default: true
     source:

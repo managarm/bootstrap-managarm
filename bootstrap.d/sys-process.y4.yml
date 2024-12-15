@@ -1,6 +1,6 @@
 packages:
   - name: htop
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: An interactive process viewer
@@ -50,7 +50,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: procps
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: Standard informational utilities and process-handling tools

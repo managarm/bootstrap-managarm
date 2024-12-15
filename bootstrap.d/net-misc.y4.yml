@@ -42,7 +42,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: dhcpcd
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: A DHCP and DHCPv6 client
@@ -85,7 +85,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: iana-etc
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: noarch
     metadata:
       summary: Data files for network services and protocols
@@ -213,7 +213,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: wget
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'

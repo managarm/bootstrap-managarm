@@ -356,7 +356,7 @@ packages:
       - args: ['rm', '-r', '@THIS_COLLECT_DIR@/usr/lib']
 
   - name: llvm
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     from_source: llvm
     tools_required:

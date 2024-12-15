@@ -66,7 +66,7 @@ tools:
 
 packages:
   - name: coreutils
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
@@ -172,7 +172,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: diffutils
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -296,7 +296,7 @@ packages:
       - args: ['rm', '-v', '@THIS_COLLECT_DIR@/usr/.crates2.json']
 
   - name: file
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: Identify a file's format by scanning binary data for patterns
@@ -327,7 +327,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: findutils
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -368,7 +368,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: gawk
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: GNU awk pattern-matching language
@@ -411,7 +411,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: grep
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: GNU regular expression matcher
@@ -454,7 +454,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: groff
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -498,7 +498,7 @@ packages:
       - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/charset.alias']
 
   - name: iproute2
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: iproute2 is a tool developed to unify network interface configuration, routing, and tunneling for Linux systems
@@ -541,7 +541,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: less
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -567,7 +567,7 @@ packages:
       - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
 
   - name: man-db
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -615,7 +615,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: man-pages-posix
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: noarch
     source:
       subdir: ports
@@ -724,7 +724,7 @@ packages:
         quiet: true
 
   - name: sed
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -758,7 +758,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: shadow
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: Utilities to deal with user accounts
@@ -912,7 +912,7 @@ packages:
       - args: ['cp', '-f', '@THIS_SOURCE_DIR@/usb.ids', '@THIS_COLLECT_DIR@/usr/share/hwdata/usb.ids']
 
   - name: util-linux-libs
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     from_source: util-linux
     tools_required:
@@ -1061,7 +1061,7 @@ packages:
       - args: ['rm', '-r', '@THIS_COLLECT_DIR@/usr/share/man/man8']
 
   - name: util-linux
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     from_source: util-linux
     tools_required:
@@ -1160,7 +1160,7 @@ packages:
       - args: ['rm', '-r', '@THIS_COLLECT_DIR@/usr/share/man/man5/terminal-colors.d.5']
 
   - name: which
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -1186,7 +1186,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xbps
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: The X Binary Package System (XBPS)
@@ -1225,7 +1225,7 @@ packages:
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/xbps.conf', '@THIS_COLLECT_DIR@/usr/share/xbps.d/']
 
   - name: kmscon
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     default: true
     metadata:

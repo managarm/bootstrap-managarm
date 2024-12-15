@@ -1,6 +1,6 @@
 packages:
   - name: ca-certificates
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: noarch
     metadata:
       summary: Common CA certificates PEM files

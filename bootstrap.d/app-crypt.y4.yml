@@ -137,7 +137,7 @@ packages:
           VAPIGEN: 'cross-vapigen'
 
   - name: p11-kit
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: A standard configuration setup for installing PKCS#11

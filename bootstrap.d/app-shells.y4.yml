@@ -45,7 +45,7 @@ tools:
 
 packages:
   - name: bash
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     default: true
     source:

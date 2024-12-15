@@ -1,6 +1,6 @@
 packages:
   - name: graphite2
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'

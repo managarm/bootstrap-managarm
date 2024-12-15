@@ -34,7 +34,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: bzip2
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: A high-quality data compressor
@@ -108,7 +108,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: gzip
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: The standard GNU compressor
@@ -151,7 +151,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libarchive
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: Multi-format archive and compression library
@@ -194,7 +194,7 @@ packages:
 
   - name: lz4
     architecture: '@OPTION:arch@'
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     metadata:
       summary: Extremely Fast Compression algorithm
       description: This package provides tools to compress and decompress files in .lz4 format.
@@ -227,7 +227,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: tar
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: The best way to make a tarball
@@ -316,7 +316,7 @@ packages:
       - args: ['cp', '@THIS_BUILD_DIR@/man/zipinfo.1', '@THIS_COLLECT_DIR@/usr/share/man/man1/']
 
   - name: xz-utils
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: Utilities for managing LZMA compressed files
@@ -397,7 +397,7 @@ packages:
       - args: ['cp', '@THIS_BUILD_DIR@/man/zipsplit.1', '@THIS_COLLECT_DIR@/usr/share/man/man1/']
 
   - name: zstd
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: zstd fast compression library

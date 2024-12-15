@@ -49,7 +49,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xclock
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -95,7 +95,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xdpyinfo
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -141,7 +141,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xdriinfo
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -230,7 +230,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xkbcomp
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -269,7 +269,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xkill
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -309,7 +309,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xlsclients
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -423,7 +423,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xwininfo
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports

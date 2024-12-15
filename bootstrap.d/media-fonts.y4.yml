@@ -39,7 +39,7 @@ packages:
       website: 'https://dejavu-fonts.github.io/'
       maintainer: "Dennis Bonke <dennis@managarm.org>"
       categories: ['media-fonts']
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: noarch
     source:
       subdir: ports
@@ -71,7 +71,7 @@ packages:
       website: 'https://gitlab.freedesktop.org/xorg/font/util'
       maintainer: "Dennis Bonke <dennis@managarm.org>"
       categories: ['media-fonts']
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     from_source: xorg-font-util
     tools_required:

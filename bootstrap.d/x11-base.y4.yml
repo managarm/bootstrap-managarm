@@ -1,6 +1,6 @@
 packages:
   - name: xcb-proto
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: X C-language Bindings protocol headers
@@ -50,7 +50,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xorg-proto
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -160,7 +160,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xwayland
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: Standalone X server running under Wayland

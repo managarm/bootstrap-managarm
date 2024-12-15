@@ -8,7 +8,7 @@ packages:
       website: https://sr.ht/~kennylevinsen/seatd/
       maintainer: "no92 <no92.mail@gmail.com>"
       categories: ['sys-auth']
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     source:
       subdir: 'ports'
       git: 'https://git.sr.ht/~kennylevinsen/seatd/'

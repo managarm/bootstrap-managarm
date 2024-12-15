@@ -111,7 +111,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xkeyboard-config
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
@@ -144,7 +144,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xorg-util-macros
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     from_source: xorg-util-macros
     tools_required:

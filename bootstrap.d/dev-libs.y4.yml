@@ -404,7 +404,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: fribidi
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: A free implementation of the unicode bidirectional algorithm
@@ -447,7 +447,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: glib
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     from_source: glib
     tools_required:
@@ -588,7 +588,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: icu
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     from_source: icu
     tools_required:
@@ -640,7 +640,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libevdev
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: Handler library for evdev events
@@ -724,7 +724,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libexpat
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: Stream-oriented XML parser library
@@ -769,7 +769,7 @@ packages:
         quiet: true
 
   - name: libffi
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     from_source: libffi
     tools_required:
@@ -930,7 +930,7 @@ packages:
         quiet: true
 
   - name: libiconv
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
@@ -1002,7 +1002,7 @@ packages:
         quiet: true
 
   - name: libinput
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
@@ -1042,7 +1042,7 @@ packages:
         quiet: true
 
   - name: libintl
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
@@ -1124,7 +1124,7 @@ packages:
 
   - name: libmnl
     architecture: '@OPTION:arch@'
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     metadata:
       summary: libmnl is a minimalistic user-space library oriented to Netlink developers
       description: There are a lot of common tasks in parsing, validating, constructing of both the Netlink header and TLVs that are repetitive and easy to get wrong. This library aims to provide simple helpers that allows you to re-use code and to avoid re-inventing the wheel.
@@ -1242,7 +1242,7 @@ packages:
   #      quiet: true
 
   - name: libpipeline
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: A pipeline manipulation library
@@ -1324,7 +1324,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libtasn
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: ASN.1 library
@@ -1488,7 +1488,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxml
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -1750,7 +1750,7 @@ packages:
         quiet: true
 
   - name: nettle
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
@@ -1956,7 +1956,7 @@ packages:
             install -v -m644 Linux*/lib/pkgconfig/nss.pc @THIS_COLLECT_DIR@/usr/lib/pkgconfig
 
   - name: openssl
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -1996,7 +1996,7 @@ packages:
       - args: ['cp', '-fr', '@THIS_SOURCE_DIR@/doc/.', '@THIS_COLLECT_DIR@/usr/share/doc/openssl-1.1.1q']
 
   - name: pcre
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -2039,7 +2039,7 @@ packages:
       - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
 
   - name: pcre2
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: Perl-compatible regular expression library
@@ -2160,7 +2160,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: wayland-protocols
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
@@ -2190,7 +2190,7 @@ packages:
         quiet: true
 
   - name: weston
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: 'A lightweight and functional Wayland compositor'
@@ -2294,7 +2294,7 @@ packages:
       - args: ['rm', '-v', '@THIS_COLLECT_DIR@/usr/lib/libxxhash.a']
 
   - name: libtsm
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: Terminal emulator state machine
@@ -2330,7 +2330,7 @@ packages:
         quiet: true
 
   - name: wayland
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     from_source: wayland
     tools_required:

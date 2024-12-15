@@ -43,7 +43,7 @@ tools:
 
 packages:
   - name: cairo
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
@@ -497,7 +497,7 @@ packages:
         quiet: true
 
   - name: libfontenc
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -547,7 +547,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libice
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -630,7 +630,7 @@ packages:
         quiet: true
 
   - name: libsm
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -677,7 +677,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libx11
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: X.Org X11 library
@@ -732,7 +732,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxau
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -774,7 +774,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxaw
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -821,7 +821,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxcb
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: X C-language Bindings library
@@ -926,7 +926,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxcursor
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -971,7 +971,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxdamage
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -1017,7 +1017,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxdmcp
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -1060,7 +1060,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxext
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -1106,7 +1106,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxfixes
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -1151,7 +1151,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxfont2
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -1209,7 +1209,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxft
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -1256,7 +1256,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxi
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -1354,7 +1354,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxkbcommon
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
@@ -1397,7 +1397,7 @@ packages:
         quiet: true
 
   - name: libxkbfile
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -1441,7 +1441,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxmu
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -1489,7 +1489,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxpm
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -1534,7 +1534,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxrandr
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -1582,7 +1582,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxrender
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -1728,7 +1728,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxshmfence
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -1774,7 +1774,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxt
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -1823,7 +1823,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxtrans
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     from_source: libxtrans
     tools_required:
@@ -1851,7 +1851,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxtst
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -1945,7 +1945,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxxf86vm
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -1992,7 +1992,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: pango
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: Internationalized text layout and rendering library
@@ -2074,7 +2074,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: pixman
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
@@ -2114,7 +2114,7 @@ packages:
         quiet: true
 
   - name: xcb-util
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -2163,7 +2163,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xcb-util-cursor
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -2212,7 +2212,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xcb-util-image
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -2304,7 +2304,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: xcb-util-render-util
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
@@ -2395,7 +2395,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libxcvt
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: X.Org xcvt library and cvt program
