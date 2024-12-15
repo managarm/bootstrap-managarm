@@ -1,4 +1,10 @@
 jobs:
+  - name: icu
+    tools:
+      - host-icu
+    packages:
+      - icu
+
   - name: image
     tasks:
       - initialize-empty-image

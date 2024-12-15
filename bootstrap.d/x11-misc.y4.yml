@@ -16,7 +16,7 @@ sources:
 
 tools:
   - name: host-xorg-macros
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: noarch
     exports_aclocal: true
     from_source: xorg-util-macros

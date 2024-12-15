@@ -83,7 +83,7 @@ sources:
 
 tools:
   - name: host-glib
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: noarch
     exports_aclocal: true
     exports_shared_libs: true
@@ -139,7 +139,7 @@ tools:
       - args: ['cp', '-rpv', '@SOURCE_ROOT@/scripts/run-wrapper', '@PREFIX@/bin/']
 
   - name: host-icu
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: noarch
     from_source: icu
     configure:
@@ -152,7 +152,7 @@ tools:
       - args: ['make', 'install']
 
   - name: host-libffi
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     from_source: libffi
     configure:

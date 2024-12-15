@@ -112,7 +112,7 @@ tools:
       - args: ['make', 'TOPDIR=@PREFIX@', 'install']
 
   - name: wayland-scanner
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: noarch
     from_source: wayland
     tools_required:

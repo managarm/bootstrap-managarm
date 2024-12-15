@@ -30,7 +30,7 @@ sources:
 
 tools:
   - name: host-file
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: noarch
     from_source: file
     tools_required:
