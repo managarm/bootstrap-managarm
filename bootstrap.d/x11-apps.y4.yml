@@ -351,8 +351,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xprop.git'
-      tag: 'xprop-1.2.6'
-      version: '1.2.6'
+      tag: 'xprop-1.2.8'
+      version: '1.2.8'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -369,7 +369,7 @@ packages:
       - mlibc
       - xorg-util-macros
       - libx11
-    revision: 5
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
