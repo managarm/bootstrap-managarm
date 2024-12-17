@@ -11,6 +11,8 @@ RUN apt-get update \
 		autogen \
 		# Used by host-bison
 		autopoint \
+		# Used by the Linux kernel
+		bc \
 		# Used by binutils in the build process
 		bison \
 		# Contains gcc and g++
@@ -51,6 +53,10 @@ RUN apt-get update \
 		libzstd-dev \
 		# Used by host-knotifications
 		libcanberra-dev \
+		# Used by host-appstream
+		libcurl4-openssl-dev \
+		# Used by the Linux kernel
+		libelf-dev \
 		# Used by wayland-scanner
 		libexpat1-dev \
 		# Used by gtk+-2
@@ -85,6 +91,9 @@ RUN apt-get update \
 		libxkbcommon-x11-dev \
 		# Used by host-kwindowsystem
 		libxfixes-dev \
+		# Used by host-appstream
+		libxml2-dev \
+		libyaml-dev \
 		# Used by many gnu build steps
 		m4 \
 		# Required to build images for Android's fastboot protocol.

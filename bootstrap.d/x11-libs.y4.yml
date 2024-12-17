@@ -6,8 +6,8 @@ sources:
   - name: libxtrans
     subdir: ports
     git: 'https://gitlab.freedesktop.org/xorg/lib/libxtrans.git'
-    tag: 'xtrans-1.5.0'
-    version: '1.5.0'
+    tag: 'xtrans-1.5.2'
+    version: '1.5.2'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.11
@@ -502,10 +502,10 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libfontenc.git'
-      tag: 'libfontenc-1.1.7'
-      version: '1.1.7'
+      tag: 'libfontenc-1.1.8'
+      version: '1.1.8'
       tools_required:
-        - host-autoconf-v2.69
+        - host-autoconf-v2.71
         - host-automake-v1.15
         - host-libtool
         - host-pkg-config
@@ -520,7 +520,7 @@ packages:
       - system-gcc
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
-      - host-autoconf-v2.69
+      - host-autoconf-v2.71
       - host-automake-v1.15
       - host-pkg-config
     pkgs_required:
@@ -531,7 +531,7 @@ packages:
       - libxtrans
       - xorg-font-util
       - zlib
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -552,8 +552,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libice.git'
-      tag: 'libICE-1.1.1'
-      version: '1.1.1'
+      tag: 'libICE-1.1.2'
+      version: '1.1.2'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -577,7 +577,7 @@ packages:
       - xorg-proto
       - libx11
       - libxtrans
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -635,8 +635,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libsm.git'
-      tag: 'libSM-1.2.4'
-      version: '1.2.4'
+      tag: 'libSM-1.2.5'
+      version: '1.2.5'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -661,7 +661,7 @@ packages:
       - libx11
       - libxtrans
       - libice
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -689,8 +689,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libx11.git'
-      tag: 'libX11-1.8.7'
-      version: '1.8.7'
+      tag: 'libX11-1.8.10'
+      version: '1.8.10'
       tools_required:
         - host-autoconf-v2.71
         - host-automake-v1.15
@@ -713,7 +713,7 @@ packages:
       - xorg-proto
       - libxcb
       - libxtrans
-    revision: 4
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -737,8 +737,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxau.git'
-      tag: 'libXau-1.0.11'
-      version: '1.0.11'
+      tag: 'libXau-1.0.12'
+      version: '1.0.12'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -758,7 +758,7 @@ packages:
       - mlibc
       - xorg-util-macros
       - xorg-proto
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -779,8 +779,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxaw.git'
-      tag: 'libXaw-1.0.15'
-      version: '1.0.15'
+      tag: 'libXaw-1.0.16'
+      version: '1.0.16'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -805,7 +805,7 @@ packages:
       - libxt
       - libxmu
       - libxpm
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -833,8 +833,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxcb.git'
-      tag: 'libxcb-1.16'
-      version: '1.16'
+      tag: 'libxcb-1.17.0'
+      version: '1.17'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -857,7 +857,7 @@ packages:
       - libxau
       - libxdmcp
       - xcb-proto
-    revision: 4
+    revision: 1
     configure:
       - args: ['sed', '-i', "s/pthread-stubs//", '@THIS_SOURCE_DIR@/configure']
       - args:
@@ -931,8 +931,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxcursor.git'
-      tag: 'libXcursor-1.2.1'
-      version: '1.2.1'
+      tag: 'libXcursor-1.2.3'
+      version: '1.2.3'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -955,7 +955,7 @@ packages:
       - libx11
       - libxfixes
       - libxrender
-    revision: 7
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1022,8 +1022,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxdmcp.git'
-      tag: 'libXdmcp-1.1.4'
-      version: '1.1.4'
+      tag: 'libXdmcp-1.1.5'
+      version: '1.1.5'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1044,7 +1044,7 @@ packages:
       - xorg-util-macros
       - xorg-proto
       - libxau
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1065,10 +1065,10 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxext.git'
-      tag: 'libXext-1.3.5'
-      version: '1.3.5'
+      tag: 'libXext-1.3.6'
+      version: '1.3.6'
       tools_required:
-        - host-autoconf-v2.69
+        - host-autoconf-v2.71
         - host-automake-v1.15
         - host-libtool
         - host-pkg-config
@@ -1080,7 +1080,7 @@ packages:
             'NOCONFIGURE': 'yes'
     tools_required:
       - system-gcc
-      - host-autoconf-v2.69
+      - host-autoconf-v2.71
       - host-automake-v1.15
       - host-pkg-config
     pkgs_required:
@@ -1089,7 +1089,7 @@ packages:
       - xorg-proto
       - libx11
       - libxtrans
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1156,10 +1156,10 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxfont.git'
-      tag: 'libXfont2-2.0.6'
-      version: '2.0.6'
+      tag: 'libXfont2-2.0.7'
+      version: '2.0.7'
       tools_required:
-        - host-autoconf-v2.69
+        - host-autoconf-v2.71
         - host-automake-v1.15
         - host-libtool
         - host-pkg-config
@@ -1175,7 +1175,7 @@ packages:
       - host-xtrans
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
-      - host-autoconf-v2.69
+      - host-autoconf-v2.71
       - host-automake-v1.15
       - host-pkg-config
     pkgs_required:
@@ -1189,7 +1189,7 @@ packages:
       - bzip2
       - libfontenc
       - zlib
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1261,8 +1261,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxi.git'
-      tag: 'libXi-1.8.1'
-      version: '1.8.1'
+      tag: 'libXi-1.8.2'
+      version: '1.8.2'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1287,7 +1287,7 @@ packages:
       - libxtrans
       - libxext
       - libxfixes
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1359,8 +1359,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/xkbcommon/libxkbcommon.git'
-      tag: 'xkbcommon-1.5.0'
-      version: '1.5.0'
+      tag: 'xkbcommon-1.7.0'
+      version: '1.7.0'
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -1376,10 +1376,11 @@ packages:
       - libxcb
       - libxml
       - xkeyboard-config
-    revision: 6
+    revision: 1
     configure:
       - args:
         - 'meson'
+        - 'setup'
         - '--native-file'
         - '@SOURCE_ROOT@/scripts/meson.native-file'
         - '--cross-file'
@@ -1402,8 +1403,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxkbfile.git'
-      tag: 'libxkbfile-1.1.2'
-      version: '1.1.2'
+      tag: 'libxkbfile-1.1.3'
+      version: '1.1.3'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1425,7 +1426,7 @@ packages:
       - xorg-util-macros
       - xorg-proto
       - libx11
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1446,10 +1447,10 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxmu.git'
-      tag: 'libXmu-1.1.4'
-      version: '1.1.4'
+      tag: 'libXmu-1.2.1'
+      version: '1.2.1'
       tools_required:
-        - host-autoconf-v2.69
+        - host-autoconf-v2.71
         - host-automake-v1.15
         - host-libtool
         - host-pkg-config
@@ -1462,7 +1463,7 @@ packages:
             'NOCONFIGURE': 'yes'
     tools_required:
       - system-gcc
-      - host-autoconf-v2.69
+      - host-autoconf-v2.71
       - host-automake-v1.15
       - host-pkg-config
     pkgs_required:
@@ -1473,7 +1474,7 @@ packages:
       - libxext
       - libxtrans
       - libxt
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1494,8 +1495,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxpm.git'
-      tag: 'libXpm-3.5.16'
-      version: '3.5.16'
+      tag: 'libXpm-3.5.17'
+      version: '3.5.17'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1518,7 +1519,7 @@ packages:
       - libx11
       - libxext
       - libxt
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1587,8 +1588,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxrender.git'
-      tag: 'libXrender-0.9.11'
-      version: '0.9.11'
+      tag: 'libXrender-0.9.12'
+      version: '0.9.12'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1611,7 +1612,7 @@ packages:
       - xorg-proto
       - libx11
       - libxtrans
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1733,8 +1734,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxshmfence.git'
-      tag: 'libxshmfence-1.3.2'
-      version: '1.3.2'
+      tag: 'libxshmfence-1.3.3'
+      version: '1.3.3'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1757,7 +1758,7 @@ packages:
       - xorg-proto
       - libx11
       - libxtrans
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1779,8 +1780,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxt.git'
-      tag: 'libXt-1.3.0'
-      version: '1.3.0'
+      tag: 'libXt-1.3.1'
+      version: '1.3.1'
       tools_required:
         - host-autoconf-v2.71
         - host-automake-v1.15
@@ -1805,7 +1806,7 @@ packages:
       - libxtrans
       - libsm
       - libice
-    revision: 10
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1835,7 +1836,7 @@ packages:
       - xorg-util-macros
       - xorg-proto
       - libxcb
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1856,8 +1857,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxtst.git'
-      tag: 'libXtst-1.2.4'
-      version: '1.2.4'
+      tag: 'libXtst-1.2.5'
+      version: '1.2.5'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1882,7 +1883,7 @@ packages:
       - libxtrans
       - libxext
       - libxi
-    revision: 7
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1950,8 +1951,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxxf86vm.git'
-      tag: 'libXxf86vm-1.1.5'
-      version: '1.1.5'
+      tag: 'libXxf86vm-1.1.6'
+      version: '1.1.6'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1975,7 +1976,7 @@ packages:
       - libx11
       - libxtrans
       - libxext
-    revision: 7
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -2407,17 +2408,18 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxcvt.git'
-      tag: 'libxcvt-0.1.2'
-      version: '0.1.2'
+      tag: 'libxcvt-0.1.3'
+      version: '0.1.3'
     tools_required:
       - system-gcc
       - host-pkg-config
     pkgs_required:
       - mlibc
-    revision: 7
+    revision: 1
     configure:
       - args:
         - 'meson'
+        - 'setup'
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'

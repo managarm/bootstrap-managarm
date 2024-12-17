@@ -383,11 +383,11 @@ packages:
       categories: ['media-libs']
     source:
       subdir: 'ports'
-      url: 'https://gstreamer.freedesktop.org/src/gst-plugins-bad/gst-plugins-bad-1.22.7.tar.xz'
+      url: 'https://gstreamer.freedesktop.org/src/gst-plugins-bad/gst-plugins-bad-1.24.10.tar.xz'
       format: 'tar.xz'
-      extract_path: 'gst-plugins-bad-1.22.7'
-      checksum: blake2b:7f1e92f172fecac079c78c18fb026dd71d2145f014ef5543b40bc54fb2d0028b1eaf83389bc6c50a9097d65ce03a0157712016b4a78331590fe721e0fc50148a
-      version: '1.22.7'
+      extract_path: 'gst-plugins-bad-1.24.10'
+      checksum: blake2b:928a79f10e93cad4bddfa1a8ce31ea2ea61e7e0424ed83789ed08c52d44665ce9da44a8b79c5f1b29cb69371ad220daafc741cf1c3bb3eababe0636dbd1b994d
+      version: '1.24.10'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -415,7 +415,7 @@ packages:
       - libmodplug
       - vulkan-headers
       - libusb
-    revision: 4
+    revision: 1
     configure:
       - args:
         - 'meson'
@@ -428,7 +428,7 @@ packages:
         - '--wrap-mode=nodownload'
         - '-Dgpl=enabled'
         - '-Dpackage-origin=https://managarm.org/'
-        - '-Dpackage-name="GStreamer 1.22.7 Managarm"'
+        - '-Dpackage-name="GStreamer 1.24.10 Managarm"'
         - '-Dopenh264=disabled'
         - '@THIS_SOURCE_DIR@'
     build:
@@ -448,11 +448,11 @@ packages:
       categories: ['media-libs']
     source:
       subdir: 'ports'
-      url: 'https://gstreamer.freedesktop.org/src/gst-plugins-base/gst-plugins-base-1.22.7.tar.xz'
+      url: 'https://gstreamer.freedesktop.org/src/gst-plugins-base/gst-plugins-base-1.24.10.tar.xz'
       format: 'tar.xz'
-      extract_path: 'gst-plugins-base-1.22.7'
-      checksum: blake2b:c6880858ed0dafef8102e097a380d771043051180cac220ead724a5861976f1e56f0d96939d271e806880fdb9473a31cfa7476d772ca9cc2c77d6c6163f5fef3
-      version: '1.22.7'
+      extract_path: 'gst-plugins-base-1.24.10'
+      checksum: blake2b:0935a21d344b7d1328d1958325c49d23dadddd5bb72b2639ed2598efd2a2d35a8bb322583c2e6b9865c9d4d922400abcd20512ef28c1de8e7f6c11369008e23c
+      version: '1.24.10'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -478,10 +478,11 @@ packages:
       - wayland
       - pango
       - libxext
-    revision: 4
+    revision: 1
     configure:
       - args:
         - 'meson'
+        - 'setup'
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
@@ -496,7 +497,7 @@ packages:
         - '-Dorc=disabled'
         - '-Dexamples=disabled'
         - '-Dpackage-origin=https://managarm.org/'
-        - '-Dpackage-name="GStreamer 1.22.7 Managarm"'
+        - '-Dpackage-name="GStreamer 1.24.10 Managarm"'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -515,11 +516,11 @@ packages:
       categories: ['media-libs']
     source:
       subdir: 'ports'
-      url: 'https://gstreamer.freedesktop.org/src/gst-plugins-good/gst-plugins-good-1.22.7.tar.xz'
+      url: 'https://gstreamer.freedesktop.org/src/gst-plugins-good/gst-plugins-good-1.24.10.tar.xz'
       format: 'tar.xz'
-      extract_path: 'gst-plugins-good-1.22.7'
-      checksum: blake2b:0c05afb9dfc70305219df4887caf887cf666bf76e7c6fd660550c7e603950bbffbdc2ab24d73e5eb47cf5f7032b92bad1b26d7b6e5ee320273894d5dfbd9e152
-      version: '1.22.7'
+      extract_path: 'gst-plugins-good-1.24.10'
+      checksum: blake2b:7f860cebe757dccd46d3f37a6e88b20d616d2d754f00833d0805a81a07046a67e37b4c6a0b9ba12857142ad6f642db29eba795da4c7feabdf9ec836d13d95d9e
+      version: '1.24.10'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -542,7 +543,7 @@ packages:
       - libpng
       - nettle
       - libxml
-    revision: 4
+    revision: 1
     configure:
       - args:
         - 'meson'
@@ -554,7 +555,7 @@ packages:
         - '--buildtype=debugoptimized'
         - '--wrap-mode=nodownload'
         - '-Dpackage-origin=https://managarm.org/'
-        - '-Dpackage-name="GStreamer 1.22.7 Managarm"'
+        - '-Dpackage-name="GStreamer 1.24.10 Managarm"'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -573,11 +574,11 @@ packages:
       categories: ['media-libs']
     source:
       subdir: 'ports'
-      url: 'https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.22.7.tar.xz'
+      url: 'https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.24.10.tar.xz'
       format: 'tar.xz'
-      extract_path: 'gstreamer-1.22.7'
-      checksum: blake2b:4bfbc1b75f85b0ebca22917ffab1ccdb0eba9deae6eee4ab076f492b6871ca5001018cd97c7b1b31948d29e0d08beb248fe28c29a0de754fe67db1c7cc5f4332
-      version: '1.22.7'
+      extract_path: 'gstreamer-1.24.10'
+      checksum: blake2b:77fac310664aefbbd35889b6c502d5e1af5b220cb22952d43b3ea1e025990ae10b6fd0199eb19ef965207a0bee748cf58432c6da6df08716b586e5882fa4a6a2
+      version: '1.24.10'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -586,7 +587,7 @@ packages:
     pkgs_required:
       - mlibc
       - glib
-    revision: 4
+    revision: 1
     configure:
       - args:
         - 'meson'
@@ -609,7 +610,7 @@ packages:
         - '-Dgst_debug=false'
         - '-Dcheck=disabled'
         - '-Dpackage-origin=https://managarm.org/'
-        - '-Dpackage-name="GStreamer 1.22.7 Managarm"'
+        - '-Dpackage-name="GStreamer 1.24.10 Managarm"'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -623,8 +624,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/harfbuzz/harfbuzz.git'
-      tag: '3.1.2'
-      version: '3.1.2'
+      tag: '10.1.0'
+      version: '10.1.0'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -649,10 +650,11 @@ packages:
       - !managarm::arch_dep
         item: gobject-introspection
         arch: [x86_64]
-    revision: 11
+    revision: 1
     configure:
       - args:
         - 'meson'
+        - 'setup'
         - '--native-file'
         - '@SOURCE_ROOT@/scripts/meson.native-file'
         - '--cross-file'
@@ -974,11 +976,11 @@ packages:
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
-      url: 'https://downloads.sourceforge.net/libpng/libpng-1.6.40.tar.xz'
+      url: 'https://downloads.sourceforge.net/libpng/libpng-1.6.44.tar.xz'
       format: 'tar.xz'
-      extract_path: 'libpng-1.6.40'
-      checksum: blake2b:4dd2df57791ca68cc31ba966b9176ecb37458572c60eef34e31ff0d3266d25ad6ea9d2e8cae6bfaf7932b5c7bc231047d3ed139b3464304c41cc4d89611f5ba8
-      version: '1.6.40'
+      extract_path: 'libpng-1.6.44'
+      checksum: blake2b:61064dd83f40a7e2e60ff723a568b7d0cda95aa80621a211aee7127b9783fbfc20cd82a2fe2d03584cbf9ab77c5444e3e008ac5ccc7f64af6e858ebcbcb78822
+      version: '1.6.44'
       patch-path-strip: 1
       tools_required:
         - host-autoconf-v2.69
@@ -992,7 +994,7 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
-    revision: 4
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1236,8 +1238,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/webmproject/libwebp.git'
-      tag: 'v1.3.2'
-      version: '1.3.2'
+      tag: 'v1.4.0'
+      version: '1.4.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1254,7 +1256,7 @@ packages:
       - freeglut
       - sdl2
       - libtiff
-    revision: 5
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

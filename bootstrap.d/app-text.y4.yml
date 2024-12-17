@@ -10,15 +10,16 @@ packages:
       categories: ['app-text']
     source:
       subdir: ports
-      url: 'https://salsa.debian.org/iso-codes-team/iso-codes/-/archive/v4.16.0/iso-codes-v4.16.0.tar.gz'
+      url: 'https://salsa.debian.org/iso-codes-team/iso-codes/-/archive/v4.17.0/iso-codes-v4.17.0.tar.gz'
       format: 'tar.gz'
-      extract_path: 'iso-codes-v4.16.0'
-      checksum: blake2b:8fcdb3c12c502c1e14169765db9c9dd7778fc5d4bb0da37aa6b27efeebd5ce9f3e825e5b1a7ae8d659babf2d6b9124af08b40ed8a2a1235e88df50be9c204ca5
-      version: '4.16.0'
+      extract_path: 'iso-codes-v4.17.0'
+      checksum: blake2b:b788e7b9f48e76667e2a7e97367faf7f5229ce66ba1b2d4e458620af4cc189f026b76c580607f7d95b2adda319137964d6e95e683f9363f3825a71c8c6792db9
+      version: '4.17.0'
     tools_required:
       - system-gcc
     pkgs_required:
       - mlibc
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

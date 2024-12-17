@@ -1,42 +1,59 @@
-From 896f9880f471a051a2ac474c542965a6dc906701 Mon Sep 17 00:00:00 2001
+From 8b19332567d488d6303077035602a7e7326cfd2f Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
-Date: Sun, 21 Jan 2024 15:45:52 +0100
+Date: Tue, 17 Dec 2024 21:14:37 +0100
 Subject: [PATCH] Add Managarm support
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
+ data/meson.build     | 4 ++--
+ meson.build          | 4 +++-
  src/as-system-info.c | 3 +++
- src/meson.build      | 3 +--
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ 3 files changed, 8 insertions(+), 3 deletions(-)
 
+diff --git a/data/meson.build b/data/meson.build
+index 7ae7a9b..c724ef3 100644
+--- a/data/meson.build
++++ b/data/meson.build
+@@ -9,8 +9,8 @@ install_data('its/metainfo.loc',
+ 
+ # Do not rely on an exe wrapper for rel-info, use the system one in that case
+ if meson.is_cross_build()
+-    dependency('appstream', version: '>=' + as_version, native: true,
+-               not_found_message: 'Native appstream required for cross-building')
++#    dependency('appstream', version: '>=' + as_version, native: true,
++#               not_found_message: 'Native appstream required for cross-building')
+     ascli_exe = find_program('appstreamcli')
+ endif
+ 
+diff --git a/meson.build b/meson.build
+index 7e89ab0..862b868 100644
+--- a/meson.build
++++ b/meson.build
+@@ -226,7 +226,9 @@ subdir('tools/')
+ subdir('po/')
+ subdir('data/')
+ subdir('contrib/')
+-subdir('docs/')
++if get_option('docs')
++    subdir('docs/')
++endif
+ subdir('tests/')
+ if get_option('qt')
+     subdir('qt/')
 diff --git a/src/as-system-info.c b/src/as-system-info.c
-index 73e4746..37002ed 100644
+index 0c7e27c..abea658 100644
 --- a/src/as-system-info.c
 +++ b/src/as-system-info.c
-@@ -409,6 +409,9 @@ as_get_physical_memory_total (void)
- 	unsigned long physmem;
- 	sysctl ((int[]){ CTL_HW, HW_PHYSMEM }, 2, &physmem, &(size_t){ sizeof (physmem) }, NULL, 0);
- 	return physmem / MB_IN_BYTES;
+@@ -519,6 +519,9 @@ as_get_physical_memory_total (void)
+ 	if (physpages > 0 && pagesize > 0)
+ 		return (physpages * pagesize) / MB_IN_BYTES;
+ 	return 0;
 +#elif defined(__managarm__)
-+	// NOT IMPLEMENTED
++	// HACK!
 +	return 0;
  #else
  #error "Implementation of as_get_physical_memory_total() missing for this OS."
  #endif
-diff --git a/src/meson.build b/src/meson.build
-index e098fab..a709b5e 100644
---- a/src/meson.build
-+++ b/src/meson.build
-@@ -194,8 +194,7 @@ appstream_lib = library ('appstream',
-     soversion: as_api_level,
-     version: as_version,
-     dependencies: [aslib_deps],
--    include_directories: [stemmer_inc_dirs,
--                          root_inc_dir],
-+    include_directories: [root_inc_dir],
-     install: true
- )
- 
 -- 
-2.43.0
+2.45.2
 

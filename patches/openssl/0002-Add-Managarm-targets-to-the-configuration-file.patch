@@ -5,8 +5,8 @@ Subject: [PATCH 2/2] Add Managarm targets to the configuration file
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
- Configurations/10-main.conf | 43 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 43 insertions(+)
+ Configurations/10-main.conf | 52 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 52 insertions(+)
 
 diff --git a/Configurations/10-main.conf b/Configurations/10-main.conf
 index 8dc3e858df..4b4f684578 100644
@@ -57,6 +57,15 @@ index 8dc3e858df..4b4f684578 100644
 +        # on to the GCC invocation
 +        CC               => "aarch64-managarm-gcc",
 +        CXX              => "aarch64-managarm-g++",
++    },
++    "riscv64-managarm" => {
++        inherit_from     => [ "managarm-generic64" ],
++        perlasm_scheme   => "linux64",
++
++        # Configure doesn't want to play nice and passes "--cross-compile-suffix"
++        # on to the GCC invocation
++        CC               => "riscv64-managarm-gcc",
++        CXX              => "riscv64-managarm-g++",
 +    },
 +
  #### *BSD

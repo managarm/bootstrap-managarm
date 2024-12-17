@@ -68,13 +68,20 @@ packages:
   - name: coreutils
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Standard GNU utilities (chmod, cp, dd, ls, sort, tr, head, wc, who,...)
+      description: This package contains the basic utility programs needed by every operating system.
+      spdx: 'GPL-3.0-or-later'
+      website: 'https://www.gnu.org/software/coreutils/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-apps']
     source:
       subdir: 'ports'
-      url: 'https://ftp.gnu.org/gnu/coreutils/coreutils-9.3.tar.xz'
+      url: 'https://ftp.gnu.org/gnu/coreutils/coreutils-9.5.tar.xz'
       format: tar.xz
-      checksum: 'blake2b:11502cd2dbeef150d0d4cece2546bf6b835941b94456c258f6058338f0477f22e68e88934d075b08fe51ee4d1c0c50cb23d8084ac06a457d6e8975f01643b1cd'
-      extract_path: 'coreutils-9.3'
-      version: '9.3'
+      checksum: 'blake2b:6fd3a77697c9e85f31415c6ad66559faf18acc7d346677a89d4a999c2027886551e78842a7283e7b3b44fe8ef2fde04ba2f88df32a7844d5f69d45bcb7a04b6f'
+      extract_path: 'coreutils-9.5'
+      version: '9.5'
       tools_required:
         - host-automake-v1.15
       regenerate:
@@ -85,7 +92,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 9
+    revision: 1
     configure:
       # Huge hack: coreutils does not compile the build-machine binary make-prime-list
       # using the build-machine compiler. Hence, build and invoke the binary manually here.
@@ -329,11 +336,18 @@ packages:
   - name: findutils
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: GNU utilities for finding files
+      description: This package contains programs to find files. Programs are provided to search through all the files in a directory tree and to create, maintain, and search a database.
+      spdx: 'GPL-3.0-or-later'
+      website: 'https://www.gnu.org/software/findutils/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-apps']
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/findutils.git'
-      tag: 'v4.9.0'
-      version: '4.9.0'
+      tag: 'v4.10.0'
+      version: '4.10.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -350,7 +364,7 @@ packages:
       - host-python
     pkgs_required:
       - mlibc
-    revision: 7
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -380,8 +394,8 @@ packages:
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/gawk.git'
-      tag: 'gawk-5.2.2'
-      version: '5.2.2'
+      tag: 'gawk-5.3.1'
+      version: '5.3.1'
       tools_required:
         - host-autoconf-v2.71
         - host-automake-v1.16
@@ -396,7 +410,7 @@ packages:
       - host-automake-v1.16
     pkgs_required:
       - mlibc
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -543,19 +557,26 @@ packages:
   - name: less
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Excellent text file viewer
+      description: This package contains a text file viewer.
+      spdx: 'GPL-3-only BSD-2-Clause'
+      website: 'https://www.greenwoodsoftware.com/less/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-apps']
     source:
       subdir: ports
-      url: 'https://www.greenwoodsoftware.com/less/less-643.tar.gz'
+      url: 'http://www.greenwoodsoftware.com/less/less-668.tar.gz'
       format: 'tar.gz'
-      checksum: blake2b:6dc60dc2e8db05afdae466877a1d26a3008ff5378bbbf2fbdf9efc4f87c0fcfde5703d44a24d4355c98d3a5f438bdb51173150f2a69f801d9c8e4a7401d71b53
-      extract_path: 'less-643'
-      version: '643'
+      checksum: blake2b:0f6a85a1c66577dd2a28682a6f8399e42fdbe9fc1498b2e89c6bb7c47109e8d3ab934abe5dd998b2c8dfacfb174ad9daeb79b3d4c13df22fa035ea792b2eaf5e
+      extract_path: 'less-668'
+      version: '668'
     tools_required:
       - system-gcc
     pkgs_required:
       - mlibc
       - ncurses
-    revision: 5
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -726,6 +747,13 @@ packages:
   - name: sed
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Super-useful stream editor
+      description: This package contains a stream editor.
+      spdx: 'GPL-3.0-or-later'
+      website: 'https://www.gnu.org/software/sed/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-apps']
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/sed.git'
