@@ -623,8 +623,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/harfbuzz/harfbuzz.git'
-      tag: '3.1.2'
-      version: '3.1.2'
+      tag: '10.1.0'
+      version: '10.1.0'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -649,10 +649,11 @@ packages:
       - !managarm::arch_dep
         item: gobject-introspection
         arch: [x86_64]
-    revision: 11
+    revision: 1
     configure:
       - args:
         - 'meson'
+        - 'setup'
         - '--native-file'
         - '@SOURCE_ROOT@/scripts/meson.native-file'
         - '--cross-file'
