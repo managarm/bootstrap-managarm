@@ -1447,10 +1447,10 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxmu.git'
-      tag: 'libXmu-1.1.4'
-      version: '1.1.4'
+      tag: 'libXmu-1.2.1'
+      version: '1.2.1'
       tools_required:
-        - host-autoconf-v2.69
+        - host-autoconf-v2.71
         - host-automake-v1.15
         - host-libtool
         - host-pkg-config
@@ -1463,7 +1463,7 @@ packages:
             'NOCONFIGURE': 'yes'
     tools_required:
       - system-gcc
-      - host-autoconf-v2.69
+      - host-autoconf-v2.71
       - host-automake-v1.15
       - host-pkg-config
     pkgs_required:
@@ -1474,7 +1474,7 @@ packages:
       - libxext
       - libxtrans
       - libxt
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
