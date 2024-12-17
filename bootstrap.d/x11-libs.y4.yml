@@ -1495,8 +1495,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxpm.git'
-      tag: 'libXpm-3.5.16'
-      version: '3.5.16'
+      tag: 'libXpm-3.5.17'
+      version: '3.5.17'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1519,7 +1519,7 @@ packages:
       - libx11
       - libxext
       - libxt
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
