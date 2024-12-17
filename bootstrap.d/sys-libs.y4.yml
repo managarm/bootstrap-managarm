@@ -278,8 +278,8 @@ packages:
       subdir: 'ports'
       git: 'https://bitmath.org/git/mtdev.git'
       disable_shallow_fetch: true
-      tag: 'v1.1.6'
-      version: '1.1.6'
+      tag: 'v1.1.7'
+      version: '1.1.7'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -292,7 +292,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 9
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
