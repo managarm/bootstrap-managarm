@@ -116,8 +116,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/xkeyboard-config/xkeyboard-config.git'
-      tag: 'xkeyboard-config-2.39'
-      version: '2.39'
+      tag: 'xkeyboard-config-2.43'
+      version: '2.43'
     tools_required:
       - host-xorg-macros
       - system-gcc
@@ -125,13 +125,11 @@ packages:
       - mlibc
       - libx11
       - xorg-proto
-    revision: 6
+    revision: 1
     configure:
-      # Make sure a symlink is created even if it already exists.
-      - args: |
-          sed -i -E 's/(ln -s)/\1f/' @THIS_SOURCE_DIR@/rules/meson.build
       - args:
         - 'meson'
+        - 'setup'
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
