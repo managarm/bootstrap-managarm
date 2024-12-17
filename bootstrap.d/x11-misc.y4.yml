@@ -2,8 +2,8 @@ sources:
   - name: 'xorg-util-macros'
     subdir: ports
     git: 'https://gitlab.freedesktop.org/xorg/util/macros.git'
-    tag: 'util-macros-1.20.0'
-    version: '1.20.0'
+    tag: 'util-macros-1.20.2'
+    version: '1.20.2'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.11
@@ -148,7 +148,7 @@ packages:
     tools_required:
       - system-gcc
       - host-xorg-macros
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
