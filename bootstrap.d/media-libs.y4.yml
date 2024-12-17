@@ -516,11 +516,11 @@ packages:
       categories: ['media-libs']
     source:
       subdir: 'ports'
-      url: 'https://gstreamer.freedesktop.org/src/gst-plugins-good/gst-plugins-good-1.22.7.tar.xz'
+      url: 'https://gstreamer.freedesktop.org/src/gst-plugins-good/gst-plugins-good-1.24.10.tar.xz'
       format: 'tar.xz'
-      extract_path: 'gst-plugins-good-1.22.7'
-      checksum: blake2b:0c05afb9dfc70305219df4887caf887cf666bf76e7c6fd660550c7e603950bbffbdc2ab24d73e5eb47cf5f7032b92bad1b26d7b6e5ee320273894d5dfbd9e152
-      version: '1.22.7'
+      extract_path: 'gst-plugins-good-1.24.10'
+      checksum: blake2b:7f860cebe757dccd46d3f37a6e88b20d616d2d754f00833d0805a81a07046a67e37b4c6a0b9ba12857142ad6f642db29eba795da4c7feabdf9ec836d13d95d9e
+      version: '1.24.10'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -543,7 +543,7 @@ packages:
       - libpng
       - nettle
       - libxml
-    revision: 4
+    revision: 1
     configure:
       - args:
         - 'meson'
@@ -555,7 +555,7 @@ packages:
         - '--buildtype=debugoptimized'
         - '--wrap-mode=nodownload'
         - '-Dpackage-origin=https://managarm.org/'
-        - '-Dpackage-name="GStreamer 1.22.7 Managarm"'
+        - '-Dpackage-name="GStreamer 1.24.10 Managarm"'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
