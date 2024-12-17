@@ -1588,8 +1588,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxrender.git'
-      tag: 'libXrender-0.9.11'
-      version: '0.9.11'
+      tag: 'libXrender-0.9.12'
+      version: '0.9.12'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1612,7 +1612,7 @@ packages:
       - xorg-proto
       - libx11
       - libxtrans
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
