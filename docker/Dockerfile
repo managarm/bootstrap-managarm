@@ -11,6 +11,8 @@ RUN apt-get update \
 		autogen \
 		# Used by host-bison
 		autopoint \
+		# Used by the Linux kernel
+		bc \
 		# Used by binutils in the build process
 		bison \
 		# Contains gcc and g++
@@ -51,6 +53,8 @@ RUN apt-get update \
 		libzstd-dev \
 		# Used by host-knotifications
 		libcanberra-dev \
+		# Used by the Linux kernel
+		libelf-dev \
 		# Used by wayland-scanner
 		libexpat1-dev \
 		# Used by gtk+-2
