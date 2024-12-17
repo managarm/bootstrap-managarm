@@ -448,11 +448,11 @@ packages:
       categories: ['media-libs']
     source:
       subdir: 'ports'
-      url: 'https://gstreamer.freedesktop.org/src/gst-plugins-base/gst-plugins-base-1.22.7.tar.xz'
+      url: 'https://gstreamer.freedesktop.org/src/gst-plugins-base/gst-plugins-base-1.24.10.tar.xz'
       format: 'tar.xz'
-      extract_path: 'gst-plugins-base-1.22.7'
-      checksum: blake2b:c6880858ed0dafef8102e097a380d771043051180cac220ead724a5861976f1e56f0d96939d271e806880fdb9473a31cfa7476d772ca9cc2c77d6c6163f5fef3
-      version: '1.22.7'
+      extract_path: 'gst-plugins-base-1.24.10'
+      checksum: blake2b:0935a21d344b7d1328d1958325c49d23dadddd5bb72b2639ed2598efd2a2d35a8bb322583c2e6b9865c9d4d922400abcd20512ef28c1de8e7f6c11369008e23c
+      version: '1.24.10'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -478,10 +478,11 @@ packages:
       - wayland
       - pango
       - libxext
-    revision: 4
+    revision: 1
     configure:
       - args:
         - 'meson'
+        - 'setup'
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
@@ -496,7 +497,7 @@ packages:
         - '-Dorc=disabled'
         - '-Dexamples=disabled'
         - '-Dpackage-origin=https://managarm.org/'
-        - '-Dpackage-name="GStreamer 1.22.7 Managarm"'
+        - '-Dpackage-name="GStreamer 1.24.10 Managarm"'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
