@@ -1403,8 +1403,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxkbfile.git'
-      tag: 'libxkbfile-1.1.2'
-      version: '1.1.2'
+      tag: 'libxkbfile-1.1.3'
+      version: '1.1.3'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1426,7 +1426,7 @@ packages:
       - xorg-util-macros
       - xorg-proto
       - libx11
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
