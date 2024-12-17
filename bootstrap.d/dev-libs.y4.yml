@@ -3,6 +3,12 @@ import:
   - !managarm
 ---
 sources:
+  - name: appstream
+    subdir: 'ports'
+    git: 'https://github.com/ximion/appstream.git'
+    tag: 'v1.0.4'
+    version: '1.0.4'
+
   - name: glib
     subdir: ports
     git: 'https://gitlab.gnome.org/GNOME/glib.git'
@@ -82,6 +88,43 @@ sources:
 
 
 tools:
+  - name: host-appstream
+    architecture: noarch
+    from_source: appstream
+    exports_aclocal: true
+    exports_shared_libs: true
+    tools_required:
+      - host-pkg-config
+      - virtual: pkgconfig-for-host
+        program_name: host-pkg-config
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--prefix=@PREFIX@'
+        - '-Dapidocs=false'
+        - '-Ddocs=false'
+        - '-Dcompose=false'
+        - '-Dmaintainer=false'
+        - '-Dstatic-analysis=false'
+        - '-Dstemming=false'
+        - '-Dvapi=false'
+        - '-Dapt-support=false'
+        - '-Dinstall-docs=false'
+        - '-Dgir=false'
+        - '-Dqt=false'
+        - '-Dsystemd=false'
+        - '-Ddocs=false'
+        - '@THIS_SOURCE_DIR@'
+        isolate_network: false
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
+
   - name: host-glib
     labels: [aarch64, riscv64]
     architecture: noarch
@@ -167,7 +210,6 @@ tools:
 packages:
   - name: appstream
     architecture: '@OPTION:arch@'
-    stability_level: 'broken' # networking issues
     metadata:
       summary: Cross-distro effort for providing metadata for software in the Linux ecosystem
       description: This package provides a library and tool that is useful for retrieving software metadata and making it easily accessible to programs which need it.
@@ -175,13 +217,10 @@ packages:
       website: 'https://www.freedesktop.org/wiki/Distributions/AppStream/'
       maintainer: "Dennis Bonke <dennis@managarm.org>"
       categories: ['dev-libs']
-    source:
-      subdir: 'ports'
-      git: 'https://github.com/ximion/appstream.git'
-      tag: 'v0.16.4'
-      version: '0.16.4'
+    from_source: 'appstream'
     tools_required:
       - system-gcc
+      - host-appstream
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
     pkgs_required:

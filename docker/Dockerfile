@@ -53,6 +53,8 @@ RUN apt-get update \
 		libzstd-dev \
 		# Used by host-knotifications
 		libcanberra-dev \
+		# Used by host-appstream
+		libcurl4-openssl-dev \
 		# Used by the Linux kernel
 		libelf-dev \
 		# Used by wayland-scanner
@@ -89,6 +91,9 @@ RUN apt-get update \
 		libxkbcommon-x11-dev \
 		# Used by host-kwindowsystem
 		libxfixes-dev \
+		# Used by host-appstream
+		libxml2-dev \
+		libyaml-dev \
 		# Used by many gnu build steps
 		m4 \
 		# Required to build images for Android's fastboot protocol.
