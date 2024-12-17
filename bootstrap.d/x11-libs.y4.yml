@@ -931,8 +931,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxcursor.git'
-      tag: 'libXcursor-1.2.1'
-      version: '1.2.1'
+      tag: 'libXcursor-1.2.3'
+      version: '1.2.3'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -955,7 +955,7 @@ packages:
       - libx11
       - libxfixes
       - libxrender
-    revision: 7
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
