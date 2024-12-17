@@ -1,4 +1,4 @@
-From 0749181b2fea154ad99e0495b0e03b3e585e5331 Mon Sep 17 00:00:00 2001
+From b42352757856ad3f6051a8863426d37849fa8f21 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Tue, 13 Feb 2024 04:48:28 +0100
 Subject: [PATCH] Add Managarm support
