@@ -1968,7 +1968,7 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
-    revision: 7
+    revision: 8
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/Configure'
