@@ -1022,8 +1022,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxdmcp.git'
-      tag: 'libXdmcp-1.1.4'
-      version: '1.1.4'
+      tag: 'libXdmcp-1.1.5'
+      version: '1.1.5'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1044,7 +1044,7 @@ packages:
       - xorg-util-macros
       - xorg-proto
       - libxau
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
