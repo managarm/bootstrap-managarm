@@ -3,15 +3,16 @@ sources:
     subdir: 'ports'
     # This may seem strange, but is actually correct
     git: 'https://code.qt.io/qt/qt5.git'
-    tag: 'v6.6.2'
-    version: '6.6.2'
+    tag: 'v6.8.1'
+    version: '6.8.1'
     regenerate:
       # Get the submodules that we'll need as a host tool
+      - args: ['git', 'remote', 'set-url', 'origin', 'https://code.qt.io/qt/qt5.git']
       - args: ['./init-repository', '-f', '--module-subset', 'qtbase,qtsvg,qtimageformats,qtshadertools,qtlanguageserver,qtdeclarative,qtwayland,qtmultimedia,qttools,qt5compat,qtsensors,qtcharts,qtpositioning,qtspeech']
         isolate_network: false
       - args: |
           cd @THIS_SOURCE_DIR@/qtbase
-          git pull origin 6.6.2
+          git pull origin 6.8.1
         isolate_network: false
 
 tools:
@@ -19,7 +20,7 @@ tools:
   - name: host-qt6
     architecture: noarch
     from_source: qt6
-    revision: 2
+    revision: 1
     tools_required:
       - host-cmake
       - wayland-scanner
