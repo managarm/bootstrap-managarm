@@ -351,8 +351,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtmultimedia.git'
-      tag: 'v6.6.2'
-      version: '6.6.2'
+      tag: 'v6.8.1'
+      version: '6.8.1'
     tools_required:
       - system-gcc
       - host-cmake
@@ -364,8 +364,8 @@ packages:
       - qtshadertools6
       - libglvnd
       - gstreamer
-      - gst-plugins-base
-    revision: 2
+      - gst-plugins-bad
+    revision: 1
     configure:
       - args:
         - 'cmake'
