@@ -779,8 +779,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxaw.git'
-      tag: 'libXaw-1.0.15'
-      version: '1.0.15'
+      tag: 'libXaw-1.0.16'
+      version: '1.0.16'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -805,7 +805,7 @@ packages:
       - libxt
       - libxmu
       - libxpm
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
