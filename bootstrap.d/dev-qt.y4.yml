@@ -549,8 +549,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'http://code.qt.io/qt/qtwayland.git'
-      tag: 'v6.6.2'
-      version: '6.6.2'
+      tag: 'v6.8.1'
+      version: '6.8.1'
     tools_required:
       - system-gcc
       - host-cmake
@@ -562,7 +562,7 @@ packages:
       - mesa
       - wayland
       - libxkbcommon
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
