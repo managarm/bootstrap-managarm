@@ -1734,8 +1734,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxshmfence.git'
-      tag: 'libxshmfence-1.3.2'
-      version: '1.3.2'
+      tag: 'libxshmfence-1.3.3'
+      version: '1.3.3'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1758,7 +1758,7 @@ packages:
       - xorg-proto
       - libx11
       - libxtrans
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
