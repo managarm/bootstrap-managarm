@@ -1261,8 +1261,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxi.git'
-      tag: 'libXi-1.8.1'
-      version: '1.8.1'
+      tag: 'libXi-1.8.2'
+      version: '1.8.2'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1287,7 +1287,7 @@ packages:
       - libxtrans
       - libxext
       - libxfixes
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
