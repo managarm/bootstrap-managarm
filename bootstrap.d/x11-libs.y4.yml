@@ -1951,8 +1951,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxxf86vm.git'
-      tag: 'libXxf86vm-1.1.5'
-      version: '1.1.5'
+      tag: 'libXxf86vm-1.1.6'
+      version: '1.1.6'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1976,7 +1976,7 @@ packages:
       - libx11
       - libxtrans
       - libxext
-    revision: 7
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
