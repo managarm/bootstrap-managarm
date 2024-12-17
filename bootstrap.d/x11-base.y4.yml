@@ -55,8 +55,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/proto/xorgproto.git'
-      tag: 'xorgproto-2023.2'
-      version: '2023.2'
+      tag: 'xorgproto-2024.1'
+      version: '2024.1'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -72,7 +72,7 @@ packages:
     pkgs_required:
       - mlibc
       - xorg-util-macros
-    revision: 7
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
