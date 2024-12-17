@@ -1238,8 +1238,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/webmproject/libwebp.git'
-      tag: 'v1.3.2'
-      version: '1.3.2'
+      tag: 'v1.4.0'
+      version: '1.4.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1256,7 +1256,7 @@ packages:
       - freeglut
       - sdl2
       - libtiff
-    revision: 5
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
