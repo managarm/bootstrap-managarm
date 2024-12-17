@@ -502,10 +502,10 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libfontenc.git'
-      tag: 'libfontenc-1.1.7'
-      version: '1.1.7'
+      tag: 'libfontenc-1.1.8'
+      version: '1.1.8'
       tools_required:
-        - host-autoconf-v2.69
+        - host-autoconf-v2.71
         - host-automake-v1.15
         - host-libtool
         - host-pkg-config
@@ -520,7 +520,7 @@ packages:
       - system-gcc
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
-      - host-autoconf-v2.69
+      - host-autoconf-v2.71
       - host-automake-v1.15
       - host-pkg-config
     pkgs_required:
@@ -531,7 +531,7 @@ packages:
       - libxtrans
       - xorg-font-util
       - zlib
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
