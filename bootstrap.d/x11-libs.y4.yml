@@ -552,8 +552,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libice.git'
-      tag: 'libICE-1.1.1'
-      version: '1.1.1'
+      tag: 'libICE-1.1.2'
+      version: '1.1.2'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -577,7 +577,7 @@ packages:
       - xorg-proto
       - libx11
       - libxtrans
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
