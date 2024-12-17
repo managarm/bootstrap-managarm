@@ -12,8 +12,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/proto/xcbproto.git'
-      tag: 'xcb-proto-1.16.0'
-      version: '1.16.0'
+      tag: 'xcb-proto-1.17.0'
+      version: '1.17.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -32,7 +32,7 @@ packages:
       - xorg-proto
       - libxau
       - libxdmcp
-    revision: 4
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
