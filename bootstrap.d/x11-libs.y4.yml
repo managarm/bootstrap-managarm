@@ -1857,8 +1857,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxtst.git'
-      tag: 'libXtst-1.2.4'
-      version: '1.2.4'
+      tag: 'libXtst-1.2.5'
+      version: '1.2.5'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1883,7 +1883,7 @@ packages:
       - libxtrans
       - libxext
       - libxi
-    revision: 7
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
