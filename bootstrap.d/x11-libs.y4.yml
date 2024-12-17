@@ -833,8 +833,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxcb.git'
-      tag: 'libxcb-1.16'
-      version: '1.16'
+      tag: 'libxcb-1.17.0'
+      version: '1.17'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -857,7 +857,7 @@ packages:
       - libxau
       - libxdmcp
       - xcb-proto
-    revision: 4
+    revision: 1
     configure:
       - args: ['sed', '-i', "s/pthread-stubs//", '@THIS_SOURCE_DIR@/configure']
       - args:
