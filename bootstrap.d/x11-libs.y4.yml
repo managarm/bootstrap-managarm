@@ -1156,10 +1156,10 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxfont.git'
-      tag: 'libXfont2-2.0.6'
-      version: '2.0.6'
+      tag: 'libXfont2-2.0.7'
+      version: '2.0.7'
       tools_required:
-        - host-autoconf-v2.69
+        - host-autoconf-v2.71
         - host-automake-v1.15
         - host-libtool
         - host-pkg-config
@@ -1175,7 +1175,7 @@ packages:
       - host-xtrans
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
-      - host-autoconf-v2.69
+      - host-autoconf-v2.71
       - host-automake-v1.15
       - host-pkg-config
     pkgs_required:
@@ -1189,7 +1189,7 @@ packages:
       - bzip2
       - libfontenc
       - zlib
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
