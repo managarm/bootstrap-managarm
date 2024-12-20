@@ -1,4 +1,4 @@
-From 0749181b2fea154ad99e0495b0e03b3e585e5331 Mon Sep 17 00:00:00 2001
+From 8dc142ca5f0bbd5f5de57bdac1a593ebeac029c9 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Tue, 13 Feb 2024 04:48:28 +0100
 Subject: [PATCH] Add Managarm support
@@ -12,20 +12,21 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
  mkspecs/managarm-g++/qmake.conf               | 12 +++
  mkspecs/managarm-g++/qplatformdefs.h          | 88 +++++++++++++++++++
  src/corelib/global/qsystemdetection.h         |  2 +
+ src/corelib/io/qprocess_unix.cpp              |  4 +
  src/corelib/io/qstorageinfo_unix.cpp          |  3 +
  src/corelib/thread/qthread_unix.cpp           |  2 +-
  src/gui/configure.cmake                       |  4 +-
  src/network/kernel/qnetworkinterface_unix.cpp |  4 +
- 11 files changed, 173 insertions(+), 5 deletions(-)
+ 12 files changed, 177 insertions(+), 5 deletions(-)
  create mode 100644 mkspecs/common/managarm.conf
  create mode 100644 mkspecs/managarm-g++/qmake.conf
  create mode 100644 mkspecs/managarm-g++/qplatformdefs.h
 
 diff --git a/cmake/QtMkspecHelpers.cmake b/cmake/QtMkspecHelpers.cmake
-index cd08daa2..1e14911b 100644
+index a9612966..e39765e6 100644
 --- a/cmake/QtMkspecHelpers.cmake
 +++ b/cmake/QtMkspecHelpers.cmake
-@@ -48,6 +48,12 @@ macro(qt_internal_setup_platform_definitions_and_mkspec)
+@@ -50,6 +50,12 @@ macro(qt_internal_setup_platform_definitions_and_mkspec)
          elseif(CLANG)
              set(QT_DEFAULT_MKSPEC linux-clang)
          endif()
@@ -39,7 +40,7 @@ index cd08daa2..1e14911b 100644
          if(GCC)
              set(QT_DEFAULT_MKSPEC android-g++)
 diff --git a/cmake/QtPlatformSupport.cmake b/cmake/QtPlatformSupport.cmake
-index e20a5e15..8d01b2df 100644
+index 9f8498e4..4b95e3be 100644
 --- a/cmake/QtPlatformSupport.cmake
 +++ b/cmake/QtPlatformSupport.cmake
 @@ -10,6 +10,7 @@ function(qt_set01 result)
@@ -110,7 +111,7 @@ index 00000000..dfa52073
 +QMAKE_STRIPFLAGS_LIB   += --strip-unneeded
 \ No newline at end of file
 diff --git a/mkspecs/common/posix/qplatformdefs.h b/mkspecs/common/posix/qplatformdefs.h
-index ffae2ac3..3196f1b1 100644
+index e7ce7a56..97a6f4f1 100644
 --- a/mkspecs/common/posix/qplatformdefs.h
 +++ b/mkspecs/common/posix/qplatformdefs.h
 @@ -12,7 +12,7 @@
@@ -130,7 +131,7 @@ index ffae2ac3..3196f1b1 100644
 +        && !defined(QT_NO_READDIR64) && !defined(__managarm__)
  #define QT_DIRENT               struct dirent64
  #define QT_READDIR              ::readdir64
- #define QT_READDIR_R            ::readdir64_r
+ #else
 diff --git a/mkspecs/managarm-g++/qmake.conf b/mkspecs/managarm-g++/qmake.conf
 new file mode 100644
 index 00000000..6eb945c0
@@ -245,10 +246,10 @@ index 00000000..91654548
 +
 +#endif // QPLATFORMDEFS_H
 diff --git a/src/corelib/global/qsystemdetection.h b/src/corelib/global/qsystemdetection.h
-index 51881043..07ea4fe7 100644
+index 0cbcef27..35f6945f 100644
 --- a/src/corelib/global/qsystemdetection.h
 +++ b/src/corelib/global/qsystemdetection.h
-@@ -126,6 +126,8 @@
+@@ -129,6 +129,8 @@
  #  define Q_OS_VXWORKS
  #elif defined(__HAIKU__)
  #  define Q_OS_HAIKU
@@ -257,11 +258,26 @@ index 51881043..07ea4fe7 100644
  #elif defined(__MAKEDEPEND__)
  #else
  #  error "Qt has not been ported to this OS - see http://www.qt-project.org/"
+diff --git a/src/corelib/io/qprocess_unix.cpp b/src/corelib/io/qprocess_unix.cpp
+index d9b672df..1f320518 100644
+--- a/src/corelib/io/qprocess_unix.cpp
++++ b/src/corelib/io/qprocess_unix.cpp
+@@ -40,6 +40,10 @@
+ #include <termios.h>
+ #include <unistd.h>
+ 
++#if !defined(_POSIX_PIPE_BUF) && defined(__managarm__)
++#define _POSIX_PIPE_BUF 512
++#endif
++
+ #if __has_include(<paths.h>)
+ #  include <paths.h>
+ #endif
 diff --git a/src/corelib/io/qstorageinfo_unix.cpp b/src/corelib/io/qstorageinfo_unix.cpp
-index e520b5be..c9ee27c6 100644
+index b809a52f..cae9ff3c 100644
 --- a/src/corelib/io/qstorageinfo_unix.cpp
 +++ b/src/corelib/io/qstorageinfo_unix.cpp
-@@ -64,6 +64,9 @@
+@@ -53,6 +53,9 @@
  #elif defined(Q_OS_HAIKU)
  #  define QT_STATFSBUF struct statvfs
  #  define QT_STATFS    ::statvfs
@@ -272,10 +288,10 @@ index e520b5be..c9ee27c6 100644
  #  if defined(QT_LARGEFILE_SUPPORT)
  #    define QT_STATFSBUF struct statvfs64
 diff --git a/src/corelib/thread/qthread_unix.cpp b/src/corelib/thread/qthread_unix.cpp
-index 6694235f..c7b1f7af 100644
+index 14c6490c..05ad17a4 100644
 --- a/src/corelib/thread/qthread_unix.cpp
 +++ b/src/corelib/thread/qthread_unix.cpp
-@@ -689,7 +689,7 @@ void QThread::start(Priority priority)
+@@ -739,7 +739,7 @@ void QThread::start(Priority priority)
  
  
      if (d->stackSize > 0) {
@@ -285,7 +301,7 @@ index 6694235f..c7b1f7af 100644
  #else
          int code = ENOSYS; // stack size not supported, automatically fail
 diff --git a/src/gui/configure.cmake b/src/gui/configure.cmake
-index 222073ad..5fecb185 100644
+index 0e53f512..09065aec 100644
 --- a/src/gui/configure.cmake
 +++ b/src/gui/configure.cmake
 @@ -29,7 +29,7 @@ set_property(CACHE INPUT_libpng PROPERTY STRINGS undefined no qt system)
@@ -297,20 +313,20 @@ index 222073ad..5fecb185 100644
  qt_find_package(ATSPI2 PROVIDED_TARGETS PkgConfig::ATSPI2 MODULE_NAME gui QMAKE_LIB atspi)
  qt_find_package(DirectFB PROVIDED_TARGETS PkgConfig::DirectFB MODULE_NAME gui QMAKE_LIB directfb)
  qt_find_package(Libdrm PROVIDED_TARGETS Libdrm::Libdrm MODULE_NAME gui QMAKE_LIB drm)
-@@ -60,7 +60,7 @@ qt_find_package(GLESv2 PROVIDED_TARGETS GLESv2::GLESv2 MODULE_NAME gui QMAKE_LIB
+@@ -69,7 +69,7 @@ qt_find_package(GLESv2 PROVIDED_TARGETS GLESv2::GLESv2 MODULE_NAME gui QMAKE_LIB
  qt_find_package(Tslib PROVIDED_TARGETS PkgConfig::Tslib MODULE_NAME gui QMAKE_LIB tslib)
  qt_find_package(WrapVulkanHeaders PROVIDED_TARGETS WrapVulkanHeaders::WrapVulkanHeaders
      MODULE_NAME gui QMAKE_LIB vulkan MARK_OPTIONAL)
 -if((LINUX) OR QT_FIND_ALL_PACKAGES_ALWAYS)
 +if((LINUX OR MANAGARM) OR QT_FIND_ALL_PACKAGES_ALWAYS)
      qt_find_package(Wayland PROVIDED_TARGETS Wayland::Server MODULE_NAME gui QMAKE_LIB wayland_server)
+     qt_find_package(Wayland PROVIDED_TARGETS Wayland::Client MODULE_NAME gui QMAKE_LIB wayland_client)
  endif()
- if((X11_SUPPORTED) OR QT_FIND_ALL_PACKAGES_ALWAYS)
 diff --git a/src/network/kernel/qnetworkinterface_unix.cpp b/src/network/kernel/qnetworkinterface_unix.cpp
-index 082d83e9..49c5a8de 100644
+index 39ff8dbb..f702e384 100644
 --- a/src/network/kernel/qnetworkinterface_unix.cpp
 +++ b/src/network/kernel/qnetworkinterface_unix.cpp
-@@ -25,6 +25,10 @@
+@@ -21,6 +21,10 @@
  # include <ifaddrs.h>
  #endif
  
@@ -322,5 +338,5 @@ index 082d83e9..49c5a8de 100644
  #  include <arpa/inet.h>
  #  ifndef SIOCGIFBRDADDR
 -- 
-2.43.0
+2.45.2
 

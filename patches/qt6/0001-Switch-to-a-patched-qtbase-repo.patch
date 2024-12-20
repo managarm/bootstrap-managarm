@@ -1,7 +1,7 @@
-From f6606f7f836162222037efd9c93412b3c4e5032b Mon Sep 17 00:00:00 2001
+From 7526880e7dee530b6ec6a6c1b92bb54e6b0aa00f Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
-Date: Sat, 2 Mar 2024 12:46:53 +0100
-Subject: [PATCH] Switch to a patched qtbase repo
+Date: Tue, 17 Dec 2024 15:36:22 +0100
+Subject: [PATCH 1/2] Switch to a patched qtbase repo
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
@@ -9,7 +9,7 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/.gitmodules b/.gitmodules
-index 1ad0f47..ee888bb 100644
+index fd4b60a..d2d84a1 100644
 --- a/.gitmodules
 +++ b/.gitmodules
 @@ -1,6 +1,6 @@
@@ -17,9 +17,9 @@ index 1ad0f47..ee888bb 100644
  	path = qtbase
 -	url = ../qtbase.git
 +	url = https://github.com/Dennisbonke/qtbase.git
- 	branch = 6.6.2
+ 	branch = 6.8.1
  	status = essential
  [submodule "qtsvg"]
 -- 
-2.43.0
+2.45.2
 

@@ -1,6 +1,6 @@
-From 7f3fcff075049579ef27b3e5b38c797ab6bcf7e2 Mon Sep 17 00:00:00 2001
+From 64d1a83f9f104179fdb6e9aca4e27693959c2bf5 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
-Date: Mon, 18 Apr 2022 21:23:04 +0200
+Date: Tue, 17 Dec 2024 18:45:39 +0100
 Subject: [PATCH] Add Managarm support
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
@@ -9,18 +9,18 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/src/qml/jit/qv4assemblercommon_p.h b/src/qml/jit/qv4assemblercommon_p.h
-index 0c94b4bf..dfc4350b 100644
+index e83608ae..622e41e6 100644
 --- a/src/qml/jit/qv4assemblercommon_p.h
 +++ b/src/qml/jit/qv4assemblercommon_p.h
 @@ -33,7 +33,7 @@ namespace QV4 {
  namespace JIT {
  
  #if defined(Q_PROCESSOR_X86_64) || defined(ENABLE_ALL_ASSEMBLERS_FOR_REFACTORING_PURPOSES)
--#if defined(Q_OS_LINUX) || defined(Q_OS_QNX) || defined(Q_OS_FREEBSD) || defined(Q_OS_DARWIN) || defined(Q_OS_SOLARIS)
-+#if defined(Q_OS_LINUX) || defined(Q_OS_QNX) || defined(Q_OS_FREEBSD) || defined(Q_OS_DARWIN) || defined(Q_OS_SOLARIS) || defined(Q_OS_MANAGARM)
+-#if defined(Q_OS_LINUX) || defined(Q_OS_QNX) || defined(Q_OS_FREEBSD) || defined(Q_OS_DARWIN) || defined(Q_OS_SOLARIS) || defined(Q_OS_VXWORKS)
++#if defined(Q_OS_LINUX) || defined(Q_OS_QNX) || defined(Q_OS_FREEBSD) || defined(Q_OS_DARWIN) || defined(Q_OS_SOLARIS) || defined(Q_OS_VXWORKS) || defined(Q_OS_MANAGARM)
  
  class PlatformAssembler_X86_64_SysV : public JSC::MacroAssembler<JSC::MacroAssemblerX86_64>
  {
 -- 
-2.42.0
+2.45.2
 
