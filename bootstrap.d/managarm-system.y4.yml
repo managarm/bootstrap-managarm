@@ -13,7 +13,7 @@ sources:
     subdir: 'ports'
     git: 'https://github.com/UltraOS/uACPI.git'
     branch: 'master'
-    commit: 2772bb5f7cae985d08f74997ca316ed56c0a79cd
+    commit: 99372abc3dca8e1c00dc3277a030463b0a9d2670
     version: '0.0pl@ROLLING_ID@'
 
   - name: freebsd-e1000
