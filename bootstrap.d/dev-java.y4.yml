@@ -1,0 +1,86 @@
+tools:
+  - name: host-openjdk
+    architecture: 'x86_64'
+    source:
+      subdir: 'ports'
+      url: 'https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.9%2B9/OpenJDK17U-jdk_x64_linux_hotspot_17.0.9_9.tar.gz'
+      format: 'tar.gz'
+      checksum: 'blake2b:0bf5a6583f27a2d961fc72de11154e2fc6ba6383ebaf58fb328ea7ef40994188d1aee6fbdef5784f5629f552d6942c43e29fa3f7b99af250e4179da9bd7fcbe4'
+      version: '17.0.9.9'
+    configure:
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/jdk-17.0.9+9', '@PREFIX@']
+
+packages:
+  - name: openjdk17
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Open source implementation of the Java programming language
+      description: Open source implementation of the Java programming language
+      spdx: 'GPL-2-with-classpath-exception'
+      website: 'https://openjdk.org'
+      maintainer: 'Qwinci <qwinci222@gmail.com>'
+      categories: ['dev-java']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/openjdk/jdk17.git'
+      tag: 'jdk-17+35'
+      version: '17.0.35'
+      tools_required:
+        - host-automake-v1.15
+      regenerate:
+        - args: ['cp',
+                '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
+                '@THIS_SOURCE_DIR@/make/autoconf/build-aux/']
+        - args: ['chmod', '+x', '@THIS_SOURCE_DIR@/configure']
+    tools_required:
+      - system-gcc
+      - host-libtool
+      - host-autoconf-v2.69
+      - host-automake-v1.15
+      - host-file
+      - host-zip
+      - host-openjdk
+    pkgs_required:
+      - mlibc
+      - managarm-system
+      - cups
+      - freetype
+      - giflib
+      - harfbuzz
+      - libpng
+      - libjpeg-turbo
+      - zlib
+      - libx11
+      - libxext
+      - libxi
+      - libxrandr
+      - libxrender
+      - libxt
+      - libxtst
+      - xorg-proto
+      - alsa-lib
+      - libiconv
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--openjdk-target=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--disable-ccache'
+        - '--disable-precompiled-headers'
+        - '--disable-warnings-as-errors'
+        - '--enable-full-docs=no'
+        - '--with-boot-jdk=@BUILD_ROOT@/tools/host-openjdk'
+        - '--with-freetype=system'
+        - '--with-giflib=system'
+        - '--with-harfbuzz=system'
+        - '--with-libjpeg=system'
+        - '--with-libpng=system'
+
+    build:
+      - args: ['make', 'JOBS=@PARALLELISM@', 'product-images']
+        isolate_network: false
+      - args: ['mkdir', '-p', 'images/jdk/.systemPrefs']
+      - args: ['touch', 'images/jdk/.systemPrefs/.system.lock']
+      - args: ['touch', 'images/jdk/.systemPrefs/.systemRootModFile']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/lib/jvm']
+      - args: ['cp', '-pPr', 'images/jdk', '@THIS_COLLECT_DIR@/usr/lib/jvm/java-17']

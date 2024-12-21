@@ -1,3 +1,28 @@
+tools:
+  - name: host-zip
+    architecture: '@OPTION:arch@'
+    source:
+      subdir: ports
+      url: 'https://downloads.sourceforge.net/infozip/zip30.tar.gz'
+      format: 'tar.gz'
+      checksum: blake2b:4f78ab75214e4a339ab96c2b0e6e1037596368a5ad7d2839e3568d0eb7491de2ffa7dbed6ae354417cff438005f5b7af7223ed889b616e265df54f05c1f6276e
+      version: '3.0'
+      extract_path: 'zip30'
+    configure:
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+    compile:
+      - args: ['make', '-f', '@THIS_BUILD_DIR@/unix/Makefile', 'generic']
+      - args: ['mkdir', '-p', '@PREFIX@/bin']
+      - args: ['mkdir', '-p', '@PREFIX@/share/man/man1']
+      - args: ['cp', '@THIS_BUILD_DIR@/zip', '@PREFIX@/bin/']
+      - args: ['cp', '@THIS_BUILD_DIR@/zipcloak', '@PREFIX@/bin/']
+      - args: ['cp', '@THIS_BUILD_DIR@/zipnote', '@PREFIX@/bin/']
+      - args: ['cp', '@THIS_BUILD_DIR@/zipsplit', '@PREFIX@/bin/']
+      - args: ['cp', '@THIS_BUILD_DIR@/man/zip.1', '@PREFIX@/share/man/man1/']
+      - args: ['cp', '@THIS_BUILD_DIR@/man/zipcloak.1', '@PREFIX@/share/man/man1/']
+      - args: ['cp', '@THIS_BUILD_DIR@/man/zipnote.1', '@PREFIX@/share/man/man1/']
+      - args: ['cp', '@THIS_BUILD_DIR@/man/zipsplit.1', '@PREFIX@/share/man/man1/']
+
 packages:
   - name: brotli
     architecture: '@OPTION:arch@'
