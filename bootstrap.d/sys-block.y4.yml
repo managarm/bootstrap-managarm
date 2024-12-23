@@ -1,0 +1,40 @@
+packages:
+  - name: fio
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Jens Axboe's Flexible IO tester.
+      description: Jens Axboe's Flexible IO tester.
+      spdx: 'GPL-2.0-only'
+      website: 'https://github.com/axboe/fio'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-block']
+    source:
+      subdir: ports
+      git: 'https://github.com/axboe/fio.git'
+      tag: 'fio-3.38'
+      version: '3.38'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - zlib
+    revision: 1
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--cc=@OPTION:arch-triple@-gcc'
+        - '--disable-pmem'
+        - '--disable-xnvme'
+        - '--disable-optimizations'
+        - '--disable-libblkio'
+        - '--disable-dfs'
+        - '--disable-libnfs'
+        - '--disable-http'
+        - '--disable-gfapi'
+        - '--disable-numa'
+        - '--disable-rbd'
+        - '--disable-rdma'
+        - '--disable-tcmalloc'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'prefix=/usr', 'mandir=/usr/share/man', 'install']
