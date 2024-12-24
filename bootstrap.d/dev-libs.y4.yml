@@ -1684,6 +1684,13 @@ packages:
 
   - name: libxslt
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: XSLT libraries and tools
+      description: This package contains XSLT libraries used for extending libxml2 libraries to support XSLT files.
+      spdx: 'MIT'
+      website: 'https://gitlab.gnome.org/GNOME/libxslt'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: ports
       git: 'https://gitlab.gnome.org/GNOME/libxslt.git'
@@ -1697,7 +1704,7 @@ packages:
     pkgs_required:
       - mlibc
       - libxml
-    revision: 5
+    revision: 6
     configure:
       # BLFS increases the recursion limit, apparently some packages need that to build their documentation.
       - args: ['sed', '-i', 's/3000/5000/', '@THIS_SOURCE_DIR@/libxslt/transform.c']
