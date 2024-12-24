@@ -1087,6 +1087,13 @@ packages:
   - name: libinput
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Library to handle input devices in Wayland
+      description: This package contains a library that handles input devices for display servers and other applications that need to directly deal with input devices.
+      spdx: 'MIT'
+      website: 'https://www.freedesktop.org/wiki/Software/libinput/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/libinput/libinput.git'
@@ -1102,7 +1109,7 @@ packages:
       - eudev
       - libevdev
       - mtdev
-    revision: 5
+    revision: 6
     configure:
       - args:
           - 'meson'
