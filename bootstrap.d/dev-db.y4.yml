@@ -1,6 +1,13 @@
 packages:
   - name: sqlite
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: SQL database engine
+      description: The sqlite package contains a software library that implements a self-contained, serverless, zero-configuration, transactional SQL database engine. 
+      spdx: 'no-spdx: public-domain'
+      website: 'https://sqlite.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-db']
     source:
       subdir: 'ports'
       url: 'https://sqlite.org/2023/sqlite-autoconf-3430200.tar.gz'
@@ -21,7 +28,7 @@ packages:
       - mlibc
       - readline
       - zlib
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
