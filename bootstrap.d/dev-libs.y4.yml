@@ -1594,6 +1594,13 @@ packages:
   - name: libxml
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: XML C parser and toolkit
+      description: This package contains libraries and utilities used for parsing XML files.
+      spdx: 'MIT'
+      website: 'https://gitlab.gnome.org/GNOME/libxml2/-/wikis/home'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: ports
       git: 'https://gitlab.gnome.org/GNOME/libxml2.git'
@@ -1614,7 +1621,7 @@ packages:
       - mlibc
       - zlib
       - libiconv
-    revision: 7
+    revision: 8
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
