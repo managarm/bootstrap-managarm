@@ -489,6 +489,13 @@ packages:
   - name: glib
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: The GLib library of C routines
+      description: This package contains low-level libraries useful for providing data structure handling for C, portability wrappers and interfaces for runtime functionality such as an event loop, threads, dynamic loading and an object system.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://www.gtk.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     from_source: glib
     tools_required:
       - system-gcc
@@ -503,10 +510,11 @@ packages:
       - zlib
       - libiconv
       - libintl
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'meson'
+        - 'setup'
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
