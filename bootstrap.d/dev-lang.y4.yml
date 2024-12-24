@@ -203,6 +203,13 @@ packages:
 
   - name: nasm
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Groovy little assembler
+      description: NASM (Netwide Assembler) is an 80x86 assembler designed for portability and modularity. It includes a disassembler as well.
+      spdx: 'BSD-2-Clause'
+      website: 'https://www.nasm.us/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-lang']
     source:
       subdir: 'ports'
       url: 'https://www.nasm.us/pub/nasm/releasebuilds/2.14.02/nasm-2.14.02.tar.xz'
@@ -214,7 +221,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 9
+    revision: 10
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -229,6 +236,13 @@ packages:
 
   - name: perl
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Larry Wall's Practical Extraction and Report Language
+      description: The Perl package contains the Practical Extraction and Report Language.
+      spdx: 'GPL-1.0-or-later'
+      website: 'https://www.perl.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-lang']
     source:
       subdir: ports
       git: 'https://github.com/Perl/perl5.git'
@@ -243,7 +257,7 @@ packages:
       - bzip2
       - libxcrypt
       - zlib
-    revision: 10
+    revision: 11
     configure:
       - args: ['cp', '-rf', '@THIS_SOURCE_DIR@/../perl-cross/.', '@THIS_SOURCE_DIR@/']
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
@@ -278,6 +292,13 @@ packages:
   - name: python
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: An interpreted, interactive, object-oriented programming language
+      description: The Python package contains the Python development environment. It is useful for object-oriented programming, writing scripts, prototyping large programs, and developing entire applications. Python is an interpreted computer language.
+      spdx: 'PSF-2.0'
+      website: 'https://www.python.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-lang']
     from_source: python
     tools_required:
       - host-pkg-config
@@ -297,7 +318,7 @@ packages:
       - util-linux-libs
       - xz-utils
       - zlib
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -380,6 +401,13 @@ packages:
 
   - name: yasm
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: An assembler for x86 and x86_64 instruction sets
+      description: Yasm is a complete rewrite of the NASM assembler. It supports the x86 and AMD64 instruction sets, accepts NASM and GAS assembler syntaxes and outputs binary, ELF32 and ELF64 object formats.
+      spdx: 'BSD-2-Clause'
+      website: 'https://yasm.tortall.net/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-lang']
     source:
       subdir: 'ports'
       git: 'https://github.com/yasm/yasm.git'
@@ -402,7 +430,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 9
+    revision: 10
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

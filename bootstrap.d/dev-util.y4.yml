@@ -139,6 +139,13 @@ tools:
 packages:
   - name: cmake
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Cross platform Make
+      description: This package contains a modern toolset used for generating Makefiles. It is a successor of the auto-generated configure script and aims to be platform- and compiler-independent. A significant user of CMake is KDE since version 4.
+      spdx: 'BSD'
+      website: 'https://cmake.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-util']
     from_source: cmake
     tools_required:
       - system-gcc
@@ -153,7 +160,7 @@ packages:
       - xz-utils
       - zlib
       - zstd
-    revision: 5
+    revision: 6
     configure:
       - args: ['sed', '-i', '/"lib64"/s/64//', '@THIS_SOURCE_DIR@/Modules/GNUInstallDirs.cmake']
       - args: ['cp', '-f', '@SOURCE_ROOT@/scripts/managarm.cmake', '@THIS_SOURCE_DIR@/Modules/Platform/']
@@ -177,6 +184,13 @@ packages:
 
   - name: desktop-file-utils
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Command line utilities to work with desktop menu entries
+      description: This package contains command line utilities for working with Desktop entries. These utilities are used by Desktop Environments and other applications to manipulate the MIME-types application databases and help adhere to the Desktop Entry Specification.
+      spdx: 'GPL-2.0-or-later'
+      website: 'https://freedesktop.org/wiki/Software/desktop-file-utils/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-util']
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xdg/desktop-file-utils.git'
@@ -198,7 +212,7 @@ packages:
     pkgs_required:
       - mlibc
       - glib
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

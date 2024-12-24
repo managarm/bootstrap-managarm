@@ -5,6 +5,13 @@ import:
 packages:
   - name: at-spi2-core
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: D-Bus accessibility specifications and registration daemon
+      description: This package contains a comprehensive accessibility framework for the Assistive Technologies available on the GNOME platform. This includes a set of interfaces which are implemented by other toolkits and applications.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://gitlab.gnome.org/GNOME/at-spi2-core.git/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['app-accessibility']
     source:
       subdir: 'ports'
       git: 'https://gitlab.gnome.org/GNOME/at-spi2-core.git'
@@ -33,7 +40,7 @@ packages:
       - libxml
       - libxtst
       - libxi
-    revision: 6
+    revision: 7
     configure:
       - args:
           - 'meson'
