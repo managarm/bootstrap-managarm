@@ -292,6 +292,13 @@ packages:
   - name: python
     labels: [aarch64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: An interpreted, interactive, object-oriented programming language
+      description: The Python package contains the Python development environment. It is useful for object-oriented programming, writing scripts, prototyping large programs, and developing entire applications. Python is an interpreted computer language.
+      spdx: 'PSF-2.0'
+      website: 'https://www.python.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-lang']
     from_source: python
     tools_required:
       - host-pkg-config
@@ -311,7 +318,7 @@ packages:
       - util-linux-libs
       - xz-utils
       - zlib
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
