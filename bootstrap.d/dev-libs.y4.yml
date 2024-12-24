@@ -1870,6 +1870,13 @@ packages:
   - name: nettle
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Low-level cryptographic library
+      description: This package contains a low-level cryptographic library that is designed to fit easily in many contexts.
+      spdx: 'LGPL-3.1-only GPL-3.0-only'
+      website: 'https://www.lysator.liu.se/~nisse/nettle/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: 'ports'
       git: 'https://git.lysator.liu.se/nettle/nettle.git'
@@ -1891,7 +1898,7 @@ packages:
     pkgs_required:
       - mlibc
       - gmp
-    revision: 7
+    revision: 8
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
