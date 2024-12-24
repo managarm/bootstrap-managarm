@@ -283,10 +283,11 @@ packages:
     pkgs_required:
       - mlibc
       - glib
-    revision: 7
+    revision: 8
     configure:
       - args:
         - 'meson'
+        - 'setup'
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
