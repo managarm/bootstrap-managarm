@@ -1,0 +1,25 @@
+From 1da5792c2a07b44ca88564bd6f0a2338d2df9b8a Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Tue, 24 Dec 2024 01:39:32 +0100
+Subject: [PATCH] Add missing include
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ plugins/sed/sedopal_cmd.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/plugins/sed/sedopal_cmd.c b/plugins/sed/sedopal_cmd.c
+index 017649d..ba64c39 100644
+--- a/plugins/sed/sedopal_cmd.c
++++ b/plugins/sed/sedopal_cmd.c
+@@ -7,6 +7,7 @@
+ #include <string.h>
+ #include <unistd.h>
+ #include <errno.h>
++#include <endian.h>
+ #include <sys/types.h>
+ #include <sys/ioctl.h>
+ #include <sys/mount.h>
+-- 
+2.45.2
+
