@@ -585,6 +585,13 @@ packages:
 
   - name: gobject-introspection
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Introspection system for GObject-based libraries
+      description: Introspection system for GObject-based libraries
+      spdx: 'LGPL-2.0-or-later GPL-2.0-or-later'
+      website: 'https://gi.readthedocs.io/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     from_source: gobject-introspection
     tools_required:
       - system-gcc
@@ -602,7 +609,7 @@ packages:
       - cairo
       - pcre2
       - python
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
