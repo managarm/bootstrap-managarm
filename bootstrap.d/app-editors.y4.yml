@@ -68,6 +68,13 @@ packages:
   - name: vim
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Vim, an improved vi-style text editor
+      description: This package contains a powerful text editor.
+      spdx: 'no-spdx: vim'
+      website: 'https://www.vim.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['app-editors']
     source:
       subdir: 'ports'
       git: 'https://github.com/vim/vim.git'
@@ -81,7 +88,7 @@ packages:
       - mlibc
       - ncurses
       - libiconv
-    revision: 4
+    revision: 5
     configure:
       # vim does not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead
