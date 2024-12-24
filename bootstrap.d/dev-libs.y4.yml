@@ -2301,6 +2301,13 @@ packages:
   - name: wayland-protocols
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Wayland protocol files
+      description: This package contains additional Wayland protocols that add functionality outside of protocols already in the Wayland core.
+      spdx: 'MIT'
+      website: 'https://wayland.freedesktop.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: 'ports'
       url: 'https://gitlab.freedesktop.org/wayland/wayland-protocols/-/releases/1.32/downloads/wayland-protocols-1.32.tar.xz'
@@ -2311,10 +2318,11 @@ packages:
     tools_required:
       - system-gcc
       - wayland-scanner
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'meson'
+        - 'setup'
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
