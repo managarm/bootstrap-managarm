@@ -1008,6 +1008,13 @@ packages:
   - name: libiconv
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: GNU charset conversion library for libc which doesn't implement it
+      description: GNU charset conversion library for libc which doesn't implement it.
+      spdx: 'LGPL-2.1-or-later GPL-3.0-or-later'
+      website: 'https://www.gnu.org/software/libiconv/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/libiconv.git'
@@ -1060,7 +1067,7 @@ packages:
       - host-libtool
     pkgs_required:
       - mlibc
-    revision: 7
+    revision: 8
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
