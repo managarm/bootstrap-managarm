@@ -2261,6 +2261,13 @@ packages:
 
   - name: popt
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Parse Options - Command line parser
+      description: This package contains the popt libraries which are used by some programs to parse command-line options.
+      spdx: 'MIT'
+      website: 'https://github.com/rpm-software-management/popt'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: 'ports'
       git: 'https://github.com/rpm-software-management/popt.git'
@@ -2277,7 +2284,7 @@ packages:
     pkgs_required:
       - mlibc
       - libiconv
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
