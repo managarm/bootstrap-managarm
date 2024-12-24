@@ -709,6 +709,49 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: nvme-cli
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: NVM-Express user space tooling for Linux
+      description: NVM-Express user space tooling for Linux.
+      spdx: 'GPL-2.0-or-later'
+      website: 'https://github.com/linux-nvme/nvme-cli'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-apps']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/linux-nvme/nvme-cli.git'
+      tag: 'v2.11'
+      version: '2.11'
+    tools_required:
+      - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - libnvme
+      - json-c
+      - zlib
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--sysconfdir=/etc'
+        - '--buildtype=release'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['rm', '-r', '@THIS_COLLECT_DIR@/usr/share/zsh'] # Nuke zsh
+      - args: ['rm', '-r', '@THIS_COLLECT_DIR@/usr/lib/systemd'] # Nuke systemd
+      - args: ['rm', '-r', '@THIS_COLLECT_DIR@/usr/lib/dracut'] # Nuke dracut
+
   - name: pciutils
     architecture: '@OPTION:arch@'
     metadata:
