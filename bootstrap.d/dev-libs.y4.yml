@@ -1134,6 +1134,13 @@ packages:
   - name: libintl
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: The GNU international library (split out of gettext)
+      description: The GNU international library (split out of gettext)
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://www.gnu.org/software/gettext/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: 'ports'
       url: 'https://ftp.gnu.org/gnu/gettext/gettext-0.21.tar.xz'
@@ -1152,7 +1159,7 @@ packages:
     pkgs_required:
       - mlibc
       - libiconv
-    revision: 9
+    revision: 10
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
