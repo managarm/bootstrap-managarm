@@ -27,6 +27,7 @@ tools:
 packages:
   - name: openttd
     architecture: '@OPTION:arch@'
+    stability_level: 'broken' # ICU seems to have broken this, investigate when time permits
     metadata:
       summary: A clone of Transport Tycoon Deluxe
       description: This package provides a free and open-source simulation game that allows you to build and manage your very own transportation empire.
