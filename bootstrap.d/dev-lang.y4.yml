@@ -401,6 +401,13 @@ packages:
 
   - name: yasm
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: An assembler for x86 and x86_64 instruction sets
+      description: Yasm is a complete rewrite of the NASM assembler. It supports the x86 and AMD64 instruction sets, accepts NASM and GAS assembler syntaxes and outputs binary, ELF32 and ELF64 object formats.
+      spdx: 'BSD-2-Clause'
+      website: 'https://yasm.tortall.net/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-lang']
     source:
       subdir: 'ports'
       git: 'https://github.com/yasm/yasm.git'
@@ -423,7 +430,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 9
+    revision: 10
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
