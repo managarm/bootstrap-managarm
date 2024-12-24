@@ -2123,6 +2123,13 @@ packages:
   - name: pcre
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Perl-compatible regular expression library
+      description: This package contains the Perl Compatible Regular Expression libraries. These are useful for implementing regular expression pattern matching using the same syntax and semantics as Perl.
+      spdx: 'BSD'
+      website: 'http://www.pcre.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: ports
       # Use a git mirror as pcre retired their svn repositories
@@ -2144,7 +2151,7 @@ packages:
       - host-automake-v1.15
     pkgs_required:
       - mlibc
-    revision: 10
+    revision: 11
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
