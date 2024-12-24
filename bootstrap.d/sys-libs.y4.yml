@@ -233,6 +233,52 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: libnvme
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: C Library for NVM Express on Linux
+      description: This package provides a library which provides type definitions for NVMe specification structures, enumerations, and bit fields, helper functions to construct, dispatch, and decode commands a>
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://github.com/linux-nvme/libnvme'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-libs']
+    source:
+      subdir: ports
+      git: 'https://github.com/linux-nvme/libnvme.git'
+      tag: 'v1.11.1'
+      version: '1.11.1'
+    tools_required:
+      - system-gcc
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - json-c
+      - dbus
+      - openssl
+      - util-linux-libs
+    revision: 1
+    configure:
+      - args:
+          - 'meson'
+          - 'setup'
+          - '--cross-file'
+          - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+          - '--prefix=/usr'
+          - '-Dbuildtype=release'
+          - '-Dpython=disabled'
+          - '-Djson-c=enabled'
+          - '-Dlibdbus=enabled'
+          - '-Dopenssl=enabled'
+          - '-Dtests=false'
+          - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: libxcrypt
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
