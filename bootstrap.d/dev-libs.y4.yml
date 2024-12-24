@@ -2413,6 +2413,13 @@ packages:
 
   - name: xxhash
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Extremely fast non-cryptographic hash algorithm
+      description: Extremely fast non-cryptographic hash algorithm
+      spdx: 'BSD-2-Clause GPL-2.0-or-later'
+      website: 'https://xxhash.com/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: 'ports'
       git: 'https://github.com/Cyan4973/xxHash.git'
@@ -2422,7 +2429,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 9
+    revision: 10
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
