@@ -677,6 +677,13 @@ packages:
 
   - name: json-c
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: A JSON implementation in C
+      description: This package implements a reference counting object model that allows you to easily construct JSON objects in C, output them as JSON formatted strings and parse JSON formatted strings back into the C representation of JSON objects.
+      spdx: 'MIT'
+      website: 'https://github.com/json-c/json-c/wiki'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: ports
       git: 'https://github.com/json-c/json-c.git'
@@ -687,7 +694,7 @@ packages:
       - host-cmake
     pkgs_required:
       - mlibc
-    revision: 8
+    revision: 9
     configure:
       - args:
         - 'cmake'
