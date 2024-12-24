@@ -203,6 +203,13 @@ packages:
 
   - name: nasm
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Groovy little assembler
+      description: NASM (Netwide Assembler) is an 80x86 assembler designed for portability and modularity. It includes a disassembler as well.
+      spdx: 'BSD-2-Clause'
+      website: 'https://www.nasm.us/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-lang']
     source:
       subdir: 'ports'
       url: 'https://www.nasm.us/pub/nasm/releasebuilds/2.14.02/nasm-2.14.02.tar.xz'
@@ -214,7 +221,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 9
+    revision: 10
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
