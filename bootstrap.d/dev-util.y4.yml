@@ -139,6 +139,13 @@ tools:
 packages:
   - name: cmake
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Cross platform Make
+      description: This package contains a modern toolset used for generating Makefiles. It is a successor of the auto-generated configure script and aims to be platform- and compiler-independent. A significant user of CMake is KDE since version 4.
+      spdx: 'BSD'
+      website: 'https://cmake.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-util']
     from_source: cmake
     tools_required:
       - system-gcc
@@ -153,7 +160,7 @@ packages:
       - xz-utils
       - zlib
       - zstd
-    revision: 5
+    revision: 6
     configure:
       - args: ['sed', '-i', '/"lib64"/s/64//', '@THIS_SOURCE_DIR@/Modules/GNUInstallDirs.cmake']
       - args: ['cp', '-f', '@SOURCE_ROOT@/scripts/managarm.cmake', '@THIS_SOURCE_DIR@/Modules/Platform/']
