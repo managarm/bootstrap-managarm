@@ -2000,14 +2000,14 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/openssl/openssl.git'
-      tag: 'OpenSSL_1_1_1q'
-      version: '1.1.1q'
+      tag: 'OpenSSL_1_1_1w'
+      version: '1.1.1w'
     tools_required:
       - system-gcc
     pkgs_required:
       - mlibc
       - zlib
-    revision: 8
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/Configure'
@@ -2030,9 +2030,9 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
       # Move the doc dir to a versioned directory
-      - args: ['mv', '@THIS_COLLECT_DIR@/usr/share/doc/openssl', '@THIS_COLLECT_DIR@/usr/share/doc/openssl-1.1.1q']
+      - args: ['mv', '@THIS_COLLECT_DIR@/usr/share/doc/openssl', '@THIS_COLLECT_DIR@/usr/share/doc/openssl-1.1.1w']
       # Install more documentation
-      - args: ['cp', '-fr', '@THIS_SOURCE_DIR@/doc/.', '@THIS_COLLECT_DIR@/usr/share/doc/openssl-1.1.1q']
+      - args: ['cp', '-fr', '@THIS_SOURCE_DIR@/doc/.', '@THIS_COLLECT_DIR@/usr/share/doc/openssl-1.1.1w']
 
   - name: pcre
     labels: [aarch64, riscv64]
