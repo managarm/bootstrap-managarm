@@ -1556,6 +1556,13 @@ packages:
 
   - name: libuv
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Cross-platform asychronous I/O
+      description: This package contains a multi-platform support library with a focus on asynchronous I/O.
+      spdx: 'BSD-2-Clause ISC MIT'
+      website: 'https://github.com/libuv/libuv'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: ports
       git: 'https://github.com/libuv/libuv.git'
@@ -1572,7 +1579,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 10
+    revision: 11
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
