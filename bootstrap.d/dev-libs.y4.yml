@@ -645,13 +645,20 @@ packages:
   - name: icu
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: International Components for Unicode
+      description: This package is a mature, widely used set of C/C++ libraries providing Unicode and Globalization support for software applications. ICU is widely portable and gives applications the same results on all platforms.
+      spdx: 'BSD'
+      website: 'https://icu.unicode.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     from_source: icu
     tools_required:
       - system-gcc
       - host-icu
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args: ['cp',
           '@THIS_SOURCE_DIR@/icu4c/source/config/mh-linux',
