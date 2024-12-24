@@ -1423,8 +1423,8 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/lxqt/libqtxdg.git'
-      tag: '4.0.0'
-      version: '4.0.0'
+      tag: '4.1.0'
+      version: '4.1.0'
     tools_required:
       - host-cmake
       - system-gcc
