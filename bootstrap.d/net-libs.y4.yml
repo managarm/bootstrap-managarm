@@ -409,6 +409,7 @@ packages:
 
   - name: webkitgtk
     architecture: '@OPTION:arch@'
+    stability_level: 'broken' # ICU broke this one too
     metadata:
       summary: 'An open source web browser engine, with a small example browser'
       description: 'This package provides WebKitGTK, a port of the portable web rendering engine WebKit to the GTK+ 3 and GTK 4 platforms.'
