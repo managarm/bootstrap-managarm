@@ -22,6 +22,11 @@ jobs:
               run: |
                   curl https://repos.managarm.org/buildenv/managarm-buildenv.tar.gz -o managarm-rootfs.tar.gz
                   tar xvf managarm-rootfs.tar.gz
+            - name: Permit unprivileged user namespaces
+              run: |
+                  set -x
+                  sudo sysctl -w kernel.apparmor_restrict_unprivileged_unconfined=0
+                  sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
             - name: Prepare build directory
               run: |
                   mkdir build
