@@ -446,7 +446,7 @@ packages:
       - tool: system-gcc
     pkgs_required:
       - mlibc
-    revision: 5
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -459,11 +459,11 @@ packages:
         - '--disable-nls'
         # On recent compilers, binutils 2.26 causes implicit-fallthrough warnings, among others.
         - '--disable-werror'
+        - '--disable-gdb'
         # -g blows up the binary size.
         - 'CFLAGS=-O2'
     build:
-      #- args: ['make', '-j@PARALLELISM@', 'all-binutils', 'all-gas', 'all-ld']
-      - args: ['make', 'all-binutils', 'all-gas', 'all-ld']
+      - args: ['make', '-j@PARALLELISM@', 'all-binutils', 'all-gas', 'all-ld']
       - args: ['make', 'install-binutils', 'install-gas', 'install-ld']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
