@@ -581,24 +581,23 @@ packages:
       categories: ['dev-libs']
     source:
       subdir: 'ports'
-      hg: 'https://gmplib.org/repo/gmp-6.2/'
-      tag: 'tip'
-      version: '6.2.1'
+      url: 'https://ftp.gnu.org/gnu/gmp/gmp-6.3.0.tar.xz'
+      format: 'tar.xz'
+      checksum: 'blake2b:a865129e2b3f634ec5bad7f97ed89532e43f5662ac47a7d8ab7f0df8c9f8d0886bd984651422e2573c2163bca69c0547c248147ec90880accbd53db97dc0ddee'
+      extract_path: 'gmp-6.3.0'
+      version: '6.3.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
         - host-libtool
       regenerate:
-        - args: ['@THIS_SOURCE_DIR@/.bootstrap']
+        - args: ['autoreconf', '-fvi']
         - args: ['cp', '@THIS_SOURCE_DIR@/configfsf.guess', '@THIS_SOURCE_DIR@/config.guess']
-        - args: ['cp',
-            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
-            '@THIS_SOURCE_DIR@/']
     tools_required:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 8
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -606,7 +605,7 @@ packages:
         - '--prefix=/usr'
         - '--enable-cxx'
         - '--disable-static'
-        - '--docdir=/usr/share/doc/gmp-6.2.1'
+        - '--docdir=/usr/share/doc/gmp-6.3.0'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']

@@ -1,18 +1,19 @@
-From f5125393a86ec3cceebbe7052b983fca7fe68b39 Mon Sep 17 00:00:00 2001
+From 2f202a15824086eda8f5e006ec64e6e7ee87bd8a Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Thu, 5 Sep 2024 00:27:05 +0200
 Subject: [PATCH] Add Managarm support
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
- Makefile.am     |  2 +-
- autogen.sh      |  2 ++
- etc/login.defs  | 10 +++++-----
- lib/encrypt.c   |  1 +
- libmisc/utmp.c  |  3 +++
- src/Makefile.am | 10 ++++------
- src/login.c     |  6 ++++++
- 7 files changed, 22 insertions(+), 12 deletions(-)
+ Makefile.am         |  2 +-
+ autogen.sh          |  2 ++
+ etc/login.defs      | 10 +++++-----
+ lib/encrypt.c       |  1 +
+ libmisc/user_busy.c |  1 +
+ libmisc/utmp.c      |  3 +++
+ src/Makefile.am     | 10 ++++------
+ src/login.c         |  6 ++++++
+ 8 files changed, 23 insertions(+), 12 deletions(-)
 
 diff --git a/Makefile.am b/Makefile.am
 index 8851f5d..5a58c54 100644
@@ -92,6 +93,18 @@ index 4247f24..2486f6b 100644
  #include <unistd.h>
  #include <stdio.h>
  
+diff --git a/libmisc/user_busy.c b/libmisc/user_busy.c
+index 324bb94..dc68db0 100644
+--- a/libmisc/user_busy.c
++++ b/libmisc/user_busy.c
+@@ -40,6 +40,7 @@
+ #include <dirent.h>
+ #include <fcntl.h>
+ #include <unistd.h>
++#include <signal.h>
+ #include "defines.h"
+ #include "prototypes.h"
+ #ifdef ENABLE_SUBIDS
 diff --git a/libmisc/utmp.c b/libmisc/utmp.c
 index ba69cf6..51277cd 100644
 --- a/libmisc/utmp.c
@@ -107,7 +120,7 @@ index ba69cf6..51277cd 100644
  
  
 diff --git a/src/Makefile.am b/src/Makefile.am
-index f175928..9c24dc5 100644
+index f175928..fda013b 100644
 --- a/src/Makefile.am
 +++ b/src/Makefile.am
 @@ -23,14 +23,12 @@ AM_CPPFLAGS = \
@@ -180,5 +193,5 @@ index 00508cd..af876c9 100644
  #ifndef USE_PAM			/* PAM does this */
  	/*
 -- 
-2.45.1
+2.45.2
 

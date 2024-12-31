@@ -1,16 +1,17 @@
-From 3c5c2fe0ce67f80ce9698f0c6154cc1d41a113bd Mon Sep 17 00:00:00 2001
+From 5da74d1cd962238655b7f9349e031cefb4836a62 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Tue, 9 Feb 2021 22:45:04 +0100
 Subject: [PATCH] Add managarm support
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
- config.sub | 2 +-
- configure  | 4 ++++
- 2 files changed, 5 insertions(+), 1 deletion(-)
+ config.sub     | 2 +-
+ configure      | 4 ++++
+ test/picsmap.c | 2 ++
+ 3 files changed, 7 insertions(+), 1 deletion(-)
 
 diff --git a/config.sub b/config.sub
-index 0f2234c1..69ffcaa9 100755
+index 0f2234c..69ffcaa 100755
 --- a/config.sub
 +++ b/config.sub
 @@ -1366,7 +1366,7 @@ case $os in
@@ -23,7 +24,7 @@ index 0f2234c1..69ffcaa9 100755
  		;;
  	qnx*)
 diff --git a/configure b/configure
-index 06f344f3..72e641d3 100755
+index 06f344f..72e641d 100755
 --- a/configure
 +++ b/configure
 @@ -5961,6 +5961,10 @@ echo "${ECHO_T}$cf_cv_ldflags_search_paths_first" >&6
@@ -37,6 +38,19 @@ index 06f344f3..72e641d3 100755
  	(mingw*)
  		cf_cv_shlib_version=mingw
  		cf_cv_shlib_version_infix=mingw
+diff --git a/test/picsmap.c b/test/picsmap.c
+index 432fbf7..849ac7e 100644
+--- a/test/picsmap.c
++++ b/test/picsmap.c
+@@ -60,6 +60,8 @@
+ #define my_intptr_t	long
+ #endif
+ 
++#include <strings.h>
++
+ #if HAVE_TSEARCH
+ #include <search.h>
+ #endif
 -- 
-2.30.0
+2.45.2
 

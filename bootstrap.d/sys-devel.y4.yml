@@ -28,12 +28,9 @@ sources:
   - name: binutils
     subdir: 'ports'
     git: 'https://github.com/managarm/binutils-gdb.git'
-    tag: 'managarm/binutils-2_40_2'
-    version: '2.40'
-    sources_required: ['gnuconfig']
-    regenerate:
-      - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.sub', '@THIS_SOURCE_DIR@/.']
-      - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.guess', '@THIS_SOURCE_DIR@/.']
+    branch: 'managarm/binutils-2_43_1'
+    commit: 'ec4ab6f1a2188a8d39bc32291d0032722893527e' # No tag made, so take current head of the branch
+    version: '2.43.1'
 
   - name: llvm
     subdir: 'ports'
@@ -44,8 +41,9 @@ sources:
   - name: gcc
     subdir: 'ports'
     git: 'https://github.com/managarm/gcc.git'
-    tag: 'managarm/gcc-13.2.3'
-    version: '13.2.3'
+    branch: 'managarm/gcc-14'
+    commit: '76e048f37a3a16ed6346dc6cb1cd1d333e59a42c' # No tag made, so take current head of the branch
+    version: '14.2.0'
     sources_required: ['gnuconfig']
     regenerate:
       - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.sub', '@THIS_SOURCE_DIR@/.']
@@ -407,7 +405,7 @@ packages:
       - mpfr
       - mpc
       - zlib
-    revision: 3
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -448,7 +446,7 @@ packages:
       - tool: system-gcc
     pkgs_required:
       - mlibc
-    revision: 5
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -461,11 +459,11 @@ packages:
         - '--disable-nls'
         # On recent compilers, binutils 2.26 causes implicit-fallthrough warnings, among others.
         - '--disable-werror'
+        - '--disable-gdb'
         # -g blows up the binary size.
         - 'CFLAGS=-O2'
     build:
-      #- args: ['make', '-j@PARALLELISM@', 'all-binutils', 'all-gas', 'all-ld']
-      - args: ['make', 'all-binutils', 'all-gas', 'all-ld']
+      - args: ['make', '-j@PARALLELISM@', 'all-binutils', 'all-gas', 'all-ld']
       - args: ['make', 'install-binutils', 'install-gas', 'install-ld']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'

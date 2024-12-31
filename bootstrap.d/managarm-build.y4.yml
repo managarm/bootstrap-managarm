@@ -233,7 +233,7 @@ tools:
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     from_source: binutils
-    revision: 3
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -244,6 +244,7 @@ tools:
         - '--with-sysroot=@SYSROOT_DIR@'
         # On recent compilers, binutils 2.26 causes implicit-fallthrough warnings, among others.
         - '--disable-werror'
+        - '--disable-gdb'
         # -g blows up the binary size.
         - 'CFLAGS=-O2'
     compile:
@@ -325,7 +326,7 @@ tools:
     tools_required:
       - tool: cross-binutils
         recursive: true
-    revision: 2
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -383,7 +384,7 @@ tools:
     tools_required:
       - tool: cross-binutils
         recursive: true
-    revision: 2
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
