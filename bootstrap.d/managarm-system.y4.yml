@@ -107,6 +107,7 @@ packages:
               > ./meson-custom.cross-file
       - args:
         - 'meson'
+        - 'setup'
         - '--cross-file=@SOURCE_ROOT@/scripts/meson-kernel-common.cross-file'
         - '--cross-file=./meson-custom.cross-file'
         - '--prefix=/usr/managarm'
@@ -246,6 +247,7 @@ packages:
               > ./meson-custom.cross-file
       - args:
         - 'meson'
+        - 'setup'
         - '--cross-file=./meson-custom.cross-file'
         - '--prefix=/usr'
         - '--libdir=lib'
