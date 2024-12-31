@@ -581,6 +581,7 @@ packages:
       categories: ['dev-libs']
     source:
       subdir: 'ports'
+      # We switched to a tarball as the GMP repos are currently returning 403 forbidden (2024-12-31)
       url: 'https://ftp.gnu.org/gnu/gmp/gmp-6.3.0.tar.xz'
       format: 'tar.xz'
       checksum: 'blake2b:a865129e2b3f634ec5bad7f97ed89532e43f5662ac47a7d8ab7f0df8c9f8d0886bd984651422e2573c2163bca69c0547c248147ec90880accbd53db97dc0ddee'
