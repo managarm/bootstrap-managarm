@@ -41,8 +41,9 @@ sources:
   - name: gcc
     subdir: 'ports'
     git: 'https://github.com/managarm/gcc.git'
-    tag: 'managarm/gcc-13.2.3'
-    version: '13.2.3'
+    branch: 'managarm/gcc-14'
+    commit: '76e048f37a3a16ed6346dc6cb1cd1d333e59a42c' # No tag made, so take current head of the branch
+    version: '14.2.0'
     sources_required: ['gnuconfig']
     regenerate:
       - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.sub', '@THIS_SOURCE_DIR@/.']
