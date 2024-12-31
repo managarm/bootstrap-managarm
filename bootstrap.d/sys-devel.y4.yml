@@ -28,12 +28,9 @@ sources:
   - name: binutils
     subdir: 'ports'
     git: 'https://github.com/managarm/binutils-gdb.git'
-    tag: 'managarm/binutils-2_40_2'
-    version: '2.40'
-    sources_required: ['gnuconfig']
-    regenerate:
-      - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.sub', '@THIS_SOURCE_DIR@/.']
-      - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.guess', '@THIS_SOURCE_DIR@/.']
+    branch: 'managarm/binutils-2_43_1'
+    commit: 'ec4ab6f1a2188a8d39bc32291d0032722893527e' # No tag made, so take current head of the branch
+    version: '2.43.1'
 
   - name: llvm
     subdir: 'ports'
