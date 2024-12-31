@@ -28,8 +28,7 @@ sources:
   - name: binutils
     subdir: 'ports'
     git: 'https://github.com/managarm/binutils-gdb.git'
-    branch: 'managarm/binutils-2_43_1'
-    commit: 'ec4ab6f1a2188a8d39bc32291d0032722893527e' # No tag made, so take current head of the branch
+    tag: 'managarm/binutils-2_43_1'
     version: '2.43.1'
 
   - name: llvm
@@ -41,8 +40,7 @@ sources:
   - name: gcc
     subdir: 'ports'
     git: 'https://github.com/managarm/gcc.git'
-    branch: 'managarm/gcc-14'
-    commit: '76e048f37a3a16ed6346dc6cb1cd1d333e59a42c' # No tag made, so take current head of the branch
+    tag: 'managarm/gcc-14_2_0'
     version: '14.2.0'
     sources_required: ['gnuconfig']
     regenerate:
