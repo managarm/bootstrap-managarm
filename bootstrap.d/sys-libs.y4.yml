@@ -135,6 +135,7 @@ packages:
     pkgs_required:
       - mlibc
       - libintl
+    revision: 2
     configure:
       - args:
           - 'meson'
