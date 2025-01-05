@@ -3,11 +3,11 @@ packages:
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
-      url: 'http://links.twibright.com/download/links-2.29.tar.gz'
+      url: 'http://links.twibright.com/download/links-2.30.tar.gz'
       format: 'tar.gz'
-      checksum: blake2b:0427ce93577fbc7e684191cbece1d15328121d26b4fa57195980b3f8b96c19eb0b9b0cc31d39a02b521736449255f1d56c75484ecd7b1b1abf9dc386a0a2f85c
-      extract_path: 'links-2.29'
-      version: '2.29'
+      checksum: blake2b:6f3ee0ab9fea82e63a484e210f229e6042bd9108b7e8d3140bc39c83a05c8cec72e3d7e64af276eb546f0524dc586b60c0507f2bdbe8a55c17f78a491bc56025
+      extract_path: 'links-2.30'
+      version: '2.30'
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -25,11 +25,11 @@ packages:
       - fontconfig
       - libjpeg-turbo
       - xz-utils
-    revision: 5
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--mandir=/usr/share/man'
         - '--enable-graphics'
@@ -50,7 +50,7 @@ packages:
         - '--without-ipv6'
         environ:
           # Configure doesn't set CC correctly and assumes gcc unless manually overridden.
-          CC: 'x86_64-managarm-gcc'
+          CC: '@OPTION:arch-triple@-gcc'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']

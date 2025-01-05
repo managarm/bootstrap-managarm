@@ -162,6 +162,10 @@ packages:
         - args: ['cp',
             '@BUILD_ROOT@/tools/host-automake-v1.11/share/automake-1.11/config.sub',
             '@THIS_SOURCE_DIR@/']
+        - args: |
+            sed -e 's/^main/int &/' -e 's/exit(/return(/' -i aczsh.m4 @THIS_SOURCE_DIR@/configure.ac
+        - args: |
+            sed -e 's/test = /&(char**)/' -i @THIS_SOURCE_DIR@/configure.ac
     tools_required:
       - host-yodl
       - system-gcc
@@ -170,7 +174,7 @@ packages:
       - gdbm
       - pcre
       - ncurses
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

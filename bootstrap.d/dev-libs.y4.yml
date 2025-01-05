@@ -802,15 +802,13 @@ packages:
         - host-pkg-config
       regenerate:
         - args: ['./autogen.sh']
-        # Fix an issue that prevents event_rpcgen.py from working.
-        - args: ['sed', '-i', 's/python/&3/', '@THIS_SOURCE_DIR@/event_rpcgen.py']
     tools_required:
       - system-gcc
     pkgs_required:
       - mlibc
       - openssl
       - zlib
-    revision: 9
+    revision: 10
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

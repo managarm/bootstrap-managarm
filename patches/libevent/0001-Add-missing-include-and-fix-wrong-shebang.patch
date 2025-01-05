@@ -1,0 +1,36 @@
+From 742d47e8a1d6c618da1a7098a6e0b4c86a42dcea Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Sun, 5 Jan 2025 16:00:36 +0100
+Subject: [PATCH] Add missing include and fix wrong shebang
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ event_rpcgen.py       | 2 +-
+ sample/https-client.c | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/event_rpcgen.py b/event_rpcgen.py
+index 0bae3b0..a2f7ba3 100755
+--- a/event_rpcgen.py
++++ b/event_rpcgen.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/env python3
+ #
+ # Copyright (c) 2005-2007 Niels Provos <provos@citi.umich.edu>
+ # Copyright (c) 2007-2012 Niels Provos and Nick Mathewson
+diff --git a/sample/https-client.c b/sample/https-client.c
+index 5136ace..fc6a6ee 100644
+--- a/sample/https-client.c
++++ b/sample/https-client.c
+@@ -19,6 +19,7 @@
+ #include <assert.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <strings.h>
+ #include <errno.h>
+ 
+ #ifdef _WIN32
+-- 
+2.45.2
+
