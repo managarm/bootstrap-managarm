@@ -380,11 +380,11 @@ packages:
     pkgs_required:
       - mlibc
       - bzip2
-    revision: 9
+    revision: 10
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
-      - args: ['make', 'CC=x86_64-managarm-gcc', '-f', '@THIS_BUILD_DIR@/unix/Makefile', 'generic']
+      - args: ['make', 'CC=x86_64-managarm-gcc -std=gnu89', '-f', '@THIS_BUILD_DIR@/unix/Makefile', 'generic']
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/bin']
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/share/man/man1']
       - args: ['cp', '@THIS_BUILD_DIR@/zip', '@THIS_COLLECT_DIR@/usr/bin/']
