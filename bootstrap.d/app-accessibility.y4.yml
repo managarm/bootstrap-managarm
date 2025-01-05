@@ -15,8 +15,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.gnome.org/GNOME/at-spi2-core.git'
-      tag: 'AT_SPI2_CORE_2_48_3'
-      version: '2.48.3'
+      tag: 'AT_SPI2_CORE_2_54_0'
+      version: '2.54.0'
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -40,7 +40,7 @@ packages:
       - libxml
       - libxtst
       - libxi
-    revision: 7
+    revision: 1
     configure:
       - args:
           - 'meson'
