@@ -1,7 +1,7 @@
-From 978ab880c1f82a43e10f7d941ef6f3ba36348b7e Mon Sep 17 00:00:00 2001
+From be64e6ace7fd67eb828fe998fa1d08026e6f2dca Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Tue, 1 Jun 2021 22:03:10 +0200
-Subject: [PATCH 2/2] Add configuration file for Managarm targets. Initial work
+Subject: [PATCH 2/3] Add configuration file for Managarm targets. Initial work
  done by Qookie
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
@@ -10,10 +10,10 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
  1 file changed, 52 insertions(+)
 
 diff --git a/Configurations/10-main.conf b/Configurations/10-main.conf
-index 2fcb96a0..06578754 100644
+index f815a09b..598aa410 100644
 --- a/Configurations/10-main.conf
 +++ b/Configurations/10-main.conf
-@@ -918,6 +918,58 @@ my %targets = (
+@@ -925,6 +925,58 @@ my %targets = (
          ranlib           => "true",
      },
  

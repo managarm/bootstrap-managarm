@@ -1,0 +1,64 @@
+From ccaeae14cbb64a22acbe0bffb09e52f4b8d4ed01 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Sun, 5 Jan 2025 14:50:10 +0100
+Subject: [PATCH 3/3] Add missing includes
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ crypto/conf/conf_def.c | 1 +
+ test/bntest.c          | 1 +
+ test/ssl_test_ctx.c    | 1 +
+ test/v3nametest.c      | 1 +
+ 4 files changed, 4 insertions(+)
+
+diff --git a/crypto/conf/conf_def.c b/crypto/conf/conf_def.c
+index 31c02cc4..4e4ca4e4 100644
+--- a/crypto/conf/conf_def.c
++++ b/crypto/conf/conf_def.c
+@@ -11,6 +11,7 @@
+ 
+ #include <stdio.h>
+ #include <string.h>
++#include <strings.h>
+ #include "internal/cryptlib.h"
+ #include "internal/o_dir.h"
+ #include <openssl/lhash.h>
+diff --git a/test/bntest.c b/test/bntest.c
+index 9273e865..c4a16833 100644
+--- a/test/bntest.c
++++ b/test/bntest.c
+@@ -10,6 +10,7 @@
+ #include <errno.h>
+ #include <stdio.h>
+ #include <string.h>
++#include <strings.h>
+ #include <ctype.h>
+ 
+ #include <openssl/bn.h>
+diff --git a/test/ssl_test_ctx.c b/test/ssl_test_ctx.c
+index 6cdced5a..d98baecd 100644
+--- a/test/ssl_test_ctx.c
++++ b/test/ssl_test_ctx.c
+@@ -8,6 +8,7 @@
+  */
+ 
+ #include <string.h>
++#include <strings.h>
+ 
+ #include <openssl/e_os2.h>
+ #include <openssl/crypto.h>
+diff --git a/test/v3nametest.c b/test/v3nametest.c
+index 566472ab..b9ddeecb 100644
+--- a/test/v3nametest.c
++++ b/test/v3nametest.c
+@@ -8,6 +8,7 @@
+  */
+ 
+ #include <string.h>
++#include <strings.h>
+ 
+ #include <openssl/e_os2.h>
+ #include <openssl/x509.h>
+-- 
+2.45.2
+

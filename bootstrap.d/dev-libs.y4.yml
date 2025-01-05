@@ -2150,6 +2150,13 @@ packages:
   - name: openssl
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Robust, full-featured Open Source Toolkit for the Transport Layer Security (TLS)
+      description: The OpenSSL package contains management tools and libraries relating to cryptography. These are useful for providing cryptographic functions to other packages, such as OpenSSH, email applications, and web browsers (for accessing HTTPS sites).
+      spdx: 'Apache-2.0'
+      website: 'https://openssl-library.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: ports
       git: 'https://github.com/openssl/openssl.git'
@@ -2160,7 +2167,7 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/Configure'
