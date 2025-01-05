@@ -46,8 +46,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.gnome.org/GNOME/libsecret.git'
-      tag: '0.21.3'
-      version: '0.21.3'
+      tag: '0.21.4'
+      version: '0.21.4'
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -70,7 +70,7 @@ packages:
         arch: [x86_64]
         item: gobject-introspection
       - libxslt
-    revision: 2
+    revision: 1
     configure:
       - args:
           - 'meson'
