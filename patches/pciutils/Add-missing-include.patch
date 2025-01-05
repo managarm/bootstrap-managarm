@@ -1,0 +1,16 @@
+Only in pciutils-work/: checkedout.xbstrap
+Only in pciutils-work/: patched.xbstrap
+Only in pciutils-work/: regenerated.xbstrap
+diff -crB pciutils-3.13.0/setpci.c pciutils-work/setpci.c
+*** pciutils-3.13.0/setpci.c	2024-02-26 10:08:51.000000000 +0100
+--- pciutils-work/setpci.c	2025-01-05 14:59:19.309760497 +0100
+***************
+*** 10,15 ****
+--- 10,16 ----
+  
+  #include <stdio.h>
+  #include <string.h>
++ #include <strings.h>
+  #include <stdlib.h>
+  #include <stdarg.h>
+  #include <errno.h>

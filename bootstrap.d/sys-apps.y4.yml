@@ -794,11 +794,12 @@ packages:
       replaces: ['mini-lspci']
     source:
       subdir: ports
-      url: 'https://mirrors.edge.kernel.org/pub/software/utils/pciutils/pciutils-3.10.0.tar.xz'
-      checksum: 'blake2b:555d095a33c9f17561c34fe8f2914cd1dbe2ac1e1f4f33b59e126258fc54a7823ac1c4f0957c7dc7a188621b978419848d93372fe28ad03aabdd152a610ba5ec'
+      url: 'https://mirrors.edge.kernel.org/pub/software/utils/pciutils/pciutils-3.13.0.tar.xz'
+      checksum: 'blake2b:5105e43351a87c9d46342acf32bf4f3ca918a7f2cf2b2c47caaef16e12d1bcde949d9323286c04dbf30156c1ffb37be816e6a44f1ffeda8ff61f57ba25a310e0'
       format: tar.xz
-      extract_path: 'pciutils-3.10.0'
-      version: '3.10.0'
+      extract_path: 'pciutils-3.13.0'
+      version: '3.13.0'
+      patch-path-strip: 1
     tools_required:
       - system-gcc
       - virtual: pkgconfig-for-target
@@ -806,8 +807,9 @@ packages:
     pkgs_required:
       - mlibc
       - eudev
+      - hwdata
       - zlib
-    revision: 4
+    revision: 1
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
