@@ -292,7 +292,7 @@ packages:
       - mlibc
       - bzip2
       - libiconv
-    revision: 9
+    revision: 10
     configure:
       # Fixup their makefile, thanks gentoo!
       - args: |
@@ -301,7 +301,7 @@ packages:
       # Remove the in tree copy of bzip2
       - args: ['rm', '-r', '@THIS_BUILD_DIR@/bzip2']
     build:
-      - args: ['make', 'CC=x86_64-managarm-gcc', 'LDFLAGS=-liconv', '-f', '@THIS_BUILD_DIR@/unix/Makefile', 'generic']
+      - args: ['make', 'CC=x86_64-managarm-gcc -Wno-error=incompatible-pointer-types', 'LDFLAGS=-liconv', '-f', '@THIS_BUILD_DIR@/unix/Makefile', 'generic']
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/bin']
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/share/man/man1']
       - args: ['cp', '@THIS_BUILD_DIR@/unzip', '@THIS_COLLECT_DIR@/usr/bin/']

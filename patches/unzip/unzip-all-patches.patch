@@ -1,0 +1,3059 @@
+Only in unzip-working/: checkedout.xbstrap
+diff -crB unzip60/crc_i386.S unzip-working/crc_i386.S
+*** unzip60/crc_i386.S	2007-01-07 06:02:58.000000000 +0100
+--- unzip-working/crc_i386.S	2025-01-05 12:54:13.429049417 +0100
+***************
+*** 302,304 ****
+--- 302,307 ----
+  #endif /* i386 || _i386 || _I386 || __i386 */
+  
+  #endif /* !USE_ZLIB && !CRC_TABLE_ONLY */
++ 
++ .section .note.GNU-stack, "", @progbits
++ .previous
+diff -crB unzip60/crypt.c unzip-working/crypt.c
+*** unzip60/crypt.c	2007-01-05 16:47:36.000000000 +0100
+--- unzip-working/crypt.c	2025-01-05 12:57:35.291369302 +0100
+***************
+*** 33,38 ****
+--- 33,39 ----
+  #include "zip.h"
+  #include "crypt.h"
+  #include "ttyio.h"
++ #include <strings.h>
+  
+  #if CRYPT
+  
+***************
+*** 465,471 ****
+      GLOBAL(pInfo->encrypted) = FALSE;
+      defer_leftover_input(__G);
+      for (n = 0; n < RAND_HEAD_LEN; n++) {
+!         b = NEXTBYTE;
+          h[n] = (uch)b;
+          Trace((stdout, " (%02x)", h[n]));
+      }
+--- 466,482 ----
+      GLOBAL(pInfo->encrypted) = FALSE;
+      defer_leftover_input(__G);
+      for (n = 0; n < RAND_HEAD_LEN; n++) {
+!         /* 2012-11-23 SMS.  (OUSPG report.)
+!          * Quit early if compressed size < HEAD_LEN.  The resulting
+!          * error message ("unable to get password") could be improved,
+!          * but it's better than trying to read nonexistent data, and
+!          * then continuing with a negative G.csize.  (See
+!          * fileio.c:readbyte()).
+!          */
+!         if ((b = NEXTBYTE) == (ush)EOF)
+!         {
+!             return PK_ERR;
+!         }
+          h[n] = (uch)b;
+          Trace((stdout, " (%02x)", h[n]));
+      }
+diff -crB unzip60/extract.c unzip-working/extract.c
+*** unzip60/extract.c	2009-03-14 02:32:52.000000000 +0100
+--- unzip-working/extract.c	2025-01-05 12:54:13.430049365 +0100
+***************
+*** 1,5 ****
+  /*
+!   Copyright (c) 1990-2009 Info-ZIP.  All rights reserved.
+  
+    See the accompanying file LICENSE, version 2009-Jan-02 or later
+    (the contents of which are also included in unzip.h) for terms of use.
+--- 1,5 ----
+  /*
+!   Copyright (c) 1990-2014 Info-ZIP.  All rights reserved.
+  
+    See the accompanying file LICENSE, version 2009-Jan-02 or later
+    (the contents of which are also included in unzip.h) for terms of use.
+***************
+*** 298,303 ****
+--- 298,305 ----
+  #ifndef SFX
+     static ZCONST char Far InconsistEFlength[] = "bad extra-field entry:\n \
+       EF block length (%u bytes) exceeds remaining EF data (%u bytes)\n";
++    static ZCONST char Far TooSmallEBlength[] = "bad extra-field entry:\n \
++      EF block length (%u bytes) invalid (< %d)\n";
+     static ZCONST char Far InvalidComprDataEAs[] =
+       " invalid compressed data for EAs\n";
+  #  if (defined(WIN32) && defined(NTSD_EAS))
+***************
+*** 472,479 ****
+                       */
+                      Info(slide, 0x401, ((char *)slide,
+                        LoadFarString(CentSigMsg), j + blknum*DIR_BLKSIZ + 1));
+!                     Info(slide, 0x401, ((char *)slide,
+!                       LoadFarString(ReportMsg)));
+                      error_in_archive = PK_BADERR;
+                  }
+                  reached_end = TRUE;     /* ...so no more left to do */
+--- 474,481 ----
+                       */
+                      Info(slide, 0x401, ((char *)slide,
+                        LoadFarString(CentSigMsg), j + blknum*DIR_BLKSIZ + 1));
+!                     Info(slide, 0x401,
+!                          ((char *)slide,"%s", LoadFarString(ReportMsg)));
+                      error_in_archive = PK_BADERR;
+                  }
+                  reached_end = TRUE;     /* ...so no more left to do */
+***************
+*** 752,759 ****
+  
+  #ifndef SFX
+      if (no_endsig_found) {                      /* just to make sure */
+!         Info(slide, 0x401, ((char *)slide, LoadFarString(EndSigMsg)));
+!         Info(slide, 0x401, ((char *)slide, LoadFarString(ReportMsg)));
+          if (!error_in_archive)       /* don't overwrite stronger error */
+              error_in_archive = PK_WARN;
+      }
+--- 754,761 ----
+  
+  #ifndef SFX
+      if (no_endsig_found) {                      /* just to make sure */
+!         Info(slide, 0x401, ((char *)slide,"%s", LoadFarString(EndSigMsg)));
+!         Info(slide, 0x401, ((char *)slide,"%s", LoadFarString(ReportMsg)));
+          if (!error_in_archive)       /* don't overwrite stronger error */
+              error_in_archive = PK_WARN;
+      }
+***************
+*** 1255,1262 ****
+          if (G.lrec.compression_method == STORED) {
+              zusz_t csiz_decrypted = G.lrec.csize;
+  
+!             if (G.pInfo->encrypted)
+                  csiz_decrypted -= 12;
+              if (G.lrec.ucsize != csiz_decrypted) {
+                  Info(slide, 0x401, ((char *)slide,
+                    LoadFarStringSmall2(WrnStorUCSizCSizDiff),
+--- 1257,1273 ----
+          if (G.lrec.compression_method == STORED) {
+              zusz_t csiz_decrypted = G.lrec.csize;
+  
+!             if (G.pInfo->encrypted) {
+!                 if (csiz_decrypted < 12) {
+!                     /* handle the error now to prevent unsigned overflow */
+!                     Info(slide, 0x401, ((char *)slide,
+!                       LoadFarStringSmall(ErrUnzipNoFile),
+!                       LoadFarString(InvalidComprData),
+!                       LoadFarStringSmall2(Inflate)));
+!                     return PK_ERR;
+!                 }
+                  csiz_decrypted -= 12;
++             }
+              if (G.lrec.ucsize != csiz_decrypted) {
+                  Info(slide, 0x401, ((char *)slide,
+                    LoadFarStringSmall2(WrnStorUCSizCSizDiff),
+***************
+*** 1924,1947 ****
+  
+  #ifdef VMS                  /* VMS:  required even for stdout! (final flush) */
+      if (!uO.tflag)           /* don't close NULL file */
+!         close_outfile(__G);
+  #else
+  #ifdef DLL
+      if (!uO.tflag && (!uO.cflag || G.redirect_data)) {
+          if (G.redirect_data)
+              FINISH_REDIRECT();
+          else
+!             close_outfile(__G);
+      }
+  #else
+      if (!uO.tflag && !uO.cflag)   /* don't close NULL file or stdout */
+!         close_outfile(__G);
+  #endif
+  #endif /* VMS */
+  
+-             /* GRR: CONVERT close_outfile() TO NON-VOID:  CHECK FOR ERRORS! */
+- 
+- 
+      if (G.disk_full) {            /* set by flush() */
+          if (G.disk_full > 1) {
+  #if (defined(DELETE_IF_FULL) && defined(HAVE_UNLINK))
+--- 1935,1955 ----
+  
+  #ifdef VMS                  /* VMS:  required even for stdout! (final flush) */
+      if (!uO.tflag)           /* don't close NULL file */
+!         error = close_outfile(__G);
+  #else
+  #ifdef DLL
+      if (!uO.tflag && (!uO.cflag || G.redirect_data)) {
+          if (G.redirect_data)
+              FINISH_REDIRECT();
+          else
+!             error = close_outfile(__G);
+      }
+  #else
+      if (!uO.tflag && !uO.cflag)   /* don't close NULL file or stdout */
+!         error = close_outfile(__G);
+  #endif
+  #endif /* VMS */
+  
+      if (G.disk_full) {            /* set by flush() */
+          if (G.disk_full > 1) {
+  #if (defined(DELETE_IF_FULL) && defined(HAVE_UNLINK))
+***************
+*** 2023,2029 ****
+          ebID = makeword(ef);
+          ebLen = (unsigned)makeword(ef+EB_LEN);
+  
+!         if (ebLen > (ef_len - EB_HEADSIZE)) {
+             /* Discovered some extra field inconsistency! */
+              if (uO.qflag)
+                  Info(slide, 1, ((char *)slide, "%-22s ",
+--- 2031,2038 ----
+          ebID = makeword(ef);
+          ebLen = (unsigned)makeword(ef+EB_LEN);
+  
+!         if (ebLen > (ef_len - EB_HEADSIZE))
+!         {
+             /* Discovered some extra field inconsistency! */
+              if (uO.qflag)
+                  Info(slide, 1, ((char *)slide, "%-22s ",
+***************
+*** 2158,2168 ****
+                  }
+                  break;
+              case EF_PKVMS:
+!                 if (makelong(ef+EB_HEADSIZE) !=
+!                     crc32(CRCVAL_INITIAL, ef+(EB_HEADSIZE+4),
+!                           (extent)(ebLen-4)))
+!                     Info(slide, 1, ((char *)slide,
+!                       LoadFarString(BadCRC_EAs)));
+                  break;
+              case EF_PKW32:
+              case EF_PKUNIX:
+--- 2167,2195 ----
+                  }
+                  break;
+              case EF_PKVMS:
+!                 /* 2015-01-30 SMS.  Added sufficient-bytes test/message
+!                  * here.  (Removed defective ebLen test above.)
+!                  *
+!                  * If sufficient bytes (EB_PKVMS_MINLEN) are available,
+!                  * then compare the stored CRC value with the calculated
+!                  * CRC for the remainder of the data (and complain about
+!                  * a mismatch).
+!                  */
+!                 if (ebLen < EB_PKVMS_MINLEN)
+!                 {
+!                     /* Insufficient bytes available. */
+!                     Info( slide, 1,
+!                      ((char *)slide, LoadFarString( TooSmallEBlength),
+!                      ebLen, EB_PKVMS_MINLEN));
+!                 }
+!                 else if (makelong(ef+ EB_HEADSIZE) !=
+!                  crc32(CRCVAL_INITIAL,
+!                  (ef+ EB_HEADSIZE+ EB_PKVMS_MINLEN),
+!                  (extent)(ebLen- EB_PKVMS_MINLEN)))
+!                 {
+!                      Info(slide, 1, ((char *)slide,
+!                        LoadFarString(BadCRC_EAs)));
+!                 }
+                  break;
+              case EF_PKW32:
+              case EF_PKUNIX:
+***************
+*** 2217,2230 ****
+      ulg eb_ucsize;
+      uch *eb_ucptr;
+      int r;
+  
+      if (compr_offset < 4)                /* field is not compressed: */
+          return PK_OK;                    /* do nothing and signal OK */
+  
+      if ((eb_size < (EB_UCSIZE_P + 4)) ||
+!         ((eb_ucsize = makelong(eb+(EB_HEADSIZE+EB_UCSIZE_P))) > 0L &&
+!          eb_size <= (compr_offset + EB_CMPRHEADLEN)))
+!         return IZ_EF_TRUNC;               /* no compressed data! */
+  
+      if (
+  #ifdef INT_16BIT
+--- 2244,2271 ----
+      ulg eb_ucsize;
+      uch *eb_ucptr;
+      int r;
++     ush method;
+  
+      if (compr_offset < 4)                /* field is not compressed: */
+          return PK_OK;                    /* do nothing and signal OK */
+  
++     /* Return no/bad-data error status if any problem is found:
++      *    1. eb_size is too small to hold the uncompressed size
++      *       (eb_ucsize).  (Else extract eb_ucsize.)
++      *    2. eb_ucsize is zero (invalid).  2014-12-04 SMS.
++      *    3. eb_ucsize is positive, but eb_size is too small to hold
++      *       the compressed data header.
++      */
+      if ((eb_size < (EB_UCSIZE_P + 4)) ||
+!      ((eb_ucsize = makelong( eb+ (EB_HEADSIZE+ EB_UCSIZE_P))) == 0L) ||
+!      ((eb_ucsize > 0L) && (eb_size <= (compr_offset + EB_CMPRHEADLEN))))
+!         return IZ_EF_TRUNC;             /* no/bad compressed data! */
+! 
+!     method = makeword(eb + (EB_HEADSIZE + compr_offset));
+!     if ((method == STORED) && (eb_size != compr_offset + EB_CMPRHEADLEN + eb_ucsize))
+!         return PK_ERR;            /* compressed & uncompressed
+!                                    * should match in STORED
+!                                    * method */
+  
+      if (
+  #ifdef INT_16BIT
+***************
+*** 2542,2549 ****
+  } /* end function set_deferred_symlink() */
+  #endif /* SYMLINKS */
+  
+  
+! 
+  
+  /*************************/
+  /*  Function fnfilter()  */        /* here instead of in list.c for SFX */
+--- 2583,2603 ----
+  } /* end function set_deferred_symlink() */
+  #endif /* SYMLINKS */
+  
++ /*
++  * If Unicode is supported, assume we have what we need to do this
++  * check using wide characters, avoiding MBCS issues.
++  */
+  
+! #ifndef UZ_FNFILTER_REPLACECHAR
+!         /* A convenient choice for the replacement of unprintable char codes is
+!          * the "single char wildcard", as this character is quite unlikely to
+!          * appear in filenames by itself.  The following default definition
+!          * sets the replacement char to a question mark as the most common
+!          * "single char wildcard"; this setting should be overridden in the
+!          * appropiate system-specific configuration header when needed.
+!          */
+! # define UZ_FNFILTER_REPLACECHAR      '?'
+! #endif
+  
+  /*************************/
+  /*  Function fnfilter()  */        /* here instead of in list.c for SFX */
+***************
+*** 2555,2602 ****
+      extent size;
+  {
+  #ifndef NATIVE   /* ASCII:  filter ANSI escape codes, etc. */
+!     ZCONST uch *r=(ZCONST uch *)raw;
+      uch *s=space;
+      uch *slim=NULL;
+      uch *se=NULL;
+      int have_overflow = FALSE;
+  
+!     if (size > 0) {
+!         slim = space + size
+! #ifdef _MBCS
+!                      - (MB_CUR_MAX - 1)
+! #endif
+!                      - 4;
+      }
+!     while (*r) {
+!         if (size > 0 && s >= slim && se == NULL) {
+!             se = s;
+!         }
+! #ifdef QDOS
+!         if (qlflag & 2) {
+!             if (*r == '/' || *r == '.') {
+                  if (se != NULL && (s > (space + (size-3)))) {
+                      have_overflow = TRUE;
+                      break;
+                  }
+!                 ++r;
+!                 *s++ = '_';
+!                 continue;
+              }
+!         } else
+  #endif
+  #ifdef HAVE_WORKING_ISPRINT
+! # ifndef UZ_FNFILTER_REPLACECHAR
+!     /* A convenient choice for the replacement of unprintable char codes is
+!      * the "single char wildcard", as this character is quite unlikely to
+!      * appear in filenames by itself.  The following default definition
+!      * sets the replacement char to a question mark as the most common
+!      * "single char wildcard"; this setting should be overridden in the
+!      * appropiate system-specific configuration header when needed.
+!      */
+! #   define UZ_FNFILTER_REPLACECHAR      '?'
+! # endif
+!         if (!isprint(*r)) {
+              if (*r < 32) {
+                  /* ASCII control codes are escaped as "^{letter}". */
+                  if (se != NULL && (s > (space + (size-4)))) {
+--- 2609,2776 ----
+      extent size;
+  {
+  #ifndef NATIVE   /* ASCII:  filter ANSI escape codes, etc. */
+!     ZCONST uch *r; // =(ZCONST uch *)raw;
+      uch *s=space;
+      uch *slim=NULL;
+      uch *se=NULL;
+      int have_overflow = FALSE;
+  
+! # if defined( UNICODE_SUPPORT) && defined( _MBCS)
+! /* If Unicode support is enabled, and we have multi-byte characters,
+!  * then do the isprint() checks by first converting to wide characters
+!  * and checking those.  This avoids our having to parse multi-byte
+!  * characters for ourselves.  After the wide-char replacements have been
+!  * made, the wide string is converted back to the local character set.
+!  */
+!     wchar_t *wstring;    /* wchar_t version of raw */
+!     size_t wslen;        /* length of wstring */
+!     wchar_t *wostring;   /* wchar_t version of output string */
+!     size_t woslen;       /* length of wostring */
+!     char *newraw;        /* new raw */
+! 
+!     /* 2012-11-06 SMS.
+!      * Changed to check the value returned by mbstowcs(), and bypass the
+!      * Unicode processing if it fails.  This seems to fix a problem
+!      * reported in the SourceForge forum, but it's not clear that we
+!      * should be doing any Unicode processing without some evidence that
+!      * the name actually is Unicode.  (Check bit 11 in the flags before
+!      * coming here?)
+!      * http://sourceforge.net/p/infozip/bugs/40/
+!      */
+! 
+!     if (MB_CUR_MAX <= 1)
+!     {
+!         /* There's no point to converting multi-byte chars if there are
+!          * no multi-byte chars.
+!          */
+!         wslen = (size_t)-1;
+      }
+!     else
+!     {
+!         /* Get Unicode wide character count (for storage allocation). */
+!         wslen = mbstowcs( NULL, raw, 0);
+!     }
+! 
+!     if (wslen != (size_t)-1)
+!     {
+!         /* Apparently valid Unicode.  Allocate wide-char storage. */
+!         wstring = (wchar_t *)malloc((wslen + 1) * sizeof(wchar_t));
+!         if (wstring == NULL) {
+!             strcpy( (char *)space, raw);
+!             return (char *)space;
+!         }
+!         wostring = (wchar_t *)malloc(2 * (wslen + 1) * sizeof(wchar_t));
+!         if (wostring == NULL) {
+!             free(wstring);
+!             strcpy( (char *)space, raw);
+!             return (char *)space;
+!         }
+! 
+!         /* Convert the multi-byte Unicode to wide chars. */
+!         wslen = mbstowcs(wstring, raw, wslen + 1);
+! 
+!         /* Filter the wide-character string. */
+!         fnfilterw( wstring, wostring, (2 * (wslen + 1) * sizeof(wchar_t)));
+! 
+!         /* Convert filtered wide chars back to multi-byte. */
+!         woslen = wcstombs( NULL, wostring, 0);
+!         if ((newraw = malloc(woslen + 1)) == NULL) {
+!             free(wstring);
+!             free(wostring);
+!             strcpy( (char *)space, raw);
+!             return (char *)space;
+!         }
+!         woslen = wcstombs( newraw, wostring, (woslen * MB_CUR_MAX) + 1);
+! 
+!         if (size > 0) {
+!             slim = space + size - 4;
+!         }
+!         r = (ZCONST uch *)newraw;
+!         while (*r) {
+!             if (size > 0 && s >= slim && se == NULL) {
+!                 se = s;
+!             }
+! #  ifdef QDOS
+!             if (qlflag & 2) {
+!                 if (*r == '/' || *r == '.') {
+!                     if (se != NULL && (s > (space + (size-3)))) {
+!                         have_overflow = TRUE;
+!                         break;
+!                     }
+!                     ++r;
+!                     *s++ = '_';
+!                     continue;
+!                 }
+!             } else
+! #  endif
+!             {
+                  if (se != NULL && (s > (space + (size-3)))) {
+                      have_overflow = TRUE;
+                      break;
+                  }
+!                 *s++ = *r++;
+              }
+!         }
+!         if (have_overflow) {
+!             strcpy((char *)se, "...");
+!         } else {
+!             *s = '\0';
+!         }
+! 
+!         free(wstring);
+!         free(wostring);
+!         free(newraw);
+!     }
+!     else
+! # endif /* defined( UNICODE_SUPPORT) && defined( _MBCS) */
+!     {
+!         /* No Unicode support, or apparently invalid Unicode. */
+!         r = (ZCONST uch *)raw;
+! 
+!         if (size > 0) {
+!             slim = space + size
+! #ifdef _MBCS
+!                          - (MB_CUR_MAX - 1)
+! #endif
+!                          - 4;
+!         }
+!         while (*r) {
+!             if (size > 0 && s >= slim && se == NULL) {
+!                 se = s;
+!             }
+! #ifdef QDOS
+!             if (qlflag & 2) {
+!                 if (*r == '/' || *r == '.') {
+!                     if (se != NULL && (s > (space + (size-3)))) {
+!                         have_overflow = TRUE;
+!                         break;
+!                     }
+!                     ++r;
+!                     *s++ = '_';
+!                     continue;
+!                 }
+!             } else
+  #endif
+  #ifdef HAVE_WORKING_ISPRINT
+!             if (!isprint(*r)) {
+!                 if (*r < 32) {
+!                     /* ASCII control codes are escaped as "^{letter}". */
+!                     if (se != NULL && (s > (space + (size-4)))) {
+!                         have_overflow = TRUE;
+!                         break;
+!                     }
+!                     *s++ = '^', *s++ = (uch)(64 + *r++);
+!                 } else {
+!                     /* Other unprintable codes are replaced by the
+!                      * placeholder character. */
+!                     if (se != NULL && (s > (space + (size-3)))) {
+!                         have_overflow = TRUE;
+!                         break;
+!                     }
+!                     *s++ = UZ_FNFILTER_REPLACECHAR;
+!                     INCSTR(r);
+!                 }
+! #else /* !HAVE_WORKING_ISPRINT */
+              if (*r < 32) {
+                  /* ASCII control codes are escaped as "^{letter}". */
+                  if (se != NULL && (s > (space + (size-4)))) {
+***************
+*** 2604,2650 ****
+                      break;
+                  }
+                  *s++ = '^', *s++ = (uch)(64 + *r++);
+              } else {
+!                 /* Other unprintable codes are replaced by the
+!                  * placeholder character. */
+                  if (se != NULL && (s > (space + (size-3)))) {
+                      have_overflow = TRUE;
+                      break;
+                  }
+-                 *s++ = UZ_FNFILTER_REPLACECHAR;
+-                 INCSTR(r);
+-             }
+- #else /* !HAVE_WORKING_ISPRINT */
+-         if (*r < 32) {
+-             /* ASCII control codes are escaped as "^{letter}". */
+-             if (se != NULL && (s > (space + (size-4)))) {
+-                 have_overflow = TRUE;
+-                 break;
+-             }
+-             *s++ = '^', *s++ = (uch)(64 + *r++);
+- #endif /* ?HAVE_WORKING_ISPRINT */
+-         } else {
+- #ifdef _MBCS
+-             unsigned i = CLEN(r);
+-             if (se != NULL && (s > (space + (size-i-2)))) {
+-                 have_overflow = TRUE;
+-                 break;
+-             }
+-             for (; i > 0; i--)
+                  *s++ = *r++;
+- #else
+-             if (se != NULL && (s > (space + (size-3)))) {
+-                 have_overflow = TRUE;
+-                 break;
+-             }
+-             *s++ = *r++;
+  #endif
+!          }
+!     }
+!     if (have_overflow) {
+!         strcpy((char *)se, "...");
+!     } else {
+!         *s = '\0';
+      }
+  
+  #ifdef WINDLL
+--- 2778,2807 ----
+                      break;
+                  }
+                  *s++ = '^', *s++ = (uch)(64 + *r++);
++ #endif /* ?HAVE_WORKING_ISPRINT */
+              } else {
+! #ifdef _MBCS
+!                 unsigned i = CLEN(r);
+!                 if (se != NULL && (s > (space + (size-i-2)))) {
+!                     have_overflow = TRUE;
+!                     break;
+!                 }
+!                 for (; i > 0; i--)
+!                     *s++ = *r++;
+! #else
+                  if (se != NULL && (s > (space + (size-3)))) {
+                      have_overflow = TRUE;
+                      break;
+                  }
+                  *s++ = *r++;
+  #endif
+!              }
+!         }
+!         if (have_overflow) {
+!             strcpy((char *)se, "...");
+!         } else {
+!             *s = '\0';
+!         }
+      }
+  
+  #ifdef WINDLL
+***************
+*** 2666,2671 ****
+--- 2823,2875 ----
+  } /* end function fnfilter() */
+  
+  
++ #if defined( UNICODE_SUPPORT) && defined( _MBCS)
++ 
++ /****************************/
++ /*  Function fnfilter[w]()  */  /* (Here instead of in list.c for SFX.) */
++ /****************************/
++ 
++ /* fnfilterw() - Convert wide name to safely printable form. */
++ 
++ /* fnfilterw() - Convert wide-character name to safely printable form. */
++ 
++ wchar_t *fnfilterw( src, dst, siz)
++     ZCONST wchar_t *src;        /* Pointer to source char (string). */
++     wchar_t *dst;               /* Pointer to destination char (string). */
++     extent siz;                 /* Not used (!). */
++ {
++     wchar_t *dsx = dst;
++ 
++     /* Filter the wide chars. */
++     while (*src)
++     {
++         if (iswprint( *src))
++         {
++             /* Printable code.  Copy it. */
++             *dst++ = *src;
++         }
++         else
++         {
++             /* Unprintable code.  Substitute something printable for it. */
++             if (*src < 32)
++             {
++                 /* Replace ASCII control code with "^{letter}". */
++                 *dst++ = (wchar_t)'^';
++                 *dst++ = (wchar_t)(64 + *src);
++             }
++             else
++             {
++                 /* Replace other unprintable code with the placeholder. */
++                 *dst++ = (wchar_t)UZ_FNFILTER_REPLACECHAR;
++             }
++         }
++         src++;
++     }
++     *dst = (wchar_t)0;  /* NUL-terminate the destination string. */
++     return dsx;
++ } /* fnfilterw(). */
++ 
++ #endif /* defined( UNICODE_SUPPORT) && defined( _MBCS) */
+  
+  
+  #ifdef SET_DIR_ATTRIB
+***************
+*** 2701,2706 ****
+--- 2905,2916 ----
+      int repeated_buf_err;
+      bz_stream bstrm;
+  
++     if (G.incnt <= 0 && G.csize <= 0L) {
++         /* avoid an infinite loop */
++         Trace((stderr, "UZbunzip2() got empty input\n"));
++         return 2;
++     }
++ 
+  #if (defined(DLL) && !defined(NO_SLIDE_REDIR))
+      if (G.redirect_slide)
+          wsize = G.redirect_size, redirSlide = G.redirect_buffer;
+Only in unzip-working/: extract.c.orig
+Only in unzip-working/: fetched.xbstrap
+diff -crB unzip60/fileio.c unzip-working/fileio.c
+*** unzip60/fileio.c	2009-04-20 02:03:44.000000000 +0200
+--- unzip-working/fileio.c	2025-01-05 12:54:13.431049313 +0100
+***************
+*** 1,5 ****
+  /*
+!   Copyright (c) 1990-2009 Info-ZIP.  All rights reserved.
+  
+    See the accompanying file LICENSE, version 2009-Jan-02 or later
+    (the contents of which are also included in unzip.h) for terms of use.
+--- 1,5 ----
+  /*
+!   Copyright (c) 1990-2017 Info-ZIP.  All rights reserved.
+  
+    See the accompanying file LICENSE, version 2009-Jan-02 or later
+    (the contents of which are also included in unzip.h) for terms of use.
+***************
+*** 176,181 ****
+--- 176,183 ----
+  #endif
+  static ZCONST char Far ExtraFieldTooLong[] =
+    "warning:  extra field too long (%d).  Ignoring...\n";
++ static ZCONST char Far ExtraFieldCorrupt[] =
++   "warning:  extra field (type: 0x%04x) corrupt.  Continuing...\n";
+  
+  #ifdef WINDLL
+     static ZCONST char Far DiskFullQuery[] =
+***************
+*** 1580,1585 ****
+--- 1582,1589 ----
+      int r = IZ_PW_ENTERED;
+      char *m;
+      char *prompt;
++     char *ep;
++     char *zp;
+  
+  #ifndef REENTRANT
+      /* tell picky compilers to shut up about "unused variable" warnings */
+***************
+*** 1588,1596 ****
+  
+      if (*rcnt == 0) {           /* First call for current entry */
+          *rcnt = 2;
+!         if ((prompt = (char *)malloc(2*FILNAMSIZ + 15)) != (char *)NULL) {
+!             sprintf(prompt, LoadFarString(PasswPrompt),
+!                     FnFilter1(zfn), FnFilter2(efn));
+              m = prompt;
+          } else
+              m = (char *)LoadFarString(PasswPrompt2);
+--- 1592,1603 ----
+  
+      if (*rcnt == 0) {           /* First call for current entry */
+          *rcnt = 2;
+!         zp = FnFilter1( zfn);
+!         ep = FnFilter2( efn);
+!         prompt = (char *)malloc(        /* Slightly too long (2* "%s"). */
+!          sizeof( PasswPrompt)+ strlen( zp)+ strlen( ep));
+!         if (prompt != (char *)NULL) {
+!             sprintf(prompt, LoadFarString(PasswPrompt), zp, ep);
+              m = prompt;
+          } else
+              m = (char *)LoadFarString(PasswPrompt2);
+***************
+*** 2006,2011 ****
+--- 2013,2019 ----
+      unsigned comment_bytes_left;
+      unsigned int block_len;
+      int error=PK_OK;
++     unsigned int length2;
+  #ifdef AMIGA
+      char tmp_fnote[2 * AMIGA_FILENOTELEN];   /* extra room for squozen chars */
+  #endif
+***************
+*** 2292,2301 ****
+              seek_zipf(__G__ G.cur_zipfile_bufstart - G.extra_bytes +
+                        (G.inptr-G.inbuf) + length);
+          } else {
+!             if (readbuf(__G__ (char *)G.extra_field, length) == 0)
+                  return PK_EOF;
+              /* Looks like here is where extra fields are read */
+!             getZip64Data(__G__ G.extra_field, length);
+  #ifdef UNICODE_SUPPORT
+              G.unipath_filename = NULL;
+              if (G.UzO.U_flag < 2) {
+--- 2300,2319 ----
+              seek_zipf(__G__ G.cur_zipfile_bufstart - G.extra_bytes +
+                        (G.inptr-G.inbuf) + length);
+          } else {
+!             if ((length2 = readbuf(__G__ (char *)G.extra_field, length)) == 0)
+                  return PK_EOF;
++             if(length2 < length) {
++               memset (__G__ (char *)G.extra_field+length2, 0 , length-length2);
++               length = length2;
++             }
+              /* Looks like here is where extra fields are read */
+!             if (getZip64Data(__G__ G.extra_field, length) != PK_COOL)
+!             {
+!                 Info(slide, 0x401, ((char *)slide,
+!                  LoadFarString( ExtraFieldCorrupt), EF_PKSZ64));
+!                 error = PK_WARN;
+!             }
+! 
+  #ifdef UNICODE_SUPPORT
+              G.unipath_filename = NULL;
+              if (G.UzO.U_flag < 2) {
+diff -crB unzip60/list.c unzip-working/list.c
+*** unzip60/list.c	2009-02-08 18:11:34.000000000 +0100
+--- unzip-working/list.c	2025-01-05 12:54:13.431049313 +0100
+***************
+*** 97,103 ****
+  {
+      int do_this_file=FALSE, cfactor, error, error_in_archive=PK_COOL;
+  #ifndef WINDLL
+!     char sgn, cfactorstr[10];
+      int longhdr=(uO.vflag>1);
+  #endif
+      int date_format;
+--- 97,103 ----
+  {
+      int do_this_file=FALSE, cfactor, error, error_in_archive=PK_COOL;
+  #ifndef WINDLL
+!     char sgn, cfactorstr[1+10+1+1];	/* <sgn><int>%NUL */
+      int longhdr=(uO.vflag>1);
+  #endif
+      int date_format;
+***************
+*** 181,187 ****
+                  Info(slide, 0x401,
+                       ((char *)slide, LoadFarString(CentSigMsg), j));
+                  Info(slide, 0x401,
+!                      ((char *)slide, LoadFarString(ReportMsg)));
+                  return PK_BADERR;   /* sig not found */
+              }
+          }
+--- 181,187 ----
+                  Info(slide, 0x401,
+                       ((char *)slide, LoadFarString(CentSigMsg), j));
+                  Info(slide, 0x401,
+!                      ((char *)slide,"%s", LoadFarString(ReportMsg)));
+                  return PK_BADERR;   /* sig not found */
+              }
+          }
+***************
+*** 339,345 ****
+                  G.crec.compression_method == ENHDEFLATED) {
+                  methbuf[5] = dtype[(G.crec.general_purpose_bit_flag>>1) & 3];
+              } else if (methnum >= NUM_METHODS) {
+!                 sprintf(&methbuf[4], "%03u", G.crec.compression_method);
+              }
+  
+  #if 0       /* GRR/Euro:  add this? */
+--- 339,357 ----
+                  G.crec.compression_method == ENHDEFLATED) {
+                  methbuf[5] = dtype[(G.crec.general_purpose_bit_flag>>1) & 3];
+              } else if (methnum >= NUM_METHODS) {
+!                 /* 2013-02-26 SMS.
+!                  * http://sourceforge.net/tracker/?func=detail
+!                  *  &aid=2861648&group_id=118012&atid=679786
+!                  * Unexpectedly large compression methods overflow
+!                  * &methbuf[].  Use the old, three-digit decimal format
+!                  * for values which fit.  Otherwise, sacrifice the
+!                  * colon, and use four-digit hexadecimal.
+!                  */
+!                 if (G.crec.compression_method <= 999) {
+!                     sprintf( &methbuf[ 4], "%03u", G.crec.compression_method);
+!                 } else {
+!                     sprintf( &methbuf[ 3], "%04X", G.crec.compression_method);
+!                 }
+              }
+  
+  #if 0       /* GRR/Euro:  add this? */
+***************
+*** 378,386 ****
+              }
+  #else /* !WINDLL */
+              if (cfactor == 100)
+!                 sprintf(cfactorstr, LoadFarString(CompFactor100));
+              else
+!                 sprintf(cfactorstr, LoadFarString(CompFactorStr), sgn, cfactor);
+              if (longhdr)
+                  Info(slide, 0, ((char *)slide, LoadFarString(LongHdrStats),
+                    FmZofft(G.crec.ucsize, "8", "u"), methbuf,
+--- 390,398 ----
+              }
+  #else /* !WINDLL */
+              if (cfactor == 100)
+!                 snprintf(cfactorstr, sizeof(cfactorstr), LoadFarString(CompFactor100));
+              else
+!                 snprintf(cfactorstr, sizeof(cfactorstr), LoadFarString(CompFactorStr), sgn, cfactor);
+              if (longhdr)
+                  Info(slide, 0, ((char *)slide, LoadFarString(LongHdrStats),
+                    FmZofft(G.crec.ucsize, "8", "u"), methbuf,
+***************
+*** 460,468 ****
+  
+  #else /* !WINDLL */
+          if (cfactor == 100)
+!             sprintf(cfactorstr, LoadFarString(CompFactor100));
+          else
+!             sprintf(cfactorstr, LoadFarString(CompFactorStr), sgn, cfactor);
+          if (longhdr) {
+              Info(slide, 0, ((char *)slide, LoadFarString(LongFileTrailer),
+                FmZofft(tot_ucsize, "8", "u"), FmZofft(tot_csize, "8", "u"),
+--- 472,480 ----
+  
+  #else /* !WINDLL */
+          if (cfactor == 100)
+!             snprintf(cfactorstr, sizeof(cfactorstr), LoadFarString(CompFactor100));
+          else
+!             snprintf(cfactorstr, sizeof(cfactorstr), LoadFarString(CompFactorStr), sgn, cfactor);
+          if (longhdr) {
+              Info(slide, 0, ((char *)slide, LoadFarString(LongFileTrailer),
+                FmZofft(tot_ucsize, "8", "u"), FmZofft(tot_csize, "8", "u"),
+***************
+*** 507,513 ****
+              && (!G.ecrec.is_zip64_archive)
+              && (memcmp(G.sig, end_central_sig, 4) != 0)
+             ) {          /* just to make sure again */
+!             Info(slide, 0x401, ((char *)slide, LoadFarString(EndSigMsg)));
+              error_in_archive = PK_WARN;   /* didn't find sig */
+          }
+  
+--- 519,526 ----
+              && (!G.ecrec.is_zip64_archive)
+              && (memcmp(G.sig, end_central_sig, 4) != 0)
+             ) {          /* just to make sure again */
+!             Info(slide, 0x401, 
+!                  ((char *)slide,"%s", LoadFarString(EndSigMsg)));
+              error_in_archive = PK_WARN;   /* didn't find sig */
+          }
+  
+***************
+*** 591,597 ****
+                  Info(slide, 0x401,
+                       ((char *)slide, LoadFarString(CentSigMsg), j));
+                  Info(slide, 0x401,
+!                      ((char *)slide, LoadFarString(ReportMsg)));
+                  return PK_BADERR;   /* sig not found */
+              }
+          }
+--- 604,610 ----
+                  Info(slide, 0x401,
+                       ((char *)slide, LoadFarString(CentSigMsg), j));
+                  Info(slide, 0x401,
+!                      ((char *)slide,"%s", LoadFarString(ReportMsg)));
+                  return PK_BADERR;   /* sig not found */
+              }
+          }
+***************
+*** 674,680 ****
+    ---------------------------------------------------------------------------*/
+  
+      if (memcmp(G.sig, end_central_sig, 4)) {    /* just to make sure again */
+!         Info(slide, 0x401, ((char *)slide, LoadFarString(EndSigMsg)));
+          error_in_archive = PK_WARN;
+      }
+      if (*nmember == 0L && error_in_archive <= PK_WARN)
+--- 687,693 ----
+    ---------------------------------------------------------------------------*/
+  
+      if (memcmp(G.sig, end_central_sig, 4)) {    /* just to make sure again */
+!         Info(slide, 0x401, ((char *)slide,"%s", LoadFarString(EndSigMsg)));
+          error_in_archive = PK_WARN;
+      }
+      if (*nmember == 0L && error_in_archive <= PK_WARN)
+Only in unzip-working/: list.c.orig
+diff -crB unzip60/match.c unzip-working/match.c
+*** unzip60/match.c	2005-08-14 19:00:36.000000000 +0200
+--- unzip-working/match.c	2025-01-05 12:54:13.431049313 +0100
+***************
+*** 27,42 ****
+  
+    ---------------------------------------------------------------------------
+  
+!   Copyright on recmatch() from Zip's util.c (although recmatch() was almost
+!   certainly written by Mark Adler...ask me how I can tell :-) ):
+  
+!      Copyright (C) 1990-1992 Mark Adler, Richard B. Wales, Jean-loup Gailly,
+!      Kai Uwe Rommel and Igor Mandrichenko.
+  
+-      Permission is granted to any individual or institution to use, copy,
+-      or redistribute this software so long as all of the original files are
+-      included unmodified, that it is not sold for profit, and that this copy-
+-      right notice is retained.
+  
+    ---------------------------------------------------------------------------
+  
+--- 27,40 ----
+  
+    ---------------------------------------------------------------------------
+  
+!   Copyright on recmatch() from Zip's util.c
+! 	 Copyright (c) 1990-2005 Info-ZIP.  All rights reserved.
+  
+! 	 See the accompanying file LICENSE, version 2004-May-22 or later
+! 	 for terms of use.
+! 	 If, for some reason, both of these files are missing, the Info-ZIP license
+! 	 also may be found at:  ftp://ftp.info-zip.org/pub/infozip/license.html  
+  
+  
+    ---------------------------------------------------------------------------
+  
+***************
+*** 53,59 ****
+  
+    A set is composed of characters or ranges; a range looks like ``character
+    hyphen character'' (as in 0-9 or A-Z).  [0-9a-zA-Z_] is the minimal set of
+!   characters allowed in the [..] pattern construct.  Other characters are
+    allowed (i.e., 8-bit characters) if your system will support them.
+  
+    To suppress the special syntactic significance of any of ``[]*?!^-\'', in-
+--- 51,57 ----
+  
+    A set is composed of characters or ranges; a range looks like ``character
+    hyphen character'' (as in 0-9 or A-Z).  [0-9a-zA-Z_] is the minimal set of
+!   characters ALlowed in the [..] pattern construct.  Other characters are
+    allowed (i.e., 8-bit characters) if your system will support them.
+  
+    To suppress the special syntactic significance of any of ``[]*?!^-\'', in-
+***************
+*** 101,108 ****
+--- 99,130 ----
+  #  define WILDCHAR   '?'
+  #  define BEG_RANGE  '['
+  #  define END_RANGE  ']'
++ #  define WILDCHR_SINGLE '?'
++ #  define DIRSEP_CHR '/'
++ #  define WILDCHR_MULTI '*'
+  #endif
+  
++ #ifdef WILD_STOP_AT_DIR
++    int wild_stop_at_dir = 1; /* default wildcards do not include / in matches */
++ #else
++    int wild_stop_at_dir = 0; /* default wildcards do include / in matches */
++ #endif
++ 
++ 
++ 
++ /*
++  * case mapping functions. case_map is used to ignore case in comparisons,
++  * to_up is used to force upper case even on Unix (for dosify option).
++  */
++ #ifdef USE_CASE_MAP
++ #  define case_map(c) upper[(c) & 0xff]
++ #  define to_up(c)    upper[(c) & 0xff]
++ #else
++ #  define case_map(c) (c)
++ #  define to_up(c)    ((c) >= 'a' && (c) <= 'z' ? (c)-'a'+'A' : (c))
++ #endif /* USE_CASE_MAP */
++ 
++ 
+  #if 0                /* GRR:  add this to unzip.h someday... */
+  #if !(defined(MSDOS) && defined(DOSWILD))
+  #ifdef WILD_STOP_AT_DIR
+***************
+*** 114,121 ****
+                   int ignore_case __WDLPRO));
+  #endif
+  #endif /* 0 */
+! static int recmatch OF((ZCONST uch *pattern, ZCONST uch *string,
+!                         int ignore_case __WDLPRO));
+  static char *isshexp OF((ZCONST char *p));
+  static int namecmp OF((ZCONST char *s1, ZCONST char *s2));
+  
+--- 136,143 ----
+                   int ignore_case __WDLPRO));
+  #endif
+  #endif /* 0 */
+! static int recmatch OF((ZCONST char *, ZCONST char *, 
+!                         int));
+  static char *isshexp OF((ZCONST char *p));
+  static int namecmp OF((ZCONST char *s1, ZCONST char *s2));
+  
+***************
+*** 154,345 ****
+              }
+              dospattern[j-1] = '\0';                    /* nuke the end "." */
+          }
+!         j = recmatch((uch *)dospattern, (uch *)string, ignore_case __WDL);
+          free(dospattern);
+          return j == 1;
+      } else
+  #endif /* MSDOS && DOSWILD */
+!     return recmatch((uch *)pattern, (uch *)string, ignore_case __WDL) == 1;
+  }
+  
+  
+  
+! static int recmatch(p, s, ic __WDL)
+!     ZCONST uch *p;        /* sh pattern to match */
+!     ZCONST uch *s;        /* string to which to match it */
+!     int ic;               /* true for case insensitivity */
+!     __WDLDEF              /* directory sepchar for WildStopAtDir mode, or 0 */
+  /* Recursively compare the sh pattern p with the string s and return 1 if
+!  * they match, and 0 or 2 if they don't or if there is a syntax error in the
+!  * pattern.  This routine recurses on itself no more deeply than the number
+!  * of characters in the pattern. */
+  {
+!     unsigned int c;       /* pattern char or start of range in [-] loop */
+  
+!     /* Get first character, the pattern for new recmatch calls follows */
+!     c = *p; INCSTR(p);
+  
+!     /* If that was the end of the pattern, match if string empty too */
+!     if (c == 0)
+!         return *s == 0;
+  
+!     /* '?' (or '%') matches any character (but not an empty string). */
+!     if (c == WILDCHAR)
+! #ifdef WILD_STOP_AT_DIR
+!         /* If uO.W_flag is non-zero, it won't match '/' */
+!         return (*s && (!sepc || *s != (uch)sepc))
+!                ? recmatch(p, s + CLEN(s), ic, sepc) : 0;
+! #else
+!         return *s ? recmatch(p, s + CLEN(s), ic) : 0;
+! #endif
+  
+!     /* '*' matches any number of characters, including zero */
+  #ifdef AMIGA
+!     if (c == '#' && *p == '?')     /* "#?" is Amiga-ese for "*" */
+!         c = '*', p++;
+  #endif /* AMIGA */
+!     if (c == '*') {
+! #ifdef WILD_STOP_AT_DIR
+!         if (sepc) {
+!           /* check for single "*" or double "**" */
+! #  ifdef AMIGA
+!           if ((c = p[0]) == '#' && p[1] == '?') /* "#?" is Amiga-ese for "*" */
+!             c = '*', p++;
+!           if (c != '*') {
+! #  else /* !AMIGA */
+!           if (*p != '*') {
+! #  endif /* ?AMIGA */
+!             /* single "*": this doesn't match the dirsep character */
+!             for (; *s && *s != (uch)sepc; INCSTR(s))
+!                 if ((c = recmatch(p, s, ic, sepc)) != 0)
+!                     return (int)c;
+!             /* end of pattern: matched if at end of string, else continue */
+!             if (*p == '\0')
+!                 return (*s == 0);
+!             /* continue to match if at sepc in pattern, else give up */
+!             return (*p == (uch)sepc || (*p == '\\' && p[1] == (uch)sepc))
+!                    ? recmatch(p, s, ic, sepc) : 2;
+!           }
+!           /* "**": this matches slashes */
+!           ++p;        /* move p behind the second '*' */
+!           /* and continue with the non-W_flag code variant */
+!         }
+! #endif /* WILD_STOP_AT_DIR */
+          if (*p == 0)
+!             return 1;
+!         if (isshexp((ZCONST char *)p) == NULL) {
+!             /* Optimization for rest of pattern being a literal string:
+!              * If there are no other shell expression chars in the rest
+!              * of the pattern behind the multi-char wildcard, then just
+!              * compare the literal string tail.
+!              */
+!             ZCONST uch *srest;
+! 
+!             srest = s + (strlen((ZCONST char *)s) - strlen((ZCONST char *)p));
+!             if (srest - s < 0)
+!                 /* remaining literal string from pattern is longer than rest
+!                  * of test string, there can't be a match
+!                  */
+!                 return 0;
+!             else
+!               /* compare the remaining literal pattern string with the last
+!                * bytes of the test string to check for a match
+!                */
+  #ifdef _MBCS
+!             {
+!                 ZCONST uch *q = s;
+  
+!                 /* MBCS-aware code must not scan backwards into a string from
+!                  * the end.
+!                  * So, we have to move forward by character from our well-known
+!                  * character position s in the test string until we have
+!                  * advanced to the srest position.
+!                  */
+!                 while (q < srest)
+!                   INCSTR(q);
+!                 /* In case the byte *srest is a trailing byte of a multibyte
+!                  * character in the test string s, we have actually advanced
+!                  * past the position (srest).
+!                  * For this case, the match has failed!
+!                  */
+!                 if (q != srest)
+!                     return 0;
+!                 return ((ic
+!                          ? namecmp((ZCONST char *)p, (ZCONST char *)q)
+!                          : strcmp((ZCONST char *)p, (ZCONST char *)q)
+!                         ) == 0);
+!             }
+  #else /* !_MBCS */
+!                 return ((ic
+!                          ? namecmp((ZCONST char *)p, (ZCONST char *)srest)
+!                          : strcmp((ZCONST char *)p, (ZCONST char *)srest)
+!                         ) == 0);
+  #endif /* ?_MBCS */
+-         } else {
+-             /* pattern contains more wildcards, continue with recursion... */
+-             for (; *s; INCSTR(s))
+-                 if ((c = recmatch(p, s, ic __WDL)) != 0)
+-                     return (int)c;
+-             return 2;  /* 2 means give up--match will return false */
+-         }
+      }
+! 
+!     /* Parse and process the list of characters and ranges in brackets */
+!     if (c == BEG_RANGE) {
+!         int e;          /* flag true if next char to be taken literally */
+!         ZCONST uch *q;  /* pointer to end of [-] group */
+!         int r;          /* flag true to match anything but the range */
+! 
+!         if (*s == 0)                            /* need a character to match */
+!             return 0;
+!         p += (r = (*p == '!' || *p == '^'));    /* see if reverse */
+!         for (q = p, e = 0; *q; INCSTR(q))       /* find closing bracket */
+!             if (e)
+!                 e = 0;
+!             else
+!                 if (*q == '\\')      /* GRR:  change to ^ for MS-DOS, OS/2? */
+!                     e = 1;
+!                 else if (*q == END_RANGE)
+!                     break;
+!         if (*q != END_RANGE)         /* nothing matches if bad syntax */
+!             return 0;
+!         for (c = 0, e = (*p == '-'); p < q; INCSTR(p)) {
+!             /* go through the list */
+!             if (!e && *p == '\\')               /* set escape flag if \ */
+!                 e = 1;
+!             else if (!e && *p == '-')           /* set start of range if - */
+!                 c = *(p-1);
+!             else {
+!                 unsigned int cc = Case(*s);
+! 
+!                 if (*(p+1) != '-')
+!                     for (c = c ? c : *p; c <= *p; c++)  /* compare range */
+!                         if ((unsigned)Case(c) == cc) /* typecast for MSC bug */
+!                             return r ? 0 : recmatch(q + 1, s + 1, ic __WDL);
+!                 c = e = 0;   /* clear range, escape flags */
+!             }
+!         }
+!         return r ? recmatch(q + CLEN(q), s + CLEN(s), ic __WDL) : 0;
+!                                         /* bracket match failed */
+      }
+  
+!     /* if escape ('\\'), just compare next character */
+!     if (c == '\\' && (c = *p++) == 0)     /* if \ at end, then syntax error */
+!         return 0;
+  
+!     /* just a character--compare it */
+! #ifdef QDOS
+!     return QMatch(Case((uch)c), Case(*s)) ?
+!            recmatch(p, s + CLEN(s), ic __WDL) : 0;
+! #else
+!     return Case((uch)c) == Case(*s) ?
+!            recmatch(p, s + CLEN(s), ic __WDL) : 0;
+! #endif
+  
+- } /* end function recmatch() */
+  
+  
+  
+  static char *isshexp(p)
+  ZCONST char *p;
+  /* If p is a sh expression, a pointer to the first special character is
+--- 176,415 ----
+              }
+              dospattern[j-1] = '\0';                    /* nuke the end "." */
+          }
+!         j = recmatch(dospattern, string, ignore_case);
+          free(dospattern);
+          return j == 1;
+      } else
+  #endif /* MSDOS && DOSWILD */
+!     return recmatch(pattern, string, ignore_case) == 1;
+  }
+  
++ #ifdef _MBCS
++ 
++ char *___tmp_ptr;
+  
++ #endif
+  
+! static int recmatch(p, s, ci)
+! ZCONST char *p;         /* sh pattern to match */
+! ZCONST char *s;         /* string to match it to */
+! int ci;                 /* flag: force case-insensitive matching */
+  /* Recursively compare the sh pattern p with the string s and return 1 if
+!    they match, and 0 or 2 if they don't or if there is a syntax error in the
+!    pattern.  This routine recurses on itself no deeper than the number of
+!    characters in the pattern. */
+  {
+!   int c;                /* pattern char or start of range in [-] loop */
+!   /* Get first character, the pattern for new recmatch calls follows */
+!  /* borrowed from Zip's global.c */
+!  int no_wild = 0; 
+!  int allow_regex=1;
+!   /* This fix provided by akt@m5.dion.ne.jp for Japanese.
+!      See 21 July 2006 mail.
+!      It only applies when p is pointing to a doublebyte character and
+!      things like / and wildcards are not doublebyte.  This probably
+!      should not be needed. */
+  
+! #ifdef _MBCS
+!   if (CLEN(p) == 2) {
+!     if (CLEN(s) == 2) {
+!       return (*p == *s && *(p+1) == *(s+1)) ?
+!         recmatch(p + 2, s + 2, ci) : 0;
+!     } else {
+!       return 0;
+!     }
+!   }
+! #endif /* ?_MBCS */
+  
+!   c = *POSTINCSTR(p);
+  
+!   /* If that was the end of the pattern, match if string empty too */
+!   if (c == 0)
+!     return *s == 0;
+! 
+!   /* '?' (or '%' or '#') matches any character (but not an empty string) */
+!   if (c == WILDCHR_SINGLE) {
+!     if (wild_stop_at_dir)
+!       return (*s && *s != DIRSEP_CHR) ? recmatch(p, s + CLEN(s), ci) : 0;
+!     else
+!       return *s ? recmatch(p, s + CLEN(s), ci) : 0;
+!   }
+  
+!   /* WILDCHR_MULTI ('*') matches any number of characters, including zero */
+  #ifdef AMIGA
+!   if (!no_wild && c == '#' && *p == '?')            /* "#?" is Amiga-ese for "*" */
+!     c = WILDCHR_MULTI, p++;
+  #endif /* AMIGA */
+!   if (!no_wild && c == WILDCHR_MULTI)
+!   {
+!     if (wild_stop_at_dir) {
+!       /* Check for an immediately following WILDCHR_MULTI */
+! # ifdef AMIGA
+!       if ((c = p[0]) == '#' && p[1] == '?') /* "#?" is Amiga-ese for "*" */
+!         c = WILDCHR_MULTI, p++;
+!       if (c != WILDCHR_MULTI) {
+! # else /* !AMIGA */
+!       if (*p != WILDCHR_MULTI) {
+! # endif /* ?AMIGA */
+!         /* Single WILDCHR_MULTI ('*'): this doesn't match slashes */
+!         for (; *s && *s != DIRSEP_CHR; INCSTR(s))
+!           if ((c = recmatch(p, s, ci)) != 0)
+!             return c;
+!         /* end of pattern: matched if at end of string, else continue */
+          if (*p == 0)
+!           return (*s == 0);
+!         /* continue to match if at DIRSEP_CHR in pattern, else give up */
+!         return (*p == DIRSEP_CHR || (*p == '\\' && p[1] == DIRSEP_CHR))
+!                ? recmatch(p, s, ci) : 2;
+!       }
+!       /* Two consecutive WILDCHR_MULTI ("**"): this matches DIRSEP_CHR ('/') */
+!       p++;        /* move p past the second WILDCHR_MULTI */
+!       /* continue with the normal non-WILD_STOP_AT_DIR code */
+!     } /* wild_stop_at_dir */
+! 
+!     /* Not wild_stop_at_dir */
+!     if (*p == 0)
+!       return 1;
+!     if (!isshexp((char *)p))
+!     {
+!       /* optimization for rest of pattern being a literal string */
+! 
+!       /* optimization to handle patterns like *.txt */
+!       /* if the first char in the pattern is '*' and there */
+!       /* are no other shell expression chars, i.e. a literal string */
+!       /* then just compare the literal string at the end */
+! 
+!       ZCONST char *srest;
+! 
+!       srest = s + (strlen(s) - strlen(p));
+!       if (srest - s < 0)
+!         /* remaining literal string from pattern is longer than rest of
+!            test string, there can't be a match
+!          */
+!         return 0;
+!       else
+!         /* compare the remaining literal pattern string with the last bytes
+!            of the test string to check for a match */
+  #ifdef _MBCS
+!       {
+!         ZCONST char *q = s;
+  
+!         /* MBCS-aware code must not scan backwards into a string from
+!          * the end.
+!          * So, we have to move forward by character from our well-known
+!          * character position s in the test string until we have advanced
+!          * to the srest position.
+!          */
+!         while (q < srest)
+!           INCSTR(q);
+!         /* In case the byte *srest is a trailing byte of a multibyte
+!          * character, we have actually advanced past the position (srest).
+!          * For this case, the match has failed!
+!          */
+!         if (q != srest)
+!           return 0;
+!         return ((!ci ? strcmp(p, q) : namecmp(p, q)) == 0);
+!       }
+  #else /* !_MBCS */
+!         return ((!ci ? strcmp(p, srest) : namecmp(p, srest)) == 0);
+  #endif /* ?_MBCS */
+      }
+!     else
+!     {
+!       /* pattern contains more wildcards, continue with recursion... */
+!       for (; *s; INCSTR(s))
+!         if ((c = recmatch(p, s, ci)) != 0)
+!           return c;
+!       return 2;           /* 2 means give up--shmatch will return false */
+      }
++   }
+  
+! #ifndef VMS             /* No bracket matching in VMS */
+!   /* Parse and process the list of characters and ranges in brackets */
+!   if (!no_wild && allow_regex && c == '[')
+!   {
+!     int e;              /* flag true if next char to be taken literally */
+!     ZCONST char *q;     /* pointer to end of [-] group */
+!     int r;              /* flag true to match anything but the range */
+! 
+!     if (*s == 0)                        /* need a character to match */
+!       return 0;
+!     p += (r = (*p == '!' || *p == '^')); /* see if reverse */
+!     for (q = p, e = 0; *q; q++)         /* find closing bracket */
+!       if (e)
+!         e = 0;
+!       else
+!         if (*q == '\\')
+!           e = 1;
+!         else if (*q == ']')
+!           break;
+!     if (*q != ']')                      /* nothing matches if bad syntax */
+!       return 0;
+!     for (c = 0, e = *p == '-'; p < q; p++)      /* go through the list */
+!     {
+!       if (e == 0 && *p == '\\')         /* set escape flag if \ */
+!         e = 1;
+!       else if (e == 0 && *p == '-')     /* set start of range if - */
+!         c = *(p-1);
+!       else
+!       {
+!         uch cc = (!ci ? (uch)*s : to_up((uch)*s));
+!         uch uc = (uch) c;
+!         if (*(p+1) != '-')
+!           for (uc = uc ? uc : (uch)*p; uc <= (uch)*p; uc++)
+!             /* compare range */
+!             if ((!ci ? uc : to_up(uc)) == cc)
+!               return r ? 0 : recmatch(q + CLEN(q), s + CLEN(s), ci);
+!         c = e = 0;                      /* clear range, escape flags */
+!       }
+!     }
+!     return r ? recmatch(q + CLEN(q), s + CLEN(s), ci) : 0;
+!                                         /* bracket match failed */
+!   }
+! #endif /* !VMS */
+  
+!   /* If escape ('\'), just compare next character */
+!   if (!no_wild && c == '\\')
+!     if ((c = *p++) == '\0')             /* if \ at end, then syntax error */
+!       return 0;
+! 
+! #ifdef VMS
+!   /* 2005-11-06 SMS.
+!      Handle "..." wildcard in p with "." or "]" in s.
+!   */
+!   if ((c == '.') && (*p == '.') && (*(p+ CLEN( p)) == '.') &&
+!    ((*s == '.') || (*s == ']')))
+!   {
+!     /* Match "...]" with "]".  Continue after "]" in both. */
+!     if ((*(p+ 2* CLEN( p)) == ']') && (*s == ']'))
+!       return recmatch( (p+ 3* CLEN( p)), (s+ CLEN( s)), ci);
+! 
+!     /* Else, look for a reduced match in s, until "]" in or end of s. */
+!     for (; *s && (*s != ']'); INCSTR(s))
+!       if (*s == '.')
+!         /* If reduced match, then continue after "..." in p, "." in s. */
+!         if ((c = recmatch( (p+ CLEN( p)), s, ci)) != 0)
+!           return (int)c;
+! 
+!     /* Match "...]" with "]".  Continue after "]" in both. */
+!     if ((*(p+ 2* CLEN( p)) == ']') && (*s == ']'))
+!       return recmatch( (p+ 3* CLEN( p)), (s+ CLEN( s)), ci);
+! 
+!     /* No reduced match.  Quit. */
+!     return 2;
+!   }
+! 
+! #endif /* def VMS */
+! 
+!   /* Just a character--compare it */
+!   return (!ci ? c == *s : to_up((uch)c) == to_up((uch)*s)) ?
+!           recmatch(p, s + CLEN(s), ci) : 0;
+! }
+  
+  
+  
+  
++ /*************************************************************************************************/
+  static char *isshexp(p)
+  ZCONST char *p;
+  /* If p is a sh expression, a pointer to the first special character is
+Only in unzip-working/: patched.xbstrap
+diff -crB unzip60/process.c unzip-working/process.c
+*** unzip60/process.c	2009-03-06 02:25:10.000000000 +0100
+--- unzip-working/process.c	2025-01-05 12:54:13.432049261 +0100
+***************
+*** 1,5 ****
+  /*
+!   Copyright (c) 1990-2009 Info-ZIP.  All rights reserved.
+  
+    See the accompanying file LICENSE, version 2009-Jan-02 or later
+    (the contents of which are also included in unzip.h) for terms of use.
+--- 1,5 ----
+  /*
+!   Copyright (c) 1990-2014 Info-ZIP.  All rights reserved.
+  
+    See the accompanying file LICENSE, version 2009-Jan-02 or later
+    (the contents of which are also included in unzip.h) for terms of use.
+***************
+*** 1888,1935 ****
+      and a 4-byte version of disk start number.
+      Sets both local header and central header fields.  Not terribly clever,
+      but it means that this procedure is only called in one place.
+    ---------------------------------------------------------------------------*/
+  
+      if (ef_len == 0 || ef_buf == NULL)
+          return PK_COOL;
+  
+      Trace((stderr,"\ngetZip64Data: scanning extra field of length %u\n",
+        ef_len));
+  
+!     while (ef_len >= EB_HEADSIZE) {
+          eb_id = makeword(EB_ID + ef_buf);
+          eb_len = makeword(EB_LEN + ef_buf);
+  
+!         if (eb_len > (ef_len - EB_HEADSIZE)) {
+!             /* discovered some extra field inconsistency! */
+              Trace((stderr,
+                "getZip64Data: block length %u > rest ef_size %u\n", eb_len,
+                ef_len - EB_HEADSIZE));
+              break;
+          }
+-         if (eb_id == EF_PKSZ64) {
+  
+            int offset = EB_HEADSIZE;
+  
+!           if (G.crec.ucsize == 0xffffffff || G.lrec.ucsize == 0xffffffff){
+!             G.lrec.ucsize = G.crec.ucsize = makeint64(offset + ef_buf);
+!             offset += sizeof(G.crec.ucsize);
+            }
+!           if (G.crec.csize == 0xffffffff || G.lrec.csize == 0xffffffff){
+!             G.csize = G.lrec.csize = G.crec.csize = makeint64(offset + ef_buf);
+!             offset += sizeof(G.crec.csize);
+            }
+!           if (G.crec.relative_offset_local_header == 0xffffffff){
+              G.crec.relative_offset_local_header = makeint64(offset + ef_buf);
+!             offset += sizeof(G.crec.relative_offset_local_header);
+            }
+!           if (G.crec.disk_number_start == 0xffff){
+              G.crec.disk_number_start = (zuvl_t)makelong(offset + ef_buf);
+!             offset += sizeof(G.crec.disk_number_start);
+            }
+          }
+  
+!         /* Skip this extra field block */
+          ef_buf += (eb_len + EB_HEADSIZE);
+          ef_len -= (eb_len + EB_HEADSIZE);
+      }
+--- 1888,1970 ----
+      and a 4-byte version of disk start number.
+      Sets both local header and central header fields.  Not terribly clever,
+      but it means that this procedure is only called in one place.
++ 
++     2014-12-05 SMS.
++     Added checks to ensure that enough data are available before calling
++     makeint64() or makelong().  Replaced various sizeof() values with
++     simple ("4" or "8") constants.  (The Zip64 structures do not depend
++     on our variable sizes.)  Error handling is crude, but we should now
++     stay within the buffer.
+    ---------------------------------------------------------------------------*/
+  
++ #define Z64FLGS 0xffff
++ #define Z64FLGL 0xffffffff
++ 
+      if (ef_len == 0 || ef_buf == NULL)
+          return PK_COOL;
+  
+      Trace((stderr,"\ngetZip64Data: scanning extra field of length %u\n",
+        ef_len));
+  
+!     while (ef_len >= EB_HEADSIZE)
+!     {
+          eb_id = makeword(EB_ID + ef_buf);
+          eb_len = makeword(EB_LEN + ef_buf);
+  
+!         if (eb_len > (ef_len - EB_HEADSIZE))
+!         {
+!             /* Extra block length exceeds remaining extra field length. */
+              Trace((stderr,
+                "getZip64Data: block length %u > rest ef_size %u\n", eb_len,
+                ef_len - EB_HEADSIZE));
+              break;
+          }
+  
++         if (eb_id == EF_PKSZ64)
++         {
+            int offset = EB_HEADSIZE;
+  
+!           if ((G.crec.ucsize == Z64FLGL) || (G.lrec.ucsize == Z64FLGL))
+!           {
+!             if (offset+ 8 > ef_len)
+!               return PK_ERR;
+! 
+!             G.crec.ucsize = G.lrec.ucsize = makeint64(offset + ef_buf);
+!             offset += 8;
+            }
+! 
+!           if ((G.crec.csize == Z64FLGL) || (G.lrec.csize == Z64FLGL))
+!           {
+!             if (offset+ 8 > ef_len)
+!               return PK_ERR;
+! 
+!             G.csize = G.crec.csize = G.lrec.csize = makeint64(offset + ef_buf);
+!             offset += 8;
+            }
+! 
+!           if (G.crec.relative_offset_local_header == Z64FLGL)
+!           {
+!             if (offset+ 8 > ef_len)
+!               return PK_ERR;
+! 
+              G.crec.relative_offset_local_header = makeint64(offset + ef_buf);
+!             offset += 8;
+            }
+! 
+!           if (G.crec.disk_number_start == Z64FLGS)
+!           {
+!             if (offset+ 4 > ef_len)
+!               return PK_ERR;
+! 
+              G.crec.disk_number_start = (zuvl_t)makelong(offset + ef_buf);
+!             offset += 4;
+            }
++ #if 0
++           break;                /* Expect only one EF_PKSZ64 block. */
++ #endif /* 0 */
+          }
+  
+!         /* Skip this extra field block. */
+          ef_buf += (eb_len + EB_HEADSIZE);
+          ef_len -= (eb_len + EB_HEADSIZE);
+      }
+***************
+*** 2867,2876 ****
+              break;
+  
+            case EF_IZUNIX2:
+!             if (have_new_type_eb == 0) {
+!                 flags &= ~0x0ff;        /* ignore any previous IZUNIX field */
+                  have_new_type_eb = 1;
+              }
+  #ifdef IZ_HAVE_UXUIDGID
+              if (have_new_type_eb > 1)
+                  break;          /* IZUNIX3 overrides IZUNIX2 e.f. block ! */
+--- 2902,2914 ----
+              break;
+  
+            case EF_IZUNIX2:
+!             if (have_new_type_eb == 0) {        /* (< 1) */
+                  have_new_type_eb = 1;
+              }
++             if (have_new_type_eb <= 1) {
++                 /* Ignore any prior (EF_IZUNIX/EF_PKUNIX) UID/GID. */
++                 flags &= 0x0ff;
++             }
+  #ifdef IZ_HAVE_UXUIDGID
+              if (have_new_type_eb > 1)
+                  break;          /* IZUNIX3 overrides IZUNIX2 e.f. block ! */
+***************
+*** 2886,2891 ****
+--- 2924,2931 ----
+              /* new 3rd generation Unix ef */
+              have_new_type_eb = 2;
+  
++             /* Ignore any prior EF_IZUNIX/EF_PKUNIX/EF_IZUNIX2 UID/GID. */
++             flags &= 0x0ff;
+          /*
+            Version       1 byte      version of this extra field, currently 1
+            UIDSize       1 byte      Size of UID field
+***************
+*** 2895,2903 ****
+          */
+  
+  #ifdef IZ_HAVE_UXUIDGID
+!             if (eb_len >= EB_UX3_MINLEN
+!                 && z_uidgid != NULL
+!                 && (*((EB_HEADSIZE + 0) + ef_buf) == 1)
+                      /* only know about version 1 */
+              {
+                  uch uid_size;
+--- 2935,2943 ----
+          */
+  
+  #ifdef IZ_HAVE_UXUIDGID
+!             if ((eb_len >= EB_UX3_MINLEN)
+!                 && (z_uidgid != NULL)
+!                 && ((*((EB_HEADSIZE + 0) + ef_buf) == 1)))
+                      /* only know about version 1 */
+              {
+                  uch uid_size;
+***************
+*** 2906,2918 ****
+                  uid_size = *((EB_HEADSIZE + 1) + ef_buf);
+                  gid_size = *((EB_HEADSIZE + uid_size + 2) + ef_buf);
+  
+-                 flags &= ~0x0ff;      /* ignore any previous UNIX field */
+- 
+                  if ( read_ux3_value((EB_HEADSIZE + 2) + ef_buf,
+!                                     uid_size, z_uidgid[0])
+                      &&
+                       read_ux3_value((EB_HEADSIZE + uid_size + 3) + ef_buf,
+!                                     gid_size, z_uidgid[1]) )
+                  {
+                      flags |= EB_UX2_VALID;   /* signal success */
+                  }
+--- 2946,2956 ----
+                  uid_size = *((EB_HEADSIZE + 1) + ef_buf);
+                  gid_size = *((EB_HEADSIZE + uid_size + 2) + ef_buf);
+  
+                  if ( read_ux3_value((EB_HEADSIZE + 2) + ef_buf,
+!                                     uid_size, &z_uidgid[0])
+                      &&
+                       read_ux3_value((EB_HEADSIZE + uid_size + 3) + ef_buf,
+!                                     gid_size, &z_uidgid[1]) )
+                  {
+                      flags |= EB_UX2_VALID;   /* signal success */
+                  }
+Only in unzip-working/: process.c.orig
+Only in unzip-working/: regenerated.xbstrap
+diff -crB unzip60/unix/configure unzip-working/unix/configure
+*** unzip60/unix/configure	2009-04-16 21:25:12.000000000 +0200
+--- unzip-working/unix/configure	2025-01-05 12:54:13.442048741 +0100
+***************
+*** 17,23 ****
+  IZ_BZIP2=${3}
+  CFLAGS="${CFLAGS} -I. -DUNIX"
+  LFLAGS1=""
+! LFLAGS2="-s"
+  LN="ln -s"
+  
+  CFLAGS_OPT=''
+--- 17,23 ----
+  IZ_BZIP2=${3}
+  CFLAGS="${CFLAGS} -I. -DUNIX"
+  LFLAGS1=""
+! LFLAGS2="${LFLAGS2}"
+  LN="ln -s"
+  
+  CFLAGS_OPT=''
+***************
+*** 382,388 ****
+  for func in fchmod fchown lchown nl_langinfo
+  do
+    echo Check for $func
+!   echo "int main(){ $func(); return 0; }" > conftest.c
+    $CC $BFLAG -o conftest conftest.c >/dev/null 2>/dev/null
+    [ $? -ne 0 ] && CFLAGSR="${CFLAGSR} -DNO_`echo $func | tr '[a-z]' '[A-Z]'`"
+  done
+--- 382,414 ----
+  for func in fchmod fchown lchown nl_langinfo
+  do
+    echo Check for $func
+! #  echo "int main(){ $func(); return 0; }" > conftest.c
+!   case $func in
+!     fchmod)
+! cat > conftest.c << _EOF_
+! #include <sys/stat.h>
+! int main(){ fchmod(0,0); return 0; }
+! _EOF_
+!     ;;
+!     fchown)
+! cat > conftest.c << _EOF_
+! #include <unistd.h>
+! int main(){ fchown(0,0,0); return 0; }
+! _EOF_
+!     ;;
+!     lchown)
+! cat > conftest.c << _EOF_
+! #include <unistd.h>
+! int main(){ lchown(0,0,0); return 0; }
+! _EOF_
+!     ;;
+!     nl_langinfo)
+! cat > conftest.c << _EOF_
+! #include <langinfo.h>
+! int main(){ nl_langinfo(0); return 0; }
+! _EOF_
+!     ;;
+!   esac  
+    $CC $BFLAG -o conftest conftest.c >/dev/null 2>/dev/null
+    [ $? -ne 0 ] && CFLAGSR="${CFLAGSR} -DNO_`echo $func | tr '[a-z]' '[A-Z]'`"
+  done
+***************
+*** 391,397 ****
+  echo 'Check for lchmod'
+  temp_file="/tmp/unzip_test_$$"
+  temp_link="link_$$"
+! ( echo '#include <unistd.h>' ; \
+    echo "int main() { lchmod(\"${temp_file}\", 0666); }" \
+  ) > conftest.c
+  ln -s "${temp_link}" "${temp_file}" && \
+--- 417,423 ----
+  echo 'Check for lchmod'
+  temp_file="/tmp/unzip_test_$$"
+  temp_link="link_$$"
+! ( echo '#include <sys/stat.h>' ; \
+    echo "int main() { lchmod(\"${temp_file}\", 0666); }" \
+  ) > conftest.c
+  ln -s "${temp_link}" "${temp_file}" && \
+***************
+*** 419,424 ****
+--- 445,452 ----
+  
+  echo Check for directory libraries
+  cat > conftest.c << _EOF_
++ #include <sys/types.h>
++ #include <dirent.h>
+  int main() { return closedir(opendir(".")); }
+  _EOF_
+  
+***************
+*** 640,646 ****
+      D_USE_BZ2="-DUSE_BZIP2"
+      L_BZ2="${BZLF} -lbz2"
+    else
+!     echo "-- bzip2 sources not found - no bzip2 support"
+    fi
+  fi
+  
+--- 668,691 ----
+      D_USE_BZ2="-DUSE_BZIP2"
+      L_BZ2="${BZLF} -lbz2"
+    else
+!     echo "  Check if OS already has bzip2 library installed"
+!     cat > conftest.c << _EOF_
+! #include "bzlib.h"
+! int main()
+! {
+!   bz_stream strm;
+!   BZ2_bzCompressEnd(&strm);
+!   return 0;
+! }
+! _EOF_
+!     $CC $CFLAGS -o conftest conftest.c -lbz2 > /dev/null 2>/dev/null
+!     if test $? -eq 0; then
+!       echo "-- OS supports bzip2 - linking in bzip2"
+!       D_USE_BZ2="-DUSE_BZIP2"
+!       L_BZ2="${BZLF} -lbz2"
+!     else
+!       echo "-- Either bzlib.h or libbz2.a not found - no bzip2"
+!     fi
+    fi
+  fi
+  
+diff -crB unzip60/unix/Makefile unzip-working/unix/Makefile
+*** unzip60/unix/Makefile	2009-01-18 23:41:18.000000000 +0100
+--- unzip-working/unix/Makefile	2025-01-05 13:08:34.867952569 +0100
+***************
+*** 47,65 ****
+  AS = as
+  LOC = $(D_USE_BZ2) $(LOCAL_UNZIP)
+  AF = $(LOC)
+- CFLAGS = -O
+  CF_NOOPT = -I. -I$(IZ_BZIP2) -DUNIX $(LOC)
+  CF = $(CFLAGS) $(CF_NOOPT)
+  LFLAGS1 =
+! LF = -o unzip$E $(LFLAGS1)
+! LF2 = -s
+  
+  # UnZipSFX flags
+! SL = -o unzipsfx$E $(LFLAGS1)
+  SL2 = $(LF2)
+  
+  # fUnZip flags
+! FL = -o funzip$E $(LFLAGS1)
+  FL2 = $(LF2)
+  
+  # general-purpose stuff
+--- 47,64 ----
+  AS = as
+  LOC = $(D_USE_BZ2) $(LOCAL_UNZIP)
+  AF = $(LOC)
+  CF_NOOPT = -I. -I$(IZ_BZIP2) -DUNIX $(LOC)
+  CF = $(CFLAGS) $(CF_NOOPT)
+  LFLAGS1 =
+! LF = $(LDFLAGS) $(LDFLAGS) $(LDFLAGS) $(LDFLAGS) $(LDFLAGS) $(LDFLAGS) $(LDFLAGS) $(LDFLAGS) -o unzip$E $(LFLAGS1)
+! LF2 = 
+  
+  # UnZipSFX flags
+! SL = $(LDFLAGS) $(LDFLAGS) $(LDFLAGS) $(LDFLAGS) $(LDFLAGS) $(LDFLAGS) $(LDFLAGS) $(LDFLAGS) -o unzipsfx$E $(LFLAGS1)
+  SL2 = $(LF2)
+  
+  # fUnZip flags
+! FL = $(LDFLAGS) $(LDFLAGS) $(LDFLAGS) $(LDFLAGS) $(LDFLAGS) $(LDFLAGS) $(LDFLAGS) $(LDFLAGS) -o funzip$E $(LFLAGS1)
+  FL2 = $(LF2)
+  
+  # general-purpose stuff
+***************
+*** 92,103 ****
+  IZ_BZIP2 = $(IZ_OUR_BZIP2_DIR)
+  ## The following symbols definitions need to be set to activate bzip2 support:
+  #D_USE_BZ2 = -DUSE_BZIP2
+! #L_BZ2 = -lbz2
+  #LIBBZ2 = $(IZ_BZIP2)/libbz2.a
+  
+  # defaults for unzip's "built-in" bzip2 library compilation
+  CC_BZ = $(CC)
+- CFLAGS_BZ = $(CFLAGS)
+  
+  # object files
+  OBJS1 = unzip$O crc32$O $(CRCA_O) crypt$O envargs$O explode$O
+--- 91,101 ----
+  IZ_BZIP2 = $(IZ_OUR_BZIP2_DIR)
+  ## The following symbols definitions need to be set to activate bzip2 support:
+  #D_USE_BZ2 = -DUSE_BZIP2
+! L_BZ2 = -lbz2
+  #LIBBZ2 = $(IZ_BZIP2)/libbz2.a
+  
+  # defaults for unzip's "built-in" bzip2 library compilation
+  CC_BZ = $(CC)
+  
+  # object files
+  OBJS1 = unzip$O crc32$O $(CRCA_O) crypt$O envargs$O explode$O
+***************
+*** 594,600 ****
+  	@echo\
+   'which is UnZip linked with the DLL).  This target is an example only.'
+  	@echo ""
+! 	$(MAKE) objsdll CC=gcc CFLAGS="-O3 -Wall -fPIC -DDLL"
+  	gcc -shared -Wl,-soname,libunzip.so.0 -o libunzip.so.0.4 $(OBJSDLL)
+  	$(RM) libunzip.so.0 libunzip.so
+  	$(LN) -s libunzip.so.0.4 libunzip.so.0
+--- 592,598 ----
+  	@echo\
+   'which is UnZip linked with the DLL).  This target is an example only.'
+  	@echo ""
+! 	$(MAKE) objsdll CC=gcc CFLAGS="$(CFLAGS) $(CPPFLAGS) -Wall -fPIC -DDLL"
+  	gcc -shared -Wl,-soname,libunzip.so.0 -o libunzip.so.0.4 $(OBJSDLL)
+  	$(RM) libunzip.so.0 libunzip.so
+  	$(LN) -s libunzip.so.0.4 libunzip.so.0
+***************
+*** 694,700 ****
+  	$(MAKE) unzips CF="$(CF) -DNO_DIR -DNO_MKDIR -DNO_STRNICMP -DNO_UID_GID -DNO_FCHMOD -DNO_LCHOWN -DNO_LCHMOD -DCBREAK=2"
+  
+  7300_gcc:	unix_make
+! 	$(MAKE) unzips CC=gcc LD=gcc LF2="" CFLAGS="-O2" \
+  	 LOC="-DNO_DIR -DNO_MKDIR -DNO_STDLIB_H -DNO_STRNICMP -DNO_UID_GID -DNO_FCHMOD -DNO_LCHOWN -DNO_LCHMOD -DCBREAK=2 $(LOC)"
+  	$(STRIP) $(UNZIPS)
+  
+--- 692,698 ----
+  	$(MAKE) unzips CF="$(CF) -DNO_DIR -DNO_MKDIR -DNO_STRNICMP -DNO_UID_GID -DNO_FCHMOD -DNO_LCHOWN -DNO_LCHMOD -DCBREAK=2"
+  
+  7300_gcc:	unix_make
+! 	$(MAKE) unzips CC=gcc LD=gcc LF2="" CFLAGS="$(CFLAGS) $(CPPFLAGS)" \
+  	 LOC="-DNO_DIR -DNO_MKDIR -DNO_STDLIB_H -DNO_STRNICMP -DNO_UID_GID -DNO_FCHMOD -DNO_LCHOWN -DNO_LCHMOD -DCBREAK=2 $(LOC)"
+  	$(STRIP) $(UNZIPS)
+  
+***************
+*** 717,729 ****
+  bsdi:		unix_make
+  	@echo 'NOTE:  use bsdi_noasm target for non-Intel BSD/OS compiles.'
+  	$(MAKE) unzips CC=gcc2 LD=shlicc2 AS=gcc2\
+! 	 CFLAGS="-O3 -Wall -DASM_CRC -DBSD" CRCA_O=crc_gcc$O
+  
+  # BSDI BSD/OS
+  bsdi_noasm:	unix_make
+  #	@echo 'NOTE:  use bsd target for non-Intel BSD/OS compiles.'
+  	$(MAKE) unzips CC=gcc2 LD=shlicc2 AS=gcc2\
+! 	 CFLAGS="-O3 -Wall -DBSD"
+  
+  # Coherent 3.x/4.x, Mark Williams C.  ``For Coherent's CC, it needs either
+  # -T0 or -T150000 (or bigger) added to the CFLAGS, otherwise the compiler
+--- 715,727 ----
+  bsdi:		unix_make
+  	@echo 'NOTE:  use bsdi_noasm target for non-Intel BSD/OS compiles.'
+  	$(MAKE) unzips CC=gcc2 LD=shlicc2 AS=gcc2\
+! 	 CFLAGS="$(CFLAGS) $(CPPFLAGS) -Wall -DASM_CRC -DBSD" CRCA_O=crc_gcc$O
+  
+  # BSDI BSD/OS
+  bsdi_noasm:	unix_make
+  #	@echo 'NOTE:  use bsd target for non-Intel BSD/OS compiles.'
+  	$(MAKE) unzips CC=gcc2 LD=shlicc2 AS=gcc2\
+! 	 CFLAGS="$(CFLAGS) $(CPPFLAGS) -Wall -DBSD"
+  
+  # Coherent 3.x/4.x, Mark Williams C.  ``For Coherent's CC, it needs either
+  # -T0 or -T150000 (or bigger) added to the CFLAGS, otherwise the compiler
+***************
+*** 747,753 ****
+  # Info-ZIP recommends using "win32/Makefile.gcc" instead.
+  cygwin:		unix_make
+  	$(MAKE) unzips CC=gcc LD=gcc AS=gcc\
+! 	 CFLAGS="-O3 -DASM_CRC -DNO_LCHOWN -DNO_LCHMOD"\
+  	 AF="-Di386 $(AF)" CRCA_O=crc_gcc$O\
+  	 E=".exe" CP="cp" LN="ln -s"
+  
+--- 745,751 ----
+  # Info-ZIP recommends using "win32/Makefile.gcc" instead.
+  cygwin:		unix_make
+  	$(MAKE) unzips CC=gcc LD=gcc AS=gcc\
+! 	 CFLAGS="$(CFLAGS) $(CPPFLAGS) -DASM_CRC -DNO_LCHOWN -DNO_LCHMOD"\
+  	 AF="-Di386 $(AF)" CRCA_O=crc_gcc$O\
+  	 E=".exe" CP="cp" LN="ln -s"
+  
+***************
+*** 764,770 ****
+  freebsd:		unix_make
+  	@echo 'NOTE:  use bsd target for non-Intel FreeBSD compiles (if any).'
+  	$(MAKE) unzips CC=gcc LD=gcc AS=gcc\
+! 	 CFLAGS="-O3 -Wall -DASM_CRC -DBSD"\
+  	 AF="-Di386 $(AF)" CRCA_O=crc_gcc$O
+  
+  # Generic BSDish Unix gcc.  ``The -O3 only works with later versions of gcc;
+--- 762,768 ----
+  freebsd:		unix_make
+  	@echo 'NOTE:  use bsd target for non-Intel FreeBSD compiles (if any).'
+  	$(MAKE) unzips CC=gcc LD=gcc AS=gcc\
+! 	 CFLAGS="$(CFLAGS) $(CPPFLAGS) -Wall -DASM_CRC -DBSD"\
+  	 AF="-Di386 $(AF)" CRCA_O=crc_gcc$O
+  
+  # Generic BSDish Unix gcc.  ``The -O3 only works with later versions of gcc;
+***************
+*** 775,781 ****
+  # with "echo" instead).
+  #
+  gcc:		unix_make
+! 	$(MAKE) unzips CC=gcc LD=gcc CFLAGS="-O3" LF2=""
+  	$(STRIP) $(UNZIPS)
+  
+  # Heurikon HK68 (68010), UniPlus+ System V 5.0, Green Hills C-68000
+--- 773,779 ----
+  # with "echo" instead).
+  #
+  gcc:		unix_make
+! 	$(MAKE) unzips CC=gcc LD=gcc CFLAGS="$(CFLAGS) $(CPPFLAGS)" LF2=""
+  	$(STRIP) $(UNZIPS)
+  
+  # Heurikon HK68 (68010), UniPlus+ System V 5.0, Green Hills C-68000
+***************
+*** 787,799 ****
+  # ISC Unix on 386 platform
+  isc:		unix_make
+  	$(MAKE) unzips LF2="-lc_s $(LF2)" CRCA_O=crc_sysv$O \
+! 	 CFLAGS="-O" LOC="-DASM_CRC -DSYSV -DNO_UID_GID -DNEED_PTEM -DNO_LCHOWN -DNO_LCHMOD $(LOC)" \
+  	 AF="-DNO_UNDERLINE -Djecxz=jcxz -DALIGNMENT='.align 16' $(AF)"
+  
+  isc_gcc:	unix_make
+  	$(MAKE) unzips AS=gcc CC=gcc LD=gcc CRCA_O=crc_gcc$O \
+  	 LF="-shlib $(LF)" SL="-shlib $(SL)" FL="-shlib $(FL)" LF2="" \
+! 	 CFLAGS="-O3" LOC="-DSYSV -DASM_CRC -DNO_UID_GID -DNEED_PTEM -DNO_LCHOWN -DNO_LCHMOD $(LOC)" \
+  	 AF="-DNO_UNDERLINE -Djecxz=jcxz -DALIGNMENT='.align 16' $(AF)"
+  	$(STRIP) $(UNZIPS)
+  
+--- 785,797 ----
+  # ISC Unix on 386 platform
+  isc:		unix_make
+  	$(MAKE) unzips LF2="-lc_s $(LF2)" CRCA_O=crc_sysv$O \
+! 	 CFLAGS="$(CFLAGS) $(CPPFLAGS)" LOC="-DASM_CRC -DSYSV -DNO_UID_GID -DNEED_PTEM -DNO_LCHOWN -DNO_LCHMOD $(LOC)" \
+  	 AF="-DNO_UNDERLINE -Djecxz=jcxz -DALIGNMENT='.align 16' $(AF)"
+  
+  isc_gcc:	unix_make
+  	$(MAKE) unzips AS=gcc CC=gcc LD=gcc CRCA_O=crc_gcc$O \
+  	 LF="-shlib $(LF)" SL="-shlib $(SL)" FL="-shlib $(FL)" LF2="" \
+! 	 CFLAGS="$(CFLAGS) $(CPPFLAGS)" LOC="-DSYSV -DASM_CRC -DNO_UID_GID -DNEED_PTEM -DNO_LCHOWN -DNO_LCHMOD $(LOC)" \
+  	 AF="-DNO_UNDERLINE -Djecxz=jcxz -DALIGNMENT='.align 16' $(AF)"
+  	$(STRIP) $(UNZIPS)
+  
+***************
+*** 809,815 ****
+  linux:		unix_make
+  	@echo 'NOTE:  use linux_noasm target for non-Intel Linux compiles.'
+  	$(MAKE) unzips CC=gcc LD=gcc AS=gcc\
+! 	 CFLAGS="-O3 -Wall -DASM_CRC"\
+  	 AF="-Di386 $(AF)" CRCA_O=crc_gcc$O
+  # GRR:  this echo is pointless; if user gets this far, no difference to install
+  #	@echo 'Be sure to use the install_asm target rather than the install target'
+--- 807,813 ----
+  linux:		unix_make
+  	@echo 'NOTE:  use linux_noasm target for non-Intel Linux compiles.'
+  	$(MAKE) unzips CC=gcc LD=gcc AS=gcc\
+! 	 CFLAGS="$(CFLAGS) $(CPPFLAGS) -Wall -DASM_CRC"\
+  	 AF="-Di386 $(AF)" CRCA_O=crc_gcc$O
+  # GRR:  this echo is pointless; if user gets this far, no difference to install
+  #	@echo 'Be sure to use the install_asm target rather than the install target'
+***************
+*** 819,837 ****
+  # Linux (Posix, approximately SysV):  virtually any version since before 0.96,
+  # for any platform.  Change "-O" to "-O3" or whatever, as desired...
+  linux_noasm:	unix_make
+! 	$(MAKE) unzips CC=gcc LD=gcc CFLAGS="-O -Wall"
+  
+  # Linux with lcc compiler:  __inline__ (stat.h) not recognized, and must edit
+  # /usr/include/gnu/types.h to get rid of "long long" if __LCC__ defined.  -O3
+  # (or -O2 or -O) is ignored.  [GRR 960828: test target only]
+  #
+  linux_lcc:	unix_make
+! 	$(MAKE) unzips CC=lcc LD=lcc CFLAGS="-O3 -Wall -D__inline__= "
+  
+  # Linux host with go32 (djgpp) cross-compiler (go32crs.tgz) for 32-bit DOS.
+  linux_dos:	unix_make
+  	$(MAKE) unzips CC=go32gcc LD=go32gcc M=msdos OSDEP_H="msdos/doscfg.h" \
+! 	 CFLAGS="-O2 -Wall"
+  #	go32-strip unzip
+  #	Due to limitations of the cross-compiling package, this has to be
+  #	done manually:
+--- 817,835 ----
+  # Linux (Posix, approximately SysV):  virtually any version since before 0.96,
+  # for any platform.  Change "-O" to "-O3" or whatever, as desired...
+  linux_noasm:	unix_make
+! 	$(MAKE) unzips CC=gcc LD=gcc CFLAGS="$(CFLAGS) $(CPPFLAGS) -Wall"
+  
+  # Linux with lcc compiler:  __inline__ (stat.h) not recognized, and must edit
+  # /usr/include/gnu/types.h to get rid of "long long" if __LCC__ defined.  -O3
+  # (or -O2 or -O) is ignored.  [GRR 960828: test target only]
+  #
+  linux_lcc:	unix_make
+! 	$(MAKE) unzips CC=lcc LD=lcc CFLAGS="$(CFLAGS) $(CPPFLAGS) -Wall -D__inline__= "
+  
+  # Linux host with go32 (djgpp) cross-compiler (go32crs.tgz) for 32-bit DOS.
+  linux_dos:	unix_make
+  	$(MAKE) unzips CC=go32gcc LD=go32gcc M=msdos OSDEP_H="msdos/doscfg.h" \
+! 	 CFLAGS="$(CFLAGS) $(CPPFLAGS) -Wall"
+  #	go32-strip unzip
+  #	Due to limitations of the cross-compiling package, this has to be
+  #	done manually:
+***************
+*** 845,851 ****
+  # library).
+  #
+  linux_shlib:	unix_make
+! 	$(MAKE) objsdll CC=gcc CFLAGS="-O3 -Wall -fPIC"\
+  	 LOC="-DDLL -DASM_CRC $(LOC)"\
+  	 AS=gcc AF="-fPIC -Di386 $(AF)" CRCA_O=crc_gcc$O
+  	gcc -shared -Wl,-soname,libunzip.so.0 -o libunzip.so.0.4 $(OBJSDLL)\
+--- 843,849 ----
+  # library).
+  #
+  linux_shlib:	unix_make
+! 	$(MAKE) objsdll CC=gcc CFLAGS="$(CFLAGS) $(CPPFLAGS) -Wall -fPIC"\
+  	 LOC="-DDLL -DASM_CRC $(LOC)"\
+  	 AS=gcc AF="-fPIC -Di386 $(AF)" CRCA_O=crc_gcc$O
+  	gcc -shared -Wl,-soname,libunzip.so.0 -o libunzip.so.0.4 $(OBJSDLL)\
+***************
+*** 859,865 ****
+  # instead of the original UnZip version.  (libz was libgz prior to 0.94)
+  linux_shlibz:	unix_make
+  	$(MAKE) objsdll CC=gcc AS=gcc AF="-fPIC -Di386 $(AF)" CRCA_O=crc_gcc$O\
+! 	 CFLAGS="-O3 -Wall -fPIC" LOC="-DDLL -DUSE_ZLIB -DASM_CRC $(LOC)"
+  	gcc -shared -Wl,-soname,libunzip.so.0 -o libunzip.so.0.4 $(OBJSDLL)\
+  	 crc_gcc.pic.o
+  	ln -sf libunzip.so.0.4 libunzip.so.0
+--- 857,863 ----
+  # instead of the original UnZip version.  (libz was libgz prior to 0.94)
+  linux_shlibz:	unix_make
+  	$(MAKE) objsdll CC=gcc AS=gcc AF="-fPIC -Di386 $(AF)" CRCA_O=crc_gcc$O\
+! 	 CFLAGS="$(CFLAGS) $(CPPFLAGS) -Wall -fPIC" LOC="-DDLL -DUSE_ZLIB -DASM_CRC $(LOC)"
+  	gcc -shared -Wl,-soname,libunzip.so.0 -o libunzip.so.0.4 $(OBJSDLL)\
+  	 crc_gcc.pic.o
+  	ln -sf libunzip.so.0.4 libunzip.so.0
+***************
+*** 872,883 ****
+  
+  # Macintosh MacOS X (Unix-compatible enviroment), using standard compiler
+  macosx:	unix_make
+! 	$(MAKE) unzips CFLAGS="-O3 -Wall -DBSD" LF2=""
+  	$(STRIP) $(UNZIPS)
+  
+  # Macintosh MacOS X (Unix-compatible enviroment), using gcc
+  macosx_gcc:	unix_make
+! 	$(MAKE) unzips CC=gcc CFLAGS="-O3 -Wall -DBSD" LF2=""
+  	$(STRIP) $(UNZIPS)
+  
+  # Minix 1.5 PC for the 386.  Invoke as is to use default cc, or as "make
+--- 870,881 ----
+  
+  # Macintosh MacOS X (Unix-compatible enviroment), using standard compiler
+  macosx:	unix_make
+! 	$(MAKE) unzips CFLAGS="$(CFLAGS) $(CPPFLAGS) -Wall -DBSD" LF2=""
+  	$(STRIP) $(UNZIPS)
+  
+  # Macintosh MacOS X (Unix-compatible enviroment), using gcc
+  macosx_gcc:	unix_make
+! 	$(MAKE) unzips CC=gcc CFLAGS="$(CFLAGS) $(CPPFLAGS) -Wall -DBSD" LF2=""
+  	$(STRIP) $(UNZIPS)
+  
+  # Minix 1.5 PC for the 386.  Invoke as is to use default cc, or as "make
+***************
+*** 914,925 ****
+  
+  # NeXT 3.x: as above, plus better optimization.
+  next3x:		unix_make
+! 	$(MAKE) unzips CFLAGS="-O2" LF2="-object -s"
+  
+  # NeXT 3.1+: make the executable fat (multi-architecture binary [MAB],
+  # for "black" [NeXT] and "white" [x86] hardware, so far).
+  nextfat:	unix_make
+! 	$(MAKE) unzips CFLAGS="-O2 -arch i386 -arch m68k" \
+  	 LF2="-arch i386 -arch m68k -object -s"
+  
+  # IBM OS/390 (formerly MVS) compiled under "OpenEdition" shell
+--- 912,923 ----
+  
+  # NeXT 3.x: as above, plus better optimization.
+  next3x:		unix_make
+! 	$(MAKE) unzips CFLAGS="$(CFLAGS) $(CPPFLAGS)" LF2="-object -s"
+  
+  # NeXT 3.1+: make the executable fat (multi-architecture binary [MAB],
+  # for "black" [NeXT] and "white" [x86] hardware, so far).
+  nextfat:	unix_make
+! 	$(MAKE) unzips CFLAGS="$(CFLAGS) $(CPPFLAGS) -arch i386 -arch m68k" \
+  	 LF2="-arch i386 -arch m68k -object -s"
+  
+  # IBM OS/390 (formerly MVS) compiled under "OpenEdition" shell
+***************
+*** 972,978 ****
+  # recognize the -M0 flag that forces 8086 code.)  (GRR:  may need to reduce
+  # stack to 0c00h if using 286/small-model code...?)
+  sco_dos:	unix_make
+! 	$(MAKE) unzips CFLAGS="-O -dos -M0" M=msdos OSDEP_H="msdos/doscfg.h" \
+  	 LF="-dos -F 2000" LF2="-o unzip.exe" \
+  	 FL="-dos" FL2="-o funzip.exe" SL="-dos" SL2="-o unzipsfx.exe"
+  
+--- 970,976 ----
+  # recognize the -M0 flag that forces 8086 code.)  (GRR:  may need to reduce
+  # stack to 0c00h if using 286/small-model code...?)
+  sco_dos:	unix_make
+! 	$(MAKE) unzips CFLAGS="$(CFLAGS) $(CPPFLAGS) -dos -M0" M=msdos OSDEP_H="msdos/doscfg.h" \
+  	 LF="-dos -F 2000" LF2="-o unzip.exe" \
+  	 FL="-dos" FL2="-o funzip.exe" SL="-dos" SL2="-o unzipsfx.exe"
+  
+***************
+*** 1000,1006 ****
+  
+  # Generic System V + GNU C
+  sysv_gcc:	unix_make
+! 	$(MAKE) unzips CC=gcc LD=gcc CFLAGS="-O2 -DSYSV" LF2=""
+  	$(STRIP) $(UNZIPS)
+  
+  # AT&T 6300+, System V.2 Unix:  run-time out-of-memory error if don't use -Ml;
+--- 998,1004 ----
+  
+  # Generic System V + GNU C
+  sysv_gcc:	unix_make
+! 	$(MAKE) unzips CC=gcc LD=gcc CFLAGS="$(CFLAGS) $(CPPFLAGS) -DSYSV" LF2=""
+  	$(STRIP) $(UNZIPS)
+  
+  # AT&T 6300+, System V.2 Unix:  run-time out-of-memory error if don't use -Ml;
+diff -crB unzip60/unix/unix.c unzip-working/unix/unix.c
+*** unzip60/unix/unix.c	2009-01-24 00:31:26.000000000 +0100
+--- unzip-working/unix/unix.c	2025-01-05 12:54:13.433049209 +0100
+***************
+*** 30,35 ****
+--- 30,38 ----
+  #define UNZIP_INTERNAL
+  #include "unzip.h"
+  
++ #include <iconv.h>
++ #include <langinfo.h>
++ 
+  #ifdef SCO_XENIX
+  #  define SYSNDIR
+  #else  /* SCO Unix, AIX, DNIX, TI SysV, Coherent 4.x, ... */
+***************
+*** 1096,1105 ****
+  #ifndef MTS
+  
+  /****************************/
+  /* Function close_outfile() */
+  /****************************/
+  
+! void close_outfile(__G)    /* GRR: change to return PK-style warning level */
+      __GDEF
+  {
+      union {
+--- 1099,1139 ----
+  #ifndef MTS
+  
+  /****************************/
++ /* Function CloseError()    */
++ /***************************/
++ 
++ int CloseError(__G)
++     __GDEF
++ {
++     int errval = PK_OK;
++     
++     if (fclose(G.outfile) < 0) {
++           switch (errno) {
++                 case ENOSPC:
++                     /* Do we need this on fileio.c? */
++                     Info(slide, 0x4a1, ((char *)slide, "%s: write error (disk full?).   Continue? (y/n/^C) ",
++                           FnFilter1(G.filename)));
++                     fgets(G.answerbuf, 9, stdin);
++                     if (*G.answerbuf == 'y')     /* stop writing to this file */
++                         G.disk_full = 1;         /* pass to next */
++                     else
++                         G.disk_full = 2;         /* no: exit program */
++           
++                     errval = PK_DISK;
++                     break;
++ 
++                 default:
++                     errval = PK_WARN;
++           }
++      }
++      return errval;
++ } /* End of CloseError() */
++ 
++ /****************************/
+  /* Function close_outfile() */
+  /****************************/
+  
+! int close_outfile(__G) 
+      __GDEF
+  {
+      union {
+***************
+*** 1108,1113 ****
+--- 1142,1148 ----
+      } zt;
+      ulg z_uidgid[2];
+      int have_uidgid_flg;
++     int errval = PK_OK;
+  
+      have_uidgid_flg = get_extattribs(__G__ &(zt.t3), z_uidgid);
+  
+***************
+*** 1141,1156 ****
+              Info(slide, 0x201, ((char *)slide,
+                "warning:  symbolic link (%s) failed: mem alloc overflow\n",
+                FnFilter1(G.filename)));
+!             fclose(G.outfile);
+!             return;
+          }
+  
+          if ((slnk_entry = (slinkentry *)malloc(slnk_entrysize)) == NULL) {
+              Info(slide, 0x201, ((char *)slide,
+                "warning:  symbolic link (%s) failed: no mem\n",
+                FnFilter1(G.filename)));
+!             fclose(G.outfile);
+!             return;
+          }
+          slnk_entry->next = NULL;
+          slnk_entry->targetlen = ucsize;
+--- 1176,1191 ----
+              Info(slide, 0x201, ((char *)slide,
+                "warning:  symbolic link (%s) failed: mem alloc overflow\n",
+                FnFilter1(G.filename)));
+!             errval = CloseError(G.outfile, G.filename);
+!             return errval ? errval : PK_WARN;
+          }
+  
+          if ((slnk_entry = (slinkentry *)malloc(slnk_entrysize)) == NULL) {
+              Info(slide, 0x201, ((char *)slide,
+                "warning:  symbolic link (%s) failed: no mem\n",
+                FnFilter1(G.filename)));
+!             errval = CloseError(G.outfile, G.filename);
+!             return errval ? errval : PK_WARN;
+          }
+          slnk_entry->next = NULL;
+          slnk_entry->targetlen = ucsize;
+***************
+*** 1174,1183 ****
+                "warning:  symbolic link (%s) failed\n",
+                FnFilter1(G.filename)));
+              free(slnk_entry);
+!             fclose(G.outfile);
+!             return;
+          }
+!         fclose(G.outfile);                  /* close "link" file for good... */
+          slnk_entry->target[ucsize] = '\0';
+          if (QCOND2)
+              Info(slide, 0, ((char *)slide, "-> %s ",
+--- 1209,1218 ----
+                "warning:  symbolic link (%s) failed\n",
+                FnFilter1(G.filename)));
+              free(slnk_entry);
+!             errval = CloseError(G.outfile, G.filename);
+!             return errval ? errval : PK_WARN;
+          }
+!         errval = CloseError(G.outfile, G.filename); /* close "link" file for good... */
+          slnk_entry->target[ucsize] = '\0';
+          if (QCOND2)
+              Info(slide, 0, ((char *)slide, "-> %s ",
+***************
+*** 1188,1194 ****
+          else
+              G.slink_head = slnk_entry;
+          G.slink_last = slnk_entry;
+!         return;
+      }
+  #endif /* SYMLINKS */
+  
+--- 1223,1229 ----
+          else
+              G.slink_head = slnk_entry;
+          G.slink_last = slnk_entry;
+!         return errval;
+      }
+  #endif /* SYMLINKS */
+  
+***************
+*** 1201,1207 ****
+  #endif
+  
+  #if (defined(NO_FCHOWN))
+!     fclose(G.outfile);
+  #endif
+  
+      /* if -X option was specified and we have UID/GID info, restore it */
+--- 1236,1242 ----
+  #endif
+  
+  #if (defined(NO_FCHOWN))
+!     errval = CloseError(G.outfile, G.filename);
+  #endif
+  
+      /* if -X option was specified and we have UID/GID info, restore it */
+***************
+*** 1227,1233 ****
+      }
+  
+  #if (!defined(NO_FCHOWN) && defined(NO_FCHMOD))
+!     fclose(G.outfile);
+  #endif
+  
+  #if (!defined(NO_FCHOWN) && !defined(NO_FCHMOD))
+--- 1262,1268 ----
+      }
+  
+  #if (!defined(NO_FCHOWN) && defined(NO_FCHMOD))
+!     errval = CloseError(G.outfile, G.filename);
+  #endif
+  
+  #if (!defined(NO_FCHOWN) && !defined(NO_FCHMOD))
+***************
+*** 1239,1245 ****
+      if (fchmod(fileno(G.outfile), filtattr(__G__ G.pInfo->file_attr)))
+          perror("fchmod (file attributes) error");
+  
+!     fclose(G.outfile);
+  #endif /* !NO_FCHOWN && !NO_FCHMOD */
+  
+      /* skip restoring time stamps on user's request */
+--- 1274,1280 ----
+      if (fchmod(fileno(G.outfile), filtattr(__G__ G.pInfo->file_attr)))
+          perror("fchmod (file attributes) error");
+  
+!     errval = CloseError(G.outfile, G.filename);
+  #endif /* !NO_FCHOWN && !NO_FCHMOD */
+  
+      /* skip restoring time stamps on user's request */
+***************
+*** 1267,1272 ****
+--- 1302,1308 ----
+  #endif
+  #endif /* NO_FCHOWN || NO_FCHMOD */
+  
++     return errval;
+  } /* end function close_outfile() */
+  
+  #endif /* !MTS */
+***************
+*** 1874,1876 ****
+--- 1910,2013 ----
+      }
+  }
+  #endif /* QLZIP */
++ 
++ 
++ typedef struct {
++     char *local_charset;
++     char *archive_charset;
++ } CHARSET_MAP;
++ 
++ /* A mapping of local <-> archive charsets used by default to convert filenames
++  * of DOS/Windows Zip archives. Currently very basic. */
++ static CHARSET_MAP dos_charset_map[] = {
++     { "ANSI_X3.4-1968", "CP850" },
++     { "ISO-8859-1", "CP850" },
++     { "CP1252", "CP850" },
++     { "UTF-8", "CP866" },
++     { "KOI8-R", "CP866" },
++     { "KOI8-U", "CP866" },
++     { "ISO-8859-5", "CP866" }
++ };
++ 
++ char OEM_CP[MAX_CP_NAME] = "";
++ char ISO_CP[MAX_CP_NAME] = "";
++ 
++ /* Try to guess the default value of OEM_CP based on the current locale.
++  * ISO_CP is left alone for now. */
++ void init_conversion_charsets()
++ {
++     const char *local_charset;
++     int i;
++ 
++     /* Make a guess only if OEM_CP not already set. */ 
++     if(*OEM_CP == '\0') {
++     	local_charset = nl_langinfo(CODESET);
++     	for(i = 0; i < sizeof(dos_charset_map)/sizeof(CHARSET_MAP); i++)
++     		if(!strcasecmp(local_charset, dos_charset_map[i].local_charset)) {
++     			strncpy(OEM_CP, dos_charset_map[i].archive_charset,
++     					MAX_CP_NAME - 1);
++ 
++ 			OEM_CP[MAX_CP_NAME - 1] = '\0';
++     			break;
++     		}
++     }
++ }
++ 
++ /* Convert a string from one encoding to the current locale using iconv().
++  * Be as non-intrusive as possible. If error is encountered during covertion
++  * just leave the string intact. */
++ static void charset_to_intern(char *string, char *from_charset)
++ {
++     iconv_t cd;
++     char *s,*d, *buf;
++     size_t slen, dlen, buflen;
++     const char *local_charset;
++ 
++     if(*from_charset == '\0')
++     	return;
++ 
++     buf = NULL;
++     local_charset = nl_langinfo(CODESET);
++ 
++     if((cd = iconv_open(local_charset, from_charset)) == (iconv_t)-1)
++         return;
++ 
++     slen = strlen(string);
++     s = string;
++ 
++     /*  Make sure OUTBUFSIZ + 1 never ends up smaller than FILNAMSIZ
++      *  as this function also gets called with G.outbuf in fileio.c
++      */
++     buflen = FILNAMSIZ;
++     if (OUTBUFSIZ + 1 < FILNAMSIZ)
++     {
++         buflen = OUTBUFSIZ + 1;
++     }
++ 
++     d = buf = malloc(buflen);
++     if(!d)
++     	goto cleanup;
++ 
++     bzero(buf,buflen);
++     dlen = buflen - 1;
++ 
++     if(iconv(cd, &s, &slen, &d, &dlen) == (size_t)-1)
++     	goto cleanup;
++     strncpy(string, buf, buflen);
++ 
++     cleanup:
++     free(buf);
++     iconv_close(cd);
++ }
++ 
++ /* Convert a string from OEM_CP to the current locale charset. */
++ inline void oem_intern(char *string)
++ {
++     charset_to_intern(string, OEM_CP);
++ }
++ 
++ /* Convert a string from ISO_CP to the current locale charset. */
++ inline void iso_intern(char *string)
++ {
++     charset_to_intern(string, ISO_CP);
++ }
+Only in unzip-working/unix: unix.c.orig
+diff -crB unzip60/unix/unxcfg.h unzip-working/unix/unxcfg.h
+*** unzip60/unix/unxcfg.h	2009-04-16 20:36:12.000000000 +0200
+--- unzip-working/unix/unxcfg.h	2025-01-05 12:54:13.433049209 +0100
+***************
+*** 227,230 ****
+--- 227,256 ----
+  /* wild_dir, dirname, wildname, matchname[], dirnamelen, have_dirname, */
+  /*    and notfirstcall are used by do_wild().                          */
+  
++ 
++ #define MAX_CP_NAME 25 + 1 
++    
++ #ifdef SETLOCALE
++ #  undef SETLOCALE
++ #endif
++ #define SETLOCALE(category, locale) setlocale(category, locale)
++ #include <locale.h>
++    
++ #ifdef _ISO_INTERN
++ #  undef _ISO_INTERN
++ #endif
++ #define _ISO_INTERN(str1) iso_intern(str1)
++ 
++ #ifdef _OEM_INTERN
++ #  undef _OEM_INTERN
++ #endif
++ #ifndef IZ_OEM2ISO_ARRAY
++ #  define IZ_OEM2ISO_ARRAY
++ #endif
++ #define _OEM_INTERN(str1) oem_intern(str1)
++ 
++ void iso_intern(char *);
++ void oem_intern(char *);
++ void init_conversion_charsets(void);
++    
+  #endif /* !__unxcfg_h */
+Only in unzip-working/unix: unxcfg.h.orig
+diff -crB unzip60/unzip.c unzip-working/unzip.c
+*** unzip60/unzip.c	2009-04-16 20:26:52.000000000 +0200
+--- unzip-working/unzip.c	2025-01-05 12:57:01.298309671 +0100
+***************
+*** 68,73 ****
+--- 68,74 ----
+  #include "unzip.h"      /* includes, typedefs, macros, prototypes, etc. */
+  #include "crypt.h"
+  #include "unzvers.h"
++ #include <unistd.h>
+  
+  #ifndef WINDLL          /* The WINDLL port uses windll/windll.c instead... */
+  
+***************
+*** 327,337 ****
+--- 328,348 ----
+    -2  just filenames but allow -h/-t/-z  -l  long Unix \"ls -l\" format\n\
+                                           -v  verbose, multi-page format\n";
+  
++ #ifndef UNIX
+  static ZCONST char Far ZipInfoUsageLine3[] = "miscellaneous options:\n\
+    -h  print header line       -t  print totals for listed files or for all\n\
+    -z  print zipfile comment   -T  print file times in sortable decimal format\
+  \n  -C  be case-insensitive   %s\
+    -x  exclude filenames that follow from listing\n";
++ #else /* UNIX */
++ static ZCONST char Far ZipInfoUsageLine3[] = "miscellaneous options:\n\
++   -h  print header line       -t  print totals for listed files or for all\n\
++   -z  print zipfile comment  %c-T%c print file times in sortable decimal format\
++ \n %c-C%c be case-insensitive   %s\
++   -x  exclude filenames that follow from listing\n\
++   -O CHARSET  specify a character encoding for DOS, Windows and OS/2 archives\n\
++   -I CHARSET  specify a character encoding for UNIX and other archives\n";
++ #endif /* !UNIX */
+  #ifdef MORE
+     static ZCONST char Far ZipInfoUsageLine4[] =
+       "  -M  page output through built-in \"more\"\n";
+***************
+*** 665,670 ****
+--- 676,692 ----
+    -U  use escapes for all non-ASCII Unicode  -UU ignore any Unicode fields\n\
+    -C  match filenames case-insensitively     -L  make (some) names \
+  lowercase\n %-42s  -V  retain VMS version numbers\n%s";
++ #elif (defined UNIX)
++ static ZCONST char Far UnzipUsageLine4[] = "\
++ modifiers:\n\
++   -n  never overwrite existing files         -q  quiet mode (-qq => quieter)\n\
++   -o  overwrite files WITHOUT prompting      -a  auto-convert any text files\n\
++   -j  junk paths (do not make directories)   -aa treat ALL files as text\n\
++   -U  use escapes for all non-ASCII Unicode  -UU ignore any Unicode fields\n\
++   -C  match filenames case-insensitively     -L  make (some) names \
++ lowercase\n %-42s  -V  retain VMS version numbers\n%s\
++   -O CHARSET  specify a character encoding for DOS, Windows and OS/2 archives\n\
++   -I CHARSET  specify a character encoding for UNIX and other archives\n\n";
+  #else /* !VMS */
+  static ZCONST char Far UnzipUsageLine4[] = "\
+  modifiers:\n\
+***************
+*** 803,808 ****
+--- 825,834 ----
+  #endif /* UNICODE_SUPPORT */
+  
+  
++ #ifdef UNIX
++     init_conversion_charsets();
++ #endif
++ 
+  #if (defined(__IBMC__) && defined(__DEBUG_ALLOC__))
+      extern void DebugMalloc(void);
+  
+***************
+*** 1336,1341 ****
+--- 1362,1372 ----
+      argc = *pargc;
+      argv = *pargv;
+  
++ #ifdef UNIX
++     extern char OEM_CP[MAX_CP_NAME];
++     extern char ISO_CP[MAX_CP_NAME];
++ #endif
++     
+      while (++argv, (--argc > 0 && *argv != NULL && **argv == '-')) {
+          s = *argv + 1;
+          while ((c = *s++) != 0) {    /* "!= 0":  prevent Turbo C warning */
+***************
+*** 1517,1522 ****
+--- 1548,1584 ----
+                      }
+                      break;
+  #endif  /* MACOS */
++ #ifdef UNIX
++     			case ('I'):
++                     if (negative) {
++                         Info(slide, 0x401, ((char *)slide,
++                           "error:  encodings can't be negated"));
++                         return(PK_PARAM);
++     				} else {
++     					if(*s) { /* Handle the -Icharset case */
++     						/* Assume that charsets can't start with a dash to spot arguments misuse */
++     						if(*s == '-') { 
++     	                        Info(slide, 0x401, ((char *)slide,
++         		                  "error:  a valid character encoding should follow the -I argument"));
++     	                        return(PK_PARAM); 
++     						}
++     						strncpy(ISO_CP, s, MAX_CP_NAME - 1);
++                 ISO_CP[MAX_CP_NAME - 1] = '\0';
++     					} else { /* -I charset */
++     						++argv;
++     						if(!(--argc > 0 && *argv != NULL && **argv != '-')) {
++     	                        Info(slide, 0x401, ((char *)slide,
++         		                  "error:  a valid character encoding should follow the -I argument"));
++     	                        return(PK_PARAM); 
++     						}
++     						s = *argv;
++     						strncpy(ISO_CP, s, MAX_CP_NAME - 1);
++                 ISO_CP[MAX_CP_NAME - 1] = '\0';
++     					}
++     					while(*(++s)); /* No params straight after charset name */
++     				}
++     				break;
++ #endif /* ?UNIX */
+                  case ('j'):    /* junk pathnames/directory structure */
+                      if (negative)
+                          uO.jflag = FALSE, negative = 0;
+***************
+*** 1592,1597 ****
+--- 1654,1690 ----
+                      } else
+                          ++uO.overwrite_all;
+                      break;
++ #ifdef UNIX
++     			case ('O'):
++                     if (negative) {
++                         Info(slide, 0x401, ((char *)slide,
++                           "error:  encodings can't be negated"));
++                         return(PK_PARAM);
++     				} else {
++     					if(*s) { /* Handle the -Ocharset case */
++     						/* Assume that charsets can't start with a dash to spot arguments misuse */
++     						if(*s == '-') { 
++     	                        Info(slide, 0x401, ((char *)slide,
++         		                  "error:  a valid character encoding should follow the -I argument"));
++     	                        return(PK_PARAM); 
++     						}
++     						strncpy(OEM_CP, s, MAX_CP_NAME - 1);
++                 OEM_CP[MAX_CP_NAME - 1] = '\0';
++     					} else { /* -O charset */
++     						++argv;
++     						if(!(--argc > 0 && *argv != NULL && **argv != '-')) {
++     	                        Info(slide, 0x401, ((char *)slide,
++         		                  "error:  a valid character encoding should follow the -O argument"));
++     	                        return(PK_PARAM); 
++     						}
++     						s = *argv;
++     						strncpy(OEM_CP, s, MAX_CP_NAME - 1);
++                 OEM_CP[MAX_CP_NAME - 1] = '\0';
++     					}
++     					while(*(++s)); /* No params straight after charset name */
++     				}
++     				break;
++ #endif /* ?UNIX */
+                  case ('p'):    /* pipes:  extract to stdout, no messages */
+                      if (negative) {
+                          uO.cflag = FALSE;
+Only in unzip-working/: unzip.c.orig
+diff -crB unzip60/unzpriv.h unzip-working/unzpriv.h
+*** unzip60/unzpriv.h	2009-04-20 01:59:26.000000000 +0200
+--- unzip-working/unzpriv.h	2025-01-05 13:00:20.216404210 +0100
+***************
+*** 645,650 ****
+--- 645,657 ----
+  #  include <limits.h>    /* MAX/MIN constant symbols for system types... */
+  #endif
+  
++ #ifdef __managarm__
++ #include <strings.h>
++ #include <unistd.h>
++ #include <wctype.h>
++ #include <utime.h>
++ #endif
++ 
+  /* this include must be down here for SysV.4, for some reason... */
+  #include <signal.h>      /* used in unzip.c, fileio.c */
+  
+***************
+*** 1211,1216 ****
+--- 1218,1224 ----
+  # ifdef UNICODE_WCHAR
+  #  if !(defined(_WIN32_WCE) || defined(POCKET_UNZIP))
+  #   include <wchar.h>
++ #   include <wctype.h>
+  #  endif
+  # endif
+  # ifndef _MBCS  /* no need to include <locale.h> twice, see below */
+***************
+*** 1806,1811 ****
+--- 1814,1821 ----
+  #define EB_NTSD_VERSION   4    /* offset of NTSD version byte */
+  #define EB_NTSD_MAX_VER   (0)  /* maximum version # we know how to handle */
+  
++ #define EB_PKVMS_MINLEN   4    /* minimum data length of PKVMS extra block */
++ 
+  #define EB_ASI_CRC32      0    /* offset of ASI Unix field's crc32 checksum */
+  #define EB_ASI_MODE       4    /* offset of ASI Unix permission mode field */
+  
+***************
+*** 2393,2398 ****
+--- 2403,2414 ----
+  char  *fnfilter                  OF((ZCONST char *raw, uch *space,
+                                       extent size));
+  
++ # if defined( UNICODE_SUPPORT) && defined( _MBCS)
++ wchar_t *fnfilterw               OF((ZCONST wchar_t *src, wchar_t *dst,
++                                      extent siz));
++ #endif
++ 
++ 
+  /*---------------------------------------------------------------------------
+      Decompression functions:
+    ---------------------------------------------------------------------------*/
+***************
+*** 2604,2610 ****
+     int   SetFileSize     OF((FILE *file, zusz_t filesize));         /* local */
+  #endif
+  #ifndef MTS /* macro in MTS */
+!    void  close_outfile   OF((__GPRO));                              /* local */
+  #endif
+  #ifdef SET_SYMLINK_ATTRIBS
+     int  set_symlnk_attribs  OF((__GPRO__ slinkentry *slnk_entry));  /* local */
+--- 2620,2626 ----
+     int   SetFileSize     OF((FILE *file, zusz_t filesize));         /* local */
+  #endif
+  #ifndef MTS /* macro in MTS */
+!    int  close_outfile   OF((__GPRO));                              /* local */
+  #endif
+  #ifdef SET_SYMLINK_ATTRIBS
+     int  set_symlnk_attribs  OF((__GPRO__ slinkentry *slnk_entry));  /* local */
+***************
+*** 3008,3014 ****
+           !(((islochdr) || (isuxatt)) && \
+             ((hostver) == 25 || (hostver) == 26 || (hostver) == 40))) || \
+          (hostnum) == FS_HPFS_ || \
+!         ((hostnum) == FS_NTFS_ && (hostver) == 50)) { \
+          _OEM_INTERN((string)); \
+      } else { \
+          _ISO_INTERN((string)); \
+--- 3024,3030 ----
+           !(((islochdr) || (isuxatt)) && \
+             ((hostver) == 25 || (hostver) == 26 || (hostver) == 40))) || \
+          (hostnum) == FS_HPFS_ || \
+!         ((hostnum) == FS_NTFS_ /* && (hostver) == 50 */ )) { \
+          _OEM_INTERN((string)); \
+      } else { \
+          _ISO_INTERN((string)); \
+Only in unzip-working/: unzpriv.h.orig
+diff -crB unzip60/zipinfo.c unzip-working/zipinfo.c
+*** unzip60/zipinfo.c	2009-02-08 18:04:30.000000000 +0100
+--- unzip-working/zipinfo.c	2025-01-05 12:54:13.441048793 +0100
+***************
+*** 457,462 ****
+--- 457,466 ----
+      int    tflag_slm=TRUE, tflag_2v=FALSE;
+      int    explicit_h=FALSE, explicit_t=FALSE;
+  
++ #ifdef UNIX
++     extern char OEM_CP[MAX_CP_NAME];
++     extern char ISO_CP[MAX_CP_NAME];
++ #endif
+  
+  #ifdef MACOS
+      uO.lflag = LFLAG;         /* reset default on each call */
+***************
+*** 501,506 ****
+--- 505,541 ----
+                              uO.lflag = 0;
+                      }
+                      break;
++ #ifdef UNIX
++     			case ('I'):
++                     if (negative) {
++                         Info(slide, 0x401, ((char *)slide,
++                           "error:  encodings can't be negated"));
++                         return(PK_PARAM);
++     				} else {
++     					if(*s) { /* Handle the -Icharset case */
++     						/* Assume that charsets can't start with a dash to spot arguments misuse */
++     						if(*s == '-') { 
++     	                        Info(slide, 0x401, ((char *)slide,
++         		                  "error:  a valid character encoding should follow the -I argument"));
++     	                        return(PK_PARAM); 
++     						}
++     						strncpy(ISO_CP, s, MAX_CP_NAME - 1);
++                 ISO_CP[MAX_CP_NAME - 1] = '\0';
++     					} else { /* -I charset */
++     						++argv;
++     						if(!(--argc > 0 && *argv != NULL && **argv != '-')) {
++     	                        Info(slide, 0x401, ((char *)slide,
++         		                  "error:  a valid character encoding should follow the -I argument"));
++     	                        return(PK_PARAM); 
++     						}
++     						s = *argv;
++     						strncpy(ISO_CP, s, MAX_CP_NAME - 1);
++                 ISO_CP[MAX_CP_NAME - 1] = '\0';
++     					}
++     					while(*(++s)); /* No params straight after charset name */
++     				}
++     				break;
++ #endif /* ?UNIX */
+                  case 'l':      /* longer form of "ls -l" type listing */
+                      if (negative)
+                          uO.lflag = -2, negative = 0;
+***************
+*** 521,526 ****
+--- 556,592 ----
+                          G.M_flag = TRUE;
+                      break;
+  #endif
++ #ifdef UNIX
++     			case ('O'):
++                     if (negative) {
++                         Info(slide, 0x401, ((char *)slide,
++                           "error:  encodings can't be negated"));
++                         return(PK_PARAM);
++     				} else {
++     					if(*s) { /* Handle the -Ocharset case */
++     						/* Assume that charsets can't start with a dash to spot arguments misuse */
++     						if(*s == '-') { 
++     	                        Info(slide, 0x401, ((char *)slide,
++         		                  "error:  a valid character encoding should follow the -I argument"));
++     	                        return(PK_PARAM); 
++     						}
++     						strncpy(OEM_CP, s, MAX_CP_NAME - 1);
++                 OEM_CP[MAX_CP_NAME - 1] = '\0';
++     					} else { /* -O charset */
++     						++argv;
++     						if(!(--argc > 0 && *argv != NULL && **argv != '-')) {
++     	                        Info(slide, 0x401, ((char *)slide,
++         		                  "error:  a valid character encoding should follow the -O argument"));
++     	                        return(PK_PARAM); 
++     						}
++     						s = *argv;
++     						strncpy(OEM_CP, s, MAX_CP_NAME - 1);
++                 OEM_CP[MAX_CP_NAME - 1] = '\0';
++     					}
++     					while(*(++s)); /* No params straight after charset name */
++     				}
++     				break;
++ #endif /* ?UNIX */
+                  case 's':      /* default:  shorter "ls -l" type listing */
+                      if (negative)
+                          uO.lflag = -2, negative = 0;
+***************
+*** 771,777 ****
+                  Info(slide, 0x401,
+                       ((char *)slide, LoadFarString(CentSigMsg), j));
+                  Info(slide, 0x401,
+!                      ((char *)slide, LoadFarString(ReportMsg)));
+                  error_in_archive = PK_BADERR;   /* sig not found */
+                  break;
+              }
+--- 837,843 ----
+                  Info(slide, 0x401,
+                       ((char *)slide, LoadFarString(CentSigMsg), j));
+                  Info(slide, 0x401,
+!                      ((char *)slide,"%s", LoadFarString(ReportMsg)));
+                  error_in_archive = PK_BADERR;   /* sig not found */
+                  break;
+              }
+***************
+*** 960,966 ****
+              && (!G.ecrec.is_zip64_archive)
+              && (memcmp(G.sig, end_central_sig, 4) != 0)
+             ) {          /* just to make sure again */
+!             Info(slide, 0x401, ((char *)slide, LoadFarString(EndSigMsg)));
+              error_in_archive = PK_WARN;   /* didn't find sig */
+          }
+  
+--- 1026,1033 ----
+              && (!G.ecrec.is_zip64_archive)
+              && (memcmp(G.sig, end_central_sig, 4) != 0)
+             ) {          /* just to make sure again */
+!             Info(slide, 0x401, 
+!                  ((char *)slide,"%s", LoadFarString(EndSigMsg)));
+              error_in_archive = PK_WARN;   /* didn't find sig */
+          }
+  
+***************
+*** 1881,1887 ****
+  #endif
+      int         k, error, error_in_archive=PK_COOL;
+      unsigned    hostnum, hostver, methid, methnum, xattr;
+!     char        *p, workspace[12], attribs[16];
+      char        methbuf[5];
+      static ZCONST char dtype[5]="NXFS"; /* normal, maximum, fast, superfast */
+      static ZCONST char Far os[NUM_HOSTS+1][4] = {
+--- 1948,1954 ----
+  #endif
+      int         k, error, error_in_archive=PK_COOL;
+      unsigned    hostnum, hostver, methid, methnum, xattr;
+!     char        *p, workspace[12], attribs[17];
+      char        methbuf[5];
+      static ZCONST char dtype[5]="NXFS"; /* normal, maximum, fast, superfast */
+      static ZCONST char Far os[NUM_HOSTS+1][4] = {
+***************
+*** 1921,1927 ****
+          ush  dnum=(ush)((G.crec.general_purpose_bit_flag>>1) & 3);
+          methbuf[3] = dtype[dnum];
+      } else if (methnum >= NUM_METHODS) {   /* unknown */
+!         sprintf(&methbuf[1], "%03u", G.crec.compression_method);
+      }
+  
+      for (k = 0;  k < 15;  ++k)
+--- 1988,2006 ----
+          ush  dnum=(ush)((G.crec.general_purpose_bit_flag>>1) & 3);
+          methbuf[3] = dtype[dnum];
+      } else if (methnum >= NUM_METHODS) {   /* unknown */
+!         /* 2016-12-05 SMS.
+!          * https://launchpad.net/bugs/1643750
+!          * Unexpectedly large compression methods overflow
+!          * &methbuf[].  Use the old, three-digit decimal format
+!          * for values which fit.  Otherwise, sacrifice the "u",
+!          * and use four-digit hexadecimal.
+!          */
+!         if (G.crec.compression_method <= 999) {
+!               sprintf( &methbuf[ 1], "%03u", G.crec.compression_method);
+!         } else {
+!               sprintf( &methbuf[ 0], "%04X", G.crec.compression_method);
+!         }
+! 
+      }
+  
+      for (k = 0;  k < 15;  ++k)
