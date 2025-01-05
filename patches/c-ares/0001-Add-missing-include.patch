@@ -1,0 +1,25 @@
+From d070cac07bd58e239263c8ad66ac8ffa432ca40b Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Sun, 5 Jan 2025 14:37:05 +0100
+Subject: [PATCH] Add missing include
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ src/lib/str/ares_str.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/lib/str/ares_str.c b/src/lib/str/ares_str.c
+index 0eda1ab..c657920 100644
+--- a/src/lib/str/ares_str.c
++++ b/src/lib/str/ares_str.c
+@@ -27,6 +27,7 @@
+ 
+ #include "ares_private.h"
+ #include "ares_str.h"
++#include <strings.h>
+ 
+ #ifdef HAVE_STDINT_H
+ #  include <stdint.h>
+-- 
+2.45.2
+
