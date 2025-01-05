@@ -292,11 +292,18 @@ packages:
 
   - name: gtk+-3
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Gimp ToolKit +
+      description: The GTK+ 3 package contains libraries used for creating graphical user interfaces for applications.
+      spdx: 'LGPL-2.0-or-later'
+      website: 'https://www.gtk.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['x11-libs']
     source:
       subdir: 'ports'
       git: 'https://gitlab.gnome.org/GNOME/gtk.git'
-      tag: '3.24.38'
-      version: '3.24.38'
+      tag: '3.24.42'
+      version: '3.24.42'
     tools_required:
       - system-gcc
       - virtual: pkgconfig-for-target
@@ -340,7 +347,7 @@ packages:
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
-    revision: 8
+    revision: 1
     configure:
       - args:
         - 'meson'
