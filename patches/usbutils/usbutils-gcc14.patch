@@ -1,0 +1,39 @@
+Only in usbutils-work/: checkedout.xbstrap
+diff -crB usbutils-018/meson.build usbutils-work/meson.build
+*** usbutils-018/meson.build	2024-10-22 11:33:33.000000000 +0200
+--- usbutils-work/meson.build	2025-01-05 13:30:16.916887030 +0100
+***************
+*** 107,114 ****
+  
+  libudev = dependency('libudev', version: '>= 196')
+  libusb = dependency('libusb-1.0', version: '>= 1.0.22')
+  
+! executable('lsusb', lsusb_sources, dependencies: [libusb, libudev], install: true)
+  
+  ################################
+  # usbhid-dump build instructions
+--- 107,115 ----
+  
+  libudev = dependency('libudev', version: '>= 196')
+  libusb = dependency('libusb-1.0', version: '>= 1.0.22')
++ libiconv = dependency('iconv')
+  
+! executable('lsusb', lsusb_sources, dependencies: [libusb, libudev, libiconv], install: true)
+  
+  ################################
+  # usbhid-dump build instructions
+Only in usbutils-work/: patched.xbstrap
+Only in usbutils-work/: regenerated.xbstrap
+diff -crB usbutils-018/usbreset.c usbutils-work/usbreset.c
+*** usbutils-018/usbreset.c	2024-10-22 11:33:33.000000000 +0200
+--- usbutils-work/usbreset.c	2025-01-05 13:26:16.741263180 +0100
+***************
+*** 15,20 ****
+--- 15,21 ----
+  #include <limits.h>
+  #include <dirent.h>
+  #include <sys/ioctl.h>
++ #include <strings.h>
+  
+  #include <linux/usbdevice_fs.h>
+  

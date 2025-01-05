@@ -1,0 +1,26 @@
+diff -crB tcl/unix/tclUnixChan.c tcl-working/unix/tclUnixChan.c
+*** tcl/unix/tclUnixChan.c	2024-08-26 19:56:52.000000000 +0200
+--- tcl-working/unix/tclUnixChan.c	2025-01-05 12:30:14.627124355 +0100
+***************
+*** 13,18 ****
+--- 13,19 ----
+  
+  #include "tclInt.h"	/* Internal definitions for Tcl. */
+  #include "tclIO.h"	/* To get Channel type declaration. */
++ #include <strings.h>
+  
+  #undef SUPPORTS_TTY
+  #if defined(HAVE_TERMIOS_H)
+diff -crB tcl/unix/tclUnixInit.c tcl-working/unix/tclUnixInit.c
+*** tcl/unix/tclUnixInit.c	2024-08-26 19:56:52.000000000 +0200
+--- tcl-working/unix/tclUnixInit.c	2025-01-05 12:30:41.188540538 +0100
+***************
+*** 11,16 ****
+--- 11,17 ----
+  #include "tclInt.h"
+  #include <stddef.h>
+  #include <locale.h>
++ #include <strings.h>
+  #ifdef HAVE_LANGINFO
+  #   include <langinfo.h>
+  #   ifdef __APPLE__

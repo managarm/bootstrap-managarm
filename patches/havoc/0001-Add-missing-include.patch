@@ -1,0 +1,25 @@
+From 547a37aa778404e180821c483e235d26342e1095 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Sun, 5 Jan 2025 14:19:07 +0100
+Subject: [PATCH] Add missing include
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ main.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/main.c b/main.c
+index d83b829..d1ed051 100644
+--- a/main.c
++++ b/main.c
+@@ -14,6 +14,7 @@
+ #include <fcntl.h>
+ #include <unistd.h>
+ #include <pty.h>
++#include <sys/ioctl.h>
+ 
+ #include <xkbcommon/xkbcommon-compose.h>
+ #include <wayland-client-core.h>
+-- 
+2.45.2
+

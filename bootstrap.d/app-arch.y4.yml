@@ -81,18 +81,18 @@ packages:
       categories: ['app-arch']
     source:
       subdir: ports
-      url: 'https://ftp.gnu.org/gnu/cpio/cpio-2.14.tar.bz2'
-      checksum: 'blake2b:f2fa9f5bc39cd91f4755fdf27f43cff4d1c1f098639502689a01314762ad686bf357a1eda7f92e4c802e6e8335548ca31fc789cea056ef685c558892ddcbebd1'
+      url: 'https://ftp.gnu.org/gnu/cpio/cpio-2.15.tar.bz2'
+      checksum: 'blake2b:ca2aae6a00239be7aff5558a2e62b4fb4b43c2ed7f4d7a23699c958ae10b348c4ebf39233f0dd0242cba895fdac4d0ff3b4e56fefa0b1afe3db41eb6916e0b23'
       format: tar.bz2
-      extract_path: 'cpio-2.14'
-      version: '2.14'
+      extract_path: 'cpio-2.15'
+      version: '2.15'
     tools_required:
       - system-gcc
     pkgs_required:
       - mlibc
       - libiconv
       - libintl
-    revision: 6
+    revision: 1
     configure:
       # Fix a build issue when building with gcc 10 and higher
       - args: ['sed', '-i', '/The name/,+2 d', '@THIS_SOURCE_DIR@/src/global.c']
@@ -292,7 +292,7 @@ packages:
       - mlibc
       - bzip2
       - libiconv
-    revision: 9
+    revision: 10
     configure:
       # Fixup their makefile, thanks gentoo!
       - args: |
@@ -301,7 +301,7 @@ packages:
       # Remove the in tree copy of bzip2
       - args: ['rm', '-r', '@THIS_BUILD_DIR@/bzip2']
     build:
-      - args: ['make', 'CC=x86_64-managarm-gcc', 'LDFLAGS=-liconv', '-f', '@THIS_BUILD_DIR@/unix/Makefile', 'generic']
+      - args: ['make', 'CC=x86_64-managarm-gcc -Wno-error=incompatible-pointer-types', 'LDFLAGS=-liconv', '-f', '@THIS_BUILD_DIR@/unix/Makefile', 'generic']
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/bin']
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/share/man/man1']
       - args: ['cp', '@THIS_BUILD_DIR@/unzip', '@THIS_COLLECT_DIR@/usr/bin/']
@@ -380,11 +380,11 @@ packages:
     pkgs_required:
       - mlibc
       - bzip2
-    revision: 9
+    revision: 10
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
-      - args: ['make', 'CC=x86_64-managarm-gcc', '-f', '@THIS_BUILD_DIR@/unix/Makefile', 'generic']
+      - args: ['make', 'CC=x86_64-managarm-gcc -std=gnu89', '-f', '@THIS_BUILD_DIR@/unix/Makefile', 'generic']
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/bin']
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/share/man/man1']
       - args: ['cp', '@THIS_BUILD_DIR@/zip', '@THIS_COLLECT_DIR@/usr/bin/']

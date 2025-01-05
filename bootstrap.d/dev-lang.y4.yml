@@ -236,6 +236,7 @@ packages:
 
   - name: perl
     architecture: '@OPTION:arch@'
+    stability_level: 'broken'
     metadata:
       summary: Larry Wall's Practical Extraction and Report Language
       description: The Perl package contains the Practical Extraction and Report Language.
@@ -353,26 +354,27 @@ packages:
       categories: ['dev-lang']
     source:
       subdir: ports
-      url: 'https://downloads.sourceforge.net/tcl/tcl8.6.13-src.tar.gz'
+      url: 'https://downloads.sourceforge.net/tcl/tcl8.6.15-src.tar.gz'
       format: 'tar.gz'
-      checksum: blake2b:f7d895ee04bf2be2a327a957189a8a4400afae13d065163c4c7b6b5ee909bae2352114843d82d9475046eafd3d288da2c1649fe6285fdb26eb22f0b97e4227ab
-      extract_path: 'tcl8.6.13'
-      version: '8.6.13'
+      checksum: blake2b:821de373492a0158f2f38c9fe4ebfda8966a75f62df01c5a2d5640b0a5ec06d883bb7385acdc1772cf4139c56be5d9f0b1c75d261c6c70a940e3e4a156c7ce4b
+      extract_path: 'tcl8.6.15'
+      patch-path-strip: 1 
+      version: '8.6.15'
     tools_required:
       - system-gcc
     pkgs_required:
       - mlibc
       - sqlite
       - zlib
-    revision: 6
+    revision: 1
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
         - './unix/configure'
-        - '--host=x86_64-managarm'
+        - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--mandir=/usr/share/man'
-        - '--enable-64bit'
+        - '--disable-rpath'
         environ:
           # Yes, our strstr and strtoul are not broken, use them
           tcl_cv_strstr_unbroken: 'ok'
@@ -382,10 +384,10 @@ packages:
       # The Tcl package expects that its source tree is preserved so that packages depending on it for their compilation can utilize it.
       # These sed's remove the references to the build directory and replace them with saner system-wide locations.
       - args: ['sed', '-e', "s#@THIS_SOURCE_DIR@/unix#/usr/lib#", '-e', "s#@THIS_SOURCE_DIR@#/usr/include#", '-i', 'tclConfig.sh']
-      - args: ['sed', '-e', "s#$@THIS_SOURCE_DIR@/unix/pkgs/tdbc1.1.5#/usr/lib/tdbc1.1.5#", '-e', "s#@THIS_SOURCE_DIR@/pkgs/tdbc1.1.5/generic#/usr/include#",
-          '-e', "s#@THIS_SOURCE_DIR@/pkgs/tdbc1.1.5/library#/usr/lib/tcl8.6#", '-e', "s#@THIS_SOURCE_DIR@/pkgs/tdbc1.1.5#/usr/include#", '-i', 'pkgs/tdbc1.1.5/tdbcConfig.sh']
-      - args: ['sed', '-e', "s#@THIS_SOURCE_DIR@/unix/pkgs/itcl4.2.3#/usr/lib/itcl4.2.3#", '-e', "s#@THIS_SOURCE_DIR@/pkgs/itcl4.2.3/generic#/usr/include#",
-          '-e', "s#@THIS_SOURCE_DIR@/pkgs/itcl4.2.3#/usr/include#", '-i', 'pkgs/itcl4.2.3/itclConfig.sh']
+      - args: ['sed', '-e', "s#$@THIS_SOURCE_DIR@/unix/pkgs/tdbc1.1.9#/usr/lib/tdbc1.1.9#", '-e', "s#@THIS_SOURCE_DIR@/pkgs/tdbc1.1.9/generic#/usr/include#",
+          '-e', "s#@THIS_SOURCE_DIR@/pkgs/tdbc1.1.9/library#/usr/lib/tcl8.6#", '-e', "s#@THIS_SOURCE_DIR@/pkgs/tdbc1.1.9#/usr/include#", '-i', 'pkgs/tdbc1.1.9/tdbcConfig.sh']
+      - args: ['sed', '-e', "s#@THIS_SOURCE_DIR@/unix/pkgs/itcl4.3.0#/usr/lib/itcl4.3.0#", '-e', "s#@THIS_SOURCE_DIR@/pkgs/itcl4.3.0/generic#/usr/include#",
+          '-e', "s#@THIS_SOURCE_DIR@/pkgs/itcl4.3.0#/usr/include#", '-i', 'pkgs/itcl4.3.0/itclConfig.sh']
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'

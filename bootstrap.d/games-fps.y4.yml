@@ -35,6 +35,7 @@ tools:
 packages:
   - name: dsda-doom
     architecture: '@OPTION:arch@'
+    stability_level: 'broken' # Broke on gcc 14 upgrade, investigate later as patches don't apply on upgrade
     metadata:
       summary: Modern DOOM source port with extra tooling for demos and speedrunning
       description: Modern DOOM source port based on PrBoom+ with support for new standards and extra tooling for demo playback, demo recording and speedrunning.
@@ -75,6 +76,7 @@ packages:
 
   - name: tyr-quake
     architecture: '@OPTION:arch@'
+    stability_level: 'broken'
     metadata:
       summary: Modern Quake source port that aims to keep the original feel of the game
       description: Modern Quake source port with support for Quake and Quakeworld, with both software rendering and OpenGL, and various other improvements.

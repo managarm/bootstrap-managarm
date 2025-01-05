@@ -718,14 +718,14 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/json-c/json-c.git'
-      tag: 'json-c-0.16-20220414'
-      version: '0.16'
+      tag: 'json-c-0.18-20240915'
+      version: '0.18'
     tools_required:
       - system-gcc
       - host-cmake
     pkgs_required:
       - mlibc
-    revision: 9
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -974,6 +974,7 @@ packages:
     pkgs_required:
       - mlibc
       - glib
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -987,7 +988,7 @@ packages:
           then: '--enable-introspection=no'
           else: '--enable-introspection=no'
     build:
-      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'CC=@OPTION:arch-triple@-gcc -Wno-incompatible-pointer-types', '-j@PARALLELISM@']
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
@@ -2150,6 +2151,13 @@ packages:
   - name: openssl
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Robust, full-featured Open Source Toolkit for the Transport Layer Security (TLS)
+      description: The OpenSSL package contains management tools and libraries relating to cryptography. These are useful for providing cryptographic functions to other packages, such as OpenSSH, email applications, and web browsers (for accessing HTTPS sites).
+      spdx: 'Apache-2.0'
+      website: 'https://openssl-library.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
     source:
       subdir: ports
       git: 'https://github.com/openssl/openssl.git'
@@ -2160,7 +2168,7 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/Configure'

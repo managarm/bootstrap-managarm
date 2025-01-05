@@ -1,0 +1,26 @@
+From 843df0204fe4bf8624142631476b93d1656083af Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Sun, 5 Jan 2025 14:55:57 +0100
+Subject: [PATCH] Add Managarm specific changes
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ json_tokener.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/json_tokener.c b/json_tokener.c
+index c831f8a..e0578a1 100644
+--- a/json_tokener.c
++++ b/json_tokener.c
+@@ -351,7 +351,7 @@ struct json_object *json_tokener_parse_ex(struct json_tokener *tok, const char *
+ 		{
+ 			tok->err = json_tokener_error_memory;
+ 			freelocale(duploc);
+-			return NULL;
++			//return NULL;
+ 		}
+ #ifdef NEWLOCALE_NEEDS_FREELOCALE
+ 		// Older versions of FreeBSD (<12.4) don't free the locale
+-- 
+2.45.2
+

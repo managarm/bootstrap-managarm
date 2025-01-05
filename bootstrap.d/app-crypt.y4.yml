@@ -149,39 +149,34 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/p11-glue/p11-kit.git'
-      tag: '0.25.0'
-      version: '0.25.0'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
-        - host-pkg-config
-        - host-libtool
-      regenerate:
-        - args: ['./autogen.sh']
-          environ:
-            NOCONFIGURE: 'yes'
+      tag: '0.25.5'
+      version: '0.25.5'
     tools_required:
       - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: '@OPTION:arch-triple@'
     pkgs_required:
       - mlibc
       - libffi
       - libtasn
-    revision: 6
+    revision: 1
     configure:
       - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--host=@OPTION:arch-triple@'
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
+        - '--buildtype=debugoptimized'
+        - '--wrap-mode=nofallback'
         - '--sysconfdir=/etc'
-        - '--with-trust-paths=/etc/pki/anchors'
-        - '--without-systemd'
-        - '--disable-doc-html'
-        - '--disable-nls'
-        environ:
-          ac_cv_func_strerror_r: 'no'
+        - '-Dtrust_paths=/etc/pki/anchors'
+        - '-Dsystemd=disabled'
+        - '@THIS_SOURCE_DIR@'
+        isolate_network: false
     build:
-      - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'install']
+      - args: ['ninja']
+      - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
       - args: ['ln', '-sfv', '/usr/libexec/p11-kit/trust-extract-compat', '@THIS_COLLECT_DIR@/usr/bin/update-ca-certificates']

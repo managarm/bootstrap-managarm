@@ -1,0 +1,25 @@
+From 9fc5173fc351f97c15e412919b3a1f65b2f21651 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Sun, 5 Jan 2025 14:24:32 +0100
+Subject: [PATCH] Add missing include
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ cmatrix.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/cmatrix.c b/cmatrix.c
+index 90284cb..0e12697 100644
+--- a/cmatrix.c
++++ b/cmatrix.c
+@@ -25,6 +25,7 @@
+ #include <stdlib.h>
+ #include <stdarg.h>
+ #include <string.h>
++#include <strings.h>
+ #include <time.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+-- 
+2.45.2
+

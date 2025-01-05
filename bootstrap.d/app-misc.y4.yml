@@ -63,7 +63,7 @@ packages:
     pkgs_required:
       - mlibc
       - ncurses
-    revision: 7
+    revision: 8
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

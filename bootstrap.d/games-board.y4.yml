@@ -28,7 +28,7 @@ packages:
       - libx11
       - libxpm
       - zlib
-    revision: 10
+    revision: 11
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

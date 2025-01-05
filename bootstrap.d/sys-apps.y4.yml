@@ -15,6 +15,12 @@ sources:
     regenerate:
       - args: ['autoreconf', '-f', '-i']
 
+  - name: hwdata
+    subdir: 'ports'
+    git: 'https://github.com/vcrhonek/hwdata.git'
+    tag: 'v0.391'
+    version: '0.391'
+
   - name: util-linux
     subdir: ports
     git: 'https://git.kernel.org/pub/scm/utils/util-linux/util-linux.git'
@@ -47,13 +53,9 @@ tools:
       - args: ['make', 'install']
 
   - name: host-hwdata
-    labels: [aarch64]
+    labels: [aarch64, riscv64]
     architecture: noarch
-    source:
-      subdir: 'ports'
-      git: 'https://github.com/vcrhonek/hwdata.git'
-      tag: 'v0.367'
-      version: '0.367'
+    from_source: hwdata
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
@@ -511,6 +513,34 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
       - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/charset.alias']
 
+  - name: hwdata
+    labels: [aarch64, riscv64]
+    architecture: 'noarch'
+    metadata:
+      summary: Hardware identification and configuration data
+      description: The hwdata package contains current PCI and vendor id data.
+      spdx: GPL-2.0-or-later
+      website: 'https://github.com/vcrhonek/hwdata'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-apps']
+    from_source: hwdata
+    tools_required:
+      - system-gcc
+    revision: 1
+    configure:
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--disable-blacklist'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+
   - name: iproute2
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
@@ -524,8 +554,8 @@ packages:
     source:
       subdir: ports
       git: 'https://git.kernel.org/pub/scm/network/iproute2/iproute2.git'
-      tag: 'v6.9.0'
-      version: '6.9.0'
+      tag: 'v6.12.0'
+      version: '6.12.0'
     tools_required:
       - system-gcc
     pkgs_required:
@@ -549,6 +579,7 @@ packages:
       - args: ['make', '-j@PARALLELISM@']
         environ:
           SBINDIR: '/usr/sbin'
+          NETNS_RUN_DIR: '/run/netns'
       - args: ['make', 'install']
         environ:
           SBINDIR: '/usr/sbin'
@@ -764,11 +795,12 @@ packages:
       replaces: ['mini-lspci']
     source:
       subdir: ports
-      url: 'https://mirrors.edge.kernel.org/pub/software/utils/pciutils/pciutils-3.10.0.tar.xz'
-      checksum: 'blake2b:555d095a33c9f17561c34fe8f2914cd1dbe2ac1e1f4f33b59e126258fc54a7823ac1c4f0957c7dc7a188621b978419848d93372fe28ad03aabdd152a610ba5ec'
+      url: 'https://mirrors.edge.kernel.org/pub/software/utils/pciutils/pciutils-3.13.0.tar.xz'
+      checksum: 'blake2b:5105e43351a87c9d46342acf32bf4f3ca918a7f2cf2b2c47caaef16e12d1bcde949d9323286c04dbf30156c1ffb37be816e6a44f1ffeda8ff61f57ba25a310e0'
       format: tar.xz
-      extract_path: 'pciutils-3.10.0'
-      version: '3.10.0'
+      extract_path: 'pciutils-3.13.0'
+      version: '3.13.0'
+      patch-path-strip: 1
     tools_required:
       - system-gcc
       - virtual: pkgconfig-for-target
@@ -776,8 +808,9 @@ packages:
     pkgs_required:
       - mlibc
       - eudev
+      - hwdata
       - zlib
-    revision: 4
+    revision: 1
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -946,41 +979,38 @@ packages:
       categories: ['sys-apps']
     source:
       subdir: 'ports'
-      url: 'https://github.com/gregkh/usbutils/archive/v015/usbutils-015.tar.gz'
+      url: 'https://github.com/gregkh/usbutils/archive/v018/usbutils-018.tar.gz'
       format: 'tar.gz'
-      checksum: blake2b:6056947e3df829e988b9429827c69234a90b7ad1be666d54566211bc6c8e09e74372543059827a39cab2badd1df71deff1147503bef3850a38bffefe3b2ae0e2
-      extract_path: 'usbutils-015'
-      version: '015'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
-        - host-libtool
-        - host-pkg-config
-      regenerate:
-        - args: ['autoreconf', '-fvi']
-        - args: ['wget', 'https://raptor.dennisbonke.com/usb.ids', '-O', '@THIS_SOURCE_DIR@/usb.ids'] # Version 20230724
-          isolate_network: false
+      checksum: blake2b:0312b4d633b6c33f084a24b686107f71df03110705a0fb11b623f414c24dda4a0f4a8338f6d81c95541cbc65b5703baa90c2fe42171fac73922e989144374188
+      extract_path: 'usbutils-018'
+      patch-path-strip: 1
+      version: '018'
     tools_required:
       - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
       - libusb
       - eudev
-    revision: 6
+      - hwdata
+      - libiconv
+    revision: 1
     configure:
       - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--host=@OPTION:arch-triple@'
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
-        - '--datadir=/usr/share/hwdata'
+        - '--buildtype=debugoptimized'
+        - '@THIS_SOURCE_DIR@'
     build:
-      - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'install']
+      - args: ['ninja']
+      - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
-      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/share/hwdata/']
-      - args: ['cp', '-f', '@THIS_SOURCE_DIR@/usb.ids', '@THIS_COLLECT_DIR@/usr/share/hwdata/usb.ids']
 
   - name: util-linux-libs
     labels: [aarch64, riscv64]
