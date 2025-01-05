@@ -718,14 +718,14 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/json-c/json-c.git'
-      tag: 'json-c-0.16-20220414'
-      version: '0.16'
+      tag: 'json-c-0.18-20240915'
+      version: '0.18'
     tools_required:
       - system-gcc
       - host-cmake
     pkgs_required:
       - mlibc
-    revision: 9
+    revision: 1
     configure:
       - args:
         - 'cmake'
