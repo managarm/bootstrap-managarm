@@ -1,6 +1,7 @@
 packages:
   - name: hexchat
     architecture: '@OPTION:arch@'
+    stability_level: 'broken' # GTK2 broke and HexChat is unmaintained, users should move to konversation
     metadata:
       summary: Graphical IRC client based on XChat
       description: This package HexChat, an IRC program. It allows you to join multiple IRC channels at the same time where you can talk publicly, have private one-to-one communications among other things.
