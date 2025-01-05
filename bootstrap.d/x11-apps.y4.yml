@@ -469,6 +469,7 @@ packages:
 
   - name: igt-gpu-tools
     architecture: '@OPTION:arch@'
+    stability_level: 'broken'
     metadata:
       summary: IGT GPU Tools is a collection of tools for development and testing of the DRM drivers
       spdx: 'MIT'

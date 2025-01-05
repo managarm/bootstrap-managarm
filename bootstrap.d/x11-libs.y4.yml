@@ -227,6 +227,7 @@ packages:
   # Deprecated, please don't depend on this anymore. Only here for gtklife and hexchat.
   - name: gtk+-2
     architecture: '@OPTION:arch@'
+    stability_level: 'broken'
     source:
       subdir: 'ports'
       url: 'https://download.gnome.org/sources/gtk+/2.24/gtk+-2.24.32.tar.xz'

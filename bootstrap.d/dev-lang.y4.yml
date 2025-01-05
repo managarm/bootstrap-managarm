@@ -27,11 +27,11 @@ sources:
 
   - name: vala
     subdir: 'ports'
-    url: 'https://download.gnome.org/sources/vala/0.56/vala-0.56.14.tar.xz'
+    url: 'https://download.gnome.org/sources/vala/0.56/vala-0.56.17.tar.xz'
     format: 'tar.xz'
-    checksum: blake2b:db6ccca635122ff2089cd61fd8335376eed435f15d9bd7c20837829fe5acc8df49a51194e3bc17d0c24567240cf2519348cc2b0a7b177b971dc037ed39e893de
-    extract_path: 'vala-0.56.14'
-    version: '0.56.14'
+    checksum: blake2b:c4b8d5b7c810893728f82d2cbbf2f0dd70ad17bd4eeb323ab5d31d99f37b5a5508b7d2447f0249f3a925013d7110bb6f145b32c833b990b15f18d9949035293f
+    extract_path: 'vala-0.56.17'
+    version: '0.56.17'
 
   - name: host-bootstrap-cargo
     subdir: 'ports'

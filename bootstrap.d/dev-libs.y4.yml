@@ -12,8 +12,8 @@ sources:
   - name: glib
     subdir: ports
     git: 'https://gitlab.gnome.org/GNOME/glib.git'
-    tag: '2.78.4'
-    version: '2.78.4'
+    tag: '2.82.4'
+    version: '2.82.4'
 
   - name: gobject-introspection
     subdir: 'ports'
@@ -58,13 +58,13 @@ sources:
 
   - name: wayland
     subdir: 'ports'
-    url: 'https://gitlab.freedesktop.org/wayland/wayland/-/releases/1.22.0/downloads/wayland-1.22.0.tar.xz'
-    checksum: 'blake2b:b0bb366e7f3494813d1574228ae5dd48eccde035120d6dd8709e3a24738681ab9dd9ba6a13924b6a35982d331fa8911fa7346911da9f618be9c9109da0288629'
-    extract_path: 'wayland-1.22.0'
+    url: 'https://gitlab.freedesktop.org/wayland/wayland/-/releases/1.23.0/downloads/wayland-1.23.0.tar.xz'
+    checksum: 'blake2b:efb80e3c67db7a707a6d2ea66e7a5132173550bc13fdff447925ec3d33bfba8131532f819d5ab0dd80924cb4339b58b7ca83d9e70a436cea8268167476355bd8'
+    extract_path: 'wayland-1.23.0'
     patch-path-strip: 1
     format: 'tar.xz'
-    tag: '1.22.0'
-    version: '1.22.0'
+    tag: '1.23.0'
+    version: '1.23.0'
 
   - name: libtool
     subdir: 'ports'
@@ -136,7 +136,7 @@ tools:
       - host-pkg-config
       - virtual: pkgconfig-for-host
         program_name: host-pkg-config
-    revision: 3
+    revision: 1
     configure:
       - args:
         - 'meson'
@@ -145,6 +145,9 @@ tools:
         - '@SOURCE_ROOT@/scripts/meson.native-file'
         - '--prefix=@PREFIX@'
         - '--libdir=lib'
+        - '-Dtests=false'
+        - '-Dinstalled_tests=false'
+        - '-Dintrospection=disabled'
         - '@THIS_SOURCE_DIR@'
         isolate_network: false
     compile:
@@ -541,7 +544,7 @@ packages:
       - zlib
       - libiconv
       - libintl
-    revision: 6
+    revision: 1
     configure:
       - args:
         - 'meson'
@@ -554,6 +557,7 @@ packages:
         - '-Dxattr=false'
         - '-Dtests=false'
         - '-Dinstalled_tests=false'
+        - '-Dintrospection=disabled'
         - '@THIS_SOURCE_DIR@'
         isolate_network: false
         environ:
@@ -2395,7 +2399,7 @@ packages:
       - mlibc
       - libexpat
       - libffi
-    revision: 8
+    revision: 1
     configure:
       - args:
         - 'meson'
@@ -2430,15 +2434,19 @@ packages:
       categories: ['dev-libs']
     source:
       subdir: 'ports'
-      url: 'https://gitlab.freedesktop.org/wayland/wayland-protocols/-/releases/1.32/downloads/wayland-protocols-1.32.tar.xz'
-      checksum: 'blake2b:80e38270526c9da13c39263a60e7d2c330a1a4b1dfecec03fadda747f1a2e3dff95b30373aa19e133ae999fa15bdcdd64aa9ebbb54acf571f980a3f6088ea9be'
-      extract_path: 'wayland-protocols-1.32'
+      url: 'https://gitlab.freedesktop.org/wayland/wayland-protocols/-/releases/1.39/downloads/wayland-protocols-1.39.tar.xz'
+      checksum: 'blake2b:ca0350acdce8e2b3803ef4582576fd2db61228f54cebfa232ebbf85377a7201ceb9a96650c8940dc91c193681fa70a0fcb3d5fa9e541acfe77ae07448e998f9d'
+      extract_path: 'wayland-protocols-1.39'
       format: 'tar.xz'
-      version: '1.32'
+      version: '1.39'
     tools_required:
       - system-gcc
       - wayland-scanner
-    revision: 6
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+      - virtual: pkgconfig-for-host
+        program_name: host-pkg-config
+    revision: 1
     configure:
       - args:
         - 'meson'
@@ -2469,8 +2477,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/wayland/weston.git'
-      tag: '12.0.2'
-      version: '12.0.2'
+      tag: '14.0.1'
+      version: '14.0.1'
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -2496,7 +2504,8 @@ packages:
       - seatd
       - xcb-proto
       - xcb-util-cursor
-    revision: 5
+      - libdisplay-info
+    revision: 1
     configure:
       - args:
         - 'meson'
