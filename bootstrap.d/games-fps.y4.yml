@@ -76,6 +76,7 @@ packages:
 
   - name: tyr-quake
     architecture: '@OPTION:arch@'
+    stability_level: 'broken'
     metadata:
       summary: Modern Quake source port that aims to keep the original feel of the game
       description: Modern Quake source port with support for Quake and Quakeworld, with both software rendering and OpenGL, and various other improvements.
