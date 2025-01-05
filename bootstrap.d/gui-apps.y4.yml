@@ -62,8 +62,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/swaywm/swaybg'
-      tag: 'v1.2.0'
-      version: '1.2.0'
+      tag: 'v1.2.1'
+      version: '1.2.1'
     tools_required:
       - system-gcc
       - wayland-scanner
@@ -78,7 +78,7 @@ packages:
       - wayland
       - wayland-protocols
       - gdk-pixbuf
-    revision: 6
+    revision: 1
     configure:
       - args:
         - 'meson'
