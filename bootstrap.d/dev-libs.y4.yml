@@ -974,6 +974,7 @@ packages:
     pkgs_required:
       - mlibc
       - glib
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -987,7 +988,7 @@ packages:
           then: '--enable-introspection=no'
           else: '--enable-introspection=no'
     build:
-      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'CC=@OPTION:arch-triple@-gcc -Wno-incompatible-pointer-types', '-j@PARALLELISM@']
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
