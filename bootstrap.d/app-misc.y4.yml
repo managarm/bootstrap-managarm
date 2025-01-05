@@ -75,6 +75,77 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+  
+  - name: fastfetch
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Fast neofetch-like system information tool
+      description: This package provides a fast neofetch-like system information tool.
+      spdx: 'MIT'
+      website: 'https://github.com/fastfetch-cli/fastfetch'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['app-misc']
+    source:
+      subdir: ports
+      git: 'https://github.com/fastfetch-cli/fastfetch.git'
+      tag: '2.33.0'
+      version: '2.33.0'
+    tools_required:
+      - host-cmake
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - yyjson
+      - zlib
+      - elfutils
+      - libdrm
+      - libglvnd
+      - libx11
+      - sqlite
+      - wayland
+      - libxcb
+      - libxrandr
+      - freetype
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DENABLE_RPM=no'
+        - '-DENABLE_ZLIB=yes'
+        - '-DENABLE_SYSTEM_YYJSON=yes'
+        - '-DINSTALL_LICENSE=no'
+        - '-DBUILD_FLASHFETCH=no'
+        - '-DENABLE_CHAFA=no'
+        - '-DENABLE_DBUS=no'
+        - '-DENABLE_DCONF=no'
+        - '-DENABLE_DDCUTIL=no'
+        - '-DENABLE_DRM=no' # Broken, does a funny DRM ioctl
+        - '-DENABLE_ELF=yes'
+        - '-DENABLE_EGL=yes'
+        - '-DENABLE_GIO=no'
+        - '-DENABLE_GLX=yes'
+        - '-DENABLE_IMAGEMAGICK6=no'
+        - '-DENABLE_IMAGEMAGICK7=no'
+        - '-DENABLE_OPENCL=no'
+        - '-DENABLE_OSMESA=no'
+        - '-DENABLE_PULSE=no'
+        - '-DENABLE_SQLITE3=yes'
+        - '-DENABLE_VULKAN=no'
+        - '-DENABLE_WAYLAND=yes'
+        - '-DENABLE_XCB_RANDR=yes'
+        - '-DENABLE_XFCONF=no'
+        - '-DENABLE_XRANDR=yes'
+        - '-DBUILD_TESTS=no'
+        - '-DPACKAGES_DISABLE_XBPS=OFF'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: sl
     labels: [aarch64]
