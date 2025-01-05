@@ -2395,7 +2395,7 @@ packages:
       - mlibc
       - libexpat
       - libffi
-    revision: 8
+    revision: 1
     configure:
       - args:
         - 'meson'
