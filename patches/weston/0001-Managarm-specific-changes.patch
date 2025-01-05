@@ -1,72 +1,42 @@
-From 6093b65d10cba186ff26b16c23a056346981b2ff Mon Sep 17 00:00:00 2001
-From: no92 <no92.mail@gmail.com>
-Date: Mon, 10 Oct 2022 11:54:07 +0200
-Subject: [PATCH] Managarm-specific changes
+From 604f5b3d981c6488f4f7e37dd0372d8198656714 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Sun, 5 Jan 2025 16:11:11 +0100
+Subject: [PATCH] Managarm specific changes
 
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
- compositor/main.c              | 10 +---------
  libweston/backend-drm/drm.c    | 10 +++++-----
  libweston/backend-drm/fb.c     |  4 ++--
- libweston/launcher-util.c      | 16 ++--------------
+ libweston/launcher-util.c      | 18 ++++--------------
  tools/zunitc/src/zunitc_impl.c |  1 +
- 5 files changed, 11 insertions(+), 30 deletions(-)
+ 4 files changed, 12 insertions(+), 21 deletions(-)
 
-diff --git a/compositor/main.c b/compositor/main.c
-index c614466..414eee0 100644
---- a/compositor/main.c
-+++ b/compositor/main.c
-@@ -45,7 +45,7 @@
- #include <libevdev/libevdev.h>
- #include <linux/input.h>
- #include <sys/time.h>
--#include <linux/limits.h>
-+#include <limits.h>
- 
- #include "weston.h"
- #include <libweston/libweston.h>
-@@ -861,14 +861,6 @@ weston_compositor_log_capabilities(struct weston_compositor *compositor)
- 	weston_log_continue(STAMP_SPACE "presentation clock: %s, id %d\n",
- 			    clock_name(compositor->presentation_clock),
- 			    compositor->presentation_clock);
--
--	if (clock_getres(compositor->presentation_clock, &res) == 0)
--		weston_log_continue(STAMP_SPACE
--				"presentation clock resolution: %d.%09ld s\n",
--				(int)res.tv_sec, res.tv_nsec);
--	else
--		weston_log_continue(STAMP_SPACE
--				"presentation clock resolution: N/A\n");
- }
- 
- static bool
 diff --git a/libweston/backend-drm/drm.c b/libweston/backend-drm/drm.c
-index 1078b89..44b72e9 100644
+index 11a5c3d..f484bc9 100644
 --- a/libweston/backend-drm/drm.c
 +++ b/libweston/backend-drm/drm.c
-@@ -724,7 +724,7 @@ drm_output_start_repaint_loop(struct weston_output *output_base)
+@@ -845,7 +845,7 @@ drm_output_start_repaint_loop(struct weston_output *output_base)
  
  	/* Try to get current msc and timestamp via instant query */
  	vbl.request.type |= drm_waitvblank_pipe(output->crtc);
 -	ret = drmWaitVBlank(device->drm.fd, &vbl);
-+	ret = -1; // drmWaitVBlank(device->drm.fd, &vbl);
++	ret = -1; //drmWaitVBlank(device->drm.fd, &vbl);
  
  	/* Error ret or zero timestamp means failure to get valid timestamp */
  	if ((ret == 0) && (vbl.reply.tval_sec > 0 || vbl.reply.tval_usec > 0)) {
-@@ -794,11 +794,11 @@ drm_repaint_begin(struct weston_backend *backend)
- 	device->repaint_data = pending_state;
+@@ -933,9 +933,9 @@ drm_repaint_begin(struct weston_backend *backend)
+ 	}
  
  	if (weston_log_scope_is_enabled(b->debug)) {
 -		char *dbg = weston_compositor_print_scene_graph(b->compositor);
 +		/*char *dbg = weston_compositor_print_scene_graph(b->compositor);
- 		drm_debug(b, "[repaint] Beginning repaint; pending_state %p\n",
- 			  device->repaint_data);
  		drm_debug(b, "%s", dbg);
 -		free(dbg);
 +		free(dbg);*/
  	}
+ }
  
- 	wl_list_for_each(device, &b->kms_list, link) {
-@@ -3720,13 +3720,13 @@ drm_backend_create(struct weston_compositor *compositor,
+@@ -4009,13 +4009,13 @@ drm_backend_create(struct weston_compositor *compositor,
  			     &b->format) < 0)
  		goto err_compositor;
  
@@ -78,15 +48,15 @@ index 1078b89..44b72e9 100644
  			   "logind D-Bus API, or use seatd.\n");
  		goto err_compositor;
 -	}
-+	} */
++	}*/
  
  	b->udev = udev_new();
  	if (b->udev == NULL) {
 diff --git a/libweston/backend-drm/fb.c b/libweston/backend-drm/fb.c
-index 0c2c0f6..28a9e9c 100644
+index 05fba0c..7f4f684 100644
 --- a/libweston/backend-drm/fb.c
 +++ b/libweston/backend-drm/fb.c
-@@ -451,13 +451,13 @@ drm_fb_get_from_dmabuf(struct linux_dmabuf_buffer *dmabuf,
+@@ -453,13 +453,13 @@ drm_fb_get_from_dmabuf(struct linux_dmabuf_buffer *dmabuf,
  	if (is_opaque)
  		fb->format = pixel_format_get_opaque_substitute(fb->format);
  
@@ -103,10 +73,19 @@ index 0c2c0f6..28a9e9c 100644
  	fb->num_planes = dmabuf->attributes.n_planes;
  	for (i = 0; i < dmabuf->attributes.n_planes; i++) {
 diff --git a/libweston/launcher-util.c b/libweston/launcher-util.c
-index b277606..8ffc821 100644
+index c833537..b47b1aa 100644
 --- a/libweston/launcher-util.c
 +++ b/libweston/launcher-util.c
-@@ -74,7 +74,8 @@ WL_EXPORT int
+@@ -26,6 +26,8 @@
+ 
+ #include "config.h"
+ 
++#include <fcntl.h>
++
+ #include <libweston/libweston.h>
+ 
+ #include "launcher-util.h"
+@@ -69,7 +71,8 @@ WL_EXPORT int
  weston_launcher_open(struct weston_launcher *launcher,
  		     const char *path, int flags)
  {
@@ -116,7 +95,7 @@ index b277606..8ffc821 100644
  }
  
  WL_EXPORT void
-@@ -109,17 +110,4 @@ weston_setup_vt_switch_bindings(struct weston_compositor *compositor)
+@@ -104,17 +107,4 @@ weston_setup_vt_switch_bindings(struct weston_compositor *compositor)
  	int ret;
  	uint32_t key;
  	struct weston_launcher *launcher = compositor->launcher;
@@ -135,7 +114,7 @@ index b277606..8ffc821 100644
 -						  compositor);
  }
 diff --git a/tools/zunitc/src/zunitc_impl.c b/tools/zunitc/src/zunitc_impl.c
-index 18f0301..f0a3bb6 100644
+index 9b460fa..9301510 100644
 --- a/tools/zunitc/src/zunitc_impl.c
 +++ b/tools/zunitc/src/zunitc_impl.c
 @@ -27,6 +27,7 @@
@@ -143,9 +122,9 @@ index 18f0301..f0a3bb6 100644
  #include <errno.h>
  #include <fcntl.h>
 +#include <signal.h>
+ #include <libgen.h>
  #include <stdarg.h>
  #include <stdbool.h>
- #include <stdio.h>
 -- 
-2.40.1
+2.45.2
 

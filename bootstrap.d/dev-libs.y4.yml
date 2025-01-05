@@ -2473,8 +2473,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/wayland/weston.git'
-      tag: '12.0.2'
-      version: '12.0.2'
+      tag: '14.0.1'
+      version: '14.0.1'
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -2500,7 +2500,8 @@ packages:
       - seatd
       - xcb-proto
       - xcb-util-cursor
-    revision: 5
+      - libdisplay-info
+    revision: 1
     configure:
       - args:
         - 'meson'
