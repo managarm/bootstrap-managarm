@@ -1,0 +1,25 @@
+From cf422b8c20d499660d4a93b82d99a44ccfd658dd Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Sun, 5 Jan 2025 14:27:54 +0100
+Subject: [PATCH] Add missing include
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ tools/var.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/tools/var.c b/tools/var.c
+index 0f285f1..af8cc1a 100644
+--- a/tools/var.c
++++ b/tools/var.c
+@@ -15,6 +15,7 @@
+    along with GDBM. If not, see <http://www.gnu.org/licenses/>.    */
+ 
+ #include "gdbmtool.h"
++#include <strings.h>
+ 
+ #define VARF_DFL    0x00   /* Default flags -- everything disabled */
+ #define VARF_SET    0x01   /* Variable is set */
+-- 
+2.45.2
+
