@@ -554,8 +554,8 @@ packages:
     source:
       subdir: ports
       git: 'https://git.kernel.org/pub/scm/network/iproute2/iproute2.git'
-      tag: 'v6.9.0'
-      version: '6.9.0'
+      tag: 'v6.12.0'
+      version: '6.12.0'
     tools_required:
       - system-gcc
     pkgs_required:
@@ -579,6 +579,7 @@ packages:
       - args: ['make', '-j@PARALLELISM@']
         environ:
           SBINDIR: '/usr/sbin'
+          NETNS_RUN_DIR: '/run/netns'
       - args: ['make', 'install']
         environ:
           SBINDIR: '/usr/sbin'
