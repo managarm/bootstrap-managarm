@@ -236,6 +236,7 @@ packages:
 
   - name: perl
     architecture: '@OPTION:arch@'
+    stability_level: 'broken'
     metadata:
       summary: Larry Wall's Practical Extraction and Report Language
       description: The Perl package contains the Practical Extraction and Report Language.
