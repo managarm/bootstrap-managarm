@@ -2575,3 +2575,42 @@ packages:
           LIBDIR: '/usr/lib'
           MANDIR: '/usr/share/man/man1'
       - args: ['rm', '-v', '@THIS_COLLECT_DIR@/usr/lib/libxxhash.a']
+
+  - name: yyjson
+    labels: [aarch64, riscv64]
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Fast JSON library in C
+      description: This package provides a fast JSON library in C.
+      spdx: 'MIT'
+      website: 'https://github.com/ibireme/yyjson'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/ibireme/yyjson.git'
+      tag: '0.10.0'
+      version: '0.10.0'
+    tools_required:
+      - system-gcc
+      - host-cmake
+    pkgs_required:
+      - mlibc
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_BUILD_TYPE=Release'
+        - '-DBUILD_SHARED_LIBS=ON'
+        - '-DYYJSON_BUILD_DOC=OFF'
+        - '-DYYJSON_BUILD_TESTS=OFF'
+        - '-DYYJSON_ENABLE_VALGRIND=OFF'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
