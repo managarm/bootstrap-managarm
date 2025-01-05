@@ -876,8 +876,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/libjpeg-turbo/libjpeg-turbo.git'
-      tag: '3.0.0'
-      version: '3.0.0'
+      tag: '3.1.0'
+      version: '3.1.0'
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -886,7 +886,7 @@ packages:
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
-    revision: 6
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -894,7 +894,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_BUILD_TYPE=RELEASE'
         - '-DENABLE_STATIC=FALSE'
-        - '-DCMAKE_INSTALL_DOCDIR=/usr/share/doc/libjpeg-turbo-3.0.0'
+        - '-DCMAKE_INSTALL_DOCDIR=/usr/share/doc/libjpeg-turbo-3.1.0'
         - '-DCMAKE_INSTALL_DEFAULT_LIBDIR=lib'
         - '-DWITH_JPEG8=ON'
         - '-DCMAKE_SYSTEM_PROCESSOR=@OPTION:arch@'

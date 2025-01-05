@@ -1,0 +1,117 @@
+From e02abfa62012352a72df69e6262922f89ed26ece Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Sun, 5 Jan 2025 14:43:47 +0100
+Subject: [PATCH] libjpeg-turbo: Add missing includes
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ src/example.c      | 1 +
+ src/md5/md5cmp.c   | 1 +
+ src/tjbench.c      | 1 +
+ src/tjcomp.c       | 1 +
+ src/tjdecomp.c     | 1 +
+ src/tjtran.c       | 1 +
+ src/tjunittest.c   | 1 +
+ src/turbojpeg-mp.c | 2 ++
+ 8 files changed, 9 insertions(+)
+
+diff --git a/src/example.c b/src/example.c
+index 9405611..8a6aa61 100644
+--- a/src/example.c
++++ b/src/example.c
+@@ -32,6 +32,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <strings.h>
+ 
+ #ifdef _WIN32
+ #define strcasecmp  stricmp
+diff --git a/src/md5/md5cmp.c b/src/md5/md5cmp.c
+index 42b94ce..0c8a44f 100644
+--- a/src/md5/md5cmp.c
++++ b/src/md5/md5cmp.c
+@@ -28,6 +28,7 @@
+ 
+ #include <stdio.h>
+ #include <string.h>
++#include <strings.h>
+ #include "./md5.h"
+ #include "../tjutil.h"
+ 
+diff --git a/src/tjbench.c b/src/tjbench.c
+index a785505..a1f65e6 100644
+--- a/src/tjbench.c
++++ b/src/tjbench.c
+@@ -33,6 +33,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <strings.h>
+ #include <ctype.h>
+ #include <math.h>
+ #include <errno.h>
+diff --git a/src/tjcomp.c b/src/tjcomp.c
+index 2c1c48c..873bb8d 100644
+--- a/src/tjcomp.c
++++ b/src/tjcomp.c
+@@ -51,6 +51,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <strings.h>
+ #include <errno.h>
+ #include <limits.h>
+ #if !defined(_MSC_VER) || _MSC_VER > 1600
+diff --git a/src/tjdecomp.c b/src/tjdecomp.c
+index 11eda89..95d18b6 100644
+--- a/src/tjdecomp.c
++++ b/src/tjdecomp.c
+@@ -48,6 +48,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <strings.h>
+ #include <errno.h>
+ #include <limits.h>
+ #if !defined(_MSC_VER) || _MSC_VER > 1600
+diff --git a/src/tjtran.c b/src/tjtran.c
+index 0f7fc52..6699470 100644
+--- a/src/tjtran.c
++++ b/src/tjtran.c
+@@ -47,6 +47,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <strings.h>
+ #include <errno.h>
+ #include <limits.h>
+ #if !defined(_MSC_VER) || _MSC_VER > 1600
+diff --git a/src/tjunittest.c b/src/tjunittest.c
+index f58e862..78b55e5 100644
+--- a/src/tjunittest.c
++++ b/src/tjunittest.c
+@@ -38,6 +38,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <strings.h>
+ #include <limits.h>
+ #include <errno.h>
+ #include "tjutil.h"
+diff --git a/src/turbojpeg-mp.c b/src/turbojpeg-mp.c
+index 1fa63b8..1cb3cb9 100644
+--- a/src/turbojpeg-mp.c
++++ b/src/turbojpeg-mp.c
+@@ -29,6 +29,8 @@
+ /* TurboJPEG API functions that must be compiled for multiple data
+    precisions */
+ 
++#include <strings.h>
++
+ #if BITS_IN_JSAMPLE == 8
+ #define _JSAMPLE  JSAMPLE
+ #define _JSAMPROW  JSAMPROW
+-- 
+2.45.2
+
