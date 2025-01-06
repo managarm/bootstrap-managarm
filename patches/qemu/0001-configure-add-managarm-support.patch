@@ -1,4 +1,4 @@
-From 00b7c9d68c5f6e8b01e8c8dcf6febb43b399682c Mon Sep 17 00:00:00 2001
+From 6269020afa91236f2c210b5cec3680e9172e52f7 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Kacper=20S=C5=82omi=C5=84ski?=
  <kacper.slominski72@gmail.com>
 Date: Tue, 21 Dec 2021 13:07:19 +0100
@@ -9,10 +9,10 @@ Subject: [PATCH 1/5] configure: add managarm support
  1 file changed, 2 insertions(+)
 
 diff --git a/configure b/configure
-index d08b71f..c0bbb66 100755
+index 1833637..78b077a 100755
 --- a/configure
 +++ b/configure
-@@ -353,6 +353,8 @@ elif check_define __NetBSD__; then
+@@ -360,6 +360,8 @@ elif check_define __NetBSD__; then
    host_os=netbsd
  elif check_define __APPLE__; then
    host_os=darwin
@@ -22,5 +22,5 @@ index d08b71f..c0bbb66 100755
    # This is a fatal error, but don't report it yet, because we
    # might be going to just print the --help text, or it might
 -- 
-2.47.0
+2.47.1
 
