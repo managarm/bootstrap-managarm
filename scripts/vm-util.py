@@ -404,15 +404,38 @@ timeout: 0
         qemu_args += ["-device", "usb-storage,drive=boot-drive,bus=ehci.0"]
     elif args.boot_drive == "nvme":
         qemu_args += ["-device", "nvme,serial=deadbeef,drive=boot-drive"]
+    elif args.boot_drive == "nvme-of":
+        tftp_dir = tempfile.TemporaryDirectory(suffix=".tftp.d")
+        shutil.copytree("packages/limine/usr/share/limine/", tftp_dir.name, dirs_exist_ok=True)
+        shutil.copytree("packages/managarm-kernel/usr/managarm/bin/", os.path.join(tftp_dir.name, "managarm"))
+        shutil.copytree("packages/managarm-kernel-uefi/usr/managarm/bin/", os.path.join(tftp_dir.name, "managarm"), dirs_exist_ok=True)
+        shutil.copyfile("initrd.cpio", os.path.join(tftp_dir.name, "managarm", "initrd.cpio"))
+        shutil.copyfile("../src/scripts/nvme-of-boot.conf", os.path.join(tftp_dir.name, "limine.conf"))
     else:
         assert args.boot_drive == "ide"
         qemu_args += ["-device", "ide-hd,drive=boot-drive,bus=ide.0"]
 
     # Add networking.
+    netdev_extra = ""
+    if args.boot_drive == "nvme-of":
+        assert isinstance(tftp_dir, tempfile.TemporaryDirectory)
+        netdev_extra += f",tftp={tftp_dir.name},bootfile="
+        if args.uefi:
+            arch = ""
+            match args.arch:
+                case "x86_64":
+                    arch = "X64"
+                case _:
+                    print(f"error: unsupported arch '{args.arch}' for PXE")
+                    sys.exit(1)
+            netdev_extra += f"BOOT{arch}.EFI"
+        else:
+            netdev_extra += "limine-bios-pxe.bin"
+
     if args.net_bridge:
-        qemu_args += ["-netdev", "tap,id=net0"]
+        qemu_args += ["-netdev", f"tap,id=net0{netdev_extra}"]
     elif args.nic != "none":
-        qemu_args += ["-netdev", "user,id=net0"]
+        qemu_args += ["-netdev", f"user,id=net0{netdev_extra}"]
 
     if args.nic == "i8254x":
         qemu_check_nic(qemu, qemu_args, "e1000")
@@ -564,7 +587,7 @@ qemu_parser.add_argument("--no-smp", action="store_true")
 qemu_parser.add_argument("--virtual-boot", action="store_true")
 qemu_parser.add_argument(
     "--boot-drive",
-    choices=["virtio", "virtio-legacy", "ahci", "usb", "ide", "nvme"],
+    choices=["virtio", "virtio-legacy", "ahci", "usb", "ide", "nvme", "nvme-of"],
     default="virtio",
 )
 qemu_parser.add_argument("--net-bridge", action="store_true")
