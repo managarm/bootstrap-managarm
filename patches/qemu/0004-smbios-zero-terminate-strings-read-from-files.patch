@@ -1,4 +1,4 @@
-From f8cf4816b6ab27f4ba1f8e932d3a12f9af88eacc Mon Sep 17 00:00:00 2001
+From 07524962ca54c90db33f8dc174a47b360b307090 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Sun, 3 Nov 2024 22:25:14 +0100
 Subject: [PATCH 4/5] smbios: zero-terminate strings read from files
@@ -22,5 +22,5 @@ index a394514..6b3d015 100644
  
          *opt->dest = g_renew(char *, *opt->dest, (*opt->ndest) + 1);
 -- 
-2.47.0
+2.47.1
 

@@ -2,8 +2,8 @@ sources:
   - name: qemu
     subdir: 'ports'
     git: 'https://github.com/qemu/qemu.git'
-    tag: 'v9.1.1'
-    version: '9.1.1'
+    tag: 'v9.2.0'
+    version: '9.2.0'
 
 tools:
   - name: host-qemu
