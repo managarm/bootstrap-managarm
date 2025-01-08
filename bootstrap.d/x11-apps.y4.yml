@@ -52,6 +52,55 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: mtview
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Multitouch Viewer
+      description: The mtview tool shows a graphical view of a kernel multitouch device. It reads events directly off the kernel device and is thus unaffected by any userspace processing.
+      spdx: 'GPL-3.0-or-later'
+      website: 'https://github.com/whot/mtview'
+      maintainer: "no92 <leo@managarm.org>"
+      categories: ['x11-apps']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/whot/mtview'
+      branch: master
+      commit: '8a20a569664cf52db0ca688200747c148b80e967'
+      version: '1'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            NOCONFIGURE: 'yes'
+    tools_required:
+      - system-gcc
+      - host-autoconf-v2.69
+      - host-automake-v1.15
+      - host-libtool
+      - host-pkg-config
+    pkgs_required:
+      - cairo
+      - libevdev
+      - libx11
+      - libxi
+      - mlibc
+      - mtdev
+    revision: 1
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: xclock
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
