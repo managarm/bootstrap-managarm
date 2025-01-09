@@ -776,7 +776,7 @@ packages:
       - mlibc
       - qtbase6
       - qtdeclarative6
-      - systemd-utils
+      - systemd
     revision: 1
     configure:
       - args:
@@ -2035,7 +2035,7 @@ packages:
       - qtbase6
       - qtdeclarative6
       - util-linux-libs
-      - systemd-utils
+      - systemd
     revision: 1
     configure:
       - args:

@@ -379,7 +379,7 @@ packages:
         program_name: host-pkg-config
     pkgs_required:
       - mlibc
-      - systemd-utils
+      - systemd
       - libdisplay-info
       - libdrm
       - libinput
