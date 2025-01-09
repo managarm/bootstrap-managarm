@@ -1,18 +1,18 @@
-From e6efdf39772f28445bb6ade650f3f3ba873e0fd7 Mon Sep 17 00:00:00 2001
+From d8299e3df5cc0d67a2fcb612ab9ff92833aa77d8 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Thu, 9 Jan 2025 17:30:36 +0100
-Subject: [PATCH 2/2] Additional fixes for Managarm under GCC 14
+Subject: [PATCH 2/3] Additional fixes for Managarm under GCC 14
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
- src/basic/errno-util.h                   | 12 ++++++++++--
+ src/basic/errno-util.h                   | 10 +++++++++-
  src/basic/lock-util.c                    |  1 +
  src/core/exec-invoke.c                   |  9 +++++++++
  src/libsystemd/sd-bus/bus-error.c        | 10 ++++++++++
  src/libsystemd/sd-journal/journal-send.c |  5 +++++
  src/nsresourced/nsresourcework.c         |  1 +
  src/shared/dissect-image.c               |  1 +
- 7 files changed, 37 insertions(+), 2 deletions(-)
+ 7 files changed, 36 insertions(+), 1 deletion(-)
 
 diff --git a/src/basic/errno-util.h b/src/basic/errno-util.h
 index 48b76e4..6e7653e 100644
@@ -23,9 +23,8 @@ index 48b76e4..6e7653e 100644
   *
   * Note that we use the GNU variant of strerror_r() here. */
 -#define STRERROR(errnum) strerror_r(abs(errnum), (char[ERRNO_BUF_LEN]){}, ERRNO_BUF_LEN)
--
 +static inline const char * STRERROR(int errnum);
-+
+ 
 +static inline const char * STRERROR(int errnum) {
 +#ifdef __GLIBC__
 +        return strerror_r(abs(errnum), (char[ERRNO_BUF_LEN]){}, ERRNO_BUF_LEN);
@@ -141,5 +140,5 @@ index 65a706d..0fe0929 100644
  #include <sys/prctl.h>
  #include <sys/wait.h>
 -- 
-2.45.2
+2.39.5
 
