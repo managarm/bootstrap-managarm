@@ -231,7 +231,8 @@ packages:
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
-      - eudev
+      # - eudev
+      - systemd-utils
       - fafnir
       - frigg
       - lewis
