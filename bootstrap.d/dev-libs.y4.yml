@@ -1147,7 +1147,7 @@ packages:
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
-      - systemd-utils
+      - systemd
       - libevdev
       - mtdev
     revision: 7
@@ -1615,7 +1615,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-      - systemd-utils
+      - systemd
     revision: 9
     configure:
       - args:

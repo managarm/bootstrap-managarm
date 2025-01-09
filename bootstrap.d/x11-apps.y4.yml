@@ -542,7 +542,7 @@ packages:
       - elfutils
       - pixman
       - cairo
-      - systemd-utils
+      - systemd
     revision: 3
     configure:
       - args:
