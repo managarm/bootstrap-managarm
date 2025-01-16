@@ -184,6 +184,10 @@ class QemuRunner:
                 break
 
     async def process_stdout(self, *, expect_all, expect_none):
+        loop = asyncio.get_running_loop()
+        w_transport, w_protocol = await loop.connect_write_pipe(asyncio.streams.FlowControlMixin, sys.stdout)
+        writer = asyncio.StreamWriter(w_transport, w_protocol, None, loop)
+
         buf = bytes()
         while True:
             chunk = await self.proc.stdout.read(4096)
@@ -193,8 +197,8 @@ class QemuRunner:
             self.last_io_time = time.time()
 
             # Echo the chunk to stdout.
-            sys.stdout.buffer.write(chunk)
-            sys.stdout.buffer.flush()
+            writer.write(chunk)
+            await writer.drain()
 
             # Split the chunk into lines, analyze each line.
             buf += chunk
