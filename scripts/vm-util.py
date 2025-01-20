@@ -290,12 +290,14 @@ def do_qemu(args):
         qemu_args += ["-debugcon", "stdio"]
 
     cpu_extras = []
-    cpu_model = "host,migratable=no"
+    cpu_model = "host"
 
     if args.arch == "x86_64":
         if not have_kvm or args.virtual_cpu:
             cpu_model = "qemu64"
             cpu_extras = ["+smap", "+smep", "+umip", "+pcid", "+invpcid"]
+        else:
+            cpu_model = "host,migratable=no"
     elif args.arch == "aarch64":
         if not have_kvm or args.virtual_cpu:
             cpu_model = "cortex-a72"
