@@ -296,6 +296,11 @@ def do_qemu(args):
         if not have_kvm or args.virtual_cpu:
             cpu_model = "qemu64"
             cpu_extras = ["+smap", "+smep", "+umip", "+pcid", "+invpcid"]
+        # Check for umip support, if the host does not support it, don't emulate it.
+        with open("/proc/cpuinfo", 'r') as file:
+            content = file.read()
+            if not "umip" in content:
+                cpu_extras = ["-umip"]
     elif args.arch == "aarch64":
         if not have_kvm or args.virtual_cpu:
             cpu_model = "cortex-a72"
