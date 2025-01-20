@@ -193,7 +193,7 @@ RUN pip3 install --break-system-packages meson \
 
 # Install mdbook.
 RUN cd /root && \
-	wget -O mdbook.tar.gz https://github.com/rust-lang/mdBook/releases/download/v0.3.7/mdbook-v0.3.7-x86_64-unknown-linux-gnu.tar.gz && \
+	wget -O mdbook.tar.gz https://github.com/rust-lang/mdBook/releases/download/v0.4.43/mdbook-v0.4.43-$(uname -m)-unknown-linux-musl.tar.gz && \
 	tar xf mdbook.tar.gz && \
 	install -D mdbook /usr/local/bin/mdbook
 
