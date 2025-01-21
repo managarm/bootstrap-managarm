@@ -203,7 +203,7 @@ packages:
       - libgcrypt
       - nss
       - openssl
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'

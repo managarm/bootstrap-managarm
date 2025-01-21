@@ -62,7 +62,7 @@ packages:
       - nasm
       - libogg
       - libiconv
-    revision: 4
+    revision: 5
     configure:
       - args:
         - 'cmake'
@@ -112,7 +112,7 @@ packages:
       - freetype
       - libxml
       - libiconv
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -144,7 +144,7 @@ packages:
       - libxi
       - mesa
       - glu
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'cmake'
@@ -189,7 +189,7 @@ packages:
       - bzip2
       - libpng
       - zlib
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -221,7 +221,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 9
+    revision: 10
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -247,7 +247,7 @@ packages:
       - mlibc
       - glu
       - mesa
-    revision: 9
+    revision: 10
     configure:
       # These two seds lets the build system respect the GCC variable
       - args: ['sed', '-i', 's/CC = cc/CC = $(GCC)/g', '@THIS_SOURCE_DIR@/config/Makefile.linux']
@@ -281,7 +281,7 @@ packages:
       - mlibc
       - gcc # Actually requires libstdc++.so in the system root, otherwise it links against the host libstdc++.so.6
       - mesa
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'meson'
@@ -330,7 +330,7 @@ packages:
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -415,7 +415,7 @@ packages:
       - libmodplug
       - vulkan-headers
       - libusb
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -650,7 +650,7 @@ packages:
       - !managarm::arch_dep
         item: gobject-introspection
         arch: [x86_64]
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -732,7 +732,7 @@ packages:
       - gtk+-3
       - gstreamer
       - libtool
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -809,7 +809,7 @@ packages:
       - mesa
       - xorg-proto
       - libx11
-    revision: 7
+    revision: 8
     configure:
       - args:
           - 'meson'
@@ -841,7 +841,7 @@ packages:
       - mlibc
       - libx11
       - libxext
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'meson'
@@ -959,7 +959,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 9
+    revision: 10
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1039,7 +1039,7 @@ packages:
       - zlib
       - zstd
       - xz-utils
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1093,7 +1093,7 @@ packages:
       - libvorbis
       - sqlite
       - alsa-lib
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1128,7 +1128,7 @@ packages:
       - mlibc
       - libogg
       - libvorbis
-    revision: 9
+    revision: 10
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1170,7 +1170,7 @@ packages:
     pkgs_required:
       - mlibc
       - libogg
-    revision: 9
+    revision: 10
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1202,7 +1202,7 @@ packages:
     pkgs_required:
       - mlibc
       - nasm
-    revision: 4
+    revision: 5
     configure:
       # Fix ownership and permission of installed files.
       - args: ['sed', '-i', 's/cp -p/cp/', '@THIS_SOURCE_DIR@/build/make/Makefile']
@@ -1309,7 +1309,7 @@ packages:
       - libglvnd
       - libexpat
       - zstd
-    revision: 2
+    revision: 3
     configure:
       - args: ['cp', '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file', 'meson.cross-file']
       - args:
@@ -1379,7 +1379,7 @@ packages:
       - wayland-protocols
       # This is only required for building.
       - vulkan-headers
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'cmake'
@@ -1425,7 +1425,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1478,7 +1478,7 @@ packages:
       - libxrender
       - libxxf86vm
       - libxkbcommon
-    revision: 7
+    revision: 8
     configure:
       - args:
         - 'cmake'

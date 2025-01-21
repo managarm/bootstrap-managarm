@@ -13,7 +13,7 @@ packages:
       git: 'https://github.com/google/brotli.git'
       tag: 'v1.1.0'
       version: '1.1.0'
-    revision: 5
+    revision: 6
     tools_required:
       - system-gcc
       - host-cmake
@@ -54,7 +54,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 9
+    revision: 10
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       # Remove the test directory from the Makefile, as it tries to run (and fail on) the tests
@@ -137,7 +137,7 @@ packages:
       - host-automake-v1.15
     pkgs_required:
       - mlibc
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -177,7 +177,7 @@ packages:
       - libexpat
       - libxml
       - zstd
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'cmake'
@@ -212,7 +212,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 6
+    revision: 7
     configure:
       - args:
         - 'cmake'
@@ -253,7 +253,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 6
+    revision: 7
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -345,7 +345,7 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -417,7 +417,7 @@ packages:
       - mlibc
       - zlib
       - xz-utils
-    revision: 1
+    revision: 2
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:

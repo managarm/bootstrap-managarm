@@ -27,7 +27,7 @@ packages:
       - glib
       - gnutls
       - gsettings-desktop-schemas
-    revision: 7
+    revision: 8
     configure:
       - args:
         - 'meson'
@@ -87,7 +87,7 @@ packages:
       - libiconv
       - libintl
       - openssl
-    revision: 8
+    revision: 9
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -133,7 +133,7 @@ packages:
     pkgs_required:
       - mlibc
       - glib
-    revision: 4
+    revision: 5
     configure:
       - args:
         - 'meson'
@@ -185,7 +185,7 @@ packages:
       - libidn2
       - libunistring
       - libiconv
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -232,10 +232,11 @@ packages:
       - libxml
       - sqlite
       - libpsl
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'meson'
+        - 'setup'
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
@@ -302,6 +303,7 @@ packages:
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -387,6 +389,7 @@ packages:
       - zlib
       - c-ares
       - boost
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

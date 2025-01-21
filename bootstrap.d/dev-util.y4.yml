@@ -255,7 +255,7 @@ packages:
       - mlibc
       - libxml
       - python
-    revision: 9
+    revision: 10
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -284,7 +284,7 @@ packages:
       - host-cmake
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -305,7 +305,7 @@ packages:
     pkgs_required:
       - mlibc
       - glib
-    revision: 9
+    revision: 10
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -338,7 +338,7 @@ packages:
     pkgs_required:
       # This is only a build-time dependency.
       - mlibc
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'cmake'

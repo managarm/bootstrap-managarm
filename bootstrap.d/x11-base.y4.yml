@@ -125,7 +125,7 @@ packages:
       - nettle
       - xkbcomp
       - pixman
-    revision: 6
+    revision: 7
     configure:
       - args:
         - 'meson'
@@ -200,7 +200,7 @@ packages:
       - nettle
       - xkbcomp
       - pixman
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'meson'
