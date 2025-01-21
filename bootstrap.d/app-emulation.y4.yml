@@ -11,7 +11,7 @@ tools:
     architecture: noarch
     containerless: true
     from_source: qemu
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -24,6 +24,7 @@ tools:
         - '--enable-gtk'
         - '--enable-sdl'
         - '--enable-trace-backends=log'
+        - '--enable-slirp'
         environ:
           CFLAGS: '-Wno-int-conversion'
     compile:
