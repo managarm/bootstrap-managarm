@@ -27,7 +27,7 @@ packages:
       - wayland
       - wayland-protocols
       - libxkbcommon
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'

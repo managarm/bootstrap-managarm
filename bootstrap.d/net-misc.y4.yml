@@ -25,7 +25,7 @@ packages:
       - openssl
       - zlib
       - zstd
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -64,6 +64,7 @@ packages:
     pkgs_required:
       - mlibc
       - eudev
+    revision: 2
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
@@ -101,7 +102,7 @@ packages:
       checksum: blake2b:66f68af42aae918097d72ea78e912180862b05baed6402d07ba2271e974ff651d0fc32562ef29f8accccf2c09d64875997fe3a66e268b81200b65decea530f8a
       extract_path: 'iana-etc-20241015'
       version: '20241015'
-    revision: 1
+    revision: 2
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -142,7 +143,7 @@ packages:
       - xxhash
       - zstd
       - popt
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -194,7 +195,7 @@ packages:
       - ncurses
       - readline
       - openssl
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -237,7 +238,7 @@ packages:
       - mlibc
       - pcre
       - openssl
-    revision: 6
+    revision: 7
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

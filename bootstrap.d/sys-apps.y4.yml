@@ -148,7 +148,7 @@ packages:
       - mlibc
       - glib
       - libexpat
-    revision: 7
+    revision: 8
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -203,7 +203,7 @@ packages:
       - host-automake-v1.15
     pkgs_required:
       - mlibc
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -241,7 +241,7 @@ packages:
       - mlibc
       - libdrm
       - json-c
-    revision: 7
+    revision: 8
     configure:
       - args:
         - 'meson'
@@ -321,7 +321,7 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -455,7 +455,7 @@ packages:
     pkgs_required:
       - mlibc
       - pcre
-    revision: 6
+    revision: 7
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -492,7 +492,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 10
+    revision: 11
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -646,7 +646,7 @@ packages:
       - groff
       - less
       - libiconv
-    revision: 10
+    revision: 11
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -678,7 +678,7 @@ packages:
       version: '2017a'
     tools_required:
       - system-gcc
-    revision: 5
+    revision: 6
     configure: []
     build:
       - args: ['mkdir', '-pv', '@THIS_COLLECT_DIR@/usr/share/man']
@@ -708,7 +708,7 @@ packages:
     pkgs_required:
       - mlibc
       - pciids
-    revision: 6
+    revision: 7
     configure:
       - args:
         - 'meson'
@@ -732,7 +732,7 @@ packages:
       branch: 'master'
       commit: 'd27a0bd748310d8ace673a614f745303b444e00e'
       version: '7.2.0'
-    revision: 7
+    revision: 8
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -848,7 +848,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 9
+    revision: 10
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1028,7 +1028,7 @@ packages:
       - libiconv
       - file
       - libxcrypt
-    revision: 11
+    revision: 12
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1178,7 +1178,7 @@ packages:
       - file
       - libxcrypt
       - pcre2
-    revision: 13
+    revision: 14
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1274,7 +1274,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 9
+    revision: 10
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1299,8 +1299,8 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/void-linux/xbps.git'
-      tag: '0.59.1' # Downgraded until we switch to .sig2 signatures on hades.
-      version: '0.59.2.actually0.59.1'
+      tag: '0.59.2'
+      version: '0.59.2'
       tools_required:
         - host-pkg-config
     tools_required:
@@ -1311,7 +1311,7 @@ packages:
       - openssl
       - zlib
       - lz4
-    revision: 1
+    revision: 6
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
@@ -1351,7 +1351,7 @@ packages:
       - libdrm
       - libtsm
       - eudev
-    revision: 7
+    revision: 8
     configure:
       - args:
         - 'meson'

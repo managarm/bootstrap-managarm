@@ -64,7 +64,7 @@ packages:
       - qtbase6
       - qtsvg6
       - qtmultimedia6
-    revision: 11
+    revision: 12
     configure:
       - args:
         - 'cmake'

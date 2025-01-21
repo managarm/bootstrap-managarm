@@ -74,7 +74,7 @@ packages:
       branch: 'master'
     tools_required:
       - system-gcc
-    revision: 8
+    revision: 9
     configure:
       - args:
         - 'meson'
@@ -95,6 +95,7 @@ packages:
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     from_source: freestnd-c-hdrs
+    revision: 2
     configure:
       - args: ['cp', '-rpv', '@THIS_SOURCE_DIR@/.', './']
     build:
@@ -108,6 +109,7 @@ packages:
     from_source: freestnd-cxx-hdrs
     pkgs_required:
       - freestnd-c-hdrs
+    revision: 2
     configure:
       - args: ['cp', '-rpv', '@THIS_SOURCE_DIR@/.', './']
     build:
@@ -156,7 +158,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc-headers
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -186,7 +188,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 9
+    revision: 10
     configure:
       - args:
         - 'meson'
@@ -246,7 +248,7 @@ packages:
       branch: 'master'
     tools_required:
       - system-gcc
-    revision: 9
+    revision: 10
     configure:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/include']
       - args:

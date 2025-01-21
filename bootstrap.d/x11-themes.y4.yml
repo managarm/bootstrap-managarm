@@ -20,7 +20,7 @@ packages:
         - args: ['./autogen.sh', '--no-configure']
     tools_required:
       - system-gcc
-    revision: 8
+    revision: 9
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -62,7 +62,7 @@ packages:
       - mlibc
       - xorg-util-macros
       - libxcursor
-    revision: 6
+    revision: 7
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

@@ -18,7 +18,7 @@ packages:
     pkgs_required:
       - mlibc
       - libnl
-    revision: 1
+    revision: 2
     configure:
       # libnl does not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead

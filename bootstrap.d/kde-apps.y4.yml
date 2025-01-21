@@ -35,6 +35,7 @@ packages:
       - knotifications
       - kwidgetsaddons
       - kxmlgui
+    revision: 2
     configure:
       - args:
         - 'cmake'

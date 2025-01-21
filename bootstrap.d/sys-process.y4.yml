@@ -28,7 +28,7 @@ packages:
     pkgs_required:
       - mlibc
       - ncurses
-    revision: 8
+    revision: 9
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -78,6 +78,7 @@ packages:
     pkgs_required:
       - mlibc
       - ncurses
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

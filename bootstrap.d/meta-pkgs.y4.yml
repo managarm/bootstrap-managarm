@@ -57,7 +57,7 @@ packages:
       - procps
       - htop
       - shadow
-    revision: 7
+    revision: 8
     configure: []
     build: []
 
@@ -85,6 +85,7 @@ packages:
       - cmake
       - bc
       - man-pages-posix
+    revision: 2
     configure: []
     build: []
 
@@ -111,5 +112,6 @@ packages:
       - xlsclients
       - xdpyinfo
       - xdriinfo
+    revision: 2
     configure: []
     build: []
