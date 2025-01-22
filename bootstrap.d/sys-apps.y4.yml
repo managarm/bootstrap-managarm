@@ -1300,7 +1300,7 @@ packages:
       subdir: ports
       git: 'https://github.com/void-linux/xbps.git'
       tag: '0.59.2'
-      version: '0.59.2'
+      version: '0.59.2.1'
       tools_required:
         - host-pkg-config
     tools_required:
@@ -1311,7 +1311,7 @@ packages:
       - openssl
       - zlib
       - lz4
-    revision: 6
+    revision: 1
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
