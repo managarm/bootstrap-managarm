@@ -116,6 +116,7 @@ packages:
         - '--wrap-mode=nofallback'
         - '-Dbuild_kernel=true'
         - '-Dstrip=true'
+        - '-Db_lto=true'
         - '@THIS_SOURCE_DIR@'
         isolate_network: false
     build:

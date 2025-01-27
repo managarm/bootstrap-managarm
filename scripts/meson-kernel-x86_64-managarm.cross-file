@@ -1,7 +1,7 @@
 [binaries]
 c = 'clang'
 cpp = 'clang++'
-ar = 'x86_64-managarm-ar'
+ar = 'llvm-ar'
 strip = 'x86_64-managarm-strip'
 pkg-config = 'x86_64-managarm-pkg-config'
 
