@@ -186,10 +186,9 @@ RUN apt-get update \
 		# Cleanup time
 		&& apt-get clean
 
-# Meson is outdated in debian repos, xbstrap and bragi are used by the build process.
+# Meson is outdated in debian repos, xbstrap is used by the build process.
 RUN pip3 install --break-system-packages meson \
-	&& pip3 install --break-system-packages xbstrap \
-	&& pip3 install --break-system-packages bragi
+	&& pip3 install --break-system-packages xbstrap
 
 # Install mdbook.
 RUN cd /root && \
