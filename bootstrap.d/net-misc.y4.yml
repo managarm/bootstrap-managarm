@@ -110,6 +110,47 @@ packages:
       - args: ['cp', '@THIS_BUILD_DIR@/services', '@THIS_COLLECT_DIR@/etc/']
       - args: ['cp', '@THIS_BUILD_DIR@/protocols', '@THIS_COLLECT_DIR@/etc/']
 
+  - name: iputils
+    labels: [aarch64, riscv64]
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: network utilities
+      description: The iputils package is set of small useful utilities for Linux networking.
+      spdx: 'GPL-2.0-or-later'
+      website: 'https://github.com/iputils/iputils'
+      maintainer: "no92 <leo@managarm.org>"
+      categories: ['dev-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/iputils/iputils.git'
+      tag: '20240905'
+      version: '20240905'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+    revision: 1
+    configure:
+      - args:
+          - 'meson'
+          - 'setup'
+          - '--cross-file'
+          - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+          - '--prefix=/usr'
+          - '--libdir=lib'
+          - '--buildtype=debugoptimized'
+          - '-DBUILD_HTML_MANS=false'
+          - '-DUSE_CAP=false'
+          - '-DUSE_GETTEXT=false'
+          - '-DSKIP_TESTS=true'
+          - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+
   - name: rsync
     architecture: '@OPTION:arch@'
     source:
