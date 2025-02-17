@@ -92,8 +92,8 @@ sources:
   - name: kglobalaccel
     subdir: 'ports'
     git: 'https://github.com/KDE/kglobalaccel.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: kguiaddons
     subdir: 'ports'
@@ -962,7 +962,7 @@ packages:
     pkgs_required:
       - mlibc
       - qtbase6
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
