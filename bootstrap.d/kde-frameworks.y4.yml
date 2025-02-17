@@ -218,8 +218,8 @@ sources:
   - name: sonnet
     subdir: 'ports'
     git: 'https://github.com/KDE/sonnet.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
 tools:
   - name: host-breeze-icons
@@ -2077,7 +2077,8 @@ packages:
       - mlibc
       - qtbase6
       - qtdeclarative6
-    revision: 2
+      - hunspell
+    revision: 1
     configure:
       - args:
         - 'cmake'
