@@ -1,4 +1,48 @@
 packages:
+  - name: hunspell
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Spell checker, morphological analyzer library and command-line tool
+      description: This package contains a spell checker, morphological analyzer library and command-line tool.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://hunspell.github.io/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['app-text']
+    source:
+      subdir: ports
+      git: 'https://github.com/hunspell/hunspell.git'
+      tag: 'v1.7.2'
+      version: '1.7.2'
+      tools_required:
+        - host-autoconf-v2.71
+        - host-automake-v1.16
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['autoreconf', '-fvi']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - libiconv
+      - ncurses
+      - readline
+    revision: 1
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--disable-nls'
+        - '--with-ui'
+        - '--with-readline'
+        - '--disable-static'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: iso-codes
     architecture: '@OPTION:arch@'
     metadata:
