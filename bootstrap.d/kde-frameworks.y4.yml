@@ -176,8 +176,8 @@ sources:
   - name: kservice
     subdir: 'ports'
     git: 'https://github.com/KDE/kservice.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: kstatusnotifieritem
     subdir: 'ports'
@@ -1733,7 +1733,7 @@ packages:
       - kcoreaddons
       - kdbusaddons
       - ki18n
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
