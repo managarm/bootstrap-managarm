@@ -11,8 +11,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/KDE/kcalc.git'
-      tag: 'v24.02.0'
-      version: '24.02.0'
+      tag: 'v24.12.2'
+      version: '24.12.2'
     tools_required:
       - system-gcc
       - host-cmake
@@ -35,7 +35,7 @@ packages:
       - knotifications
       - kwidgetsaddons
       - kxmlgui
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
