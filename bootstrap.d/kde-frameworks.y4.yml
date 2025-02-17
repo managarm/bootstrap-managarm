@@ -134,8 +134,8 @@ sources:
   - name: kitemviews
     subdir: 'ports'
     git: 'https://github.com/KDE/kitemviews.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: kjobwidgets
     subdir: 'ports'
@@ -1333,7 +1333,7 @@ packages:
     pkgs_required:
       - mlibc
       - qtbase6
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
