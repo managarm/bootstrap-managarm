@@ -44,8 +44,8 @@ sources:
   - name: kcolorscheme
     subdir: 'ports'
     git: 'https://github.com/KDE/kcolorscheme.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: kcompletion
     subdir: 'ports'
@@ -592,7 +592,7 @@ packages:
       - kconfig
       - kguiaddons
       - ki18n
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
