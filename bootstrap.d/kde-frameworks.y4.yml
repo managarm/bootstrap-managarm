@@ -212,8 +212,8 @@ sources:
   - name: solid
     subdir: 'ports'
     git: 'https://github.com/KDE/solid.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: sonnet
     subdir: 'ports'
@@ -2035,7 +2035,7 @@ packages:
       - qtdeclarative6
       - util-linux-libs
       - systemd-utils
-    revision: 3
+    revision: 1
     configure:
       - args:
         - 'cmake'
