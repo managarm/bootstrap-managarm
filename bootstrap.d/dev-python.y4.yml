@@ -4,7 +4,8 @@ tools:
     architecture: noarch
     from_source: bragi
     tools_required:
-      - host-python
+      - tool: host-python
+        recursive: true
     revision: 1
     install:
       - args: ['python3', '-m', 'venv', '.']
