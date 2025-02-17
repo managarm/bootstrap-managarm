@@ -1,7 +1,7 @@
 From d8299e3df5cc0d67a2fcb612ab9ff92833aa77d8 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Thu, 9 Jan 2025 17:30:36 +0100
-Subject: [PATCH 2/4] Additional fixes for Managarm under GCC 14
+Subject: [PATCH 2/5] Additional fixes for Managarm under GCC 14
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---

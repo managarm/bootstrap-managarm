@@ -1,7 +1,7 @@
 From 50e218b70445bf34f2a83644b38fa3a474e43bca Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Thu, 30 Jan 2025 23:18:25 +0100
-Subject: [PATCH 4/4] systemd-more-wip
+Subject: [PATCH 4/5] systemd-more-wip
 
 ---
  src/basic/capability-util.c              |  2 +
