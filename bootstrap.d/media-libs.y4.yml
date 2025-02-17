@@ -995,13 +995,18 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
+        # TODO: libpng fails to build without -mno-relax (toolchain issue?).
+        - !managarm::arch_ite
+          arch: [riscv64]
+          then: 'CFLAGS=-O2 -g -mno-relax'
+          else: 'CFLAGS=-O2 -g'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
