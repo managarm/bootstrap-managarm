@@ -26,8 +26,8 @@ sources:
   - name: kauth
     subdir: 'ports'
     git: 'https://github.com/KDE/kauth.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: kbookmarks
     subdir: 'ports'
@@ -454,7 +454,7 @@ packages:
       - mlibc
       - qtbase6
       - kcoreaddons
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
