@@ -456,7 +456,7 @@ def generate_plan(arch, root_uuid, scriptdir):
     yield FsAction.RSYNC, "sbin"
     yield FsAction.RSYNC, "root/"
     yield FsAction.RSYNC, "usr/"
-    yield FsAction.RSYNC, "etc/"
+    yield FsAction.RSYNC, "etc/", ["udev/hwdb.bin"]
     yield FsAction.RSYNC, "var/"
     yield FsAction.RSYNC, "home/"
 
@@ -554,10 +554,14 @@ class UpdateFsAction:
 
             steps.append(["install", source, target])
 
-        def plan_rsync(dir):
+        def plan_rsync(dir, exclude_files=[]):
             source = os.path.join(self.sysroot, dir)
             target = os.path.join(target_mntpoint, dir)
-            steps.append(["rsync", "-a", "--delete", source, target])
+            command = ["rsync", "-a", "--delete", source, target]
+            if exclude_files:
+                for f in exclude_files:
+                    command.append(f"--exclude={os.path.join(f)}")
+            steps.append(command)
 
         def plan_cp(source, dest):
             target = os.path.join(target_mntpoint, dest)

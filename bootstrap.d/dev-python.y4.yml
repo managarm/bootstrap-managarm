@@ -1,0 +1,14 @@
+tools:
+  - name: host-bragi
+    labels: [aarch64, riscv64]
+    architecture: noarch
+    from_source: bragi
+    tools_required:
+      - host-python
+    revision: 1
+    install:
+      - args: ['python3', '-m', 'venv', '.']
+        workdir: '@PREFIX@'
+      - args: ['bin/pip', 'install', '@THIS_SOURCE_DIR@']
+        workdir: '@PREFIX@'
+        isolate_network: false

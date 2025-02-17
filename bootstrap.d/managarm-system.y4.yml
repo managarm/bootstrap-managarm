@@ -60,6 +60,7 @@ tools:
     from_source: managarm
     tools_required:
       - host-frigg
+      - host-bragi
       - virtual: pkgconfig-for-host
         program_name: host-pkg-config
     revision: 3
@@ -94,6 +95,7 @@ packages:
     tools_required:
       - host-llvm-toolchain
       - host-managarm-tools
+      - host-bragi
       - kernel-gcc
       - host-pkg-config
       - virtual: pkgconfig-for-target
@@ -169,6 +171,7 @@ packages:
     tools_required:
       - host-llvm-toolchain
       - host-managarm-tools
+      - host-bragi
       - host-pkg-config
       - !managarm::arch_dep
         arch: [riscv64]
@@ -225,6 +228,7 @@ packages:
     tools_required:
       - host-llvm-toolchain
       - host-managarm-tools
+      - host-bragi
       - host-pkg-config
       - host-mold
       - system-gcc
