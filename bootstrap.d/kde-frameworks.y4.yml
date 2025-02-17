@@ -188,8 +188,8 @@ sources:
   - name: ktextwidgets
     subdir: 'ports'
     git: 'https://github.com/KDE/ktextwidgets.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: kwidgetsaddons
     subdir: 'ports'
@@ -1684,7 +1684,7 @@ packages:
       - kservice
       - kwidgetsaddons
       - sonnet
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
