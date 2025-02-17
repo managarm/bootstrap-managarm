@@ -152,8 +152,8 @@ sources:
   - name: knotifications
     subdir: 'ports'
     git: 'https://github.com/KDE/knotifications.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: knotifyconfig
     subdir: 'ports'
@@ -1483,7 +1483,7 @@ packages:
       - qtdeclarative6
       - kconfig
       - libcanberra
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
