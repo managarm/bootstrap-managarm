@@ -2,8 +2,8 @@ sources:
   - name: openttd
     subdir: 'ports'
     git: 'https://github.com/OpenTTD/OpenTTD.git'
-    tag: '13.4'
-    version: '13.4'
+    tag: '14.1'
+    version: '14.1'
 
 tools:
   - name: host-openttd-compile-tools
@@ -27,7 +27,6 @@ tools:
 packages:
   - name: openttd
     architecture: '@OPTION:arch@'
-    stability_level: 'broken' # ICU seems to have broken this, investigate when time permits
     metadata:
       summary: A clone of Transport Tycoon Deluxe
       description: This package provides a free and open-source simulation game that allows you to build and manage your very own transportation empire.
@@ -59,7 +58,7 @@ packages:
       - openttd-opengfx
       - openttd-openmsx
       - openttd-opensfx
-    revision: 5
+    revision: 1
     configure:
       - args:
         - 'cmake'
