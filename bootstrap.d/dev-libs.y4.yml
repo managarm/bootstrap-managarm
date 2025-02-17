@@ -694,7 +694,7 @@ packages:
       - host-icu
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args: ['cp',
           '@THIS_SOURCE_DIR@/icu4c/source/config/mh-linux',
@@ -704,6 +704,12 @@ packages:
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--with-cross-build=@BUILD_ROOT@/tool-builds/host-icu'
+        # TODO: Most Linux distros prefer 'library' here but this does not work on RISC-V.
+        #       In particular, the shared library built by ICU's pkgdata tool is soft-float (potential multilib issue?).
+        - !managarm::arch_ite
+          arch: [riscv64]
+          then: '--with-data-packaging=archive'
+          else: '--with-data-packaging=library'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
