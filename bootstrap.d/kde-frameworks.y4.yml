@@ -182,8 +182,8 @@ sources:
   - name: kstatusnotifieritem
     subdir: 'ports'
     git: 'https://github.com/KDE/kstatusnotifieritem.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: ktextwidgets
     subdir: 'ports'
@@ -1778,7 +1778,7 @@ packages:
       - mlibc
       - qtbase6
       - kwindowsystem
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
