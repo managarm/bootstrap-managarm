@@ -71,8 +71,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/KDE/konversation.git'
-      tag: 'v24.05.1'
-      version: '24.05.1'
+      tag: 'v24.12.2'
+      version: '24.12.2'
     tools_required:
       - system-gcc
       - host-cmake
