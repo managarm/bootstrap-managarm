@@ -10,6 +10,7 @@ import shutil
 import subprocess
 import string
 import struct
+import socket
 import sys
 import time
 import tempfile
@@ -742,6 +743,71 @@ def do_alloc_trace(args):
 
 alloc_trace_parser = main_subparsers.add_parser("alloc-trace")
 alloc_trace_parser.set_defaults(_fn=do_alloc_trace)
+
+# ---------------------------------------------------------------------------------------
+# wol subcommand.
+# ---------------------------------------------------------------------------------------
+
+def do_wol(args):
+    def parse_mac(mac: str):
+        sanitized_mac = mac.replace(':', '').replace('-', '').lower()
+
+        if len(sanitized_mac) == 12:
+            try:
+                return bytes.fromhex(sanitized_mac)
+            except ValueError as e:
+                print(f"Error parsing MAC address: {e}")
+                sys.exit(1)
+        else:
+            print(f"Error parsing MAC address")
+            sys.exit(1)
+
+    with open("wol.yml", "r") as f:
+        yml = yaml.load(f, Loader=yaml.SafeLoader)
+
+        if not args.interface:
+            if "interface" in yml:
+                args.interface = yml["interface"]
+            else:
+                print("No interface specified.")
+                sys.exit(1)
+
+        resolved_addr = None
+        if len(args.target) == 17:
+            mac_addr = args.target
+        else:
+            # parse aliases
+            with open("wol.yml", "r") as f:
+                if "alias" in yml and args.target in yml["alias"]:
+                    resolved_addr = mac_addr = yml["alias"][args.target]
+                else:
+                    print(f"Could not resolve alias {args.target}")
+                    sys.exit(1)
+
+    mac_address_bytes = parse_mac(mac_addr)
+    if len(mac_address_bytes) != 6:
+        print(f"Invalid MAC address {args.target}")
+        sys.exit(1)
+
+    try:
+        ifindex = socket.if_nametoindex(args.interface)
+    except OSError as e:
+        print(f"Interface '{args.interface}' not found: {e}")
+        sys.exit(1)
+
+    print(f"Waking {args.target}{f" ({resolved_addr})" if resolved_addr else ""} over interface '{args.interface}'")
+
+    magic_packet = b'\xFF' * 6 + mac_address_bytes * 16
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_BINDTOIFINDEX, ifindex)
+    sock.sendto(magic_packet, ('<broadcast>', socket.getservbyname("discard")))
+    sock.close()
+
+wol_parser = main_subparsers.add_parser("wol")
+wol_parser.add_argument("interface", nargs='?', type=str)
+wol_parser.add_argument("target", type=str)
+wol_parser.set_defaults(_fn=do_wol)
 
 # ---------------------------------------------------------------------------------------
 # "main()" code.
