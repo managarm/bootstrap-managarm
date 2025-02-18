@@ -16,7 +16,7 @@ packages:
       extract_path: 'linux-6.12.8'
       format: 'tar.xz'
       version: '6.12.8'
-    revision: 1
+    revision: 2
     configure:
       - args: ['cp', '-Tr', '@THIS_SOURCE_DIR@', '.']
     build:
@@ -42,8 +42,6 @@ packages:
       # files.
       - args: ['rm', '-rf', '@THIS_COLLECT_DIR@/usr/src/linux-headers']
       - args: ['rm', '-rf', '@THIS_COLLECT_DIR@/usr/include']
-      # remove this file, as mlibc will override this file with one suited to mlibc
-      - args: ['rm', 'usr/include/linux/libc-compat.h']
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/src']
       - args: ['cp', '-Tr', 'usr/include', '@THIS_COLLECT_DIR@/usr/include']
       - args: ['cp', '-Tr', 'usr/include', '@THIS_COLLECT_DIR@/usr/src/linux-headers']
