@@ -1,0 +1,2343 @@
+From 50e218b70445bf34f2a83644b38fa3a474e43bca Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Thu, 30 Jan 2025 23:18:25 +0100
+Subject: [PATCH 4/5] systemd-more-wip
+
+---
+ src/basic/capability-util.c              |  2 +
+ src/basic/cgroup-util.c                  |  2 +-
+ src/basic/fd-util.c                      |  2 +
+ src/basic/fileio.c                       | 17 +++--
+ src/basic/log.c                          |  2 +-
+ src/basic/process-util.c                 |  7 +-
+ src/basic/socket-util.c                  |  3 +
+ src/basic/time-util.c                    |  8 ++-
+ src/core/exec-credential.c               |  4 ++
+ src/core/exec-invoke.c                   | 64 ++++++++++++++++-
+ src/core/execute-serialize.c             |  1 +
+ src/core/executor.c                      |  1 +
+ src/core/manager.c                       | 24 +++++++
+ src/core/socket.c                        |  1 +
+ src/journal/journald-kmsg.c              |  5 ++
+ src/journal/journald-native.c            |  2 +
+ src/journal/journald-server.c            | 36 +++++++++-
+ src/journal/journald-syslog.c            |  2 +
+ src/journal/journald.c                   | 36 ++++++++++
+ src/libsystemd/sd-event/sd-event.c       | 87 +++++++++++++++++++++---
+ src/libsystemd/sd-journal/journal-file.c | 64 ++++++++++++++++-
+ src/shared/cgroup-setup.c                | 26 +++++--
+ src/shared/install.c                     |  1 +
+ src/shared/journal-file-util.c           |  1 +
+ src/shared/main-func.h                   |  3 +
+ src/shared/mount-setup.c                 | 23 +++++++
+ src/shared/mount-util.c                  |  5 ++
+ src/shared/serialize.c                   | 11 ++-
+ src/sleep/sleep.c                        |  1 +
+ src/udev/udev.conf                       |  2 +-
+ src/udev/udevadm.c                       |  8 ++-
+ src/udev/udevd.c                         |  2 +-
+ units/systemd-journald.service.in        | 10 +--
+ units/systemd-udevd.service.in           | 26 +++----
+ 34 files changed, 435 insertions(+), 54 deletions(-)
+
+diff --git a/src/basic/capability-util.c b/src/basic/capability-util.c
+index e9b41fe..ed8472c 100644
+--- a/src/basic/capability-util.c
++++ b/src/basic/capability-util.c
+@@ -333,6 +333,7 @@ int drop_privileges(uid_t uid, gid_t gid, uint64_t keep_capabilities) {
+         if (prctl(PR_SET_KEEPCAPS, 0) < 0)
+                 return log_error_errno(errno, "Failed to disable keep capabilities flag: %m");
+ 
++#ifndef __managarm__
+         /* Drop all caps from the bounding set (as well as the inheritable/permitted/effective sets), except
+          * the ones we want to keep */
+         r = capability_bounding_set_drop(keep_capabilities, true);
+@@ -365,6 +366,7 @@ int drop_privileges(uid_t uid, gid_t gid, uint64_t keep_capabilities) {
+                 if (cap_set_proc(d) < 0)
+                         return log_error_errno(errno, "Failed to increase capabilities: %m");
+         }
++#endif
+ 
+         return 0;
+ }
+diff --git a/src/basic/cgroup-util.c b/src/basic/cgroup-util.c
+index 431853c..0bb7df4 100644
+--- a/src/basic/cgroup-util.c
++++ b/src/basic/cgroup-util.c
+@@ -2273,7 +2273,7 @@ int cg_unified_cached(bool flush) {
+ }
+ 
+ int cg_unified_controller(const char *controller) {
+-        return true;
++        // return true;
+         int r;
+ 
+         r = cg_unified_cached(false);
+diff --git a/src/basic/fd-util.c b/src/basic/fd-util.c
+index da4ee63..3182aa2 100644
+--- a/src/basic/fd-util.c
++++ b/src/basic/fd-util.c
+@@ -491,6 +491,8 @@ int pack_fds(int fds[], size_t n_fds) {
+                                 continue;
+ 
+                         nfd = fcntl(fds[i], F_DUPFD, i + 3);
++                        if(getpid() == 35)
++                                log_debug("pack_fds fcntl returns: %d, we entered i: %d", nfd, i);
+                         if (nfd < 0)
+                                 return -errno;
+ 
+diff --git a/src/basic/fileio.c b/src/basic/fileio.c
+index 5233781..cdbdf71 100644
+--- a/src/basic/fileio.c
++++ b/src/basic/fileio.c
+@@ -280,16 +280,20 @@ int write_string_file_ts_at(
+ 
+         if (flags & WRITE_STRING_FILE_MKDIR_0755) {
+                 r = mkdirat_parents(dir_fd, fn, 0755);
+-                if (r < 0)
++                if (r < 0) {
++                        log_debug("kanker 1");
+                         return r;
++                }
+         }
+ 
+         if (flags & WRITE_STRING_FILE_ATOMIC) {
+                 assert(flags & WRITE_STRING_FILE_CREATE);
+ 
+                 r = write_string_file_atomic_at(dir_fd, fn, line, flags, ts);
+-                if (r < 0)
++                if (r < 0) {
++                        log_debug("kanker 2");
+                         goto fail;
++                }
+ 
+                 return r;
+         } else
+@@ -303,20 +307,25 @@ int write_string_file_ts_at(
+                     (FLAGS_SET(flags, WRITE_STRING_FILE_SUPPRESS_REDUNDANT_VIRTUAL) ? O_RDWR : O_WRONLY),
+                     write_string_file_flags_to_mode(flags));
+         if (fd < 0) {
++                log_debug("kanker 3");
+                 r = -errno;
+                 goto fail;
+         }
+ 
+         r = take_fdopen_unlocked(&fd, "w", &f);
+-        if (r < 0)
++        if (r < 0) {
++                log_debug("kanker 4");
+                 goto fail;
++        }
+ 
+         if (flags & WRITE_STRING_FILE_DISABLE_BUFFER)
+                 setvbuf(f, NULL, _IONBF, 0);
+ 
+         r = write_string_stream_ts(f, line, flags, ts);
+-        if (r < 0)
++        if (r < 0) {
++                log_debug("kanker 5");
+                 goto fail;
++        }
+ 
+         return 0;
+ 
+diff --git a/src/basic/log.c b/src/basic/log.c
+index 2675d59..3d67487 100644
+--- a/src/basic/log.c
++++ b/src/basic/log.c
+@@ -56,7 +56,7 @@ static int log_target_max_level[] = {
+         [LOG_TARGET_JOURNAL] = INT_MAX,
+ };
+ static int log_facility = LOG_DAEMON;
+-static bool ratelimit_kmsg = true;
++static bool ratelimit_kmsg = false;
+ 
+ static int console_fd = STDERR_FILENO;
+ static int console_fd_is_tty = -1; /* tri-state: -1 means don't know */
+diff --git a/src/basic/process-util.c b/src/basic/process-util.c
+index e90c367..afc289d 100644
+--- a/src/basic/process-util.c
++++ b/src/basic/process-util.c
+@@ -1621,6 +1621,8 @@ int safe_fork_full(
+                 }
+         }
+ 
++// TODO: HACK!
++#ifndef __managarm__
+         if (FLAGS_SET(flags, FORK_NEW_MOUNTNS | FORK_MOUNTNS_SLAVE)) {
+                 /* Optionally, make sure we never propagate mounts to the host. */
+                 if (mount(NULL, "/", NULL, MS_SLAVE | MS_REC, NULL) < 0) {
+@@ -1628,6 +1630,7 @@ int safe_fork_full(
+                         _exit(EXIT_FAILURE);
+                 }
+         }
++#endif
+ 
+         if (FLAGS_SET(flags, FORK_PRIVATE_TMP)) {
+                 assert(FLAGS_SET(flags, FORK_NEW_MOUNTNS));
+@@ -1967,8 +1970,8 @@ _noreturn_ void freeze(void) {
+         }
+ 
+         /* waitid() failed with an unexpected error, things are really borked. Freeze now! */
+-        for (;;)
+-                pause();
++        for (;;);
++                // pause();
+ }
+ 
+ int get_process_threads(pid_t pid) {
+diff --git a/src/basic/socket-util.c b/src/basic/socket-util.c
+index 6e304e8..c8dca25 100644
+--- a/src/basic/socket-util.c
++++ b/src/basic/socket-util.c
+@@ -1246,6 +1246,7 @@ fallback:
+ #define MAX_FLUSH_ITERATIONS 1024
+ 
+ int flush_accept(int fd) {
++        log_debug("Calling flush_accept");
+ 
+         int r, b;
+         socklen_t l = sizeof(b);
+@@ -1267,7 +1268,9 @@ int flush_accept(int fd) {
+         for (unsigned iteration = 0;; iteration++) {
+                 int cfd;
+ 
++                log_debug("waiting for event....");
+                 r = fd_wait_for_event(fd, POLLIN, 0);
++                log_debug("returned from it....");
+                 if (r < 0) {
+                         if (r == -EINTR)
+                                 continue;
+diff --git a/src/basic/time-util.c b/src/basic/time-util.c
+index 5201d5a..f138420 100644
+--- a/src/basic/time-util.c
++++ b/src/basic/time-util.c
+@@ -1704,7 +1704,7 @@ int time_change_fd(void) {
+ 
+         /* We only care for the cancellation event, hence we set the timeout to the latest possible value. */
+         static const struct itimerspec its = {
+-                .it_value.tv_sec = TIME_T_MAX,
++                .it_value.tv_sec = INT32_MAX, // HACK!
+         };
+ 
+         _cleanup_close_ int fd = -EBADF;
+@@ -1718,8 +1718,11 @@ int time_change_fd(void) {
+         if (fd < 0)
+                 return -errno;
+ 
+-        if (timerfd_settime(fd, TFD_TIMER_ABSTIME|TFD_TIMER_CANCEL_ON_SET, &its, NULL) >= 0)
++        log_debug("timerfd_settime time-util.c 1721");
++        if (timerfd_settime(fd, TFD_TIMER_ABSTIME|TFD_TIMER_CANCEL_ON_SET, &its, NULL) >= 0) {
++                log_debug("taking FD?");
+                 return TAKE_FD(fd);
++        }
+ 
+         /* So apparently there are systems where time_t is 64-bit, but the kernel actually doesn't support
+          * 64-bit time_t. In that case configuring a timer to TIME_T_MAX will fail with EOPNOTSUPP or a
+@@ -1737,6 +1740,7 @@ int time_change_fd(void) {
+                         .it_value.tv_sec = INT32_MAX,
+                 };
+ 
++                log_debug("timerfd_settime time-util.c 1741");
+                 if (timerfd_settime(fd, TFD_TIMER_ABSTIME|TFD_TIMER_CANCEL_ON_SET, &its32, NULL) >= 0)
+                         return TAKE_FD(fd);
+         }
+diff --git a/src/core/exec-credential.c b/src/core/exec-credential.c
+index 6157ac4..d508df7 100644
+--- a/src/core/exec-credential.c
++++ b/src/core/exec-credential.c
+@@ -908,6 +908,7 @@ static int setup_credentials_internal(
+ 
+         if (workspace_mounted) {
+                 if (!final_mounted) {
++#ifndef __managarm__
+                         /* Make workspace read-only now, so that any bind mount we make from it defaults to
+                          * read-only too */
+                         r = mount_nofollow_verbose(LOG_DEBUG, NULL, workspace, NULL, MS_BIND|MS_REMOUNT|credentials_fs_mount_flags(/* ro= */ true), NULL);
+@@ -916,6 +917,7 @@ static int setup_credentials_internal(
+ 
+                         /* And mount it to the final place, read-only */
+                         r = mount_nofollow_verbose(LOG_DEBUG, workspace, final, NULL, MS_MOVE, NULL);
++#endif
+                 } else
+                         /* Otherwise we just get rid of the bind mount of final place */
+                         r = umount_verbose(LOG_DEBUG, workspace, MNT_DETACH|UMOUNT_NOFOLLOW);
+@@ -1036,9 +1038,11 @@ int exec_setup_credentials(
+                  * no one else sees this should be OK to do. */
+ 
+                 /* Turn off propagation from our namespace to host */
++#ifndef __managarm__
+                 r = mount_nofollow_verbose(LOG_DEBUG, NULL, "/dev", NULL, MS_SLAVE|MS_REC, NULL);
+                 if (r < 0)
+                         goto child_fail;
++#endif
+ 
+                 r = setup_credentials_internal(
+                                 context,
+diff --git a/src/core/exec-invoke.c b/src/core/exec-invoke.c
+index 108fe70..dd66b40 100644
+--- a/src/core/exec-invoke.c
++++ b/src/core/exec-invoke.c
+@@ -4093,6 +4093,8 @@ int exec_invoke(
+         assert(params);
+         assert(exit_status);
+ 
++        log_debug("exec_invoke 1");
++
+         /* This should be mostly redundant, as the log level is also passed as an argument of the executor,
+          * and is already applied earlier. Just for safety. */
+         if (context->log_level_max >= 0)
+@@ -4107,6 +4109,7 @@ int exec_invoke(
+                                 SYNTHETIC_ERRNO(EINVAL),
+                                 "Invalid command line arguments.");
+         }
++        log_debug("exec_invoke 2");
+ 
+         LOG_CONTEXT_PUSH_EXEC(context, params);
+ 
+@@ -4127,6 +4130,7 @@ int exec_invoke(
+                 n_storage_fds = params->n_storage_fds;
+         }
+         n_fds = n_socket_fds + n_storage_fds;
++        log_debug("exec_invoke 3");
+ 
+         r = exec_context_named_iofds(context, params, named_iofds);
+         if (r < 0)
+@@ -4139,6 +4143,7 @@ int exec_invoke(
+          * both of which will be demoted to SIG_DFL. */
+         (void) default_signals(SIGNALS_CRASH_HANDLER,
+                                SIGNALS_IGNORE);
++        log_debug("exec_invoke 4");
+ 
+         if (context->ignore_sigpipe)
+                 (void) ignore_signals(SIGPIPE);
+@@ -4151,6 +4156,7 @@ int exec_invoke(
+ 
+         if (params->idle_pipe)
+                 do_idle_pipe_dance(params->idle_pipe);
++        log_debug("exec_invoke 5");
+ 
+         /* Close fds we don't need very early to make sure we don't block init reexecution because it cannot bind its
+          * sockets. Among the fds we close are the logging fds, and we want to keep them closed, so that we don't have
+@@ -4169,6 +4175,7 @@ int exec_invoke(
+                 *exit_status = EXIT_FDS;
+                 return log_exec_error_errno(context, params, r, "Failed to get OpenFile= file descriptors: %m");
+         }
++        log_debug("exec_invoke 6");
+ 
+         int keep_fds[n_fds + 4];
+         memcpy_safe(keep_fds, params->fds, n_fds * sizeof(int));
+@@ -4185,6 +4192,7 @@ int exec_invoke(
+                 *exit_status = EXIT_FDS;
+                 return log_exec_error_errno(context, params, r, "Failed to collect shifted fd: %m");
+         }
++        log_debug("exec_invoke 7");
+ 
+ #if HAVE_LIBBPF
+         r = add_shifted_fd(keep_fds, ELEMENTSOF(keep_fds), &n_keep_fds, &params->bpf_restrict_fs_map_fd);
+@@ -4207,6 +4215,7 @@ int exec_invoke(
+         }
+ 
+         exec_context_tty_reset(context, params);
++        log_debug("exec_invoke 8");
+ 
+         if (params->shall_confirm_spawn && exec_context_shall_confirm_spawn(context)) {
+                 _cleanup_free_ char *cmdline = NULL;
+@@ -4240,8 +4249,10 @@ int exec_invoke(
+                 *exit_status = EXIT_MEMORY;
+                 return log_exec_error_errno(context, params, errno, "Failed to update environment: %m");
+         }
++        log_debug("exec_invoke 9");
+ 
+         if (context->dynamic_user && runtime && runtime->dynamic_creds) {
++                log_debug("exec_invoke 9.1");
+                 _cleanup_strv_free_ char **suggested_paths = NULL;
+ 
+                 /* On top of that, make sure we bypass our own NSS module nss-systemd comprehensively for any NSS
+@@ -4280,6 +4291,7 @@ int exec_invoke(
+                         username = runtime->dynamic_creds->user->name;
+ 
+         } else {
++                log_debug("exec_invoke 9.2");
+                 const char *u;
+ 
+                 if (context->user)
+@@ -4311,6 +4323,7 @@ int exec_invoke(
+                         }
+                 }
+         }
++        log_debug("exec_invoke 10");
+ 
+         /* Initialize user supplementary groups and get SupplementaryGroups= ones */
+         r = get_supplementary_groups(context, username, groupname, gid,
+@@ -4327,6 +4340,7 @@ int exec_invoke(
+         }
+ 
+         params->user_lookup_fd = safe_close(params->user_lookup_fd);
++        log_debug("exec_invoke 11");
+ 
+         r = acquire_home(context, &home, &home_buffer);
+         if (r < 0) {
+@@ -4337,6 +4351,7 @@ int exec_invoke(
+         /* If a socket is connected to STDIN/STDOUT/STDERR, we must drop O_NONBLOCK */
+         if (socket_fd >= 0)
+                 (void) fd_nonblock(socket_fd, false);
++        log_debug("exec_invoke 12");
+ 
+         /* Journald will try to look-up our cgroup in order to populate _SYSTEMD_CGROUP and _SYSTEMD_UNIT fields.
+          * Hence we need to migrate to the target cgroup from init.scope before connecting to journald */
+@@ -4362,6 +4377,7 @@ int exec_invoke(
+                         return log_exec_error_errno(context, params, r, "Failed to attach to cgroup %s: %m", p);
+                 }
+         }
++        log_debug("exec_invoke 13");
+ 
+         if (context->network_namespace_path && runtime && runtime->shared && runtime->shared->netns_storage_socket[0] >= 0) {
+                 r = open_shareable_ns_path(runtime->shared->netns_storage_socket, context->network_namespace_path, CLONE_NEWNET);
+@@ -4384,6 +4400,7 @@ int exec_invoke(
+                 *exit_status = EXIT_STDIN;
+                 return log_exec_error_errno(context, params, r, "Failed to set up standard input: %m");
+         }
++        log_debug("exec_invoke 14");
+ 
+         _cleanup_free_ char *fname = NULL;
+         r = path_extract_filename(command->path, &fname);
+@@ -4403,6 +4420,7 @@ int exec_invoke(
+                 *exit_status = EXIT_STDERR;
+                 return log_exec_error_errno(context, params, r, "Failed to set up standard error output: %m");
+         }
++        log_debug("exec_invoke 15");
+ 
+         if (context->oom_score_adjust_set) {
+                 /* When we can't make this change due to EPERM, then let's silently skip over it. User
+@@ -4426,6 +4444,7 @@ int exec_invoke(
+                         return log_exec_error_errno(context, params, r, "Failed to adjust coredump_filter: %m");
+                 }
+         }
++        log_debug("exec_invoke 16");
+ 
+         if (context->cpu_sched_set) {
+                 struct sched_attr attr = {
+@@ -4470,6 +4489,7 @@ int exec_invoke(
+                         return log_exec_error_errno(context, params, errno, "Failed to set up CPU affinity: %m");
+                 }
+         }
++        log_debug("exec_invoke 17");
+ 
+         if (mpol_is_valid(numa_policy_get_type(&context->numa_policy))) {
+                 r = apply_numa_policy(&context->numa_policy);
+@@ -4500,6 +4520,7 @@ int exec_invoke(
+                         return log_exec_error_errno(context, params, r, "Failed to set up execution domain (personality): %m");
+                 }
+         }
++        log_debug("exec_invoke 18");
+ 
+ #if ENABLE_UTMP
+         if (context->utmp_id) {
+@@ -4585,6 +4606,7 @@ int exec_invoke(
+                         }
+                 }
+         }
++        log_debug("exec_invoke 19");
+ 
+         needs_mount_namespace = exec_needs_mount_namespace(context, params, runtime);
+ 
+@@ -4616,6 +4638,7 @@ int exec_invoke(
+                 *exit_status = EXIT_MEMORY;
+                 return log_oom();
+         }
++        log_debug("exec_invoke 20");
+ 
+         r = build_pass_environment(context, &pass_env);
+         if (r < 0) {
+@@ -4653,6 +4676,7 @@ int exec_invoke(
+                 return log_oom();
+         }
+         accum_env = strv_env_clean(accum_env);
++        log_debug("exec_invoke 21");
+ 
+         (void) umask(context->umask);
+ 
+@@ -4677,6 +4701,7 @@ int exec_invoke(
+                 needs_setuid = false;
+         else
+                 needs_setuid = (params->flags & EXEC_APPLY_SANDBOXING) && !(command->flags & (EXEC_COMMAND_FULLY_PRIVILEGED|EXEC_COMMAND_NO_SETUID));
++        log_debug("exec_invoke 22");
+ 
+         uint64_t capability_ambient_set = context->capability_ambient_set;
+ 
+@@ -4696,6 +4721,7 @@ int exec_invoke(
+ #endif
+         }
+ 
++#ifndef __managarm__
+         if (needs_sandboxing) {
+                 int which_failed;
+ 
+@@ -4708,6 +4734,7 @@ int exec_invoke(
+                         return log_exec_error_errno(context, params, r, "Failed to adjust resource limit RLIMIT_%s: %m", rlimit_to_string(which_failed));
+                 }
+         }
++#endif
+ 
+         if (needs_setuid && context->pam_name && username) {
+                 /* Let's call into PAM after we set up our own idea of resource limits so that pam_limits
+@@ -4740,6 +4767,7 @@ int exec_invoke(
+                         return log_exec_error_errno(context, params, ngids_after_pam, "Failed to obtain groups after setting up PAM: %m");
+                 }
+         }
++        log_debug("exec_invoke 23");
+ 
+         if (needs_sandboxing && exec_context_need_unprivileged_private_users(context, params)) {
+                 /* If we're unprivileged, set up the user namespace first to enable use of the other namespaces.
+@@ -4781,6 +4809,7 @@ int exec_invoke(
+                 } else
+                         log_exec_notice(context, params, "PrivateNetwork=yes is configured, but the kernel does not support or we lack privileges for network namespace, proceeding without.");
+         }
++        log_debug("exec_invoke 24");
+ 
+         if (exec_needs_ipc_namespace(context) && runtime && runtime->shared && runtime->shared->ipcns_storage_socket[0] >= 0) {
+ 
+@@ -4817,6 +4846,7 @@ int exec_invoke(
+                                                     error_path ? ": " : "", strempty(error_path));
+                 }
+         }
++        log_debug("exec_invoke 25");
+ 
+         if (needs_sandboxing) {
+                 r = apply_protect_hostname(context, params, exit_status);
+@@ -4862,6 +4892,7 @@ int exec_invoke(
+                         return log_exec_error_errno(context, params, r, "Changing group credentials failed: %m");
+                 }
+         }
++        log_debug("exec_invoke 26");
+ 
+         /* If the user namespace was not set up above, try to do it now.
+          * It's preferred to set up the user namespace later (after all other namespaces) so as not to be
+@@ -4901,6 +4932,7 @@ int exec_invoke(
+                 *exit_status = EXIT_FDS;
+                 return log_exec_error_errno(context, params, r, "Failed to collect shifted fd: %m");
+         }
++        log_debug("exec_invoke 27");
+ 
+ #if HAVE_SELINUX
+         if (needs_sandboxing && use_selinux && params->selinux_context_net) {
+@@ -4940,16 +4972,30 @@ int exec_invoke(
+ 
+         exec_runtime_close(runtime);
+         exec_params_close(params);
++        log_debug("exec_invoke 28");
+ 
+         r = close_all_fds(keep_fds, n_keep_fds);
+-        if (r >= 0)
++        log_debug("exec_invoke 28.1");
++        if (r >= 0) {
++                log_debug("exec_invoke 28.2");
+                 r = pack_fds(params->fds, n_fds);
+-        if (r >= 0)
++                log_debug("exec_invoke 28.3");
++        }
++        log_debug("exec_invoke 28.3.1");
++        if (r >= 0) {
++                log_debug("exec_invoke 28.4");
+                 r = flag_fds(params->fds, n_socket_fds, n_fds, context->non_blocking);
++                log_debug("exec_invoke 28.5");
++        }
++        log_debug("exec_invoke 28.5.1");
+         if (r < 0) {
++                log_debug("exec_invoke 28.6");
+                 *exit_status = EXIT_FDS;
+                 return log_exec_error_errno(context, params, r, "Failed to adjust passed file descriptors: %m");
+         }
++        log_debug("exec_invoke 28.7");
++        // if(getpid() == 35)
++        //         abort();
+ 
+         /* At this point, the fds we want to pass to the program are all ready and set up, with O_CLOEXEC turned off
+          * and at the right fd numbers. The are no other fds open, with one exception: the exec_fd if it is defined,
+@@ -4957,6 +5003,7 @@ int exec_invoke(
+          * came this far. */
+ 
+         secure_bits = context->secure_bits;
++        log_debug("exec_invoke 29");
+ 
+         if (needs_sandboxing) {
+                 uint64_t bset;
+@@ -4991,6 +5038,7 @@ int exec_invoke(
+                         bset |= (UINT64_C(1) << CAP_SETPCAP) |
+                                 (UINT64_C(1) << CAP_SETUID) |
+                                 (UINT64_C(1) << CAP_SETGID);
++                log_debug("exec_invoke 30");
+ 
+ #if HAVE_SECCOMP
+                 /* If the service has any form of a seccomp filter and it allows dropping privileges, we'll
+@@ -5014,6 +5062,7 @@ int exec_invoke(
+                 }
+ #endif
+ 
++#ifndef __managarm__
+                 if (!cap_test_all(bset)) {
+                         r = capability_bounding_set_drop(bset, /* right_now= */ false);
+                         if (r < 0) {
+@@ -5021,6 +5070,8 @@ int exec_invoke(
+                                 return log_exec_error_errno(context, params, r, "Failed to drop capabilities: %m");
+                         }
+                 }
++#endif
++                log_debug("exec_invoke 31");
+ 
+                 /* Ambient capabilities are cleared during setresuid() (in enforce_user()) even with
+                  * keep-caps set.
+@@ -5046,6 +5097,7 @@ int exec_invoke(
+         r = apply_root_directory(context, params, runtime, needs_mount_namespace, exit_status);
+         if (r < 0)
+                 return log_exec_error_errno(context, params, r, "Chrooting to the requested root directory failed: %m");
++        log_debug("exec_invoke 32");
+ 
+         if (needs_setuid) {
+                 if (uid_is_valid(uid)) {
+@@ -5088,6 +5140,7 @@ int exec_invoke(
+                         }
+                 }
+         }
++        log_debug("exec_invoke 33");
+ 
+         /* Apply working directory here, because the working directory might be on NFS and only the user
+          * running this service might have the correct privilege to change to the working directory. Also, it
+@@ -5138,6 +5191,7 @@ int exec_invoke(
+                 }
+ #endif
+ 
++#ifndef __managarm__
+                 /* PR_GET_SECUREBITS is not privileged, while PR_SET_SECUREBITS is. So to suppress potential
+                  * EPERMs we'll try not to call PR_SET_SECUREBITS unless necessary. Setting securebits
+                  * requires CAP_SETPCAP. */
+@@ -5169,6 +5223,8 @@ int exec_invoke(
+                                 *exit_status = EXIT_NO_NEW_PRIVILEGES;
+                                 return log_exec_error_errno(context, params, errno, "Failed to disable new privileges: %m");
+                         }
++#endif
++                log_debug("exec_invoke 34");
+ 
+ #if HAVE_SECCOMP
+                 r = apply_address_families(context, params);
+@@ -5318,6 +5374,7 @@ int exec_invoke(
+ 
+                 strv_free_and_replace(accum_env, ee);
+         }
++        log_debug("exec_invoke 35");
+ 
+         if (!FLAGS_SET(command->flags, EXEC_COMMAND_NO_ENV_EXPAND)) {
+                 _cleanup_strv_free_ char **unset_variables = NULL, **bad_variables = NULL;
+@@ -5349,6 +5406,7 @@ int exec_invoke(
+                 }
+         } else
+                 final_argv = command->argv;
++        log_debug("exec_invoke 36");
+ 
+         log_command_line(context, params, "Executing", executable, final_argv);
+ 
+@@ -5366,12 +5424,14 @@ int exec_invoke(
+                 (void) exec_fd_mark_hot(context, params, /* hot= */ false, /* reterr_exit_status= */ NULL);
+                 return r;
+         }
++        log_debug("exec_invoke 37");
+ 
+         /* NB: we leave executable_fd, exec_fd, handoff_timestamp_fd open here. This is safe, because they
+          * have O_CLOEXEC set, and the execve() below will thus automatically close them. In fact, for
+          * exec_fd this is pretty much the whole raison d'etre. */
+ 
+         r = fexecve_or_execve(executable_fd, executable, final_argv, accum_env);
++        log_debug("exec_invoke 38????");
+ 
+         /* The execve() failed, let's undo the marking as hot */
+         (void) exec_fd_mark_hot(context, params, /* hot= */ false, /* reterr_exit_status= */ NULL);
+diff --git a/src/core/execute-serialize.c b/src/core/execute-serialize.c
+index 41b31e9..d58d7cd 100644
+--- a/src/core/execute-serialize.c
++++ b/src/core/execute-serialize.c
+@@ -497,6 +497,7 @@ static int exec_cgroup_context_deserialize(CGroupContext *c, FILE *f) {
+                         return r;
+                 if (r == 0) /* eof or end marker */
+                         break;
++                log_debug("exec_group_context_deserialize: '%s'", l);
+ 
+                 if ((val = startswith(l, "exec-cgroup-context-cpu-accounting="))) {
+                         r = parse_boolean(val);
+diff --git a/src/core/executor.c b/src/core/executor.c
+index bd0c742..5367301 100644
+--- a/src/core/executor.c
++++ b/src/core/executor.c
+@@ -232,6 +232,7 @@ static int run(int argc, char *argv[]) {
+ 
+         arg_serialization = safe_fclose(arg_serialization);
+         fdset = fdset_free(fdset);
++        log_debug("Going to execute");
+ 
+         r = exec_invoke(&command,
+                         &context,
+diff --git a/src/core/manager.c b/src/core/manager.c
+index 22b1822..f9468de 100644
+--- a/src/core/manager.c
++++ b/src/core/manager.c
+@@ -926,6 +926,8 @@ int manager_new(RuntimeScope runtime_scope, ManagerTestRunFlags test_run_flags,
+                 .executor_fd = -EBADF,
+         };
+ 
++        log_debug("manager_new 1");
++
+         unit_defaults_init(&m->defaults, runtime_scope);
+ 
+ #if ENABLE_EFI
+@@ -934,6 +936,7 @@ int manager_new(RuntimeScope runtime_scope, ManagerTestRunFlags test_run_flags,
+                                 m->timestamps + MANAGER_TIMESTAMP_FIRMWARE,
+                                 m->timestamps + MANAGER_TIMESTAMP_LOADER);
+ #endif
++        log_debug("manager_new 2");
+ 
+         /* Prepare log fields we can use for structured logging */
+         if (MANAGER_IS_SYSTEM(m)) {
+@@ -949,6 +952,7 @@ int manager_new(RuntimeScope runtime_scope, ManagerTestRunFlags test_run_flags,
+                 m->invocation_log_field = "USER_INVOCATION_ID=";
+                 m->invocation_log_format_string = "USER_INVOCATION_ID=%s";
+         }
++        log_debug("manager_new 3");
+ 
+         /* Reboot immediately if the user hits C-A-D more often than 7x per 2s */
+         m->ctrl_alt_del_ratelimit = (const RateLimit) { .interval = 2 * USEC_PER_SEC, .burst = 7 };
+@@ -956,38 +960,47 @@ int manager_new(RuntimeScope runtime_scope, ManagerTestRunFlags test_run_flags,
+         r = manager_default_environment(m);
+         if (r < 0)
+                 return r;
++        log_debug("manager_new 4");
+ 
+         r = hashmap_ensure_allocated(&m->units, &string_hash_ops);
+         if (r < 0)
+                 return r;
++        log_debug("manager_new 5");
+ 
+         r = hashmap_ensure_allocated(&m->cgroup_unit, &path_hash_ops);
+         if (r < 0)
+                 return r;
++        log_debug("manager_new 6");
+ 
+         r = hashmap_ensure_allocated(&m->watch_bus, &string_hash_ops);
+         if (r < 0)
+                 return r;
++        log_debug("manager_new 7");
+ 
+         r = prioq_ensure_allocated(&m->run_queue, compare_job_priority);
+         if (r < 0)
+                 return r;
++        log_debug("manager_new 8");
+ 
+         r = manager_setup_prefix(m);
+         if (r < 0)
+                 return r;
++        log_debug("manager_new 9");
+ 
+         r = manager_find_credentials_dirs(m);
+         if (r < 0)
+                 return r;
++        log_debug("manager_new 10");
+ 
+         r = sd_event_default(&m->event);
+         if (r < 0)
+                 return r;
++        log_debug("manager_new 11");
+ 
+         r = manager_setup_run_queue(m);
+         if (r < 0)
+                 return r;
++        log_debug("manager_new 12");
+ 
+         if (FLAGS_SET(test_run_flags, MANAGER_TEST_RUN_MINIMAL)) {
+                 m->cgroup_root = strdup("");
+@@ -997,28 +1010,34 @@ int manager_new(RuntimeScope runtime_scope, ManagerTestRunFlags test_run_flags,
+                 r = manager_setup_signals(m);
+                 if (r < 0)
+                         return r;
++                log_debug("manager_new 13");
+ 
+                 r = manager_setup_cgroup(m);
+                 if (r < 0)
+                         return r;
++                log_debug("manager_new 14");
+ 
+                 r = manager_setup_time_change(m);
+                 if (r < 0)
+                         return r;
++                log_debug("manager_new 15");
+ 
+                 r = manager_read_timezone_stat(m);
+                 if (r < 0)
+                         return r;
++                log_debug("manager_new 16");
+ 
+                 (void) manager_setup_timezone_change(m);
+ 
+                 r = manager_setup_sigchld_event_source(m);
+                 if (r < 0)
+                         return r;
++                log_debug("manager_new 17");
+ 
+                 r = manager_setup_memory_pressure_event_source(m);
+                 if (r < 0)
+                         return r;
++                log_debug("manager_new 18");
+ 
+ #if HAVE_LIBBPF
+                 if (MANAGER_IS_SYSTEM(m) && bpf_restrict_fs_supported(/* initialize = */ true)) {
+@@ -1028,6 +1047,7 @@ int manager_new(RuntimeScope runtime_scope, ManagerTestRunFlags test_run_flags,
+                 }
+ #endif
+         }
++        log_debug("manager_new 19");
+ 
+         if (test_run_flags == 0) {
+                 if (MANAGER_IS_SYSTEM(m))
+@@ -1043,6 +1063,7 @@ int manager_new(RuntimeScope runtime_scope, ManagerTestRunFlags test_run_flags,
+                 if (r < 0 && r != -EEXIST)
+                         return r;
+         }
++        log_debug("manager_new 20");
+ 
+         if (!FLAGS_SET(test_run_flags, MANAGER_TEST_DONT_OPEN_EXECUTOR)) {
+                 m->executor_fd = pin_callout_binary(SYSTEMD_EXECUTOR_BINARY_PATH);
+@@ -1056,6 +1077,7 @@ int manager_new(RuntimeScope runtime_scope, ManagerTestRunFlags test_run_flags,
+ 
+                 log_debug("Using systemd-executor binary from '%s'.", executor_path);
+         }
++        log_debug("manager_new 21");
+ 
+         /* Note that we do not set up the notify fd here. We do that after deserialization,
+          * since they might have gotten serialized across the reexec. */
+@@ -2720,6 +2742,7 @@ static int manager_get_units_for_pidref(Manager *m, const PidRef *pidref, Unit *
+ }
+ 
+ static int manager_dispatch_notify_fd(sd_event_source *source, int fd, uint32_t revents, void *userdata) {
++        log_debug("REEEEEEEEEEEEEEEEEE");
+         Manager *m = ASSERT_PTR(userdata);
+         _cleanup_fdset_free_ FDSet *fds = NULL;
+         char buf[NOTIFY_BUFFER_MAX+1];
+@@ -2746,6 +2769,7 @@ static int manager_dispatch_notify_fd(sd_event_source *source, int fd, uint32_t
+         assert(m->notify_fd == fd);
+ 
+         if (revents != EPOLLIN) {
++                log_debug("KANKER: %d", revents);
+                 log_warning("Got unexpected poll event for notify fd.");
+                 return 0;
+         }
+diff --git a/src/core/socket.c b/src/core/socket.c
+index 0694fe7..ce6a5ac 100644
+--- a/src/core/socket.c
++++ b/src/core/socket.c
+@@ -2968,6 +2968,7 @@ static bool socket_may_gc(Unit *u) {
+ }
+ 
+ static int socket_accept_do(Socket *s, int fd) {
++        log_debug("socket_accept_do called");
+         int cfd;
+ 
+         assert(s);
+diff --git a/src/journal/journald-kmsg.c b/src/journal/journald-kmsg.c
+index 78f6e1f..db16c3d 100644
+--- a/src/journal/journald-kmsg.c
++++ b/src/journal/journald-kmsg.c
+@@ -339,6 +339,10 @@ static int server_read_dev_kmsg(Server *s) {
+ }
+ 
+ int server_flush_dev_kmsg(Server *s) {
++#ifdef __managarm__
++        // HACK! We potentially loop dumping here especially if log_debug's are printed. Oops
++        return 0;
++#endif
+         int r;
+ 
+         assert(s);
+@@ -380,6 +384,7 @@ static int dispatch_dev_kmsg(sd_event_source *es, int fd, uint32_t revents, void
+ }
+ 
+ int server_open_dev_kmsg(Server *s) {
++        return 0;
+         mode_t mode;
+         int r;
+ 
+diff --git a/src/journal/journald-native.c b/src/journal/journald-native.c
+index 0600102..e4d3be2 100644
+--- a/src/journal/journald-native.c
++++ b/src/journal/journald-native.c
+@@ -493,9 +493,11 @@ int server_open_native_socket(Server *s, const char *native_socket) {
+                         log_warning_errno(r, "SO_PASSSEC failed: %m");
+         }
+ 
++#ifndef __managarm__
+         r = setsockopt_int(s->native_fd, SOL_SOCKET, SO_TIMESTAMP, true);
+         if (r < 0)
+                 return log_error_errno(r, "SO_TIMESTAMP failed: %m");
++#endif
+ 
+         r = sd_event_add_io(s->event, &s->native_event_source, s->native_fd, EPOLLIN, server_process_datagram, s);
+         if (r < 0)
+diff --git a/src/journal/journald-server.c b/src/journal/journald-server.c
+index 07748f0..8788b8e 100644
+--- a/src/journal/journald-server.c
++++ b/src/journal/journald-server.c
+@@ -310,12 +310,16 @@ static int server_open_journal(
+                                 s->mmap,
+                                 /* template= */ NULL,
+                                 &f);
+-        if (r < 0)
++        if (r < 0) {
++                log_debug("KANKER 1");
+                 return r;
++        }
+ 
+         r = journal_file_enable_post_change_timer(f, s->event, POST_CHANGE_TIMER_INTERVAL_USEC);
+-        if (r < 0)
++        if (r < 0) {
++                log_debug("KANKER 2");
+                 return r;
++        }
+ 
+         *ret = TAKE_PTR(f);
+         return r;
+@@ -2153,28 +2157,37 @@ static int server_connect_notify(Server *s) {
+          * Don't think that this issue is real? It is, see: https://github.com/systemd/systemd/issues/1505
+          */
+ 
++        log_info("server_connect_notify 1");
++
+         e = getenv("NOTIFY_SOCKET");
+         if (!e)
+                 return 0;
++        log_info("server_connect_notify 2");
+ 
+         r = sockaddr_un_set_path(&sa.un, e);
+         if (r < 0)
+                 return log_error_errno(r, "NOTIFY_SOCKET set to invalid value '%s': %m", e);
+         sa_len = r;
++        log_info("server_connect_notify 3");
+ 
+         s->notify_fd = socket(AF_UNIX, SOCK_DGRAM|SOCK_CLOEXEC|SOCK_NONBLOCK, 0);
+         if (s->notify_fd < 0)
+                 return log_error_errno(errno, "Failed to create notify socket: %m");
++        log_info("server_connect_notify 4");
+ 
+         (void) fd_inc_sndbuf(s->notify_fd, NOTIFY_SNDBUF_SIZE);
++        log_info("server_connect_notify 5");
+ 
+         r = connect(s->notify_fd, &sa.sa, sa_len);
++        log_info("server_connect_notify 5.1");
+         if (r < 0)
+                 return log_error_errno(errno, "Failed to connect to notify socket: %m");
++        log_info("server_connect_notify 6");
+ 
+         r = sd_event_add_io(s->event, &s->notify_event_source, s->notify_fd, EPOLLOUT, dispatch_notify_event, s);
+         if (r < 0)
+                 return log_error_errno(r, "Failed to watch notification socket: %m");
++        log_info("server_connect_notify 7");
+ 
+         if (sd_watchdog_enabled(false, &s->watchdog_usec) > 0) {
+                 s->send_watchdog = true;
+@@ -2183,6 +2196,7 @@ static int server_connect_notify(Server *s) {
+                 if (r < 0)
+                         return log_error_errno(r, "Failed to add watchdog time event: %m");
+         }
++        log_info("server_connect_notify 8");
+ 
+         /* This should fire pretty soon, which we'll use to send the READY=1 event. */
+ 
+@@ -2700,9 +2714,12 @@ int server_init(Server *s, const char *namespace) {
+         if (r < 0)
+                 return log_error_errno(r, "Failed to create event loop: %m");
+ 
++        log_info("We ballin....");
++
+         n = sd_listen_fds(true);
+         if (n < 0)
+                 return log_error_errno(n, "Failed to read listening file descriptors from environment: %m");
++        log_info("Still we rise....");
+ 
+         native_socket = strjoina(s->runtime_directory, "/socket");
+         stdout_socket = strjoina(s->runtime_directory, "/stdout");
+@@ -2817,25 +2834,34 @@ int server_init(Server *s, const char *namespace) {
+         if (r < 0)
+                 return r;
+ 
++#ifndef __managarm__
+         r = server_open_hostname(s);
+         if (r < 0)
+                 return r;
++#endif
++        log_info("server init 1");
+ 
+         r = server_setup_signals(s);
+         if (r < 0)
+                 return r;
++        log_info("server init 2");
+ 
+         r = server_setup_memory_pressure(s);
+         if (r < 0)
+                 return r;
++        log_info("server init 3");
+ 
+         r = cg_get_root_path(&s->cgroup_root);
+         if (r < 0)
+                 return log_error_errno(r, "Failed to acquire cgroup root path: %m");
++        log_info("server init 4");
+ 
+         server_cache_hostname(s);
++        log_info("server init 5");
+         server_cache_boot_id(s);
++        log_info("server init 6");
+         server_cache_machine_id(s);
++        log_info("server init 7");
+ 
+         if (s->namespace)
+                 s->runtime_storage.path = strjoin("/run/log/journal/", SERVER_MACHINE_ID(s), ".", s->namespace);
+@@ -2843,6 +2869,7 @@ int server_init(Server *s, const char *namespace) {
+                 s->runtime_storage.path = strjoin("/run/log/journal/", SERVER_MACHINE_ID(s));
+         if (!s->runtime_storage.path)
+                 return log_oom();
++        log_info("server init 8");
+ 
+         e = getenv("LOGS_DIRECTORY");
+         if (e)
+@@ -2853,16 +2880,21 @@ int server_init(Server *s, const char *namespace) {
+                 s->system_storage.path = strjoin("/var/log/journal/", SERVER_MACHINE_ID(s));
+         if (!s->system_storage.path)
+                 return log_oom();
++        log_info("server init 9");
+ 
+         (void) server_connect_notify(s);
++        log_info("server init 10");
+ 
+         (void) client_context_acquire_default(s);
++        log_info("server init 11");
+ 
+         r = server_system_journal_open(s, /* flush_requested= */ false, /* relinquish_requested= */ false);
+         if (r < 0)
+                 return r;
++        log_info("server init 12");
+ 
+         server_start_or_stop_idle_timer(s);
++        log_info("server init 13");
+ 
+         return 0;
+ }
+diff --git a/src/journal/journald-syslog.c b/src/journal/journald-syslog.c
+index 4ad73ed..291d8c0 100644
+--- a/src/journal/journald-syslog.c
++++ b/src/journal/journald-syslog.c
+@@ -495,9 +495,11 @@ int server_open_syslog_socket(Server *s, const char *syslog_socket) {
+                         log_warning_errno(r, "SO_PASSSEC failed: %m");
+         }
+ 
++#ifndef __managarm__
+         r = setsockopt_int(s->syslog_fd, SOL_SOCKET, SO_TIMESTAMP, true);
+         if (r < 0)
+                 return log_error_errno(r, "SO_TIMESTAMP failed: %m");
++#endif
+ 
+         r = sd_event_add_io(s->event, &s->syslog_event_source, s->syslog_fd, EPOLLIN, server_process_datagram, s);
+         if (r < 0)
+diff --git a/src/journal/journald.c b/src/journal/journald.c
+index 87ed22e..d7e9973 100644
+--- a/src/journal/journald.c
++++ b/src/journal/journald.c
+@@ -16,79 +16,107 @@
+ #include "terminal-util.h"
+ 
+ static int run(int argc, char *argv[]) {
++        int helout = open("/dev/helout", O_RDWR);
++        dprintf(helout, "SYSTEMD JOURNALD KANKER\n");
++        log_error("WHAT THE FUCK");
+         _cleanup_(server_freep) Server *s = NULL;
+         const char *namespace;
+         LogTarget log_target;
+         int r;
+ 
++        log_debug("entering main journald");
++
+         if (argc > 2)
+                 return log_error_errno(SYNTHETIC_ERRNO(EINVAL), "This program takes one or no arguments.");
+ 
+         namespace = argc > 1 ? empty_to_null(argv[1]) : NULL;
+ 
+         log_set_facility(LOG_SYSLOG);
++        log_debug("journald main 1");
+ 
+         if (namespace)
+                 /* If we run for a log namespace, then we ourselves can log to the main journald. */
+                 log_setup();
+         else {
++                log_debug("journald main 2");
+                 /* So here's the deal if we run as the main journald: we can't be considered as regular
+                  * daemon when it comes to logging hence LOG_TARGET_AUTO won't do the right thing for
+                  * us. Hence explicitly log to the console if we're started from a console or to kmsg
+                  * otherwise. */
+                 log_target = isatty(STDERR_FILENO) ? LOG_TARGET_CONSOLE : LOG_TARGET_KMSG;
++                log_debug("journald main 2");
+ 
+                 log_set_prohibit_ipc(true); /* better safe than sorry */
++                log_debug("journald main 3");
+                 log_set_target(log_target);
++                log_debug("journald main 4");
+                 log_parse_environment();
++                log_debug("journald main 5");
+                 log_open();
++                log_debug("journald main 6");
+         }
+ 
+         umask(0022);
++        log_debug("journald main 7");
+ 
+         sigbus_install();
++        log_debug("journald main 8");
+ 
+         r = server_new(&s);
++        log_debug("journald main 9");
+         if (r < 0)
+                 return log_oom();
++        log_debug("journald main 10");
+ 
+         r = server_init(s, namespace);
++        log_debug("journald main 11");
+         if (r < 0)
+                 return r;
++        log_debug("journald main 12");
+ 
+         server_vacuum(s, /* verbose = */ false);
++        log_debug("journald main 13");
+         server_flush_to_var(s, /* require_flag_file = */ true);
++        log_debug("journald main 14");
+         server_flush_dev_kmsg(s);
++        log_debug("journald main 15");
+ 
+         if (s->namespace)
+                 log_debug("systemd-journald running as PID "PID_FMT" for namespace '%s'.", getpid_cached(), s->namespace);
+         else
+                 log_debug("systemd-journald running as PID "PID_FMT" for the system.", getpid_cached());
++        log_debug("journald main 16");
+ 
+         server_driver_message(s, 0,
+                               "MESSAGE_ID=" SD_MESSAGE_JOURNAL_START_STR,
+                               LOG_MESSAGE("Journal started"),
+                               NULL);
++        log_debug("journald main 17");
+ 
+         /* Make sure to send the usage message *after* flushing the
+          * journal so entries from the runtime journals are ordered
+          * before this message. See #4190 for some details. */
+         server_space_usage_message(s, NULL);
++        log_debug("journald main 18");
+ 
+         for (;;) {
+                 usec_t t, n;
++                log_debug("journald main for 1");
+ 
+                 r = sd_event_get_state(s->event);
+                 if (r < 0)
+                         return log_error_errno(r, "Failed to get event loop state: %m");
+                 if (r == SD_EVENT_FINISHED)
+                         break;
++                log_debug("journald main for 2");
+ 
+                 r = sd_event_now(s->event, CLOCK_REALTIME, &n);
+                 if (r < 0)
+                         return log_error_errno(r, "Failed to get the current time: %m");
++                log_debug("journald main for 3");
+ 
+                 if (s->max_retention_usec > 0 && s->oldest_file_usec > 0) {
++                        log_debug("journald main for 4");
+                         /* Calculate when to rotate the next time */
+                         t = usec_sub_unsigned(usec_add(s->oldest_file_usec, s->max_retention_usec), n);
+ 
+@@ -98,6 +126,7 @@ static int run(int argc, char *argv[]) {
+                                 server_vacuum(s, /* verbose = */ false);
+                                 continue;
+                         }
++                        log_debug("journald main for 5");
+                 } else
+                         t = USEC_INFINITY;
+ 
+@@ -109,25 +138,32 @@ static int run(int argc, char *argv[]) {
+                                 t = MIN(t, usec_sub_unsigned(u, n));
+                 }
+ #endif
++                log_debug("journald main for 6");
+ 
+                 r = sd_event_run(s->event, t);
+                 if (r < 0)
+                         return log_error_errno(r, "Failed to run event loop: %m");
++                log_debug("journald main for 7");
+ 
+                 server_maybe_append_tags(s);
++                log_debug("journald main for 8");
+                 server_maybe_warn_forward_syslog_missed(s);
++                log_debug("journald main for 9");
+         }
+ 
+         if (s->namespace)
+                 log_debug("systemd-journald stopped as PID "PID_FMT" for namespace '%s'.", getpid_cached(), s->namespace);
+         else
+                 log_debug("systemd-journald stopped as PID "PID_FMT" for the system.", getpid_cached());
++        log_debug("journald main 19");
+ 
+         server_driver_message(s, 0,
+                               "MESSAGE_ID=" SD_MESSAGE_JOURNAL_STOP_STR,
+                               LOG_MESSAGE("Journal stopped"),
+                               NULL);
+ 
++        log_debug("journald main 20");
++
+         return 0;
+ }
+ 
+diff --git a/src/libsystemd/sd-event/sd-event.c b/src/libsystemd/sd-event/sd-event.c
+index 6685aa7..093b2c6 100644
+--- a/src/libsystemd/sd-event/sd-event.c
++++ b/src/libsystemd/sd-event/sd-event.c
+@@ -907,6 +907,7 @@ static void event_source_time_prioq_remove(
+         assert(s);
+         assert(d);
+ 
++        log_debug("prioq_remove (2 of them!) at file %s line %d", __FILE__, __LINE__);
+         prioq_remove(d->earliest, s, &s->earliest_index);
+         prioq_remove(d->latest, s, &s->latest_index);
+         s->earliest_index = s->latest_index = PRIOQ_IDX_NULL;
+@@ -944,6 +945,7 @@ static void source_disconnect(sd_event_source *s) {
+                 if (!s->ratelimited) {
+                         struct clock_data *d;
+                         assert_se(d = event_get_clock_data(s->event, s->type));
++                        log_debug("event_source_time_prioq_remove at file %s line %d", __FILE__, __LINE__);
+                         event_source_time_prioq_remove(s, d);
+                 }
+ 
+@@ -1003,6 +1005,7 @@ static void source_disconnect(sd_event_source *s) {
+                 break;
+ 
+         case SOURCE_EXIT:
++                log_debug("prioq_remove at file %s line %d", __FILE__, __LINE__);
+                 prioq_remove(s->event->exit, s, &s->exit.prioq_index);
+                 break;
+ 
+@@ -1050,14 +1053,20 @@ static void source_disconnect(sd_event_source *s) {
+                 assert_not_reached();
+         }
+ 
+-        if (s->pending)
++        if (s->pending) {
++                log_debug("prioq_remove at file %s line %d", __FILE__, __LINE__);
+                 prioq_remove(s->event->pending, s, &s->pending_index);
++        }
+ 
+-        if (s->prepare)
++        if (s->prepare) {
++                log_debug("prioq_remove at file %s line %d", __FILE__, __LINE__);
+                 prioq_remove(s->event->prepare, s, &s->prepare_index);
++        }
+ 
+-        if (s->ratelimited)
++        if (s->ratelimited) {
++                log_debug("event_source_time_prioq_remove at file %s line %d", __FILE__, __LINE__);
+                 event_source_time_prioq_remove(s, &s->event->monotonic);
++        }
+ 
+         event = TAKE_PTR(s->event);
+         LIST_REMOVE(sources, event->sources, s);
+@@ -1148,8 +1157,10 @@ static int source_set_pending(sd_event_source *s, bool b) {
+                         s->pending = false;
+                         return r;
+                 }
+-        } else
++        } else {
++                log_debug("prioq_remove at file %s line %d", __FILE__, __LINE__);
+                 assert_se(prioq_remove(s->event->pending, s, &s->pending_index));
++        }
+ 
+         if (EVENT_SOURCE_IS_TIME(s->type))
+                 event_source_time_prioq_reshuffle(s);
+@@ -1373,6 +1384,7 @@ static int event_source_time_prioq_put(
+ 
+         r = prioq_put(d->latest, s, &s->latest_index);
+         if (r < 0) {
++                log_debug("prioq_remove at file %s line %d", __FILE__, __LINE__);
+                 assert_se(prioq_remove(d->earliest, s, &s->earliest_index) > 0);
+                 s->earliest_index = PRIOQ_IDX_NULL;
+                 return r;
+@@ -2724,6 +2736,7 @@ _public_ int sd_event_source_set_io_events(sd_event_source *s, uint32_t events)
+         if (s->io.events == events && !(events & EPOLLET))
+                 return 0;
+ 
++        log_debug("source_set_pending to false at %s:%d, description: %s", __FILE__, __LINE__, s->description);
+         r = source_set_pending(s, false);
+         if (r < 0)
+                 return r;
+@@ -2904,6 +2917,7 @@ static int event_source_offline(
+         if (s->enabled != SD_EVENT_OFF &&
+             enabled == SD_EVENT_OFF &&
+             !IN_SET(s->type, SOURCE_DEFER, SOURCE_EXIT)) {
++                log_debug("source_set_pending to false at %s:%d, description: %s", __FILE__, __LINE__, s->description);
+                 r = source_set_pending(s, false);
+                 if (r < 0)
+                         return r;
+@@ -2978,6 +2992,7 @@ static int event_source_online(
+         if (s->enabled == SD_EVENT_OFF &&
+             enabled != SD_EVENT_OFF &&
+             !IN_SET(s->type, SOURCE_DEFER, SOURCE_EXIT)) {
++                log_debug("source_set_pending to false at %s:%d, description: %s", __FILE__, __LINE__, s->description);
+                 r = source_set_pending(s, false);
+                 if (r < 0)
+                         return r;
+@@ -3121,6 +3136,7 @@ _public_ int sd_event_source_set_time(sd_event_source *s, uint64_t usec) {
+         assert_return(s->event->state != SD_EVENT_FINISHED, -ESTALE);
+         assert_return(!event_origin_changed(s->event), -ECHILD);
+ 
++        log_debug("source_set_pending to false at %s:%d, description: %s", __FILE__, __LINE__, s->description);
+         r = source_set_pending(s, false);
+         if (r < 0)
+                 return r;
+@@ -3172,6 +3188,7 @@ _public_ int sd_event_source_set_time_accuracy(sd_event_source *s, uint64_t usec
+         assert_return(s->event->state != SD_EVENT_FINISHED, -ESTALE);
+         assert_return(!event_origin_changed(s->event), -ECHILD);
+ 
++        log_debug("source_set_pending to false at %s:%d, description: %s", __FILE__, __LINE__, s->description);
+         r = source_set_pending(s, false);
+         if (r < 0)
+                 return r;
+@@ -3353,8 +3370,10 @@ _public_ int sd_event_source_set_prepare(sd_event_source *s, sd_event_handler_t
+                 r = prioq_put(s->event->prepare, s, &s->prepare_index);
+                 if (r < 0)
+                         return r;
+-        } else
++        } else {
++                log_debug("prioq_remove at file %s line %d", __FILE__, __LINE__);
+                 prioq_remove(s->event->prepare, s, &s->prepare_index);
++        }
+ 
+         return 0;
+ }
+@@ -3397,8 +3416,10 @@ static int event_source_enter_ratelimited(sd_event_source *s) {
+         /* Timer event sources are already using the earliest/latest queues for the timer scheduling. Let's
+          * first remove them from the prioq appropriate for their own clock, so that we can use the prioq
+          * fields of the event source then for adding it to the CLOCK_MONOTONIC prioq instead. */
+-        if (EVENT_SOURCE_IS_TIME(s->type))
++        if (EVENT_SOURCE_IS_TIME(s->type)) {
++                log_debug("event_source_time_prioq_remove at file %s line %d", __FILE__, __LINE__);
+                 event_source_time_prioq_remove(s, event_get_clock_data(s->event, s->type));
++        }
+ 
+         /* Now, let's add the event source to the monotonic clock instead */
+         r = event_source_time_prioq_put(s, &s->event->monotonic);
+@@ -3408,6 +3429,7 @@ static int event_source_enter_ratelimited(sd_event_source *s) {
+         /* And let's take the event source officially offline */
+         r = event_source_offline(s, s->enabled, /* ratelimited= */ true);
+         if (r < 0) {
++                log_debug("event_source_time_prioq_remove at file %s line %d", __FILE__, __LINE__);
+                 event_source_time_prioq_remove(s, &s->event->monotonic);
+                 goto fail;
+         }
+@@ -3435,6 +3457,7 @@ static int event_source_leave_ratelimit(sd_event_source *s, bool run_callback) {
+                 return 0;
+ 
+         /* Let's take the event source out of the monotonic prioq first. */
++        log_debug("event_source_time_prioq_remove at file %s line %d", __FILE__, __LINE__);
+         event_source_time_prioq_remove(s, &s->event->monotonic);
+ 
+         /* Let's then add the event source to its native clock prioq again — if this is a timer event source */
+@@ -3448,8 +3471,10 @@ static int event_source_leave_ratelimit(sd_event_source *s, bool run_callback) {
+         r = event_source_online(s, s->enabled, /* ratelimited= */ false);
+         if (r < 0) {
+                 /* Do something roughly sensible when this failed: undo the two prioq ops above */
+-                if (EVENT_SOURCE_IS_TIME(s->type))
++                if (EVENT_SOURCE_IS_TIME(s->type)) {
++                        log_debug("event_source_time_prioq_remove at file %s line %d", __FILE__, __LINE__);
+                         event_source_time_prioq_remove(s, event_get_clock_data(s->event, s->type));
++                }
+ 
+                 goto fail;
+         }
+@@ -3599,6 +3624,7 @@ static int event_arm_timer(
+                         return 0;
+ 
+                 /* disarm */
++                log_debug("timerfd_settime sd-event.c 3602");
+                 if (timerfd_settime(d->fd, TFD_TIMER_ABSTIME, &its, NULL) < 0)
+                         return -errno;
+ 
+@@ -3623,6 +3649,7 @@ static int event_arm_timer(
+         } else
+                 timespec_store(&its.it_value, t);
+ 
++        log_debug("timerfd_settime sd-event.c 3627");
+         if (timerfd_settime(d->fd, TFD_TIMER_ABSTIME, &its, NULL) < 0)
+                 return -errno;
+ 
+@@ -4179,10 +4206,12 @@ static int source_dispatch(sd_event_source *s) {
+         }
+ 
+         if (!IN_SET(s->type, SOURCE_DEFER, SOURCE_EXIT)) {
++                log_debug("source_set_pending to false at %s:%d, description: %s, saved_type: %s, type: %s", __FILE__, __LINE__, s->description, event_source_type_to_string(saved_type), event_source_type_to_string(s->type));
+                 r = source_set_pending(s, false);
+                 if (r < 0)
+                         return r;
+         }
++        log_debug("continue?");
+ 
+         if (s->type != SOURCE_POST) {
+                 sd_event_source *z;
+@@ -4216,10 +4245,14 @@ static int source_dispatch(sd_event_source *s) {
+         }
+ 
+         s->dispatching = true;
++        log_debug("source_dispatch gonna dispatch callbacks?");
+ 
+         switch (s->type) {
+ 
+         case SOURCE_IO:
++                log_debug("dispatching to: %p", s->io.callback);
++                // if(strcmp(s->description, "manager-notify"))
++                //         abort();
+                 r = s->io.callback(s, s->io.fd, s->io.revents, s->userdata);
+                 break;
+ 
+@@ -4420,6 +4453,7 @@ static int arm_watchdog(sd_event *e) {
+         if (its.it_value.tv_sec == 0 && its.it_value.tv_nsec == 0)
+                 its.it_value.tv_nsec = 1;
+ 
++        log_debug("timerfd_settime sd-event.c 4425");
+         return RET_NERRNO(timerfd_settime(e->watchdog_fd, TFD_TIMER_ABSTIME, &its, NULL));
+ }
+ 
+@@ -4545,6 +4579,7 @@ _public_ int sd_event_prepare(sd_event *e) {
+ 
+ pending:
+         e->state = SD_EVENT_ARMED;
++        log_debug("KANKER");
+         r = sd_event_wait(e, 0);
+         if (r == 0)
+                 e->state = SD_EVENT_ARMED;
+@@ -4604,6 +4639,7 @@ static int epoll_wait_usec(
+ }
+ 
+ static int process_epoll(sd_event *e, usec_t timeout, int64_t threshold, int64_t *ret_min_priority) {
++        log_debug("process_epoll enter");
+         size_t n_event_queue, m, n_event_max;
+         int64_t min_priority = threshold;
+         bool something_new = false;
+@@ -4623,6 +4659,7 @@ static int process_epoll(sd_event *e, usec_t timeout, int64_t threshold, int64_t
+                 timeout = 0;
+ 
+         for (;;) {
++                log_debug("process_epoll for loop");
+                 r = epoll_wait_usec(
+                                 e->epoll_fd,
+                                 e->event_queue,
+@@ -4652,14 +4689,17 @@ static int process_epoll(sd_event *e, usec_t timeout, int64_t threshold, int64_t
+ 
+         for (size_t i = 0; i < m; i++) {
+ 
+-                if (e->event_queue[i].data.ptr == INT_TO_PTR(SOURCE_WATCHDOG))
++                if (e->event_queue[i].data.ptr == INT_TO_PTR(SOURCE_WATCHDOG)) {
++                        log_debug("process_epoll flush_timer");
+                         r = flush_timer(e, e->watchdog_fd, e->event_queue[i].events, NULL);
+-                else {
++                } else {
++                        log_debug("process_epoll hitting else");
+                         WakeupType *t = e->event_queue[i].data.ptr;
+ 
+                         switch (*t) {
+ 
+                         case WAKEUP_EVENT_SOURCE: {
++                                log_debug("process_epoll WAKEUP_EVENT_SOURCE");
+                                 sd_event_source *s = e->event_queue[i].data.ptr;
+ 
+                                 assert(s);
+@@ -4672,14 +4712,17 @@ static int process_epoll(sd_event *e, usec_t timeout, int64_t threshold, int64_t
+                                 switch (s->type) {
+ 
+                                 case SOURCE_IO:
++                                        log_debug("process_epoll SOURCE_IO");
+                                         r = process_io(e, s, e->event_queue[i].events);
+                                         break;
+ 
+                                 case SOURCE_CHILD:
++                                        log_debug("process_epoll SOURCE_CHILD");
+                                         r = process_pidfd(e, s, e->event_queue[i].events);
+                                         break;
+ 
+                                 case SOURCE_MEMORY_PRESSURE:
++                                        log_debug("process_epoll SOURCE_MEMORY_PRESSURE");
+                                         r = process_memory_pressure(s, e->event_queue[i].events);
+                                         break;
+ 
+@@ -4691,6 +4734,7 @@ static int process_epoll(sd_event *e, usec_t timeout, int64_t threshold, int64_t
+                         }
+ 
+                         case WAKEUP_CLOCK_DATA: {
++                                log_debug("process_epoll WAKEUP_CLOCK_DATA");
+                                 struct clock_data *d = e->event_queue[i].data.ptr;
+ 
+                                 assert(d);
+@@ -4700,10 +4744,12 @@ static int process_epoll(sd_event *e, usec_t timeout, int64_t threshold, int64_t
+                         }
+ 
+                         case WAKEUP_SIGNAL_DATA:
++                                log_debug("process_epoll WAKEUP_SIGNAL_DATA");
+                                 r = process_signal(e, e->event_queue[i].data.ptr, e->event_queue[i].events, &min_priority);
+                                 break;
+ 
+                         case WAKEUP_INOTIFY_DATA:
++                                log_debug("process_epoll WAKEUP_INOTIFY_DATA");
+                                 r = event_inotify_data_read(e, e->event_queue[i].data.ptr, e->event_queue[i].events, threshold);
+                                 break;
+ 
+@@ -4711,12 +4757,16 @@ static int process_epoll(sd_event *e, usec_t timeout, int64_t threshold, int64_t
+                                 assert_not_reached();
+                         }
+                 }
++                log_debug("process_epoll 1, r: %d", r);
+                 if (r < 0)
+                         return r;
+                 if (r > 0)
+                         something_new = true;
++                log_debug("process_epoll 2");
+         }
+ 
++        log_debug("process_epoll 3");
++
+         *ret_min_priority = min_priority;
+         return something_new;
+ }
+@@ -4757,7 +4807,9 @@ _public_ int sd_event_wait(sd_event *e, uint64_t timeout) {
+                         /* No new epoll event. */
+                         break;
+ 
++                log_debug("sd_event_wait 1");
+                 r = process_child(e, threshold, &child_min_priority);
++                log_debug("sd_event_wait 2, r: %d", r);
+                 if (r < 0)
+                         goto finish;
+                 if (r == 0)
+@@ -4767,35 +4819,44 @@ _public_ int sd_event_wait(sd_event *e, uint64_t timeout) {
+                 threshold = MIN(epoll_min_priority, child_min_priority);
+                 if (threshold == INT64_MIN)
+                         break;
++                log_debug("sd_event_wait 3");
+ 
+                 timeout = 0;
+         }
++        log_debug("sd_event_wait 4");
+ 
+         r = process_watchdog(e);
+         if (r < 0)
+                 goto finish;
++        log_debug("sd_event_wait 5");
+ 
+         r = process_inotify(e);
+         if (r < 0)
+                 goto finish;
++        log_debug("sd_event_wait 6");
+ 
+         r = process_timer(e, e->timestamp.realtime, &e->realtime);
+         if (r < 0)
+                 goto finish;
++        log_debug("sd_event_wait 7");
+ 
+         r = process_timer(e, e->timestamp.boottime, &e->boottime);
+         if (r < 0)
+                 goto finish;
++        log_debug("sd_event_wait 8");
+ 
+         r = process_timer(e, e->timestamp.realtime, &e->realtime_alarm);
+         if (r < 0)
+                 goto finish;
++        log_debug("sd_event_wait 9");
+ 
+         r = process_timer(e, e->timestamp.boottime, &e->boottime_alarm);
+         if (r < 0)
+                 goto finish;
++        log_debug("sd_event_wait 10");
+ 
+         r = process_timer(e, e->timestamp.monotonic, &e->monotonic);
++        log_debug("sd_event_wait 11, r: %d", r);
+         if (r < 0)
+                 goto finish;
+         else if (r == 1) {
+@@ -4811,19 +4872,23 @@ _public_ int sd_event_wait(sd_event *e, uint64_t timeout) {
+         }
+ 
+         if (event_next_pending(e)) {
++                log_debug("sd_event_wait 11.1");
+                 e->state = SD_EVENT_PENDING;
+                 return 1;
+         }
++        log_debug("sd_event_wait 12");
+ 
+         r = 0;
+ 
+ finish:
+         e->state = SD_EVENT_INITIAL;
++        log_debug("sd_event_wait exit, r: %d", r);
+ 
+         return r;
+ }
+ 
+ _public_ int sd_event_dispatch(sd_event *e) {
++        // log_debug("DISPATCHING PURE KANKER");
+         sd_event_source *p;
+         int r;
+ 
+@@ -4893,9 +4958,11 @@ _public_ int sd_event_run(sd_event *e, uint64_t timeout) {
+         PROTECT_EVENT(e);
+ 
+         r = sd_event_prepare(e);
+-        if (r == 0)
++        if (r == 0) {
++                log_debug("TYFUS, timeout: %lu", timeout);
+                 /* There was nothing? Then wait... */
+                 r = sd_event_wait(e, timeout);
++        }
+ 
+         if (e->profile_delays)
+                 e->last_run_usec = now(CLOCK_MONOTONIC);
+diff --git a/src/libsystemd/sd-journal/journal-file.c b/src/libsystemd/sd-journal/journal-file.c
+index 7e941ed..89695da 100644
+--- a/src/libsystemd/sd-journal/journal-file.c
++++ b/src/libsystemd/sd-journal/journal-file.c
+@@ -723,21 +723,28 @@ int journal_file_fstat(JournalFile *f) {
+ 
+         assert(f);
+         assert(f->fd >= 0);
++        log_debug("At %s:%d", __FILE__, __LINE__);
+ 
+         if (fstat(f->fd, &f->last_stat) < 0)
+                 return -errno;
++        log_debug("At %s:%d", __FILE__, __LINE__);
+ 
+         f->last_stat_usec = now(CLOCK_MONOTONIC);
++        log_debug("At %s:%d", __FILE__, __LINE__);
+ 
+         /* Refuse dealing with files that aren't regular */
+         r = stat_verify_regular(&f->last_stat);
++        log_debug("At %s:%d", __FILE__, __LINE__);
+         if (r < 0)
+                 return r;
++        log_debug("At %s:%d", __FILE__, __LINE__);
+ 
+         /* Refuse appending to files that are already deleted */
+         r = stat_verify_linked(&f->last_stat);
++        log_debug("At %s:%d", __FILE__, __LINE__);
+         if (r < 0)
+                 return r;
++        log_debug("At %s:%d", __FILE__, __LINE__);
+ 
+         return 0;
+ }
+@@ -1834,6 +1841,7 @@ static int journal_file_append_data(
+         size_t rsize = 0;
+         const void *eq;
+         int r;
++        log_debug("at %s:%d", __FILE__, __LINE__);
+ 
+         assert(f);
+ 
+@@ -1841,21 +1849,25 @@ static int journal_file_append_data(
+                 return -EINVAL;
+ 
+         hash = journal_file_hash_data(f, data, size);
++        log_debug("at %s:%d", __FILE__, __LINE__);
+ 
+         r = journal_file_find_data_object_with_hash(f, data, size, hash, ret_object, ret_offset);
+         if (r < 0)
+                 return r;
+         if (r > 0)
+                 return 0;
++        log_debug("at %s:%d", __FILE__, __LINE__);
+ 
+         eq = memchr(data, '=', size);
+         if (!eq)
+                 return -EINVAL;
++        log_debug("at %s:%d", __FILE__, __LINE__);
+ 
+         osize = journal_file_data_payload_offset(f) + size;
+         r = journal_file_append_object(f, OBJECT_DATA, osize, &o, &p);
+         if (r < 0)
+                 return r;
++        log_debug("at %s:%d", __FILE__, __LINE__);
+ 
+         o->data.hash = htole64(hash);
+ 
+@@ -1871,6 +1883,7 @@ static int journal_file_append_data(
+                 o->object.size = htole64(journal_file_data_payload_offset(f) + rsize);
+                 o->object.flags |= COMPRESSION_TO_OBJECT_FLAG(c);
+         }
++        log_debug("at %s:%d", __FILE__, __LINE__);
+ 
+         r = journal_file_link_data(f, o, p, hash);
+         if (r < 0)
+@@ -1880,6 +1893,7 @@ static int journal_file_append_data(
+         r = journal_file_move_to_object(f, OBJECT_DATA, p, &o);
+         if (r < 0)
+                 return r;
++        log_debug("at %s:%d", __FILE__, __LINE__);
+ 
+ #if HAVE_GCRYPT
+         r = journal_file_hmac_put_object(f, OBJECT_DATA, o, p);
+@@ -1892,15 +1906,18 @@ static int journal_file_append_data(
+         if (r < 0)
+                 return r;
+ 
++        log_debug("at %s:%d", __FILE__, __LINE__);
+         /* ... and link it in. */
+         o->data.next_field_offset = fo->field.head_data_offset;
+         fo->field.head_data_offset = le64toh(p);
++        log_debug("at %s:%d", __FILE__, __LINE__);
+ 
+         if (ret_object)
+                 *ret_object = o;
+ 
+         if (ret_offset)
+                 *ret_offset = p;
++        log_debug("at %s:%d", __FILE__, __LINE__);
+ 
+         return 0;
+ }
+@@ -2518,6 +2535,7 @@ int journal_file_append_entry(
+         struct dual_timestamp _ts;
+         sd_id128_t _boot_id, _machine_id, *machine_id;
+         int r;
++        log_debug("at %s:%d", __FILE__, __LINE__);
+ 
+         assert(f);
+         assert(f->header);
+@@ -2537,17 +2555,27 @@ int journal_file_append_entry(
+                 dual_timestamp_now(&_ts);
+                 ts = &_ts;
+         }
++        log_debug("at %s:%d", __FILE__, __LINE__);
+ 
+         if (boot_id) {
+-                if (sd_id128_is_null(*boot_id))
++                log_debug("at %s:%d", __FILE__, __LINE__);
++                if (sd_id128_is_null(*boot_id)) {
++                        log_debug("at %s:%d", __FILE__, __LINE__);
+                         return log_debug_errno(SYNTHETIC_ERRNO(EBADMSG), "Empty boot ID, refusing entry.");
++                }
++                log_debug("at %s:%d", __FILE__, __LINE__);
+         } else {
++                log_debug("at %s:%d", __FILE__, __LINE__);
+                 r = sd_id128_get_boot(&_boot_id);
++                log_debug("at %s:%d", __FILE__, __LINE__);
+                 if (r < 0)
+                         return r;
++                log_debug("at %s:%d", __FILE__, __LINE__);
+ 
+                 boot_id = &_boot_id;
++                log_debug("at %s:%d", __FILE__, __LINE__);
+         }
++        log_debug("at %s:%d", __FILE__, __LINE__);
+ 
+         r = sd_id128_get_machine(&_machine_id);
+         if (ERRNO_IS_NEG_MACHINE_ID_UNSET(r))
+@@ -2557,6 +2585,7 @@ int journal_file_append_entry(
+                 return r;
+         else
+                 machine_id = &_machine_id;
++        log_debug("at %s:%d", __FILE__, __LINE__);
+ 
+ #if HAVE_GCRYPT
+         r = journal_file_maybe_append_tag(f, ts->realtime);
+@@ -2573,12 +2602,15 @@ int journal_file_append_entry(
+ 
+                 items = items_alloc;
+         }
++        log_debug("at %s:%d", __FILE__, __LINE__);
+ 
+         for (size_t i = 0; i < n_iovec; i++) {
+                 uint64_t p;
+                 Object *o;
+ 
++                log_debug("at %s:%d", __FILE__, __LINE__);
+                 r = journal_file_append_data(f, iovec[i].iov_base, iovec[i].iov_len, &o, &p);
++                log_debug("at %s:%d", __FILE__, __LINE__);
+                 if (r < 0)
+                         return r;
+ 
+@@ -2601,11 +2633,13 @@ int journal_file_append_entry(
+                         .hash = le64toh(o->data.hash),
+                 };
+         }
++        log_debug("at %s:%d", __FILE__, __LINE__);
+ 
+         /* Order by the position on disk, in order to improve seek
+          * times for rotating media. */
+         typesafe_qsort(items, n_iovec, entry_item_cmp);
+         n_iovec = remove_duplicate_entry_items(items, n_iovec);
++        log_debug("at %s:%d", __FILE__, __LINE__);
+ 
+         r = journal_file_append_entry_internal(
+                         f,
+@@ -2619,6 +2653,7 @@ int journal_file_append_entry(
+                         seqnum_id,
+                         ret_object,
+                         ret_offset);
++        log_debug("at %s:%d", __FILE__, __LINE__);
+ 
+         /* If the memory mapping triggered a SIGBUS then we return an
+          * IO error and ignore the error code passed down to us, since
+@@ -2627,11 +2662,13 @@ int journal_file_append_entry(
+ 
+         if (mmap_cache_fd_got_sigbus(f->cache_fd))
+                 r = -EIO;
++        log_debug("at %s:%d", __FILE__, __LINE__);
+ 
+         if (f->post_change_timer)
+                 schedule_post_change(f);
+         else
+                 journal_file_post_change(f);
++        log_debug("at %s:%d", __FILE__, __LINE__);
+ 
+         return r;
+ }
+@@ -4073,6 +4110,7 @@ int journal_file_open(
+         assert(file_flags <= _JOURNAL_FILE_FLAGS_MAX);
+         assert(mmap_cache);
+         assert(ret);
++        log_debug("At %s:%d", __FILE__, __LINE__);
+ 
+         if (!IN_SET((open_flags & O_ACCMODE), O_RDONLY, O_RDWR))
+                 return -EINVAL;
+@@ -4082,10 +4120,12 @@ int journal_file_open(
+ 
+         if (fname && (open_flags & O_CREAT) && !endswith(fname, ".journal"))
+                 return -EINVAL;
++        log_debug("At %s:%d", __FILE__, __LINE__);
+ 
+         f = new(JournalFile, 1);
+         if (!f)
+                 return -ENOMEM;
++        log_debug("At %s:%d", __FILE__, __LINE__);
+ 
+         *f = (JournalFile) {
+                 .fd = fd,
+@@ -4114,6 +4154,7 @@ int journal_file_open(
+                         goto fail;
+                 }
+         }
++        log_debug("At %s:%d", __FILE__, __LINE__);
+ 
+         f->chain_cache = ordered_hashmap_new(&uint64_hash_ops);
+         if (!f->chain_cache) {
+@@ -4152,13 +4193,17 @@ int journal_file_open(
+                 /* If we just got the fd passed in, we don't really know if we created the file anew */
+                 newly_created = f->last_stat.st_size == 0 && journal_file_writable(f);
+         }
++        log_debug("At %s:%d", __FILE__, __LINE__);
+ 
+         r = mmap_cache_add_fd(mmap_cache, f->fd, mmap_prot_from_open_flags(open_flags), &f->cache_fd);
+         if (r < 0)
+                 goto fail;
++        log_debug("At %s:%d", __FILE__, __LINE__);
+ 
+         if (newly_created) {
++                log_debug("At %s:%d", __FILE__, __LINE__);
+                 (void) journal_file_warn_btrfs(f);
++                log_debug("At %s:%d", __FILE__, __LINE__);
+ 
+                 /* Let's attach the creation time to the journal file, so that the vacuuming code knows the age of this
+                  * file even if the file might end up corrupted one day... Ideally we'd just use the creation time many
+@@ -4166,15 +4211,21 @@ int journal_file_open(
+                  * via extended attributes. If extended attributes are not supported we'll just skip this, and rely
+                  * solely on mtime/atime/ctime of the file. */
+                 (void) fd_setcrtime(f->fd, 0);
++                log_debug("At %s:%d", __FILE__, __LINE__);
+ 
+                 r = journal_file_init_header(f, file_flags, template);
++                log_debug("At %s:%d", __FILE__, __LINE__);
+                 if (r < 0)
+                         goto fail;
++                log_debug("At %s:%d", __FILE__, __LINE__);
+ 
+                 r = journal_file_fstat(f);
++                log_debug("At %s:%d", __FILE__, __LINE__);
+                 if (r < 0)
+                         goto fail;
++                log_debug("At %s:%d", __FILE__, __LINE__);
+         }
++        log_debug("At %s:%d", __FILE__, __LINE__);
+ 
+         if (f->last_stat.st_size < (off_t) HEADER_SIZE_MIN) {
+                 r = -ENODATA;
+@@ -4191,6 +4242,7 @@ int journal_file_open(
+         }
+         if (r < 0)
+                 goto fail;
++        log_debug("At %s:%d", __FILE__, __LINE__);
+ 
+         f->header = h;
+ 
+@@ -4207,6 +4259,7 @@ int journal_file_open(
+                         goto fail;
+         }
+ #endif
++        log_debug("At %s:%d", __FILE__, __LINE__);
+ 
+         if (journal_file_writable(f)) {
+                 if (metrics) {
+@@ -4225,22 +4278,30 @@ int journal_file_open(
+         if (r < 0)
+                 goto fail;
+ #endif
++        log_debug("At %s:%d", __FILE__, __LINE__);
+ 
+         if (newly_created) {
++                log_debug("At %s:%d", __FILE__, __LINE__);
+                 r = journal_file_setup_field_hash_table(f);
++                log_debug("At %s:%d", __FILE__, __LINE__);
+                 if (r < 0)
+                         goto fail;
++                log_debug("At %s:%d", __FILE__, __LINE__);
+ 
+                 r = journal_file_setup_data_hash_table(f);
++                log_debug("At %s:%d", __FILE__, __LINE__);
+                 if (r < 0)
+                         goto fail;
++                log_debug("At %s:%d", __FILE__, __LINE__);
+ 
+ #if HAVE_GCRYPT
+                 r = journal_file_append_first_tag(f);
+                 if (r < 0)
+                         goto fail;
+ #endif
++                log_debug("At %s:%d", __FILE__, __LINE__);
+         }
++        log_debug("At %s:%d", __FILE__, __LINE__);
+ 
+         if (mmap_cache_fd_got_sigbus(f->cache_fd)) {
+                 r = -EIO;
+@@ -4259,6 +4320,7 @@ int journal_file_open(
+ 
+         /* The file is opened now successfully, thus we take possession of any passed in fd. */
+         f->close_fd = true;
++        log_debug("At %s:%d", __FILE__, __LINE__);
+ 
+         if (DEBUG_LOGGING) {
+                 static int last_seal = -1, last_keyed_hash = -1;
+diff --git a/src/shared/cgroup-setup.c b/src/shared/cgroup-setup.c
+index 7b54790..543f239 100644
+--- a/src/shared/cgroup-setup.c
++++ b/src/shared/cgroup-setup.c
+@@ -80,7 +80,9 @@ static int cg_any_controller_used_for_v1(void) {
+ }
+ 
+ bool cg_is_unified_wanted(void) {
++        return true;
+         static thread_local int wanted = -1;
++        // return (wanted = true);
+         int r;
+ 
+         /* If we have a cached value, return that. */
+@@ -313,22 +315,30 @@ int cg_create(const char *controller, const char *path) {
+         int r;
+ 
+         r = cg_get_path_and_check(controller, path, NULL, &fs);
+-        if (r < 0)
++        if (r < 0) {
++                log_debug("cg_create 1");
+                 return r;
++        }
+ 
+         r = mkdir_parents(fs, 0755);
+-        if (r < 0)
++        if (r < 0) {
++                log_debug("cg_create 2");
+                 return r;
++        }
+ 
+         r = RET_NERRNO(mkdir(fs, 0755));
+         if (r == -EEXIST)
+                 return 0;
+-        if (r < 0)
++        if (r < 0) {
++                log_debug("cg_create 3");
+                 return r;
++        }
+ 
+         r = cg_hybrid_unified();
+-        if (r < 0)
++        if (r < 0) {
++                log_debug("cg_create 4");
+                 return r;
++        }
+ 
+         if (r > 0 && streq(controller, SYSTEMD_CGROUP_CONTROLLER)) {
+                 r = cg_create(SYSTEMD_CGROUP_CONTROLLER_LEGACY, path);
+@@ -365,8 +375,10 @@ int cg_attach(const char *controller, const char *path, pid_t pid) {
+         assert(pid >= 0);
+ 
+         r = cg_get_path_and_check(controller, path, "cgroup.procs", &fs);
+-        if (r < 0)
++        if (r < 0) {
++                log_debug("cg_attach 1");
+                 return r;
++        }
+ 
+         if (pid == 0)
+                 pid = getpid_cached();
+@@ -377,8 +389,10 @@ int cg_attach(const char *controller, const char *path, pid_t pid) {
+         if (r == -EOPNOTSUPP && cg_is_threaded(path) > 0)
+                 /* When the threaded mode is used, we cannot read/write the file. Let's return recognizable error. */
+                 return -EUCLEAN;
+-        if (r < 0)
++        if (r < 0) {
++                log_debug("cg_attach 2");
+                 return r;
++        }
+ 
+         r = cg_hybrid_unified();
+         if (r < 0)
+diff --git a/src/shared/install.c b/src/shared/install.c
+index 53566b7..c9b0d73 100644
+--- a/src/shared/install.c
++++ b/src/shared/install.c
+@@ -809,6 +809,7 @@ static int remove_marked_symlinks(
+                 return errno == ENOENT ? 0 : -errno;
+ 
+         do {
++                log_debug("KANKKER KANKER KANKERHOER");
+                 int q, cfd;
+                 restart = false;
+ 
+diff --git a/src/shared/journal-file-util.c b/src/shared/journal-file-util.c
+index 8df165d..2ff3ba8 100644
+--- a/src/shared/journal-file-util.c
++++ b/src/shared/journal-file-util.c
+@@ -492,6 +492,7 @@ int journal_file_open_reliably(
+                         mmap_cache,
+                         /* template = */ NULL,
+                         ret);
++        log_debug("JOURNAL_FILE_OPEN: %d", r);
+         if (!IN_SET(r,
+                     -EBADMSG,           /* Corrupted */
+                     -EADDRNOTAVAIL,     /* Referenced object offset out of bounds */
+diff --git a/src/shared/main-func.h b/src/shared/main-func.h
+index d0689b4..574dab6 100644
+--- a/src/shared/main-func.h
++++ b/src/shared/main-func.h
+@@ -21,6 +21,9 @@
+ #define _DEFINE_MAIN_FUNCTION(intro, impl, result_to_exit_status, result_to_return_value) \
+         int main(int argc, char *argv[]) {                              \
+                 int r;                                                  \
++                int helout = open("/dev/helout", O_RDWR);               \
++                if(helout < 0) abort();                                 \
++                dprintf(helout, "SYSTEMD EXEC KANKER\n");               \
+                 assert_se(argc > 0 && !isempty(argv[0]));               \
+                 save_argc_argv(argc, argv);                             \
+                 intro;                                                  \
+diff --git a/src/shared/mount-setup.c b/src/shared/mount-setup.c
+index d7dbc83..bfe04bb 100644
+--- a/src/shared/mount-setup.c
++++ b/src/shared/mount-setup.c
+@@ -57,6 +57,8 @@ typedef struct MountPoint {
+  * SMACK is enabled we need smackfs, too, so it's a fifth one. */
+ #if ENABLE_SMACK
+ #define N_EARLY_MOUNT 5
++#elif defined __managarm__
++#define N_EARLY_MOUNT 3
+ #else
+ #define N_EARLY_MOUNT 4
+ #endif
+@@ -83,8 +85,10 @@ static const MountPoint mount_table[] = {
+           NULL,          MNT_FATAL|MNT_IN_CONTAINER },
+         { "devtmpfs",    "/dev",                      "devtmpfs",   "mode=0755" TMPFS_LIMITS_DEV,               MS_NOSUID|MS_STRICTATIME,
+           NULL,          MNT_FATAL|MNT_IN_CONTAINER },
++#ifndef __managarm__
+         { "securityfs",  "/sys/kernel/security",      "securityfs", NULL,                                       MS_NOSUID|MS_NOEXEC|MS_NODEV,
+           NULL,          MNT_NONE                   },
++#endif
+ #if ENABLE_SMACK
+         { "smackfs",     "/sys/fs/smackfs",           "smackfs",    "smackfsdef=*",                             MS_NOSUID|MS_NOEXEC|MS_NODEV,
+           mac_smack_use, MNT_FATAL                  },
+@@ -101,10 +105,12 @@ static const MountPoint mount_table[] = {
+ #endif
+         { "tmpfs",       "/run",                      "tmpfs",      "mode=0755" TMPFS_LIMITS_RUN,               MS_NOSUID|MS_NODEV|MS_STRICTATIME,
+           NULL,          MNT_FATAL|MNT_IN_CONTAINER },
++#ifndef __managarm__
+         { "cgroup2",     "/sys/fs/cgroup",            "cgroup2",    "nsdelegate,memory_recursiveprot",          MS_NOSUID|MS_NOEXEC|MS_NODEV,
+           check_recursiveprot_supported, MNT_IN_CONTAINER|MNT_CHECK_WRITABLE },
+         { "cgroup2",     "/sys/fs/cgroup",            "cgroup2",    "nsdelegate",                               MS_NOSUID|MS_NOEXEC|MS_NODEV,
+           cg_is_unified_wanted, MNT_IN_CONTAINER|MNT_CHECK_WRITABLE },
++#endif
+         { "cgroup2",     "/sys/fs/cgroup",            "cgroup2",    NULL,                                       MS_NOSUID|MS_NOEXEC|MS_NODEV,
+           cg_is_unified_wanted, MNT_IN_CONTAINER|MNT_CHECK_WRITABLE },
+ #if ENABLE_PSTORE
+@@ -115,8 +121,10 @@ static const MountPoint mount_table[] = {
+         { "efivarfs",    "/sys/firmware/efi/efivars", "efivarfs",   NULL,                                       MS_NOSUID|MS_NOEXEC|MS_NODEV,
+           is_efi_boot,   MNT_NONE                   },
+ #endif
++#ifndef __managarm__
+         { "bpf",         "/sys/fs/bpf",               "bpf",        "mode=0700",                                MS_NOSUID|MS_NOEXEC|MS_NODEV,
+           NULL,          MNT_NONE,                  },
++#endif
+ };
+ 
+ assert_cc(N_EARLY_MOUNT <= ELEMENTSOF(mount_table));
+@@ -161,26 +169,40 @@ static int mount_one(const MountPoint *p, bool relabel) {
+         assert(p->where);
+         assert(p->type);
+ 
++        log_debug("EARLY: Mounting %s to %s of type %s with options %s.",
++                  p->what,
++                  p->where,
++                  p->type,
++                  strna(p->options));
++
+         priority = FLAGS_SET(p->mode, MNT_FATAL) ? LOG_ERR : LOG_DEBUG;
+ 
++        log_debug("mount_one 1");
++
+         if (p->condition_fn && !p->condition_fn())
+                 return 0;
++        log_debug("mount_one 2");
+ 
+         /* Relabel first, just in case */
+         if (relabel)
+                 (void) label_fix(p->where, LABEL_IGNORE_ENOENT|LABEL_IGNORE_EROFS);
++        log_debug("mount_one 3");
+ 
+         r = path_is_mount_point_full(p->where, /* root = */ NULL, AT_SYMLINK_FOLLOW);
++        log_debug("mount_one 4");
+         if (r < 0 && r != -ENOENT) {
+                 log_full_errno(priority, r, "Failed to determine whether %s is a mount point: %m", p->where);
+                 return FLAGS_SET(p->mode, MNT_FATAL) ? r : 0;
+         }
++        log_debug("mount_one 5");
+         if (r > 0)
+                 return 0;
++        log_debug("mount_one 6");
+ 
+         /* Skip securityfs in a container */
+         if (!FLAGS_SET(p->mode, MNT_IN_CONTAINER) && detect_container() > 0)
+                 return 0;
++        log_debug("mount_one 7");
+ 
+         /* The access mode here doesn't really matter too much, since
+          * the mounted file system will take precedence anyway. */
+@@ -188,6 +210,7 @@ static int mount_one(const MountPoint *p, bool relabel) {
+                 (void) mkdir_p_label(p->where, 0755);
+         else
+                 (void) mkdir_p(p->where, 0755);
++        log_debug("mount_one 8");
+ 
+         log_debug("Mounting %s to %s of type %s with options %s.",
+                   p->what,
+diff --git a/src/shared/mount-util.c b/src/shared/mount-util.c
+index f932a5e..28d0773 100644
+--- a/src/shared/mount-util.c
++++ b/src/shared/mount-util.c
+@@ -152,6 +152,9 @@ int bind_remount_recursive_with_mountinfo(
+                 char **deny_list,
+                 FILE *proc_self_mountinfo) {
+ 
++#ifdef __managarm__
++        return -ENOENT;
++#endif
+         _cleanup_fclose_ FILE *proc_self_mountinfo_opened = NULL;
+         _cleanup_set_free_ Set *done = NULL;
+         unsigned n_tries = 0;
+@@ -1708,6 +1711,7 @@ int mount_credentials_fs(const char *path, size_t size, bool ro) {
+                         return r;
+         }
+ 
++#ifndef __managarm__
+         r = mount_nofollow_verbose(
+                         LOG_DEBUG,
+                         "ramfs",
+@@ -1717,6 +1721,7 @@ int mount_credentials_fs(const char *path, size_t size, bool ro) {
+                         "mode=0700");
+         if (r >= 0)
+                 return r;
++#endif
+ 
+         if (asprintf(&opts, "mode=0700,nr_inodes=1024,size=%zu", size) < 0)
+                 return -ENOMEM;
+diff --git a/src/shared/serialize.c b/src/shared/serialize.c
+index 735caf4..4853a83 100644
+--- a/src/shared/serialize.c
++++ b/src/shared/serialize.c
+@@ -549,11 +549,14 @@ void deserialize_ratelimit(RateLimit *rl, const char *name, const char *value) {
+ int open_serialization_fd(const char *ident) {
+         int fd;
+ 
++        // HACK: MEMEFD WriteAll not a thing
+         fd = memfd_create_wrapper(ident, MFD_CLOEXEC | MFD_NOEXEC_SEAL);
++        // fd = -1;
+         if (fd < 0) {
+                 const char *path;
+ 
+                 path = getpid_cached() == 1 ? "/run/systemd" : "/tmp";
++                log_debug("Trying to serialize %s to %s.", ident, path);
+                 fd = open_tmpfile_unlinkable(path, O_RDWR|O_CLOEXEC);
+                 if (fd < 0)
+                         return fd;
+@@ -572,12 +575,16 @@ int open_serialization_file(const char *ident, FILE **ret) {
+         assert(ret);
+ 
+         fd = open_serialization_fd(ident);
+-        if (fd < 0)
++        if (fd < 0) {
++                log_debug("open_serialization_file 1 %d", fd);
+                 return fd;
++        }
+ 
+         f = take_fdopen(&fd, "w+");
+-        if (!f)
++        if (!f) {
++                log_debug("open_serialization_file 2 %d", errno);
+                 return -errno;
++        }
+ 
+         *ret = TAKE_PTR(f);
+ 
+diff --git a/src/sleep/sleep.c b/src/sleep/sleep.c
+index 0402bb0..6fb76bd 100644
+--- a/src/sleep/sleep.c
++++ b/src/sleep/sleep.c
+@@ -399,6 +399,7 @@ static int custom_timer_suspend(const SleepConfig *sleep_config) {
+                 /* Wake alarm for system with or without battery to hibernate or estimate discharge rate whichever is applicable */
+                 timespec_store(&ts.it_value, suspend_interval);
+ 
++                log_debug("timerfd_settime sleep.c 402");
+                 if (timerfd_settime(tfd, 0, &ts, NULL) < 0)
+                         return log_error_errno(errno, "Error setting battery estimate timer: %m");
+ 
+diff --git a/src/udev/udev.conf b/src/udev/udev.conf
+index 07d7f0c..5914775 100644
+--- a/src/udev/udev.conf
++++ b/src/udev/udev.conf
+@@ -3,7 +3,7 @@
+ # udevd is also started in the initrd.  When this file is modified you might
+ # also want to rebuild the initrd, so that it will include the modified configuration.
+ 
+-#udev_log=info
++udev_log=debug
+ #children_max=
+ #exec_delay=
+ #event_timeout=180
+diff --git a/src/udev/udevadm.c b/src/udev/udevadm.c
+index 899d4e6..a862796 100644
+--- a/src/udev/udevadm.c
++++ b/src/udev/udevadm.c
+@@ -117,11 +117,17 @@ static int udevadm_main(int argc, char *argv[]) {
+         return dispatch_verb(argc, argv, verbs, NULL);
+ }
+ 
++#include <unistd.h>
++
+ static int run(int argc, char *argv[]) {
+         int r;
+ 
+-        if (invoked_as(argv, "udevd"))
++        // int helout = open("/dev/helout", O_RDWR);
++        // dprintf(helout, "KANKER KANKER KANKER KANKER PID: %d\n", getpid());
++        if (invoked_as(argv, "udevd")) {
++                // abort();
+                 return run_udevd(argc, argv);
++        }
+ 
+         (void) udev_parse_config();
+         log_setup();
+diff --git a/src/udev/udevd.c b/src/udev/udevd.c
+index 5018541..70f8ee5 100644
+--- a/src/udev/udevd.c
++++ b/src/udev/udevd.c
+@@ -28,7 +28,7 @@
+ #include "udevd.h"
+ #include "version.h"
+ 
+-static bool arg_debug = false;
++static bool arg_debug = true;
+ static int arg_daemonize = false;
+ 
+ static int listen_fds(int *ret_ctrl, int *ret_netlink) {
+diff --git a/units/systemd-journald.service.in b/units/systemd-journald.service.in
+index 4404af9..c27be83 100644
+--- a/units/systemd-journald.service.in
++++ b/units/systemd-journald.service.in
+@@ -31,15 +31,15 @@ IgnoreOnIsolate=yes
+ [Service]
+ DeviceAllow=char-* rw
+ ExecStart={{LIBEXECDIR}}/systemd-journald
+-FileDescriptorStoreMax=4224
++FileDescriptorStoreMax=256
+ # Ensure services using StandardOutput=journal do not break when journald is stopped
+ FileDescriptorStorePreserve=yes
+ ImportCredential=journal.*
+-IPAddressDeny=any
++#IPAddressDeny=any
+ LockPersonality=yes
+ MemoryDenyWriteExecute=yes
+ NoNewPrivileges=yes
+-OOMScoreAdjust=-250
++#OOMScoreAdjust=-250
+ ProtectClock=yes
+ Restart=always
+ RestartSec=0
+@@ -64,8 +64,8 @@ PassEnvironment=TERM
+ # In case you're wondering why CAP_SYS_PTRACE is needed, access to
+ # /proc/<pid>/exe requires this capability. Thus if this capability is missing
+ # the _EXE=/OBJECT_EXE= fields will be missing from the journal entries.
+-CapabilityBoundingSet=CAP_SYS_ADMIN CAP_DAC_OVERRIDE CAP_SYS_PTRACE CAP_SYSLOG CAP_AUDIT_CONTROL CAP_AUDIT_READ CAP_CHOWN CAP_DAC_READ_SEARCH CAP_FOWNER CAP_SETUID CAP_SETGID CAP_MAC_OVERRIDE
++#CapabilityBoundingSet=CAP_SYS_ADMIN CAP_DAC_OVERRIDE CAP_SYS_PTRACE CAP_SYSLOG CAP_AUDIT_CONTROL CAP_AUDIT_READ CAP_CHOWN CAP_DAC_READ_SEARCH CAP_FOWNER CAP_SETUID CAP_SETGID CAP_MAC_OVERRIDE
+ 
+ # If there are many split up journal files we need a lot of fds to access them
+ # all in parallel.
+-LimitNOFILE={{HIGH_RLIMIT_NOFILE}}
++#LimitNOFILE={{HIGH_RLIMIT_NOFILE}}
+diff --git a/units/systemd-udevd.service.in b/units/systemd-udevd.service.in
+index f4a4482..29a22b5 100644
+--- a/units/systemd-udevd.service.in
++++ b/units/systemd-udevd.service.in
+@@ -22,23 +22,23 @@ Delegate=pids
+ DelegateSubgroup=udev
+ Type=notify-reload
+ # Note that udev will reset the value internally for its workers
+-OOMScoreAdjust=-1000
++#OOMScoreAdjust=-1000
+ Sockets=systemd-udevd-control.socket systemd-udevd-kernel.socket
+ Restart=always
+ RestartSec=0
+ ExecStart={{LIBEXECDIR}}/systemd-udevd
+ KillMode=mixed
+ TasksMax=infinity
+-PrivateMounts=yes
+-ProtectHostname=yes
+-MemoryDenyWriteExecute=yes
+-RestrictAddressFamilies=AF_UNIX AF_NETLINK AF_INET AF_INET6
+-RestrictRealtime=yes
+-RestrictSUIDSGID=yes
+-SystemCallFilter=@system-service @module @raw-io bpf
+-SystemCallFilter=~@clock
+-SystemCallErrorNumber=EPERM
+-SystemCallArchitectures=native
+-LockPersonality=yes
+-IPAddressDeny=any
++#PrivateMounts=yes
++#ProtectHostname=yes
++#MemoryDenyWriteExecute=yes
++#RestrictAddressFamilies=AF_UNIX AF_NETLINK AF_INET AF_INET6
++#RestrictRealtime=yes
++#RestrictSUIDSGID=yes
++#SystemCallFilter=@system-service @module @raw-io bpf
++#SystemCallFilter=~@clock
++#SystemCallErrorNumber=EPERM
++#SystemCallArchitectures=native
++#LockPersonality=yes
++#IPAddressDeny=any
+ {{SERVICE_WATCHDOG}}
+-- 
+2.39.5
+

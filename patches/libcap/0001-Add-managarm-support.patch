@@ -1,0 +1,104 @@
+From f69ca23391ebd81312583a351918659a0b66ec4e Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Sat, 23 Nov 2024 15:34:18 +0100
+Subject: [PATCH] Add managarm support
+
+---
+ Make.Rules        |  2 +-
+ libcap/cap_proc.c | 21 ++++++++++++++++++++-
+ psx/psx.c         |  8 +++++++-
+ 3 files changed, 28 insertions(+), 3 deletions(-)
+
+diff --git a/Make.Rules b/Make.Rules
+index 2dd6916..36b55a2 100644
+--- a/Make.Rules
++++ b/Make.Rules
+@@ -63,7 +63,7 @@ GOMAJOR=1
+ KERNEL_HEADERS := $(topdir)/libcap/include/uapi
+ LIBCAP_INCLUDES = -I$(KERNEL_HEADERS) -I$(topdir)/libcap/include
+ DEFINES := -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
+-SYSTEM_HEADERS = /usr/include
++SYSTEM_HEADERS ?= /usr/include
+ 
+ SUDO := sudo
+ CC := $(CROSS_COMPILE)gcc
+diff --git a/libcap/cap_proc.c b/libcap/cap_proc.c
+index 09b74ca..7fc8d37 100644
+--- a/libcap/cap_proc.c
++++ b/libcap/cap_proc.c
+@@ -13,13 +13,24 @@
+ #include <grp.h>
+ #include <sys/prctl.h>
+ #include <sys/securebits.h>
+-#include <sys/syscall.h>
++// #include <sys/syscall.h>
+ #include <unistd.h>
+ #include <sys/types.h>
+ #include <sys/wait.h>
+ 
+ #include "libcap.h"
+ 
++#if defined(__managarm__)
++
++#define SYS_capset -1
++#define SYS_prctl -1
++#define SYS_setuid -1
++#define SYS_setgid -1
++#define SYS_setgroups -1
++#define SYS_chroot -1
++
++#endif
++
+ /*
+  * libcap uses this abstraction for all system calls that change
+  * kernel managed capability state. This permits the user to redirect
+@@ -30,14 +41,22 @@
+ static long int _cap_syscall3(long int syscall_nr,
+ 			      long int arg1, long int arg2, long int arg3)
+ {
++#if defined(__managarm__)
++    return ENOSYS;
++#else
+     return syscall(syscall_nr, arg1, arg2, arg3);
++#endif
+ }
+ 
+ static long int _cap_syscall6(long int syscall_nr,
+ 			      long int arg1, long int arg2, long int arg3,
+ 			      long int arg4, long int arg5, long int arg6)
+ {
++#if defined(__managarm__)
++    return ENOSYS;
++#else
+     return syscall(syscall_nr, arg1, arg2, arg3, arg4, arg5, arg6);
++#endif
+ }
+ 
+ /*
+diff --git a/psx/psx.c b/psx/psx.c
+index d66a7bf..f748374 100644
+--- a/psx/psx.c
++++ b/psx/psx.c
+@@ -24,12 +24,18 @@
+ #include <stdint.h>
+ #include <stdlib.h>
+ #include <string.h>
+-#include <sys/syscall.h>
++// #include <sys/syscall.h>
+ #include <sys/types.h>
+ #include <unistd.h>
+ 
+ #include "psx_syscall.h"
+ 
++#if defined(__managarm__)
++
++#define syscall(...) (-1)
++
++#endif
++
+ #ifdef _PSX_DEBUG_MEMORY
+ 
+ static void *_psx_calloc(const char *file, const int line,
+-- 
+2.47.1
+

@@ -1,0 +1,144 @@
+From d8299e3df5cc0d67a2fcb612ab9ff92833aa77d8 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Thu, 9 Jan 2025 17:30:36 +0100
+Subject: [PATCH 2/5] Additional fixes for Managarm under GCC 14
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ src/basic/errno-util.h                   | 10 +++++++++-
+ src/basic/lock-util.c                    |  1 +
+ src/core/exec-invoke.c                   |  9 +++++++++
+ src/libsystemd/sd-bus/bus-error.c        | 10 ++++++++++
+ src/libsystemd/sd-journal/journal-send.c |  5 +++++
+ src/nsresourced/nsresourcework.c         |  1 +
+ src/shared/dissect-image.c               |  1 +
+ 7 files changed, 36 insertions(+), 1 deletion(-)
+
+diff --git a/src/basic/errno-util.h b/src/basic/errno-util.h
+index 48b76e4..6e7653e 100644
+--- a/src/basic/errno-util.h
++++ b/src/basic/errno-util.h
+@@ -15,8 +15,16 @@
+  * https://stackoverflow.com/questions/34880638/compound-literal-lifetime-and-if-blocks
+  *
+  * Note that we use the GNU variant of strerror_r() here. */
+-#define STRERROR(errnum) strerror_r(abs(errnum), (char[ERRNO_BUF_LEN]){}, ERRNO_BUF_LEN)
++static inline const char * STRERROR(int errnum);
+ 
++static inline const char * STRERROR(int errnum) {
++#ifdef __GLIBC__
++        return strerror_r(abs(errnum), (char[ERRNO_BUF_LEN]){}, ERRNO_BUF_LEN);
++#else
++        static __thread char buf[ERRNO_BUF_LEN];
++        return strerror_r(abs(errnum), buf, ERRNO_BUF_LEN) ? "unknown error" : buf;
++#endif
++}
+ /* A helper to print an error message or message for functions that return 0 on EOF.
+  * Note that we can't use ({ … }) to define a temporary variable, so errnum is
+  * evaluated twice. */
+diff --git a/src/basic/lock-util.c b/src/basic/lock-util.c
+index aef395d..904eb0d 100644
+--- a/src/basic/lock-util.c
++++ b/src/basic/lock-util.c
+@@ -7,6 +7,7 @@
+ #include <string.h>
+ #include <sys/file.h>
+ #include <sys/stat.h>
++#include <sys/time.h>
+ #include <sys/wait.h>
+ 
+ #include "alloc-util.h"
+diff --git a/src/core/exec-invoke.c b/src/core/exec-invoke.c
+index f72eccf..108fe70 100644
+--- a/src/core/exec-invoke.c
++++ b/src/core/exec-invoke.c
+@@ -1,6 +1,15 @@
+ /* SPDX-License-Identifier: LGPL-2.1-or-later */
+ 
++#ifndef __managarm__
+ #include <linux/sched.h>
++#else
++#include <sched.h>
++#include <linux/sched.h>
++// This is undefined for us? Debian unstable has this defined in <linux/sched.h>?
++#ifndef SCHED_FLAG_RESET_ON_FORK
++#define SCHED_FLAG_RESET_ON_FORK 0x01
++#endif
++#endif
+ #include <sys/eventfd.h>
+ #include <sys/ioctl.h>
+ #include <sys/file.h>
+diff --git a/src/libsystemd/sd-bus/bus-error.c b/src/libsystemd/sd-bus/bus-error.c
+index f415797..ebeff08 100644
+--- a/src/libsystemd/sd-bus/bus-error.c
++++ b/src/libsystemd/sd-bus/bus-error.c
+@@ -410,7 +410,12 @@ static void bus_error_strerror(sd_bus_error *e, int error) {
+                         return;
+ 
+                 errno = 0;
++#ifndef __GLIBC__
++                strerror_r(error, m, k);
++                x = m;
++#else
+                 x = strerror_r(error, m, k);
++#endif
+                 if (errno == ERANGE || strlen(x) >= k - 1) {
+                         free(m);
+                         k *= 2;
+@@ -596,7 +601,12 @@ const char* _bus_error_message(const sd_bus_error *e, int error, char buf[static
+         if (e && e->message)
+                 return e->message;
+ 
++#ifndef __GLIBC__
++        strerror_r(abs(error), buf, ERRNO_BUF_LEN);
++        return buf;
++#else
+         return strerror_r(abs(error), buf, ERRNO_BUF_LEN);
++#endif
+ }
+ 
+ static bool map_ok(const sd_bus_error_map *map) {
+diff --git a/src/libsystemd/sd-journal/journal-send.c b/src/libsystemd/sd-journal/journal-send.c
+index 7d02b57..cf759b8 100644
+--- a/src/libsystemd/sd-journal/journal-send.c
++++ b/src/libsystemd/sd-journal/journal-send.c
+@@ -361,7 +361,12 @@ static int fill_iovec_perror_and_send(const char *message, int skip, struct iove
+                 char* j;
+ 
+                 errno = 0;
++#ifndef __GLIBC__
++                strerror_r(_saved_errno_, buffer + 8 + k, n - 8 - k);
++                j = buffer + 8 + k;
++#else
+                 j = strerror_r(_saved_errno_, buffer + 8 + k, n - 8 - k);
++#endif
+                 if (errno == 0) {
+                         char error[STRLEN("ERRNO=") + DECIMAL_STR_MAX(int) + 1];
+ 
+diff --git a/src/nsresourced/nsresourcework.c b/src/nsresourced/nsresourcework.c
+index 6bd2fed..c959237 100644
+--- a/src/nsresourced/nsresourcework.c
++++ b/src/nsresourced/nsresourcework.c
+@@ -4,6 +4,7 @@
+ #include <linux/nsfs.h>
+ #include <linux/veth.h>
+ #include <sys/eventfd.h>
++#include <sys/ioctl.h>
+ #include <sys/stat.h>
+ #include <sys/wait.h>
+ 
+diff --git a/src/shared/dissect-image.c b/src/shared/dissect-image.c
+index 65a706d..0fe0929 100644
+--- a/src/shared/dissect-image.c
++++ b/src/shared/dissect-image.c
+@@ -7,6 +7,7 @@
+ #include <linux/dm-ioctl.h>
+ #include <linux/loop.h>
+ #include <sys/file.h>
++#include <sys/ioctl.h>
+ #include <sys/mount.h>
+ #include <sys/prctl.h>
+ #include <sys/wait.h>
+-- 
+2.39.5
+

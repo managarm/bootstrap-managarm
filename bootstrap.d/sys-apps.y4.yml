@@ -1418,3 +1418,117 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
       - args: ['touch', '@THIS_COLLECT_DIR@/usr/etc/udev/rules.d/.keep']
+
+  - name: systemd-utils
+    labels: [aarch64, riscv64]
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: the systemd System and Service Manager
+      description: systemd is a suite of basic building blocks for a Linux system. It provides a system and service manager that runs as PID 1 and starts the rest of the system.
+      spdx: 'GPL-2.0-or-later'
+      website: 'https://systemd.io'
+      maintainer: "no92 <leo@managarm.org>"
+      categories: ['sys-apps']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/systemd/systemd.git'
+      tag: 'v256.8'
+      version: '256.8'
+    tools_required:
+      - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - libcap
+      - libintl
+      - libxcrypt
+      - shadow
+      - openssl
+      - util-linux-libs
+      - mlibc
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--buildtype=debugoptimized'
+        - '-Dadm-group=false'
+        - '-Danalyze=false'
+        - '-Dapparmor=false'
+        - '-Daudit=false'
+        - '-Dbacklight=false'
+        - '-Dbinfmt=false'
+        - '-Dbpf-framework=false'
+        - '-Dbzip2=false'
+        - '-Dcoredump=false'
+        - '-Ddbus=false'
+        - '-Delfutils=false'
+        - '-Denvironment-d=false'
+        - '-Dfdisk=false'
+        - '-Dgcrypt=false'
+        - '-Dglib=false'
+        - '-Dgshadow=false'
+        - '-Dgnutls=false'
+        - '-Dhibernate=false'
+        - '-Dhostnamed=false'
+        - '-Didn=false'
+        - '-Dima=false'
+        - '-Dinitrd=false'
+        - '-Dfirstboot=false'
+        - '-Dldconfig=false'
+        - '-Dlibcryptsetup=false'
+        - '-Dlibcurl=false'
+        - '-Dlibfido2=false'
+        - '-Dlibidn=false'
+        - '-Dlibidn2=false'
+        - '-Dlibiptc=false'
+        - '-Dlocaled=false'
+        - '-Dlogind=false'
+        - '-Dlz4=false'
+        - '-Dmachined=false'
+        - '-Dmicrohttpd=false'
+        - '-Dnetworkd=false'
+        - '-Dnscd=false'
+        - '-Dnss-myhostname=false'
+        - '-Dnss-resolve=false'
+        - '-Dnss-systemd=false'
+        - '-Doomd=false'
+        - '-Dopenssl=false'
+        - '-Dp11kit=false'
+        - '-Dpam=false'
+        - '-Dpcre2=false'
+        - '-Dpolkit=false'
+        - '-Dportabled=false'
+        - '-Dpstore=false'
+        - '-Dpwquality=false'
+        - '-Drandomseed=false'
+        - '-Dresolve=false'
+        - '-Drfkill=false'
+        - '-Dseccomp=false'
+        - '-Dsmack=false'
+        - '-Dsysext=false'
+        - '-Dtimedated=false'
+        - '-Dtimesyncd=false'
+        - '-Dtpm=false'
+        - '-Dqrencode=false'
+        - '-Dquotacheck=false'
+        - '-Duserdb=false'
+        - '-Dutmp=false'
+        - '-Dvconsole=false'
+        - '-Dwheel-group=false'
+        - '-Dxdg-autostart=false'
+        - '-Dxkbcommon=false'
+        - '-Dxz=false'
+        - '-Dzlib=false'
+        - '-Dzstd=false'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true

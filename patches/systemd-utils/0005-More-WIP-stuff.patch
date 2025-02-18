@@ -1,0 +1,404 @@
+From 9fda4773ec8343086feb1615f838205fe19d1f07 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Mon, 17 Feb 2025 19:38:38 +0100
+Subject: [PATCH 5/5] More WIP stuff
+
+---
+ src/basic/missing_syscall.h   |  2 ++
+ src/core/exec-invoke.c        |  4 ++--
+ src/core/mount.c              |  9 +++++++++
+ src/journal/journald-server.c |  8 +++++---
+ src/udev/udev-manager.c       | 36 +++++++++++++++++++++++++++++++++++
+ src/udev/udevadm-control.c    |  5 +++++
+ src/udev/udevadm.c            |  1 +
+ src/udev/udevd.c              | 30 +++++++++++++++++++++++++++--
+ 8 files changed, 88 insertions(+), 7 deletions(-)
+
+diff --git a/src/basic/missing_syscall.h b/src/basic/missing_syscall.h
+index 0ed0cdd..f76fa7e 100644
+--- a/src/basic/missing_syscall.h
++++ b/src/basic/missing_syscall.h
+@@ -65,6 +65,7 @@ static inline int missing_pivot_root(const char *new_root, const char *put_old)
+ #if !HAVE_IOPRIO_GET
+ static inline int missing_ioprio_get(int which, int who) {
+ #ifdef __managarm__
++        return 0;
+         assert(!"unimplemented ioprio_get");
+ #else
+         return syscall(__NR_ioprio_get, which, who);
+@@ -79,6 +80,7 @@ static inline int missing_ioprio_get(int which, int who) {
+ #if !HAVE_IOPRIO_SET
+ static inline int missing_ioprio_set(int which, int who, int ioprio) {
+ #ifdef __managarm__
++        return 0;
+         assert(!"unimplemented ioprio_set");
+ #else
+         return syscall(__NR_ioprio_set, which, who, ioprio);
+diff --git a/src/core/exec-invoke.c b/src/core/exec-invoke.c
+index dd66b40..7f07037 100644
+--- a/src/core/exec-invoke.c
++++ b/src/core/exec-invoke.c
+@@ -235,8 +235,8 @@ static int connect_logger_as(
+         if (r < 0)
+                 return r;
+ 
+-        if (shutdown(fd, SHUT_RD) < 0)
+-                return -errno;
++        // if (shutdown(fd, SHUT_RD) < 0)
++        //         return -errno;
+ 
+         (void) fd_inc_sndbuf(fd, SNDBUF_SIZE);
+ 
+diff --git a/src/core/mount.c b/src/core/mount.c
+index 66917df..82fa9dd 100644
+--- a/src/core/mount.c
++++ b/src/core/mount.c
+@@ -1553,6 +1553,11 @@ static void mount_sigchld_event(Unit *u, pid_t pid, int code, int status) {
+                         f == MOUNT_SUCCESS,
+                         code, status);
+ 
++#ifdef __managarm__
++        if(m->state == MOUNT_MOUNTING && f == MOUNT_SUCCESS)
++                m->state = MOUNT_MOUNTING_DONE;
++#endif
++
+         /* Note that due to the io event priority logic, we can be sure the new mountinfo is loaded
+          * before we process the SIGCHLD for the mount command. */
+ 
+@@ -2124,6 +2129,9 @@ static int drain_libmount(Manager *m) {
+ }
+ 
+ static int mount_process_proc_self_mountinfo(Manager *m) {
++#ifdef __managarm__
++        return 0;
++#else
+         _cleanup_set_free_ Set *around = NULL, *gone = NULL;
+         const char *what;
+         int r;
+@@ -2236,6 +2244,7 @@ static int mount_process_proc_self_mountinfo(Manager *m) {
+         }
+ 
+         return 0;
++#endif
+ }
+ 
+ static int mount_dispatch_io(sd_event_source *source, int fd, uint32_t revents, void *userdata) {
+diff --git a/src/journal/journald-server.c b/src/journal/journald-server.c
+index 8788b8e..a1d4118 100644
+--- a/src/journal/journald-server.c
++++ b/src/journal/journald-server.c
+@@ -162,9 +162,11 @@ static int cache_space_refresh(Server *s, JournalStorage *storage) {
+         if (space->timestamp != 0 && usec_add(space->timestamp, RECHECK_SPACE_USEC) > ts)
+                 return 0;
+ 
+-        r = server_determine_path_usage(s, storage->path, &vfs_used, &vfs_avail);
+-        if (r < 0)
+-                return r;
++        // r = server_determine_path_usage(s, storage->path, &vfs_used, &vfs_avail);
++        // if (r < 0)
++        //         return r;
++        vfs_used = 0;
++        vfs_avail = 16384;
+ 
+         space->vfs_used = vfs_used;
+         space->vfs_available = vfs_avail;
+diff --git a/src/udev/udev-manager.c b/src/udev/udev-manager.c
+index bb94478..e71d571 100644
+--- a/src/udev/udev-manager.c
++++ b/src/udev/udev-manager.c
+@@ -1280,57 +1280,78 @@ int manager_init(Manager *manager, int fd_ctrl, int fd_uevent) {
+ }
+ 
+ int manager_main(Manager *manager) {
++        int helout = open("/dev/helout", O_RDWR);
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+         int fd_worker, r;
+ 
+         manager_set_default_children_max(manager);
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         /* unnamed socket from workers to the main daemon */
+         r = socketpair(AF_UNIX, SOCK_DGRAM|SOCK_CLOEXEC, 0, manager->worker_watch);
+         if (r < 0)
+                 return log_error_errno(errno, "Failed to create socketpair for communicating with workers: %m");
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         fd_worker = manager->worker_watch[READ_END];
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         r = setsockopt_int(fd_worker, SOL_SOCKET, SO_PASSCRED, true);
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+         if (r < 0)
+                 return log_error_errno(r, "Failed to enable SO_PASSCRED: %m");
+ 
+         manager->inotify_fd = inotify_init1(IN_CLOEXEC);
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+         if (manager->inotify_fd < 0)
+                 return log_error_errno(errno, "Failed to create inotify descriptor: %m");
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         udev_watch_restore(manager->inotify_fd);
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         /* block SIGCHLD for listening child events. */
+         assert_se(sigprocmask_many(SIG_BLOCK, NULL, SIGCHLD) >= 0);
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         r = sd_event_default(&manager->event);
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+         if (r < 0)
+                 return log_error_errno(r, "Failed to allocate event loop: %m");
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         r = sd_event_add_signal(manager->event, NULL, SIGINT | SD_EVENT_SIGNAL_PROCMASK, on_sigterm, manager);
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+         if (r < 0)
+                 return log_error_errno(r, "Failed to create SIGINT event source: %m");
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         r = sd_event_add_signal(manager->event, NULL, SIGTERM | SD_EVENT_SIGNAL_PROCMASK, on_sigterm, manager);
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+         if (r < 0)
+                 return log_error_errno(r, "Failed to create SIGTERM event source: %m");
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         r = sd_event_add_signal(manager->event, NULL, SIGHUP | SD_EVENT_SIGNAL_PROCMASK, on_sighup, manager);
+         if (r < 0)
+                 return log_error_errno(r, "Failed to create SIGHUP event source: %m");
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         r = sd_event_set_watchdog(manager->event, true);
+         if (r < 0)
+                 return log_error_errno(r, "Failed to create watchdog event source: %m");
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         r = udev_ctrl_attach_event(manager->ctrl, manager->event);
+         if (r < 0)
+                 return log_error_errno(r, "Failed to attach event to udev control: %m");
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         r = udev_ctrl_start(manager->ctrl, on_ctrl_msg, manager);
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+         if (r < 0)
+                 return log_error_errno(r, "Failed to start udev control: %m");
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         /* This needs to be after the inotify and uevent handling, to make sure
+          * that the ping is send back after fully processing the pending uevents
+@@ -1339,56 +1360,71 @@ int manager_main(Manager *manager) {
+         r = sd_event_source_set_priority(udev_ctrl_get_event_source(manager->ctrl), SD_EVENT_PRIORITY_IDLE);
+         if (r < 0)
+                 return log_error_errno(r, "Failed to set IDLE event priority for udev control event source: %m");
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         r = sd_event_add_io(manager->event, &manager->inotify_event, manager->inotify_fd, EPOLLIN, on_inotify, manager);
+         if (r < 0)
+                 return log_error_errno(r, "Failed to create inotify event source: %m");
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         r = sd_device_monitor_attach_event(manager->monitor, manager->event);
+         if (r < 0)
+                 return log_error_errno(r, "Failed to attach event to device monitor: %m");
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         r = sd_device_monitor_start(manager->monitor, on_uevent, manager);
+         if (r < 0)
+                 return log_error_errno(r, "Failed to start device monitor: %m");
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         r = sd_event_add_io(manager->event, NULL, fd_worker, EPOLLIN, on_worker, manager);
+         if (r < 0)
+                 return log_error_errno(r, "Failed to create worker event source: %m");
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         r = sd_event_add_post(manager->event, NULL, on_post, manager);
+         if (r < 0)
+                 return log_error_errno(r, "Failed to create post event source: %m");
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         /* Eventually, we probably want to do more here on memory pressure, for example, kill idle workers immediately */
+         r = sd_event_add_memory_pressure(manager->event, &manager->memory_pressure_event_source, NULL, NULL);
+         if (r < 0)
+                 log_full_errno(ERRNO_IS_NOT_SUPPORTED(r) || ERRNO_IS_PRIVILEGE(r) || (r == -EHOSTDOWN) ? LOG_DEBUG : LOG_WARNING, r,
+                                "Failed to allocate memory pressure watch, ignoring: %m");
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         r = sd_event_add_signal(manager->event, &manager->memory_pressure_event_source,
+                                 (SIGRTMIN+18) | SD_EVENT_SIGNAL_PROCMASK, sigrtmin18_handler, NULL);
+         if (r < 0)
+                 return log_error_errno(r, "Failed to allocate SIGRTMIN+18 event source, ignoring: %m");
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         manager->last_usec = now(CLOCK_MONOTONIC);
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         udev_builtin_init();
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         r = udev_rules_load(&manager->rules, manager->resolve_name_timing);
+         if (r < 0)
+                 return log_error_errno(r, "Failed to read udev rules: %m");
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         r = udev_rules_apply_static_dev_perms(manager->rules);
+         if (r < 0)
+                 log_warning_errno(r, "Failed to apply permissions on static device nodes, ignoring: %m");
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         notify_ready(manager);
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         r = sd_event_loop(manager->event);
+         if (r < 0)
+                 log_error_errno(r, "Event loop failed: %m");
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         (void) sd_notify(/* unset= */ false, NOTIFY_STOPPING);
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+         return r;
+ }
+diff --git a/src/udev/udevadm-control.c b/src/udev/udevadm-control.c
+index 29dc883..70e0020 100644
+--- a/src/udev/udevadm-control.c
++++ b/src/udev/udevadm-control.c
+@@ -246,6 +246,11 @@ int control_main(int argc, char *argv[], void *userdata) {
+                 return 0;
+         }
+ 
++        for(int i = 0; i < argc; i++) {
++                log_info("KANKER KANKER KANKER argv: %s, optind: %d", argv[i], optind);
++        }
++        optind = 1;
++
+         r = parse_argv(argc, argv);
+         if (r <= 0)
+                 return r;
+diff --git a/src/udev/udevadm.c b/src/udev/udevadm.c
+index a862796..a36c1ff 100644
+--- a/src/udev/udevadm.c
++++ b/src/udev/udevadm.c
+@@ -84,6 +84,7 @@ static int parse_argv(int argc, char *argv[]) {
+                 default:
+                         assert_not_reached();
+                 }
++        log_info("before verbs: %d", optind);
+ 
+         return 1; /* work to do */
+ }
+diff --git a/src/udev/udevd.c b/src/udev/udevd.c
+index 70f8ee5..7a0b9be 100644
+--- a/src/udev/udevd.c
++++ b/src/udev/udevd.c
+@@ -285,70 +285,93 @@ static int parse_argv(int argc, char *argv[], Manager *manager) {
+ }
+ 
+ int run_udevd(int argc, char *argv[]) {
++        int helout = open("/dev/helout", O_RDWR);
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+         _cleanup_(manager_freep) Manager *manager = NULL;
+         int fd_ctrl = -EBADF, fd_uevent = -EBADF;
+         int r;
+ 
+         log_setup();
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         manager = manager_new();
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+         if (!manager)
+                 return log_oom();
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         manager_parse_udev_config(manager);
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         r = parse_argv(argc, argv, manager);
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+         if (r <= 0)
+                 return r;
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         r = proc_cmdline_parse(parse_proc_cmdline_item, manager, PROC_CMDLINE_STRIP_RD_PREFIX);
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+         if (r < 0)
+                 log_warning_errno(r, "Failed to parse kernel command line, ignoring: %m");
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+-        if (arg_debug) {
++        // if (arg_debug) {
+                 log_set_target(LOG_TARGET_CONSOLE);
+                 log_set_max_level(LOG_DEBUG);
+-        }
++        // }
+ 
+         manager_adjust_arguments(manager);
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         r = must_be_root();
+         if (r < 0)
+                 return r;
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         /* set umask before creating any file/directory */
+         umask(022);
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         r = mac_init();
+         if (r < 0)
+                 return r;
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         /* Make sure we can have plenty fds (for example for pidfds) */
+         (void) rlimit_nofile_bump(-1);
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         r = RET_NERRNO(mkdir("/run/udev", 0755));
+         if (r < 0 && r != -EEXIST)
+                 return log_error_errno(r, "Failed to create /run/udev: %m");
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         r = listen_fds(&fd_ctrl, &fd_uevent);
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+         if (r < 0)
+                 return log_error_errno(r, "Failed to listen on fds: %m");
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         r = manager_init(manager, fd_ctrl, fd_uevent);
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+         if (r < 0)
+                 return log_error_errno(r, "Failed to create manager: %m");
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         if (arg_daemonize) {
++                dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+                 pid_t pid;
+ 
+                 log_info("Starting systemd-udevd version " GIT_VERSION);
+ 
+                 /* connect /dev/null to stdin, stdout, stderr */
++                dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+                 if (log_get_max_level() < LOG_DEBUG) {
+                         r = make_null_stdio();
+                         if (r < 0)
+                                 log_warning_errno(r, "Failed to redirect standard streams to /dev/null: %m");
+                 }
++                dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+                 pid = fork();
+                 if (pid < 0)
+@@ -356,10 +379,13 @@ int run_udevd(int argc, char *argv[]) {
+                 if (pid > 0)
+                         /* parent */
+                         return 0;
++                dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+                 /* child */
+                 (void) setsid();
++                dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+         }
++        dprintf(helout, "UDEVD: %s:%d\n", __FILE__, __LINE__);
+ 
+         return manager_main(manager);
+ }
+-- 
+2.39.5
+
