@@ -84,6 +84,7 @@ tools:
   - name: host-linux-headers
     architecture: noarch
     from_source: linux-headers
+    revision: 2
     configure:
       - args: ['cp', '-Tr', '@THIS_SOURCE_DIR@', '.']
     compile:
@@ -110,8 +111,6 @@ tools:
       # files.
       - args: ['rm', '-rf', '@PREFIX@/src/linux-headers']
       - args: ['rm', '-rf', '@PREFIX@/include']
-      # remove this file, as mlibc will override this file with one suited to mlibc
-      - args: ['rm', 'usr/include/linux/libc-compat.h']
       - args: ['mkdir', '-p', '@PREFIX@/src']
       - args: ['cp', '-Tr', 'usr/include', '@PREFIX@/include']
       - args: ['cp', '-Tr', 'usr/include', '@PREFIX@/src/linux-headers']
