@@ -164,8 +164,8 @@ sources:
   - name: kpackage
     subdir: 'ports'
     git: 'https://github.com/KDE/kpackage.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: kparts
     subdir: 'ports'
@@ -1579,7 +1579,7 @@ packages:
       - karchive
       - kcoreaddons
       - ki18n
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
