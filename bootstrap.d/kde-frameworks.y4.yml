@@ -170,8 +170,8 @@ sources:
   - name: kparts
     subdir: 'ports'
     git: 'https://github.com/KDE/kparts.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: kservice
     subdir: 'ports'
@@ -1632,7 +1632,7 @@ packages:
       - kservice
       - kwidgetsaddons
       - kxmlgui
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
