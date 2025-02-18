@@ -1816,8 +1816,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/KDE/kwallet.git'
-      tag: 'v6.3.0'
-      version: '6.3.0'
+      tag: 'v6.11.0'
+      version: '6.11.0'
     tools_required:
       - system-gcc
       - host-cmake
@@ -1832,13 +1832,14 @@ packages:
       - kcolorscheme
       - kconfig
       - kcoreaddons
+      - kcrash
       - kdbusaddons
       - ki18n
       - knotifications
       - kservice
       - kwidgetsaddons
       - kwindowsystem
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
