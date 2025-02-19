@@ -542,8 +542,8 @@ packages:
       - elfutils
       - pixman
       - cairo
-      - eudev
-    revision: 2
+      - systemd-utils
+    revision: 3
     configure:
       - args:
         - 'meson'

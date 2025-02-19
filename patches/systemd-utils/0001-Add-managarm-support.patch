@@ -1,0 +1,513 @@
+From 7358a1c31a63ebdb2495cff5a26858319c27f116 Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Tue, 18 Feb 2025 23:40:13 +0100
+Subject: [PATCH] Add managarm support
+
+---
+ meson.build                        |  8 ++--
+ src/basic/missing_syscall.h        | 68 ++++++++++++++++++++++++------
+ src/basic/mountpoint-util.c        |  5 +++
+ src/basic/process-util.c           |  8 ++++
+ src/basic/raw-clone.h              |  9 ++++
+ src/basic/raw-reboot.h             | 11 +++++
+ src/core/exec-invoke.c             |  1 +
+ src/libsystemd/sd-event/sd-event.c |  5 +++
+ src/mountfsd/mountwork.c           |  2 +
+ src/nsresourced/userns-registry.c  |  2 +
+ src/shared/bpf-program.h           |  2 +
+ src/shared/bus-util.c              |  5 +++
+ src/shared/common-signal.c         |  3 ++
+ src/shared/dev-setup.c             |  1 +
+ src/test/test-path-util.c          |  3 ++
+ src/udev/udevadm-settle.c          |  3 ++
+ 16 files changed, 118 insertions(+), 18 deletions(-)
+
+diff --git a/meson.build b/meson.build
+index 5a5ac35..213d07d 100644
+--- a/meson.build
++++ b/meson.build
+@@ -367,15 +367,15 @@ possible_common_cc_flags = [
+         '-Warray-bounds=2',
+         '-Wdate-time',
+         '-Wendif-labels',
+-        '-Werror=format=2',
++        # '-Werror=format=2',
+         '-Werror=format-signedness',
+-        '-Werror=implicit-function-declaration',
++        # '-Werror=implicit-function-declaration',
+         '-Werror=implicit-int',
+         '-Werror=incompatible-pointer-types',
+-        '-Werror=int-conversion',
++        # '-Werror=int-conversion',
+         '-Werror=missing-declarations',
+         '-Werror=missing-prototypes',
+-        '-Werror=overflow',
++        # '-Werror=overflow',
+         '-Werror=override-init',
+         '-Werror=return-type',
+         '-Werror=shift-count-overflow',
+diff --git a/src/basic/missing_syscall.h b/src/basic/missing_syscall.h
+index e2cd8b4..1f76beb 100644
+--- a/src/basic/missing_syscall.h
++++ b/src/basic/missing_syscall.h
+@@ -11,7 +11,9 @@
+ #include <linux/time_types.h>
+ #endif
+ #include <signal.h>
++#if !defined(__managarm__)
+ #include <sys/syscall.h>
++#endif
+ #include <sys/types.h>
+ #include <sys/wait.h>
+ #include <unistd.h>
+@@ -31,11 +33,21 @@
+ #define KCMP_FILE 0
+ #endif
+ 
++#if defined(__managarm__)
++
++#define complain(...) do { \
++        int helout = open("/dev/helout", O_RDWR); \
++        dprintf(helout, ##__VA_ARGS__); \
++        close(helout); \
++} while (0)
++
++#endif
++
+ /* ======================================================================= */
+ 
+ #if !HAVE_FCHMODAT2
+ static inline int missing_fchmodat2(int dirfd, const char *path, mode_t mode, int flags) {
+-#  ifdef __NR_fchmodat2
++#  if defined(__NR_fchmodat2) && !defined(__managarm__)
+         return syscall(__NR_fchmodat2, dirfd, path, mode, flags);
+ #  else
+         errno = ENOSYS;
+@@ -50,7 +62,13 @@ static inline int missing_fchmodat2(int dirfd, const char *path, mode_t mode, in
+ 
+ #if !HAVE_PIVOT_ROOT
+ static inline int missing_pivot_root(const char *new_root, const char *put_old) {
++#ifdef __managarm__
++        complain("systemd: unimplemented pivot_root\n");
++        errno = ENOSYS;
++        return -1;
++#else
+         return syscall(__NR_pivot_root, new_root, put_old);
++#endif
+ }
+ 
+ #  define pivot_root missing_pivot_root
+@@ -60,7 +78,13 @@ static inline int missing_pivot_root(const char *new_root, const char *put_old)
+ 
+ #if !HAVE_IOPRIO_GET
+ static inline int missing_ioprio_get(int which, int who) {
++#ifdef __managarm__
++        complain("systemd: unimplemented ioprio_get\n");
++        errno = ENOSYS;
++        return -1;
++#else
+         return syscall(__NR_ioprio_get, which, who);
++#endif
+ }
+ 
+ #  define ioprio_get missing_ioprio_get
+@@ -70,7 +94,13 @@ static inline int missing_ioprio_get(int which, int who) {
+ 
+ #if !HAVE_IOPRIO_SET
+ static inline int missing_ioprio_set(int which, int who, int ioprio) {
++#ifdef __managarm__
++        complain("systemd: unimplemented ioprio_set\n");
++        errno = ENOSYS;
++        return -1;
++#else
+         return syscall(__NR_ioprio_set, which, who, ioprio);
++#endif
+ }
+ 
+ #  define ioprio_set missing_ioprio_set
+@@ -163,6 +193,8 @@ static inline int missing_setns(int fd, int nstype) {
+ static inline pid_t raw_getpid(void) {
+ #if defined(__alpha__)
+         return (pid_t) syscall(__NR_getxpid);
++#elif defined(__managarm__)
++        return getpid();
+ #else
+         return (pid_t) syscall(__NR_getpid);
+ #endif
+@@ -172,7 +204,7 @@ static inline pid_t raw_getpid(void) {
+ 
+ #if !HAVE_RENAMEAT2
+ static inline int missing_renameat2(int oldfd, const char *oldname, int newfd, const char *newname, unsigned flags) {
+-#  ifdef __NR_renameat2
++#  if defined(__NR_renameat2) && !defined(__managarm__)
+         return syscall(__NR_renameat2, oldfd, oldname, newfd, newname, flags);
+ #  else
+         errno = ENOSYS;
+@@ -242,7 +274,7 @@ static inline ssize_t missing_copy_file_range(int fd_in, loff_t *off_in,
+                                               int fd_out, loff_t *off_out,
+                                               size_t len,
+                                               unsigned int flags) {
+-#  ifdef __NR_copy_file_range
++#  if defined(__NR_copy_file_range) && !defined(__managarm__)
+         return syscall(__NR_copy_file_range, fd_in, off_in, fd_out, off_out, len, flags);
+ #  else
+         errno = ENOSYS;
+@@ -259,7 +291,7 @@ static inline ssize_t missing_copy_file_range(int fd_in, loff_t *off_in,
+ union bpf_attr;
+ 
+ static inline int missing_bpf(int cmd, union bpf_attr *attr, size_t size) {
+-#ifdef __NR_bpf
++#if defined(__NR_bpf) && !defined(__managarm__)
+         return (int) syscall(__NR_bpf, cmd, attr, size);
+ #else
+         errno = ENOSYS;
+@@ -339,7 +371,7 @@ static inline long missing_get_mempolicy(int *mode, unsigned long *nodemask,
+ 
+ #if !HAVE_PIDFD_SEND_SIGNAL
+ static inline int missing_pidfd_send_signal(int fd, int sig, siginfo_t *info, unsigned flags) {
+-#  ifdef __NR_pidfd_send_signal
++#  if defined(__NR_pidfd_send_signal) && !defined(__managarm__)
+         return syscall(__NR_pidfd_send_signal, fd, sig, info, flags);
+ #  else
+         errno = ENOSYS;
+@@ -352,7 +384,7 @@ static inline int missing_pidfd_send_signal(int fd, int sig, siginfo_t *info, un
+ 
+ #if !HAVE_PIDFD_OPEN
+ static inline int missing_pidfd_open(pid_t pid, unsigned flags) {
+-#  ifdef __NR_pidfd_open
++#  if defined(__NR_pidfd_open) && !defined(__managarm__)
+         return syscall(__NR_pidfd_open, pid, flags);
+ #  else
+         errno = ENOSYS;
+@@ -369,6 +401,10 @@ static inline int missing_pidfd_open(pid_t pid, unsigned flags) {
+ static inline int missing_rt_sigqueueinfo(pid_t tgid, int sig, siginfo_t *info) {
+ #  if defined __NR_rt_sigqueueinfo && __NR_rt_sigqueueinfo >= 0
+         return syscall(__NR_rt_sigqueueinfo, tgid, sig, info);
++#elif defined(__managarm__)
++        complain("systemd: unimplemented rt_sigqueueinfo\n");
++        errno = ENOSYS;
++        return -1;
+ #  else
+ #    error "__NR_rt_sigqueueinfo not defined"
+ #  endif
+@@ -383,6 +419,10 @@ static inline int missing_rt_sigqueueinfo(pid_t tgid, int sig, siginfo_t *info)
+ static inline int missing_rt_tgsigqueueinfo(pid_t tgid, pid_t tid, int sig, siginfo_t *info) {
+ #  if defined __NR_rt_tgsigqueueinfo && __NR_rt_tgsigqueueinfo >= 0
+         return syscall(__NR_rt_tgsigqueueinfo, tgid, tid, sig, info);
++#elif defined(__managarm__)
++        complain("systemd: unimplemented rt_tgsigqueueinfo\n");
++        errno = ENOSYS;
++        return -1;
+ #  else
+ #    error "__NR_rt_tgsigqueueinfo not defined"
+ #  endif
+@@ -414,7 +454,7 @@ static inline int missing_execveat(int dirfd, const char *pathname,
+ 
+ #if !HAVE_CLOSE_RANGE
+ static inline int missing_close_range(unsigned first_fd, unsigned end_fd, unsigned flags) {
+-#  ifdef __NR_close_range
++#  if defined(__NR_close_range) && !defined(__managarm__)
+         /* Kernel-side the syscall expects fds as unsigned integers (just like close() actually), while
+          * userspace exclusively uses signed integers for fds. glibc chose to expose it 1:1 however, hence we
+          * do so here too, even if we end up passing signed fds to it most of the time. */
+@@ -505,7 +545,7 @@ static inline int missing_mount_setattr(
+                 struct mount_attr *attr,
+                 size_t size) {
+ 
+-#  if defined __NR_mount_setattr && __NR_mount_setattr >= 0
++#  if defined __NR_mount_setattr && __NR_mount_setattr >= 0 && !defined(__managarm__)
+         return syscall(__NR_mount_setattr, dfd, path, flags, attr, size);
+ #  else
+         errno = ENOSYS;
+@@ -533,7 +573,7 @@ static inline int missing_open_tree(
+                 const char *filename,
+                 unsigned flags) {
+ 
+-#  if defined __NR_open_tree && __NR_open_tree >= 0
++#  if defined __NR_open_tree && __NR_open_tree >= 0 && !defined(__managarm__)
+         return syscall(__NR_open_tree, dfd, filename, flags);
+ #  else
+         errno = ENOSYS;
+@@ -567,7 +607,7 @@ static inline int missing_move_mount(
+                 const char *to_pathname,
+                 unsigned flags) {
+ 
+-#  if defined __NR_move_mount && __NR_move_mount >= 0
++#  if defined __NR_move_mount && __NR_move_mount >= 0 && !defined(__managarm__)
+         return syscall(__NR_move_mount, from_dfd, from_pathname, to_dfd, to_pathname, flags);
+ #  else
+         errno = ENOSYS;
+@@ -587,7 +627,7 @@ static inline int missing_move_mount(
+ #endif
+ 
+ static inline int missing_fsopen(const char *fsname, unsigned flags) {
+-#  if defined __NR_fsopen && __NR_fsopen >= 0
++#  if defined __NR_fsopen && __NR_fsopen >= 0 && !defined(__managarm__)
+         return syscall(__NR_fsopen, fsname, flags);
+ #  else
+         errno = ENOSYS;
+@@ -619,7 +659,7 @@ static inline int missing_fsopen(const char *fsname, unsigned flags) {
+ #endif
+ 
+ static inline int missing_fsconfig(int fd, unsigned cmd, const char *key, const void *value, int aux) {
+-#  if defined __NR_fsconfig && __NR_fsconfig >= 0
++#  if defined __NR_fsconfig && __NR_fsconfig >= 0 && !defined(__managarm__)
+         return syscall(__NR_fsconfig, fd, cmd, key, value, aux);
+ #  else
+         errno = ENOSYS;
+@@ -639,7 +679,7 @@ static inline int missing_fsconfig(int fd, unsigned cmd, const char *key, const
+ #endif
+ 
+ static inline int missing_fsmount(int fd, unsigned flags, unsigned ms_flags) {
+-#  if defined __NR_fsmount && __NR_fsmount >= 0
++#  if defined __NR_fsmount && __NR_fsmount >= 0 && !defined(__managarm__)
+         return syscall(__NR_fsmount, fd, flags, ms_flags);
+ #  else
+         errno = ENOSYS;
+@@ -655,7 +695,7 @@ static inline int missing_fsmount(int fd, unsigned flags, unsigned ms_flags) {
+ #if !HAVE_GETDENTS64
+ 
+ static inline ssize_t missing_getdents64(int fd, void *buffer, size_t length) {
+-#  if defined __NR_getdents64 && __NR_getdents64 >= 0
++#  if defined __NR_getdents64 && __NR_getdents64 >= 0 && !defined(__managarm__)
+         return syscall(__NR_getdents64, fd, buffer, length);
+ #  else
+         errno = ENOSYS;
+diff --git a/src/basic/mountpoint-util.c b/src/basic/mountpoint-util.c
+index 135b296..7d5e297 100644
+--- a/src/basic/mountpoint-util.c
++++ b/src/basic/mountpoint-util.c
+@@ -554,6 +554,11 @@ int dev_is_devtmpfs(void) {
+         int mount_id, r;
+         char *e;
+ 
++#if defined(__managarm__)
++        // TODO: remove this once we support /proc/*/mountinfo
++        return true;
++#endif
++
+         r = path_get_mnt_id("/dev", &mount_id);
+         if (r < 0)
+                 return r;
+diff --git a/src/basic/process-util.c b/src/basic/process-util.c
+index d9e8bc9..6a1e496 100644
+--- a/src/basic/process-util.c
++++ b/src/basic/process-util.c
+@@ -1855,6 +1855,14 @@ int pidfd_get_pid(int fd, pid_t *ret) {
+         if (fd < 0)
+                 return -EBADF;
+ 
++#if defined(__managarm__)
++        // TODO: remove this once we support /proc/*/fdinfo/*
++        int helout = open("/dev/helout", O_RDWR);
++        dprintf(helout, "systemd: /proc/*/fdinfo/* unimplemented\n");
++        close(helout);
++        return -ENOTTY;
++#endif
++
+         xsprintf(path, "/proc/self/fdinfo/%i", fd);
+ 
+         r = read_full_virtual_file(path, &fdinfo, NULL);
+diff --git a/src/basic/raw-clone.h b/src/basic/raw-clone.h
+index 6de67ab..c5bfc10 100644
+--- a/src/basic/raw-clone.h
++++ b/src/basic/raw-clone.h
+@@ -7,7 +7,9 @@
+ 
+ #include <errno.h>
+ #include <sched.h>
++#if !defined(__managarm__)
+ #include <sys/syscall.h>
++#endif
+ 
+ #include "log.h"
+ #include "macro.h"
+@@ -74,6 +76,13 @@ static inline pid_t raw_clone(unsigned long flags) {
+                 } else
+                         ret = in_child ? 0 : child_pid;
+         }
++#elif defined(__managarm__)
++        int helout = open("/dev/helout", O_RDWR);
++        dprintf(helout, "systemd: clone unsupported\n");
++        close(helout);
++
++        errno = ENOSYS;
++        ret = -1;
+ #else
+         ret = (pid_t) syscall(__NR_clone, flags, NULL);
+ #endif
+diff --git a/src/basic/raw-reboot.h b/src/basic/raw-reboot.h
+index e6bff30..3fa8df3 100644
+--- a/src/basic/raw-reboot.h
++++ b/src/basic/raw-reboot.h
+@@ -3,12 +3,23 @@
+ 
+ #include <linux/reboot.h>
+ #include <sys/reboot.h>
++#if !defined(__managarm__)
+ #include <sys/syscall.h>
++#endif
+ 
+ /* glibc defines the reboot() API call, which is a wrapper around the system call of the same name, but without the
+  * extra "arg" parameter. Since we need that parameter for some calls, let's add a "raw" wrapper that is defined the
+  * same way, except it takes the additional argument. */
+ 
+ static inline int raw_reboot(int cmd, const void *arg) {
++#if defined(__managarm__)
++        int helout = open("/dev/helout", O_RDWR);
++        dprintf(helout, "systemd: reboot unsupported\n");
++        close(helout);
++
++        errno = ENOSYS;
++        return -1;
++#else
+         return (int) syscall(SYS_reboot, LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2, cmd, arg);
++#endif
+ }
+diff --git a/src/core/exec-invoke.c b/src/core/exec-invoke.c
+index 56df5cf..f72eccf 100644
+--- a/src/core/exec-invoke.c
++++ b/src/core/exec-invoke.c
+@@ -3,6 +3,7 @@
+ #include <linux/sched.h>
+ #include <sys/eventfd.h>
+ #include <sys/ioctl.h>
++#include <sys/file.h>
+ #include <sys/mount.h>
+ #include <sys/prctl.h>
+ 
+diff --git a/src/libsystemd/sd-event/sd-event.c b/src/libsystemd/sd-event/sd-event.c
+index 64825ca..ff84f60 100644
+--- a/src/libsystemd/sd-event/sd-event.c
++++ b/src/libsystemd/sd-event/sd-event.c
+@@ -1891,7 +1891,12 @@ _public_ int sd_event_trim_memory(void) {
+ 
+         usec_t before_timestamp = now(CLOCK_MONOTONIC);
+         hashmap_trim_pools();
++#if defined(__managarm__)
++        // mlibc does not support malloc_trim
++        r = 0;
++#else
+         r = malloc_trim(0);
++#endif
+         usec_t after_timestamp = now(CLOCK_MONOTONIC);
+ 
+         if (r > 0)
+diff --git a/src/mountfsd/mountwork.c b/src/mountfsd/mountwork.c
+index 1d218a6..4bb91e3 100644
+--- a/src/mountfsd/mountwork.c
++++ b/src/mountfsd/mountwork.c
+@@ -1,5 +1,7 @@
+ /* SPDX-License-Identifier: LGPL-2.1-or-later */
+ 
++#include <sys/file.h>
++
+ #include "sd-daemon.h"
+ 
+ #include "argv-util.h"
+diff --git a/src/nsresourced/userns-registry.c b/src/nsresourced/userns-registry.c
+index 2cc1b1f..572f9d2 100644
+--- a/src/nsresourced/userns-registry.c
++++ b/src/nsresourced/userns-registry.c
+@@ -1,5 +1,7 @@
+ /* SPDX-License-Identifier: LGPL-2.1-or-later */
+ 
++#include <sys/file.h>
++
+ #include "chase.h"
+ #include "fd-util.h"
+ #include "fileio.h"
+diff --git a/src/shared/bpf-program.h b/src/shared/bpf-program.h
+index 0e0b666..44d0112 100644
+--- a/src/shared/bpf-program.h
++++ b/src/shared/bpf-program.h
+@@ -4,7 +4,9 @@
+ #include <linux/bpf.h>
+ #include <stdint.h>
+ #include <stdio.h>
++#if !defined(__managarm__)
+ #include <sys/syscall.h>
++#endif
+ 
+ #include "fdset.h"
+ #include "list.h"
+diff --git a/src/shared/bus-util.c b/src/shared/bus-util.c
+index f347ea6..a0fd509 100644
+--- a/src/shared/bus-util.c
++++ b/src/shared/bus-util.c
+@@ -764,7 +764,12 @@ static int method_dump_memory_state_by_fd(sd_bus_message *message, void *userdat
+         if (!f)
+                 return -ENOMEM;
+ 
++#if defined(__managarm__)
++        // mlibc does not support malloc_info
++        r = 0;
++#else
+         r = RET_NERRNO(malloc_info(/* options= */ 0, f));
++#endif
+         if (r < 0)
+                 return r;
+ 
+diff --git a/src/shared/common-signal.c b/src/shared/common-signal.c
+index 8e70e36..dcbcf05 100644
+--- a/src/shared/common-signal.c
++++ b/src/shared/common-signal.c
+@@ -66,10 +66,13 @@ int sigrtmin18_handler(sd_event_source *s, const struct signalfd_siginfo *si, vo
+                         break;
+                 }
+ 
++#if !defined(__managarm__)
++                // mlibc does not support malloc_info
+                 if (malloc_info(0, f) < 0) {
+                         log_error_errno(errno, "Failed to invoke malloc_info(): %m");
+                         break;
+                 }
++#endif
+ 
+                 (void) memstream_dump(LOG_INFO, &m);
+                 break;
+diff --git a/src/shared/dev-setup.c b/src/shared/dev-setup.c
+index 4b4b625..07fa519 100644
+--- a/src/shared/dev-setup.c
++++ b/src/shared/dev-setup.c
+@@ -3,6 +3,7 @@
+ #include <errno.h>
+ #include <stdlib.h>
+ #include <unistd.h>
++#include <sys/file.h>
+ 
+ #include "alloc-util.h"
+ #include "dev-setup.h"
+diff --git a/src/test/test-path-util.c b/src/test/test-path-util.c
+index e02bd8c..2c9429a 100644
+--- a/src/test/test-path-util.c
++++ b/src/test/test-path-util.c
+@@ -1304,7 +1304,10 @@ TEST(print_MAX) {
+                  (size_t) FILENAME_MAX,
+                  (size_t) NAME_MAX);
+ 
++#if !defined(__managarm__)
++        // TODO: remove this #if once mlibc matches this
+         assert_cc(FILENAME_MAX == PATH_MAX);
++#endif
+ }
+ 
+ TEST(path_implies_directory) {
+diff --git a/src/udev/udevadm-settle.c b/src/udev/udevadm-settle.c
+index c236a70..8314e2c 100644
+--- a/src/udev/udevadm-settle.c
++++ b/src/udev/udevadm-settle.c
+@@ -195,7 +195,10 @@ int settle_main(int argc, char *argv[], void *userdata) {
+                 return 0;
+         }
+ 
++#if !defined(__managarm__)
++        // TODO: remove this once managarm supports full-blown systemd :^)
+         (void) emit_deprecation_warning();
++#endif
+ 
+         if (getuid() == 0) {
+                 _cleanup_(udev_ctrl_unrefp) UdevCtrl *uctrl = NULL;
+-- 
+2.48.1
+

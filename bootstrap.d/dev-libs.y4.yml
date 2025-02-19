@@ -1147,10 +1147,10 @@ packages:
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
-      - eudev
+      - systemd-utils
       - libevdev
       - mtdev
-    revision: 6
+    revision: 7
     configure:
       - args:
           - 'meson'
@@ -1615,8 +1615,8 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-      - eudev
-    revision: 8
+      - systemd-utils
+    revision: 9
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

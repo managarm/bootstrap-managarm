@@ -108,7 +108,7 @@ packages:
       - xcb-proto
       - xorg-proto
       - libdrm
-      - eudev
+      - systemd-utils
       - libxshmfence
       - libx11
       - libxxf86vm
@@ -125,7 +125,7 @@ packages:
       - nettle
       - xkbcomp
       - pixman
-    revision: 7
+    revision: 8
     configure:
       - args:
         - 'meson'

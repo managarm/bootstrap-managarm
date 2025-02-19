@@ -1468,7 +1468,7 @@ packages:
     pkgs_required:
       - mlibc
       - libdrm
-      - eudev
+      - systemd-utils
       - mesa
       - wayland
       - wayland-protocols
@@ -1483,7 +1483,7 @@ packages:
       - libxrender
       - libxxf86vm
       - libxkbcommon
-    revision: 8
+    revision: 9
     configure:
       - args:
         - 'cmake'
