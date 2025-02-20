@@ -891,7 +891,7 @@ packages:
       - libxcrypt
       - libiconv
       - libintl
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1028,7 +1028,7 @@ packages:
       - libiconv
       - file
       - libxcrypt
-    revision: 12
+    revision: 13
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1178,7 +1178,7 @@ packages:
       - file
       - libxcrypt
       - pcre2
-    revision: 15
+    revision: 16
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
