@@ -1,22 +1,21 @@
-From 16e47a0c7d82bf8d426c192dac60ee3c6716b563 Mon Sep 17 00:00:00 2001
+From 414778f9c56c4927836eb3b48a4d118473e0508c Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
-Date: Thu, 27 Jun 2024 13:23:38 +0200
+Date: Mon, 17 Feb 2025 23:40:05 +0100
 Subject: [PATCH] Install qrcAlias to enable cross-compilation
 
-Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
  src/tools/CMakeLists.txt | 1 +
  1 file changed, 1 insertion(+)
 
 diff --git a/src/tools/CMakeLists.txt b/src/tools/CMakeLists.txt
-index 8f16080..9493488 100644
+index 191dfdf..f5b3801 100644
 --- a/src/tools/CMakeLists.txt
 +++ b/src/tools/CMakeLists.txt
-@@ -5,3 +5,4 @@ target_link_libraries(generate-symbolic-dark PRIVATE Qt6::Core)
- # qrc generator
+@@ -7,3 +7,4 @@ ecm_mark_nongui_executable(generate-symbolic-dark)
  add_executable(qrcAlias qrcAlias.cpp)
  target_link_libraries(qrcAlias PRIVATE Qt6::Core)
+ ecm_mark_nongui_executable(qrcAlias)
 +install(TARGETS qrcAlias DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 -- 
-2.45.2
+2.39.5
 

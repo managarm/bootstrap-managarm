@@ -2,224 +2,224 @@ sources:
   - name: attica
     subdir: 'ports'
     git: 'https://github.com/KDE/attica.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: breeze-icons
     subdir: 'ports'
     git: 'https://github.com/KDE/breeze-icons.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: extra-cmake-modules
     subdir: 'ports'
     git: 'https://github.com/KDE/extra-cmake-modules.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: karchive
     subdir: 'ports'
     git: 'https://github.com/KDE/karchive.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: kauth
     subdir: 'ports'
     git: 'https://github.com/KDE/kauth.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: kbookmarks
     subdir: 'ports'
     git: 'https://github.com/KDE/kbookmarks.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: kcodecs
     subdir: 'ports'
     git: 'https://github.com/KDE/kcodecs.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: kcolorscheme
     subdir: 'ports'
     git: 'https://github.com/KDE/kcolorscheme.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: kcompletion
     subdir: 'ports'
     git: 'https://github.com/KDE/kcompletion.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: kconfig
     subdir: 'ports'
     git: 'https://github.com/KDE/kconfig.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: kconfigwidgets
     subdir: 'ports'
     git: 'https://github.com/KDE/kconfigwidgets.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: kcoreaddons
     subdir: 'ports'
     git: 'https://github.com/KDE/kcoreaddons.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: kcrash
     subdir: 'ports'
     git: 'https://github.com/KDE/kcrash.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: kdbusaddons
     subdir: 'ports'
     git: 'https://github.com/KDE/kdbusaddons.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: kded
     subdir: 'ports'
     git: 'https://github.com/KDE/kded.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: kglobalaccel
     subdir: 'ports'
     git: 'https://github.com/KDE/kglobalaccel.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: kguiaddons
     subdir: 'ports'
     git: 'https://github.com/KDE/kguiaddons.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: ki18n
     subdir: 'ports'
     git: 'https://github.com/KDE/ki18n.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: kiconthemes
     subdir: 'ports'
     git: 'https://github.com/KDE/kiconthemes.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: kidletime
     subdir: 'ports'
     git: 'https://github.com/KDE/kidletime.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: kio
     subdir: 'ports'
     git: 'https://github.com/KDE/kio.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: kirigami
     subdir: 'ports'
     git: 'https://github.com/KDE/kirigami.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: kitemviews
     subdir: 'ports'
     git: 'https://github.com/KDE/kitemviews.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: kjobwidgets
     subdir: 'ports'
     git: 'https://github.com/KDE/kjobwidgets.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: knewstuff
     subdir: 'ports'
     git: 'https://github.com/KDE/knewstuff.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: knotifications
     subdir: 'ports'
     git: 'https://github.com/KDE/knotifications.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: knotifyconfig
     subdir: 'ports'
     git: 'https://github.com/KDE/knotifyconfig.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: kpackage
     subdir: 'ports'
     git: 'https://github.com/KDE/kpackage.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: kparts
     subdir: 'ports'
     git: 'https://github.com/KDE/kparts.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: kservice
     subdir: 'ports'
     git: 'https://github.com/KDE/kservice.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: kstatusnotifieritem
     subdir: 'ports'
     git: 'https://github.com/KDE/kstatusnotifieritem.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: ktextwidgets
     subdir: 'ports'
     git: 'https://github.com/KDE/ktextwidgets.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: kwidgetsaddons
     subdir: 'ports'
     git: 'https://github.com/KDE/kwidgetsaddons.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: kwindowsystem
     subdir: 'ports'
     git: 'https://github.com/KDE/kwindowsystem.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: kxmlgui
     subdir: 'ports'
     git: 'https://github.com/KDE/kxmlgui.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: solid
     subdir: 'ports'
     git: 'https://github.com/KDE/solid.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
   - name: sonnet
     subdir: 'ports'
     git: 'https://github.com/KDE/sonnet.git'
-    tag: 'v6.3.0'
-    version: '6.3.0'
+    tag: 'v6.11.0'
+    version: '6.11.0'
 
 tools:
   - name: host-breeze-icons
@@ -320,7 +320,7 @@ packages:
     pkgs_required:
       - mlibc
       - qtbase6
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -366,7 +366,7 @@ packages:
     pkgs_required:
       - mlibc
       - qtbase6
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -412,7 +412,7 @@ packages:
       - bzip2
       - zstd
       - zlib
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -454,7 +454,7 @@ packages:
       - mlibc
       - qtbase6
       - kcoreaddons
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -503,7 +503,7 @@ packages:
       - kcoreaddons
       - kiconthemes
       - kwidgetsaddons
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -547,7 +547,7 @@ packages:
     pkgs_required:
       - mlibc
       - qtbase6
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -592,7 +592,7 @@ packages:
       - kconfig
       - kguiaddons
       - ki18n
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -637,7 +637,7 @@ packages:
       - kconfig
       - kcoreaddons
       - kwidgetsaddons
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -682,7 +682,7 @@ packages:
       - mlibc
       - qtbase6
       - qtdeclarative6
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -734,7 +734,7 @@ packages:
       - kguiaddons
       - ki18n
       - kwidgetsaddons
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -777,7 +777,7 @@ packages:
       - qtbase6
       - qtdeclarative6
       - systemd-utils
-    revision: 3
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -823,7 +823,7 @@ packages:
       - libice
       - libx11
       - xorg-proto
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -868,7 +868,7 @@ packages:
     pkgs_required:
       - mlibc
       - qtbase6
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -918,7 +918,7 @@ packages:
       - kcrash
       - kdbusaddons
       - kservice
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -962,7 +962,7 @@ packages:
     pkgs_required:
       - mlibc
       - qtbase6
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -1014,7 +1014,7 @@ packages:
       - libxcb
       - xorg-proto
       - libice
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -1064,7 +1064,7 @@ packages:
       - qtdeclarative6
       - libintl
       - iso-codes
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -1117,7 +1117,7 @@ packages:
       - ki18n
       - kwidgetsaddons
       - breeze-icons
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -1170,7 +1170,7 @@ packages:
       - libxscrnsaver
       - plasma-wayland-protocols
       - wayland-protocols
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -1240,7 +1240,7 @@ packages:
       - kwindowsystem
       - kxmlgui
       - solid
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -1288,7 +1288,7 @@ packages:
       - qtdeclarative6
       - qtsvg6
       - qt5compat
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -1333,7 +1333,7 @@ packages:
     pkgs_required:
       - mlibc
       - qtbase6
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -1383,7 +1383,7 @@ packages:
       - libx11
       - libice
       - xorg-proto
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -1436,7 +1436,7 @@ packages:
       - kpackage
       - kirigami
       - kwidgetsaddons
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -1483,7 +1483,7 @@ packages:
       - qtdeclarative6
       - kconfig
       - libcanberra
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -1532,7 +1532,7 @@ packages:
       - ki18n
       - kio
       - libcanberra
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -1579,7 +1579,7 @@ packages:
       - karchive
       - kcoreaddons
       - ki18n
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -1632,7 +1632,7 @@ packages:
       - kservice
       - kwidgetsaddons
       - kxmlgui
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -1684,7 +1684,7 @@ packages:
       - kservice
       - kwidgetsaddons
       - sonnet
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -1733,7 +1733,7 @@ packages:
       - kcoreaddons
       - kdbusaddons
       - ki18n
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -1778,7 +1778,7 @@ packages:
       - mlibc
       - qtbase6
       - kwindowsystem
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -1816,8 +1816,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/KDE/kwallet.git'
-      tag: 'v6.3.0'
-      version: '6.3.0'
+      tag: 'v6.11.0'
+      version: '6.11.0'
     tools_required:
       - system-gcc
       - host-cmake
@@ -1832,13 +1832,14 @@ packages:
       - kcolorscheme
       - kconfig
       - kcoreaddons
+      - kcrash
       - kdbusaddons
       - ki18n
       - knotifications
       - kservice
       - kwidgetsaddons
       - kwindowsystem
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -1882,7 +1883,7 @@ packages:
     pkgs_required:
       - mlibc
       - qtbase6
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -1935,7 +1936,7 @@ packages:
       - xorg-proto
       - xcb-util-keysyms
       - libice
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -1989,7 +1990,7 @@ packages:
       - kiconthemes
       - kitemviews
       - kwidgetsaddons
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -2035,7 +2036,7 @@ packages:
       - qtdeclarative6
       - util-linux-libs
       - systemd-utils
-    revision: 3
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -2077,7 +2078,8 @@ packages:
       - mlibc
       - qtbase6
       - qtdeclarative6
-    revision: 2
+      - hunspell
+    revision: 1
     configure:
       - args:
         - 'cmake'
