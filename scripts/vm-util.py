@@ -2,6 +2,7 @@
 
 import asyncio
 import argparse
+import enum
 import json
 import os
 import re
@@ -10,7 +11,9 @@ import shutil
 import subprocess
 import string
 import struct
+import socket
 import sys
+import pathlib
 import time
 import tempfile
 import yaml
@@ -129,6 +132,220 @@ def qemu_parse_device_spec(yml):
         args += parse_device(device)
 
     return args
+
+def setup_tftp_directory():
+    tftp_dir = tempfile.TemporaryDirectory(suffix=".tftp.d", delete=True)
+
+    shutil.copytree("packages/limine/usr/share/limine/", tftp_dir.name, dirs_exist_ok=True)
+    shutil.copytree("packages/managarm-kernel/usr/managarm/bin/", os.path.join(tftp_dir.name, "managarm"), dirs_exist_ok=True)
+    shutil.copytree("packages/managarm-kernel-uefi/usr/managarm/bin/", os.path.join(tftp_dir.name, "managarm"), dirs_exist_ok=True)
+    shutil.copyfile("initrd.cpio", os.path.join(tftp_dir.name, "managarm", "initrd.cpio"))
+    shutil.copyfile("../src/scripts/nvme-of-boot.conf", os.path.join(tftp_dir.name, "limine.conf"))
+    return tftp_dir
+
+class TftpServer:
+    def __init__(self, args):
+        self.verbose = args.verbose
+
+    class TftpOpcode(enum.Enum):
+        RRQ = 1
+        WRQ = 2
+        DATA = 3
+        ACK = 4
+        ERROR = 5
+        OACK = 6
+
+    class TftpErrorCode(int, enum.Enum):
+        NotDefined = 0
+        FileNotFound = 1
+        AccessViolation = 2
+        DiskFull = 3
+        IllegalOperation = 4
+        UnknownTransfer = 5
+        FileExists = 6
+        NoSuchUser = 7
+
+    class ReadRequest:
+        def __init__(self, buf):
+            self.opcode = TftpServer.TftpOpcode(struct.unpack(">H", buf[:2])[0])
+
+            if self.opcode != TftpServer.TftpOpcode.RRQ:
+                raise ValueError(f"Invalid opcode {self.opcode}")
+
+            self.filename = buf[2:].split(b"\0", 1)[0].decode("ascii")
+            self.mode = buf[(len(self.filename) + 3):].split(b"\0", 1)[0].decode("ascii").lower()
+
+            self.opts = False
+            self.tsize = None
+            self.blksize = None
+            self.windowsize = None
+
+            if self.mode and self.mode not in ("octet", "netascii"):
+                raise ValueError(f"Invalid mode {self.mode}")
+
+            options_offset = 2 + len(self.filename) + 1 + len(self.mode) + 1
+            self.acknowledged_opts = b""
+
+            while True:
+                option = buf[options_offset:].split(b"\0", 1)[0].decode("ascii")
+                if not option:
+                    break
+                if option not in ("blksize", "tsize", "windowsize"):
+                    raise ValueError(f"Unsupported option {option}")
+
+                option_value = buf[options_offset + len(option) + 1:].split(b"\0", 1)[0].decode("ascii")
+                self.opts = True
+
+                if option == "tsize":
+                    self.tsize = int(option_value)
+                elif option == "blksize":
+                    self.blksize = int(option_value)
+                elif option == "windowsize":
+                    self.windowsize = int(option_value)
+
+                options_offset += len(option) + 1 + len(option_value) + 1
+
+        def get_blksize(self):
+            return self.blksize or 512
+
+        def get_options_ack(self, f):
+            res = b""
+
+            if self.tsize is not None:
+                tsize_res = str(self.tsize) if self.tsize > 0 else str(f.stat().st_size)
+
+                res += b"tsize\0" + tsize_res.encode("ascii") + b"\0"
+
+            if self.blksize is not None:
+                res += b"blksize\0" + str(self.blksize).encode("ascii") + b"\0"
+
+            if self.windowsize is not None:
+                res += b"windowsize\0" + str(self.windowsize).encode("ascii") + b"\0"
+
+            return res
+
+    class DataPacket:
+        def __init__(self, block, data=b""):
+            self.packet = struct.pack(">HH", TftpServer.TftpOpcode.DATA.value, block) + data
+
+    class Error:
+        def __init__(self, code=0, msg=None, buf=None):
+            if buf:
+                self.packet = buf
+            else:
+                self.packet = struct.pack(">HH", TftpServer.TftpOpcode.ERROR.value, code)
+                if msg:
+                    self.packet += bytes(msg, "ascii")
+                self.packet += b"\0"
+
+        @property
+        def code(self) -> int:
+            return struct.unpack(">H", self.packet[2:4])[0]
+
+        @property
+        def message(self) -> str:
+            return self.packet[4:].split(b"\0", 1)[0].decode("ascii")
+
+    class OptionsAck:
+        def __init__(self, request, file):
+            self.packet = struct.pack(">H", TftpServer.TftpOpcode.OACK.value) + request.get_options_ack(file)
+
+    def wait_for_ack(self, cs, block):
+        while True:
+            reply, _ = cs.recvfrom(516)
+            opcode = TftpServer.TftpOpcode(struct.unpack(">H", reply[:2])[0])
+            if opcode == TftpServer.TftpOpcode.ACK:
+                ack_block = struct.unpack(">H", reply[2:])[0]
+                if ack_block == block:
+                    break
+            elif opcode == TftpServer.TftpOpcode.ERROR:
+                error = TftpServer.Error(buf=reply)
+                raise ValueError(f"Received error code {error.code}: {error.message}")
+
+    def run(self, tftp_root: tempfile.TemporaryDirectory):
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.bind(("0.0.0.0", 69))
+
+        while True:
+            if self.verbose:
+                print("Waiting for client connection")
+            data, client = s.recvfrom(516)
+            try:
+                rrq = self.ReadRequest(data)
+            except ValueError as e:
+                print(f"Connection from {client[0]}:{client[1]} failed: {e}")
+                s.sendto(TftpServer.Error(msg=str(e)).packet, client)
+                continue;
+
+            cs = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            cs.bind(("0.0.0.0", 0))
+            if self.verbose:
+                print(f"Serving client {client[0]}:{client[1]} on port {cs.getsockname()[1]}")
+
+            root_path = pathlib.Path(tftp_root.name).resolve()
+            file = pathlib.Path.joinpath(root_path, pathlib.Path(rrq.filename.removeprefix("/"))).resolve()
+
+            if root_path not in file.parents:
+                print(f"Client requested file outside of TFTP root: {rrq.filename}")
+                cs.sendto(TftpServer.Error(code=2, msg="Access violation").packet, client)
+                continue
+
+            if not file.exists() or not file.is_file():
+                print(f"Client requested non-existing file: {rrq.filename}")
+                cs.sendto(TftpServer.Error(code=TftpServer.TftpErrorCode.FileNotFound, msg=f"File {rrq.filename} does not exist").packet, client)
+                continue
+
+            if rrq.opts:
+                cs.sendto(TftpServer.OptionsAck(rrq, file).packet, client)
+
+            if rrq.tsize == 0:
+                continue
+
+            if self.verbose:
+                print(f"Client requested file: {file}")
+            with open(file, "rb") as f:
+                block = 1
+                total_bytes = min(file.stat().st_size, rrq.tsize or file.stat().st_size)
+
+                for _ in range(total_bytes // rrq.get_blksize()):
+                    data = f.read(rrq.get_blksize())
+                    cs.sendto(self.DataPacket(block, data).packet, client)
+                    if self.verbose:
+                        print(f"[{block}] {len(data)} bytes sent")
+
+                    if not rrq.windowsize or block % rrq.windowsize == 0:
+                        try:
+                            self.wait_for_ack(cs, block)
+                        except ValueError as e:
+                            print(f"Client {client[0]}:{client[1]} failed to ACK: {e}")
+                            continue
+
+                    block += 1
+
+                if total_bytes % rrq.get_blksize() != 0:
+                    data = f.read()
+                    cs.sendto(self.DataPacket(block, data).packet, client)
+                    if self.verbose:
+                        print(f"[{block}] {len(data)} bytes sent")
+
+                    try:
+                        self.wait_for_ack(cs, block)
+                    except ValueError as e:
+                        print(f"Client {client[0]}:{client[1]} failed to ACK: {e}")
+
+                else:
+                    cs.sendto(self.DataPacket(block).packet, client)
+                    if self.verbose:
+                        print(f"[{block}] 0 bytes sent")
+
+                    try:
+                        self.wait_for_ack(cs, block)
+                    except ValueError as e:
+                        print(f"Client {client[0]}:{client[1]} failed to ACK: {e}")
+
+            if self.verbose:
+                print("Transfer complete")
+            cs.close()
 
 class QemuRunner:
     def __init__(self):
@@ -410,12 +627,7 @@ timeout: 0
     elif args.boot_drive == "nvme":
         qemu_args += ["-device", "nvme,serial=deadbeef,drive=boot-drive"]
     elif args.boot_drive == "nvme-of":
-        tftp_dir = tempfile.TemporaryDirectory(suffix=".tftp.d")
-        shutil.copytree("packages/limine/usr/share/limine/", tftp_dir.name, dirs_exist_ok=True)
-        shutil.copytree("packages/managarm-kernel/usr/managarm/bin/", os.path.join(tftp_dir.name, "managarm"))
-        shutil.copytree("packages/managarm-kernel-uefi/usr/managarm/bin/", os.path.join(tftp_dir.name, "managarm"), dirs_exist_ok=True)
-        shutil.copyfile("initrd.cpio", os.path.join(tftp_dir.name, "managarm", "initrd.cpio"))
-        shutil.copyfile("../src/scripts/nvme-of-boot.conf", os.path.join(tftp_dir.name, "limine.conf"))
+        tftp_dir = setup_tftp_directory()
     else:
         assert args.boot_drive == "ide"
         qemu_args += ["-device", "ide-hd,drive=boot-drive,bus=ide.0"]
@@ -423,7 +635,6 @@ timeout: 0
     # Add networking.
     netdev_extra = ""
     if args.boot_drive == "nvme-of":
-        assert isinstance(tftp_dir, tempfile.TemporaryDirectory)
         netdev_extra += f",tftp={tftp_dir.name},bootfile="
         if args.uefi:
             arch = ""
@@ -742,6 +953,87 @@ def do_alloc_trace(args):
 
 alloc_trace_parser = main_subparsers.add_parser("alloc-trace")
 alloc_trace_parser.set_defaults(_fn=do_alloc_trace)
+
+# ---------------------------------------------------------------------------------------
+# tftp subcommand.
+# ---------------------------------------------------------------------------------------
+
+def do_tftp(args):
+    tftp_dir = setup_tftp_directory()
+    if args.verbose:
+        print(f"Temporary tftp root directory: {tftp_dir}")
+
+    server = TftpServer(args)
+    server.run(tftp_dir)
+
+tftp_parser = main_subparsers.add_parser("tftp")
+tftp_parser.add_argument("-v", "--verbose", action="store_true")
+tftp_parser.set_defaults(_fn=do_tftp)
+
+# ---------------------------------------------------------------------------------------
+# wol subcommand.
+# ---------------------------------------------------------------------------------------
+
+def do_wol(args):
+    def parse_mac(mac: str):
+        sanitized_mac = mac.replace(':', '').replace('-', '').lower()
+
+        if len(sanitized_mac) == 12:
+            try:
+                return bytes.fromhex(sanitized_mac)
+            except ValueError as e:
+                print(f"Error parsing MAC address: {e}")
+                sys.exit(1)
+        else:
+            print(f"Error parsing MAC address")
+            sys.exit(1)
+
+    with open("wol.yml", "r") as f:
+        yml = yaml.load(f, Loader=yaml.SafeLoader)
+
+        if not args.interface:
+            if "interface" in yml:
+                args.interface = yml["interface"]
+            else:
+                print("No interface specified.")
+                sys.exit(1)
+
+        resolved_addr = None
+        if len(args.target) == 17:
+            mac_addr = args.target
+        else:
+            # parse aliases
+            with open("wol.yml", "r") as f:
+                if "alias" in yml and args.target in yml["alias"]:
+                    resolved_addr = mac_addr = yml["alias"][args.target]
+                else:
+                    print(f"Could not resolve alias {args.target}")
+                    sys.exit(1)
+
+    mac_address_bytes = parse_mac(mac_addr)
+    if len(mac_address_bytes) != 6:
+        print(f"Invalid MAC address {args.target}")
+        sys.exit(1)
+
+    try:
+        ifindex = socket.if_nametoindex(args.interface)
+    except OSError as e:
+        print(f"Interface '{args.interface}' not found: {e}")
+        sys.exit(1)
+
+    print(f"Waking {args.target}{f" ({resolved_addr})" if resolved_addr else ""} over interface '{args.interface}'")
+
+    magic_packet = b'\xFF' * 6 + mac_address_bytes * 16
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_BINDTOIFINDEX, ifindex)
+    sock.sendto(magic_packet, ('<broadcast>', socket.getservbyname("discard")))
+    sock.close()
+
+wol_parser = main_subparsers.add_parser("wol")
+wol_parser.add_argument("interface", nargs='?', type=str)
+wol_parser.add_argument("target", type=str)
+wol_parser.set_defaults(_fn=do_wol)
 
 # ---------------------------------------------------------------------------------------
 # "main()" code.
