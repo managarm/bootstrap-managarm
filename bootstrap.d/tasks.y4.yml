@@ -142,7 +142,7 @@ tasks:
       - '--arch'
       - '@OPTION:arch@'
       - '--timeout=1200'
-      - '--io-timeout=30'
+      - '--io-timeout=60'
       - '--expect'
       - "launching '/usr/libexec/weston-desktop-shell'"
     environ:

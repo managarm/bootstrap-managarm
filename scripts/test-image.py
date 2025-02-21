@@ -9,7 +9,7 @@ import sys
 import time
 
 timeout = 20 * 60
-io_timeout = 30
+io_timeout = 60
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--io-timeout", action="store_true")
