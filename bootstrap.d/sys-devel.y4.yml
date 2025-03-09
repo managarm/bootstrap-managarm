@@ -235,20 +235,24 @@ packages:
 
   - name: m4
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: GNU macro processor
+      description: This package contains a macro processor.
+      spdx: 'GPL-3.0-or-later'
+      website: 'https://www.gnu.org/software/m4/m4.html'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-devel']
     source:
       subdir: 'ports'
       git: 'https://git.savannah.gnu.org/git/m4.git'
-      tag: 'v1.4.19'
+      branch: 'branch-1.4'
+      commit: '817edf1a766b10e132ffe595bf66606cf2ceee22'
       version: '1.4.19'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
         - host-libtool
       regenerate:
-        # Pull a new bootstrap file that is actually competent, because the original bootstrap only checks out the last 365 days of gnulib, which ain't enough for us
-        - args: ['wget', '-O', '@THIS_SOURCE_DIR@/bootstrap', 'https://raw.githubusercontent.com/gnulib-modules/bootstrap/3ee70612fc5e54384f39669c970714217cd5c476/bootstrap']
-          isolate_network: false
-        - args: ['chmod', '0755', '@THIS_SOURCE_DIR@/bootstrap']
         - args: ['./bootstrap']
           isolate_network: false
         - args: ['cp',
@@ -258,7 +262,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 10
+    revision: 11
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
