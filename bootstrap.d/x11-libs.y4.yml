@@ -349,7 +349,7 @@ packages:
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -364,7 +364,7 @@ packages:
         - '-Dprint_backends=file'
         - !managarm::arch_ite
           arch: [x86_64]
-          then: '-Dintrospection=true'
+          then: '-Dintrospection=false' # Broke due to rtld changes
           else: '-Dintrospection=false'
         - '-Dx11_backend=true'
         - '-Dbroadway_backend=true'
