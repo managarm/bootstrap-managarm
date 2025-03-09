@@ -833,8 +833,8 @@ packages:
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/sed.git'
-      tag: 'v4.8'
-      version: '4.8'
+      tag: 'v4.9'
+      version: '4.9'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -848,13 +848,14 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 10
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--disable-nls'
+        - '--disable-gcc-warnings'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
