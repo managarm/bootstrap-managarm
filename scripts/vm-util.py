@@ -1021,7 +1021,7 @@ def do_wol(args):
         print(f"Interface '{args.interface}' not found: {e}")
         sys.exit(1)
 
-    print(f"Waking {args.target}{f" ({resolved_addr})" if resolved_addr else ""} over interface '{args.interface}'")
+    print(f"Waking {args.target}{f' ({resolved_addr})' if resolved_addr else ''} over interface '{args.interface}'")
 
     magic_packet = b'\xFF' * 6 + mac_address_bytes * 16
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
