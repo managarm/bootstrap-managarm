@@ -71,6 +71,7 @@ tools:
         - '@SOURCE_ROOT@/scripts/meson.native-file'
         - '--prefix=@PREFIX@'
         - '-Dbuild_tools=true'
+        - '-Dbuild_testsuite=true'
         - '@THIS_SOURCE_DIR@'
         isolate_network: false
     compile:
@@ -259,6 +260,7 @@ packages:
         - '--buildtype=debugoptimized'
         - '--wrap-mode=nodownload'
         - '-Dbuild_drivers=true'
+        - '-Dbuild_testsuite=true'
         - '@THIS_SOURCE_DIR@'
         environ:
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
