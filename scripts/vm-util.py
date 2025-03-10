@@ -1065,6 +1065,36 @@ wol_parser.add_argument("target", type=str)
 wol_parser.set_defaults(_fn=do_wol)
 
 # ---------------------------------------------------------------------------------------
+# vfio subcommand.
+# ---------------------------------------------------------------------------------------
+
+def do_vfio(args):
+    sysfs_path = pathlib.Path(f"/sys/bus/pci/devices/{args.device}")
+    if not sysfs_path.exists():
+        print(f"Device {args.device} not found")
+        sys.exit(1)
+
+    if (sysfs_path / "driver").exists():
+        with open(sysfs_path / "driver/unbind", "w") as f:
+            f.write(args.device)
+
+    with open(sysfs_path / "vendor", "r") as f: vendor = int(f.read().strip(), 16)
+    with open(sysfs_path / "device", "r") as f: device = int(f.read().strip(), 16)
+
+    try:
+        with open("/sys/bus/pci/drivers/vfio-pci/new_id", "w") as f:
+            f.write(f"{vendor:x} {device:x}")
+    except FileExistsError:
+        pass
+
+    with open("/sys/bus/pci/drivers/vfio-pci/bind", "w") as f:
+        f.write(args.device)
+
+vfio_parser = main_subparsers.add_parser("vfio")
+vfio_parser.add_argument("device", type=str)
+vfio_parser.set_defaults(_fn=do_vfio)
+
+# ---------------------------------------------------------------------------------------
 # "main()" code.
 # ---------------------------------------------------------------------------------------
 
