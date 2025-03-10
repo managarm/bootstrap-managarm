@@ -647,9 +647,10 @@ timeout: 0
         qemu_args += ["-device", "nvme,serial=deadbeef,drive=boot-drive"]
     elif args.boot_drive == "nvme-of":
         tftp_dir = setup_tftp_directory()
-    else:
-        assert args.boot_drive == "ide"
+    elif args.boot_drive == "ide":
         qemu_args += ["-device", "ide-hd,drive=boot-drive,bus=ide.0"]
+    else:
+        assert args.boot_drive == "none"
 
     # Add networking.
     netdev_extra = ""
@@ -822,7 +823,7 @@ qemu_parser.add_argument("--no-smp", action="store_true")
 qemu_parser.add_argument("--virtual-boot", action="store_true")
 qemu_parser.add_argument(
     "--boot-drive",
-    choices=["virtio", "virtio-legacy", "ahci", "usb", "ide", "nvme", "nvme-of"],
+    choices=["virtio", "virtio-legacy", "ahci", "usb", "ide", "nvme", "nvme-of", "none"],
     default="virtio",
 )
 qemu_parser.add_argument("--net-bridge", action="store_true")
