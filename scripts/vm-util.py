@@ -613,14 +613,15 @@ timeout: 0
         qemu_args += ["-device", "isa-debugcon,iobase=0x402,chardev=ovmf-logs"]
 
     # Add USB HCDs.
-    qemu_args += [
-        "-device",
-        "piix3-usb-uhci,id=uhci",
-        "-device",
-        "usb-ehci,id=ehci",
-        "-device",
-        "qemu-xhci,id=xhci",
-    ]
+    if not args.inhibit_usb:
+        qemu_args += [
+            "-device",
+            "piix3-usb-uhci,id=uhci",
+            "-device",
+            "usb-ehci,id=ehci",
+            "-device",
+            "qemu-xhci,id=xhci",
+        ]
 
     # Add the boot medium.
     qemu_args += ["-drive", "id=boot-drive,file=image,format=raw,if=none"]
@@ -845,6 +846,7 @@ qemu_parser.add_argument("--timeout", type=int)
 qemu_parser.add_argument("--io-timeout", type=int)
 qemu_parser.add_argument("--expect", action="append")
 qemu_parser.add_argument("--expect-not", action="append")
+qemu_parser.add_argument("--inhibit-usb", action="store_true")
 
 # ---------------------------------------------------------------------------------------
 # gdb subcommand.
