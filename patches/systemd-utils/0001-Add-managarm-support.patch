@@ -1,7 +1,7 @@
-From 7358a1c31a63ebdb2495cff5a26858319c27f116 Mon Sep 17 00:00:00 2001
+From b665ef017d518f835115ace004591663bd5e34d9 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Tue, 18 Feb 2025 23:40:13 +0100
-Subject: [PATCH] Add managarm support
+Subject: [PATCH 1/3] Add managarm support
 
 ---
  meson.build                        |  8 ++--
@@ -509,5 +509,5 @@ index c236a70..8314e2c 100644
          if (getuid() == 0) {
                  _cleanup_(udev_ctrl_unrefp) UdevCtrl *uctrl = NULL;
 -- 
-2.48.1
+2.39.5
 
