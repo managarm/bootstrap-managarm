@@ -536,6 +536,12 @@ def do_qemu(args):
             content = file.read()
             if not "umip" in content:
                 cpu_extras = ["-umip"]
+        if args.iommu:
+            qemu_args += ["-device", "intel-iommu,intremap=on"]
+            qemu_args += ["-M", "q35,kernel-irqchip=split"]
+            qemu_args += ["-nodefaults"]
+            if args.iommu_trace:
+                qemu_args += ["--trace", "vtd*"]
     elif args.arch == "aarch64":
         if not have_kvm or args.virtual_cpu:
             cpu_model = "cortex-a72"
@@ -848,6 +854,8 @@ qemu_parser.add_argument("--io-timeout", type=int)
 qemu_parser.add_argument("--expect", action="append")
 qemu_parser.add_argument("--expect-not", action="append")
 qemu_parser.add_argument("--inhibit-usb", action="store_true")
+qemu_parser.add_argument("--iommu", action="store_true")
+qemu_parser.add_argument("--iommu-trace", action="store_true")
 
 # ---------------------------------------------------------------------------------------
 # gdb subcommand.
