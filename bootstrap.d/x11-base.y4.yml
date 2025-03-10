@@ -108,7 +108,7 @@ packages:
       - xcb-proto
       - xorg-proto
       - libdrm
-      - systemd-utils
+      - systemd
       - libxshmfence
       - libx11
       - libxxf86vm
