@@ -1,4 +1,4 @@
-From a8487fb2a189363486333a3a0f1933731dd2b34f Mon Sep 17 00:00:00 2001
+From 82e891e13aac65b153e0f816e0b766579d9e31a3 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Sun, 2 Jan 2022 00:19:17 +0100
 Subject: [PATCH] Initial Managarm support
@@ -10,9 +10,12 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
  Source/JavaScriptCore/runtime/Options.cpp              |  1 +
  Source/ThirdParty/ANGLE/include/GLSLANG/ShaderVars.h   |  1 +
  Source/ThirdParty/ANGLE/src/common/platform.h          |  2 +-
+ Source/ThirdParty/xdgmime/src/xdgmimecache.c           |  1 +
+ Source/ThirdParty/xdgmime/src/xdgmimeglob.c            |  1 +
  Source/WTF/wtf/CompletionHandler.h                     |  1 +
  Source/WTF/wtf/InlineASM.h                             |  8 +++++---
  Source/WTF/wtf/MallocPtr.h                             |  1 +
+ Source/WTF/wtf/Platform.h                              |  1 +
  Source/WTF/wtf/PlatformHave.h                          |  4 ++--
  Source/WTF/wtf/PlatformOS.h                            |  6 ++++++
  Source/WTF/wtf/text/IntegerToStringConversion.h        |  1 +
@@ -20,7 +23,7 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
  Source/WebCore/platform/sql/SQLiteDatabase.cpp         |  6 +++---
  Source/WebKit/Platform/IPC/unix/ConnectionUnix.cpp     |  2 +-
  Source/WebKit/Platform/unix/SharedMemoryUnix.cpp       |  4 +++-
- 15 files changed, 34 insertions(+), 17 deletions(-)
+ 18 files changed, 37 insertions(+), 17 deletions(-)
 
 diff --git a/Source/JavaScriptCore/heap/BlockDirectory.cpp b/Source/JavaScriptCore/heap/BlockDirectory.cpp
 index e2a3540f86..d58513333e 100644
@@ -121,6 +124,30 @@ index 41f3cf4ff7..77c4a91f29 100644
  #    define ANGLE_PLATFORM_POSIX 1
  #else
  #    error Unsupported platform.
+diff --git a/Source/ThirdParty/xdgmime/src/xdgmimecache.c b/Source/ThirdParty/xdgmime/src/xdgmimecache.c
+index d06095f4e4..e26001567f 100644
+--- a/Source/ThirdParty/xdgmime/src/xdgmimecache.c
++++ b/Source/ThirdParty/xdgmime/src/xdgmimecache.c
+@@ -31,6 +31,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <strings.h>
+ 
+ #include <fcntl.h>
+ #include <unistd.h>
+diff --git a/Source/ThirdParty/xdgmime/src/xdgmimeglob.c b/Source/ThirdParty/xdgmime/src/xdgmimeglob.c
+index ebe3a0de00..4e3f451453 100644
+--- a/Source/ThirdParty/xdgmime/src/xdgmimeglob.c
++++ b/Source/ThirdParty/xdgmime/src/xdgmimeglob.c
+@@ -35,6 +35,7 @@
+ #include <stdio.h>
+ #include <assert.h>
+ #include <string.h>
++#include <strings.h>
+ #include <fnmatch.h>
+ 
+ #ifndef	FALSE
 diff --git a/Source/WTF/wtf/CompletionHandler.h b/Source/WTF/wtf/CompletionHandler.h
 index a358c0f6ee..100cb29aca 100644
 --- a/Source/WTF/wtf/CompletionHandler.h
@@ -181,6 +208,18 @@ index 2cbd861efd..0415cccea0 100644
  
  // MallocPtr is a smart pointer class that calls fastFree in its destructor.
  // It is intended to be used for pointers where the C++ lifetime semantics
+diff --git a/Source/WTF/wtf/Platform.h b/Source/WTF/wtf/Platform.h
+index 9080e98da4..89a0026ade 100644
+--- a/Source/WTF/wtf/Platform.h
++++ b/Source/WTF/wtf/Platform.h
+@@ -115,6 +115,7 @@
+ /* ICU configuration. Some of these match ICU defaults on some platforms, but we would like them consistently set everywhere we build WebKit. */
+ #define U_HIDE_DEPRECATED_API 1
+ #define U_SHOW_CPLUSPLUS_API 0
++#define U_SHOW_CPLUSPLUS_HEADER_API 0
+ #ifdef __cplusplus
+ #define UCHAR_TYPE char16_t
+ #endif
 diff --git a/Source/WTF/wtf/PlatformHave.h b/Source/WTF/wtf/PlatformHave.h
 index 61f13c2b73..de93124ef8 100644
 --- a/Source/WTF/wtf/PlatformHave.h
@@ -314,5 +353,5 @@ index 998a2a7679..a490b3fb5f 100644
  
          if (fileDescriptor != -1)
 -- 
-2.43.0
+2.39.5
 
