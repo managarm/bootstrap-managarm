@@ -271,6 +271,10 @@ packages:
         environ:
           'DESTDIR': '@THIS_COLLECT_DIR@'
         quiet: true
+      # Workaround for drivers that are not integrated into udev yet with systemd
+      - args: ['mkdir', '-pv', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/sysinit.target.wants/']
+      - args: ['cp', '-v', '@THIS_SOURCE_DIR@/drivers/usb/runsvr-usbhid.service', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/']
+      - args: ['ln', '-svn', '../runsvr-usbhid.service', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/sysinit.target.wants/']
     tasks:
     - name: clang-tidy
       args:
