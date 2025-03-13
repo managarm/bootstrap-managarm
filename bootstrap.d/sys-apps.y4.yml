@@ -807,7 +807,7 @@ packages:
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
-      - systemd-utils
+      - systemd
       - hwdata
       - zlib
     revision: 2
@@ -993,7 +993,7 @@ packages:
     pkgs_required:
       - mlibc
       - libusb
-      - systemd-utils
+      - systemd
       - hwdata
       - libiconv
     revision: 2
@@ -1170,7 +1170,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-      - systemd-utils
+      - systemd
       - util-linux-libs
       - readline
       - ncurses
@@ -1351,7 +1351,7 @@ packages:
       - libxkbcommon
       - libdrm
       - libtsm
-      - systemd-utils
+      - systemd
     revision: 9
     configure:
       - args:
@@ -1378,7 +1378,7 @@ packages:
   - name: eudev
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
-    # API mismatch with systemd-utils's udevd, hence unusable
+    # API mismatch with systemd's udevd, hence unusable
     stability_level: broken
     source:
       subdir: 'ports'
@@ -1422,17 +1422,17 @@ packages:
         quiet: true
       - args: ['touch', '@THIS_COLLECT_DIR@/usr/etc/udev/rules.d/.keep']
 
-  - name: systemd-utils
+  - name: systemd
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
-      summary: Utilities for the systemd System and Service Manager
+      summary: System and service manager for Linux and Managarm
       description: systemd is a suite of basic building blocks for a Linux system. It provides a system and service manager that runs as PID 1 and starts the rest of the system.
-      spdx: 'GPL-2.0-or-later'
+      spdx: 'GPL-2.0-only'
       website: 'https://systemd.io'
-      maintainer: "no92 <leo@managarm.org>"
+      maintainer: "no92 <leo@managarm.org> && Dennis Bonke <dennis@managarm.org>"
       categories: ['sys-apps']
-      replaces: ['eudev']
+      replaces: ['eudev', 'systemd-utils']
     source:
       subdir: 'ports'
       git: 'https://github.com/systemd/systemd.git'
@@ -1530,6 +1530,8 @@ packages:
         - '-Dxz=false'
         - '-Dzlib=false'
         - '-Dzstd=false'
+        - '-Dtests=true'
+        - '-Dinstall-tests=true'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -1537,3 +1539,33 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      # These don't work on Managarm, remove them so we don't get a degraded system
+      - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/systemd-ask-password-console.path']
+      - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/sysinit.target.wants/systemd-ask-password-console.path']
+      - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/systemd-ask-password-console.service']
+      # Touch up empty directories
+      - args: ['touch',
+          '@THIS_COLLECT_DIR@/usr/lib/systemd/system/runlevel1.target.wants/.keep',
+          '@THIS_COLLECT_DIR@/usr/lib/systemd/system/runlevel2.target.wants/.keep',
+          '@THIS_COLLECT_DIR@/usr/lib/systemd/system/runlevel3.target.wants/.keep',
+          '@THIS_COLLECT_DIR@/usr/lib/systemd/system/runlevel4.target.wants/.keep',
+          '@THIS_COLLECT_DIR@/usr/lib/systemd/system/runlevel5.target.wants/.keep',
+          '@THIS_COLLECT_DIR@/usr/lib/systemd/user-generators/.keep',
+          '@THIS_COLLECT_DIR@/usr/lib/systemd/system-shutdown/.keep',
+          '@THIS_COLLECT_DIR@/usr/lib/systemd/system-sleep/.keep',
+          '@THIS_COLLECT_DIR@/etc/credstore.encrypted/.keep',
+          '@THIS_COLLECT_DIR@/etc/kernel/install.d/.keep',
+          '@THIS_COLLECT_DIR@/etc/systemd/network/.keep',
+          '@THIS_COLLECT_DIR@/etc/systemd/system/.keep',
+          '@THIS_COLLECT_DIR@/usr/lib/credstore/.keep',
+          '@THIS_COLLECT_DIR@/etc/udev/rules.d/.keep',
+          '@THIS_COLLECT_DIR@/etc/systemd/user/.keep',
+          '@THIS_COLLECT_DIR@/var/log/journal/.keep',
+          '@THIS_COLLECT_DIR@/etc/udev/hwdb.d/.keep',
+          '@THIS_COLLECT_DIR@/var/lib/systemd/.keep',
+          '@THIS_COLLECT_DIR@/etc/tmpfiles.d/.keep',
+          '@THIS_COLLECT_DIR@/etc/credstore/.keep',
+          '@THIS_COLLECT_DIR@/etc/sysctl.d/.keep',
+          '@THIS_COLLECT_DIR@/etc/kernel/.keep'
+        ]
+      - args: ['dbus-uuidgen', '--ensure=@THIS_COLLECT_DIR@/etc/machine-id']

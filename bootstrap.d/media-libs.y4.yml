@@ -1468,7 +1468,7 @@ packages:
     pkgs_required:
       - mlibc
       - libdrm
-      - systemd-utils
+      - systemd
       - mesa
       - wayland
       - wayland-protocols
