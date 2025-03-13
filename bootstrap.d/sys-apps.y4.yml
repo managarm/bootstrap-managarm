@@ -1431,7 +1431,7 @@ packages:
       website: 'https://systemd.io'
       maintainer: "no92 <leo@managarm.org> && Dennis Bonke <dennis@managarm.org>"
       categories: ['sys-apps']
-      replaces: ['eudev', 'systemd-utils']
+      replaces: ['eudev']
     source:
       subdir: 'ports'
       git: 'https://github.com/systemd/systemd.git'
