@@ -777,7 +777,7 @@ packages:
       - qtbase6
       - qtdeclarative6
       - systemd
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -2036,7 +2036,7 @@ packages:
       - qtdeclarative6
       - util-linux-libs
       - systemd
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'

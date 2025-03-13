@@ -809,7 +809,7 @@ packages:
       - systemd
       - hwdata
       - zlib
-    revision: 2
+    revision: 3
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -995,7 +995,7 @@ packages:
       - systemd
       - hwdata
       - libiconv
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -1178,7 +1178,7 @@ packages:
       - file
       - libxcrypt
       - pcre2
-    revision: 16
+    revision: 17
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1351,7 +1351,7 @@ packages:
       - libdrm
       - libtsm
       - systemd
-    revision: 9
+    revision: 10
     configure:
       - args:
         - 'meson'
@@ -1431,7 +1431,7 @@ packages:
       website: 'https://systemd.io'
       maintainer: "no92 <leo@managarm.org> && Dennis Bonke <dennis@managarm.org>"
       categories: ['sys-apps']
-      replaces: ['eudev']
+      replaces: ['eudev', 'systemd-utils']
     source:
       subdir: 'ports'
       git: 'https://github.com/systemd/systemd.git'
@@ -1449,7 +1449,7 @@ packages:
       - openssl
       - util-linux-libs
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'meson'

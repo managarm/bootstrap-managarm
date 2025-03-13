@@ -1150,7 +1150,7 @@ packages:
       - systemd
       - libevdev
       - mtdev
-    revision: 7
+    revision: 8
     configure:
       - args:
           - 'meson'
@@ -1616,7 +1616,7 @@ packages:
     pkgs_required:
       - mlibc
       - systemd
-    revision: 9
+    revision: 10
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
