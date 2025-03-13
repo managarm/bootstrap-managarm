@@ -1483,7 +1483,7 @@ packages:
       - libxrender
       - libxxf86vm
       - libxkbcommon
-    revision: 9
+    revision: 10
     configure:
       - args:
         - 'cmake'
