@@ -1431,7 +1431,7 @@ packages:
       website: 'https://systemd.io'
       maintainer: "no92 <leo@managarm.org> && Dennis Bonke <dennis@managarm.org>"
       categories: ['sys-apps']
-      replaces: ['eudev']
+      replaces: ['eudev', 'systemd-utils']
     source:
       subdir: 'ports'
       git: 'https://github.com/systemd/systemd.git'
@@ -1449,7 +1449,7 @@ packages:
       - openssl
       - util-linux-libs
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'meson'
