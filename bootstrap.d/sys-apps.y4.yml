@@ -148,7 +148,8 @@ packages:
       - mlibc
       - glib
       - libexpat
-    revision: 8
+      - systemd
+    revision: 9
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -161,8 +162,6 @@ packages:
         - '--disable-static'
         - '--enable-shared'
         - '--enable-verbose-mode'
-        - '--with-systemdsystemunitdir=no'
-        - '--with-systemduserunitdir=no'
         - '--docdir=/usr/share/doc/dbus-1.12.20'
         - '--with-console-auth-dir=/run/console'
         - '--with-system-pid-file=/run/dbus/pid'
@@ -172,7 +171,7 @@ packages:
         - '--disable-libaudit'
         - '--disable-kqueue'
         - '--disable-launchd'
-        - '--disable-systemd'
+        - '--enable-systemd'
         - '--disable-tests'
     build:
       - args: ['make', '-j@PARALLELISM@']
