@@ -1,29 +1,28 @@
-From c02304e2d1f9a5e95832104eb5c533afee403964 Mon Sep 17 00:00:00 2001
+From 3e3bdd1df6ec27d37184b7f23ea3bb4789f093a8 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Fri, 10 Jan 2025 00:55:19 +0100
 Subject: [PATCH 2/3] Add support for systemd boot for Managarm
 
 ---
  src/basic/capability-util.c              |  2 ++
- src/basic/process-util.c                 |  8 ++++++--
- src/basic/raw-clone.h                    |  6 ++----
+ src/basic/process-util.c                 |  8 +++--
+ src/basic/raw-clone.h                    |  6 ++--
  src/basic/stdio-util.h                   |  1 +
- src/core/exec-credential.c               |  4 ++++
- src/core/exec-invoke.c                   | 11 ++++++++++
- src/core/main.c                          |  3 +++
- src/core/mount.c                         | 11 ++++++++++
- src/journal/journald-native.c            |  3 +++
- src/journal/journald-server.c            |  9 ++++++++
- src/journal/journald-syslog.c            |  3 +++
- src/journal/journald.conf                |  6 +++---
+ src/core/exec-credential.c               |  4 +++
+ src/core/exec-invoke.c                   | 11 +++++++
+ src/core/main.c                          |  3 ++
+ src/core/mount.c                         | 11 +++++++
+ src/journal/journald-server.c            |  9 ++++++
+ src/journal/journald.conf                |  6 ++--
  src/libsystemd/sd-journal/journal-send.c |  1 +
- src/shared/async.c                       |  4 ++++
- src/shared/mount-setup.c                 | 10 +++++++++
- src/shared/mount-util.c                  |  7 +++++++
+ src/shared/async.c                       |  4 +++
+ src/shared/mount-setup.c                 | 10 +++++++
+ src/shared/mount-util.c                  |  7 +++++
  src/udev/udev.conf                       |  2 +-
- units/systemd-journald.service.in        | 10 ++++-----
- units/systemd-udevd.service.in           | 26 ++++++++++++------------
- 19 files changed, 99 insertions(+), 28 deletions(-)
+ units/systemd-journald.service.in        | 10 +++----
+ units/systemd-logind.service.in          | 38 ++++++++++++------------
+ units/systemd-udevd.service.in           | 26 ++++++++--------
+ 18 files changed, 112 insertions(+), 47 deletions(-)
 
 diff --git a/src/basic/capability-util.c b/src/basic/capability-util.c
 index e9b41fe..ed8472c 100644
@@ -257,23 +256,6 @@ index 66917df..405dd2b 100644
  }
  
  static int mount_dispatch_io(sd_event_source *source, int fd, uint32_t revents, void *userdata) {
-diff --git a/src/journal/journald-native.c b/src/journal/journald-native.c
-index 0600102..817bc7c 100644
---- a/src/journal/journald-native.c
-+++ b/src/journal/journald-native.c
-@@ -493,9 +493,12 @@ int server_open_native_socket(Server *s, const char *native_socket) {
-                         log_warning_errno(r, "SO_PASSSEC failed: %m");
-         }
- 
-+// TODO: Remove this hack once SO_TIMESTAMP is merged
-+#ifndef __managarm__
-         r = setsockopt_int(s->native_fd, SOL_SOCKET, SO_TIMESTAMP, true);
-         if (r < 0)
-                 return log_error_errno(r, "SO_TIMESTAMP failed: %m");
-+#endif
- 
-         r = sd_event_add_io(s->event, &s->native_event_source, s->native_fd, EPOLLIN, server_process_datagram, s);
-         if (r < 0)
 diff --git a/src/journal/journald-server.c b/src/journal/journald-server.c
 index 07748f0..3f05328 100644
 --- a/src/journal/journald-server.c
@@ -306,23 +288,6 @@ index 07748f0..3f05328 100644
 +#endif
  
          r = server_setup_signals(s);
-         if (r < 0)
-diff --git a/src/journal/journald-syslog.c b/src/journal/journald-syslog.c
-index 4ad73ed..d2436c5 100644
---- a/src/journal/journald-syslog.c
-+++ b/src/journal/journald-syslog.c
-@@ -495,9 +495,12 @@ int server_open_syslog_socket(Server *s, const char *syslog_socket) {
-                         log_warning_errno(r, "SO_PASSSEC failed: %m");
-         }
- 
-+// TODO: Remove this hack once SO_TIMESTAMP is merged
-+#ifndef __managarm__
-         r = setsockopt_int(s->syslog_fd, SOL_SOCKET, SO_TIMESTAMP, true);
-         if (r < 0)
-                 return log_error_errno(r, "SO_TIMESTAMP failed: %m");
-+#endif
- 
-         r = sd_event_add_io(s->event, &s->syslog_event_source, s->syslog_fd, EPOLLIN, server_process_datagram, s);
          if (r < 0)
 diff --git a/src/journal/journald.conf b/src/journal/journald.conf
 index 9a12ca7..828dee0 100644
@@ -521,6 +486,70 @@ index 4404af9..c27be83 100644
  # all in parallel.
 -LimitNOFILE={{HIGH_RLIMIT_NOFILE}}
 +#LimitNOFILE={{HIGH_RLIMIT_NOFILE}}
+diff --git a/units/systemd-logind.service.in b/units/systemd-logind.service.in
+index e04aa82..40faebf 100644
+--- a/units/systemd-logind.service.in
++++ b/units/systemd-logind.service.in
+@@ -23,7 +23,7 @@ After=dbus.socket
+ 
+ [Service]
+ BusName=org.freedesktop.login1
+-CapabilityBoundingSet=CAP_SYS_ADMIN CAP_MAC_ADMIN CAP_AUDIT_CONTROL CAP_CHOWN CAP_DAC_READ_SEARCH CAP_DAC_OVERRIDE CAP_FOWNER CAP_SYS_TTY_CONFIG CAP_LINUX_IMMUTABLE
++#CapabilityBoundingSet=CAP_SYS_ADMIN CAP_MAC_ADMIN CAP_AUDIT_CONTROL CAP_CHOWN CAP_DAC_READ_SEARCH CAP_DAC_OVERRIDE CAP_FOWNER CAP_SYS_TTY_CONFIG CAP_LINUX_IMMUTABLE
+ DeviceAllow=block-* r
+ DeviceAllow=char-/dev/console rw
+ DeviceAllow=char-drm rw
+@@ -33,32 +33,32 @@ DeviceAllow=char-tty rw
+ DeviceAllow=char-vcs rw
+ ExecStart={{LIBEXECDIR}}/systemd-logind
+ FileDescriptorStoreMax=768
+-IPAddressDeny=any
+-LockPersonality=yes
+-MemoryDenyWriteExecute=yes
+-NoNewPrivileges=yes
++#IPAddressDeny=any
++#LockPersonality=yes
++#MemoryDenyWriteExecute=yes
++#NoNewPrivileges=yes
+ PrivateTmp=yes
+ # We don't use ProtectProc= since we need to look for usernames and tty for wall messages
+-ProtectClock=yes
+-ProtectControlGroups=yes
+-ProtectHome=yes
+-ProtectHostname=yes
+-ProtectKernelLogs=yes
+-ProtectKernelModules=yes
+-ProtectSystem=strict
++#ProtectClock=yes
++#ProtectControlGroups=yes
++#ProtectHome=yes
++#ProtectHostname=yes
++#ProtectKernelLogs=yes
++#ProtectKernelModules=yes
++#ProtectSystem=strict
+ ReadWritePaths=/etc /run
+ Restart=always
+ RestartSec=0
+-RestrictAddressFamilies=AF_UNIX AF_NETLINK
+-RestrictNamespaces=yes
+-RestrictRealtime=yes
+-RestrictSUIDSGID=yes
++#RestrictAddressFamilies=AF_UNIX AF_NETLINK
++#RestrictNamespaces=yes
++#RestrictRealtime=yes
++#RestrictSUIDSGID=yes
+ RuntimeDirectory=systemd/sessions systemd/seats systemd/users systemd/inhibit systemd/shutdown
+ RuntimeDirectoryPreserve=yes
+ StateDirectory=systemd/linger
+-SystemCallArchitectures=native
+-SystemCallErrorNumber=EPERM
+-SystemCallFilter=@system-service
++#SystemCallArchitectures=native
++#SystemCallErrorNumber=EPERM
++#SystemCallFilter=@system-service
+ Type=notify-reload
+ {{SERVICE_WATCHDOG}}
+ 
 diff --git a/units/systemd-udevd.service.in b/units/systemd-udevd.service.in
 index f4a4482..29a22b5 100644
 --- a/units/systemd-udevd.service.in
@@ -563,5 +592,5 @@ index f4a4482..29a22b5 100644
 +#IPAddressDeny=any
  {{SERVICE_WATCHDOG}}
 -- 
-2.39.5
+2.47.2
 

@@ -1449,7 +1449,7 @@ packages:
       - openssl
       - util-linux-libs
       - mlibc
-    revision: 4
+    revision: 5
     configure:
       - args:
         - 'meson'
@@ -1491,7 +1491,7 @@ packages:
         - '-Dlibidn2=false'
         - '-Dlibiptc=false'
         - '-Dlocaled=false'
-        - '-Dlogind=false'
+        - '-Dlogind=true'
         - '-Dlz4=false'
         - '-Dmachined=false'
         - '-Dmicrohttpd=false'

@@ -1,4 +1,4 @@
-From d998fd66ec2ac7e5d29a08e366ce0b0d5553d801 Mon Sep 17 00:00:00 2001
+From c6d21e5288be99b9156f93497a2330b007ba640d Mon Sep 17 00:00:00 2001
 From: Alexander Kanavin <alex.kanavin@gmail.com>
 Date: Sat, 22 May 2021 20:26:24 +0200
 Subject: [PATCH 3/3] add fallback parse_printf_format implementation
@@ -377,5 +377,5 @@ index 0000000..9d10e53
 +
 +#endif
 -- 
-2.39.5
+2.47.2
 
