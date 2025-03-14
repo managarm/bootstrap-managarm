@@ -57,7 +57,9 @@ packages:
       - procps
       - htop
       - shadow
-    revision: 8
+      - dbus
+      - systemd
+    revision: 9
     configure: []
     build: []
 
