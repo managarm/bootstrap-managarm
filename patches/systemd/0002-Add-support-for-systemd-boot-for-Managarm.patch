@@ -1,4 +1,4 @@
-From c02304e2d1f9a5e95832104eb5c533afee403964 Mon Sep 17 00:00:00 2001
+From fcc16df2c48e35ad13083e46f3c67b3bacb1f80b Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Fri, 10 Jan 2025 00:55:19 +0100
 Subject: [PATCH 2/3] Add support for systemd boot for Managarm
@@ -12,9 +12,7 @@ Subject: [PATCH 2/3] Add support for systemd boot for Managarm
  src/core/exec-invoke.c                   | 11 ++++++++++
  src/core/main.c                          |  3 +++
  src/core/mount.c                         | 11 ++++++++++
- src/journal/journald-native.c            |  3 +++
  src/journal/journald-server.c            |  9 ++++++++
- src/journal/journald-syslog.c            |  3 +++
  src/journal/journald.conf                |  6 +++---
  src/libsystemd/sd-journal/journal-send.c |  1 +
  src/shared/async.c                       |  4 ++++
@@ -23,7 +21,7 @@ Subject: [PATCH 2/3] Add support for systemd boot for Managarm
  src/udev/udev.conf                       |  2 +-
  units/systemd-journald.service.in        | 10 ++++-----
  units/systemd-udevd.service.in           | 26 ++++++++++++------------
- 19 files changed, 99 insertions(+), 28 deletions(-)
+ 17 files changed, 93 insertions(+), 28 deletions(-)
 
 diff --git a/src/basic/capability-util.c b/src/basic/capability-util.c
 index e9b41fe..ed8472c 100644
@@ -257,23 +255,6 @@ index 66917df..405dd2b 100644
  }
  
  static int mount_dispatch_io(sd_event_source *source, int fd, uint32_t revents, void *userdata) {
-diff --git a/src/journal/journald-native.c b/src/journal/journald-native.c
-index 0600102..817bc7c 100644
---- a/src/journal/journald-native.c
-+++ b/src/journal/journald-native.c
-@@ -493,9 +493,12 @@ int server_open_native_socket(Server *s, const char *native_socket) {
-                         log_warning_errno(r, "SO_PASSSEC failed: %m");
-         }
- 
-+// TODO: Remove this hack once SO_TIMESTAMP is merged
-+#ifndef __managarm__
-         r = setsockopt_int(s->native_fd, SOL_SOCKET, SO_TIMESTAMP, true);
-         if (r < 0)
-                 return log_error_errno(r, "SO_TIMESTAMP failed: %m");
-+#endif
- 
-         r = sd_event_add_io(s->event, &s->native_event_source, s->native_fd, EPOLLIN, server_process_datagram, s);
-         if (r < 0)
 diff --git a/src/journal/journald-server.c b/src/journal/journald-server.c
 index 07748f0..3f05328 100644
 --- a/src/journal/journald-server.c
@@ -306,23 +287,6 @@ index 07748f0..3f05328 100644
 +#endif
  
          r = server_setup_signals(s);
-         if (r < 0)
-diff --git a/src/journal/journald-syslog.c b/src/journal/journald-syslog.c
-index 4ad73ed..d2436c5 100644
---- a/src/journal/journald-syslog.c
-+++ b/src/journal/journald-syslog.c
-@@ -495,9 +495,12 @@ int server_open_syslog_socket(Server *s, const char *syslog_socket) {
-                         log_warning_errno(r, "SO_PASSSEC failed: %m");
-         }
- 
-+// TODO: Remove this hack once SO_TIMESTAMP is merged
-+#ifndef __managarm__
-         r = setsockopt_int(s->syslog_fd, SOL_SOCKET, SO_TIMESTAMP, true);
-         if (r < 0)
-                 return log_error_errno(r, "SO_TIMESTAMP failed: %m");
-+#endif
- 
-         r = sd_event_add_io(s->event, &s->syslog_event_source, s->syslog_fd, EPOLLIN, server_process_datagram, s);
          if (r < 0)
 diff --git a/src/journal/journald.conf b/src/journal/journald.conf
 index 9a12ca7..828dee0 100644
@@ -563,5 +527,5 @@ index f4a4482..29a22b5 100644
 +#IPAddressDeny=any
  {{SERVICE_WATCHDOG}}
 -- 
-2.39.5
+2.47.2
 
