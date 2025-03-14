@@ -2516,7 +2516,7 @@ packages:
       - xcb-util-cursor
       - libdisplay-info
       - systemd
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
