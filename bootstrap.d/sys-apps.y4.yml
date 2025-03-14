@@ -1365,7 +1365,7 @@ packages:
       - libdrm
       - libtsm
       - systemd
-    revision: 10
+    revision: 11
     configure:
       - args:
         - 'meson'
@@ -1378,6 +1378,7 @@ packages:
         - '--buildtype=debugoptimized'
         - '-Dsession_dummy=enabled'
         - '-Dsession_terminal=enabled'
+        - '-Dmulti_seat=disabled'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
