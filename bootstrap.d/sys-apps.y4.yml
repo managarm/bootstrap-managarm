@@ -157,7 +157,7 @@ packages:
       - glib
       - libexpat
       - systemd
-    revision: 10
+    revision: 11
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -189,9 +189,9 @@ packages:
       # Touch up empty directories
       - args: ['touch',
           '@THIS_COLLECT_DIR@/usr/share/dbus-1/session.d/.keep',
-          '@THIS_COLLECT_DIR@/var/lib/dbus/.keep',
-          '@THIS_COLLECT_DIR@/var/run/dbus/.keep'
+          '@THIS_COLLECT_DIR@/var/lib/dbus/.keep'
         ]
+      - args: ['rm', '-r', '@THIS_COLLECT_DIR@/var/run/']
 
   - name: diffutils
     labels: [aarch64, riscv64]
