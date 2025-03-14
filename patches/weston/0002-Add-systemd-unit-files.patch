@@ -4,18 +4,18 @@ Date: Thu, 13 Mar 2025 02:14:28 +0100
 Subject: [PATCH 2/3] Add systemd unit files
 
 ---
- weston.service | 27 +++++++++++++++++++++++++++
+ weston.service | 28 ++++++++++++++++++++++++++++
  weston.socket  |  7 +++++++
- 2 files changed, 34 insertions(+)
+ 2 files changed, 35 insertions(+)
  create mode 100644 weston.service
  create mode 100644 weston.socket
 
 diff --git a/weston.service b/weston.service
 new file mode 100644
-index 0000000..b126d9a
+index 0000000..a5d3989
 --- /dev/null
 +++ b/weston.service
-@@ -0,0 +1,27 @@
+@@ -0,0 +1,28 @@
 +[Unit]
 +Description=Weston, a Wayland compositor, as a user service
 +Documentation=man:weston(1) man:weston.ini(5)
@@ -35,6 +35,7 @@ index 0000000..b126d9a
 +StandardError=journal
 +
 +# add a ~/.config/weston.ini and weston will pick-it up
++ExecStartPre=/usr/bin/wait-for-devices --want-graphics --want-keyboard --want-mouse
 +ExecStart=/usr/bin/weston --xwayland
 +# HACK: All of these should be set by a proper DM, but for now hardcode them in
 +Environment="XDG_RUNTIME_DIR=/run"
