@@ -121,7 +121,15 @@ packages:
         quiet: true
 
   - name: dbus
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: A message bus system, a simple way for applications to talk to each other
+      description: D-Bus is a message bus system, a simple way for applications to talk to one another. D-Bus supplies both a system daemon (for events such as "new hardware device added" or "printer queue changed") and a per-user-login-session daemon (for general IPC needs among user applications). Also, the message bus is built on top of a general one-to-one message passing framework, which can be used by any two applications to communicate directly (without going through the message bus daemon).
+      spdx: 'GPL-2.0-only'
+      website: 'https://www.freedesktop.org/wiki/Software/dbus/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-apps']
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/dbus/dbus.git'
@@ -149,7 +157,7 @@ packages:
       - glib
       - libexpat
       - systemd
-    revision: 9
+    revision: 10
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -178,6 +186,12 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      # Touch up empty directories
+      - args: ['touch',
+          '@THIS_COLLECT_DIR@/usr/share/dbus-1/session.d/.keep',
+          '@THIS_COLLECT_DIR@/var/lib/dbus/.keep',
+          '@THIS_COLLECT_DIR@/var/run/dbus/.keep'
+        ]
 
   - name: diffutils
     labels: [aarch64, riscv64]
