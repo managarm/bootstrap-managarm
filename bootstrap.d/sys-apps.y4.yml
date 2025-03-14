@@ -1449,7 +1449,7 @@ packages:
       - openssl
       - util-linux-libs
       - mlibc
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'meson'

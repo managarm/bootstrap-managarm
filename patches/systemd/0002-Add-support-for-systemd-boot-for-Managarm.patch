@@ -1,28 +1,30 @@
-From 3e3bdd1df6ec27d37184b7f23ea3bb4789f093a8 Mon Sep 17 00:00:00 2001
+From 03229ad8dcd63463155ed22838a0a9b4f80ae324 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Fri, 10 Jan 2025 00:55:19 +0100
 Subject: [PATCH 2/3] Add support for systemd boot for Managarm
 
 ---
- src/basic/capability-util.c              |  2 ++
- src/basic/process-util.c                 |  8 +++--
- src/basic/raw-clone.h                    |  6 ++--
- src/basic/stdio-util.h                   |  1 +
- src/core/exec-credential.c               |  4 +++
- src/core/exec-invoke.c                   | 11 +++++++
- src/core/main.c                          |  3 ++
- src/core/mount.c                         | 11 +++++++
- src/journal/journald-server.c            |  9 ++++++
- src/journal/journald.conf                |  6 ++--
- src/libsystemd/sd-journal/journal-send.c |  1 +
- src/shared/async.c                       |  4 +++
- src/shared/mount-setup.c                 | 10 +++++++
- src/shared/mount-util.c                  |  7 +++++
- src/udev/udev.conf                       |  2 +-
- units/systemd-journald.service.in        | 10 +++----
- units/systemd-logind.service.in          | 38 ++++++++++++------------
- units/systemd-udevd.service.in           | 26 ++++++++--------
- 18 files changed, 112 insertions(+), 47 deletions(-)
+ src/basic/capability-util.c                   |  2 +
+ src/basic/process-util.c                      |  8 +++-
+ src/basic/raw-clone.h                         |  6 +--
+ src/basic/stdio-util.h                        |  1 +
+ src/core/exec-credential.c                    |  4 ++
+ src/core/exec-invoke.c                        | 11 +++++
+ src/core/main.c                               |  3 ++
+ src/core/mount.c                              | 11 +++++
+ src/journal/journald-server.c                 |  9 ++++
+ src/journal/journald.conf                     |  6 +--
+ src/libsystemd/sd-journal/journal-send.c      |  1 +
+ src/shared/async.c                            |  4 ++
+ src/shared/mount-setup.c                      | 10 +++++
+ src/shared/mount-util.c                       |  7 ++++
+ src/udev/udev.conf                            |  2 +-
+ units/systemd-journald.service.in             | 10 ++---
+ units/systemd-logind.service.in               | 38 ++++++++---------
+ units/systemd-networkd-wait-online.service.in |  2 +-
+ units/systemd-networkd.service.in             | 42 +++++++++----------
+ units/systemd-udevd.service.in                | 26 ++++++------
+ 20 files changed, 134 insertions(+), 69 deletions(-)
 
 diff --git a/src/basic/capability-util.c b/src/basic/capability-util.c
 index e9b41fe..ed8472c 100644
@@ -550,6 +552,90 @@ index e04aa82..40faebf 100644
  Type=notify-reload
  {{SERVICE_WATCHDOG}}
  
+diff --git a/units/systemd-networkd-wait-online.service.in b/units/systemd-networkd-wait-online.service.in
+index 7768121..0da9961 100644
+--- a/units/systemd-networkd-wait-online.service.in
++++ b/units/systemd-networkd-wait-online.service.in
+@@ -10,7 +10,7 @@
+ [Unit]
+ Description=Wait for Network to be Configured
+ Documentation=man:systemd-networkd-wait-online.service(8)
+-ConditionCapability=CAP_NET_ADMIN
++#ConditionCapability=CAP_NET_ADMIN
+ DefaultDependencies=no
+ Conflicts=shutdown.target
+ BindsTo=systemd-networkd.service
+diff --git a/units/systemd-networkd.service.in b/units/systemd-networkd.service.in
+index 6141fdb..1f1e936 100644
+--- a/units/systemd-networkd.service.in
++++ b/units/systemd-networkd.service.in
+@@ -11,7 +11,7 @@
+ Description=Network Configuration
+ Documentation=man:systemd-networkd.service(8)
+ Documentation=man:org.freedesktop.network1(5)
+-ConditionCapability=CAP_NET_ADMIN
++#ConditionCapability=CAP_NET_ADMIN
+ DefaultDependencies=no
+ # systemd-udevd.service can be dropped once tuntap is moved to netlink
+ After=systemd-networkd.socket systemd-udevd.service network-pre.target systemd-sysusers.service systemd-sysctl.service
+@@ -20,37 +20,37 @@ Conflicts=shutdown.target initrd-switch-root.target
+ Wants=systemd-networkd.socket network.target systemd-networkd-persistent-storage.service
+ 
+ [Service]
+-AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE CAP_NET_BROADCAST CAP_NET_RAW
++#AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE CAP_NET_BROADCAST CAP_NET_RAW
+ BusName=org.freedesktop.network1
+-CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE CAP_NET_BROADCAST CAP_NET_RAW
++#CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE CAP_NET_BROADCAST CAP_NET_RAW
+ DeviceAllow=char-* rw
+ ExecStart=!!{{LIBEXECDIR}}/systemd-networkd
+ FileDescriptorStoreMax=512
+ ImportCredential=network.wireguard.*
+-LockPersonality=yes
+-MemoryDenyWriteExecute=yes
+-NoNewPrivileges=yes
+-ProtectProc=invisible
+-ProtectClock=yes
+-ProtectControlGroups=yes
+-ProtectHome=yes
+-ProtectKernelLogs=yes
+-ProtectKernelModules=yes
+-ProtectSystem=strict
++#LockPersonality=yes
++#MemoryDenyWriteExecute=yes
++#NoNewPrivileges=yes
++#ProtectProc=invisible
++#ProtectClock=yes
++#ProtectControlGroups=yes
++#ProtectHome=yes
++#ProtectKernelLogs=yes
++#ProtectKernelModules=yes
++#ProtectSystem=strict
+ Restart=on-failure
+ RestartKillSignal=SIGUSR2
+ RestartSec=0
+-RestrictAddressFamilies=AF_UNIX AF_NETLINK AF_INET AF_INET6 AF_PACKET
+-RestrictNamespaces=yes
+-RestrictRealtime=yes
+-RestrictSUIDSGID=yes
++#RestrictAddressFamilies=AF_UNIX AF_NETLINK AF_INET AF_INET6 AF_PACKET
++#RestrictNamespaces=yes
++#RestrictRealtime=yes
++#RestrictSUIDSGID=yes
+ RuntimeDirectory=systemd/netif
+ RuntimeDirectoryPreserve=yes
+-SystemCallArchitectures=native
+-SystemCallErrorNumber=EPERM
+-SystemCallFilter=@system-service
++#SystemCallArchitectures=native
++#SystemCallErrorNumber=EPERM
++#SystemCallFilter=@system-service
+ Type=notify-reload
+-User=systemd-network
++#User=systemd-network
+ {{SERVICE_WATCHDOG}}
+ 
+ [Install]
 diff --git a/units/systemd-udevd.service.in b/units/systemd-udevd.service.in
 index f4a4482..29a22b5 100644
 --- a/units/systemd-udevd.service.in
