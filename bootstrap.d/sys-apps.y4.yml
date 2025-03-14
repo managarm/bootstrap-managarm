@@ -1467,7 +1467,7 @@ packages:
       - openssl
       - util-linux-libs
       - mlibc
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'meson'
@@ -1539,7 +1539,7 @@ packages:
         - '-Dqrencode=false'
         - '-Dquotacheck=false'
         - '-Duserdb=false'
-        - '-Dutmp=false'
+        - '-Dutmp=true'
         - '-Dvconsole=false'
         - '-Dwheel-group=false'
         - '-Dxdg-autostart=false'
@@ -1560,6 +1560,13 @@ packages:
       - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/systemd-ask-password-console.path']
       - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/sysinit.target.wants/systemd-ask-password-console.path']
       - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/systemd-ask-password-console.service']
+      # These are part of utmp, but don't work yet, investigate later
+      - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/systemd-update-utmp.service']
+      - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/systemd-update-utmp-runlevel.service']
+      - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/graphical.target.wants/systemd-update-utmp-runlevel.service']
+      - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/multi-user.target.wants/systemd-update-utmp-runlevel.service']
+      - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/rescue.target.wants/systemd-update-utmp-runlevel.service']
+      - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/sysinit.target.wants/systemd-update-utmp.service']
       # Touch up empty directories
       - args: ['touch',
           '@THIS_COLLECT_DIR@/usr/lib/systemd/system/runlevel1.target.wants/.keep',
@@ -1567,6 +1574,8 @@ packages:
           '@THIS_COLLECT_DIR@/usr/lib/systemd/system/runlevel3.target.wants/.keep',
           '@THIS_COLLECT_DIR@/usr/lib/systemd/system/runlevel4.target.wants/.keep',
           '@THIS_COLLECT_DIR@/usr/lib/systemd/system/runlevel5.target.wants/.keep',
+          '@THIS_COLLECT_DIR@/usr/lib/systemd/system/rescue.target.wants/.keep',
+          '@THIS_COLLECT_DIR@/usr/lib/systemd/system/graphical.target.wants/.keep',
           '@THIS_COLLECT_DIR@/usr/lib/systemd/user-generators/.keep',
           '@THIS_COLLECT_DIR@/usr/lib/systemd/system-shutdown/.keep',
           '@THIS_COLLECT_DIR@/usr/lib/systemd/system-sleep/.keep',
