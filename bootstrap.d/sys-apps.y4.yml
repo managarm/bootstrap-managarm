@@ -1365,7 +1365,7 @@ packages:
       - libdrm
       - libtsm
       - systemd
-    revision: 11
+    revision: 12
     configure:
       - args:
         - 'meson'
@@ -1388,6 +1388,9 @@ packages:
         quiet: true
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc/kmscon']
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/kmscon.conf', '@THIS_COLLECT_DIR@/etc/kmscon/']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/kmscon.target.wants']
+      - args: ['ln', '-svn', '../kmscon.service', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/kmscon.target.wants/']
+      - args: ['cp', '@THIS_SOURCE_DIR@/kmscon.target', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/kmscon.target']
 
   - name: eudev
     labels: [aarch64, riscv64]
