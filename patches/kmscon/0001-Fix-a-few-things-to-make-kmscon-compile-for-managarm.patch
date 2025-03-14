@@ -1,15 +1,58 @@
-From f2db8b60b5c51787ae26e52b434b3f608aff537b Mon Sep 17 00:00:00 2001
+From 5827826d39bc9553802ea4e8e417599bb280bffd Mon Sep 17 00:00:00 2001
 From: qookie <kacper.slominski72@gmail.com>
 Date: Sun, 23 Jun 2019 19:02:21 +0200
 Subject: [PATCH 1/2] Fix a few things to make kmscon compile for managarm
 
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
+ docs/kmscon.service.in |  1 +
+ kmscon.target          |  8 ++++++++
+ src/conf.c             |  1 +
  src/pty.c              |  1 +
  src/uterm_drm_shared.c |  3 ++-
  src/uterm_monitor.c    | 24 +++++++++++++++++-------
  src/uterm_vt.c         |  1 +
- 4 files changed, 21 insertions(+), 8 deletions(-)
+ 7 files changed, 31 insertions(+), 8 deletions(-)
+ create mode 100644 kmscon.target
 
+diff --git a/docs/kmscon.service.in b/docs/kmscon.service.in
+index c29fe92..398469e 100644
+--- a/docs/kmscon.service.in
++++ b/docs/kmscon.service.in
+@@ -3,6 +3,7 @@ Description=KMS System Console
+ Documentation=man:kmscon(1)
+ 
+ [Service]
++ExecStartPre=@bindir@/wait-for-devices --want-graphics --want-keyboard
+ ExecStart=@bindir@/kmscon -l /bin/login
+ 
+ [Install]
+diff --git a/kmscon.target b/kmscon.target
+new file mode 100644
+index 0000000..92c9b6e
+--- /dev/null
++++ b/kmscon.target
+@@ -0,0 +1,8 @@
++[Unit]
++Description=Graphical Interface (KMSCON)
++Documentation=man:systemd.special(7)
++Requires=multi-user.target
++Wants=kmscon.service
++Conflicts=rescue.service rescue.target
++After=multi-user.target rescue.service rescue.target kmscon.service
++AllowIsolate=yes
+diff --git a/src/conf.c b/src/conf.c
+index 890e599..4f245e0 100644
+--- a/src/conf.c
++++ b/src/conf.c
+@@ -36,6 +36,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <strings.h>
+ #include <unistd.h>
+ #include <xkbcommon/xkbcommon.h>
+ #include "conf.h"
 diff --git a/src/pty.c b/src/pty.c
 index 1443f4a..e9c817a 100644
 --- a/src/pty.c
@@ -108,5 +151,5 @@ index fbe9e76..203350b 100644
  #include <sys/stat.h>
  #include <sys/sysmacros.h>
 -- 
-2.40.1
+2.47.2
 

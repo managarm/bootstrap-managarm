@@ -509,5 +509,5 @@ index c236a70..8314e2c 100644
          if (getuid() == 0) {
                  _cleanup_(udev_ctrl_unrefp) UdevCtrl *uctrl = NULL;
 -- 
-2.39.5
+2.47.2
 

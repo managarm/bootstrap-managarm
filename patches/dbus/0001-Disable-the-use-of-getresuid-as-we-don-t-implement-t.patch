@@ -1,7 +1,8 @@
-From 4e718c51b3f75b740d12bc8d4ffe04d81929e008 Mon Sep 17 00:00:00 2001
+From 9d69ab48a8d596ab0c20d1c02ab51ff2c8dc9670 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Mon, 10 Oct 2022 16:24:57 +0200
-Subject: [PATCH] Disable the use of getresuid as we don't implement that yet
+Subject: [PATCH 1/2] Disable the use of getresuid as we don't implement that
+ yet
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
@@ -23,5 +24,5 @@ index e511afc..30c5fd8 100644
            getresgid (&rgid, &egid, &sgid) != 0)
  #endif /* HAVE_GETRESUID */
 -- 
-2.38.1
+2.47.2
 

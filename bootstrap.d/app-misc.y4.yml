@@ -106,7 +106,7 @@ packages:
       - libxcb
       - libxrandr
       - freetype
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'

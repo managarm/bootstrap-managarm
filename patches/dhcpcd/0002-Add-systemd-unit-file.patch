@@ -1,0 +1,36 @@
+From cb0f0831b08d35d265fd4378ecfb6aba05e367cf Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Fri, 14 Mar 2025 15:27:37 +0100
+Subject: [PATCH 2/2] Add systemd unit file
+
+---
+ dhcpcd.service | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
+ create mode 100644 dhcpcd.service
+
+diff --git a/dhcpcd.service b/dhcpcd.service
+new file mode 100644
+index 0000000..1a88202
+--- /dev/null
++++ b/dhcpcd.service
+@@ -0,0 +1,17 @@
++# This service file is graciously taken from gentoo
++
++[Unit]
++Description=Lightweight DHCP client daemon
++Wants=network.target
++Before=network.target network-online.target
++
++[Service]
++Type=forking
++ExecStart=/sbin/dhcpcd -q
++PIDFile=/run/dhcpcd/pid
++# Avoid duplicate output on stderr/syslog
++StandardOutput=null
++StandardError=null
++
++[Install]
++WantedBy=multi-user.target
+-- 
+2.47.2
+

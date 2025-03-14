@@ -121,7 +121,15 @@ packages:
         quiet: true
 
   - name: dbus
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: A message bus system, a simple way for applications to talk to each other
+      description: D-Bus is a message bus system, a simple way for applications to talk to one another. D-Bus supplies both a system daemon (for events such as "new hardware device added" or "printer queue changed") and a per-user-login-session daemon (for general IPC needs among user applications). Also, the message bus is built on top of a general one-to-one message passing framework, which can be used by any two applications to communicate directly (without going through the message bus daemon).
+      spdx: 'GPL-2.0-only'
+      website: 'https://www.freedesktop.org/wiki/Software/dbus/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-apps']
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/dbus/dbus.git'
@@ -149,7 +157,7 @@ packages:
       - glib
       - libexpat
       - systemd
-    revision: 9
+    revision: 11
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -178,6 +186,12 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      # Touch up empty directories
+      - args: ['touch',
+          '@THIS_COLLECT_DIR@/usr/share/dbus-1/session.d/.keep',
+          '@THIS_COLLECT_DIR@/var/lib/dbus/.keep'
+        ]
+      - args: ['rm', '-r', '@THIS_COLLECT_DIR@/var/run/']
 
   - name: diffutils
     labels: [aarch64, riscv64]
@@ -891,7 +905,7 @@ packages:
       - libxcrypt
       - libiconv
       - libintl
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1351,7 +1365,7 @@ packages:
       - libdrm
       - libtsm
       - systemd
-    revision: 10
+    revision: 12
     configure:
       - args:
         - 'meson'
@@ -1364,6 +1378,7 @@ packages:
         - '--buildtype=debugoptimized'
         - '-Dsession_dummy=enabled'
         - '-Dsession_terminal=enabled'
+        - '-Dmulti_seat=disabled'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -1373,6 +1388,9 @@ packages:
         quiet: true
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc/kmscon']
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/kmscon.conf', '@THIS_COLLECT_DIR@/etc/kmscon/']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/kmscon.target.wants']
+      - args: ['ln', '-svn', '../kmscon.service', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/kmscon.target.wants/']
+      - args: ['cp', '@THIS_SOURCE_DIR@/kmscon.target', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/kmscon.target']
 
   - name: eudev
     labels: [aarch64, riscv64]
@@ -1449,7 +1467,7 @@ packages:
       - openssl
       - util-linux-libs
       - mlibc
-    revision: 4
+    revision: 6
     configure:
       - args:
         - 'meson'
@@ -1521,7 +1539,7 @@ packages:
         - '-Dqrencode=false'
         - '-Dquotacheck=false'
         - '-Duserdb=false'
-        - '-Dutmp=false'
+        - '-Dutmp=true'
         - '-Dvconsole=false'
         - '-Dwheel-group=false'
         - '-Dxdg-autostart=false'
@@ -1542,6 +1560,13 @@ packages:
       - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/systemd-ask-password-console.path']
       - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/sysinit.target.wants/systemd-ask-password-console.path']
       - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/systemd-ask-password-console.service']
+      # These are part of utmp, but don't work yet, investigate later
+      - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/systemd-update-utmp.service']
+      - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/systemd-update-utmp-runlevel.service']
+      - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/graphical.target.wants/systemd-update-utmp-runlevel.service']
+      - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/multi-user.target.wants/systemd-update-utmp-runlevel.service']
+      - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/rescue.target.wants/systemd-update-utmp-runlevel.service']
+      - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/sysinit.target.wants/systemd-update-utmp.service']
       # Touch up empty directories
       - args: ['touch',
           '@THIS_COLLECT_DIR@/usr/lib/systemd/system/runlevel1.target.wants/.keep',
@@ -1549,6 +1574,8 @@ packages:
           '@THIS_COLLECT_DIR@/usr/lib/systemd/system/runlevel3.target.wants/.keep',
           '@THIS_COLLECT_DIR@/usr/lib/systemd/system/runlevel4.target.wants/.keep',
           '@THIS_COLLECT_DIR@/usr/lib/systemd/system/runlevel5.target.wants/.keep',
+          '@THIS_COLLECT_DIR@/usr/lib/systemd/system/rescue.target.wants/.keep',
+          '@THIS_COLLECT_DIR@/usr/lib/systemd/system/graphical.target.wants/.keep',
           '@THIS_COLLECT_DIR@/usr/lib/systemd/user-generators/.keep',
           '@THIS_COLLECT_DIR@/usr/lib/systemd/system-shutdown/.keep',
           '@THIS_COLLECT_DIR@/usr/lib/systemd/system-sleep/.keep',
