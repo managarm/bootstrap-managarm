@@ -1,20 +1,21 @@
-From b50977b2cb6b3f9c2c7f9762373085918c9447cb Mon Sep 17 00:00:00 2001
+From 4807cfac0b52b2f242eaa8091108c6f131c6353c Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Sun, 5 Jan 2025 22:21:51 +0100
 Subject: [PATCH] Add Managarm support
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
- CMakeLists.txt                           | 112 ++++++++++++++++++++---
- src/common/processing_linux.c            |   4 +-
- src/detection/displayserver/linux/wmde.c |   2 +-
- src/detection/libc/libc_linux.c          |   3 +
- src/options/general.h                    |   2 +-
- src/util/FFstrbuf.h                      |   1 +
- src/util/platform/FFPlatform_unix.c      |   2 +-
- src/util/smbiosHelper.c                  |   6 +-
- src/util/smbiosHelper.h                  |   2 +-
- 9 files changed, 113 insertions(+), 21 deletions(-)
+ CMakeLists.txt                              | 112 +++++++++++++++++---
+ src/common/processing_linux.c               |   4 +-
+ src/detection/displayserver/linux/wmde.c    |   2 +-
+ src/detection/initsystem/initsystem_linux.c |   2 +-
+ src/detection/libc/libc_linux.c             |   3 +
+ src/options/general.h                       |   2 +-
+ src/util/FFstrbuf.h                         |   1 +
+ src/util/platform/FFPlatform_unix.c         |   2 +-
+ src/util/smbiosHelper.c                     |   6 +-
+ src/util/smbiosHelper.h                     |   2 +-
+ 10 files changed, 114 insertions(+), 22 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
 index 71c0e88..e1d0bfb 100644
@@ -207,6 +208,19 @@ index 557be31..473e834 100644
      FF_AUTO_CLOSE_DIR DIR* procdir = opendir("/proc");
      if(procdir == NULL)
          return "opendir(\"/proc\") failed";
+diff --git a/src/detection/initsystem/initsystem_linux.c b/src/detection/initsystem/initsystem_linux.c
+index 6776ef7..e2e4142 100644
+--- a/src/detection/initsystem/initsystem_linux.c
++++ b/src/detection/initsystem/initsystem_linux.c
+@@ -48,7 +48,7 @@ const char* ffDetectInitSystem(FFInitSystemResult* result)
+ 
+     if (instance.config.general.detectVersion)
+     {
+-        #if __linux__ && !__ANDROID__
++        #if (__linux__ && !__ANDROID__) || defined(__managarm__)
+         if (ffStrbufEqualS(&result->name, "systemd"))
+         {
+             ffBinaryExtractStrings(result->exe.chars, extractSystemdVersion, &result->version, (uint32_t) strlen("systemd 0.0 running in x"));
 diff --git a/src/detection/libc/libc_linux.c b/src/detection/libc/libc_linux.c
 index 19e8e83..1ade513 100644
 --- a/src/detection/libc/libc_linux.c
@@ -301,5 +315,5 @@ index 1bce70b..98b01a0 100644
  bool ffGetSmbiosValue(const char* devicesPath, const char* classPath, FFstrbuf* buffer);
  #endif
 -- 
-2.45.2
+2.47.2
 
