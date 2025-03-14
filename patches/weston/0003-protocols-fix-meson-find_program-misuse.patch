@@ -1,0 +1,23 @@
+From 4c19aa4514fc045801eddf3c8606e4045fa4368b Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Fri, 14 Mar 2025 16:39:43 +0100
+Subject: [PATCH 3/3] protocols: fix meson find_program misuse
+
+---
+ protocol/meson.build | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/protocol/meson.build b/protocol/meson.build
+index d107354..cf0140d 100644
+--- a/protocol/meson.build
++++ b/protocol/meson.build
+@@ -1,5 +1,5 @@
+ dep_scanner = dependency('wayland-scanner', native: true)
+-prog_scanner = find_program(dep_scanner.get_variable(pkgconfig: 'wayland_scanner'))
++prog_scanner = find_program('wayland-scanner', dirs: dep_scanner.get_variable(pkgconfig: 'wayland_scanner'))
+ 
+ dep_wp = dependency('wayland-protocols', version: '>= 1.33',
+ 	fallback: ['wayland-protocols', 'wayland_protocols'])
+-- 
+2.48.1
+
