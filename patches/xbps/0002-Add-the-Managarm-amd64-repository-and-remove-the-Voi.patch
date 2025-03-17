@@ -1,7 +1,7 @@
-From 70e7f52cdbf0d978180bf312c34c3a7c618da6d1 Mon Sep 17 00:00:00 2001
+From 76f5f7f66c9e9ab497df84bb5ee1eed3eb940407 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Thu, 15 Jul 2021 02:10:26 +0200
-Subject: [PATCH 2/3] Add the Managarm amd64 repository and remove the Void
+Subject: [PATCH 2/4] Add the Managarm amd64 repository and remove the Void
  Linux repository
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
@@ -15,7 +15,7 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 
 diff --git a/data/5d:d2:5b:a6:50:95:c7:b9:a4:10:e4:63:39:d0:b8:c5.plist b/data/5d:d2:5b:a6:50:95:c7:b9:a4:10:e4:63:39:d0:b8:c5.plist
 new file mode 100644
-index 00000000..96142fd8
+index 0000000..96142fd
 --- /dev/null
 +++ b/data/5d:d2:5b:a6:50:95:c7:b9:a4:10:e4:63:39:d0:b8:c5.plist
 @@ -0,0 +1,12 @@
@@ -33,7 +33,7 @@ index 00000000..96142fd8
 +</plist>
 diff --git a/data/60:ae:0c:d6:f0:95:17:80:bc:93:46:7a:89:af:a3:2d.plist b/data/60:ae:0c:d6:f0:95:17:80:bc:93:46:7a:89:af:a3:2d.plist
 deleted file mode 100644
-index c1e82a7e..00000000
+index c1e82a7..0000000
 --- a/data/60:ae:0c:d6:f0:95:17:80:bc:93:46:7a:89:af:a3:2d.plist
 +++ /dev/null
 @@ -1,12 +0,0 @@
@@ -50,12 +50,12 @@ index c1e82a7e..00000000
 -</dict>
 -</plist>
 diff --git a/data/repod-main.conf b/data/repod-main.conf
-index 9890a844..b96b00cb 100644
+index 9890a84..225bbe5 100644
 --- a/data/repod-main.conf
 +++ b/data/repod-main.conf
 @@ -1 +1 @@
 -repository=https://a-hel-fi.m.voidlinux.org/current
 +repository=https://repos.managarm.org/repos/amd64/
 -- 
-2.32.0
+2.39.5
 

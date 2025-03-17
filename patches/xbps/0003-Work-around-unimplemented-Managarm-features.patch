@@ -1,7 +1,7 @@
-From 512a7080e61b08eabdc85271ec36da79e326bdcd Mon Sep 17 00:00:00 2001
+From f3e841dc5779bcebddf1a70ece858ae63fe1ad06 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Thu, 15 Jul 2021 02:53:59 +0200
-Subject: [PATCH 3/3] Work around unimplemented Managarm features
+Subject: [PATCH 3/4] Work around unimplemented Managarm features
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
@@ -9,7 +9,7 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/bin/xbps-install/question.c b/bin/xbps-install/question.c
-index 865649ff..f2d6e9b4 100644
+index 865649f..f2d6e9b 100644
 --- a/bin/xbps-install/question.c
 +++ b/bin/xbps-install/question.c
 @@ -50,7 +50,7 @@ question(bool preset, const char *fmt, va_list ap)
@@ -30,5 +30,6 @@ index 865649ff..f2d6e9b4 100644
  		response = fgetc(stdin);
  
  	return rv;
-2.32.0
+-- 
+2.39.5
 

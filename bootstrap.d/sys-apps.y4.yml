@@ -1325,7 +1325,7 @@ packages:
       - openssl
       - zlib
       - lz4
-    revision: 1
+    revision: 2
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
@@ -1338,6 +1338,9 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/xbps.conf', '@THIS_COLLECT_DIR@/usr/share/xbps.d/']
+      - args: ['mkdir', '-pv', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/sysinit.target.wants/']
+      - args: ['cp', '-v', '@THIS_SOURCE_DIR@/xbps.service', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/']
+      - args: ['ln', '-svn', '../xbps.service', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/sysinit.target.wants/']
 
   - name: kmscon
     labels: [aarch64, riscv64]
