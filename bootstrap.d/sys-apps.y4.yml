@@ -1470,7 +1470,7 @@ packages:
       - openssl
       - util-linux-libs
       - mlibc
-    revision: 6
+    revision: 7
     configure:
       - args:
         - 'meson'

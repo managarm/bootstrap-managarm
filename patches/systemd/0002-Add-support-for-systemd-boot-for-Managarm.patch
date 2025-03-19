@@ -1,4 +1,4 @@
-From fcc16df2c48e35ad13083e46f3c67b3bacb1f80b Mon Sep 17 00:00:00 2001
+From 70d8db99bb7f7e319368a28c8e892cae5d65544f Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Fri, 10 Jan 2025 00:55:19 +0100
 Subject: [PATCH 2/3] Add support for systemd boot for Managarm
@@ -11,7 +11,6 @@ Subject: [PATCH 2/3] Add support for systemd boot for Managarm
  src/core/exec-credential.c               |  4 ++++
  src/core/exec-invoke.c                   | 11 ++++++++++
  src/core/main.c                          |  3 +++
- src/core/mount.c                         | 11 ++++++++++
  src/journal/journald-server.c            |  9 ++++++++
  src/journal/journald.conf                |  6 +++---
  src/libsystemd/sd-journal/journal-send.c |  1 +
@@ -21,7 +20,7 @@ Subject: [PATCH 2/3] Add support for systemd boot for Managarm
  src/udev/udev.conf                       |  2 +-
  units/systemd-journald.service.in        | 10 ++++-----
  units/systemd-udevd.service.in           | 26 ++++++++++++------------
- 17 files changed, 93 insertions(+), 28 deletions(-)
+ 16 files changed, 82 insertions(+), 28 deletions(-)
 
 diff --git a/src/basic/capability-util.c b/src/basic/capability-util.c
 index e9b41fe..ed8472c 100644
@@ -44,7 +43,7 @@ index e9b41fe..ed8472c 100644
          return 0;
  }
 diff --git a/src/basic/process-util.c b/src/basic/process-util.c
-index 6a1e496..48a5b76 100644
+index d9e8bc9..9489237 100644
 --- a/src/basic/process-util.c
 +++ b/src/basic/process-util.c
 @@ -1621,6 +1621,8 @@ int safe_fork_full(
@@ -64,7 +63,7 @@ index 6a1e496..48a5b76 100644
  
          if (FLAGS_SET(flags, FORK_PRIVATE_TMP)) {
                  assert(FLAGS_SET(flags, FORK_NEW_MOUNTNS));
-@@ -1973,8 +1976,9 @@ _noreturn_ void freeze(void) {
+@@ -1965,8 +1968,9 @@ _noreturn_ void freeze(void) {
          }
  
          /* waitid() failed with an unexpected error, things are really borked. Freeze now! */
@@ -219,42 +218,6 @@ index 5b11c79..d79d48b 100644
                          bump_unix_max_dgram_qlen();
                          bump_file_max_and_nr_open();
                          test_usr();
-diff --git a/src/core/mount.c b/src/core/mount.c
-index 66917df..405dd2b 100644
---- a/src/core/mount.c
-+++ b/src/core/mount.c
-@@ -1553,6 +1553,12 @@ static void mount_sigchld_event(Unit *u, pid_t pid, int code, int status) {
-                         f == MOUNT_SUCCESS,
-                         code, status);
- 
-+// TODO: Remove this hack once /proc/self/mounts and friends are merged.
-+#ifdef __managarm__
-+        if(m->state == MOUNT_MOUNTING && f == MOUNT_SUCCESS)
-+                m->state = MOUNT_MOUNTING_DONE;
-+#endif
-+
-         /* Note that due to the io event priority logic, we can be sure the new mountinfo is loaded
-          * before we process the SIGCHLD for the mount command. */
- 
-@@ -2124,6 +2130,10 @@ static int drain_libmount(Manager *m) {
- }
- 
- static int mount_process_proc_self_mountinfo(Manager *m) {
-+// TODO: Remove this hack once /proc/self/mounts and friends are merged.
-+#ifdef __managarm__
-+        return 0;
-+#else
-         _cleanup_set_free_ Set *around = NULL, *gone = NULL;
-         const char *what;
-         int r;
-@@ -2236,6 +2246,7 @@ static int mount_process_proc_self_mountinfo(Manager *m) {
-         }
- 
-         return 0;
-+#endif
- }
- 
- static int mount_dispatch_io(sd_event_source *source, int fd, uint32_t revents, void *userdata) {
 diff --git a/src/journal/journald-server.c b/src/journal/journald-server.c
 index 07748f0..3f05328 100644
 --- a/src/journal/journald-server.c
@@ -407,14 +370,14 @@ index d5009fb..741d912 100644
          /* Create a few directories we always want around, Note that sd_booted() checks for /run/systemd/system, so
           * this mkdir really needs to stay for good, otherwise software that copied sd-daemon.c into their sources will
 diff --git a/src/shared/mount-util.c b/src/shared/mount-util.c
-index f932a5e..f3b5660 100644
+index f932a5e..0d2625d 100644
 --- a/src/shared/mount-util.c
 +++ b/src/shared/mount-util.c
 @@ -152,6 +152,10 @@ int bind_remount_recursive_with_mountinfo(
                  char **deny_list,
                  FILE *proc_self_mountinfo) {
  
-+// TODO: Remove once mountinfo is a thing
++// TODO: Remove once we support bind mounts
 +#ifdef __managarm__
 +        return -ENOENT;
 +#endif
