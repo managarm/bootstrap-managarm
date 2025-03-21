@@ -1470,7 +1470,7 @@ packages:
       - openssl
       - util-linux-libs
       - mlibc
-    revision: 7
+    revision: 8
     configure:
       - args:
         - 'meson'
@@ -1597,3 +1597,6 @@ packages:
           '@THIS_COLLECT_DIR@/etc/sysctl.d/.keep',
           '@THIS_COLLECT_DIR@/etc/kernel/.keep'
         ]
+      - args: ['ln', '-sr', '@THIS_COLLECT_DIR@/usr/lib', '@THIS_COLLECT_DIR@/lib']
+      - args: ['systemd-hwdb', '-r', '@THIS_COLLECT_DIR@', 'update']
+      - args: ['rm', '@THIS_COLLECT_DIR@/lib']
