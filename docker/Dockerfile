@@ -53,6 +53,8 @@ RUN apt-get update \
 		libzstd-dev \
 		# Used by host-knotifications
 		libcanberra-dev \
+		# Used for systemd
+		udev \
 		# Used by host-appstream
 		libcurl4-openssl-dev \
 		# Used by the Linux kernel
