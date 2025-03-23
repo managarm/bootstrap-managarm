@@ -393,14 +393,14 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/google/double-conversion.git'
-      tag: 'v3.3.0'
-      version: '3.3.0'
+      tag: 'v3.3.1'
+      version: '3.3.1'
     tools_required:
       - host-cmake
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 7
+    revision: 1
     configure:
       - args:
         - 'cmake'
