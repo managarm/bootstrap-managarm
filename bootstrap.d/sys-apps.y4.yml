@@ -196,11 +196,18 @@ packages:
   - name: diffutils
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Tools to make diffs and compare files
+      description: This package contains programs that show the differences between files or directories.
+      spdx: 'GPL-2.0-only'
+      website: 'https://www.gnu.org/software/diffutils/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-apps']
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/diffutils.git'
-      tag: 'v3.10'
-      version: '3.10'
+      tag: 'v3.11'
+      version: '3.11'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -216,7 +223,7 @@ packages:
       - host-automake-v1.15
     pkgs_required:
       - mlibc
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
