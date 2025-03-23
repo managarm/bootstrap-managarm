@@ -2569,13 +2569,13 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/Cyan4973/xxHash.git'
-      tag: 'v0.8.0'
-      version: '0.8.0'
+      tag: 'v0.8.3'
+      version: '0.8.3'
     tools_required:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 10
+    revision: 1
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
