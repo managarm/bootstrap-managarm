@@ -473,10 +473,10 @@ packages:
     default: true
     source:
       subdir: 'ports'
-      url: 'https://data.iana.org/time-zones/releases/tzdata2024b.tar.gz'
+      url: 'https://data.iana.org/time-zones/releases/tzdata2025b.tar.gz'
       format: 'tar.gz'
-      checksum: blake2b:58b9eec497ee8e87e0ead06211600ec76bda58738c57adf78b412b7b9305000dc9af7ed232cd161ff05fcb659f5cc7e7fd0e59d0576bdc5d794ea0b592689921
-      version: '2024b'
+      checksum: blake2b:07421e756cd33f003f1173c320a2e454f767a2ba299b76b54e34dc5cf1c126b00ab3186bc61d4989201a83cb8b3e4c005c0bc080fb39a1e48ff9555d50c84f1d
+      version: '2025b'
     tools_required:
       - system-gcc
     revision: 1
