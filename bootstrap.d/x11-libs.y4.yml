@@ -1369,8 +1369,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/xkbcommon/libxkbcommon.git'
-      tag: 'xkbcommon-1.7.0'
-      version: '1.7.0'
+      tag: 'xkbcommon-1.8.1'
+      version: '1.8.1'
     tools_required:
       - host-pkg-config
       - system-gcc
