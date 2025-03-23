@@ -1959,8 +1959,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://git.lysator.liu.se/nettle/nettle.git'
-      tag: 'nettle_3.8.1_release_20220727'
-      version: '3.8.1'
+      tag: 'nettle_3.10.1_release_20241230'
+      version: '3.10.1'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1977,7 +1977,7 @@ packages:
     pkgs_required:
       - mlibc
       - gmp
-    revision: 8
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
