@@ -6,11 +6,11 @@ sources:
   - name: libxtrans
     subdir: ports
     git: 'https://gitlab.freedesktop.org/xorg/lib/libxtrans.git'
-    tag: 'xtrans-1.5.2'
-    version: '1.5.2'
+    tag: 'xtrans-1.6.0'
+    version: '1.6.0'
     tools_required:
       - host-autoconf-v2.69
-      - host-automake-v1.11
+      - host-automake-v1.15
       - host-libtool
       - host-pkg-config
       - host-xorg-macros
