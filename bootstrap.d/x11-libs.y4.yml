@@ -645,8 +645,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libsm.git'
-      tag: 'libSM-1.2.5'
-      version: '1.2.5'
+      tag: 'libSM-1.2.6'
+      version: '1.2.6'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
