@@ -1681,11 +1681,11 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.gnome.org/GNOME/libxml2.git'
-      tag: 'v2.10.0'
-      version: '2.10.0'
+      tag: 'v2.13.6'
+      version: '2.13.6'
       tools_required:
         - host-autoconf-v2.69
-        - host-automake-v1.15
+        - host-automake-v1.16
         - host-libtool
         - host-pkg-config
       regenerate:
@@ -1698,7 +1698,7 @@ packages:
       - mlibc
       - zlib
       - libiconv
-    revision: 8
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
