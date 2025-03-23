@@ -491,8 +491,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/fribidi/fribidi.git'
-      tag: 'v1.0.13'
-      version: '1.0.13'
+      tag: 'v1.0.16'
+      version: '1.0.16'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -509,7 +509,7 @@ packages:
       - host-automake-v1.15
     pkgs_required:
       - mlibc
-    revision: 7
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
