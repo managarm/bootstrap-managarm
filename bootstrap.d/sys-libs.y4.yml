@@ -284,11 +284,18 @@ packages:
   - name: libxcrypt
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Extended crypt library for descrypt, md5crypt, bcrypt, and others
+      description: This package contains a modern library for one-way hashing of passwords.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://github.com/besser82/libxcrypt'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-libs']
     source:
       subdir: 'ports'
       git: 'https://github.com/besser82/libxcrypt.git'
-      tag: 'v4.4.36'
-      version: '4.4.36'
+      tag: 'v4.4.38'
+      version: '4.4.38'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -302,7 +309,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
