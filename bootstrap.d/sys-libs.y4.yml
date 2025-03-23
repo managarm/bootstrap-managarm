@@ -239,7 +239,7 @@ packages:
     architecture: '@OPTION:arch@'
     metadata:
       summary: C Library for NVM Express on Linux
-      description: This package provides a library which provides type definitions for NVMe specification structures, enumerations, and bit fields, helper functions to construct, dispatch, and decode commands a>
+      description: This package provides a library which provides type definitions for NVMe specification structures, enumerations, and bit fields, helper functions to construct, dispatch, and decode commands and payloads, and utilities to connect, scan, and manage NVMe devices on a Linux system.
       spdx: 'LGPL-2.1-or-later'
       website: 'https://github.com/linux-nvme/libnvme'
       maintainer: "Dennis Bonke <dennis@managarm.org>"
@@ -247,8 +247,8 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/linux-nvme/libnvme.git'
-      tag: 'v1.11.1'
-      version: '1.11.1'
+      tag: 'v1.12'
+      version: '1.12'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -272,7 +272,7 @@ packages:
           - '-Dpython=disabled'
           - '-Djson-c=enabled'
           - '-Dlibdbus=enabled'
-          - '-Dopenssl=enabled'
+          - '-Dopenssl=disabled' # Needs openssl 3.0
           - '-Dtests=false'
           - '@THIS_SOURCE_DIR@'
     build:
@@ -284,11 +284,18 @@ packages:
   - name: libxcrypt
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Extended crypt library for descrypt, md5crypt, bcrypt, and others
+      description: This package contains a modern library for one-way hashing of passwords.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://github.com/besser82/libxcrypt'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-libs']
     source:
       subdir: 'ports'
       git: 'https://github.com/besser82/libxcrypt.git'
-      tag: 'v4.4.36'
-      version: '4.4.36'
+      tag: 'v4.4.38'
+      version: '4.4.38'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -302,7 +309,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -473,10 +480,10 @@ packages:
     default: true
     source:
       subdir: 'ports'
-      url: 'https://data.iana.org/time-zones/releases/tzdata2024b.tar.gz'
+      url: 'https://data.iana.org/time-zones/releases/tzdata2025b.tar.gz'
       format: 'tar.gz'
-      checksum: blake2b:58b9eec497ee8e87e0ead06211600ec76bda58738c57adf78b412b7b9305000dc9af7ed232cd161ff05fcb659f5cc7e7fd0e59d0576bdc5d794ea0b592689921
-      version: '2024b'
+      checksum: blake2b:07421e756cd33f003f1173c320a2e454f767a2ba299b76b54e34dc5cf1c126b00ab3186bc61d4989201a83cb8b3e4c005c0bc080fb39a1e48ff9555d50c84f1d
+      version: '2025b'
     tools_required:
       - system-gcc
     revision: 1

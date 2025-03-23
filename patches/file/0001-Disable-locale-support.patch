@@ -1,0 +1,26 @@
+From 187cc0641f7da0fb242bdadc9de5b47fbf564686 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Sun, 23 Mar 2025 13:00:04 +0100
+Subject: [PATCH] Disable locale support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ src/file.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/file.h b/src/file.h
+index 9922632..97c8a1b 100644
+--- a/src/file.h
++++ b/src/file.h
+@@ -517,7 +517,7 @@ struct magic_set {
+ #define	FILE_REGEX_MAX			8192
+ #define	FILE_ENCODING_MAX		(64 * 1024)
+ #define	FILE_MAGWARN_MAX		64
+-#if defined(HAVE_NEWLOCALE) && defined(HAVE_USELOCALE) && defined(HAVE_FREELOCALE)
++#if defined(HAVE_NEWLOCALE) && defined(HAVE_USELOCALE) && defined(HAVE_FREELOCALE) && !defined(__managarm__)
+ #define USE_C_LOCALE
+ 	locale_t c_lc_ctype;
+ #define file_locale_used
+-- 
+2.49.0
+

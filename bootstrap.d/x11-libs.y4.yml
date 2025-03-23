@@ -6,11 +6,11 @@ sources:
   - name: libxtrans
     subdir: ports
     git: 'https://gitlab.freedesktop.org/xorg/lib/libxtrans.git'
-    tag: 'xtrans-1.5.2'
-    version: '1.5.2'
+    tag: 'xtrans-1.6.0'
+    version: '1.6.0'
     tools_required:
       - host-autoconf-v2.69
-      - host-automake-v1.11
+      - host-automake-v1.15
       - host-libtool
       - host-pkg-config
       - host-xorg-macros
@@ -645,8 +645,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libsm.git'
-      tag: 'libSM-1.2.5'
-      version: '1.2.5'
+      tag: 'libSM-1.2.6'
+      version: '1.2.6'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -699,8 +699,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libx11.git'
-      tag: 'libX11-1.8.10'
-      version: '1.8.10'
+      tag: 'libX11-1.8.12'
+      version: '1.8.12'
       tools_required:
         - host-autoconf-v2.71
         - host-automake-v1.15
@@ -1369,8 +1369,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/xkbcommon/libxkbcommon.git'
-      tag: 'xkbcommon-1.7.0'
-      version: '1.7.0'
+      tag: 'xkbcommon-1.8.1'
+      version: '1.8.1'
     tools_required:
       - host-pkg-config
       - system-gcc

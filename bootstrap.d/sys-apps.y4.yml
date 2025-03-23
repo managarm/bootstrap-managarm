@@ -6,8 +6,8 @@ sources:
   - name: file
     subdir: ports
     git: 'https://github.com/file/file.git'
-    tag: 'FILE5_45'
-    version: '5.45'
+    tag: 'FILE5_46'
+    version: '5.46'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.15
@@ -79,11 +79,11 @@ packages:
       categories: ['sys-apps']
     source:
       subdir: 'ports'
-      url: 'https://ftp.gnu.org/gnu/coreutils/coreutils-9.5.tar.xz'
+      url: 'https://ftp.gnu.org/gnu/coreutils/coreutils-9.6.tar.xz'
       format: tar.xz
-      checksum: 'blake2b:6fd3a77697c9e85f31415c6ad66559faf18acc7d346677a89d4a999c2027886551e78842a7283e7b3b44fe8ef2fde04ba2f88df32a7844d5f69d45bcb7a04b6f'
-      extract_path: 'coreutils-9.5'
-      version: '9.5'
+      checksum: 'blake2b:4070d3d272851d3e9c326df9c05ce67797d86852e7f5c26e545f987f444295f2cfca24e8569514d7b5edf8fd50318d07cb20dea4a4ce8c65b34bea0c5a9177be'
+      extract_path: 'coreutils-9.6'
+      version: '9.6'
       tools_required:
         - host-automake-v1.15
       regenerate:
@@ -196,11 +196,18 @@ packages:
   - name: diffutils
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Tools to make diffs and compare files
+      description: This package contains programs that show the differences between files or directories.
+      spdx: 'GPL-2.0-only'
+      website: 'https://www.gnu.org/software/diffutils/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-apps']
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/diffutils.git'
-      tag: 'v3.10'
-      version: '3.10'
+      tag: 'v3.11'
+      version: '3.11'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -216,7 +223,7 @@ packages:
       - host-automake-v1.15
     pkgs_required:
       - mlibc
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -334,7 +341,7 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -444,7 +451,7 @@ packages:
     architecture: '@OPTION:arch@'
     metadata:
       summary: GNU regular expression matcher
-      description: This package contains for searching through the contents of files.
+      description: This package contains programs for searching through the contents of files.
       spdx: 'GPL-3.0-or-later'
       website: 'https://www.gnu.org/software/grep/'
       maintainer: "Dennis Bonke <dennis@managarm.org>"
@@ -485,6 +492,13 @@ packages:
   - name: groff
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Text formatter used for man pages
+      description: This package contains programs for processing and formatting text and images.
+      spdx: 'GPL-2.0-only'
+      website: 'https://www.gnu.org/software/groff/groff.html/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-apps']
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/groff.git'
@@ -505,7 +519,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 11
+    revision: 12
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
