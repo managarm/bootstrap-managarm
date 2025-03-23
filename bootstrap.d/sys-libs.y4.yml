@@ -239,7 +239,7 @@ packages:
     architecture: '@OPTION:arch@'
     metadata:
       summary: C Library for NVM Express on Linux
-      description: This package provides a library which provides type definitions for NVMe specification structures, enumerations, and bit fields, helper functions to construct, dispatch, and decode commands a>
+      description: This package provides a library which provides type definitions for NVMe specification structures, enumerations, and bit fields, helper functions to construct, dispatch, and decode commands and payloads, and utilities to connect, scan, and manage NVMe devices on a Linux system.
       spdx: 'LGPL-2.1-or-later'
       website: 'https://github.com/linux-nvme/libnvme'
       maintainer: "Dennis Bonke <dennis@managarm.org>"
@@ -247,8 +247,8 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/linux-nvme/libnvme.git'
-      tag: 'v1.11.1'
-      version: '1.11.1'
+      tag: 'v1.12'
+      version: '1.12'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -272,7 +272,7 @@ packages:
           - '-Dpython=disabled'
           - '-Djson-c=enabled'
           - '-Dlibdbus=enabled'
-          - '-Dopenssl=enabled'
+          - '-Dopenssl=disabled' # Needs openssl 3.0
           - '-Dtests=false'
           - '@THIS_SOURCE_DIR@'
     build:
