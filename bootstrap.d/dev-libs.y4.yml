@@ -53,8 +53,8 @@ sources:
   - name: nss
     subdir: 'ports'
     git: 'https://github.com/nss-dev/nss.git'
-    tag: 'NSS_3_106_RTM'
-    version: '3.106.RTM'
+    tag: 'NSS_3_109_RTM'
+    version: '3.109.RTM'
 
   - name: wayland
     subdir: 'ports'
@@ -2066,7 +2066,7 @@ packages:
       - nspr
       - sqlite
       - zlib
-    revision: 2
+    revision: 1
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
