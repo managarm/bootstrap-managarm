@@ -492,6 +492,13 @@ packages:
   - name: groff
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Text formatter used for man pages
+      description: This package contains programs for processing and formatting text and images.
+      spdx: 'GPL-2.0-only'
+      website: 'https://www.gnu.org/software/groff/groff.html/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-apps']
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/groff.git'
@@ -512,7 +519,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 11
+    revision: 12
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
