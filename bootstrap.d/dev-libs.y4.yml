@@ -1726,8 +1726,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/hughsie/libxmlb.git'
-      tag: '0.3.15'
-      version: '0.3.15'
+      tag: '0.3.22'
+      version: '0.3.22'
     tools_required:
       - system-gcc
       - virtual: pkgconfig-for-target
@@ -1737,7 +1737,7 @@ packages:
       - glib
       - xz-utils
       - zstd
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'meson'
