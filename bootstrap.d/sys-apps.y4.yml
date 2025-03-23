@@ -79,11 +79,11 @@ packages:
       categories: ['sys-apps']
     source:
       subdir: 'ports'
-      url: 'https://ftp.gnu.org/gnu/coreutils/coreutils-9.5.tar.xz'
+      url: 'https://ftp.gnu.org/gnu/coreutils/coreutils-9.6.tar.xz'
       format: tar.xz
-      checksum: 'blake2b:6fd3a77697c9e85f31415c6ad66559faf18acc7d346677a89d4a999c2027886551e78842a7283e7b3b44fe8ef2fde04ba2f88df32a7844d5f69d45bcb7a04b6f'
-      extract_path: 'coreutils-9.5'
-      version: '9.5'
+      checksum: 'blake2b:4070d3d272851d3e9c326df9c05ce67797d86852e7f5c26e545f987f444295f2cfca24e8569514d7b5edf8fd50318d07cb20dea4a4ce8c65b34bea0c5a9177be'
+      extract_path: 'coreutils-9.6'
+      version: '9.6'
       tools_required:
         - host-automake-v1.15
       regenerate:
