@@ -1772,8 +1772,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.gnome.org/GNOME/libxslt.git'
-      tag: 'v1.1.38'
-      version: '1.1.38'
+      tag: 'v1.1.43'
+      version: '1.1.43'
     tools_required:
       - system-gcc
       - virtual: pkgconfig-for-target
@@ -1782,7 +1782,7 @@ packages:
     pkgs_required:
       - mlibc
       - libxml
-    revision: 6
+    revision: 1
     configure:
       # BLFS increases the recursion limit, apparently some packages need that to build their documentation.
       - args: ['sed', '-i', 's/3000/5000/', '@THIS_SOURCE_DIR@/libxslt/transform.c']
