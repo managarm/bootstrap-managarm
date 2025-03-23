@@ -451,7 +451,7 @@ packages:
     architecture: '@OPTION:arch@'
     metadata:
       summary: GNU regular expression matcher
-      description: This package contains for searching through the contents of files.
+      description: This package contains programs for searching through the contents of files.
       spdx: 'GPL-3.0-or-later'
       website: 'https://www.gnu.org/software/grep/'
       maintainer: "Dennis Bonke <dennis@managarm.org>"
