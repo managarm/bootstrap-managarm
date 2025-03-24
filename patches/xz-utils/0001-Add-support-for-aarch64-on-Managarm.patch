@@ -1,0 +1,29 @@
+From de6464261d4c41f3d4d9beb2400129a4c2bee865 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Mon, 24 Mar 2025 11:20:08 +0100
+Subject: [PATCH] Add support for aarch64 on Managarm
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ src/liblzma/check/crc32_arm64.h | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/src/liblzma/check/crc32_arm64.h b/src/liblzma/check/crc32_arm64.h
+index 39c1c63e..4c100f50 100644
+--- a/src/liblzma/check/crc32_arm64.h
++++ b/src/liblzma/check/crc32_arm64.h
+@@ -32,6 +32,11 @@
+ #	endif
+ #endif
+ 
++// TODO: mlibc should provide this somewhere and somehow?
++#ifndef HWCAP_CRC32
++#define HWCAP_CRC32		(1 << 7)
++#endif
++
+ // Some EDG-based compilers support ARM64 and define __GNUC__
+ // (such as Nvidia's nvcc), but do not support function attributes.
+ //
+-- 
+2.49.0
+
