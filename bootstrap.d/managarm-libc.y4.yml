@@ -2,7 +2,7 @@ sources:
   - name: mlibc
     git: 'https://github.com/managarm/mlibc.git'
     branch: 'master'
-    commit: 'e462cd5308ff4361414ecbae87df26fa6d35bf12'
+    commit: '1d93c227467c6da63855403f4736c59a274564e5'
     rolling_version: true
     version: '0.0pl@ROLLING_ID@'
     sources_required:
@@ -126,7 +126,7 @@ tools:
       - host-frigg
       - virtual: pkgconfig-for-host
         program_name: host-pkg-config
-    revision: 4
+    revision: 1
     configure:
       - args:
         - 'meson'
@@ -178,7 +178,7 @@ packages:
     pkgs_required:
       - libdrm-headers
       - linux-headers
-    revision: 2
+    revision: 1
     configure:
       - args: ['ln', '-sf', '@SYSROOT_DIR@/usr/src/libdrm-headers', '@THIS_SOURCE_DIR@/subprojects/']
       - args:
@@ -221,7 +221,7 @@ packages:
       - mlibc-headers
       - libdrm-headers
       - frigg
-    revision: 2
+    revision: 1
     configure:
       - args: ['ln', '-sf', '@SYSROOT_DIR@/usr/src/libdrm-headers', '@THIS_SOURCE_DIR@/subprojects/']
       - args:
