@@ -791,6 +791,51 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: lcms
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: A lightweight, speed optimized color management engine
+      description: This package contains the Little Color Management System, which is a small-footprint color management engine, with special focus on accuracy and performance. It uses the International Color Consortium standard (ICC), which is the modern standard for color management.
+      spdx: 'GPL-3.0-only'
+      website: 'https://www.littlecms.com/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/mm2/Little-CMS.git'
+      tag: 'lcms2.18'
+      version: '2.18'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            NOCONFIGURE: 'yes'
+        - args: ['cp',
+            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
+            '@THIS_SOURCE_DIR@/']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - libjpeg-turbo
+      - libtiff
+    revision: 1
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--disable-static'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: libaom
     architecture: '@OPTION:arch@'
     metadata:
