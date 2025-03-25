@@ -1,12 +1,13 @@
-From c9c29292acc604c4f71fe44a0d5af6bd0035fd3f Mon Sep 17 00:00:00 2001
+From ecc19b6f726bdf7351a50ecb780f6f30f25a0928 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Sun, 24 Jan 2021 15:01:28 +0100
 Subject: [PATCH] Add managarm-specific changes
 
 ---
  include/linux/input.h         | 2 ++
+ meson.build                   | 6 +++---
  tools/libinput-debug-tablet.c | 1 +
- 2 files changed, 3 insertions(+)
+ 3 files changed, 6 insertions(+), 3 deletions(-)
 
 diff --git a/include/linux/input.h b/include/linux/input.h
 index 03c512e..3d407a0 100644
@@ -19,8 +20,25 @@ index 03c512e..3d407a0 100644
 +#elif __managarm__
 +#include_next <linux/input.h>
  #endif
+diff --git a/meson.build b/meson.build
+index a8a0238..36c1c97 100644
+--- a/meson.build
++++ b/meson.build
+@@ -115,9 +115,9 @@ if cc.has_header_symbol('dirent.h', 'versionsort', prefix : prefix)
+ 	config_h.set('HAVE_VERSIONSORT', '1')
+ endif
+ 
+-if cc.get_define('SYS_pidfd_open', prefix: '#include <sys/syscall.h>') != ''
+-	config_h.set('HAVE_PIDFD_OPEN', '1')
+-endif
++#if cc.get_define('SYS_pidfd_open', prefix: '#include <sys/syscall.h>') != ''
++#	config_h.set('HAVE_PIDFD_OPEN', '1')
++#endif
+ 
+ if cc.has_function('sigabbrev_np', prefix: '#define _GNU_SOURCE 1\n#include <string.h>')
+ 	config_h.set('HAVE_SIGABBREV_NP', '1')
 diff --git a/tools/libinput-debug-tablet.c b/tools/libinput-debug-tablet.c
-index 642f1e2..a8e683d 100644
+index 754cb51..0ae9d1a 100644
 --- a/tools/libinput-debug-tablet.c
 +++ b/tools/libinput-debug-tablet.c
 @@ -33,6 +33,7 @@
@@ -32,5 +50,5 @@ index 642f1e2..a8e683d 100644
  #include <libinput.h>
  #include <libevdev/libevdev.h>
 -- 
-2.29.2
+2.39.5
 
