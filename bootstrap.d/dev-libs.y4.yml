@@ -895,6 +895,51 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: libei
+    labels: [aarch64, riscv64]
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Library for Emulated Input, primarily aimed at the Wayland stack
+      description: This package contains a set of libraries for handling emulated inputs. It is primarily aimed at the Wayland stack.
+      spdx: 'MIT'
+      website: 'https://gitlab.freedesktop.org/libinput/libei'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.freedesktop.org/libinput/libei.git'
+      tag: '1.5.0'
+      version: '1.5.0'
+    tools_required:
+      - host-pkg-config
+      - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - libevdev
+      - libxkbcommon
+      - systemd
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '-Dliboeffis=enabled'
+        - '-Dsd-bus-provider=libsystemd'
+        - '-Dtests=disabled'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: libevdev
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
