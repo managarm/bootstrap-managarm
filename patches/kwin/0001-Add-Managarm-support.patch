@@ -1,0 +1,46 @@
+From 57a281c66a00544f3349e13d74ad115a5910c00d Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Wed, 26 Mar 2025 00:10:26 +0100
+Subject: [PATCH] Add Managarm support
+
+---
+ src/utils/CMakeLists.txt         | 2 +-
+ src/wayland/tools/CMakeLists.txt | 8 ++++++--
+ 2 files changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/src/utils/CMakeLists.txt b/src/utils/CMakeLists.txt
+index 95c0e39..9fe6068 100644
+--- a/src/utils/CMakeLists.txt
++++ b/src/utils/CMakeLists.txt
+@@ -16,7 +16,7 @@ if (KWIN_BUILD_X11)
+     target_sources(kwin PRIVATE xcbutils.cpp)
+ endif()
+ 
+-if(CMAKE_SYSTEM_NAME MATCHES "Linux")
++if(CMAKE_SYSTEM_NAME MATCHES "Linux" OR CMAKE_SYSTEM_NAME MATCHES "managarm")
+     target_sources(kwin PRIVATE executable_path_proc.cpp)
+ elseif(CMAKE_SYSTEM_NAME MATCHES "FreeBSD")
+     target_sources(kwin PRIVATE executable_path_sysctl.cpp)
+diff --git a/src/wayland/tools/CMakeLists.txt b/src/wayland/tools/CMakeLists.txt
+index 78daf40..fa608ba 100644
+--- a/src/wayland/tools/CMakeLists.txt
++++ b/src/wayland/tools/CMakeLists.txt
+@@ -20,9 +20,13 @@ elseif(CMAKE_CROSSCOMPILING)
+ 
+     # search native tooling prefix
+     set(NATIVE_PREFIX "" CACHE STRING "CMAKE_PREFIX_PATH for native Qt libraries")
++    message(${KF6_HOST_TOOLING})
+     if (NOT NATIVE_PREFIX)
+-        string(FIND ${KF6_HOST_TOOLING} /lib idx)
+-        string(SUBSTRING ${KF6_HOST_TOOLING} 0 ${idx} NATIVE_PREFIX)
++        foreach(path IN LISTS KF6_HOST_TOOLING)
++            string(FIND "${path}" /lib idx)
++            string(SUBSTRING "${path}" 0 ${idx} prefix)
++            list(APPEND NATIVE_PREFIX "${prefix}")
++        endforeach()
+     endif()
+     message(STATUS "Building qtwaylandscanner_kde against ${NATIVE_PREFIX}")
+ 
+-- 
+2.39.5
+

@@ -220,6 +220,101 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: kwin
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Flexible, composited Window Manager for windowing systems on Linux
+      description: This package provides the KDE window manager.
+      spdx: 'LGPL-3.0-or-later'
+      website: 'https://kde.org/plasma-desktop'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['kde-plasma']
+    source:
+      subdir: 'ports'
+      git: 'https://invent.kde.org/plasma/kwin.git'
+      tag: 'v6.6.4'
+      version: '6.6.4'
+    tools_required:
+      - system-gcc
+      - host-cmake
+      - host-ecm
+      - host-kcmutils
+      - host-kconfig
+      - host-kpackage
+      - host-qt6
+      - wayland-scanner
+    pkgs_required:
+      - mlibc
+      - hwdata
+      - kauth
+      - kcmutils
+      - kcolorscheme
+      - kconfig
+      - kconfigwidgets
+      - kcoreaddons
+      - kcrash
+      - kdbusaddons
+      - kdeclarative
+      - kdecoration
+      - kglobalaccel
+      - kglobalacceld
+      - kguiaddons
+      - ki18n
+      - kidletime
+      - knewstuff
+      - knighttime
+      - kpackage
+      - kservice
+      - ksvg
+      - kwayland
+      - kwidgetsaddons
+      - kwindowsystem
+      - kxmlgui
+      - lcms
+      - libdisplay-info
+      - libdrm
+      - libei
+      - libinput
+      - libplasma
+      - libxcvt
+      - plasma-activities
+      - qt5compat
+      - qtbase6
+      - qtdeclarative6
+      - qtsensors6
+      - qtshadertools6
+      - qtsvg6
+      - qttools6
+      - qtwayland6
+      - xwayland
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=/usr/lib/qt6/qml'
+        - '-DKDE_INSTALL_PLUGINDIR=/usr/lib/qt6/plugins'
+        - '-DKDE_INSTALL_QTPLUGINDIR=/usr/lib/qt6/plugins'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '-DKF6_HOST_TOOLING=@BUILD_ROOT@/tools/host-kconfig/lib/x86_64-linux-gnu/cmake/;@BUILD_ROOT@/tools/host-kcmutils/lib/x86_64-linux-gnu/cmake/;@BUILD_ROOT@/tools/host-kpackage/lib/x86_64-linux-gnu/cmake/'
+        - '-DKWIN_BUILD_SCREENLOCKER=OFF'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: layer-shell-qt
     architecture: '@OPTION:arch@'
     metadata:
