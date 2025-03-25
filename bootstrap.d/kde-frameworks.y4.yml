@@ -785,6 +785,58 @@ tools:
     install:
       - args: ['ninja', 'install']
 
+  - name: host-kio
+    architecture: noarch
+    from_source: kio
+    tools_required:
+      - host-cmake
+      - host-ecm
+      - host-karchive
+      - host-kauth
+      - host-kbookmarks
+      - host-kcodecs
+      - host-kcolorscheme
+      - host-kcompletion
+      - host-kconfig
+      - host-kcoreaddons
+      - host-kcrash
+      - host-kdbusaddons
+      - host-kguiaddons
+      - host-ki18n
+      - host-kiconthemes
+      - host-kitemviews
+      - host-kjobwidgets
+      - host-knotifications
+      - host-kservice
+      - host-ktextwidgets
+      - host-kwidgetsaddons
+      - host-kwindowsystem
+      - host-kxmlgui
+      - host-ninja
+      - host-qt6
+      - host-solid
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=@PREFIX@'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=@PREFIX@/lib/qt6/qml'
+        - '-DKDE_INSTALL_LIBEXECDIR_KF=@PREFIX@/libexec'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
+
   - name: host-kitemviews
     architecture: noarch
     from_source: kitemviews
