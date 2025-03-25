@@ -1,4 +1,4 @@
-From 15bb868ed023ca26114c1a50cfbf25d4665e69ae Mon Sep 17 00:00:00 2001
+From 0a6e9129292adb0ba32a394564c10ebcd8b09b3a Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Kacper=20S=C5=82omi=C5=84ski?=
  <kacper.slominski72@gmail.com>
 Date: Tue, 10 Dec 2019 22:41:43 +0100
@@ -9,10 +9,10 @@ Subject: [PATCH 2/3] Add more managarm-specific changes
  1 file changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/xf86drm.c b/xf86drm.c
-index 3bb024e..4248ef2 100644
+index 6ca5626..3ab71f7 100644
 --- a/xf86drm.c
 +++ b/xf86drm.c
-@@ -3421,7 +3421,7 @@ drm_public int drmCloseBufferHandle(int fd, uint32_t handle)
+@@ -3402,7 +3402,7 @@ drm_public int drmCloseBufferHandle(int fd, uint32_t handle)
  
  static char *drmGetMinorNameForFD(int fd, int type)
  {
@@ -21,7 +21,7 @@ index 3bb024e..4248ef2 100644
      DIR *sysdir;
      struct dirent *ent;
      struct stat sbuf;
-@@ -3543,7 +3543,7 @@ drm_public char *drmGetRenderDeviceNameFromFd(int fd)
+@@ -3524,7 +3524,7 @@ drm_public char *drmGetRenderDeviceNameFromFd(int fd)
      return drmGetMinorNameForFD(fd, DRM_NODE_RENDER);
  }
  
@@ -30,7 +30,7 @@ index 3bb024e..4248ef2 100644
  static char * DRM_PRINTFLIKE(2, 3)
  sysfs_uevent_get(const char *path, const char *fmt, ...)
  {
-@@ -3629,7 +3629,7 @@ static int get_subsystem_type(const char *device_path)
+@@ -3610,7 +3610,7 @@ static int get_subsystem_type(const char *device_path)
  
  static int drmParseSubsystemType(int maj, int min)
  {
@@ -39,7 +39,7 @@ index 3bb024e..4248ef2 100644
      char path[PATH_MAX + 1] = "";
      char real_path[PATH_MAX + 1] = "";
      int subsystem_type;
-@@ -3736,7 +3736,7 @@ static int get_sysctl_pci_bus_info(int maj, int min, drmPciBusInfoPtr info)
+@@ -3714,7 +3714,7 @@ static int get_sysctl_pci_bus_info(int maj, int min, drmPciBusInfoPtr info)
  
  static int drmParsePciBusInfo(int maj, int min, drmPciBusInfoPtr info)
  {
@@ -48,7 +48,7 @@ index 3bb024e..4248ef2 100644
      unsigned int domain, bus, dev, func;
      char pci_path[PATH_MAX + 1], *value;
      int num;
-@@ -3845,7 +3845,7 @@ static int drmGetMaxNodeName(void)
+@@ -3819,7 +3819,7 @@ static int drmGetMaxNodeName(void)
             3 /* length of the node number */;
  }
  
@@ -57,7 +57,7 @@ index 3bb024e..4248ef2 100644
  static int parse_separate_sysfs_files(int maj, int min,
                                        drmPciDeviceInfoPtr device,
                                        bool ignore_revision)
-@@ -3923,7 +3923,7 @@ static int drmParsePciDeviceInfo(int maj, int min,
+@@ -3897,7 +3897,7 @@ static int drmParsePciDeviceInfo(int maj, int min,
                                   drmPciDeviceInfoPtr device,
                                   uint32_t flags)
  {
@@ -66,7 +66,7 @@ index 3bb024e..4248ef2 100644
      if (!(flags & DRM_DEVICE_GET_PCI_REVISION))
          return parse_separate_sysfs_files(maj, min, device, true);
  
-@@ -4194,7 +4194,7 @@ static int drm_usb_dev_path(int maj, int min, char *path, size_t len)
+@@ -4168,7 +4168,7 @@ static int drm_usb_dev_path(int maj, int min, char *path, size_t len)
  
  static int drmParseUsbBusInfo(int maj, int min, drmUsbBusInfoPtr info)
  {
@@ -75,7 +75,7 @@ index 3bb024e..4248ef2 100644
      char path[PATH_MAX + 1], *value;
      unsigned int bus, dev;
      int ret;
-@@ -4235,7 +4235,7 @@ static int drmParseUsbBusInfo(int maj, int min, drmUsbBusInfoPtr info)
+@@ -4209,7 +4209,7 @@ static int drmParseUsbBusInfo(int maj, int min, drmUsbBusInfoPtr info)
  
  static int drmParseUsbDeviceInfo(int maj, int min, drmUsbDeviceInfoPtr info)
  {
@@ -84,7 +84,7 @@ index 3bb024e..4248ef2 100644
      char path[PATH_MAX + 1], *value;
      unsigned int vendor, product;
      int ret;
-@@ -4835,7 +4835,7 @@ drm_public int drmGetDevices(drmDevicePtr devices[], int max_devices)
+@@ -4843,7 +4843,7 @@ drm_public int drmGetDevices(drmDevicePtr devices[], int max_devices)
  
  drm_public char *drmGetDeviceNameFromFd2(int fd)
  {
@@ -94,5 +94,5 @@ index 3bb024e..4248ef2 100644
      char path[PATH_MAX + 1], *value;
      unsigned int maj, min;
 -- 
-2.40.1
+2.39.5
 
