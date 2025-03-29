@@ -22,8 +22,8 @@ sources:
   - name: rust
     subdir: 'ports'
     git: 'https://github.com/rust-lang/rust.git'
-    tag: '1.77.1'
-    version: '1.77.1'
+    tag: '1.85.1'
+    version: '1.85.1'
 
   - name: vala
     subdir: 'ports'
@@ -56,7 +56,6 @@ tools:
       - args: ['make', 'install']
 
   - name: host-rust
-    stability_level: 'broken' # LLVM Bumped?
     architecture: noarch
     from_source: rust
     sources_required:
@@ -65,7 +64,7 @@ tools:
       - host-llvm-toolchain
       - host-python
       - host-libffi
-    revision: 2
+    revision: 1
     compile:
       - args: |
             cat << EOF > config.toml
@@ -98,12 +97,14 @@ tools:
         cargo_home: false
         environ:
           CARGO_HOME: '@THIS_BUILD_DIR@/cargo-home'
+          BOOTSTRAP_SKIP_TARGET_SANITY: '1'
         isolate_network: false
     install:
       - args: ['python3', '@THIS_SOURCE_DIR@/x.py', 'install', '-j', '@PARALLELISM@']
         cargo_home: false
         environ:
           CARGO_HOME: '@THIS_BUILD_DIR@/cargo-home'
+          BOOTSTRAP_SKIP_TARGET_SANITY: '1'
         isolate_network: false
 
   - name: host-cargo
