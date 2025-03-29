@@ -2,8 +2,8 @@ sources:
   - name: rust-libc
     subdir: 'ports'
     git: 'https://github.com/rust-lang/libc.git'
-    tag: '0.2.153'
-    version: '0.2.153'
+    tag: '0.2.171'
+    version: '0.2.171'
 
   - name: rust-num-cpus
     subdir: 'ports'
