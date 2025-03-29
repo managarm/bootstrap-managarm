@@ -1,7 +1,7 @@
-From 3faf84c1dfb842b6005bb276ede5e2cc6a96883b Mon Sep 17 00:00:00 2001
+From db237ac6244e08929620f3765549f0b1e733a0b3 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Tue, 5 Nov 2024 01:43:57 +0100
-Subject: [PATCH 3/4] [clang] Add managarm tests
+Subject: [PATCH 3/4] Add managarm tests
 
 ---
  .../lib/aarch64-managarm-mlibc/.keep          |   0
@@ -56,76 +56,76 @@ Subject: [PATCH 3/4] [clang] Add managarm tests
 
 diff --git a/clang/test/Driver/Inputs/basic_managarm_tree/lib/aarch64-managarm-mlibc/.keep b/clang/test/Driver/Inputs/basic_managarm_tree/lib/aarch64-managarm-mlibc/.keep
 new file mode 100644
-index 0000000000..e69de29bb2
+index 000000000..e69de29bb
 diff --git a/clang/test/Driver/Inputs/basic_managarm_tree/lib/riscv64-managarm-mlibc/.keep b/clang/test/Driver/Inputs/basic_managarm_tree/lib/riscv64-managarm-mlibc/.keep
 new file mode 100644
-index 0000000000..e69de29bb2
+index 000000000..e69de29bb
 diff --git a/clang/test/Driver/Inputs/basic_managarm_tree/lib/x86_64-managarm-mlibc/.keep b/clang/test/Driver/Inputs/basic_managarm_tree/lib/x86_64-managarm-mlibc/.keep
 new file mode 100644
-index 0000000000..e69de29bb2
+index 000000000..e69de29bb
 diff --git a/clang/test/Driver/Inputs/basic_managarm_tree/lib64/aarch64-managarm-mlibc/.keep b/clang/test/Driver/Inputs/basic_managarm_tree/lib64/aarch64-managarm-mlibc/.keep
 new file mode 100644
-index 0000000000..e69de29bb2
+index 000000000..e69de29bb
 diff --git a/clang/test/Driver/Inputs/basic_managarm_tree/lib64/riscv64-managarm-mlibc/.keep b/clang/test/Driver/Inputs/basic_managarm_tree/lib64/riscv64-managarm-mlibc/.keep
 new file mode 100644
-index 0000000000..e69de29bb2
+index 000000000..e69de29bb
 diff --git a/clang/test/Driver/Inputs/basic_managarm_tree/lib64/x86_64-managarm-mlibc/.keep b/clang/test/Driver/Inputs/basic_managarm_tree/lib64/x86_64-managarm-mlibc/.keep
 new file mode 100644
-index 0000000000..e69de29bb2
+index 000000000..e69de29bb
 diff --git a/clang/test/Driver/Inputs/basic_managarm_tree/usr/include/aarch64-managarm-mlibc/c++/10/.keep b/clang/test/Driver/Inputs/basic_managarm_tree/usr/include/aarch64-managarm-mlibc/c++/10/.keep
 new file mode 100644
-index 0000000000..e69de29bb2
+index 000000000..e69de29bb
 diff --git a/clang/test/Driver/Inputs/basic_managarm_tree/usr/include/c++/10/.keep b/clang/test/Driver/Inputs/basic_managarm_tree/usr/include/c++/10/.keep
 new file mode 100644
-index 0000000000..e69de29bb2
+index 000000000..e69de29bb
 diff --git a/clang/test/Driver/Inputs/basic_managarm_tree/usr/include/riscv64-managarm-mlibc/c++/10/.keep b/clang/test/Driver/Inputs/basic_managarm_tree/usr/include/riscv64-managarm-mlibc/c++/10/.keep
 new file mode 100644
-index 0000000000..e69de29bb2
+index 000000000..e69de29bb
 diff --git a/clang/test/Driver/Inputs/basic_managarm_tree/usr/include/x86_64-managarm-mlibc/c++/10/.keep b/clang/test/Driver/Inputs/basic_managarm_tree/usr/include/x86_64-managarm-mlibc/c++/10/.keep
 new file mode 100644
-index 0000000000..e69de29bb2
+index 000000000..e69de29bb
 diff --git a/clang/test/Driver/Inputs/basic_managarm_tree/usr/lib/aarch64-managarm-mlibc/.keep b/clang/test/Driver/Inputs/basic_managarm_tree/usr/lib/aarch64-managarm-mlibc/.keep
 new file mode 100644
-index 0000000000..e69de29bb2
+index 000000000..e69de29bb
 diff --git a/clang/test/Driver/Inputs/basic_managarm_tree/usr/lib/gcc/aarch64-managarm-mlibc/10/crtbegin.o b/clang/test/Driver/Inputs/basic_managarm_tree/usr/lib/gcc/aarch64-managarm-mlibc/10/crtbegin.o
 new file mode 100644
-index 0000000000..e69de29bb2
+index 000000000..e69de29bb
 diff --git a/clang/test/Driver/Inputs/basic_managarm_tree/usr/lib/gcc/aarch64-managarm-mlibc/10/crtbeginS.o b/clang/test/Driver/Inputs/basic_managarm_tree/usr/lib/gcc/aarch64-managarm-mlibc/10/crtbeginS.o
 new file mode 100644
-index 0000000000..e69de29bb2
+index 000000000..e69de29bb
 diff --git a/clang/test/Driver/Inputs/basic_managarm_tree/usr/lib/gcc/aarch64-managarm-mlibc/10/crtbeginT.o b/clang/test/Driver/Inputs/basic_managarm_tree/usr/lib/gcc/aarch64-managarm-mlibc/10/crtbeginT.o
 new file mode 100644
-index 0000000000..e69de29bb2
+index 000000000..e69de29bb
 diff --git a/clang/test/Driver/Inputs/basic_managarm_tree/usr/lib/gcc/riscv64-managarm-mlibc/10/crtbegin.o b/clang/test/Driver/Inputs/basic_managarm_tree/usr/lib/gcc/riscv64-managarm-mlibc/10/crtbegin.o
 new file mode 100644
-index 0000000000..e69de29bb2
+index 000000000..e69de29bb
 diff --git a/clang/test/Driver/Inputs/basic_managarm_tree/usr/lib/gcc/riscv64-managarm-mlibc/10/crtbeginS.o b/clang/test/Driver/Inputs/basic_managarm_tree/usr/lib/gcc/riscv64-managarm-mlibc/10/crtbeginS.o
 new file mode 100644
-index 0000000000..e69de29bb2
+index 000000000..e69de29bb
 diff --git a/clang/test/Driver/Inputs/basic_managarm_tree/usr/lib/gcc/riscv64-managarm-mlibc/10/crtbeginT.o b/clang/test/Driver/Inputs/basic_managarm_tree/usr/lib/gcc/riscv64-managarm-mlibc/10/crtbeginT.o
 new file mode 100644
-index 0000000000..e69de29bb2
+index 000000000..e69de29bb
 diff --git a/clang/test/Driver/Inputs/basic_managarm_tree/usr/lib/gcc/x86_64-managarm-mlibc/10/crtbegin.o b/clang/test/Driver/Inputs/basic_managarm_tree/usr/lib/gcc/x86_64-managarm-mlibc/10/crtbegin.o
 new file mode 100644
-index 0000000000..e69de29bb2
+index 000000000..e69de29bb
 diff --git a/clang/test/Driver/Inputs/basic_managarm_tree/usr/lib/gcc/x86_64-managarm-mlibc/10/crtbeginS.o b/clang/test/Driver/Inputs/basic_managarm_tree/usr/lib/gcc/x86_64-managarm-mlibc/10/crtbeginS.o
 new file mode 100644
-index 0000000000..e69de29bb2
+index 000000000..e69de29bb
 diff --git a/clang/test/Driver/Inputs/basic_managarm_tree/usr/lib/gcc/x86_64-managarm-mlibc/10/crtbeginT.o b/clang/test/Driver/Inputs/basic_managarm_tree/usr/lib/gcc/x86_64-managarm-mlibc/10/crtbeginT.o
 new file mode 100644
-index 0000000000..e69de29bb2
+index 000000000..e69de29bb
 diff --git a/clang/test/Driver/Inputs/basic_managarm_tree/usr/lib/riscv64-managarm-mlibc/.keep b/clang/test/Driver/Inputs/basic_managarm_tree/usr/lib/riscv64-managarm-mlibc/.keep
 new file mode 100644
-index 0000000000..e69de29bb2
+index 000000000..e69de29bb
 diff --git a/clang/test/Driver/Inputs/basic_managarm_tree/usr/lib/x86_64-managarm-mlibc/.keep b/clang/test/Driver/Inputs/basic_managarm_tree/usr/lib/x86_64-managarm-mlibc/.keep
 new file mode 100644
-index 0000000000..e69de29bb2
+index 000000000..e69de29bb
 diff --git a/clang/test/Driver/Inputs/basic_managarm_tree/usr/lib64/.keep b/clang/test/Driver/Inputs/basic_managarm_tree/usr/lib64/.keep
 new file mode 100644
-index 0000000000..e69de29bb2
+index 000000000..e69de29bb
 diff --git a/clang/test/Driver/managarm.cpp b/clang/test/Driver/managarm.cpp
 new file mode 100644
-index 0000000000..86f1e27104
+index 000000000..86f1e2710
 --- /dev/null
 +++ b/clang/test/Driver/managarm.cpp
 @@ -0,0 +1,195 @@
@@ -325,5 +325,5 @@ index 0000000000..86f1e27104
 +// CHECK-RISCV64-SHARED-SAME: {{^}} "-L[[SYSROOT]]/lib"
 +// CHECK-RISCV64-SHARED-SAME: {{^}} "-L[[SYSROOT]]/usr/lib"
 -- 
-2.47.0
+2.48.1
 

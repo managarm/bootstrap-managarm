@@ -1,0 +1,39 @@
+From dc55323f4faef8510e132c13a0f7196d16538dc7 Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Sat, 29 Mar 2025 12:26:50 +0100
+Subject: [PATCH] Add managarm support
+
+---
+ src/lib.rs       | 2 +-
+ src/util_libc.rs | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/lib.rs b/src/lib.rs
+index bc3695b..4f7e3c2 100644
+--- a/src/lib.rs
++++ b/src/lib.rs
+@@ -232,7 +232,7 @@ pub use crate::error::Error;
+ // The function MUST NOT ever write uninitialized bytes into `dest`,
+ // regardless of what value it returns.
+ cfg_if! {
+-    if #[cfg(any(target_os = "haiku", target_os = "redox", target_os = "nto", target_os = "aix"))] {
++    if #[cfg(any(target_os = "haiku", target_os = "redox", target_os = "nto", target_os = "aix", target_os = "managarm"))] {
+         mod util_libc;
+         #[path = "use_file.rs"] mod imp;
+     } else if #[cfg(any(
+diff --git a/src/util_libc.rs b/src/util_libc.rs
+index 129362d..d86f9cf 100644
+--- a/src/util_libc.rs
++++ b/src/util_libc.rs
+@@ -11,7 +11,7 @@ use libc::c_void;
+ cfg_if! {
+     if #[cfg(any(target_os = "netbsd", target_os = "openbsd", target_os = "android"))] {
+         use libc::__errno as errno_location;
+-    } else if #[cfg(any(target_os = "linux", target_os = "emscripten", target_os = "hurd", target_os = "redox", target_os = "dragonfly"))] {
++    } else if #[cfg(any(target_os = "linux", target_os = "emscripten", target_os = "hurd", target_os = "redox", target_os = "dragonfly", target_os = "managarm"))] {
+         use libc::__errno_location as errno_location;
+     } else if #[cfg(any(target_os = "solaris", target_os = "illumos"))] {
+         use libc::___errno as errno_location;
+-- 
+2.48.1
+

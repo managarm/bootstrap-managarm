@@ -8,8 +8,8 @@ import subprocess
 patched_libs = {
     "backtrace": "0.3.69",
     "calloop": "0.10.0",
-    'getrandom': '0.2.9',
-    "libc": "0.2.153",
+    'getrandom': ['0.2.15', '0.3.2'],
+    "libc": "0.2.171",
     "libloading": "0.7.4",
     "mio": ["0.6.23", "0.8.3"],
     "nix": "0.24.3",
@@ -20,6 +20,7 @@ patched_libs = {
     "glutin_glx_sys": "0.1.7",
     "glutin_egl_sys": "0.1.5",
     "shared_library": "0.1.9",
+    "errno": "0.3.10",
 }
 
 parser = argparse.ArgumentParser(description="Inject patched Rust libraries into Cargo lockfiles")

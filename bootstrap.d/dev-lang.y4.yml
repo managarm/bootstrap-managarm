@@ -22,8 +22,8 @@ sources:
   - name: rust
     subdir: 'ports'
     git: 'https://github.com/rust-lang/rust.git'
-    tag: '1.77.1'
-    version: '1.77.1'
+    tag: '1.85.1'
+    version: '1.85.1'
 
   - name: vala
     subdir: 'ports'
@@ -35,11 +35,11 @@ sources:
 
   - name: host-bootstrap-cargo
     subdir: 'ports'
-    url: 'https://static.rust-lang.org/dist/cargo-1.75.0-x86_64-unknown-linux-gnu.tar.xz'
+    url: 'https://static.rust-lang.org/dist/cargo-1.85.1-x86_64-unknown-linux-gnu.tar.xz'
     format: 'tar.xz'
-    checksum: blake2b:cc2c5ffab3396b462415dfb0f275b2cb121a145284d065474e95ecdb49ce4cc6d20cf59c6eb317bdf4d26a80491ed0ed7c369960182155da42459169fffa0844
-    extract_path: 'cargo-1.75.0-x86_64-unknown-linux-gnu'
-    version: '1.75.0'
+    checksum: blake2b:ad112e8cd83ebadd355e23a621c815b7cccd058b1d1c00a5addf907550adc0943bbdd98659f211e7be7f4b34cb7dbb5dc8d2826c45277b9f1a19d5d5fc091207
+    extract_path: 'cargo-1.85.1-x86_64-unknown-linux-gnu'
+    version: '1.85.1'
 
 tools:
   - name: host-python
@@ -56,7 +56,6 @@ tools:
       - args: ['make', 'install']
 
   - name: host-rust
-    stability_level: 'broken' # LLVM Bumped?
     architecture: noarch
     from_source: rust
     sources_required:
@@ -65,7 +64,7 @@ tools:
       - host-llvm-toolchain
       - host-python
       - host-libffi
-    revision: 2
+    revision: 1
     compile:
       - args: |
             cat << EOF > config.toml
@@ -98,22 +97,23 @@ tools:
         cargo_home: false
         environ:
           CARGO_HOME: '@THIS_BUILD_DIR@/cargo-home'
+          BOOTSTRAP_SKIP_TARGET_SANITY: '1'
         isolate_network: false
     install:
       - args: ['python3', '@THIS_SOURCE_DIR@/x.py', 'install', '-j', '@PARALLELISM@']
         cargo_home: false
         environ:
           CARGO_HOME: '@THIS_BUILD_DIR@/cargo-home'
+          BOOTSTRAP_SKIP_TARGET_SANITY: '1'
         isolate_network: false
 
   - name: host-cargo
-    stability_level: 'broken' # Rust updates?
     architecture: noarch
     source:
       subdir: 'ports'
       git: 'https://github.com/rust-lang/cargo.git'
-      tag: '0.73.1'
-      version: '0.73.1'
+      tag: '0.86.0'
+      version: '0.86.0'
     tools_required:
       - tool: host-rust
         recursive: true

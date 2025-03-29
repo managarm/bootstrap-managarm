@@ -1,0 +1,24 @@
+From 12ed3919f789d2b2c4249f007b5a66e8545a91ac Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Sat, 29 Mar 2025 12:32:14 +0100
+Subject: [PATCH] Add managarm support
+
+---
+ src/unix.rs | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/unix.rs b/src/unix.rs
+index d2ca222..1e747ca 100644
+--- a/src/unix.rs
++++ b/src/unix.rs
+@@ -93,6 +93,7 @@ extern "C" {
+             target_os = "redox",
+             target_os = "dragonfly",
+             target_os = "emscripten",
++            target_os = "managarm",
+         ),
+         link_name = "__errno_location"
+     )]
+-- 
+2.48.1
+
