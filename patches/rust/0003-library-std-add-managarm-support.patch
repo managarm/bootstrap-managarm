@@ -1,41 +1,40 @@
-From 3b095184b3a4f6c19d824757bdfdf72ead99fab3 Mon Sep 17 00:00:00 2001
+From 291a236cf5bde2de906dcac2b3bd5ac33773a7b7 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Fri, 1 Sep 2023 16:49:14 +0200
 Subject: [PATCH 3/4] library/std: add managarm support
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
- library/std/build.rs                          |   1 +
- library/std/src/os/managarm/fs.rs             | 148 ++++++++++++++++++
- library/std/src/os/managarm/mod.rs            |   6 +
- library/std/src/os/managarm/raw.rs            |  74 +++++++++
- library/std/src/os/mod.rs                     |   2 +
- library/std/src/os/unix/mod.rs                |   2 +
- library/std/src/sys/pal/unix/args.rs          |   1 +
- library/std/src/sys/pal/unix/env.rs           |  11 ++
- library/std/src/sys/pal/unix/fs.rs            |   1 +
- library/std/src/sys/pal/unix/os.rs            |   4 +-
- library/std/src/sys/pal/unix/thread.rs        |   3 +-
- .../std/src/sys/pal/unix/thread_local_dtor.rs |   3 +-
- library/unwind/src/lib.rs                     |   4 +
- src/tools/clippy/clippy_lints/src/attrs.rs    |   1 +
- 14 files changed, 258 insertions(+), 3 deletions(-)
+ library/std/build.rs                   |   1 +
+ library/std/src/os/managarm/fs.rs      | 148 +++++++++++++++++++++++++
+ library/std/src/os/managarm/mod.rs     |   6 +
+ library/std/src/os/managarm/raw.rs     |  74 +++++++++++++
+ library/std/src/os/mod.rs              |   2 +
+ library/std/src/os/unix/mod.rs         |   2 +
+ library/std/src/sys/pal/unix/args.rs   |   1 +
+ library/std/src/sys/pal/unix/env.rs    |  11 ++
+ library/std/src/sys/pal/unix/fs.rs     |   1 +
+ library/std/src/sys/pal/unix/os.rs     |   2 +
+ library/std/src/sys/pal/unix/thread.rs |   3 +-
+ library/std/src/sys/random/mod.rs      |   1 +
+ library/unwind/src/lib.rs              |   4 +
+ 13 files changed, 255 insertions(+), 1 deletion(-)
  create mode 100644 library/std/src/os/managarm/fs.rs
  create mode 100644 library/std/src/os/managarm/mod.rs
  create mode 100644 library/std/src/os/managarm/raw.rs
 
 diff --git a/library/std/build.rs b/library/std/build.rs
-index 60c097db..20ddd0dd 100644
+index 8dc326a3..9db887cd 100644
 --- a/library/std/build.rs
 +++ b/library/std/build.rs
-@@ -36,6 +36,7 @@ fn main() {
-         || target.contains("uefi")
-         || target.contains("teeos")
-         || target.contains("zkvm")
-+        || target.contains("managarm")
-         // See src/bootstrap/synthetic_targets.rs
+@@ -56,6 +56,7 @@ fn main() {
+         || target_os == "zkvm"
+         || target_os == "rtems"
+         || target_os == "nuttx"
++        || target_os == "managarm"
+ 
+         // See src/bootstrap/src/core/build_steps/synthetic_targets.rs
          || env::var("RUSTC_BOOTSTRAP_SYNTHETIC_TARGET").is_ok()
-     {
 diff --git a/library/std/src/os/managarm/fs.rs b/library/std/src/os/managarm/fs.rs
 new file mode 100644
 index 00000000..58205f11
@@ -283,10 +282,10 @@ index 00000000..ce950064
 +    pub st_blocks: libc::blkcnt_t,
 +}
 diff --git a/library/std/src/os/mod.rs b/library/std/src/os/mod.rs
-index 6e11b92b..4478107c 100644
+index e28a1c3e..47af4361 100644
 --- a/library/std/src/os/mod.rs
 +++ b/library/std/src/os/mod.rs
-@@ -129,6 +129,8 @@ pub mod windows {}
+@@ -153,6 +153,8 @@ pub mod windows {}
  pub mod l4re;
  #[cfg(target_os = "macos")]
  pub mod macos;
@@ -296,35 +295,35 @@ index 6e11b92b..4478107c 100644
  pub mod netbsd;
  #[cfg(target_os = "nto")]
 diff --git a/library/std/src/os/unix/mod.rs b/library/std/src/os/unix/mod.rs
-index 5ba8719e..da1af8ca 100644
+index 2f9dffe8..fd0fece2 100644
 --- a/library/std/src/os/unix/mod.rs
 +++ b/library/std/src/os/unix/mod.rs
-@@ -67,6 +67,8 @@ mod platform {
+@@ -65,6 +65,8 @@ mod platform {
+     pub use crate::os::l4re::*;
+     #[cfg(target_os = "linux")]
      pub use crate::os::linux::*;
-     #[cfg(target_os = "macos")]
-     pub use crate::os::macos::*;
 +    #[cfg(target_os = "managarm")]
 +    pub use crate::os::managarm::*;
      #[cfg(target_os = "netbsd")]
      pub use crate::os::netbsd::*;
      #[cfg(target_os = "nto")]
 diff --git a/library/std/src/sys/pal/unix/args.rs b/library/std/src/sys/pal/unix/args.rs
-index 78e82d9c..dad71a32 100644
+index 8438a61e..8b81a0f1 100644
 --- a/library/std/src/sys/pal/unix/args.rs
 +++ b/library/std/src/sys/pal/unix/args.rs
-@@ -73,6 +73,7 @@ fn next_back(&mut self) -> Option<OsString> {
-     target_os = "aix",
-     target_os = "nto",
+@@ -114,6 +114,7 @@ fn next_back(&mut self) -> Option<OsString> {
      target_os = "hurd",
+     target_os = "rtems",
+     target_os = "nuttx",
 +    target_os = "managarm",
  ))]
  mod imp {
-     use super::Args;
+     use crate::ffi::c_char;
 diff --git a/library/std/src/sys/pal/unix/env.rs b/library/std/src/sys/pal/unix/env.rs
-index 3d4ba509..7a16a103 100644
+index 2aee0b5d..525c7bb5 100644
 --- a/library/std/src/sys/pal/unix/env.rs
 +++ b/library/std/src/sys/pal/unix/env.rs
-@@ -261,3 +261,14 @@ pub mod os {
+@@ -294,3 +294,14 @@ pub mod os {
      pub const EXE_SUFFIX: &str = "";
      pub const EXE_EXTENSION: &str = "";
  }
@@ -340,22 +339,22 @@ index 3d4ba509..7a16a103 100644
 +    pub const EXE_EXTENSION: &str = "";
 +}
 diff --git a/library/std/src/sys/pal/unix/fs.rs b/library/std/src/sys/pal/unix/fs.rs
-index 6d0b892e..7e24f36e 100644
+index 54fa3162..bae62dd0 100644
 --- a/library/std/src/sys/pal/unix/fs.rs
 +++ b/library/std/src/sys/pal/unix/fs.rs
-@@ -954,6 +954,7 @@ pub fn file_type(&self) -> io::Result<FileType> {
-         target_os = "aix",
+@@ -981,6 +981,7 @@ pub fn file_type(&self) -> io::Result<FileType> {
          target_os = "nto",
          target_os = "hurd",
+         target_os = "rtems",
 +        target_os = "managarm",
+         target_vendor = "apple",
      ))]
      pub fn ino(&self) -> u64 {
-         self.entry.d_ino as u64
 diff --git a/library/std/src/sys/pal/unix/os.rs b/library/std/src/sys/pal/unix/os.rs
-index 881b3a25..973a0f48 100644
+index b83772e3..f2b501dc 100644
 --- a/library/std/src/sys/pal/unix/os.rs
 +++ b/library/std/src/sys/pal/unix/os.rs
-@@ -48,6 +48,7 @@
+@@ -39,6 +39,7 @@
              target_os = "fuchsia",
              target_os = "l4re",
              target_os = "hurd",
@@ -363,18 +362,16 @@ index 881b3a25..973a0f48 100644
          ),
          link_name = "__errno_location"
      )]
-@@ -407,7 +408,8 @@ pub fn current_exe() -> io::Result<PathBuf> {
-     target_os = "linux",
+@@ -400,6 +401,7 @@ pub fn current_exe() -> io::Result<PathBuf> {
      target_os = "hurd",
      target_os = "android",
--    target_os = "emscripten"
-+    target_os = "emscripten",
-+    target_os = "managarm"
+     target_os = "nuttx",
++    target_os = "managarm",
+     target_os = "emscripten"
  ))]
  pub fn current_exe() -> io::Result<PathBuf> {
-     match crate::fs::read_link("/proc/self/exe") {
 diff --git a/library/std/src/sys/pal/unix/thread.rs b/library/std/src/sys/pal/unix/thread.rs
-index 7e4a01a5..6ed30d75 100644
+index e360ba0f..a89cf046 100644
 --- a/library/std/src/sys/pal/unix/thread.rs
 +++ b/library/std/src/sys/pal/unix/thread.rs
 @@ -130,7 +130,7 @@ pub fn set_name(name: &CStr) {
@@ -386,52 +383,38 @@ index 7e4a01a5..6ed30d75 100644
      pub fn set_name(name: &CStr) {
          const TASK_COMM_LEN: usize = 16;
  
-@@ -297,6 +297,7 @@ fn drop(&mut self) {
-     target_os = "tvos",
-     target_os = "watchos",
-     target_os = "nto",
-+    target_os = "managarm"
+@@ -332,6 +332,7 @@ fn drop(&mut self) {
+     target_os = "solaris",
+     target_os = "illumos",
+     target_os = "vxworks",
++    target_os = "managarm",
+     target_vendor = "apple",
  ))]
  fn truncate_cstr<const MAX_WITH_NUL: usize>(cstr: &CStr) -> [libc::c_char; MAX_WITH_NUL] {
-     let mut result = [0; MAX_WITH_NUL];
-diff --git a/library/std/src/sys/pal/unix/thread_local_dtor.rs b/library/std/src/sys/pal/unix/thread_local_dtor.rs
-index 4bf8f206..3beb8fd9 100644
---- a/library/std/src/sys/pal/unix/thread_local_dtor.rs
-+++ b/library/std/src/sys/pal/unix/thread_local_dtor.rs
-@@ -19,7 +19,8 @@
-     target_os = "redox",
-     target_os = "hurd",
-     target_os = "netbsd",
--    target_os = "dragonfly"
-+    target_os = "dragonfly",
-+    target_os = "managarm"
- ))]
- // FIXME: The Rust compiler currently omits weakly function definitions (i.e.,
- // __cxa_thread_atexit_impl) and its metadata from LLVM IR.
+diff --git a/library/std/src/sys/random/mod.rs b/library/std/src/sys/random/mod.rs
+index f42351de..ba57262a 100644
+--- a/library/std/src/sys/random/mod.rs
++++ b/library/std/src/sys/random/mod.rs
+@@ -45,6 +45,7 @@
+         target_os = "l4re",
+         target_os = "nto",
+         target_os = "nuttx",
++        target_os = "managarm",
+     ))] {
+         mod unix_legacy;
+         pub use unix_legacy::fill_bytes;
 diff --git a/library/unwind/src/lib.rs b/library/unwind/src/lib.rs
-index f5988a4d..76fdd8ef 100644
+index 40d40931..d840791b 100644
 --- a/library/unwind/src/lib.rs
 +++ b/library/unwind/src/lib.rs
-@@ -162,3 +162,7 @@
- #[cfg(target_os = "hurd")]
- #[link(name = "gcc_s")]
+@@ -183,3 +183,7 @@
+ #[link(name = "unwind", kind = "static", modifiers = "-bundle", cfg(target_feature = "crt-static"))]
+ #[link(name = "unwind", cfg(not(target_feature = "crt-static")))]
  extern "C" {}
 +
 +#[cfg(target_os = "managarm")]
 +#[link(name = "gcc_s")]
 +extern "C" {}
-diff --git a/src/tools/clippy/clippy_lints/src/attrs.rs b/src/tools/clippy/clippy_lints/src/attrs.rs
-index da384228..53b5cd81 100644
---- a/src/tools/clippy/clippy_lints/src/attrs.rs
-+++ b/src/tools/clippy/clippy_lints/src/attrs.rs
-@@ -39,6 +39,7 @@
-     "redox",
-     "solaris",
-     "vxworks",
-+    "managarm",
- ];
- 
- // NOTE: windows is excluded from the list because it's also a valid target family.
 -- 
-2.44.0
+2.48.1
 
