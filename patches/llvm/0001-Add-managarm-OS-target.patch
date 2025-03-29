@@ -1,18 +1,18 @@
-From 9d681fdec1f5f86244dd0ba429f35805e1ddde61 Mon Sep 17 00:00:00 2001
+From 0263ee83e7924f0947ad1d718465eddf60743592 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Fri, 6 Sep 2024 21:17:53 +0200
-Subject: [PATCH 1/4] [llvm] Add managarm OS target
+Subject: [PATCH 1/4] Add managarm OS target
 
 ---
  llvm/include/llvm/ADT/bit.h                |  2 +-
- llvm/include/llvm/TargetParser/Triple.h    |  6 ++++++
+ llvm/include/llvm/TargetParser/Triple.h    |  4 ++++
  llvm/lib/Support/Unix/Path.inc             | 13 ++++++++-----
- llvm/lib/TargetParser/Triple.cpp           |  4 ++++
+ llvm/lib/TargetParser/Triple.cpp           |  6 ++++++
  llvm/unittests/TargetParser/TripleTest.cpp | 18 ++++++++++++++++++
  5 files changed, 37 insertions(+), 6 deletions(-)
 
 diff --git a/llvm/include/llvm/ADT/bit.h b/llvm/include/llvm/ADT/bit.h
-index c42b5e686b..7a36ef2eb5 100644
+index c42b5e686..7a36ef2eb 100644
 --- a/llvm/include/llvm/ADT/bit.h
 +++ b/llvm/include/llvm/ADT/bit.h
 @@ -29,7 +29,7 @@
@@ -25,10 +25,10 @@ index c42b5e686b..7a36ef2eb5 100644
  #elif defined(_AIX)
  #include <sys/machine.h>
 diff --git a/llvm/include/llvm/TargetParser/Triple.h b/llvm/include/llvm/TargetParser/Triple.h
-index 779bd9017d..3ff75723b3 100644
+index d2126a03d..302bcf030 100644
 --- a/llvm/include/llvm/TargetParser/Triple.h
 +++ b/llvm/include/llvm/TargetParser/Triple.h
-@@ -207,6 +207,7 @@ public:
+@@ -208,6 +208,7 @@ public:
      Linux,
      Lv2, // PS3
      MacOSX,
@@ -36,7 +36,7 @@ index 779bd9017d..3ff75723b3 100644
      NetBSD,
      OpenBSD,
      Solaris,
-@@ -297,6 +298,7 @@ public:
+@@ -291,6 +292,7 @@ public:
      Amplification,
      OpenCL,
      OpenHOS,
@@ -44,19 +44,17 @@ index 779bd9017d..3ff75723b3 100644
  
      PAuthTest,
  
-@@ -821,6 +823,10 @@ public:
+@@ -815,6 +817,8 @@ public:
  
    bool isVulkanOS() const { return getOS() == Triple::Vulkan; }
  
-+  bool isOSManagarm() const {
-+    return getOS() == Triple::Managarm;
-+  }
++  bool isOSManagarm() const { return getOS() == Triple::Managarm; }
 +
    bool isShaderStageEnvironment() const {
      EnvironmentType Env = getEnvironment();
      return Env == Triple::Pixel || Env == Triple::Vertex ||
 diff --git a/llvm/lib/Support/Unix/Path.inc b/llvm/lib/Support/Unix/Path.inc
-index 44097bad7b..f7e5d8748b 100644
+index cf05db546..8f4f7129e 100644
 --- a/llvm/lib/Support/Unix/Path.inc
 +++ b/llvm/lib/Support/Unix/Path.inc
 @@ -74,7 +74,8 @@ extern char **environ;
@@ -108,26 +106,28 @@ index 44097bad7b..f7e5d8748b 100644
  #define NFS_SUPER_MAGIC 0x6969
  #endif
 diff --git a/llvm/lib/TargetParser/Triple.cpp b/llvm/lib/TargetParser/Triple.cpp
-index b271f29d26..656f06f011 100644
+index 21d6c74b5..32b924729 100644
 --- a/llvm/lib/TargetParser/Triple.cpp
 +++ b/llvm/lib/TargetParser/Triple.cpp
-@@ -277,6 +277,7 @@ StringRef Triple::getOSTypeName(OSType Kind) {
+@@ -282,6 +282,8 @@ StringRef Triple::getOSTypeName(OSType Kind) {
    case Linux: return "linux";
    case Lv2: return "lv2";
    case MacOSX: return "macosx";
-+  case Managarm: return "managarm";
++  case Managarm:
++    return "managarm";
    case Mesa3D: return "mesa3d";
    case NVCL: return "nvcl";
    case NaCl: return "nacl";
-@@ -360,6 +361,7 @@ StringRef Triple::getEnvironmentTypeName(EnvironmentType Kind) {
+@@ -357,6 +359,8 @@ StringRef Triple::getEnvironmentTypeName(EnvironmentType Kind) {
    case OpenHOS: return "ohos";
    case PAuthTest:
      return "pauthtest";
-+  case Mlibc: return "mlibc";
++  case Mlibc:
++    return "mlibc";
    }
  
    llvm_unreachable("Invalid EnvironmentType!");
-@@ -653,6 +655,7 @@ static Triple::OSType parseOS(StringRef OSName) {
+@@ -654,6 +658,7 @@ static Triple::OSType parseOS(StringRef OSName) {
      .StartsWith("linux", Triple::Linux)
      .StartsWith("lv2", Triple::Lv2)
      .StartsWith("macos", Triple::MacOSX)
@@ -135,7 +135,7 @@ index b271f29d26..656f06f011 100644
      .StartsWith("netbsd", Triple::NetBSD)
      .StartsWith("openbsd", Triple::OpenBSD)
      .StartsWith("solaris", Triple::Solaris)
-@@ -740,6 +743,7 @@ static Triple::EnvironmentType parseEnvironment(StringRef EnvironmentName) {
+@@ -737,6 +742,7 @@ static Triple::EnvironmentType parseEnvironment(StringRef EnvironmentName) {
        .StartsWith("opencl", Triple::OpenCL)
        .StartsWith("ohos", Triple::OpenHOS)
        .StartsWith("pauthtest", Triple::PAuthTest)
@@ -144,12 +144,12 @@ index b271f29d26..656f06f011 100644
  }
  
 diff --git a/llvm/unittests/TargetParser/TripleTest.cpp b/llvm/unittests/TargetParser/TripleTest.cpp
-index cb2fa95d43..32ddd148dc 100644
+index ae5df4621..232b1f3b6 100644
 --- a/llvm/unittests/TargetParser/TripleTest.cpp
 +++ b/llvm/unittests/TargetParser/TripleTest.cpp
-@@ -1341,6 +1341,24 @@ TEST(TripleTest, ParsedIDs) {
-   EXPECT_TRUE(T.isTime64ABI());
-   EXPECT_TRUE(T.isHardFloatABI());
+@@ -570,6 +570,24 @@ TEST(TripleTest, ParsedIDs) {
+   EXPECT_EQ(Triple::UnknownEnvironment, T.getEnvironment());
+   EXPECT_EQ(Triple::COFF, T.getObjectFormat());
  
 +  T = Triple("aarch64-unknown-managarm-mlibc");
 +  EXPECT_EQ(Triple::aarch64, T.getArch());
@@ -169,9 +169,9 @@ index cb2fa95d43..32ddd148dc 100644
 +  EXPECT_EQ(Triple::Managarm, T.getOS());
 +  EXPECT_EQ(Triple::Mlibc, T.getEnvironment());
 +
-   T = Triple("huh");
-   EXPECT_EQ(Triple::UnknownArch, T.getArch());
- }
+   T = Triple("wasm32-unknown-unknown");
+   EXPECT_EQ(Triple::wasm32, T.getArch());
+   EXPECT_EQ(Triple::UnknownVendor, T.getVendor());
 -- 
-2.47.0
+2.48.1
 

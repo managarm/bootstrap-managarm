@@ -16,7 +16,10 @@ nix = { path = "@SOURCE_ROOT@/ports/rust-nix" }
 num_cpus = { path = "@SOURCE_ROOT@/ports/rust-num-cpus" }
 users = { path = "@SOURCE_ROOT@/ports/rust-users" }
 winit = { path = "@SOURCE_ROOT@/ports/rust-winit" }
+errno = { path = "@SOURCE_ROOT@/ports/rust-errno" }
 glutin = { path = "@SOURCE_ROOT@/ports/rust-glutin/glutin" }
 glutin_egl_sys = { path = "@SOURCE_ROOT@/ports/rust-glutin/glutin_egl_sys" }
 glutin_glx_sys = { path = "@SOURCE_ROOT@/ports/rust-glutin/glutin_glx_sys" }
 shared_library = { path = "@SOURCE_ROOT@/ports/rust-shared-library" }
+getrandom-02 = { path = "@SOURCE_ROOT@/ports/rust-getrandom-0.2", package = "getrandom" }
+getrandom-03 = { path = "@SOURCE_ROOT@/ports/rust-getrandom-0.3", package = "getrandom" }

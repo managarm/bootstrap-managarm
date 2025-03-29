@@ -1,4 +1,4 @@
-From 643e8df1c8d37019b31eabdb7be54c20623f73bf Mon Sep 17 00:00:00 2001
+From 674d3a6201cd973ca46bbb3e27ae84e99955e5bf Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Sun, 31 Mar 2024 15:48:04 +0200
 Subject: [PATCH 1/4] compiler: Add `x86_64-unknown-managarm-mlibc` target
@@ -7,9 +7,9 @@ Subject: [PATCH 1/4] compiler: Add `x86_64-unknown-managarm-mlibc` target
  .../src/spec/base/managarm_mlibc.rs           | 35 +++++++++++++++++++
  compiler/rustc_target/src/spec/base/mod.rs    |  1 +
  compiler/rustc_target/src/spec/mod.rs         |  2 ++
- .../targets/x86_64_unknown_managarm_mlibc.rs  | 19 ++++++++++
+ .../targets/x86_64_unknown_managarm_mlibc.rs  | 25 +++++++++++++
  src/tools/build-manifest/src/main.rs          |  1 +
- 5 files changed, 58 insertions(+)
+ 5 files changed, 64 insertions(+)
  create mode 100644 compiler/rustc_target/src/spec/base/managarm_mlibc.rs
  create mode 100644 compiler/rustc_target/src/spec/targets/x86_64_unknown_managarm_mlibc.rs
 
@@ -55,7 +55,7 @@ index 00000000..b694a946
 +    }
 +}
 diff --git a/compiler/rustc_target/src/spec/base/mod.rs b/compiler/rustc_target/src/spec/base/mod.rs
-index d137aaa5..c32dc591 100644
+index 28d10dcf..6cfb67d9 100644
 --- a/compiler/rustc_target/src/spec/base/mod.rs
 +++ b/compiler/rustc_target/src/spec/base/mod.rs
 @@ -17,6 +17,7 @@
@@ -67,11 +67,11 @@ index d137aaa5..c32dc591 100644
  pub(crate) mod netbsd;
  pub(crate) mod nto_qnx;
 diff --git a/compiler/rustc_target/src/spec/mod.rs b/compiler/rustc_target/src/spec/mod.rs
-index 6c698c5b..ace18ec1 100644
+index 02962d55..9f6008b3 100644
 --- a/compiler/rustc_target/src/spec/mod.rs
 +++ b/compiler/rustc_target/src/spec/mod.rs
-@@ -1521,6 +1521,8 @@ fn $module() {
-     ("aarch64-unknown-redox", aarch64_unknown_redox),
+@@ -1773,6 +1773,8 @@ fn $module() {
+     ("i686-unknown-redox", i686_unknown_redox),
      ("x86_64-unknown-redox", x86_64_unknown_redox),
  
 +    ("x86_64-unknown-managarm-mlibc", x86_64_unknown_managarm_mlibc),
@@ -81,13 +81,13 @@ index 6c698c5b..ace18ec1 100644
      ("aarch64-apple-ios", aarch64_apple_ios),
 diff --git a/compiler/rustc_target/src/spec/targets/x86_64_unknown_managarm_mlibc.rs b/compiler/rustc_target/src/spec/targets/x86_64_unknown_managarm_mlibc.rs
 new file mode 100644
-index 00000000..f0f7a069
+index 00000000..27763954
 --- /dev/null
 +++ b/compiler/rustc_target/src/spec/targets/x86_64_unknown_managarm_mlibc.rs
-@@ -0,0 +1,19 @@
+@@ -0,0 +1,25 @@
 +use crate::spec::{base, Cc, LinkerFlavor, Lld, StackProbeType, Target};
 +
-+pub fn target() -> Target {
++pub(crate) fn target() -> Target {
 +    let mut base = base::managarm_mlibc::opts();
 +    base.cpu = "x86-64".to_string().into();
 +    base.max_atomic_width = Some(64);
@@ -97,6 +97,12 @@ index 00000000..f0f7a069
 +
 +    Target {
 +        llvm_target: "x86_64-unknown-managarm-mlibc".to_string().into(),
++        metadata: crate::spec::TargetMetadata {
++            description: Some("managarm/amd64".into()),
++            tier: Some(3),
++            host_tools: Some(true),
++            std: Some(true),
++        },
 +        pointer_width: 64,
 +        data_layout: "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128"
 +            .to_string().into(),
@@ -105,17 +111,17 @@ index 00000000..f0f7a069
 +    }
 +}
 diff --git a/src/tools/build-manifest/src/main.rs b/src/tools/build-manifest/src/main.rs
-index 1ef8cf7d..7d9b3d0a 100644
+index 561b6111..2392023f 100644
 --- a/src/tools/build-manifest/src/main.rs
 +++ b/src/tools/build-manifest/src/main.rs
-@@ -160,6 +160,7 @@
-     "x86_64-unknown-linux-gnu",
-     "x86_64-unknown-linux-gnux32",
-     "x86_64-unknown-linux-musl",
-+    "x86_64-unknown-managarm-mlibc",
-     "x86_64-unknown-netbsd",
-     "x86_64-unknown-none",
+@@ -185,6 +185,7 @@
      "x86_64-unknown-redox",
+     "x86_64-unknown-hermit",
+     "x86_64-unknown-uefi",
++    "x86_64-unknown-managarm-mlibc",
+ ];
+ 
+ /// This allows the manifest to contain rust-docs for hosts that don't build
 -- 
-2.44.0
+2.48.1
 

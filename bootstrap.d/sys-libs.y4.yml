@@ -2,8 +2,8 @@ sources:
   - name: rust-libc
     subdir: 'ports'
     git: 'https://github.com/rust-lang/libc.git'
-    tag: '0.2.153'
-    version: '0.2.153'
+    tag: '0.2.171'
+    version: '0.2.171'
 
   - name: rust-num-cpus
     subdir: 'ports'
@@ -29,11 +29,17 @@ sources:
     tag: 'v0.10.0'
     version: '0.10.0'
 
-  - name: rust-getrandom
+  - name: rust-getrandom-0.2
     subdir: 'ports'
     git: 'https://github.com/rust-random/getrandom.git'
-    tag: 'v0.2.9'
-    version: '0.2.9'
+    tag: 'v0.2.15'
+    version: '0.2.15'
+
+  - name: rust-getrandom-0.3
+    subdir: 'ports'
+    git: 'https://github.com/rust-random/getrandom.git'
+    tag: 'v0.3.2'
+    version: '0.3.2'
 
   - name: rust-libloading
     subdir: 'ports'
@@ -78,6 +84,12 @@ sources:
     branch: 'master'
     version: '0.1.9'
 
+  - name: rust-errno
+    subdir: 'ports'
+    git: 'https://github.com/lambda-fairy/rust-errno.git'
+    tag: 'v0.3.10'
+    version: '0.3.10'
+
   - name: rust-patched-libs
     subdir: 'ports'
     sources_required:
@@ -85,7 +97,9 @@ sources:
         recursive: true
       - name: rust-calloop
         recursive: true
-      - name: rust-getrandom
+      - name: rust-getrandom-0.2
+        recursive: true
+      - name: rust-getrandom-0.3
         recursive: true
       - name: rust-libc
         recursive: true
@@ -106,6 +120,8 @@ sources:
       - name: rust-glutin
         recursive: true
       - name: rust-shared-library
+        recursive: true
+      - name: rust-errno
         recursive: true
 
 packages:

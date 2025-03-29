@@ -1,4 +1,4 @@
-From d2a16d97d256e44cdd5cbad17e2c1c117328cb53 Mon Sep 17 00:00:00 2001
+From f104332eb9ef226d61ffdf9f980ea8d2ea566ae9 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Mon, 1 Apr 2024 12:45:22 +0200
 Subject: [PATCH 4/4] doc: Add `*-unknown-managarm-mlibc` documentation
@@ -11,29 +11,29 @@ Subject: [PATCH 4/4] doc: Add `*-unknown-managarm-mlibc` documentation
  create mode 100644 src/doc/rustc/src/platform-support/managarm.md
 
 diff --git a/src/doc/rustc/src/SUMMARY.md b/src/doc/rustc/src/SUMMARY.md
-index 1998b008..fe7b219a 100644
+index f0c3720e..820f96a7 100644
 --- a/src/doc/rustc/src/SUMMARY.md
 +++ b/src/doc/rustc/src/SUMMARY.md
-@@ -55,6 +55,7 @@
-     - [\*-nto-qnx-\*](platform-support/nto-qnx.md)
+@@ -83,6 +83,7 @@
      - [*-unikraft-linux-musl](platform-support/unikraft-linux-musl.md)
      - [*-unknown-hermit](platform-support/hermit.md)
+     - [*-unknown-freebsd](platform-support/freebsd.md)
 +    - [\*-unknown-managarm-mlibc](platform-support/managarm.md)
      - [\*-unknown-netbsd\*](platform-support/netbsd.md)
      - [*-unknown-openbsd](platform-support/openbsd.md)
-     - [\*-unknown-uefi](platform-support/unknown-uefi.md)
+     - [*-unknown-redox](platform-support/redox.md)
 diff --git a/src/doc/rustc/src/platform-support.md b/src/doc/rustc/src/platform-support.md
-index f648a60b..3fcb98fc 100644
+index 24e9a3c8..1f934e89 100644
 --- a/src/doc/rustc/src/platform-support.md
 +++ b/src/doc/rustc/src/platform-support.md
-@@ -373,6 +373,7 @@ target | std | host | notes
- [`x86_64-unknown-hermit`](platform-support/hermit.md) | ✓ |  | x86_64 Hermit
- `x86_64-unknown-l4re-uclibc` | ? |  |
- [`x86_64-unknown-linux-ohos`](platform-support/openharmony.md) | ✓ |  | x86_64 OpenHarmony |
-+[`x86_64-unknown-managarm-mlibc`](platform-support/managarm.md) |   |   | x86_64 managarm
- [`x86_64-unknown-openbsd`](platform-support/openbsd.md) | ✓ | ✓ | 64-bit OpenBSD
- `x86_64-uwp-windows-gnu` | ✓ |  |
+@@ -409,6 +409,7 @@ target | std | host | notes
  `x86_64-uwp-windows-msvc` | ✓ |  |
+ [`x86_64-win7-windows-msvc`](platform-support/win7-windows-msvc.md) | ✓ |   | 64-bit Windows 7 support
+ [`x86_64-wrs-vxworks`](platform-support/vxworks.md) | ✓ |  |
++[`x86_64-unknown-managarm-mlibc`](platform-support/managarm.md) | * | ? | x86_64 managarm
+ [`x86_64h-apple-darwin`](platform-support/x86_64h-apple-darwin.md) | ✓ | ✓ | macOS with late-gen Intel (at least Haswell)
+ [`xtensa-esp32-espidf`](platform-support/esp-idf.md) | ✓ |  | Xtensa ESP32
+ [`xtensa-esp32-none-elf`](platform-support/xtensa.md) | * |  | Xtensa ESP32
 diff --git a/src/doc/rustc/src/platform-support/managarm.md b/src/doc/rustc/src/platform-support/managarm.md
 new file mode 100644
 index 00000000..79cbdbb3
@@ -94,5 +94,5 @@ index 00000000..79cbdbb3
 +
 +This target does not support running the Rust testsuite yet.
 -- 
-2.44.0
+2.48.1
 
