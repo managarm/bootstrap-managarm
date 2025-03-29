@@ -942,7 +942,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: ripgrep
-    stability_level: 'broken' # Rust updates?
     architecture: '@OPTION:arch@'
     metadata:
       summary: a search tool that combines the usability of ag with the raw speed of grep
@@ -954,15 +953,15 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/BurntSushi/ripgrep.git'
-      tag: '12.1.1'
-      version: '12.1.1'
+      tag: '14.1.1'
+      version: '14.1.1'
     tools_required:
       - host-cargo
     sources_required:
       - rust-patched-libs
     pkgs_required:
       - mlibc
-    revision: 12
+    revision: 1
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
         isolate_network: false
