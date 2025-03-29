@@ -84,6 +84,12 @@ sources:
     branch: 'master'
     version: '0.1.9'
 
+  - name: rust-errno
+    subdir: 'ports'
+    git: 'https://github.com/lambda-fairy/rust-errno.git'
+    tag: 'v0.3.10'
+    version: '0.3.10'
+
   - name: rust-patched-libs
     subdir: 'ports'
     sources_required:
@@ -114,6 +120,8 @@ sources:
       - name: rust-glutin
         recursive: true
       - name: rust-shared-library
+        recursive: true
+      - name: rust-errno
         recursive: true
 
 packages:

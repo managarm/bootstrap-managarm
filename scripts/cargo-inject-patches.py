@@ -20,6 +20,7 @@ patched_libs = {
     "glutin_glx_sys": "0.1.7",
     "glutin_egl_sys": "0.1.5",
     "shared_library": "0.1.9",
+    "errno": "0.3.10",
 }
 
 parser = argparse.ArgumentParser(description="Inject patched Rust libraries into Cargo lockfiles")
