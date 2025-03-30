@@ -113,6 +113,49 @@ packages:
       - args: ['cp', '@THIS_BUILD_DIR@/services', '@THIS_COLLECT_DIR@/etc/']
       - args: ['cp', '@THIS_BUILD_DIR@/protocols', '@THIS_COLLECT_DIR@/etc/']
 
+  - name: iperf3
+    labels: [aarch64, riscv64]
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: iperf is a tool for active measurements of the maximum achievable bandwidth on IP networks.
+      description: iperf is a tool for active measurements of the maximum achievable bandwidth on IP networks. It supports tuning of various parameters related to timing, protocols, and buffers. For each test it reports the measured throughput / bitrate, loss, and other parameters.
+      spdx: 'BSD-3-Clause'
+      website: 'https://iperf.fr'
+      maintainer: "no92 <leo@managarm.org>"
+      categories: ['net-misc']
+    source:
+      subdir: ports
+      git: https://github.com/esnet/iperf.git
+      tag: '3.18'
+      version: '3.18'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+      regenerate:
+        - args: ['cp',
+            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
+            '@THIS_SOURCE_DIR@/config/']
+        - args: ['cp',
+            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.guess',
+            '@THIS_SOURCE_DIR@/config/']
+        - args: ['./bootstrap.sh']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+    revision: 1
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: iputils
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
