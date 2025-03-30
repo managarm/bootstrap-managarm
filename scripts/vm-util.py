@@ -104,7 +104,10 @@ def qemu_parse_device_spec(yml):
 
         if devtype == 'pci-bridge':
             qemu_pci_bridges += 1
-            args += ['-device', f"pci-bridge,id={yml['name']},chassis_nr={qemu_pci_bridges}"]
+            properties = f"pci-bridge,id={yml['name']},chassis_nr={qemu_pci_bridges}"
+            if bus_id:
+                properties += f',bus={bus_id}'
+            args += ['-device', properties]
 
             for i, device in enumerate(yml.get('devices', [])):
                 args += parse_device(device, bus_id=yml['name'], device_id=i)
@@ -122,6 +125,21 @@ def qemu_parse_device_spec(yml):
                 args += ['-device', properties]
         elif devtype == 'pci-device':
             args += ['-device', f"vfio-pci,host={yml['host']},id={yml['name']}"]
+        elif devtype == 'ehci':
+            properties = f"usb-ehci,id={yml['name']}"
+            if bus_id:
+                properties += f',bus={bus_id}'
+            args += ['-device', properties]
+        elif devtype == 'xhci':
+            properties = f"qemu-xhci,id={yml['name']}"
+            if bus_id:
+                properties += f',bus={bus_id}'
+            args += ['-device', properties]
+        elif devtype == 'uhci':
+            properties = f"piix3-usb-uhci,id={yml['name']}"
+            if bus_id:
+                properties += f',bus={bus_id}'
+            args += ['-device', properties]
         else:
             print(f"error: unsupported device-spec device kind {devtype}")
             sys.exit(1)
@@ -518,6 +536,12 @@ def do_qemu(args):
             content = file.read()
             if not "umip" in content:
                 cpu_extras = ["-umip"]
+        if args.iommu:
+            qemu_args += ["-device", "intel-iommu,intremap=on"]
+            qemu_args += ["-M", "q35,kernel-irqchip=split"]
+            qemu_args += ["-nodefaults"]
+            if args.iommu_trace:
+                qemu_args += ["--trace", "vtd*"]
     elif args.arch == "aarch64":
         if not have_kvm or args.virtual_cpu:
             cpu_model = "cortex-a72"
@@ -595,14 +619,15 @@ timeout: 0
         qemu_args += ["-device", "isa-debugcon,iobase=0x402,chardev=ovmf-logs"]
 
     # Add USB HCDs.
-    qemu_args += [
-        "-device",
-        "piix3-usb-uhci,id=uhci",
-        "-device",
-        "usb-ehci,id=ehci",
-        "-device",
-        "qemu-xhci,id=xhci",
-    ]
+    if not args.inhibit_usb:
+        qemu_args += [
+            "-device",
+            "piix3-usb-uhci,id=uhci",
+            "-device",
+            "usb-ehci,id=ehci",
+            "-device",
+            "qemu-xhci,id=xhci",
+        ]
 
     # Add the boot medium.
     qemu_args += ["-drive", "id=boot-drive,file=image,format=raw,if=none"]
@@ -628,9 +653,10 @@ timeout: 0
         qemu_args += ["-device", "nvme,serial=deadbeef,drive=boot-drive"]
     elif args.boot_drive == "nvme-of":
         tftp_dir = setup_tftp_directory()
-    else:
-        assert args.boot_drive == "ide"
+    elif args.boot_drive == "ide":
         qemu_args += ["-device", "ide-hd,drive=boot-drive,bus=ide.0"]
+    else:
+        assert args.boot_drive == "none"
 
     # Add networking.
     netdev_extra = ""
@@ -803,7 +829,7 @@ qemu_parser.add_argument("--no-smp", action="store_true")
 qemu_parser.add_argument("--virtual-boot", action="store_true")
 qemu_parser.add_argument(
     "--boot-drive",
-    choices=["virtio", "virtio-legacy", "ahci", "usb", "ide", "nvme", "nvme-of"],
+    choices=["virtio", "virtio-legacy", "ahci", "usb", "ide", "nvme", "nvme-of", "none"],
     default="virtio",
 )
 qemu_parser.add_argument("--net-bridge", action="store_true")
@@ -827,6 +853,9 @@ qemu_parser.add_argument("--timeout", type=int)
 qemu_parser.add_argument("--io-timeout", type=int)
 qemu_parser.add_argument("--expect", action="append")
 qemu_parser.add_argument("--expect-not", action="append")
+qemu_parser.add_argument("--inhibit-usb", action="store_true")
+qemu_parser.add_argument("--iommu", action="store_true")
+qemu_parser.add_argument("--iommu-trace", action="store_true")
 
 # ---------------------------------------------------------------------------------------
 # gdb subcommand.
@@ -1034,6 +1063,36 @@ wol_parser = main_subparsers.add_parser("wol")
 wol_parser.add_argument("interface", nargs='?', type=str)
 wol_parser.add_argument("target", type=str)
 wol_parser.set_defaults(_fn=do_wol)
+
+# ---------------------------------------------------------------------------------------
+# vfio subcommand.
+# ---------------------------------------------------------------------------------------
+
+def do_vfio(args):
+    sysfs_path = pathlib.Path(f"/sys/bus/pci/devices/{args.device}")
+    if not sysfs_path.exists():
+        print(f"Device {args.device} not found")
+        sys.exit(1)
+
+    if (sysfs_path / "driver").exists():
+        with open(sysfs_path / "driver/unbind", "w") as f:
+            f.write(args.device)
+
+    with open(sysfs_path / "vendor", "r") as f: vendor = int(f.read().strip(), 16)
+    with open(sysfs_path / "device", "r") as f: device = int(f.read().strip(), 16)
+
+    try:
+        with open("/sys/bus/pci/drivers/vfio-pci/new_id", "w") as f:
+            f.write(f"{vendor:x} {device:x}")
+    except FileExistsError:
+        pass
+
+    with open("/sys/bus/pci/drivers/vfio-pci/bind", "w") as f:
+        f.write(args.device)
+
+vfio_parser = main_subparsers.add_parser("vfio")
+vfio_parser.add_argument("device", type=str)
+vfio_parser.set_defaults(_fn=do_vfio)
 
 # ---------------------------------------------------------------------------------------
 # "main()" code.
