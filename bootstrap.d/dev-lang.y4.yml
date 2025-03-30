@@ -64,7 +64,7 @@ tools:
       - host-llvm-toolchain
       - host-python
       - host-libffi
-    revision: 1
+    revision: 2
     compile:
       - args: |
             cat << EOF > config.toml
@@ -93,14 +93,14 @@ tools:
             [target.x86_64-unknown-managarm-mlibc]
             llvm-config = "@BUILD_ROOT@/tools/host-llvm-toolchain/bin/llvm-config"
             EOF
-      - args: ['python3', '@THIS_SOURCE_DIR@/x.py', 'build', '--stage', '2', '-j', '@PARALLELISM@']
+      - args: ['python3', '@THIS_SOURCE_DIR@/x.py', 'build', 'clippy', '--stage', '2', '-j', '@PARALLELISM@']
         cargo_home: false
         environ:
           CARGO_HOME: '@THIS_BUILD_DIR@/cargo-home'
           BOOTSTRAP_SKIP_TARGET_SANITY: '1'
         isolate_network: false
     install:
-      - args: ['python3', '@THIS_SOURCE_DIR@/x.py', 'install', '-j', '@PARALLELISM@']
+      - args: ['python3', '@THIS_SOURCE_DIR@/x.py', 'install', 'clippy', '-j', '@PARALLELISM@']
         cargo_home: false
         environ:
           CARGO_HOME: '@THIS_BUILD_DIR@/cargo-home'
