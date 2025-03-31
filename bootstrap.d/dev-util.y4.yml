@@ -39,7 +39,7 @@ tools:
       - args: ['make', '-j@PARALLELISM@']
     install:
       - args: ['make', 'install']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/scripts/managarm.cmake', '@PREFIX@/share/cmake-3.26/Modules/Platform/']
+      - args: ['ln', '-sf', '@SOURCE_ROOT@/scripts/managarm.cmake', '@PREFIX@/share/cmake-4.0/Modules/Platform/']
 
   - name: host-lxqt-build-tools
     architecture: noarch
