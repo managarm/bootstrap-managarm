@@ -221,8 +221,8 @@ packages:
     source:
       subdir: ports
       git: 'https://git.savannah.gnu.org/git/gdbm.git'
-      tag: 'v1.24'
-      version: '1.24'
+      tag: 'v1.25'
+      version: '1.25'
       tools_required:
         - host-autoconf-v2.71
         - host-automake-v1.16
@@ -235,7 +235,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
