@@ -2006,8 +2006,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.gnome.org/GNOME/pango.git'
-      tag: '1.51.1'
-      version: '1.51.1'
+      tag: '1.56.3'
+      version: '1.56.3'
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -2038,10 +2038,11 @@ packages:
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
-    revision: 6
+    revision: 1
     configure:
       - args:
         - 'meson'
+        - 'setup'
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
