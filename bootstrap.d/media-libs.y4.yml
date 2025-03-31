@@ -1172,7 +1172,7 @@ packages:
       - libvorbis
       - sqlite
       - alsa-lib
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1180,7 +1180,7 @@ packages:
         - '--prefix=/usr'
         - '--disable-static'
         - '--enable-shared'
-        - '--docdir=/usr/share/doc/libsndfile-1.2.0'
+        - '--docdir=/usr/share/doc/libsndfile-1.2.2'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
