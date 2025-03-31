@@ -1,4 +1,4 @@
-From 14775fec817c747227da3b9a7f574c22a754d85b Mon Sep 17 00:00:00 2001
+From a9f880255e400d482e27714307d38feb64ef5b18 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Sat, 23 Jan 2021 21:09:10 +0100
 Subject: [PATCH 3/3] Even more managarm-specific changes
@@ -8,10 +8,10 @@ Subject: [PATCH 3/3] Even more managarm-specific changes
  1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/xf86drm.c b/xf86drm.c
-index 4248ef2..929f6a1 100644
+index 3ab71f7..26fb8bc 100644
 --- a/xf86drm.c
 +++ b/xf86drm.c
-@@ -3333,7 +3333,7 @@ drm_public char *drmGetDeviceNameFromFd(int fd)
+@@ -3314,7 +3314,7 @@ drm_public char *drmGetDeviceNameFromFd(int fd)
  
  static bool drmNodeIsDRM(int maj, int min)
  {
@@ -20,7 +20,7 @@ index 4248ef2..929f6a1 100644
      char path[64];
      struct stat sbuf;
  
-@@ -3590,7 +3590,7 @@ sysfs_uevent_get(const char *path, const char *fmt, ...)
+@@ -3571,7 +3571,7 @@ sysfs_uevent_get(const char *path, const char *fmt, ...)
  /* Little white lie to avoid major rework of the existing code */
  #define DRM_BUS_VIRTIO 0x10
  
@@ -29,7 +29,7 @@ index 4248ef2..929f6a1 100644
  static int get_subsystem_type(const char *device_path)
  {
      char path[PATH_MAX + 1] = "";
-@@ -3656,7 +3656,7 @@ static int drmParseSubsystemType(int maj, int min)
+@@ -3637,7 +3637,7 @@ static int drmParseSubsystemType(int maj, int min)
  #endif
  }
  
@@ -38,7 +38,7 @@ index 4248ef2..929f6a1 100644
  static void
  get_pci_path(int maj, int min, char *pci_path)
  {
-@@ -4147,7 +4147,7 @@ free_device:
+@@ -4121,7 +4121,7 @@ free_device:
      return ret;
  }
  
@@ -47,7 +47,7 @@ index 4248ef2..929f6a1 100644
  static int drm_usb_dev_path(int maj, int min, char *path, size_t len)
  {
      char *value, *tmp_path, *slash;
-@@ -4305,7 +4305,7 @@ free_device:
+@@ -4279,7 +4279,7 @@ free_device:
  
  static int drmParseOFBusInfo(int maj, int min, char *fullname)
  {
@@ -56,7 +56,7 @@ index 4248ef2..929f6a1 100644
      char path[PATH_MAX + 1], *name, *tmp_name;
  
      snprintf(path, sizeof(path), "/sys/dev/char/%d:%d/device", maj, min);
-@@ -4340,7 +4340,7 @@ static int drmParseOFBusInfo(int maj, int min, char *fullname)
+@@ -4314,7 +4314,7 @@ static int drmParseOFBusInfo(int maj, int min, char *fullname)
  
  static int drmParseOFDeviceInfo(int maj, int min, char ***compatible)
  {
@@ -66,5 +66,5 @@ index 4248ef2..929f6a1 100644
      unsigned int count, i;
      int err;
 -- 
-2.40.1
+2.39.5
 

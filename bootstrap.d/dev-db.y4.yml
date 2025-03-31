@@ -10,17 +10,11 @@ packages:
       categories: ['dev-db']
     source:
       subdir: 'ports'
-      url: 'https://sqlite.org/2023/sqlite-autoconf-3430200.tar.gz'
+      url: 'https://sqlite.org/2025/sqlite-autoconf-3490100.tar.gz'
       format: 'tar.gz'
-      checksum: blake2b:109ef44851a27dea0c0ddde2c74f23607648fa701a6e00871eb4617445c71b14da02d47b4d1159e9a10b87ac2e6cbe306ac61d4cdac35754e8d0df86597d9f9a
-      extract_path: 'sqlite-autoconf-3430200'
-      version: '3.43.2'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
-        - host-libtool
-      regenerate:
-        - args: ['autoreconf', '-fvi']
+      checksum: blake2b:08f9379977b9a7962de5283cb532ecdd500e6e9b00d5e64e14e323777b47ea90e15745528d441328b7907060b7f594dc5054b327b471189477e595c0575c43a0
+      extract_path: 'sqlite-autoconf-3490100'
+      version: '3.49.1'
     tools_required:
       - system-gcc
       - host-libtool
@@ -28,16 +22,16 @@ packages:
       - mlibc
       - readline
       - zlib
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--disable-static'
-        - '--enable-readline'
         - '--enable-fts5'
-        - 'CFLAGS=-g -O2 -DSQLITE_ENABLE_FTS3=1 -DSQLITE_ENABLE_FTS4=1 -DSQLITE_ENABLE_COLUMN_METADATA=1 -DSQLITE_ENABLE_UNLOCK_NOTIFY=1 -DSQLITE_ENABLE_DBSTAT_VTAB=1 -DSQLITE_SECURE_DELETE=1 -DSQLITE_ENABLE_FTS3_TOKENIZER=1'
+        - '--enable-fts4'
+        - 'CPPFLAGS=-DSQLITE_ENABLE_COLUMN_METADATA=1 -DSQLITE_ENABLE_UNLOCK_NOTIFY=1 -DSQLITE_ENABLE_DBSTAT_VTAB=1 -DSQLITE_SECURE_DELETE=1'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']

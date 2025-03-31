@@ -53,8 +53,8 @@ sources:
   - name: nss
     subdir: 'ports'
     git: 'https://github.com/nss-dev/nss.git'
-    tag: 'NSS_3_109_RTM'
-    version: '3.109.RTM'
+    tag: 'NSS_3_110_RTM'
+    version: '3.110.RTM'
 
   - name: wayland
     subdir: 'ports'
@@ -763,8 +763,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/libevdev/libevdev.git'
-      tag: 'libevdev-1.13.3'
-      version: '1.13.3'
+      tag: 'libevdev-1.13.4'
+      version: '1.13.4'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -845,8 +845,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/libexpat/libexpat.git'
-      tag: 'R_2_7_0'
-      version: '2.7.0'
+      tag: 'R_2_7_1'
+      version: '2.7.1'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -918,8 +918,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://dev.gnupg.org/source/libgcrypt.git'
-      tag: 'libgcrypt-1.10.3'
-      version: '1.10.3'
+      tag: 'libgcrypt-1.11.0'
+      version: '1.11.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -932,7 +932,7 @@ packages:
     pkgs_required:
       - mlibc
       - libgpg-error
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1002,7 +1002,6 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
-  # Updating to 1.47 broke libgcrypt, must be investigated
   - name: libgpg-error
     architecture: '@OPTION:arch@'
     metadata:
@@ -1015,8 +1014,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://dev.gnupg.org/source/libgpg-error.git'
-      tag: 'libgpg-error-1.45'
-      version: '1.45'
+      tag: 'libgpg-error-1.51'
+      version: '1.51'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1028,7 +1027,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 9
+    revision: 1
     configure:
       # libgpg-error does not know about managarm, teach it
       - args: ['cp', '-v', '@THIS_SOURCE_DIR@/src/syscfg/lock-obj-pub.x86_64-unknown-linux-gnu.h',
@@ -1039,6 +1038,8 @@ packages:
         - '--prefix=/usr'
         - '--disable-nls'
         - '--disable-doc'
+        - '--enable-threads'
+        - '--enable-install-gpg-error-config'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
@@ -1138,8 +1139,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/libinput/libinput.git'
-      tag: '1.24.0'
-      version: '1.24.0'
+      tag: '1.28.0'
+      version: '1.28.0'
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -1150,21 +1151,21 @@ packages:
       - systemd
       - libevdev
       - mtdev
-    revision: 8
+    revision: 1
     configure:
       - args:
-          - 'meson'
-          - 'setup'
-          - '--cross-file'
-          - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
-          - '--prefix=/usr'
-          - '--libdir=lib'
-          - '--buildtype=debugoptimized'
-          - '-Dlibwacom=false'
-          - '-Ddebug-gui=false'
-          - '-Dtests=false'
-          - '-Ddocumentation=false'
-          - '@THIS_SOURCE_DIR@'
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '-Dlibwacom=false'
+        - '-Ddebug-gui=false'
+        - '-Dtests=false'
+        - '-Ddocumentation=false'
+        - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
       - args: ['ninja', 'install']
@@ -1903,11 +1904,11 @@ packages:
       categories: ['dev-libs']
     source:
       subdir: 'ports'
-      url: 'https://ftp.gnu.org/gnu/mpfr/mpfr-4.2.1.tar.xz'
+      url: 'https://ftp.gnu.org/gnu/mpfr/mpfr-4.2.2.tar.xz'
       format: 'tar.xz'
-      checksum: blake2b:ad69f53bc910294647523e7613b18a683f1d0f3dd994168ab2a46b66d0371ffa9b8e7cb59495f898470aea69d343e83fc722f11babe4af7b3a12665a1e65860c
-      extract_path: 'mpfr-4.2.1'
-      version: '4.2.1'
+      checksum: blake2b:6bbf5658e70fbb673a3b65246a6bac708d1571aa6943c6742efd92f468ac71e6f0fe351b757f7133440ea312d9a5fc3549acd89d54f4d975c58bdc204d7b21ec
+      extract_path: 'mpfr-4.2.2'
+      version: '4.2.2'
       tools_required:
         - host-autoconf-archive
         - host-autoconf-v2.69
@@ -1916,16 +1917,11 @@ packages:
       regenerate:
         - args: ['autoreconf', '-v', '-f', '-i', '--warnings=all,error']
     tools_required:
-      - host-autoconf-archive
-      - host-autoconf-v2.69
-      - host-automake-v1.15
-      - host-libtool
       - system-gcc
-      - host-libtool
     pkgs_required:
       - mlibc
       - gmp
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1933,7 +1929,7 @@ packages:
         - '--prefix=/usr'
         - '--enable-static=no'
         - '--enable-shared=yes'
-        - '--docdir=/usr/share/doc/mpfr-4.2.1'
+        - '--docdir=/usr/share/doc/mpfr-4.2.2'
         - '--with-pic'
         environ:
           # MPFR's configuration script misdetects cross-compilations. Hence,
@@ -2444,11 +2440,11 @@ packages:
       categories: ['dev-libs']
     source:
       subdir: 'ports'
-      url: 'https://gitlab.freedesktop.org/wayland/wayland-protocols/-/releases/1.39/downloads/wayland-protocols-1.39.tar.xz'
-      checksum: 'blake2b:ca0350acdce8e2b3803ef4582576fd2db61228f54cebfa232ebbf85377a7201ceb9a96650c8940dc91c193681fa70a0fcb3d5fa9e541acfe77ae07448e998f9d'
-      extract_path: 'wayland-protocols-1.39'
+      url: 'https://gitlab.freedesktop.org/wayland/wayland-protocols/-/releases/1.42/downloads/wayland-protocols-1.42.tar.xz'
+      checksum: 'blake2b:7dc9cf43f82ee7522419327eaeaa36ebfe2a05f45687a2068951125af0de587d3a496bb2eb80f1e0afa96c960090d8d80ff7806117c578fb3771126fd2b8d65d'
+      extract_path: 'wayland-protocols-1.42'
       format: 'tar.xz'
-      version: '1.39'
+      version: '1.42'
     tools_required:
       - system-gcc
       - wayland-scanner

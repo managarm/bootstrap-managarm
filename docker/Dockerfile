@@ -79,6 +79,8 @@ RUN apt-get update \
 		libgmp-dev \
 		libmpc-dev \
 		libmpfr-dev \
+		# Used by host-sonnet
+		libhunspell-dev \
 		# Used by host-kio
 		libmount-dev \
 		# Used by cmake

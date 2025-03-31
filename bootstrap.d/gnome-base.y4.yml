@@ -15,8 +15,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.gnome.org/GNOME/gsettings-desktop-schemas.git'
-      tag: '42.0'
-      version: '42.0'
+      tag: '48.0'
+      version: '48.0'
     tools_required:
       - system-gcc
       - !managarm::arch_dep
@@ -32,12 +32,13 @@ packages:
     pkgs_required:
       - mlibc
       - glib
-    revision: 8
+    revision: 1
     configure:
       - args: |
               sed -i -r 's:"(/system):"/org/gnome\1:g' @THIS_SOURCE_DIR@/schemas/*.in
       - args:
         - 'meson'
+        - 'setup'
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'

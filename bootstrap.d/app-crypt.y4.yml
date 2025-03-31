@@ -6,8 +6,8 @@ sources:
   - name: qca
     subdir: 'ports'
     git: 'https://github.com/KDE/qca.git'
-    tag: 'v2.3.9'
-    version: '2.3.9'
+    tag: 'v2.3.10'
+    version: '2.3.10'
 
 tools:
   - name: host-qca
@@ -46,8 +46,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.gnome.org/GNOME/libsecret.git'
-      tag: '0.21.4'
-      version: '0.21.4'
+      tag: '0.21.7'
+      version: '0.21.7'
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -203,7 +203,7 @@ packages:
       - libgcrypt
       - nss
       - openssl
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'

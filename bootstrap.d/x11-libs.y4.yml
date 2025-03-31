@@ -22,8 +22,8 @@ sources:
   - name: libdrm
     subdir: 'ports'
     git: 'https://gitlab.freedesktop.org/mesa/drm'
-    tag: 'libdrm-2.4.115'
-    version: '2.4.115'
+    tag: 'libdrm-2.4.124'
+    version: '2.4.124'
 
 
 tools:
@@ -45,26 +45,22 @@ packages:
   - name: cairo
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: A vector graphics library with cross-device output support
+      description: This package contains a 2D graphics library with support for multiple output devices. Currently supported output targets include the X Window System, Win32, image buffers, PostScript, PDF and SVG. Experimental backends include OpenGL, Quartz and XCB file output. Cairo is designed to produce consistent output on all output media while taking advantage of display hardware acceleration when available (e.g. through the X Render Extension).
+      spdx: 'LGPL-2.1-only'
+      website: 'https://www.cairographics.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['x11-libs']
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/cairo/cairo.git'
-      tag: '1.17.6'
-      version: '1.17.6'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
-        - host-libtool
-        - host-pkg-config
-      regenerate:
-        - args: ['./autogen.sh']
-          environ:
-            'NOCONFIGURE': 'yes'
+      tag: '1.18.4'
+      version: '1.18.4'
     tools_required:
       - system-gcc
-      - host-autoconf-v2.69
-      - host-automake-v1.15
-      - host-libtool
-      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
       - freetype
@@ -77,26 +73,20 @@ packages:
       - mesa
       - libxrender
       - glib
-    revision: 10
+    revision: 1
     configure:
       - args:
-        # For now, we build without glesv2 backend as Weston prefers the image backend.
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--host=@OPTION:arch-triple@'
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
-        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
-        - '--enable-xlib-xcb'
-        - '--enable-xml'
-        - '--enable-tee'
-        - '--enable-gl'
-        environ:
-          # freetype-config does not support cross-compilation.
-          FREETYPE_CONFIG: 'no'
-          PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
-          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
+        - '--buildtype=release'
+        - '-Dxlib-xcb=enabled'
+        - '@THIS_SOURCE_DIR@'
     build:
-      - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'install']
+      - args: ['ninja']
+      - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
@@ -476,10 +466,11 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 9
+    revision: 1
     configure:
       - args:
         - 'meson'
+        - 'setup'
         - '--native-file'
         - '@SOURCE_ROOT@/scripts/meson.native-file'
         - '--cross-file'
@@ -2015,8 +2006,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.gnome.org/GNOME/pango.git'
-      tag: '1.51.1'
-      version: '1.51.1'
+      tag: '1.56.3'
+      version: '1.56.3'
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -2047,10 +2038,11 @@ packages:
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
-    revision: 6
+    revision: 1
     configure:
       - args:
         - 'meson'
+        - 'setup'
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
@@ -2087,39 +2079,39 @@ packages:
   - name: pixman
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Low-level pixel manipulation routines
+      description: This package contains a library that provides low-level pixel manipulation features such as image compositing and trapezoid rasterization.
+      spdx: 'MIT'
+      website: 'http://www.pixman.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['x11-libs']
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/pixman/pixman.git'
-      tag: 'pixman-0.42.2'
-      version: '0.42.2'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
-        - host-libtool
-        - host-pkg-config
-      regenerate:
-        - args: ['./autogen.sh']
-          environ:
-            'NOCONFIGURE': 'yes'
+      tag: 'pixman-0.44.2'
+      version: '0.44.2'
     tools_required:
-      - host-autoconf-v2.69
-      - host-automake-v1.15
-      - host-libtool
-      - host-pkg-config
       - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
       - libpng
-    revision: 7
+    revision: 1
     configure:
       - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--host=@OPTION:arch-triple@'
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
-        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
+        - '--buildtype=release'
+        - '--wrap-mode=nofallback'
+        - '@THIS_SOURCE_DIR@'
     build:
-      - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'install']
+      - args: ['ninja']
+      - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true

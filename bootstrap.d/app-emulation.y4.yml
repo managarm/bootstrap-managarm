@@ -2,12 +2,12 @@ sources:
   - name: qemu
     subdir: 'ports'
     git: 'https://github.com/qemu/qemu.git'
-    tag: 'v9.2.0'
-    version: '9.2.0'
+    tag: 'v9.2.3'
+    version: '9.2.3'
 
 tools:
   - name: host-qemu
-    labels: [aarch64,  riscv64, not-on-xbbs]
+    labels: [aarch64, riscv64, not-on-xbbs]
     architecture: noarch
     containerless: true
     from_source: qemu
@@ -59,6 +59,11 @@ packages:
       - pixman
       - ncurses
       - nettle
+      - libtasn
+      - gnutls
+      - libgcrypt
+      - libusb
+      - curl
     revision: 1
     configure:
       - args:
@@ -69,6 +74,7 @@ packages:
         - '--target-list=i386-softmmu,x86_64-softmmu,aarch64-softmmu,riscv32-softmmu,riscv64-softmmu'
         - '--disable-slirp'
         - '--with-coroutine=sigaltstack'
+        - '--disable-auth-pam'
         isolate_network: false
         environ:
           PKG_CONFIG_LIBDIR: '@SYSROOT_DIR@/usr/lib/pkgconfig:@SYSROOT_DIR@/usr/share/pkgconfig'

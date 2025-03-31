@@ -322,8 +322,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/WebPlatformForEmbedded/libwpe.git'
-      tag: '1.14.1'
-      version: '1.14.1'
+      tag: '1.16.2'
+      version: '1.16.2'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -333,7 +333,7 @@ packages:
       - mlibc
       - mesa
       - libxkbcommon
-    revision: 5
+    revision: 1
     configure:
       - args:
         - 'meson'
@@ -364,8 +364,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/wlroots/wlroots/'
-      tag: '0.17.2'
-      version: '0.17.2'
+      tag: '0.18.2'
+      version: '0.18.2'
     tools_required:
       - system-gcc
       - host-libtool
@@ -392,7 +392,9 @@ packages:
       - xcb-util-image
       - xcb-util-wm
       - xwayland
-    revision: 4
+      - hwdata
+      - mesa
+    revision: 1
     configure:
       - args: 'sed -i s#{XBSTRAP_SYSTEM_ROOT}#@SYSROOT_DIR@# @THIS_SOURCE_DIR@/xwayland/meson.build'
       - args:
@@ -426,8 +428,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/Igalia/WPEBackend-fdo.git'
-      tag: '1.14.2'
-      version: '1.14.2'
+      tag: '1.16.0'
+      version: '1.16.0'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -441,7 +443,7 @@ packages:
       - wayland
       - libepoxy
       - glib
-    revision: 5
+    revision: 1
     configure:
       - args:
         - 'meson'

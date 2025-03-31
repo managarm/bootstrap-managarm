@@ -52,8 +52,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/xiph/flac.git'
-      tag: '1.4.3'
-      version: '1.4.3'
+      tag: '1.5.0'
+      version: '1.5.0'
     tools_required:
       - host-cmake
       - system-gcc
@@ -62,7 +62,7 @@ packages:
       - nasm
       - libogg
       - libiconv
-    revision: 5
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -83,14 +83,21 @@ packages:
   - name: fontconfig
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: A library for configuring and customizing font access
+      description: This package contains a library and support programs used for configuring and customizing font access.
+      spdx: 'MIT'
+      website: 'https://fontconfig.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/fontconfig/fontconfig'
-      tag: '2.14.2'
-      version: '2.14.2'
+      tag: '2.16.0'
+      version: '2.16.0'
       tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
+        - host-autoconf-v2.71
+        - host-automake-v1.16
         - host-libtool
         - host-pkg-config
       regenerate:
@@ -100,8 +107,8 @@ packages:
         # Make sure we regenerate this file
         - args: ['rm', '-f', 'src/fcobjshash.h']
     tools_required:
-      - host-autoconf-v2.69
-      - host-automake-v1.15
+      - host-autoconf-v2.71
+      - host-automake-v1.16
       - system-gcc
       - host-libtool
       - host-pkg-config
@@ -112,7 +119,7 @@ packages:
       - freetype
       - libxml
       - libiconv
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -123,6 +130,7 @@ packages:
         - '--disable-docs'
         - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
         - '--enable-libxml2'
+        - '--docdir=/usr/share/doc/fontconfig-2.16.0'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
@@ -131,11 +139,18 @@ packages:
 
   - name: freeglut
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: A free OpenGL utility toolkit, the open-sourced alternative to the GLUT library
+      description: Freeglut is intended to be a 100% compatible, completely opensourced clone of the GLUT library. GLUT is a window system independent toolkit for writing OpenGL programs, implementing a simple windowing API, which makes learning about and exploring OpenGL programming very easy.
+      spdx: 'MIT'
+      website: 'https://freeglut.sourceforge.net/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
     source:
       subdir: 'ports'
       git: 'https://github.com/FreeGLUTProject/freeglut.git'
-      tag: 'v3.4.0'
-      version: '3.4.0'
+      tag: 'v3.6.0'
+      version: '3.6.0'
     tools_required:
       - host-cmake
       - system-gcc
@@ -144,7 +159,7 @@ packages:
       - libxi
       - mesa
       - glu
-    revision: 6
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -154,6 +169,7 @@ packages:
         - '-DBUILD_SHARED_LIBS=ON'
         - '-DFREEGLUT_BUILD_DEMOS=OFF'
         - '-DFREEGLUT_BUILD_STATIC_LIBS=OFF'
+        - '-DCMAKE_POLICY_VERSION_MINIMUM=3.5' # CMake 4.0.0 removed compat with CMake < 3.5
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -164,11 +180,18 @@ packages:
   - name: freetype
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: High-quality and portable font engine
+      description: This package contains a library which allows applications to properly render TrueType fonts.
+      spdx: 'GPL-2.0-or-later'
+      website: 'https://www.freetype.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/freetype/freetype.git'
-      tag: 'VER-2-13-1'
-      version: '2.13.1'
+      tag: 'VER-2-13-3'
+      version: '2.13.3'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -182,6 +205,12 @@ packages:
         - args: ['cp',
             '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
             '@THIS_SOURCE_DIR@/builds/unix/']
+        # Enable GX/AAT and OpenType table validation
+        - args: |
+            sed -ri "s:.*(AUX_MODULES.*valid):\1:" @THIS_SOURCE_DIR@/modules.cfg
+        # Enable subpixel rendering
+        - args: |
+            sed -r "s:.*(#.*SUBPIXEL_RENDERING) .*:\1:" -i @THIS_SOURCE_DIR@/include/freetype/config/ftoption.h
     tools_required:
       - system-gcc
     pkgs_required:
@@ -189,7 +218,7 @@ packages:
       - bzip2
       - libpng
       - zlib
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -197,6 +226,7 @@ packages:
         - '--prefix=/usr'
         - '--disable-static'
         - '--with-harfbuzz=no'
+        - '--enable-freetype-config'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
@@ -383,11 +413,11 @@ packages:
       categories: ['media-libs']
     source:
       subdir: 'ports'
-      url: 'https://gstreamer.freedesktop.org/src/gst-plugins-bad/gst-plugins-bad-1.24.10.tar.xz'
+      url: 'https://gstreamer.freedesktop.org/src/gst-plugins-bad/gst-plugins-bad-1.26.0.tar.xz'
       format: 'tar.xz'
-      extract_path: 'gst-plugins-bad-1.24.10'
-      checksum: blake2b:928a79f10e93cad4bddfa1a8ce31ea2ea61e7e0424ed83789ed08c52d44665ce9da44a8b79c5f1b29cb69371ad220daafc741cf1c3bb3eababe0636dbd1b994d
-      version: '1.24.10'
+      extract_path: 'gst-plugins-bad-1.26.0'
+      checksum: blake2b:b8ffd8c7694c171f4e2bff88e37c0c63d5f58d04baa2a7bad4b526179ef630cc6909a8bef3479cdc5ee8c7c1f23f1c53f4a6f462799a0f940483116b407c12ae
+      version: '1.26.0'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -415,7 +445,7 @@ packages:
       - libmodplug
       - vulkan-headers
       - libusb
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'meson'
@@ -428,7 +458,7 @@ packages:
         - '--wrap-mode=nodownload'
         - '-Dgpl=enabled'
         - '-Dpackage-origin=https://managarm.org/'
-        - '-Dpackage-name="GStreamer 1.24.10 Managarm"'
+        - '-Dpackage-name="GStreamer 1.26.0 Managarm"'
         - '-Dopenh264=disabled'
         - '@THIS_SOURCE_DIR@'
     build:
@@ -448,11 +478,11 @@ packages:
       categories: ['media-libs']
     source:
       subdir: 'ports'
-      url: 'https://gstreamer.freedesktop.org/src/gst-plugins-base/gst-plugins-base-1.24.10.tar.xz'
+      url: 'https://gstreamer.freedesktop.org/src/gst-plugins-base/gst-plugins-base-1.26.0.tar.xz'
       format: 'tar.xz'
-      extract_path: 'gst-plugins-base-1.24.10'
-      checksum: blake2b:0935a21d344b7d1328d1958325c49d23dadddd5bb72b2639ed2598efd2a2d35a8bb322583c2e6b9865c9d4d922400abcd20512ef28c1de8e7f6c11369008e23c
-      version: '1.24.10'
+      extract_path: 'gst-plugins-base-1.26.0'
+      checksum: blake2b:7d9bbbaf24d981af2794e013ece6b69b9e973ea34a1517bbb550b7d3d7ae778a676f56a56a07a67a684af458af53350f591fe1a1eff5f570d147f3a0374b35b6
+      version: '1.26.0'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -497,7 +527,7 @@ packages:
         - '-Dorc=disabled'
         - '-Dexamples=disabled'
         - '-Dpackage-origin=https://managarm.org/'
-        - '-Dpackage-name="GStreamer 1.24.10 Managarm"'
+        - '-Dpackage-name="GStreamer 1.26.0 Managarm"'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -516,11 +546,11 @@ packages:
       categories: ['media-libs']
     source:
       subdir: 'ports'
-      url: 'https://gstreamer.freedesktop.org/src/gst-plugins-good/gst-plugins-good-1.24.10.tar.xz'
+      url: 'https://gstreamer.freedesktop.org/src/gst-plugins-good/gst-plugins-good-1.26.0.tar.xz'
       format: 'tar.xz'
-      extract_path: 'gst-plugins-good-1.24.10'
-      checksum: blake2b:7f860cebe757dccd46d3f37a6e88b20d616d2d754f00833d0805a81a07046a67e37b4c6a0b9ba12857142ad6f642db29eba795da4c7feabdf9ec836d13d95d9e
-      version: '1.24.10'
+      extract_path: 'gst-plugins-good-1.26.0'
+      checksum: blake2b:e10f51ed5c4cf9012a37ceaeb6e2c4835bc9d79c84b44fea3cbe6d0cb287f4f8f3af58ff6736d30e0900b3067b716ae83bf10923a1756f83bedc480e44d6bf2e
+      version: '1.26.0'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -555,7 +585,7 @@ packages:
         - '--buildtype=debugoptimized'
         - '--wrap-mode=nodownload'
         - '-Dpackage-origin=https://managarm.org/'
-        - '-Dpackage-name="GStreamer 1.24.10 Managarm"'
+        - '-Dpackage-name="GStreamer 1.26.0 Managarm"'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -574,11 +604,11 @@ packages:
       categories: ['media-libs']
     source:
       subdir: 'ports'
-      url: 'https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.24.10.tar.xz'
+      url: 'https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.26.0.tar.xz'
       format: 'tar.xz'
-      extract_path: 'gstreamer-1.24.10'
-      checksum: blake2b:77fac310664aefbbd35889b6c502d5e1af5b220cb22952d43b3ea1e025990ae10b6fd0199eb19ef965207a0bee748cf58432c6da6df08716b586e5882fa4a6a2
-      version: '1.24.10'
+      extract_path: 'gstreamer-1.26.0'
+      checksum: blake2b:48ac9eb40c3ae9644028d2f1135658cb6eb661870556edfb956023bc126a3d8077e5e030c0f3718a0f572a0ac8bcc2339cad8e74563cd0c10de7f9956bcba939
+      version: '1.26.0'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -610,7 +640,7 @@ packages:
         - '-Dgst_debug=false'
         - '-Dcheck=disabled'
         - '-Dpackage-origin=https://managarm.org/'
-        - '-Dpackage-name="GStreamer 1.24.10 Managarm"'
+        - '-Dpackage-name="GStreamer 1.26.0 Managarm"'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -621,11 +651,18 @@ packages:
   - name: harfbuzz
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: An OpenType text shaping engine
+      description: This package contains an OpenType text shaping engine.
+      spdx: 'ISC'
+      website: 'https://harfbuzz.github.io/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
     source:
       subdir: 'ports'
       git: 'https://github.com/harfbuzz/harfbuzz.git'
-      tag: '10.1.0'
-      version: '10.1.0'
+      tag: '11.0.0'
+      version: '11.0.0'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -650,7 +687,7 @@ packages:
       - !managarm::arch_dep
         item: gobject-introspection
         arch: [x86_64]
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'meson'
@@ -794,6 +831,13 @@ packages:
   - name: libepoxy
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Library for handling OpenGL function pointer management
+      description: libdisplay-info is a library for handling OpenGL function pointer management.
+      spdx: 'MIT'
+      website: 'https://github.com/anholt/libepoxy'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
     source:
       subdir: 'ports'
       git: 'https://github.com/anholt/libepoxy.git'
@@ -809,10 +853,11 @@ packages:
       - mesa
       - xorg-proto
       - libx11
-    revision: 8
+    revision: 9
     configure:
       - args:
           - 'meson'
+          - 'setup'
           - '--cross-file'
           - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
           - '--prefix=/usr'
@@ -827,6 +872,13 @@ packages:
   - name: libglvnd
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: The GL Vendor-Neutral Dispatch library
+      description: This package contains the GL Vendor-Neutral Dispatch library.
+      spdx: 'MIT'
+      website: 'https://gitlab.freedesktop.org/glvnd/libglvnd'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/glvnd/libglvnd.git'
@@ -841,10 +893,11 @@ packages:
       - mlibc
       - libx11
       - libxext
-    revision: 6
+    revision: 7
     configure:
       - args:
         - 'meson'
+        - 'setup'
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
@@ -909,16 +962,23 @@ packages:
 
   - name: libmodplug
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Library for playing MOD-like music files
+      description: This package contains a library for playing MOD-like music files.
+      spdx: 'public-domain'
+      website: 'https://modplug-xmms.sourceforge.net/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
     source:
       subdir: 'ports'
       git: 'https://github.com/Konstanty/libmodplug.git'
       # Check out current master
       branch: 'master'
-      commit: '5a39f5913d07ba3e61d8d5afdba00b70165da81d'
-      version: '0.8.9.0'
+      commit: 'd04fbc2eb2dddc9dd05fbcc29ab062f83a7a2a48'
+      version: '0.8.9.1'
       tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
+        - host-autoconf-v2.71
+        - host-automake-v1.16
         - host-libtool
         - host-pkg-config
       regenerate:
@@ -927,7 +987,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 9
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -941,6 +1001,13 @@ packages:
 
   - name: libogg
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: The Ogg media file format library
+      description: This package contains the Ogg file structure. This is useful for creating (encoding) or playing (decoding) a single physical bit stream.
+      spdx: 'BSD'
+      website: 'https://xiph.org/ogg/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
     source:
       subdir: 'ports'
       git: 'https://github.com/xiph/ogg.git'
@@ -959,7 +1026,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 10
+    revision: 11
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -975,6 +1042,13 @@ packages:
   - name: libpng
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Portable Network Graphics library
+      description: This package contains libraries used by other programs for reading and writing PNG files. The PNG format was designed as a replacement for GIF and, to a lesser extent, TIFF, with many improvements and extensions and lack of patent problems.
+      spdx: 'no-spdx: libpng'
+      website: 'http://www.libpng.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
     source:
       subdir: 'ports'
       url: 'https://downloads.sourceforge.net/libpng/libpng-1.6.44.tar.xz'
@@ -995,7 +1069,7 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1026,8 +1100,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.com/libtiff/libtiff.git'
-      tag: 'v4.6.0'
-      version: '4.6.0'
+      tag: 'v4.7.0'
+      version: '4.7.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1044,7 +1118,7 @@ packages:
       - zlib
       - zstd
       - xz-utils
-    revision: 5
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1052,7 +1126,7 @@ packages:
         - '--prefix=/usr'
         - '--disable-static'
         - '--enable-shared'
-        - '--with-docdir=/usr/share/doc/libtiff-4.6.0'
+        - '--with-docdir=/usr/share/doc/libtiff-4.7.0'
         - '--without-x'
         - '--enable-zlib'
         - '--enable-zstd'
@@ -1098,7 +1172,7 @@ packages:
       - libvorbis
       - sqlite
       - alsa-lib
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1106,7 +1180,7 @@ packages:
         - '--prefix=/usr'
         - '--disable-static'
         - '--enable-shared'
-        - '--docdir=/usr/share/doc/libsndfile-1.2.0'
+        - '--docdir=/usr/share/doc/libsndfile-1.2.2'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
@@ -1115,14 +1189,21 @@ packages:
 
   - name: libtheora
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: The Theora Video Compression Codec
+      description: This package contains the Theora Video Compression Codec.
+      spdx: 'BSD'
+      website: 'https://www.theora.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
     source:
       subdir: 'ports'
       git: 'https://github.com/xiph/theora.git'
-      tag: 'v1.1.1'
-      version: '1.1.1'
+      tag: 'v1.2.0'
+      version: '1.2.0'
       tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
+        - host-autoconf-v2.71
+        - host-automake-v1.16
         - host-libtool
         - host-pkg-config
       regenerate:
@@ -1133,7 +1214,7 @@ packages:
       - mlibc
       - libogg
       - libvorbis
-    revision: 10
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1156,6 +1237,13 @@ packages:
 
   - name: libvorbis
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: The Ogg Vorbis sound file format library
+      description: This package contains a general purpose audio and music encoding format. This is useful for creating (encoding) and playing (decoding) sound in an open (patent free) format.
+      spdx: 'BSD'
+      website: 'https://xiph.org/vorbis/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
     source:
       subdir: 'ports'
       git: 'https://github.com/xiph/vorbis.git'
@@ -1175,7 +1263,7 @@ packages:
     pkgs_required:
       - mlibc
       - libogg
-    revision: 10
+    revision: 11
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1200,14 +1288,14 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://chromium.googlesource.com/webm/libvpx.git'
-      tag: 'v1.13.1'
-      version: '1.13.1'
+      tag: 'v1.15.0'
+      version: '1.15.0'
     tools_required:
       - system-gcc
     pkgs_required:
       - mlibc
       - nasm
-    revision: 5
+    revision: 1
     configure:
       # Fix ownership and permission of installed files.
       - args: ['sed', '-i', 's/cp -p/cp/', '@THIS_SOURCE_DIR@/build/make/Makefile']
@@ -1244,8 +1332,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/webmproject/libwebp.git'
-      tag: 'v1.4.0'
-      version: '1.4.0'
+      tag: 'v1.5.0'
+      version: '1.5.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1262,6 +1350,7 @@ packages:
       - freeglut
       - sdl2
       - libtiff
+      - giflib
     revision: 1
     configure:
       - args:
@@ -1417,8 +1506,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.xiph.org/xiph/opus.git'
-      tag: 'v1.3.1'
-      version: '1.3.1'
+      tag: 'v1.5.2'
+      version: '1.5.2'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1426,17 +1515,18 @@ packages:
         - host-pkg-config
       regenerate:
         - args: ['./autogen.sh']
+          isolate_network: false
     tools_required:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 5
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
-        - '--docdir=/usr/share/doc/opus-1.3.1'
+        - '--docdir=/usr/share/doc/opus-1.5.2'
         - '--disable-static'
         - '--disable-intrinsics'
         - '--disable-doc'
