@@ -428,8 +428,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/Igalia/WPEBackend-fdo.git'
-      tag: '1.14.2'
-      version: '1.14.2'
+      tag: '1.16.0'
+      version: '1.16.0'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -443,7 +443,7 @@ packages:
       - wayland
       - libepoxy
       - glib
-    revision: 5
+    revision: 1
     configure:
       - args:
         - 'meson'
