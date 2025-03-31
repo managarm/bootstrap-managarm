@@ -1288,14 +1288,14 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://chromium.googlesource.com/webm/libvpx.git'
-      tag: 'v1.13.1'
-      version: '1.13.1'
+      tag: 'v1.15.0'
+      version: '1.15.0'
     tools_required:
       - system-gcc
     pkgs_required:
       - mlibc
       - nasm
-    revision: 5
+    revision: 1
     configure:
       # Fix ownership and permission of installed files.
       - args: ['sed', '-i', 's/cp -p/cp/', '@THIS_SOURCE_DIR@/build/make/Makefile']
