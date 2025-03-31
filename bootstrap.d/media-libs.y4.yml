@@ -1237,6 +1237,13 @@ packages:
 
   - name: libvorbis
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: The Ogg Vorbis sound file format library
+      description: This package contains a general purpose audio and music encoding format. This is useful for creating (encoding) and playing (decoding) sound in an open (patent free) format.
+      spdx: 'BSD'
+      website: 'https://xiph.org/vorbis/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
     source:
       subdir: 'ports'
       git: 'https://github.com/xiph/vorbis.git'
@@ -1256,7 +1263,7 @@ packages:
     pkgs_required:
       - mlibc
       - libogg
-    revision: 10
+    revision: 11
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
