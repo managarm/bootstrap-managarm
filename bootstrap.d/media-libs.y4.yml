@@ -872,6 +872,13 @@ packages:
   - name: libglvnd
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: The GL Vendor-Neutral Dispatch library
+      description: This package contains the GL Vendor-Neutral Dispatch library.
+      spdx: 'MIT'
+      website: 'https://gitlab.freedesktop.org/glvnd/libglvnd'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/glvnd/libglvnd.git'
@@ -886,10 +893,11 @@ packages:
       - mlibc
       - libx11
       - libxext
-    revision: 6
+    revision: 7
     configure:
       - args:
         - 'meson'
+        - 'setup'
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
