@@ -643,11 +643,18 @@ packages:
   - name: harfbuzz
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: An OpenType text shaping engine
+      description: This package contains an OpenType text shaping engine.
+      spdx: 'ISC'
+      website: 'https://harfbuzz.github.io/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
     source:
       subdir: 'ports'
       git: 'https://github.com/harfbuzz/harfbuzz.git'
-      tag: '10.1.0'
-      version: '10.1.0'
+      tag: '11.0.0'
+      version: '11.0.0'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -672,7 +679,7 @@ packages:
       - !managarm::arch_dep
         item: gobject-introspection
         arch: [x86_64]
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'meson'
