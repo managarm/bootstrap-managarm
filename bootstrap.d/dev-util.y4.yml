@@ -2,8 +2,8 @@ sources:
   - name: 'cmake'
     subdir: 'ports'
     git: 'https://gitlab.kitware.com/cmake/cmake.git'
-    tag: 'v3.26.4'
-    version: '3.26.4'
+    tag: 'v4.0.0'
+    version: '4.0.0'
 
   - name: ninja
     subdir: ports
@@ -161,7 +161,7 @@ packages:
       - xz-utils
       - zlib
       - zstd
-    revision: 6
+    revision: 1
     configure:
       - args: ['sed', '-i', '/"lib64"/s/64//', '@THIS_SOURCE_DIR@/Modules/GNUInstallDirs.cmake']
       - args: ['cp', '-f', '@SOURCE_ROOT@/scripts/managarm.cmake', '@THIS_SOURCE_DIR@/Modules/Platform/']
@@ -170,10 +170,11 @@ packages:
         - '--prefix=/usr'
         - '--system-libs'
         - '--mandir=/usr/share/man'
-        - '--datadir=/usr/share/cmake-3.26'
+        - '--datadir=/usr/share/cmake-4.0'
         - '--no-system-jsoncpp'
         - '--no-system-librhash'
-        - '--docdir=/usr/share/doc/cmake-3.26.4'
+        - '--no-system-cppdap'
+        - '--docdir=/usr/share/doc/cmake-4.0.0'
         - '--parallel=@PARALLELISM@'
         - '--'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
