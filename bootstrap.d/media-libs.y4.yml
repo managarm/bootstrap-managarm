@@ -1001,6 +1001,13 @@ packages:
 
   - name: libogg
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: The Ogg media file format library
+      description: This package contains the Ogg file structure. This is useful for creating (encoding) or playing (decoding) a single physical bit stream.
+      spdx: 'BSD'
+      website: 'https://xiph.org/ogg/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
     source:
       subdir: 'ports'
       git: 'https://github.com/xiph/ogg.git'
@@ -1019,7 +1026,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 10
+    revision: 11
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
