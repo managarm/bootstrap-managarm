@@ -164,11 +164,18 @@ packages:
   - name: freetype
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: High-quality and portable font engine
+      description: This package contains a library which allows applications to properly render TrueType fonts.
+      spdx: 'GPL-2.0-or-later'
+      website: 'https://www.freetype.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/freetype/freetype.git'
-      tag: 'VER-2-13-1'
-      version: '2.13.1'
+      tag: 'VER-2-13-3'
+      version: '2.13.3'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -182,6 +189,12 @@ packages:
         - args: ['cp',
             '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
             '@THIS_SOURCE_DIR@/builds/unix/']
+        # Enable GX/AAT and OpenType table validation
+        - args: |
+            sed -ri "s:.*(AUX_MODULES.*valid):\1:" @THIS_SOURCE_DIR@/modules.cfg
+        # Enable subpixel rendering
+        - args: |
+            sed -r "s:.*(#.*SUBPIXEL_RENDERING) .*:\1:" -i @THIS_SOURCE_DIR@/include/freetype/config/ftoption.h
     tools_required:
       - system-gcc
     pkgs_required:
@@ -189,7 +202,7 @@ packages:
       - bzip2
       - libpng
       - zlib
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -197,6 +210,7 @@ packages:
         - '--prefix=/usr'
         - '--disable-static'
         - '--with-harfbuzz=no'
+        - '--enable-freetype-config'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
