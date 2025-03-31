@@ -364,8 +364,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/wlroots/wlroots/'
-      tag: '0.17.2'
-      version: '0.17.2'
+      tag: '0.18.2'
+      version: '0.18.2'
     tools_required:
       - system-gcc
       - host-libtool
@@ -392,7 +392,9 @@ packages:
       - xcb-util-image
       - xcb-util-wm
       - xwayland
-    revision: 4
+      - hwdata
+      - mesa
+    revision: 1
     configure:
       - args: 'sed -i s#{XBSTRAP_SYSTEM_ROOT}#@SYSROOT_DIR@# @THIS_SOURCE_DIR@/xwayland/meson.build'
       - args:
