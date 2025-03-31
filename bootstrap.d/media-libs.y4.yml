@@ -1042,6 +1042,13 @@ packages:
   - name: libpng
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Portable Network Graphics library
+      description: This package contains libraries used by other programs for reading and writing PNG files. The PNG format was designed as a replacement for GIF and, to a lesser extent, TIFF, with many improvements and extensions and lack of patent problems.
+      spdx: 'no-spdx: libpng'
+      website: 'http://www.libpng.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
     source:
       subdir: 'ports'
       url: 'https://downloads.sourceforge.net/libpng/libpng-1.6.44.tar.xz'
@@ -1062,7 +1069,7 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
