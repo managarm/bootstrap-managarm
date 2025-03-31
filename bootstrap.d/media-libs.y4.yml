@@ -413,11 +413,11 @@ packages:
       categories: ['media-libs']
     source:
       subdir: 'ports'
-      url: 'https://gstreamer.freedesktop.org/src/gst-plugins-bad/gst-plugins-bad-1.24.10.tar.xz'
+      url: 'https://gstreamer.freedesktop.org/src/gst-plugins-bad/gst-plugins-bad-1.26.0.tar.xz'
       format: 'tar.xz'
-      extract_path: 'gst-plugins-bad-1.24.10'
-      checksum: blake2b:928a79f10e93cad4bddfa1a8ce31ea2ea61e7e0424ed83789ed08c52d44665ce9da44a8b79c5f1b29cb69371ad220daafc741cf1c3bb3eababe0636dbd1b994d
-      version: '1.24.10'
+      extract_path: 'gst-plugins-bad-1.26.0'
+      checksum: blake2b:b8ffd8c7694c171f4e2bff88e37c0c63d5f58d04baa2a7bad4b526179ef630cc6909a8bef3479cdc5ee8c7c1f23f1c53f4a6f462799a0f940483116b407c12ae
+      version: '1.26.0'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -445,7 +445,7 @@ packages:
       - libmodplug
       - vulkan-headers
       - libusb
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'meson'
@@ -458,7 +458,7 @@ packages:
         - '--wrap-mode=nodownload'
         - '-Dgpl=enabled'
         - '-Dpackage-origin=https://managarm.org/'
-        - '-Dpackage-name="GStreamer 1.24.10 Managarm"'
+        - '-Dpackage-name="GStreamer 1.26.0 Managarm"'
         - '-Dopenh264=disabled'
         - '@THIS_SOURCE_DIR@'
     build:
