@@ -604,11 +604,11 @@ packages:
       categories: ['media-libs']
     source:
       subdir: 'ports'
-      url: 'https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.24.10.tar.xz'
+      url: 'https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.26.0.tar.xz'
       format: 'tar.xz'
-      extract_path: 'gstreamer-1.24.10'
-      checksum: blake2b:77fac310664aefbbd35889b6c502d5e1af5b220cb22952d43b3ea1e025990ae10b6fd0199eb19ef965207a0bee748cf58432c6da6df08716b586e5882fa4a6a2
-      version: '1.24.10'
+      extract_path: 'gstreamer-1.26.0'
+      checksum: blake2b:48ac9eb40c3ae9644028d2f1135658cb6eb661870556edfb956023bc126a3d8077e5e030c0f3718a0f572a0ac8bcc2339cad8e74563cd0c10de7f9956bcba939
+      version: '1.26.0'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -640,7 +640,7 @@ packages:
         - '-Dgst_debug=false'
         - '-Dcheck=disabled'
         - '-Dpackage-origin=https://managarm.org/'
-        - '-Dpackage-name="GStreamer 1.24.10 Managarm"'
+        - '-Dpackage-name="GStreamer 1.26.0 Managarm"'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
