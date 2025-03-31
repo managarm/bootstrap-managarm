@@ -31,14 +31,14 @@ sources:
     rolling_version: true
     version: '0.0pl@ROLLING_ID@'
     subdir: 'ports'
-    git: 'https://github.com/osdev0/freestnd-c-hdrs.git'
+    git: 'https://codeberg.org/osdev/freestnd-c-hdrs.git'
     branch: 'trunk'
 
   - name: freestnd-cxx-hdrs
     rolling_version: true
     version: '0.0pl@ROLLING_ID@'
     subdir: 'ports'
-    git: 'https://github.com/osdev0/freestnd-cxx-hdrs.git'
+    git: 'https://codeberg.org/osdev/freestnd-cxx-hdrs.git'
     branch: 'trunk'
 
 tools:
