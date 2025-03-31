@@ -831,6 +831,13 @@ packages:
   - name: libepoxy
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Library for handling OpenGL function pointer management
+      description: libdisplay-info is a library for handling OpenGL function pointer management.
+      spdx: 'MIT'
+      website: 'https://github.com/anholt/libepoxy'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
     source:
       subdir: 'ports'
       git: 'https://github.com/anholt/libepoxy.git'
@@ -846,10 +853,11 @@ packages:
       - mesa
       - xorg-proto
       - libx11
-    revision: 8
+    revision: 9
     configure:
       - args:
           - 'meson'
+          - 'setup'
           - '--cross-file'
           - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
           - '--prefix=/usr'
