@@ -962,16 +962,23 @@ packages:
 
   - name: libmodplug
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: Library for playing MOD-like music files
+      description: This package contains a library for playing MOD-like music files.
+      spdx: 'public-domain'
+      website: 'https://modplug-xmms.sourceforge.net/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
     source:
       subdir: 'ports'
       git: 'https://github.com/Konstanty/libmodplug.git'
       # Check out current master
       branch: 'master'
-      commit: '5a39f5913d07ba3e61d8d5afdba00b70165da81d'
-      version: '0.8.9.0'
+      commit: 'd04fbc2eb2dddc9dd05fbcc29ab062f83a7a2a48'
+      version: '0.8.9.1'
       tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
+        - host-autoconf-v2.71
+        - host-automake-v1.16
         - host-libtool
         - host-pkg-config
       regenerate:
@@ -980,7 +987,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 9
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
