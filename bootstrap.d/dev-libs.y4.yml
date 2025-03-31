@@ -2444,11 +2444,11 @@ packages:
       categories: ['dev-libs']
     source:
       subdir: 'ports'
-      url: 'https://gitlab.freedesktop.org/wayland/wayland-protocols/-/releases/1.39/downloads/wayland-protocols-1.39.tar.xz'
-      checksum: 'blake2b:ca0350acdce8e2b3803ef4582576fd2db61228f54cebfa232ebbf85377a7201ceb9a96650c8940dc91c193681fa70a0fcb3d5fa9e541acfe77ae07448e998f9d'
-      extract_path: 'wayland-protocols-1.39'
+      url: 'https://gitlab.freedesktop.org/wayland/wayland-protocols/-/releases/1.42/downloads/wayland-protocols-1.42.tar.xz'
+      checksum: 'blake2b:7dc9cf43f82ee7522419327eaeaa36ebfe2a05f45687a2068951125af0de587d3a496bb2eb80f1e0afa96c960090d8d80ff7806117c578fb3771126fd2b8d65d'
+      extract_path: 'wayland-protocols-1.42'
       format: 'tar.xz'
-      version: '1.39'
+      version: '1.42'
     tools_required:
       - system-gcc
       - wayland-scanner
