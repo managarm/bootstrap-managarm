@@ -338,6 +338,105 @@ packages:
       - '-fix'
       - '\.(h|c|cpp|hpp)$'
 
+  - name: managarm-system-rs
+    metadata:
+      summary: The Managarm userspace (Rust components)
+      description: This package provides the Rust components of the Managarm userspace.
+      spdx: 'MIT'
+      website: 'https://managarm.org'
+      maintainer: "48cf <me@iretq.dev>"
+      categories: ['sys-kernel']
+    labels: [aarch64, riscv64]
+    architecture: '@OPTION:arch@'
+    default: true
+    from_source: managarm
+    tools_required:
+      - host-llvm-toolchain
+      - host-managarm-tools
+      - host-bragi
+      - host-pkg-config
+      - host-mold
+      - host-cargo
+      - host-rust
+      - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    sources_required:
+      - rust-patched-libs
+    pkgs_required:
+      - mlibc
+    revision: 1
+    configure:
+      - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
+        isolate_network: false
+    build:
+      - args:
+        - 'cargo'
+        - 'build'
+        - '--release'
+        - '--target-dir'
+        - '@THIS_BUILD_DIR@'
+        - '--manifest-path'
+        - '@THIS_SOURCE_DIR@/Cargo.toml'
+        - '--target'
+        - '@OPTION:rust-arch@-unknown-managarm-mlibc'
+        - '-j@PARALLELISM@'
+        isolate_network: false
+        environ:
+          # Required to build hel bindings
+          CC: '@OPTION:arch@-managarm-gcc'
+          # Link the server binaries statically and don't touch SIGPIPE on startup
+          RUSTFLAGS: "-C relocation-model=static -Z on-broken-pipe=inherit"
+      - args: |
+          mkdir -pv @THIS_COLLECT_DIR@/usr/bin
+          mkdir -pv @THIS_COLLECT_DIR@/usr/lib/managarm/server
+
+          # Find and copy all binaries built by this crate
+          find @THIS_BUILD_DIR@/@OPTION:rust-arch@-unknown-managarm-mlibc/release/ -maxdepth 1 -type f -executable \
+            -exec sh -c 'cp -pv "$1" "@THIS_COLLECT_DIR@/usr/bin/$(basename "$1")"' _ {} \;
+
+          # Run bakesvr on all server binaries
+          servers=""
+          for x in ${servers}; do
+            name=$(basename $x)
+            bakesvr -o @THIS_COLLECT_DIR@/usr/lib/managarm/server/$name.bin @THIS_SOURCE_DIR@/$x/$name.yml
+          done
+    tasks:
+    - name: cargo-check
+      args:
+        - 'cargo'
+        - 'check'
+        - '--release'
+        - '--target-dir'
+        - '@THIS_BUILD_DIR@'
+        - '--manifest-path'
+        - '@THIS_SOURCE_DIR@/Cargo.toml'
+        - '--target'
+        - '@OPTION:rust-arch@-unknown-managarm-mlibc'
+        - '-j@PARALLELISM@'
+      environ:
+        # Required to build hel bindings
+        CC: '@OPTION:arch@-managarm-gcc'
+        # Link the server binaries statically and don't touch SIGPIPE on startup
+        RUSTFLAGS: "-C relocation-model=static -Z on-broken-pipe=inherit"
+    - name: cargo-clippy
+      args:
+        - 'cargo'
+        - 'clippy'
+        - '--release'
+        - '--target-dir'
+        - '@THIS_BUILD_DIR@'
+        - '--manifest-path'
+        - '@THIS_SOURCE_DIR@/Cargo.toml'
+        - '--target'
+        - '@OPTION:rust-arch@-unknown-managarm-mlibc'
+        - '-j@PARALLELISM@'
+      environ:
+        # Required to build hel bindings
+        CC: '@OPTION:arch@-managarm-gcc'
+        # Link the server binaries statically and don't touch SIGPIPE on startup
+        RUSTFLAGS: "-C relocation-model=static -Z on-broken-pipe=inherit"
+
   - name: vendor-devicetrees
     metadata:
       summary: Device trees for Managarm that are not part of mainline Linux
