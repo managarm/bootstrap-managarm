@@ -330,8 +330,8 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/tukaani-project/xz.git'
-      tag: 'v5.6.4'
-      version: '5.6.4'
+      tag: 'v5.8.0'
+      version: '5.8.0'
       disable_shallow_fetch: true
       tools_required:
         - host-autoconf-v2.69
@@ -347,7 +347,7 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
-    revision: 2
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
