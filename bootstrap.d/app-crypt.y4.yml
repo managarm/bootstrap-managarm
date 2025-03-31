@@ -6,8 +6,8 @@ sources:
   - name: qca
     subdir: 'ports'
     git: 'https://github.com/KDE/qca.git'
-    tag: 'v2.3.9'
-    version: '2.3.9'
+    tag: 'v2.3.10'
+    version: '2.3.10'
 
 tools:
   - name: host-qca
@@ -203,7 +203,7 @@ packages:
       - libgcrypt
       - nss
       - openssl
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
