@@ -845,8 +845,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/libexpat/libexpat.git'
-      tag: 'R_2_7_0'
-      version: '2.7.0'
+      tag: 'R_2_7_1'
+      version: '2.7.1'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
