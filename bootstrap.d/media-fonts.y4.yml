@@ -2,8 +2,8 @@ sources:
   - name: xorg-font-util
     subdir: 'ports'
     git: 'https://gitlab.freedesktop.org/xorg/font/util.git'
-    tag: 'font-util-1.4.0'
-    version: '1.4.0'
+    tag: 'font-util-1.4.1'
+    version: '1.4.1'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.15
@@ -64,6 +64,8 @@ packages:
           - args: ['fc-cache']
 
   - name: xorg-font-util
+    labels: [aarch64, riscv64]
+    architecture: '@OPTION:arch@'
     metadata:
       summary: X.Org font utilities
       description: This package provides various X.Org font utilities.
@@ -71,14 +73,12 @@ packages:
       website: 'https://gitlab.freedesktop.org/xorg/font/util'
       maintainer: "Dennis Bonke <dennis@managarm.org>"
       categories: ['media-fonts']
-    labels: [aarch64, riscv64]
-    architecture: '@OPTION:arch@'
     from_source: xorg-font-util
     tools_required:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 6
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
