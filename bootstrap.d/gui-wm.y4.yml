@@ -11,8 +11,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/swaywm/sway'
-      tag: '1.9'
-      version: '1.9'
+      tag: '1.10.1'
+      version: '1.10.1'
     tools_required:
       - system-gcc
       - host-libtool
@@ -34,7 +34,7 @@ packages:
       - wayland-protocols
       - wlroots
       - xwayland
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'meson'
@@ -50,7 +50,6 @@ packages:
         - '-Dfish-completions=false'
         - '-Dgdk-pixbuf=enabled'
         - '-Dman-pages=disabled'
-        - '-Dxwayland=enabled'
         - '-Dzsh-completions=false'
         - '-Dwerror=false'
         - '@THIS_SOURCE_DIR@'
