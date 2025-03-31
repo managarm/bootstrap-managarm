@@ -54,8 +54,8 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/lxqt/lxqt-notificationd.git'
-      tag: '2.0.1'
-      version: '2.0.1'
+      tag: '2.1.1'
+      version: '2.1.1'
     tools_required:
       - host-cmake
       - system-gcc
@@ -68,7 +68,7 @@ packages:
       - layer-shell-qt
       - kwindowsystem
       - qtbase6
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
