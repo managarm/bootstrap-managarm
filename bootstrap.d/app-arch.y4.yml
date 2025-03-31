@@ -163,8 +163,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/libarchive/libarchive.git'
-      tag: 'v3.7.2'
-      version: '3.7.2'
+      tag: 'v3.7.9'
+      version: '3.7.9'
     tools_required:
       - host-cmake
       - system-gcc
@@ -177,13 +177,15 @@ packages:
       - libexpat
       - libxml
       - zstd
-    revision: 6
+      - lz4
+    revision: 1
     configure:
       - args:
         - 'cmake'
         - '-GNinja'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DBUILD_SHARED_LIBS=ON'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
