@@ -1189,14 +1189,21 @@ packages:
 
   - name: libtheora
     architecture: '@OPTION:arch@'
+    metadata:
+      summary: The Theora Video Compression Codec
+      description: This package contains the Theora Video Compression Codec.
+      spdx: 'BSD'
+      website: 'https://www.theora.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
     source:
       subdir: 'ports'
       git: 'https://github.com/xiph/theora.git'
-      tag: 'v1.1.1'
-      version: '1.1.1'
+      tag: 'v1.2.0'
+      version: '1.2.0'
       tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
+        - host-autoconf-v2.71
+        - host-automake-v1.16
         - host-libtool
         - host-pkg-config
       regenerate:
@@ -1207,7 +1214,7 @@ packages:
       - mlibc
       - libogg
       - libvorbis
-    revision: 10
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
