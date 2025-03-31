@@ -322,8 +322,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/WebPlatformForEmbedded/libwpe.git'
-      tag: '1.14.1'
-      version: '1.14.1'
+      tag: '1.16.2'
+      version: '1.16.2'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -333,7 +333,7 @@ packages:
       - mlibc
       - mesa
       - libxkbcommon
-    revision: 5
+    revision: 1
     configure:
       - args:
         - 'meson'
