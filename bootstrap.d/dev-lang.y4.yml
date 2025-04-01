@@ -125,6 +125,7 @@ tools:
       - rust-patched-libs
       # Cargo requires cargo to build, so we download a binary that we can use temporarily
       - host-bootstrap-cargo
+    revision: 2
     compile:
       - args:
         - '@THIS_SOURCE_DIR@/../host-bootstrap-cargo/cargo/bin/cargo'

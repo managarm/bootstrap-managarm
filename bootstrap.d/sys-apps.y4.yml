@@ -280,7 +280,6 @@ packages:
         quiet: true
 
   - name: exa
-    stability_level: 'broken'
     architecture: '@OPTION:arch@'
     metadata:
       summary: A modern replacement for 'ls' written in Rust
@@ -302,7 +301,7 @@ packages:
       - rust-patched-libs
     pkgs_required:
       - mlibc
-    revision: 8
+    revision: 9
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
         isolate_network: false
