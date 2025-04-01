@@ -90,6 +90,12 @@ sources:
     tag: 'v0.3.10'
     version: '0.3.10'
 
+  - name: rust-rustix
+    subdir: 'ports'
+    git: 'https://github.com/bytecodealliance/rustix.git'
+    tag: 'v1.0.5'
+    version: '1.0.5'
+
   - name: rust-patched-libs
     subdir: 'ports'
     sources_required:
@@ -122,6 +128,8 @@ sources:
       - name: rust-shared-library
         recursive: true
       - name: rust-errno
+        recursive: true
+      - name: rust-rustix
         recursive: true
 
 packages:
