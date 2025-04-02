@@ -1,0 +1,25 @@
+From ac7d25ae30ce785bd60e4523756f4a5d8e3d8fa5 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Wed, 2 Apr 2025 03:31:29 +0200
+Subject: [PATCH] Pin version of ctrlc
+
+---
+ Cargo.toml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Cargo.toml b/Cargo.toml
+index 016652a..0669d61 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -37,7 +37,7 @@ clap = { version = "4.3.14", features = [
+     "error-context",
+ ] }
+ console = "0.15.0"
+-ctrlc = "3.2.5"
++ctrlc = "=3.2.2"
+ dirs = "5.0.1"
+ git2 = { version = "0.18.2", default-features = false, features = [] }
+ grep-cli = "0.1.8"
+-- 
+2.39.5
+

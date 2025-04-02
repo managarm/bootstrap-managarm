@@ -226,6 +226,47 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: git-delta
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: A syntax-highlighting pager for git
+      description: Delta is a syntax-highlighting pager for git.
+      spdx: 'Apache-2.0 BSD LGPL-3.0-or-later MIT'
+      website: 'https://github.com/dandavison/delta'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-util']
+    source:
+      subdir: ports
+      git: 'https://github.com/dandavison/delta.git'
+      tag: '0.18.2'
+      version: '0.18.2'
+    tools_required:
+      - host-cargo
+      - system-gcc
+    sources_required:
+      - rust-patched-libs
+    pkgs_required:
+      - mlibc
+    revision: 1
+    configure:
+      - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
+        isolate_network: false
+    build:
+      - args:
+        - 'cargo'
+        - 'install'
+        - '--locked'
+        - '--target-dir'
+        - '@THIS_BUILD_DIR@'
+        - '--path'
+        - '@THIS_SOURCE_DIR@'
+        - '--root'
+        - '@THIS_COLLECT_DIR@/usr'
+        - '-j@PARALLELISM@'
+        isolate_network: false
+      - args: ['rm', '-v', '@THIS_COLLECT_DIR@/usr/.crates.toml']
+      - args: ['rm', '-v', '@THIS_COLLECT_DIR@/usr/.crates2.json']
+
   - name: itstool
     architecture: '@OPTION:arch@'
     metadata:
