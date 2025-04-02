@@ -11,7 +11,7 @@ patched_libs = {
     'getrandom': ['0.2.15', '0.3.2'],
     "libc": "0.2.171",
     "libloading": "0.7.4",
-    "mio": ["0.6.23", "0.8.3"],
+    "mio": ["0.6.23", "0.8.3", "1.0.3"],
     "nix": "0.24.3",
     "num_cpus": "1.15.0",
     "users": "0.11.0",
@@ -21,6 +21,8 @@ patched_libs = {
     "glutin_egl_sys": "0.1.5",
     "shared_library": "0.1.9",
     "errno": "0.3.10",
+    "rustix": "1.0.5",
+    "uzers": "0.12.1"
 }
 
 parser = argparse.ArgumentParser(description="Inject patched Rust libraries into Cargo lockfiles")

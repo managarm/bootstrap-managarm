@@ -67,6 +67,47 @@ tools:
       - args: ['make', 'install']
 
 packages:
+  - name: bat
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: cat clone with syntax highlighting and Git integration
+      description: Bat is a cat clone with syntax highlighting and Git integration.
+      spdx: 'Apache-2.0 BSD LGPL-3.0-or-later MIT'
+      website: 'https://github.com/sharkdp/bat'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-apps']
+    source:
+      subdir: ports
+      git: 'https://github.com/sharkdp/bat.git'
+      tag: 'v0.25.0'
+      version: '0.25.0'
+    tools_required:
+      - host-cargo
+      - system-gcc
+    sources_required:
+      - rust-patched-libs
+    pkgs_required:
+      - mlibc
+    revision: 1
+    configure:
+      - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
+        isolate_network: false
+    build:
+      - args:
+        - 'cargo'
+        - 'install'
+        - '--locked'
+        - '--target-dir'
+        - '@THIS_BUILD_DIR@'
+        - '--path'
+        - '@THIS_SOURCE_DIR@'
+        - '--root'
+        - '@THIS_COLLECT_DIR@/usr'
+        - '-j@PARALLELISM@'
+        isolate_network: false
+      - args: ['rm', '-v', '@THIS_COLLECT_DIR@/usr/.crates.toml']
+      - args: ['rm', '-v', '@THIS_COLLECT_DIR@/usr/.crates2.json']
+
   - name: coreutils
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
@@ -279,21 +320,20 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
-  - name: exa
+  - name: eza
     architecture: '@OPTION:arch@'
     metadata:
       summary: A modern replacement for 'ls' written in Rust
-      description: Exa is a modern `ls` replacement written in rust.
-      spdx: 'Apache-2.0 MIT Unlicense'
-      website: 'https://github.com/ogham/exa'
-      maintainer: "Matt Taylor <mstaveleytaylor@gmail.com>"
+      description: Eza is a modern `ls` replacement written in rust.
+      spdx: 'Apache-2.0 MIT'
+      website: 'https://eza.rocks'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
       categories: ['sys-apps']
     source:
       subdir: ports
-      git: 'https://github.com/ogham/exa.git'
-      commit: 'c697d066702ab81ce0684fedb4c638e0fc0473e8'
-      branch: 'master'
-      version: '0.10.1p2'
+      git: 'https://github.com/eza-community/eza.git'
+      tag: 'v0.20.24'
+      version: '0.20.24'
     tools_required:
       - host-cargo
       - system-gcc
@@ -301,7 +341,7 @@ packages:
       - rust-patched-libs
     pkgs_required:
       - mlibc
-    revision: 9
+    revision: 1
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
         isolate_network: false

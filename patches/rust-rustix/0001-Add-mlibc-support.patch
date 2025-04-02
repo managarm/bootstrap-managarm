@@ -1,0 +1,27 @@
+From 9a704b890903acdebb627c68745f1c1b06e17c45 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Wed, 2 Apr 2025 01:53:32 +0200
+Subject: [PATCH] Add mlibc support
+
+---
+ src/ioctl/mod.rs | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/src/ioctl/mod.rs b/src/ioctl/mod.rs
+index e3e8f8e..18f43aa 100644
+--- a/src/ioctl/mod.rs
++++ b/src/ioctl/mod.rs
+@@ -309,6 +309,10 @@ type _Opcode = c::c_ulong;
+ ))]
+ type _Opcode = c::c_int;
+ 
++// mlibc uses `c_ulong`
++#[cfg(target_env = "mlibc")]
++type _Opcode = c::c_ulong;
++
+ // Android uses `c_int`.
+ #[cfg(all(not(linux_raw), target_os = "android"))]
+ type _Opcode = c::c_int;
+-- 
+2.39.5
+

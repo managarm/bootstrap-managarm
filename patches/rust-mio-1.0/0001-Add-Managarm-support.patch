@@ -1,0 +1,32 @@
+From 849b9be1349f30fe17741ca586d415941666c66b Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Wed, 2 Apr 2025 02:52:59 +0200
+Subject: [PATCH] Add Managarm support
+
+---
+ src/sys/unix/mod.rs | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/sys/unix/mod.rs b/src/sys/unix/mod.rs
+index 6c0c885..a2d43ac 100644
+--- a/src/sys/unix/mod.rs
++++ b/src/sys/unix/mod.rs
+@@ -22,6 +22,7 @@ cfg_os_poll! {
+             target_os = "illumos",
+             target_os = "linux",
+             target_os = "redox",
++            target_os = "managarm",
+         )
+     ), path = "selector/epoll.rs")]
+     #[cfg_attr(all(
+@@ -62,6 +63,7 @@ cfg_os_poll! {
+             target_os = "hermit",
+             target_os = "illumos",
+             target_os = "linux",
++            target_os = "managarm",
+         )
+     ), path = "waker/eventfd.rs")]
+     #[cfg_attr(all(
+-- 
+2.39.5
+

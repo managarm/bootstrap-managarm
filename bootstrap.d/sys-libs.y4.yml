@@ -59,6 +59,12 @@ sources:
     tag: 'v0.8.3'
     version: '0.8.3'
 
+  - name: rust-mio-1.0
+    subdir: 'ports'
+    git: 'https://github.com/tokio-rs/mio.git'
+    tag: 'v1.0.3'
+    version: '1.0.3'
+
   - name: rust-nix
     subdir: 'ports'
     git: 'https://github.com/nix-rust/nix.git'
@@ -90,6 +96,18 @@ sources:
     tag: 'v0.3.10'
     version: '0.3.10'
 
+  - name: rust-rustix
+    subdir: 'ports'
+    git: 'https://github.com/bytecodealliance/rustix.git'
+    tag: 'v1.0.5'
+    version: '1.0.5'
+
+  - name: rust-uzers
+    subdir: 'ports'
+    git: 'https://github.com/rustadopt/uzers-rs.git'
+    tag: 'v0.12.1'
+    version: '0.12.1'
+
   - name: rust-patched-libs
     subdir: 'ports'
     sources_required:
@@ -109,6 +127,8 @@ sources:
         recursive: true
       - name: rust-mio-0.8
         recursive: true
+      - name: rust-mio-1.0
+        recursive: true
       - name: rust-nix
         recursive: true
       - name: rust-num-cpus
@@ -122,6 +142,10 @@ sources:
       - name: rust-shared-library
         recursive: true
       - name: rust-errno
+        recursive: true
+      - name: rust-rustix
+        recursive: true
+      - name: rust-uzers
         recursive: true
 
 packages:
