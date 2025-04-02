@@ -72,7 +72,7 @@ tools:
             change-id = 102579
 
             [llvm]
-            targets = ["X86", "AArch64", "RISCV"]
+            targets = "X86;AArch64;RISCV"
             download-ci-llvm = false
 
             [build]
