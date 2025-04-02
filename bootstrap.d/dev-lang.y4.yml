@@ -56,6 +56,7 @@ tools:
       - args: ['make', 'install']
 
   - name: host-rust
+    labels: [aarch64, riscv64]
     architecture: noarch
     from_source: rust
     sources_required:
