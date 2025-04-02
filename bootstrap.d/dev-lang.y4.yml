@@ -65,18 +65,18 @@ tools:
       - host-llvm-toolchain
       - host-python
       - host-libffi
-    revision: 3
+    revision: 4
     compile:
       - args: |
             cat << EOF > config.toml
             change-id = 102579
 
             [llvm]
-            targets = "X86"
+            targets = ["X86", "AArch64", "RISCV"]
             download-ci-llvm = false
 
             [build]
-            target = ["x86_64-unknown-managarm-mlibc", "x86_64-unknown-linux-gnu"]
+            target = ["x86_64-unknown-managarm-mlibc", "x86_64-unknown-linux-gnu", "aarch64-unknown-managarm-mlibc", "aarch64-unknown-linux-gnu", "riscv-unknown-managarm-mlibc", "riscv-unknown-linux-gnu"]
             build-dir = "@THIS_BUILD_DIR@"
             docs = false
 
