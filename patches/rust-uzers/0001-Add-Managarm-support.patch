@@ -1,0 +1,66 @@
+From f92a794249ff9c7904593dc008939ce5e529a190 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Wed, 2 Apr 2025 01:54:28 +0200
+Subject: [PATCH] Add Managarm support
+
+---
+ src/base.rs | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
+
+diff --git a/src/base.rs b/src/base.rs
+index 5f7e274..c863645 100644
+--- a/src/base.rs
++++ b/src/base.rs
+@@ -1037,7 +1037,8 @@ pub mod os {
+         target_os = "redox",
+         target_os = "solaris",
+         target_os = "illumos",
+-        target_os = "haiku"
++        target_os = "haiku",
++        target_os = "managarm"
+     ))]
+     pub mod unix {
+         use std::ffi::{OsStr, OsString};
+@@ -1148,7 +1149,8 @@ pub mod os {
+             target_os = "redox",
+             target_os = "solaris",
+             target_os = "illumos",
+-            target_os = "haiku"
++            target_os = "haiku",
++            target_os = "managarm"
+         ))]
+         use super::super::User;
+ 
+@@ -1158,7 +1160,8 @@ pub mod os {
+             target_os = "redox",
+             target_os = "solaris",
+             target_os = "illumos",
+-            target_os = "haiku"
++            target_os = "haiku",
++            target_os = "managarm"
+         ))]
+         impl UserExt for User {
+             fn home_dir(&self) -> &Path {
+@@ -1355,7 +1358,8 @@ pub mod os {
+         target_os = "redox",
+         target_os = "solaris",
+         target_os = "illumos",
+-        target_os = "haiku"
++        target_os = "haiku",
++        target_os = "managarm"
+     ))]
+     pub type UserExtras = unix::UserExtras;
+ 
+@@ -1371,7 +1375,8 @@ pub mod os {
+         target_os = "redox",
+         target_os = "solaris",
+         target_os = "illumos",
+-        target_os = "haiku"
++        target_os = "haiku",
++        target_os = "managarm"
+     ))]
+     pub type GroupExtras = unix::GroupExtras;
+ }
+-- 
+2.39.5
+

@@ -96,6 +96,12 @@ sources:
     tag: 'v1.0.5'
     version: '1.0.5'
 
+  - name: rust-uzers
+    subdir: 'ports'
+    git: 'https://github.com/rustadopt/uzers-rs.git'
+    tag: 'v0.12.1'
+    version: '0.12.1'
+
   - name: rust-patched-libs
     subdir: 'ports'
     sources_required:
@@ -130,6 +136,8 @@ sources:
       - name: rust-errno
         recursive: true
       - name: rust-rustix
+        recursive: true
+      - name: rust-uzers
         recursive: true
 
 packages:
