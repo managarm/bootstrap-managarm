@@ -88,7 +88,7 @@ packages:
       - rust-patched-libs
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
         isolate_network: false
@@ -103,6 +103,8 @@ packages:
         - '@THIS_SOURCE_DIR@'
         - '--root'
         - '@THIS_COLLECT_DIR@/usr'
+        - '--target'
+        - '@OPTION:arch@-unknown-managarm-mlibc'
         - '-j@PARALLELISM@'
         isolate_network: false
       - args: ['rm', '-v', '@THIS_COLLECT_DIR@/usr/.crates.toml']
@@ -341,7 +343,7 @@ packages:
       - rust-patched-libs
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
         isolate_network: false
@@ -356,10 +358,12 @@ packages:
         - '@THIS_SOURCE_DIR@'
         - '--root'
         - '@THIS_COLLECT_DIR@/usr'
+        - '--target'
+        - '@OPTION:arch@-unknown-managarm-mlibc'
         - '-j@PARALLELISM@'
         isolate_network: false
         environ: # Required to build libgit2
-          CC: x86_64-managarm-gcc
+          CC: "@OPTION:arch-triple@-gcc"
       - args: ['rm', '-v', '@THIS_COLLECT_DIR@/usr/.crates.toml']
       - args: ['rm', '-v', '@THIS_COLLECT_DIR@/usr/.crates2.json']
 
@@ -1014,7 +1018,7 @@ packages:
       - rust-patched-libs
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
         isolate_network: false
@@ -1029,6 +1033,8 @@ packages:
         - '@THIS_SOURCE_DIR@'
         - '--root'
         - '@THIS_COLLECT_DIR@/usr'
+        - '--target'
+        - '@OPTION:arch@-unknown-managarm-mlibc'
         - '-j@PARALLELISM@'
         isolate_network: false
       - args: ['rm', '-v', '@THIS_COLLECT_DIR@/usr/.crates.toml']
