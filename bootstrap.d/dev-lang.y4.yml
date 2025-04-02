@@ -110,6 +110,7 @@ tools:
 
   - name: host-cargo
     architecture: noarch
+    labels: [aarch64, riscv64]
     source:
       subdir: 'ports'
       git: 'https://github.com/rust-lang/cargo.git'
