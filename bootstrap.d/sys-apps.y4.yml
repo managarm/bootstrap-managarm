@@ -361,7 +361,7 @@ packages:
         - '--root'
         - '@THIS_COLLECT_DIR@/usr'
         - '--target'
-        - '@OPTION:arch@-unknown-managarm-mlibc'
+        - '@OPTION:rust-arch@-unknown-managarm-mlibc'
         - '-j@PARALLELISM@'
         isolate_network: false
         environ: # Required to build libgit2
