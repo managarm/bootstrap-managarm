@@ -108,6 +108,12 @@ sources:
     tag: 'v0.12.1'
     version: '0.12.1'
 
+  - name: rust-cc
+    subdir: 'ports'
+    git: 'https://github.com/rust-lang/cc-rs.git'
+    tag: 'cc-v1.2.17'
+    version: '1.2.17'
+
   - name: rust-patched-libs
     subdir: 'ports'
     sources_required:
@@ -146,6 +152,8 @@ sources:
       - name: rust-rustix
         recursive: true
       - name: rust-uzers
+        recursive: true
+      - name: rust-cc
         recursive: true
 
 packages:
