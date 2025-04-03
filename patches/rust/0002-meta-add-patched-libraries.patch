@@ -1,4 +1,4 @@
-From 3eb4ac8978b1c642e578e0caf1c91a417721b560 Mon Sep 17 00:00:00 2001
+From ffbf8f601621188a37ac8242bd17e47a073982a0 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Sun, 31 Mar 2024 19:21:57 +0200
 Subject: [PATCH 2/4] meta: add patched libraries
@@ -89,5 +89,5 @@ index a193ff5b..763dee34 100644
  mod backtrace_rs;
  
 -- 
-2.48.1
+2.39.5
 

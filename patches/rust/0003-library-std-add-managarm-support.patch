@@ -1,4 +1,4 @@
-From 291a236cf5bde2de906dcac2b3bd5ac33773a7b7 Mon Sep 17 00:00:00 2001
+From 890d29a6a2dd7b704f51d2f1336a88b96170de09 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Fri, 1 Sep 2023 16:49:14 +0200
 Subject: [PATCH 3/4] library/std: add managarm support
@@ -416,5 +416,5 @@ index 40d40931..d840791b 100644
 +#[link(name = "gcc_s")]
 +extern "C" {}
 -- 
-2.48.1
+2.39.5
 
