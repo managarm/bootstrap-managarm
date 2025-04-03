@@ -96,3 +96,5 @@ declare_options:
     default: guestfs
   - name: image-size
     default: 4G
+  - name: rust-arch
+    default: x86_64

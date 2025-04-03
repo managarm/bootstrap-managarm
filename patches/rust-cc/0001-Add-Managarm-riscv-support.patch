@@ -1,0 +1,25 @@
+From 13438fa7e77cdffc442577e66e567525c41ef319 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Thu, 3 Apr 2025 16:27:21 +0200
+Subject: [PATCH] Add Managarm riscv support
+
+---
+ src/lib.rs | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/lib.rs b/src/lib.rs
+index c259a07..4bbc58a 100644
+--- a/src/lib.rs
++++ b/src/lib.rs
+@@ -2434,7 +2434,7 @@ impl Build {
+                     // get the 32i/32imac/32imc/64gc/64imac/... part
+                     let arch = &target.full_arch[5..];
+                     if arch.starts_with("64") {
+-                        if matches!(target.os, "linux" | "freebsd" | "netbsd") {
++                        if matches!(target.os, "linux" | "freebsd" | "netbsd" | "managarm") {
+                             cmd.args.push(("-march=rv64gc").into());
+                             cmd.args.push("-mabi=lp64d".into());
+                         } else {
+-- 
+2.39.5
+

@@ -1,4 +1,4 @@
-From f104332eb9ef226d61ffdf9f980ea8d2ea566ae9 Mon Sep 17 00:00:00 2001
+From 0ab990f47a70d063d7ff5b35671f4144c7e73b46 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Mon, 1 Apr 2024 12:45:22 +0200
 Subject: [PATCH 4/4] doc: Add `*-unknown-managarm-mlibc` documentation
@@ -94,5 +94,5 @@ index 00000000..79cbdbb3
 +
 +This target does not support running the Rust testsuite yet.
 -- 
-2.48.1
+2.39.5
 

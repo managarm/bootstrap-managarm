@@ -104,8 +104,10 @@ packages:
         - '--root'
         - '@THIS_COLLECT_DIR@/usr'
         - '--target'
-        - '@OPTION:arch@-unknown-managarm-mlibc'
+        - '@OPTION:rust-arch@-unknown-managarm-mlibc'
         - '-j@PARALLELISM@'
+        environ:
+          CC: "@OPTION:arch-triple@-gcc"
         isolate_network: false
       - args: ['rm', '-v', '@THIS_COLLECT_DIR@/usr/.crates.toml']
       - args: ['rm', '-v', '@THIS_COLLECT_DIR@/usr/.crates2.json']
@@ -359,7 +361,7 @@ packages:
         - '--root'
         - '@THIS_COLLECT_DIR@/usr'
         - '--target'
-        - '@OPTION:arch@-unknown-managarm-mlibc'
+        - '@OPTION:rust-arch@-unknown-managarm-mlibc'
         - '-j@PARALLELISM@'
         isolate_network: false
         environ: # Required to build libgit2
@@ -1034,7 +1036,7 @@ packages:
         - '--root'
         - '@THIS_COLLECT_DIR@/usr'
         - '--target'
-        - '@OPTION:arch@-unknown-managarm-mlibc'
+        - '@OPTION:rust-arch@-unknown-managarm-mlibc'
         - '-j@PARALLELISM@'
         isolate_network: false
       - args: ['rm', '-v', '@THIS_COLLECT_DIR@/usr/.crates.toml']
