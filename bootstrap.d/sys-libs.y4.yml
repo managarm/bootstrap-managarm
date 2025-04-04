@@ -65,7 +65,7 @@ sources:
     tag: 'v1.0.3'
     version: '1.0.3'
 
-  - name: rust-nix
+  - name: rust-nix-0.24
     subdir: 'ports'
     git: 'https://github.com/nix-rust/nix.git'
     tag: 'v0.24.3'
@@ -135,7 +135,7 @@ sources:
         recursive: true
       - name: rust-mio-1.0
         recursive: true
-      - name: rust-nix
+      - name: rust-nix-0.24
         recursive: true
       - name: rust-num-cpus
         recursive: true

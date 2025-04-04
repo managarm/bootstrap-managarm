@@ -19,7 +19,7 @@ libloading = { path = "@SOURCE_ROOT@/ports/rust-libloading" }
 mio-06 = { path = "@SOURCE_ROOT@/ports/rust-mio-0.6", package = "mio" }
 mio-08 = { path = "@SOURCE_ROOT@/ports/rust-mio-0.8", package = "mio" }
 mio-10 = { path = "@SOURCE_ROOT@/ports/rust-mio-1.0", package = "mio" }
-nix = { path = "@SOURCE_ROOT@/ports/rust-nix" }
+nix-024 = { path = "@SOURCE_ROOT@/ports/rust-nix-0.24", package = "nix" }
 num_cpus = { path = "@SOURCE_ROOT@/ports/rust-num-cpus" }
 users = { path = "@SOURCE_ROOT@/ports/rust-users" }
 winit = { path = "@SOURCE_ROOT@/ports/rust-winit" }
