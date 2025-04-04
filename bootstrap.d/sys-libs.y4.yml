@@ -71,6 +71,12 @@ sources:
     tag: 'v0.24.3'
     version: '0.24.3'
 
+  - name: rust-nix-0.29
+    subdir: 'ports'
+    git: 'https://github.com/nix-rust/nix.git'
+    tag: 'v0.29.0'
+    version: '0.29.0'
+
   - name: rust-winit
     subdir: 'ports'
     git: 'https://github.com/rust-windowing/winit.git'
@@ -136,6 +142,8 @@ sources:
       - name: rust-mio-1.0
         recursive: true
       - name: rust-nix-0.24
+        recursive: true
+      - name: rust-nix-0.29
         recursive: true
       - name: rust-num-cpus
         recursive: true
