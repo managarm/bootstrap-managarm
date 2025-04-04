@@ -126,6 +126,12 @@ sources:
     tag: 'cc-v1.2.17'
     version: '1.2.17'
 
+  - name: rust-termios
+    subdir: 'ports'
+    git: 'https://github.com/dcuddeback/termios-rs.git'
+    tag: 'v0.3.3'
+    version: '0.3.3'
+
   - name: rust-patched-libs
     subdir: 'ports'
     sources_required:
@@ -170,6 +176,8 @@ sources:
       - name: rust-uzers
         recursive: true
       - name: rust-cc
+        recursive: true
+      - name: rust-termios
         recursive: true
 
 packages:

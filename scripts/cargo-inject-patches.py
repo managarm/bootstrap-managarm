@@ -23,7 +23,8 @@ patched_libs = {
     "errno": "0.3.10",
     "rustix": ["0.38.44", "1.0.5"],
     "uzers": "0.12.1",
-    "cc": "1.2.17"
+    "cc": "1.2.17",
+    "termios": "0.3.3"
 }
 
 parser = argparse.ArgumentParser(description="Inject patched Rust libraries into Cargo lockfiles")
