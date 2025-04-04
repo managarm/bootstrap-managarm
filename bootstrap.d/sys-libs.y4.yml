@@ -139,6 +139,12 @@ sources:
     commit: '9a1723346265a9fb04cc58c0995ca18b967c0a4a' # No tags here
     version: '1.2.8'
 
+  - name: rust-lua-src
+    subdir: 'ports'
+    git: 'https://github.com/mlua-rs/lua-src-rs.git'
+    tag: 'v547.0.0'
+    version: '547.0.0'
+
   - name: rust-patched-libs
     subdir: 'ports'
     sources_required:
@@ -187,6 +193,8 @@ sources:
       - name: rust-termios
         recursive: true
       - name: rust-mac-address
+        recursive: true
+      - name: rust-lua-src
         recursive: true
 
 packages:
