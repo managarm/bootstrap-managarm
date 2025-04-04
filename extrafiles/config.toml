@@ -37,3 +37,4 @@ uzers = { path = "@SOURCE_ROOT@/ports/rust-uzers", package = "uzers" }
 cc = { path = "@SOURCE_ROOT@/ports/rust-cc", package = "cc" }
 termios = { path = "@SOURCE_ROOT@/ports/rust-termios", package = "termios" }
 mac_address = { path = "@SOURCE_ROOT@/ports/rust-mac-address", package = "mac_address" }
+lua-src = { path = "@SOURCE_ROOT@/ports/rust-lua-src", package = "lua-src" }

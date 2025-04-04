@@ -1,0 +1,27 @@
+From e154d4a1245316a49313e5655f8c0a80a9098c7b Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Fri, 4 Apr 2025 20:04:17 +0200
+Subject: [PATCH] Add Managarm support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ src/lib.rs | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/src/lib.rs b/src/lib.rs
+index f434c52..d9e3e4a 100644
+--- a/src/lib.rs
++++ b/src/lib.rs
+@@ -85,6 +85,9 @@ impl Build {
+             _ if target.contains("linux") => {
+                 config.define("LUA_USE_LINUX", None);
+             }
++            _ if target.contains("managarm") => {
++                config.define("LUA_USE_LINUX", None);
++            }
+             _ if target.ends_with("bsd") => {
+                 config.define("LUA_USE_LINUX", None);
+             }
+-- 
+2.49.0
+
