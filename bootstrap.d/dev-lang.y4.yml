@@ -66,53 +66,98 @@ tools:
       - host-llvm-toolchain
       - host-python
       - host-libffi
-    revision: 5
-    compile:
-      - args: |
-            cat << EOF > config.toml
-            change-id = 102579
+    revision: 6
+    stages:
+      - name: config
+        compile:
+          - args: |
+              cat << EOF > config.toml
+              change-id = 102579
 
-            [llvm]
-            targets = "X86;AArch64;RISCV"
-            download-ci-llvm = false
+              [llvm]
+              targets = "X86;AArch64;RISCV"
+              download-ci-llvm = false
 
-            [build]
-            target = ["@OPTION:rust-arch@-unknown-managarm-mlibc", "x86_64-unknown-linux-gnu"]
-            build-dir = "@THIS_BUILD_DIR@"
-            docs = false
+              [build]
+              target = ["@OPTION:rust-arch@-unknown-managarm-mlibc", "x86_64-unknown-linux-gnu"]
+              build-dir = "@THIS_BUILD_DIR@"
+              docs = false
 
-            [install]
-            prefix = "@PREFIX@"
-            sysconfdir = "etc"
+              [install]
+              prefix = "@PREFIX@"
+              sysconfdir = "etc"
 
-            [rust]
-            codegen-tests = false
-            deny-warnings = false
+              [rust]
+              codegen-tests = false
+              deny-warnings = false
 
-            [target.x86_64-unknown-linux-gnu]
-            llvm-config = "@BUILD_ROOT@/tools/host-llvm-toolchain/bin/llvm-config"
+              [target.x86_64-unknown-linux-gnu]
+              llvm-config = "@BUILD_ROOT@/tools/host-llvm-toolchain/bin/llvm-config"
 
-            [target.@OPTION:rust-arch@-unknown-managarm-mlibc]
-            llvm-config = "@BUILD_ROOT@/tools/host-llvm-toolchain/bin/llvm-config"
-            cc = "@OPTION:arch-triple@-gcc"
-            cxx = "@OPTION:arch-triple@-g++"
-            ar = "@OPTION:arch-triple@-ar"
-            ranlib = "@OPTION:arch-triple@-ranlib"
-            linker = "@OPTION:arch-triple@-gcc"
-            EOF
-      - args: ['python3', '@THIS_SOURCE_DIR@/x.py', 'build', 'rustc', 'clippy', 'std', '--stage', '2', '-j', '@PARALLELISM@']
-        cargo_home: false
-        environ:
-          CARGO_HOME: '@THIS_BUILD_DIR@/cargo-home'
-          BOOTSTRAP_SKIP_TARGET_SANITY: '1'
-        isolate_network: false
-    install:
-      - args: ['python3', '@THIS_SOURCE_DIR@/x.py', 'install', 'rustc', 'clippy', 'std', '-j', '@PARALLELISM@']
-        cargo_home: false
-        environ:
-          CARGO_HOME: '@THIS_BUILD_DIR@/cargo-home'
-          BOOTSTRAP_SKIP_TARGET_SANITY: '1'
-        isolate_network: false
+              [target.@OPTION:rust-arch@-unknown-managarm-mlibc]
+              llvm-config = "@BUILD_ROOT@/tools/host-llvm-toolchain/bin/llvm-config"
+              cc = "@OPTION:arch-triple@-gcc"
+              cxx = "@OPTION:arch-triple@-g++"
+              ar = "@OPTION:arch-triple@-ar"
+              ranlib = "@OPTION:arch-triple@-ranlib"
+              linker = "@OPTION:arch-triple@-gcc"
+              EOF
+      - name: compiler
+        tools_required:
+          - tool: host-rust
+            stage_dependencies: [config]
+        compile:
+          - args: ['python3', '@THIS_SOURCE_DIR@/x.py', 'build', 'rustc', '--stage', '2', '-j', '@PARALLELISM@']
+            cargo_home: false
+            isolate_network: false
+            environ:
+              CARGO_HOME: '@THIS_BUILD_DIR@/cargo-home'
+              BOOTSTRAP_SKIP_TARGET_SANITY: '1'
+        install:
+          - args: ['python3', '@THIS_SOURCE_DIR@/x.py', 'install', 'rustc', '-j', '@PARALLELISM@']
+            cargo_home: false
+            environ:
+              CARGO_HOME: '@THIS_BUILD_DIR@/cargo-home'
+              BOOTSTRAP_SKIP_TARGET_SANITY: '1'
+            isolate_network: false
+      - name: std
+        tools_required:
+          - tool: host-rust
+            stage_dependencies: [compiler]
+        pkgs_required:
+         - mlibc
+        compile:
+          - args: ['python3', '@THIS_SOURCE_DIR@/x.py', 'build', 'std', '--stage', '2', '-j', '@PARALLELISM@']
+            cargo_home: false
+            isolate_network: false
+            environ:
+              CARGO_HOME: '@THIS_BUILD_DIR@/cargo-home'
+              BOOTSTRAP_SKIP_TARGET_SANITY: '1'
+        install:
+          - args: ['python3', '@THIS_SOURCE_DIR@/x.py', 'install', 'std', '-j', '@PARALLELISM@']
+            cargo_home: false
+            environ:
+              CARGO_HOME: '@THIS_BUILD_DIR@/cargo-home'
+              BOOTSTRAP_SKIP_TARGET_SANITY: '1'
+            isolate_network: false
+      - name: clippy
+        tools_required:
+          - tool: host-rust
+            stage_dependencies: [compiler]
+        compile:
+          - args: ['python3', '@THIS_SOURCE_DIR@/x.py', 'build', 'clippy', '--stage', '2', '-j', '@PARALLELISM@']
+            cargo_home: false
+            isolate_network: false
+            environ:
+              CARGO_HOME: '@THIS_BUILD_DIR@/cargo-home'
+              BOOTSTRAP_SKIP_TARGET_SANITY: '1'
+        install:
+          - args: ['python3', '@THIS_SOURCE_DIR@/x.py', 'install', 'clippy', '-j', '@PARALLELISM@']
+            cargo_home: false
+            environ:
+              CARGO_HOME: '@THIS_BUILD_DIR@/cargo-home'
+              BOOTSTRAP_SKIP_TARGET_SANITY: '1'
+            isolate_network: false
 
   - name: host-cargo
     architecture: noarch
