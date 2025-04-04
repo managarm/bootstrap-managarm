@@ -1,0 +1,202 @@
+From a0cec46f17b3483c0d5839c2002e8588825ee409 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Tue, 24 Dec 2024 00:56:20 +0100
+Subject: [PATCH] Add Managarm support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ Makefile           | 12 ++++++------
+ engines/io_uring.c | 29 +++++++++++++++++++++++++++++
+ os/os-linux.h      |  9 ++++++++-
+ os/os.h            |  2 +-
+ 4 files changed, 44 insertions(+), 8 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 746a27d..023d4c7 100644
+--- a/Makefile
++++ b/Makefile
+@@ -368,8 +368,8 @@ T_VS_PROGS = t/fio-verify-state
+ T_PIPE_ASYNC_OBJS = t/read-to-pipe-async.o
+ T_PIPE_ASYNC_PROGS = t/read-to-pipe-async
+ 
+-T_IOU_RING_OBJS = t/io_uring.o lib/rand.o lib/pattern.o lib/strntol.o
+-T_IOU_RING_PROGS = t/io_uring
++# T_IOU_RING_OBJS = t/io_uring.o lib/rand.o lib/pattern.o lib/strntol.o
++# T_IOU_RING_PROGS = t/io_uring
+ 
+ T_MEMLOCK_OBJS = t/memlock.o
+ T_MEMLOCK_PROGS = t/memlock
+@@ -412,7 +412,7 @@ T_OBJS += $(T_VS_OBJS)
+ T_OBJS += $(T_PIPE_ASYNC_OBJS)
+ T_OBJS += $(T_MEMLOCK_OBJS)
+ T_OBJS += $(T_TT_OBJS)
+-T_OBJS += $(T_IOU_RING_OBJS)
++# T_OBJS += $(T_IOU_RING_OBJS)
+ T_OBJS += $(T_FUZZ_OBJS)
+ 
+ ifneq (,$(findstring CYGWIN,$(CONFIG_TARGET_OS)))
+@@ -580,9 +580,9 @@ cairo_text_helpers.o: cairo_text_helpers.c cairo_text_helpers.h
+ printing.o: printing.c printing.h
+ 	$(QUIET_CC)$(CC) $(CFLAGS) $(GTK_CFLAGS) $(CPPFLAGS) -c $<
+ 
+-t/io_uring.o: os/linux/io_uring.h
+-t/io_uring: $(T_IOU_RING_OBJS)
+-	$(QUIET_LINK)$(CC) $(LDFLAGS) -o $@ $(T_IOU_RING_OBJS) $(LIBS)
++# t/io_uring.o: os/linux/io_uring.h
++# t/io_uring: $(T_IOU_RING_OBJS)
++# 	$(QUIET_LINK)$(CC) $(LDFLAGS) -o $@ $(T_IOU_RING_OBJS) $(LIBS)
+ 
+ t/read-to-pipe-async: $(T_PIPE_ASYNC_OBJS)
+ 	$(QUIET_LINK)$(CC) $(LDFLAGS) -o $@ $(T_PIPE_ASYNC_OBJS) $(LIBS)
+diff --git a/engines/io_uring.c b/engines/io_uring.c
+index 1b6a434..303a896 100644
+--- a/engines/io_uring.c
++++ b/engines/io_uring.c
+@@ -365,6 +365,7 @@ static struct fio_option options[] = {
+ static int io_uring_enter(struct ioring_data *ld, unsigned int to_submit,
+ 			 unsigned int min_complete, unsigned int flags)
+ {
++#ifndef __managarm__
+ #ifdef FIO_ARCH_HAS_SYSCALL
+ 	return __do_syscall6(__NR_io_uring_enter, ld->ring_fd, to_submit,
+ 				min_complete, flags, NULL, 0);
+@@ -372,6 +373,10 @@ static int io_uring_enter(struct ioring_data *ld, unsigned int to_submit,
+ 	return syscall(__NR_io_uring_enter, ld->ring_fd, to_submit,
+ 			min_complete, flags, NULL, 0);
+ #endif
++#else
++	errno = ENOSYS;
++	return -1;
++#endif
+ }
+ 
+ #ifndef BLOCK_URING_CMD_DISCARD
+@@ -976,8 +981,12 @@ static void fio_ioring_probe(struct thread_data *td)
+ 	if (!p)
+ 		return;
+ 
++#ifndef __managarm__
+ 	ret = syscall(__NR_io_uring_register, ld->ring_fd,
+ 			IORING_REGISTER_PROBE, p, 256);
++#else
++	ret = ENOSYS;
++#endif
+ 	if (ret < 0)
+ 		goto out;
+ 
+@@ -1039,7 +1048,11 @@ static int fio_ioring_queue_init(struct thread_data *td)
+ 	p.flags |= IORING_SETUP_SINGLE_ISSUER | IORING_SETUP_DEFER_TASKRUN;
+ 
+ retry:
++#ifndef __managarm__
+ 	ret = syscall(__NR_io_uring_setup, depth, &p);
++#else
++	ret = ENOSYS;
++#endif
+ 	if (ret < 0) {
+ 		if (errno == EINVAL && p.flags & IORING_SETUP_DEFER_TASKRUN) {
+ 			p.flags &= ~IORING_SETUP_DEFER_TASKRUN;
+@@ -1062,8 +1075,12 @@ retry:
+ 	fio_ioring_probe(td);
+ 
+ 	if (o->fixedbufs) {
++#ifndef __managarm__
+ 		ret = syscall(__NR_io_uring_register, ld->ring_fd,
+ 				IORING_REGISTER_BUFFERS, ld->iovecs, depth);
++#else
++	ret = ENOSYS;
++#endif
+ 		if (ret < 0)
+ 			return ret;
+ 	}
+@@ -1123,7 +1140,11 @@ static int fio_ioring_cmd_queue_init(struct thread_data *td)
+ 	p.flags |= IORING_SETUP_SINGLE_ISSUER | IORING_SETUP_DEFER_TASKRUN;
+ 
+ retry:
++#ifndef __managarm__
+ 	ret = syscall(__NR_io_uring_setup, depth, &p);
++#else
++	ret = ENOSYS;
++#endif
+ 	if (ret < 0) {
+ 		if (errno == EINVAL && p.flags & IORING_SETUP_DEFER_TASKRUN) {
+ 			p.flags &= ~IORING_SETUP_DEFER_TASKRUN;
+@@ -1146,8 +1167,12 @@ retry:
+ 	fio_ioring_probe(td);
+ 
+ 	if (o->fixedbufs) {
++#ifndef __managarm__
+ 		ret = syscall(__NR_io_uring_register, ld->ring_fd,
+ 				IORING_REGISTER_BUFFERS, ld->iovecs, depth);
++#else
++	ret = ENOSYS;
++#endif
+ 		if (ret < 0)
+ 			return ret;
+ 	}
+@@ -1172,8 +1197,12 @@ static int fio_ioring_register_files(struct thread_data *td)
+ 		f->engine_pos = i;
+ 	}
+ 
++#ifndef __managarm__
+ 	ret = syscall(__NR_io_uring_register, ld->ring_fd,
+ 			IORING_REGISTER_FILES, ld->fds, td->o.nr_files);
++#else
++	ret = ENOSYS;
++#endif
+ 	if (ret) {
+ err:
+ 		free(ld->fds);
+diff --git a/os/os-linux.h b/os/os-linux.h
+index ead8295..d985343 100644
+--- a/os/os-linux.h
++++ b/os/os-linux.h
+@@ -9,7 +9,9 @@
+ 
+ #include <sys/ioctl.h>
+ #include <sys/uio.h>
++#ifndef __managarm__
+ #include <sys/syscall.h>
++#endif
+ #include <sys/sysmacros.h>
+ #include <sys/vfs.h>
+ #include <sys/mman.h>
+@@ -164,8 +166,13 @@ static inline bool ioprio_value_is_class_rt(unsigned int priority)
+ static inline int ioprio_set(int which, int who, int ioprio_class, int ioprio,
+ 			     int ioprio_hint)
+ {
++#ifndef __managarm__
+ 	return syscall(__NR_ioprio_set, which, who,
+ 		       ioprio_value(ioprio_class, ioprio, ioprio_hint));
++#else
++	errno = ENOSYS;
++	return -1;
++#endif
+ }
+ 
+ #ifndef CONFIG_HAVE_GETTID
+@@ -342,7 +349,7 @@ static inline int fio_set_sched_idle(void)
+ #endif
+ 
+ #ifndef CONFIG_PWRITEV2
+-#ifdef __NR_preadv2
++#if defined(__NR_preadv2) && !defined(__managarm__)
+ static inline void make_pos_h_l(unsigned long *pos_h, unsigned long *pos_l,
+ 				off_t offset)
+ {
+diff --git a/os/os.h b/os/os.h
+index d54e7c0..cef1035 100644
+--- a/os/os.h
++++ b/os/os.h
+@@ -34,7 +34,7 @@ typedef enum {
+ } cpu_features;
+ 
+ /* IWYU pragma: begin_exports */
+-#if defined(__linux__)
++#if defined(__linux__) || defined(__managarm__)
+ #include "os-linux.h"
+ #elif defined(__FreeBSD__)
+ #include "os-freebsd.h"
+-- 
+2.45.2
+
