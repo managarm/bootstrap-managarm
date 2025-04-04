@@ -1,0 +1,46 @@
+From e5e7aeae711b26c197b3a4fb2f5b7aa79026621e Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Fri, 4 Apr 2025 19:37:41 +0200
+Subject: [PATCH] Add Managarm support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ src/iter/mod.rs | 1 +
+ src/lib.rs      | 2 ++
+ 2 files changed, 3 insertions(+)
+
+diff --git a/src/iter/mod.rs b/src/iter/mod.rs
+index bb2213a..00ded97 100644
+--- a/src/iter/mod.rs
++++ b/src/iter/mod.rs
+@@ -10,6 +10,7 @@ mod internal;
+     target_os = "openbsd",
+     target_os = "android",
+     target_os = "illumos",
++    target_os = "managarm",
+ ))]
+ #[path = "linux.rs"]
+ mod internal;
+diff --git a/src/lib.rs b/src/lib.rs
+index f3b7440..a1749ba 100644
+--- a/src/lib.rs
++++ b/src/lib.rs
+@@ -18,6 +18,7 @@ mod os;
+     target_os = "openbsd",
+     target_os = "android",
+     target_os = "illumos",
++    target_os = "managarm",
+ ))]
+ #[path = "linux.rs"]
+ mod os;
+@@ -42,6 +43,7 @@ pub enum MacAddressError {
+     target_os = "openbsd",
+     target_os = "android",
+     target_os = "illumos",
++    target_os = "managarm",
+ ))]
+ impl From<nix::Error> for MacAddressError {
+     fn from(_: nix::Error) -> MacAddressError {
+-- 
+2.49.0
+
