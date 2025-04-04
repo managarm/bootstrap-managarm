@@ -1,0 +1,86 @@
+From bceb323f59d84cea682669b84eff6d751a22f554 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Fri, 4 Apr 2025 16:02:28 +0200
+Subject: [PATCH] Add mlibc support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ src/backend/libc/conv.rs     | 1 +
+ src/backend/libc/fs/types.rs | 5 +++++
+ src/ioctl/mod.rs             | 4 ++++
+ 3 files changed, 10 insertions(+)
+
+diff --git a/src/backend/libc/conv.rs b/src/backend/libc/conv.rs
+index 4f7bb5d..ac1ec2d 100644
+--- a/src/backend/libc/conv.rs
++++ b/src/backend/libc/conv.rs
+@@ -209,6 +209,7 @@ pub(super) fn msg_iov_len(len: usize) -> c::size_t {
+     )),
+     not(any(
+         target_os = "android",
++        target_os = "managarm",
+         all(
+             target_os = "linux",
+             not(target_env = "musl"),
+diff --git a/src/backend/libc/fs/types.rs b/src/backend/libc/fs/types.rs
+index 8d70615..0c2a87b 100644
+--- a/src/backend/libc/fs/types.rs
++++ b/src/backend/libc/fs/types.rs
+@@ -841,6 +841,7 @@ bitflags! {
+             target_os = "l4re",
+             target_os = "linux",
+             target_os = "wasi",
++            target_os = "managarm"
+         )))]
+         const NO_HIDE_STALE = bitcast!(c::FALLOC_FL_NO_HIDE_STALE);
+         /// `FALLOC_FL_COLLAPSE_RANGE`
+@@ -852,6 +853,7 @@ bitflags! {
+             target_os = "hurd",
+             target_os = "emscripten",
+             target_os = "wasi",
++            target_os = "managarm"
+         )))]
+         const COLLAPSE_RANGE = bitcast!(c::FALLOC_FL_COLLAPSE_RANGE);
+         /// `FALLOC_FL_ZERO_RANGE`
+@@ -863,6 +865,7 @@ bitflags! {
+             target_os = "hurd",
+             target_os = "emscripten",
+             target_os = "wasi",
++            target_os = "managarm"
+         )))]
+         const ZERO_RANGE = bitcast!(c::FALLOC_FL_ZERO_RANGE);
+         /// `FALLOC_FL_INSERT_RANGE`
+@@ -874,6 +877,7 @@ bitflags! {
+             target_os = "hurd",
+             target_os = "emscripten",
+             target_os = "wasi",
++            target_os = "managarm"
+         )))]
+         const INSERT_RANGE = bitcast!(c::FALLOC_FL_INSERT_RANGE);
+         /// `FALLOC_FL_UNSHARE_RANGE`
+@@ -885,6 +889,7 @@ bitflags! {
+             target_os = "hurd",
+             target_os = "emscripten",
+             target_os = "wasi",
++            target_os = "managarm"
+         )))]
+         const UNSHARE_RANGE = bitcast!(c::FALLOC_FL_UNSHARE_RANGE);
+ 
+diff --git a/src/ioctl/mod.rs b/src/ioctl/mod.rs
+index 2f0c951..8028232 100644
+--- a/src/ioctl/mod.rs
++++ b/src/ioctl/mod.rs
+@@ -315,6 +315,10 @@ type _RawOpcode = c::c_uint;
+ ))]
+ type _RawOpcode = c::c_ulong;
+ 
++// mlibc uses `c_ulong`
++#[cfg(target_env = "mlibc")]
++type _RawOpcode = c::c_ulong;
++
+ // Musl uses `c_int`.
+ #[cfg(all(
+     not(linux_raw),
+-- 
+2.49.0
+
