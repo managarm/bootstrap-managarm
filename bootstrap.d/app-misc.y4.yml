@@ -1,4 +1,49 @@
 packages:
+  - name: broot
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: A new way to see and navigate directory trees
+      description: Broot is a new way to see and navigate directory trees.
+      spdx: 'MIT'
+      website: 'https://dystroy.org/broot'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['app-misc']
+    source:
+      subdir: ports
+      git: 'https://github.com/Canop/broot.git'
+      tag: 'v1.45.1'
+      version: '1.45.1'
+    tools_required:
+      - host-cargo
+      - system-gcc
+    sources_required:
+      - rust-patched-libs
+    pkgs_required:
+      - mlibc
+    revision: 1
+    configure:
+      - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
+        isolate_network: false
+    build:
+      - args:
+        - 'cargo'
+        - 'install'
+        - '--locked'
+        - '--target-dir'
+        - '@THIS_BUILD_DIR@'
+        - '--path'
+        - '@THIS_SOURCE_DIR@'
+        - '--root'
+        - '@THIS_COLLECT_DIR@/usr'
+        - '--target'
+        - '@OPTION:rust-arch@-unknown-managarm-mlibc'
+        - '-j@PARALLELISM@'
+        environ:
+          CC: "@OPTION:arch-triple@-gcc"
+        isolate_network: false
+      - args: ['rm', '-v', '@THIS_COLLECT_DIR@/usr/.crates.toml']
+      - args: ['rm', '-v', '@THIS_COLLECT_DIR@/usr/.crates2.json']
+
   - name: ca-certificates
     labels: [aarch64, riscv64]
     architecture: noarch
