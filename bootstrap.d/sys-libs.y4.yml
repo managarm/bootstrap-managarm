@@ -102,6 +102,12 @@ sources:
     tag: 'v0.3.10'
     version: '0.3.10'
 
+  - name: rust-rustix-0.38
+    subdir: 'ports'
+    git: 'https://github.com/bytecodealliance/rustix.git'
+    tag: 'v0.38.44'
+    version: '0.38.44'
+
   - name: rust-rustix-1.0
     subdir: 'ports'
     git: 'https://github.com/bytecodealliance/rustix.git'
@@ -156,6 +162,8 @@ sources:
       - name: rust-shared-library
         recursive: true
       - name: rust-errno
+        recursive: true
+      - name: rust-rustix-0.38
         recursive: true
       - name: rust-rustix-1.0
         recursive: true

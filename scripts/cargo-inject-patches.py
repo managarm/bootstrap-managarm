@@ -21,7 +21,7 @@ patched_libs = {
     "glutin_egl_sys": "0.1.5",
     "shared_library": "0.1.9",
     "errno": "0.3.10",
-    "rustix": "1.0.5",
+    "rustix": ["0.38.44", "1.0.5"],
     "uzers": "0.12.1",
     "cc": "1.2.17"
 }
