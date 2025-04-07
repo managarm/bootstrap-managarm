@@ -151,6 +151,13 @@ sources:
     tag: 'v0.10.1'
     version: '0.10.1'
 
+  - name: rust-socket2
+    subdir: 'ports'
+    git: 'https://github.com/rust-lang/socket2.git'
+    branch: 'v0.5.x'
+    commit: '660d5f843aba5096089ef123cf69199bb8caa1e4'
+    version: '0.5.9'
+
   - name: rust-patched-libs
     subdir: 'ports'
     sources_required:
@@ -203,6 +210,8 @@ sources:
       - name: rust-lua-src
         recursive: true
       - name: rust-starship-battery
+        recursive: true
+      - name: rust-socket2
         recursive: true
 
 packages:

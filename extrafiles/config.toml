@@ -39,3 +39,4 @@ termios = { path = "@SOURCE_ROOT@/ports/rust-termios", package = "termios" }
 mac_address = { path = "@SOURCE_ROOT@/ports/rust-mac-address", package = "mac_address" }
 lua-src = { path = "@SOURCE_ROOT@/ports/rust-lua-src", package = "lua-src" }
 starship-battery = { path = "@SOURCE_ROOT@/ports/rust-starship-battery" }
+socket2 = { path = "@SOURCE_ROOT@/ports/rust-socket2" }
