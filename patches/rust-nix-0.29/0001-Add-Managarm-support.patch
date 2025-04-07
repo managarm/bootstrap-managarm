@@ -1,25 +1,26 @@
-From 954e44812178eac47c39a8c7ffbe2b185d4e6ca1 Mon Sep 17 00:00:00 2001
+From 2182aff346c122d23017bf85f780eced2fa1a61d Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Fri, 4 Apr 2025 15:29:44 +0200
 Subject: [PATCH] Add Managarm support
 
 ---
- src/errno.rs           | 152 +++++++++++++++++++-------------
- src/features.rs        |   2 +-
- src/ifaddrs.rs         |   2 +-
- src/lib.rs             |   7 +-
- src/poll.rs            |   2 +-
- src/sys/memfd.rs       |   1 +
- src/sys/mod.rs         |  17 ++--
- src/sys/resource.rs    |   4 +-
- src/sys/signal.rs      |  34 +++++---
- src/sys/socket/addr.rs |  63 +++++++------
- src/sys/socket/mod.rs  | 115 ++++++++++++------------
- src/sys/termios.rs     |  78 +++++++++++------
- src/sys/time.rs        |   7 +-
- src/time.rs            |  25 +++---
- src/unistd.rs          | 194 +++++++++++++++++++++++++++--------------
- 15 files changed, 429 insertions(+), 274 deletions(-)
+ src/errno.rs              | 152 +++++++++++++++++++++---------------
+ src/features.rs           |   2 +-
+ src/ifaddrs.rs            |   2 +-
+ src/lib.rs                |   7 +-
+ src/poll.rs               |   2 +-
+ src/sys/memfd.rs          |   1 +
+ src/sys/mod.rs            |  17 ++--
+ src/sys/resource.rs       |  20 +++--
+ src/sys/signal.rs         |  34 +++++---
+ src/sys/socket/addr.rs    |  65 +++++++++-------
+ src/sys/socket/mod.rs     | 139 +++++++++++++++++----------------
+ src/sys/socket/sockopt.rs |  18 +++--
+ src/sys/termios.rs        |  75 ++++++++++++------
+ src/sys/time.rs           |   7 +-
+ src/time.rs               |  25 +++---
+ src/unistd.rs             | 158 ++++++++++++++++++++++++--------------
+ 16 files changed, 431 insertions(+), 293 deletions(-)
 
 diff --git a/src/errno.rs b/src/errno.rs
 index 2e74a84..05b3bd6 100644
@@ -613,7 +614,7 @@ index 93339d1..50ccb5b 100644
      feature = "time",
      feature = "signal"
 diff --git a/src/sys/resource.rs b/src/sys/resource.rs
-index 73d8a05..d2e28ce 100644
+index 73d8a05..d07d17d 100644
 --- a/src/sys/resource.rs
 +++ b/src/sys/resource.rs
 @@ -19,6 +19,7 @@ cfg_if! {
@@ -639,6 +640,69 @@ index 73d8a05..d2e28ce 100644
              all(target_os = "linux", not(any(target_env = "gnu", target_env = "uclibc")))
          ), repr(i32))]
      #[non_exhaustive]
+@@ -75,22 +77,22 @@ libc_enum! {
+         /// The maximum number of kqueues this user id is allowed to create.
+         RLIMIT_KQUEUES,
+ 
+-        #[cfg(linux_android)]
++        #[cfg(any(linux_android, target_os = "managarm"))]
+         /// A limit on the combined number of flock locks and fcntl leases that
+         /// this process may establish.
+         RLIMIT_LOCKS,
+ 
+-        #[cfg(any(linux_android, target_os = "freebsd", netbsdlike))]
++        #[cfg(any(linux_android, target_os = "freebsd", netbsdlike, target_os = "managarm"))]
+         /// The maximum size (in bytes) which a process may lock into memory
+         /// using the mlock(2) system call.
+         RLIMIT_MEMLOCK,
+ 
+-        #[cfg(linux_android)]
++        #[cfg(any(linux_android, target_os = "managarm"))]
+         /// A limit on the number of bytes that can be allocated for POSIX
+         /// message queues  for  the  real  user  ID  of  the  calling process.
+         RLIMIT_MSGQUEUE,
+ 
+-        #[cfg(linux_android)]
++        #[cfg(any(linux_android, target_os = "managarm"))]
+         /// A ceiling to which the process's nice value can be raised using
+         /// setpriority or nice.
+         RLIMIT_NICE,
+@@ -100,6 +102,7 @@ libc_enum! {
+             target_os = "freebsd",
+             netbsdlike,
+             target_os = "aix",
++            target_os = "managarm"
+         ))]
+         /// The maximum number of simultaneous processes for this user id.
+         RLIMIT_NPROC,
+@@ -113,23 +116,24 @@ libc_enum! {
+             target_os = "freebsd",
+             netbsdlike,
+             target_os = "aix",
++            target_os = "managarm"
+         ))]
+         /// When there is memory pressure and swap is available, prioritize
+         /// eviction of a process' resident pages beyond this amount (in bytes).
+         RLIMIT_RSS,
+ 
+-        #[cfg(linux_android)]
++        #[cfg(any(linux_android, target_os = "managarm"))]
+         /// A ceiling on the real-time priority that may be set for this process
+         /// using sched_setscheduler and  sched_set‐ param.
+         RLIMIT_RTPRIO,
+ 
+-        #[cfg(any(target_os = "linux"))]
++        #[cfg(any(target_os = "linux", target_os = "managarm"))]
+         /// A limit (in microseconds) on the amount of CPU time that a process
+         /// scheduled under a real-time scheduling policy may con‐ sume without
+         /// making a blocking system call.
+         RLIMIT_RTTIME,
+ 
+-        #[cfg(linux_android)]
++        #[cfg(any(linux_android, target_os = "managarm"))]
+         /// A limit on the number of signals that may be queued for the real
+         /// user ID of the  calling  process.
+         RLIMIT_SIGPENDING,
 diff --git a/src/sys/signal.rs b/src/sys/signal.rs
 index 921fb28..cfd5978 100644
 --- a/src/sys/signal.rs
@@ -786,7 +850,7 @@ index 921fb28..cfd5978 100644
      #[doc(alias("sigsuspend"))]
      pub fn suspend(&self) -> Result<()> {
 diff --git a/src/sys/socket/addr.rs b/src/sys/socket/addr.rs
-index aa89ba9..fba0d59 100644
+index aa89ba9..a314fc7 100644
 --- a/src/sys/socket/addr.rs
 +++ b/src/sys/socket/addr.rs
 @@ -5,6 +5,7 @@
@@ -1036,6 +1100,15 @@ index aa89ba9..fba0d59 100644
                  ))]
              {
                  let p = unsafe{ &self.ss as *const libc::sockaddr_storage };
+@@ -1328,7 +1339,7 @@ impl SockaddrStorage {
+     accessors! {as_alg_addr, as_alg_addr_mut, AlgAddr,
+     AddressFamily::Alg, libc::sockaddr_alg, alg}
+ 
+-    #[cfg(any(linux_android, target_os = "fuchsia"))]
++    #[cfg(any(linux_android, target_os = "fuchsia", target_os = "managarm"))]
+     #[cfg(feature = "net")]
+     accessors! {
+     as_link_addr, as_link_addr_mut, LinkAddr,
 @@ -1350,7 +1361,7 @@ impl SockaddrStorage {
      as_sockaddr_in6, as_sockaddr_in6_mut, SockaddrIn6,
      AddressFamily::Inet6, libc::sockaddr_in6, sin6}
@@ -1091,9 +1164,18 @@ index aa89ba9..fba0d59 100644
      feature! {
      #![feature = "net"]
 diff --git a/src/sys/socket/mod.rs b/src/sys/socket/mod.rs
-index 1f1869e..a589b2e 100644
+index 1f1869e..1d36984 100644
 --- a/src/sys/socket/mod.rs
 +++ b/src/sys/socket/mod.rs
+@@ -1,7 +1,7 @@
+ //! Socket interface functions
+ //!
+ //! [Further reading](https://man7.org/linux/man-pages/man7/socket.7.html)
+-#[cfg(any(target_os = "freebsd", linux_android))]
++#[cfg(any(target_os = "freebsd", linux_android, target_os = "managarm"))]
+ #[cfg(feature = "uio")]
+ use crate::sys::time::TimeSpec;
+ #[cfg(not(target_os = "redox"))]
 @@ -48,7 +48,7 @@ pub use self::addr::{SockaddrIn, SockaddrIn6};
  
  #[cfg(linux_android)]
@@ -1274,6 +1356,29 @@ index 1f1869e..a589b2e 100644
      ScmTimestampns(TimeSpec),
      /// Realtime clock timestamp
      ///
+@@ -744,11 +746,11 @@ pub enum ControlMessageOwned {
+     /// [Further reading](https://man.freebsd.org/cgi/man.cgi?setsockopt)
+     #[cfg(target_os = "freebsd")]
+     ScmMonotonic(TimeSpec),
+-    #[cfg(any(linux_android, apple_targets, target_os = "netbsd"))]
++    #[cfg(any(linux_android, apple_targets, target_os = "netbsd", target_os = "managarm"))]
+     #[cfg(feature = "net")]
+     #[cfg_attr(docsrs, doc(cfg(feature = "net")))]
+     Ipv4PacketInfo(libc::in_pktinfo),
+-    #[cfg(any(linux_android, bsd))]
++    #[cfg(any(linux_android, bsd, target_os = "managarm"))]
+     #[cfg(feature = "net")]
+     #[cfg_attr(docsrs, doc(cfg(feature = "net")))]
+     Ipv6PacketInfo(libc::in6_pktinfo),
+@@ -790,7 +792,7 @@ pub enum ControlMessageOwned {
+     ///
+     /// `RxqOvfl` socket option should be enabled on a socket
+     /// to allow receiving the drop counter.
+-    #[cfg(any(linux_android, target_os = "fuchsia"))]
++    #[cfg(any(linux_android, target_os = "fuchsia", target_os = "managarm"))]
+     RxqOvfl(u32),
+ 
+     /// Socket error queue control messages read with the `MSG_ERRQUEUE` flag.
 @@ -814,7 +816,7 @@ pub enum ControlMessageOwned {
  }
  
@@ -1326,15 +1431,28 @@ index 1f1869e..a589b2e 100644
              #[cfg(feature = "net")]
              (libc::IPPROTO_IP, libc::IP_PKTINFO) => {
                  let info = unsafe { ptr::read_unaligned(p as *const libc::in_pktinfo) };
-@@ -995,7 +997,7 @@ impl ControlMessageOwned {
-         }
-     }
- 
--    #[cfg(linux_android)]
-+    #[cfg(any(linux_android, target_os = "managarm"))]
-     #[cfg(feature = "net")]
-     #[allow(clippy::cast_ptr_alignment)]    // False positive
-     unsafe fn recv_err_helper<T>(p: *mut libc::c_uchar, len: usize) -> (libc::sock_extended_err, Option<T>) {
+@@ -959,18 +961,18 @@ impl ControlMessageOwned {
+                 let gso_size: i32 = unsafe { ptr::read_unaligned(p as *const _) };
+                 ControlMessageOwned::UdpGroSegments(gso_size)
+             },
+-            #[cfg(any(linux_android, target_os = "fuchsia"))]
++            #[cfg(any(linux_android, target_os = "fuchsia", target_os = "managarm"))]
+             (libc::SOL_SOCKET, libc::SO_RXQ_OVFL) => {
+                 let drop_counter = unsafe { ptr::read_unaligned(p as *const u32) };
+                 ControlMessageOwned::RxqOvfl(drop_counter)
+             },
+-            #[cfg(linux_android)]
++            #[cfg(any(linux_android))]
+             #[cfg(feature = "net")]
+             (libc::IPPROTO_IP, libc::IP_RECVERR) => {
+                 let (err, addr) = unsafe { Self::recv_err_helper::<sockaddr_in>(p, len) };
+                 ControlMessageOwned::Ipv4RecvErr(err, addr)
+             },
+-            #[cfg(linux_android)]
++            #[cfg(any(linux_android))]
+             #[cfg(feature = "net")]
+             (libc::IPPROTO_IPV6, libc::IPV6_RECVERR) => {
+                 let (err, addr) = unsafe { Self::recv_err_helper::<sockaddr_in6>(p, len) };
 @@ -1046,7 +1048,7 @@ pub enum ControlMessage<'a> {
      ///
      /// For further information, please refer to the
@@ -1362,7 +1480,16 @@ index 1f1869e..a589b2e 100644
      #[cfg(feature = "net")]
      #[cfg_attr(docsrs, doc(cfg(feature = "net")))]
      Ipv6PacketInfo(&'a libc::in6_pktinfo),
-@@ -1168,7 +1170,7 @@ impl<'a> ControlMessage<'a> {
+@@ -1142,7 +1144,7 @@ pub enum ControlMessage<'a> {
+     /// skbs indicating the number of packets dropped by the
+     /// socket between the last recieved packet and this
+     /// received packet.
+-    #[cfg(any(linux_android, target_os = "fuchsia"))]
++    #[cfg(any(linux_android, target_os = "fuchsia", target_os = "managarm"))]
+     RxqOvfl(&'a u32),
+ 
+     /// Configure the transmission time of packets.
+@@ -1168,13 +1170,13 @@ impl<'a> ControlMessage<'a> {
  
      /// The value of CMSG_LEN on this message.
      /// Safe because CMSG_LEN is always safe
@@ -1371,6 +1498,13 @@ index 1f1869e..a589b2e 100644
                all(target_os = "linux", not(target_env = "musl"))))]
      fn cmsg_len(&self) -> usize {
          unsafe{CMSG_LEN(self.len() as libc::c_uint) as usize}
+     }
+ 
+-    #[cfg(not(any(target_os = "android",
++    #[cfg(not(any(target_os = "android", target_os = "managarm",
+                   all(target_os = "linux", not(target_env = "musl")))))]
+     fn cmsg_len(&self) -> libc::c_uint {
+         unsafe{CMSG_LEN(self.len() as libc::c_uint)}
 @@ -1186,7 +1188,7 @@ impl<'a> ControlMessage<'a> {
              ControlMessage::ScmRights(fds) => {
                  fds as *const _ as *const u8
@@ -1393,6 +1527,15 @@ index 1f1869e..a589b2e 100644
                        target_os = "freebsd", apple_targets))]
              #[cfg(feature = "net")]
              ControlMessage::Ipv6PacketInfo(info) => info as *const _ as *const u8,
+@@ -1248,7 +1250,7 @@ impl<'a> ControlMessage<'a> {
+             #[cfg(any(linux_android, freebsdlike, apple_targets, target_os = "haiku"))]
+             #[cfg(feature = "net")]
+             ControlMessage::Ipv6HopLimit(limit) => limit as *const _ as *const u8,
+-            #[cfg(any(linux_android, target_os = "fuchsia"))]
++            #[cfg(any(linux_android, target_os = "fuchsia", target_os = "managarm"))]
+             ControlMessage::RxqOvfl(drop_count) => {
+                 drop_count as *const _ as *const u8
+             },
 @@ -1272,7 +1274,7 @@ impl<'a> ControlMessage<'a> {
              ControlMessage::ScmRights(fds) => {
                  mem::size_of_val(fds)
@@ -1415,6 +1558,15 @@ index 1f1869e..a589b2e 100644
                        target_os = "freebsd", apple_targets))]
              #[cfg(feature = "net")]
              ControlMessage::Ipv6PacketInfo(info) => mem::size_of_val(info),
+@@ -1312,7 +1314,7 @@ impl<'a> ControlMessage<'a> {
+             ControlMessage::Ipv6HopLimit(limit) => {
+                 mem::size_of_val(limit)
+             },
+-            #[cfg(any(linux_android, target_os = "fuchsia"))]
++            #[cfg(any(linux_android, target_os = "fuchsia", target_os = "managarm"))]
+             ControlMessage::RxqOvfl(drop_count) => {
+                 mem::size_of_val(drop_count)
+             },
 @@ -1327,7 +1329,7 @@ impl<'a> ControlMessage<'a> {
      fn cmsg_level(&self) -> libc::c_int {
          match *self {
@@ -1437,6 +1589,15 @@ index 1f1869e..a589b2e 100644
                        target_os = "freebsd", apple_targets))]
              #[cfg(feature = "net")]
              ControlMessage::Ipv6PacketInfo(_) => libc::IPPROTO_IPV6,
+@@ -1350,7 +1352,7 @@ impl<'a> ControlMessage<'a> {
+             #[cfg(any(linux_android, freebsdlike, apple_targets, target_os = "haiku"))]
+             #[cfg(feature = "net")]
+             ControlMessage::Ipv6HopLimit(_) => libc::IPPROTO_IPV6,
+-            #[cfg(any(linux_android, target_os = "fuchsia"))]
++            #[cfg(any(linux_android, target_os = "fuchsia", target_os = "managarm"))]
+             ControlMessage::RxqOvfl(_) => libc::SOL_SOCKET,
+             #[cfg(target_os = "linux")]
+             ControlMessage::TxTime(_) => libc::SOL_SOCKET,
 @@ -1361,7 +1363,7 @@ impl<'a> ControlMessage<'a> {
      fn cmsg_type(&self) -> libc::c_int {
          match *self {
@@ -1459,6 +1620,15 @@ index 1f1869e..a589b2e 100644
                        target_os = "freebsd", apple_targets))]
              #[cfg(feature = "net")]
              ControlMessage::Ipv6PacketInfo(_) => libc::IPV6_PKTINFO,
+@@ -1395,7 +1397,7 @@ impl<'a> ControlMessage<'a> {
+             #[cfg(any(linux_android, freebsdlike, apple_targets, target_os = "haiku"))]
+             #[cfg(feature = "net")]
+             ControlMessage::Ipv6HopLimit(_) => libc::IPV6_HOPLIMIT,
+-            #[cfg(any(linux_android, target_os = "fuchsia"))]
++            #[cfg(any(linux_android, target_os = "fuchsia", target_os = "managarm"))]
+             ControlMessage::RxqOvfl(_) => {
+                 libc::SO_RXQ_OVFL
+             },
 @@ -1494,7 +1496,7 @@ pub fn sendmsg<S>(fd: RawFd, iov: &[IoSlice<'_>], cmsgs: &[ControlMessage],
  ///
  /// # References
@@ -1521,8 +1691,98 @@ index 1f1869e..a589b2e 100644
  ))]
  pub fn accept4(sockfd: RawFd, flags: SockFlag) -> Result<RawFd> {
      let res = unsafe {
+diff --git a/src/sys/socket/sockopt.rs b/src/sys/socket/sockopt.rs
+index f66b54e..be8c6fa 100644
+--- a/src/sys/socket/sockopt.rs
++++ b/src/sys/socket/sockopt.rs
+@@ -12,7 +12,7 @@ use std::os::unix::io::{AsFd, AsRawFd};
+ 
+ // Constants
+ // TCP_CA_NAME_MAX isn't defined in user space include files
+-#[cfg(any(target_os = "freebsd", target_os = "linux"))]
++#[cfg(any(target_os = "freebsd", target_os = "linux", target_os = "managarm"))]
+ #[cfg(feature = "net")]
+ const TCP_CA_NAME_MAX: usize = 16;
+ 
+@@ -386,7 +386,7 @@ sockopt_impl!(
+     libc::IP_MULTICAST_LOOP,
+     bool
+ );
+-#[cfg(target_os = "linux")]
++#[cfg(any(target_os = "linux", target_os = "managarm"))]
+ #[cfg(feature = "net")]
+ sockopt_impl!(
+     #[cfg_attr(docsrs, doc(cfg(feature = "net")))]
+@@ -398,7 +398,7 @@ sockopt_impl!(
+     libc::SO_PRIORITY,
+     libc::c_int
+ );
+-#[cfg(target_os = "linux")]
++#[cfg(any(target_os = "linux", target_os = "managarm"))]
+ #[cfg(feature = "net")]
+ sockopt_impl!(
+     #[cfg_attr(docsrs, doc(cfg(feature = "net")))]
+@@ -410,7 +410,7 @@ sockopt_impl!(
+     libc::IP_TOS,
+     libc::c_int
+ );
+-#[cfg(target_os = "linux")]
++#[cfg(any(target_os = "linux", target_os = "managarm"))]
+ #[cfg(feature = "net")]
+ sockopt_impl!(
+     #[cfg_attr(docsrs, doc(cfg(feature = "net")))]
+@@ -523,7 +523,7 @@ sockopt_impl!(
+     libc::LOCAL_PEERPID,
+     libc::c_int
+ );
+-#[cfg(linux_android)]
++#[cfg(any(linux_android, target_os = "managarm"))]
+ sockopt_impl!(
+     /// Return the credentials of the foreign process connected to this socket.
+     PeerCredentials,
+@@ -619,7 +619,7 @@ sockopt_impl!(
+     libc::TCP_KEEPINTVL,
+     u32
+ );
+-#[cfg(any(target_os = "fuchsia", target_os = "linux"))]
++#[cfg(any(target_os = "fuchsia", target_os = "linux", target_os = "managarm"))]
+ #[cfg(feature = "net")]
+ sockopt_impl!(
+     #[cfg_attr(docsrs, doc(cfg(feature = "net")))]
+@@ -852,7 +852,7 @@ sockopt_impl!(
+     libc::SO_ACCEPTFILTER,
+     libc::accept_filter_arg
+ );
+-#[cfg(target_os = "linux")]
++#[cfg(any(target_os = "linux", target_os = "managarm"))]
+ sockopt_impl!(
+     /// Set the mark for each packet sent through this socket (similar to the
+     /// netfilter MARK target but socket-based).
+@@ -872,7 +872,7 @@ sockopt_impl!(
+     libc::SO_PASSCRED,
+     bool
+ );
+-#[cfg(any(target_os = "freebsd", target_os = "linux"))]
++#[cfg(any(target_os = "freebsd", target_os = "linux", target_os = "managarm"))]
+ #[cfg(feature = "net")]
+ sockopt_impl!(
+     #[cfg_attr(docsrs, doc(cfg(feature = "net")))]
+@@ -1590,11 +1590,13 @@ impl<'a> Set<'a, OsString> for SetOsString<'a> {
+ }
+ 
+ /// Getter for a `CString` value.
++#[cfg(apple_targets)]
+ struct GetCString<T: AsMut<[u8]>> {
+     len: socklen_t,
+     val: MaybeUninit<T>,
+ }
+ 
++#[cfg(apple_targets)]
+ impl<T: AsMut<[u8]>> Get<CString> for GetCString<T> {
+     fn uninit() -> Self {
+         GetCString {
 diff --git a/src/sys/termios.rs b/src/sys/termios.rs
-index e006c2f..cd511b8 100644
+index e006c2f..cbfebd2 100644
 --- a/src/sys/termios.rs
 +++ b/src/sys/termios.rs
 @@ -166,7 +166,7 @@ pub struct Termios {
@@ -1608,16 +1868,7 @@ index e006c2f..cd511b8 100644
          B4000000,
      }
      impl TryFrom<libc::speed_t>
-@@ -425,7 +427,7 @@ libc_enum! {
-         #[cfg(not(target_os = "haiku"))]
-         VLNEXT,
-         #[cfg(not(any(all(target_os = "linux", target_arch = "sparc64"),
--                solarish, target_os = "aix", target_os = "haiku")))]
-+                solarish, target_os = "aix", target_os = "haiku", target_os = "managarm")))]
-         VMIN,
-         VQUIT,
-         #[cfg(not(target_os = "haiku"))]
-@@ -435,12 +437,12 @@ libc_enum! {
+@@ -435,7 +437,7 @@ libc_enum! {
          VSTATUS,
          VSTOP,
          VSUSP,
@@ -1626,21 +1877,16 @@ index e006c2f..cd511b8 100644
          VSWTC,
          #[cfg(any(solarish, target_os = "haiku"))]
          VSWTCH,
-         #[cfg(not(any(all(target_os = "linux", target_arch = "sparc64"),
--                solarish, target_os = "aix", target_os = "haiku")))]
-+                solarish, target_os = "aix", target_os = "haiku", target_os = "managarm")))]
-         VTIME,
-         #[cfg(not(any(target_os = "aix", target_os = "haiku")))]
-         VWERASE,
-@@ -454,6 +456,7 @@ libc_enum! {
+@@ -453,7 +455,7 @@ libc_enum! {
+     all(target_os = "linux", target_arch = "sparc64"),
      solarish,
      target_os = "aix",
-     target_os = "haiku",
-+    target_os = "managarm"
+-    target_os = "haiku",
++    target_os = "haiku"
  ))]
  impl SpecialCharacterIndices {
      pub const VMIN: SpecialCharacterIndices = SpecialCharacterIndices::VEOF;
-@@ -482,7 +485,7 @@ libc_bitflags! {
+@@ -482,7 +484,7 @@ libc_bitflags! {
          IXANY;
          #[cfg(not(any(target_os = "redox", target_os = "haiku")))]
          IMAXBEL;
@@ -1649,7 +1895,7 @@ index e006c2f..cd511b8 100644
          IUTF8;
      }
  }
-@@ -493,7 +496,8 @@ libc_bitflags! {
+@@ -493,7 +495,8 @@ libc_bitflags! {
          OPOST;
          #[cfg(any(linux_android,
                    target_os = "haiku",
@@ -1659,7 +1905,7 @@ index e006c2f..cd511b8 100644
          OLCUC;
          ONLCR;
          OCRNL as tcflag_t;
-@@ -501,74 +505,91 @@ libc_bitflags! {
+@@ -501,74 +504,91 @@ libc_bitflags! {
          ONLRET as tcflag_t;
          #[cfg(any(linux_android,
                    target_os = "haiku",
@@ -1752,7 +1998,7 @@ index e006c2f..cd511b8 100644
                    apple_targets))]
          FF1 as tcflag_t;
          #[cfg(bsd)]
-@@ -582,27 +603,33 @@ libc_bitflags! {
+@@ -582,27 +602,33 @@ libc_bitflags! {
  
          #[cfg(any(linux_android,
                    target_os = "haiku",
@@ -1786,7 +2032,7 @@ index e006c2f..cd511b8 100644
                    apple_targets))]
          FFDLY as tcflag_t;
      }
-@@ -625,15 +652,16 @@ libc_bitflags! {
+@@ -625,15 +651,16 @@ libc_bitflags! {
          CLOCAL;
          #[cfg(not(any(target_os = "redox", target_os = "aix")))]
          CRTSCTS;
@@ -1948,7 +2194,7 @@ index 195df71..63eb186 100644
  pub fn clock_nanosleep(
      clock_id: ClockId,
 diff --git a/src/unistd.rs b/src/unistd.rs
-index 58ede6e..ea27329 100644
+index 58ede6e..3c1dfce 100644
 --- a/src/unistd.rs
 +++ b/src/unistd.rs
 @@ -4,7 +4,7 @@ use crate::errno::Errno;
@@ -2066,65 +2312,16 @@ index 58ede6e..ea27329 100644
      ))]
      /// Minimum number of bits needed to represent, as a signed integer value,
      /// the maximum size of a regular file allowed in the specified directory.
-@@ -2075,6 +2083,7 @@ pub enum PathconfVar {
+@@ -2074,7 +2082,7 @@ pub enum PathconfVar {
+         solarish,
          netbsdlike,
          target_os = "dragonfly",
-         target_os = "redox",
-+        target_os = "managarm"
+-        target_os = "redox",
++        target_os = "redox"
      ))]
      /// Symbolic links can be created.
      POSIX2_SYMLINKS = libc::_PC_2_SYMLINKS,
-@@ -2082,7 +2091,8 @@ pub enum PathconfVar {
-         linux_android,
-         freebsdlike,
-         target_os = "openbsd",
--        target_os = "redox"
-+        target_os = "redox",
-+        target_os = "managarm"
-     ))]
-     /// Minimum number of bytes of storage actually allocated for any portion of
-     /// a file.
-@@ -2090,7 +2100,8 @@ pub enum PathconfVar {
-     #[cfg(any(
-         freebsdlike,
-         linux_android,
--        target_os = "openbsd"
-+        target_os = "openbsd",
-+        target_os = "managarm"
-     ))]
-     /// Recommended increment for file transfer sizes between the
-     /// `POSIX_REC_MIN_XFER_SIZE` and `POSIX_REC_MAX_XFER_SIZE` values.
-@@ -2099,7 +2110,8 @@ pub enum PathconfVar {
-         linux_android,
-         freebsdlike,
-         target_os = "openbsd",
--        target_os = "redox"
-+        target_os = "redox",
-+        target_os = "managarm"
-     ))]
-     /// Maximum recommended file transfer size.
-     POSIX_REC_MAX_XFER_SIZE = libc::_PC_REC_MAX_XFER_SIZE,
-@@ -2107,7 +2119,8 @@ pub enum PathconfVar {
-         linux_android,
-         freebsdlike,
-         target_os = "openbsd",
--        target_os = "redox"
-+        target_os = "redox",
-+        target_os = "managarm"
-     ))]
-     /// Minimum recommended file transfer size.
-     POSIX_REC_MIN_XFER_SIZE = libc::_PC_REC_MIN_XFER_SIZE,
-@@ -2115,7 +2128,8 @@ pub enum PathconfVar {
-         linux_android,
-         freebsdlike,
-         target_os = "openbsd",
--        target_os = "redox"
-+        target_os = "redox",
-+        target_os = "managarm"
-     ))]
-     ///  Recommended file transfer buffer alignment.
-     POSIX_REC_XFER_ALIGN = libc::_PC_REC_XFER_ALIGN,
-@@ -2125,6 +2139,7 @@ pub enum PathconfVar {
+@@ -2125,6 +2133,7 @@ pub enum PathconfVar {
          solarish,
          netbsdlike,
          target_os = "redox",
@@ -2132,31 +2329,34 @@ index 58ede6e..ea27329 100644
      ))]
      /// Maximum number of bytes in a symbolic link.
      SYMLINK_MAX = libc::_PC_SYMLINK_MAX,
-@@ -2144,6 +2159,7 @@ pub enum PathconfVar {
+@@ -2143,7 +2152,7 @@ pub enum PathconfVar {
+         freebsdlike,
          solarish,
          target_os = "openbsd",
-         target_os = "redox",
-+        target_os = "managarm"
+-        target_os = "redox",
++        target_os = "redox"
      ))]
      /// Asynchronous input or output operations may be performed for the
      /// associated file.
-@@ -2154,6 +2170,7 @@ pub enum PathconfVar {
+@@ -2153,7 +2162,7 @@ pub enum PathconfVar {
+         freebsdlike,
          solarish,
          target_os = "openbsd",
-         target_os = "redox",
-+        target_os = "managarm"
+-        target_os = "redox",
++        target_os = "redox"
      ))]
      /// Prioritized input or output operations may be performed for the
      /// associated file.
-@@ -2164,6 +2181,7 @@ pub enum PathconfVar {
+@@ -2163,7 +2172,7 @@ pub enum PathconfVar {
+         freebsdlike,
          solarish,
          netbsdlike,
-         target_os = "redox",
-+        target_os = "managarm"
+-        target_os = "redox",
++        target_os = "redox"
      ))]
      /// Synchronized input or output operations may be performed for the
      /// associated file.
-@@ -2281,7 +2299,8 @@ pub enum SysconfVar {
+@@ -2281,7 +2290,8 @@ pub enum SysconfVar {
          linux_android,
          freebsdlike,
          apple_targets,
@@ -2166,7 +2366,7 @@ index 58ede6e..ea27329 100644
      ))]
      /// The maximum amount by which a process can decrease its asynchronous I/O
      /// priority level from its own scheduling priority.
-@@ -2356,20 +2375,21 @@ pub enum SysconfVar {
+@@ -2356,20 +2366,21 @@ pub enum SysconfVar {
          freebsdlike,
          apple_targets,
          target_os = "linux",
@@ -2192,15 +2392,16 @@ index 58ede6e..ea27329 100644
      /// The implementation supports the Process CPU-Time Clocks option.
      _POSIX_CPUTIME = libc::_SC_CPUTIME,
      /// The implementation supports the File Synchronization option.
-@@ -2381,6 +2401,7 @@ pub enum SysconfVar {
+@@ -2380,7 +2391,7 @@ pub enum SysconfVar {
+         apple_targets,
          solarish,
          target_os = "linux",
-         target_os = "openbsd",
-+        target_os = "managarm"
+-        target_os = "openbsd",
++        target_os = "openbsd"
      ))]
      /// The implementation supports the IPv6 option.
      _POSIX_IPV6 = libc::_SC_IPV6,
-@@ -2411,6 +2432,7 @@ pub enum SysconfVar {
+@@ -2411,6 +2422,7 @@ pub enum SysconfVar {
          solarish,
          apple_targets,
          target_os = "openbsd",
@@ -2208,23 +2409,24 @@ index 58ede6e..ea27329 100644
      ))]
      /// The implementation supports the Prioritized Input and Output option.
      _POSIX_PRIORITIZED_IO = libc::_SC_PRIORITIZED_IO,
-@@ -2423,6 +2445,7 @@ pub enum SysconfVar {
+@@ -2422,14 +2434,14 @@ pub enum SysconfVar {
+         solarish,
          apple_targets,
          target_os = "linux",
-         target_os = "openbsd",
-+        target_os = "managarm"
+-        target_os = "openbsd",
++        target_os = "openbsd"
      ))]
      /// The implementation supports the Raw Sockets option.
      _POSIX_RAW_SOCKETS = libc::_SC_RAW_SOCKETS,
-@@ -2430,6 +2453,7 @@ pub enum SysconfVar {
+     #[cfg(any(
          bsd,
          solarish,
-         target_os = "linux",
-+        target_os = "managarm"
+-        target_os = "linux",
++        target_os = "linux"
      ))]
      /// The implementation supports read-write locks.
      _POSIX_READER_WRITER_LOCKS = libc::_SC_READER_WRITER_LOCKS,
-@@ -2437,7 +2461,8 @@ pub enum SysconfVar {
+@@ -2437,7 +2449,8 @@ pub enum SysconfVar {
          linux_android,
          freebsdlike,
          apple_targets,
@@ -2234,7 +2436,7 @@ index 58ede6e..ea27329 100644
      ))]
      /// The implementation supports realtime signals.
      _POSIX_REALTIME_SIGNALS = libc::_SC_REALTIME_SIGNALS,
-@@ -2445,6 +2470,7 @@ pub enum SysconfVar {
+@@ -2445,6 +2458,7 @@ pub enum SysconfVar {
          bsd,
          solarish,
          target_os = "linux",
@@ -2242,7 +2444,7 @@ index 58ede6e..ea27329 100644
      ))]
      /// The implementation supports the Regular Expression Handling option.
      _POSIX_REGEXP = libc::_SC_REGEXP,
-@@ -2457,20 +2483,21 @@ pub enum SysconfVar {
+@@ -2457,20 +2471,21 @@ pub enum SysconfVar {
      /// The implementation supports the Shared Memory Objects option.
      #[cfg(not(any(target_os = "redox", target_os = "haiku")))]
      _POSIX_SHARED_MEMORY_OBJECTS = libc::_SC_SHARED_MEMORY_OBJECTS,
@@ -2268,17 +2470,7 @@ index 58ede6e..ea27329 100644
      ))]
      /// The implementation supports the Process Sporadic Server option.
      _POSIX_SPORADIC_SERVER = libc::_SC_SPORADIC_SERVER,
-@@ -2479,7 +2506,8 @@ pub enum SysconfVar {
-     #[cfg(any(
-         apple_targets,
-         target_os = "linux",
--        target_os = "openbsd"
-+        target_os = "openbsd",
-+        target_os = "managarm"
-     ))]
-     _POSIX_SS_REPL_MAX = libc::_SC_SS_REPL_MAX,
-     /// The implementation supports the Synchronized Input and Output option.
-@@ -2495,6 +2523,7 @@ pub enum SysconfVar {
+@@ -2495,6 +2510,7 @@ pub enum SysconfVar {
          apple_targets,
          target_os = "linux",
          netbsdlike,
@@ -2286,7 +2478,7 @@ index 58ede6e..ea27329 100644
      ))]
      /// The implementation supports the Thread CPU-Time Clocks option.
      _POSIX_THREAD_CPUTIME = libc::_SC_THREAD_CPUTIME,
-@@ -2508,21 +2537,23 @@ pub enum SysconfVar {
+@@ -2508,7 +2524,7 @@ pub enum SysconfVar {
      /// The implementation supports the Thread Execution Scheduling option.
      #[cfg(not(target_os = "redox"))]
      _POSIX_THREAD_PRIORITY_SCHEDULING = libc::_SC_THREAD_PRIORITY_SCHEDULING,
@@ -2295,25 +2487,7 @@ index 58ede6e..ea27329 100644
      /// The implementation supports the Thread Process-Shared Synchronization
      /// option.
      _POSIX_THREAD_PROCESS_SHARED = libc::_SC_THREAD_PROCESS_SHARED,
-     #[cfg(any(
-         target_os = "dragonfly",
-         target_os = "linux",
--        target_os = "openbsd"
-+        target_os = "openbsd",
-+        target_os = "managarm"
-     ))]
-     /// The implementation supports the Robust Mutex Priority Inheritance option.
-     _POSIX_THREAD_ROBUST_PRIO_INHERIT = libc::_SC_THREAD_ROBUST_PRIO_INHERIT,
-     #[cfg(any(
-         target_os = "dragonfly",
-         target_os = "linux",
--        target_os = "openbsd"
-+        target_os = "openbsd",
-+        target_os = "managarm"
-     ))]
-     /// The implementation supports the Robust Mutex Priority Protection option.
-     _POSIX_THREAD_ROBUST_PRIO_PROTECT = libc::_SC_THREAD_ROBUST_PRIO_PROTECT,
-@@ -2533,7 +2564,8 @@ pub enum SysconfVar {
+@@ -2533,7 +2549,8 @@ pub enum SysconfVar {
          freebsdlike,
          apple_targets,
          target_os = "linux",
@@ -2323,7 +2497,7 @@ index 58ede6e..ea27329 100644
      ))]
      /// The implementation supports the Thread Sporadic Server option.
      _POSIX_THREAD_SPORADIC_SERVER = libc::_SC_THREAD_SPORADIC_SERVER,
-@@ -2544,7 +2576,8 @@ pub enum SysconfVar {
+@@ -2544,7 +2561,8 @@ pub enum SysconfVar {
          freebsdlike,
          apple_targets,
          target_os = "linux",
@@ -2333,7 +2507,7 @@ index 58ede6e..ea27329 100644
      ))]
      /// The implementation supports timeouts.
      _POSIX_TIMEOUTS = libc::_SC_TIMEOUTS,
-@@ -2555,7 +2588,8 @@ pub enum SysconfVar {
+@@ -2555,7 +2573,8 @@ pub enum SysconfVar {
          freebsdlike,
          apple_targets,
          target_os = "linux",
@@ -2343,7 +2517,7 @@ index 58ede6e..ea27329 100644
      ))]
      /// The implementation supports the Trace option.
      _POSIX_TRACE = libc::_SC_TRACE,
-@@ -2563,7 +2597,8 @@ pub enum SysconfVar {
+@@ -2563,7 +2582,8 @@ pub enum SysconfVar {
          freebsdlike,
          apple_targets,
          target_os = "linux",
@@ -2353,16 +2527,7 @@ index 58ede6e..ea27329 100644
      ))]
      /// The implementation supports the Trace Event Filter option.
      _POSIX_TRACE_EVENT_FILTER = libc::_SC_TRACE_EVENT_FILTER,
-@@ -2571,14 +2606,16 @@ pub enum SysconfVar {
-     #[cfg(any(
-         apple_targets,
-         target_os = "linux",
--        target_os = "openbsd"
-+        target_os = "openbsd",
-+        target_os = "managarm"
-     ))]
-     _POSIX_TRACE_EVENT_NAME_MAX = libc::_SC_TRACE_EVENT_NAME_MAX,
-     #[cfg(any(
+@@ -2578,7 +2598,8 @@ pub enum SysconfVar {
          freebsdlike,
          apple_targets,
          target_os = "linux",
@@ -2372,7 +2537,7 @@ index 58ede6e..ea27329 100644
      ))]
      /// The implementation supports the Trace Inherit option.
      _POSIX_TRACE_INHERIT = libc::_SC_TRACE_INHERIT,
-@@ -2586,7 +2623,8 @@ pub enum SysconfVar {
+@@ -2586,7 +2607,8 @@ pub enum SysconfVar {
          freebsdlike,
          apple_targets,
          target_os = "linux",
@@ -2382,35 +2547,7 @@ index 58ede6e..ea27329 100644
      ))]
      /// The implementation supports the Trace Log option.
      _POSIX_TRACE_LOG = libc::_SC_TRACE_LOG,
-@@ -2594,7 +2632,8 @@ pub enum SysconfVar {
-     #[cfg(any(
-         apple_targets,
-         target_os = "linux",
--        target_os = "openbsd"
-+        target_os = "openbsd",
-+        target_os = "managarm"
-     ))]
-     _POSIX_TRACE_NAME_MAX = libc::_SC_TRACE_NAME_MAX,
-     /// Maximum number of times `posix_trace_create` may be called from the same or different
-@@ -2602,21 +2641,24 @@ pub enum SysconfVar {
-     #[cfg(any(
-         apple_targets,
-         target_os = "linux",
--        target_os = "openbsd"
-+        target_os = "openbsd",
-+        target_os = "managarm"
-     ))]
-     _POSIX_TRACE_SYS_MAX = libc::_SC_TRACE_SYS_MAX,
-     /// Maximum number of user trace event type identifiers for a single process.
-     #[cfg(any(
-         apple_targets,
-         target_os = "linux",
--        target_os = "openbsd"
-+        target_os = "openbsd",
-+        target_os = "managarm"
-     ))]
-     _POSIX_TRACE_USER_EVENT_MAX = libc::_SC_TRACE_USER_EVENT_MAX,
-     #[cfg(any(
+@@ -2616,7 +2638,8 @@ pub enum SysconfVar {
          freebsdlike,
          apple_targets,
          target_os = "linux",
@@ -2420,7 +2557,7 @@ index 58ede6e..ea27329 100644
      ))]
      /// The implementation supports the Typed Memory Objects option.
      _POSIX_TYPED_MEMORY_OBJECTS = libc::_SC_TYPED_MEMORY_OBJECTS,
-@@ -2624,20 +2666,20 @@ pub enum SysconfVar {
+@@ -2624,20 +2647,20 @@ pub enum SysconfVar {
      /// to which the implementation conforms. For implementations conforming to
      /// POSIX.1-2008, the value shall be 200809L.
      _POSIX_VERSION = libc::_SC_VERSION,
@@ -2445,7 +2582,7 @@ index 58ede6e..ea27329 100644
      /// The implementation provides a C-language compilation environment with an
      /// `int` type using at least 32 bits and `long`, pointer, and `off_t` types
      /// using at least 64 bits.
-@@ -2661,23 +2703,23 @@ pub enum SysconfVar {
+@@ -2661,23 +2684,23 @@ pub enum SysconfVar {
      /// utility.
      #[cfg(not(any(target_os = "redox", target_os = "haiku")))]
      _POSIX2_LOCALEDEF = libc::_SC_2_LOCALEDEF,
@@ -2475,7 +2612,7 @@ index 58ede6e..ea27329 100644
      /// The implementation supports the Track Batch Job Request option.
      _POSIX2_PBS_TRACK = libc::_SC_2_PBS_TRACK,
      /// The implementation supports the Software Development Utilities option.
-@@ -2717,7 +2759,8 @@ pub enum SysconfVar {
+@@ -2717,7 +2740,8 @@ pub enum SysconfVar {
          linux_android,
          freebsdlike,
          apple_targets,
@@ -2485,7 +2622,7 @@ index 58ede6e..ea27329 100644
      ))]
      RTSIG_MAX = libc::_SC_RTSIG_MAX,
      /// Maximum number of semaphores that a process may have.
-@@ -2728,7 +2771,8 @@ pub enum SysconfVar {
+@@ -2728,7 +2752,8 @@ pub enum SysconfVar {
          linux_android,
          freebsdlike,
          apple_targets,
@@ -2495,7 +2632,7 @@ index 58ede6e..ea27329 100644
      ))]
      SEM_VALUE_MAX = libc::_SC_SEM_VALUE_MAX,
      /// Maximum number of queued signals that a process may send and have pending at the
-@@ -2737,14 +2781,15 @@ pub enum SysconfVar {
+@@ -2737,14 +2762,15 @@ pub enum SysconfVar {
          linux_android,
          freebsdlike,
          apple_targets,
@@ -2513,7 +2650,7 @@ index 58ede6e..ea27329 100644
      SYMLOOP_MAX = libc::_SC_SYMLOOP_MAX,
      /// Maximum number of timers per process supported.
      #[cfg(not(target_os = "redox"))]
-@@ -2757,7 +2802,8 @@ pub enum SysconfVar {
+@@ -2757,7 +2783,8 @@ pub enum SysconfVar {
          linux_android,
          freebsdlike,
          apple_targets,
@@ -2523,7 +2660,7 @@ index 58ede6e..ea27329 100644
      ))]
      /// The implementation supports the X/Open Encryption Option Group.
      _XOPEN_CRYPT = libc::_SC_XOPEN_CRYPT,
-@@ -2765,7 +2811,8 @@ pub enum SysconfVar {
+@@ -2765,7 +2792,8 @@ pub enum SysconfVar {
          linux_android,
          freebsdlike,
          apple_targets,
@@ -2533,7 +2670,7 @@ index 58ede6e..ea27329 100644
      ))]
      /// The implementation supports the Issue 4, Version 2 Enhanced
      /// Internationalization Option Group.
-@@ -2774,7 +2821,8 @@ pub enum SysconfVar {
+@@ -2774,7 +2802,8 @@ pub enum SysconfVar {
          linux_android,
          freebsdlike,
          apple_targets,
@@ -2543,7 +2680,7 @@ index 58ede6e..ea27329 100644
      ))]
      /// The implementation supports the XOpen Legacy Option group.
      ///
-@@ -2784,7 +2832,8 @@ pub enum SysconfVar {
+@@ -2784,7 +2813,8 @@ pub enum SysconfVar {
          linux_android,
          freebsdlike,
          apple_targets,
@@ -2553,7 +2690,7 @@ index 58ede6e..ea27329 100644
      ))]
      /// The implementation supports the X/Open Realtime Option Group.
      _XOPEN_REALTIME = libc::_SC_XOPEN_REALTIME,
-@@ -2792,7 +2841,8 @@ pub enum SysconfVar {
+@@ -2792,7 +2822,8 @@ pub enum SysconfVar {
          linux_android,
          freebsdlike,
          apple_targets,
@@ -2563,17 +2700,7 @@ index 58ede6e..ea27329 100644
      ))]
      /// The implementation supports the X/Open Realtime Threads Option Group.
      _XOPEN_REALTIME_THREADS = libc::_SC_XOPEN_REALTIME_THREADS,
-@@ -2804,7 +2854,8 @@ pub enum SysconfVar {
-         freebsdlike,
-         apple_targets,
-         target_os = "linux",
--        target_os = "openbsd"
-+        target_os = "openbsd",
-+        target_os = "managarm"
-     ))]
-     /// The implementation supports the XSI STREAMS Option Group.
-     _XOPEN_STREAMS = libc::_SC_XOPEN_STREAMS,
-@@ -2812,7 +2863,8 @@ pub enum SysconfVar {
+@@ -2812,7 +2843,8 @@ pub enum SysconfVar {
          linux_android,
          freebsdlike,
          apple_targets,
@@ -2583,7 +2710,7 @@ index 58ede6e..ea27329 100644
      ))]
      /// The implementation supports the XSI option
      _XOPEN_UNIX = libc::_SC_XOPEN_UNIX,
-@@ -2820,23 +2872,24 @@ pub enum SysconfVar {
+@@ -2820,23 +2852,24 @@ pub enum SysconfVar {
          linux_android,
          freebsdlike,
          apple_targets,
@@ -2613,25 +2740,7 @@ index 58ede6e..ea27329 100644
      _NPROCESSORS_ONLN = libc::_SC_NPROCESSORS_ONLN,
  }
  
-@@ -2900,7 +2953,7 @@ mod pivot_root {
-     }
- }
- 
--#[cfg(any(linux_android, freebsdlike, target_os = "openbsd"))]
-+#[cfg(any(linux_android, freebsdlike, target_os = "openbsd", target_os = "managarm"))]
- mod setres {
-     feature! {
-     #![feature = "user"]
-@@ -2945,7 +2998,7 @@ mod setres {
-     }
- }
- 
--#[cfg(any(linux_android, freebsdlike, target_os = "openbsd"))]
-+#[cfg(any(linux_android, freebsdlike, target_os = "openbsd", target_os = "managarm"))]
- mod getres {
-     feature! {
-     #![feature = "user"]
-@@ -3190,6 +3243,7 @@ pub struct User {
+@@ -3190,6 +3223,7 @@ pub struct User {
          target_os = "fuchsia",
          target_os = "haiku",
          target_os = "hurd",
@@ -2639,7 +2748,7 @@ index 58ede6e..ea27329 100644
      )))]
      pub class: CString,
      /// Last password change
-@@ -3200,6 +3254,7 @@ pub struct User {
+@@ -3200,6 +3234,7 @@ pub struct User {
          target_os = "fuchsia",
          target_os = "haiku",
          target_os = "hurd",
@@ -2647,7 +2756,7 @@ index 58ede6e..ea27329 100644
      )))]
      pub change: libc::time_t,
      /// Expiration time of account
-@@ -3210,6 +3265,7 @@ pub struct User {
+@@ -3210,6 +3245,7 @@ pub struct User {
          target_os = "fuchsia",
          target_os = "haiku",
          target_os = "hurd",
@@ -2655,7 +2764,7 @@ index 58ede6e..ea27329 100644
      )))]
      pub expire: libc::time_t,
  }
-@@ -3263,6 +3319,7 @@ impl From<&libc::passwd> for User {
+@@ -3263,6 +3299,7 @@ impl From<&libc::passwd> for User {
                      target_os = "fuchsia",
                      target_os = "haiku",
                      target_os = "hurd",
@@ -2663,7 +2772,7 @@ index 58ede6e..ea27329 100644
                  )))]
                  class: CString::new(CStr::from_ptr(pw.pw_class).to_bytes())
                      .unwrap(),
-@@ -3273,6 +3330,7 @@ impl From<&libc::passwd> for User {
+@@ -3273,6 +3310,7 @@ impl From<&libc::passwd> for User {
                      target_os = "fuchsia",
                      target_os = "haiku",
                      target_os = "hurd",
@@ -2671,7 +2780,7 @@ index 58ede6e..ea27329 100644
                  )))]
                  change: pw.pw_change,
                  #[cfg(not(any(
-@@ -3282,6 +3340,7 @@ impl From<&libc::passwd> for User {
+@@ -3282,6 +3320,7 @@ impl From<&libc::passwd> for User {
                      target_os = "fuchsia",
                      target_os = "haiku",
                      target_os = "hurd",
@@ -2679,7 +2788,7 @@ index 58ede6e..ea27329 100644
                  )))]
                  expire: pw.pw_expire,
              }
-@@ -3323,6 +3382,7 @@ impl From<User> for libc::passwd {
+@@ -3323,6 +3362,7 @@ impl From<User> for libc::passwd {
                  target_os = "fuchsia",
                  target_os = "haiku",
                  target_os = "hurd",
@@ -2687,7 +2796,7 @@ index 58ede6e..ea27329 100644
              )))]
              pw_class: u.class.into_raw(),
              #[cfg(not(any(
-@@ -3332,6 +3392,7 @@ impl From<User> for libc::passwd {
+@@ -3332,6 +3372,7 @@ impl From<User> for libc::passwd {
                  target_os = "fuchsia",
                  target_os = "haiku",
                  target_os = "hurd",
@@ -2695,7 +2804,7 @@ index 58ede6e..ea27329 100644
              )))]
              pw_change: u.change,
              #[cfg(not(any(
-@@ -3341,6 +3402,7 @@ impl From<User> for libc::passwd {
+@@ -3341,6 +3382,7 @@ impl From<User> for libc::passwd {
                  target_os = "fuchsia",
                  target_os = "haiku",
                  target_os = "hurd",
