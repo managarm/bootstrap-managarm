@@ -1,14 +1,14 @@
-From 0b079dcaf75873f459d8b45bab2173f41bf4e3e1 Mon Sep 17 00:00:00 2001
+From a700849337dd16bfd04290a4f224f7f21b9f35fb Mon Sep 17 00:00:00 2001
 From: 48cf <32851089+48cf@users.noreply.github.com>
 Date: Mon, 7 Apr 2025 14:20:23 +0200
 Subject: [PATCH] Update generated mlibc bindings
 
 ---
- src/unix/linux_like/managarm/mod.rs | 139 ++++++++++++++++++++++++----
- 1 file changed, 119 insertions(+), 20 deletions(-)
+ src/unix/linux_like/managarm/mod.rs | 157 +++++++++++++++++++++++-----
+ 1 file changed, 128 insertions(+), 29 deletions(-)
 
 diff --git a/src/unix/linux_like/managarm/mod.rs b/src/unix/linux_like/managarm/mod.rs
-index dd2dd9f..cc09191 100644
+index dd2dd9f..07b0de8 100644
 --- a/src/unix/linux_like/managarm/mod.rs
 +++ b/src/unix/linux_like/managarm/mod.rs
 @@ -169,6 +169,81 @@ impl siginfo_t {
@@ -134,17 +134,35 @@ index dd2dd9f..cc09191 100644
  s! {
      pub struct statvfs {
          pub f_bsize: c_ulong,
-@@ -1497,8 +1574,8 @@ s! {
+@@ -1497,17 +1574,17 @@ s! {
  // abi-bits/termios.h
  pub const NCCS: usize = 32;
  pub const VEOF: usize = 4;
 -pub const VTIME: c_int = 5;
 -pub const VMIN: c_int = 6;
+-pub const VSWTC: c_int = 7;
+-pub const VSTART: c_int = 8;
+-pub const VSTOP: c_int = 9;
+-pub const VSUSP: c_int = 10;
+-pub const VEOL: c_int = 11;
+-pub const VREPRINT: c_int = 12;
+-pub const VDISCARD: c_int = 13;
+-pub const VWERASE: c_int = 14;
+-pub const VEOL2: c_int = 16;
 +pub const VTIME: usize = 5;
 +pub const VMIN: usize = 6;
- pub const VSWTC: c_int = 7;
- pub const VSTART: c_int = 8;
- pub const VSTOP: c_int = 9;
++pub const VSWTC: usize = 7;
++pub const VSTART: usize = 8;
++pub const VSTOP: usize = 9;
++pub const VSUSP: usize = 10;
++pub const VEOL: usize = 11;
++pub const VREPRINT: usize = 12;
++pub const VDISCARD: usize = 13;
++pub const VWERASE: usize = 14;
++pub const VEOL2: usize = 16;
+ pub const IUCLC: c_uint = 0o001000;
+ pub const IXON: c_uint = 0o002000;
+ pub const IXOFF: c_uint = 0o010000;
 @@ -1549,9 +1626,9 @@ pub const TOSTOP: crate::tcflag_t = 0o000400;
  pub const IEXTEN: crate::tcflag_t = 0o100000;
  pub const EXTA: c_int = 0o000016;
