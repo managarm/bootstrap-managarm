@@ -1,25 +1,25 @@
-From 4b8abe1ff4fdfd872413be827b74ddf397eec216 Mon Sep 17 00:00:00 2001
+From 954e44812178eac47c39a8c7ffbe2b185d4e6ca1 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Fri, 4 Apr 2025 15:29:44 +0200
 Subject: [PATCH] Add Managarm support
 
-Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
  src/errno.rs           | 152 +++++++++++++++++++-------------
  src/features.rs        |   2 +-
- src/lib.rs             |   9 +-
+ src/ifaddrs.rs         |   2 +-
+ src/lib.rs             |   7 +-
  src/poll.rs            |   2 +-
  src/sys/memfd.rs       |   1 +
  src/sys/mod.rs         |  17 ++--
  src/sys/resource.rs    |   4 +-
  src/sys/signal.rs      |  34 +++++---
- src/sys/socket/addr.rs |  61 +++++++------
- src/sys/socket/mod.rs  | 123 +++++++++++++-------------
- src/sys/termios.rs     |  83 ++++++++++++------
+ src/sys/socket/addr.rs |  63 +++++++------
+ src/sys/socket/mod.rs  | 115 ++++++++++++------------
+ src/sys/termios.rs     |  78 +++++++++++------
  src/sys/time.rs        |   7 +-
  src/time.rs            |  25 +++---
  src/unistd.rs          | 194 +++++++++++++++++++++++++++--------------
- 14 files changed, 435 insertions(+), 279 deletions(-)
+ 15 files changed, 429 insertions(+), 274 deletions(-)
 
 diff --git a/src/errno.rs b/src/errno.rs
 index 2e74a84..05b3bd6 100644
@@ -466,8 +466,21 @@ index 0a0c618..d2c3ff3 100644
  mod os {
      use crate::sys::utsname::uname;
      use crate::Result;
+diff --git a/src/ifaddrs.rs b/src/ifaddrs.rs
+index b3de64b..849007c 100644
+--- a/src/ifaddrs.rs
++++ b/src/ifaddrs.rs
+@@ -33,7 +33,7 @@ pub struct InterfaceAddress {
+ }
+ 
+ cfg_if! {
+-    if #[cfg(any(linux_android, target_os = "emscripten", target_os = "fuchsia"))] {
++    if #[cfg(any(linux_android, target_os = "emscripten", target_os = "fuchsia", target_os = "managarm"))] {
+         fn get_ifu_from_sockaddr(info: &libc::ifaddrs) -> *const libc::sockaddr {
+             info.ifa_ifu
+         }
 diff --git a/src/lib.rs b/src/lib.rs
-index c4c0fa5..a0f7da2 100644
+index c4c0fa5..5a4179c 100644
 --- a/src/lib.rs
 +++ b/src/lib.rs
 @@ -101,11 +101,12 @@ pub use libc;
@@ -484,7 +497,7 @@ index c4c0fa5..a0f7da2 100644
  feature! {
      #![feature = "env"]
      pub mod env;
-@@ -124,10 +125,11 @@ feature! {
+@@ -124,7 +125,8 @@ feature! {
  
      #[cfg(any(linux_android,
                bsd,
@@ -493,11 +506,7 @@ index c4c0fa5..a0f7da2 100644
 +              target_os = "managarm"))]
      #[deny(missing_docs)]
      pub mod ifaddrs;
--    #[cfg(not(target_os = "redox"))]
-+    #[cfg(not(any(target_os = "redox", target_os = "managarm")))]
-     #[deny(missing_docs)]
-     pub mod net;
- }
+     #[cfg(not(target_os = "redox"))]
 @@ -155,6 +157,7 @@ feature! {
      #[deny(missing_docs)]
      pub mod pty;
@@ -777,7 +786,7 @@ index 921fb28..cfd5978 100644
      #[doc(alias("sigsuspend"))]
      pub fn suspend(&self) -> Result<()> {
 diff --git a/src/sys/socket/addr.rs b/src/sys/socket/addr.rs
-index aa89ba9..946b98a 100644
+index aa89ba9..fba0d59 100644
 --- a/src/sys/socket/addr.rs
 +++ b/src/sys/socket/addr.rs
 @@ -5,6 +5,7 @@
@@ -1072,8 +1081,17 @@ index aa89ba9..946b98a 100644
  pub mod netlink {
      use super::*;
      use crate::sys::socket::addr::AddressFamily;
+@@ -1813,7 +1824,7 @@ pub mod sys_control {
+ }
+ }
+ 
+-#[cfg(any(linux_android, target_os = "fuchsia"))]
++#[cfg(any(linux_android, target_os = "fuchsia", target_os = "managarm"))]
+ mod datalink {
+     feature! {
+     #![feature = "net"]
 diff --git a/src/sys/socket/mod.rs b/src/sys/socket/mod.rs
-index 1f1869e..b227495 100644
+index 1f1869e..a589b2e 100644
 --- a/src/sys/socket/mod.rs
 +++ b/src/sys/socket/mod.rs
 @@ -48,7 +48,7 @@ pub use self::addr::{SockaddrIn, SockaddrIn6};
@@ -1085,32 +1103,6 @@ index 1f1869e..b227495 100644
  pub use crate::sys::socket::addr::netlink::NetlinkAddr;
  #[cfg(apple_targets)]
  #[cfg(feature = "ioctl")]
-@@ -84,11 +84,11 @@ pub enum SockType {
-     /// entire packet with each input system call.
-     SeqPacket = libc::SOCK_SEQPACKET,
-     /// Provides raw network protocol access.
--    #[cfg(not(target_os = "redox"))]
-+    #[cfg(not(target_os = "redox", target_os = "managarm"))]
-     Raw = libc::SOCK_RAW,
-     /// Provides a reliable datagram layer that does not
-     /// guarantee ordering.
--    #[cfg(not(any(target_os = "haiku", target_os = "redox")))]
-+    #[cfg(not(any(target_os = "haiku", target_os = "redox", target_os = "managarm")))]
-     Rdm = libc::SOCK_RDM,
- }
- // The TryFrom impl could've been derived using libc_enum!.  But for
-@@ -102,9 +102,9 @@ impl TryFrom<i32> for SockType {
-             libc::SOCK_STREAM => Ok(Self::Stream),
-             libc::SOCK_DGRAM => Ok(Self::Datagram),
-             libc::SOCK_SEQPACKET => Ok(Self::SeqPacket),
--            #[cfg(not(target_os = "redox"))]
-+            #[cfg(not(target_os = "redox", target_os = "managarm"))]
-             libc::SOCK_RAW => Ok(Self::Raw),
--            #[cfg(not(any(target_os = "haiku", target_os = "redox")))]
-+            #[cfg(not(any(target_os = "haiku", target_os = "redox", target_os = "managarm")))]
-             libc::SOCK_RDM => Ok(Self::Rdm),
-             _ => Err(Errno::EINVAL),
-         }
 @@ -130,68 +130,68 @@ pub enum SockProtocol {
      /// Receives routing and link updates and may be used to modify the routing tables (both IPv4 and IPv6), IP addresses, link
      // parameters, neighbor setups, queueing disciplines, traffic classes and packet classifiers
@@ -1530,7 +1522,7 @@ index 1f1869e..b227495 100644
  pub fn accept4(sockfd: RawFd, flags: SockFlag) -> Result<RawFd> {
      let res = unsafe {
 diff --git a/src/sys/termios.rs b/src/sys/termios.rs
-index e006c2f..c9ea9a0 100644
+index e006c2f..cd511b8 100644
 --- a/src/sys/termios.rs
 +++ b/src/sys/termios.rs
 @@ -166,7 +166,7 @@ pub struct Termios {
@@ -1569,23 +1561,7 @@ index e006c2f..c9ea9a0 100644
              line_discipline: termios.c_line,
          }
      }
-@@ -260,12 +260,13 @@ libc_enum! {
-     ///
-     /// B0 is special and will disable the port.
-     #[cfg_attr(target_os = "haiku", repr(u8))]
--    #[cfg_attr(target_os = "hurd", repr(i32))]
-+    #[cfg_attr(any(target_os = "hurd", target_os = "managarm"), repr(i32))]
-     #[cfg_attr(all(apple_targets, target_pointer_width = "64"), repr(u64))]
-     #[cfg_attr(all(
-         not(all(apple_targets, target_pointer_width = "64")),
-         not(target_os = "haiku"),
--        not(target_os = "hurd")
-+        not(target_os = "hurd"),
-+        not(target_os = "managarm"),
-         ), repr(u32))]
-     #[non_exhaustive]
-     pub enum BaudRate {
-@@ -306,32 +307,34 @@ libc_enum! {
+@@ -306,32 +306,34 @@ libc_enum! {
          #[cfg(any(linux_android,
                    solarish,
                    target_os = "freebsd",
@@ -1632,7 +1608,7 @@ index e006c2f..c9ea9a0 100644
          B4000000,
      }
      impl TryFrom<libc::speed_t>
-@@ -425,7 +428,7 @@ libc_enum! {
+@@ -425,7 +427,7 @@ libc_enum! {
          #[cfg(not(target_os = "haiku"))]
          VLNEXT,
          #[cfg(not(any(all(target_os = "linux", target_arch = "sparc64"),
@@ -1641,7 +1617,7 @@ index e006c2f..c9ea9a0 100644
          VMIN,
          VQUIT,
          #[cfg(not(target_os = "haiku"))]
-@@ -435,12 +438,12 @@ libc_enum! {
+@@ -435,12 +437,12 @@ libc_enum! {
          VSTATUS,
          VSTOP,
          VSUSP,
@@ -1656,7 +1632,7 @@ index e006c2f..c9ea9a0 100644
          VTIME,
          #[cfg(not(any(target_os = "aix", target_os = "haiku")))]
          VWERASE,
-@@ -454,6 +457,7 @@ libc_enum! {
+@@ -454,6 +456,7 @@ libc_enum! {
      solarish,
      target_os = "aix",
      target_os = "haiku",
@@ -1664,7 +1640,7 @@ index e006c2f..c9ea9a0 100644
  ))]
  impl SpecialCharacterIndices {
      pub const VMIN: SpecialCharacterIndices = SpecialCharacterIndices::VEOF;
-@@ -482,7 +486,7 @@ libc_bitflags! {
+@@ -482,7 +485,7 @@ libc_bitflags! {
          IXANY;
          #[cfg(not(any(target_os = "redox", target_os = "haiku")))]
          IMAXBEL;
@@ -1673,7 +1649,7 @@ index e006c2f..c9ea9a0 100644
          IUTF8;
      }
  }
-@@ -493,7 +497,8 @@ libc_bitflags! {
+@@ -493,7 +496,8 @@ libc_bitflags! {
          OPOST;
          #[cfg(any(linux_android,
                    target_os = "haiku",
@@ -1683,7 +1659,7 @@ index e006c2f..c9ea9a0 100644
          OLCUC;
          ONLCR;
          OCRNL as tcflag_t;
-@@ -501,74 +506,91 @@ libc_bitflags! {
+@@ -501,74 +505,91 @@ libc_bitflags! {
          ONLRET as tcflag_t;
          #[cfg(any(linux_android,
                    target_os = "haiku",
@@ -1776,7 +1752,7 @@ index e006c2f..c9ea9a0 100644
                    apple_targets))]
          FF1 as tcflag_t;
          #[cfg(bsd)]
-@@ -582,27 +604,33 @@ libc_bitflags! {
+@@ -582,27 +603,33 @@ libc_bitflags! {
  
          #[cfg(any(linux_android,
                    target_os = "haiku",
@@ -1810,7 +1786,7 @@ index e006c2f..c9ea9a0 100644
                    apple_targets))]
          FFDLY as tcflag_t;
      }
-@@ -625,15 +653,16 @@ libc_bitflags! {
+@@ -625,15 +652,16 @@ libc_bitflags! {
          CLOCAL;
          #[cfg(not(any(target_os = "redox", target_os = "aix")))]
          CRTSCTS;
@@ -2728,5 +2704,5 @@ index 58ede6e..ea27329 100644
              pw_expire: u.expire,
              #[cfg(solarish)]
 -- 
-2.49.0
+2.47.2
 
