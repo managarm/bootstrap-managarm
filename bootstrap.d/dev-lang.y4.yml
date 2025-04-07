@@ -165,8 +165,8 @@ tools:
     source:
       subdir: 'ports'
       git: 'https://github.com/rust-lang/cargo.git'
-      tag: '0.86.0'
-      version: '0.86.0'
+      tag: '0.87.0'
+      version: '0.87.0'
     tools_required:
       - tool: host-rust
         recursive: true
@@ -178,7 +178,7 @@ tools:
       - rust-patched-libs
       # Cargo requires cargo to build, so we download a binary that we can use temporarily
       - host-bootstrap-cargo
-    revision: 2
+    revision: 1
     compile:
       - args:
         - '@THIS_SOURCE_DIR@/../host-bootstrap-cargo/cargo/bin/cargo'
