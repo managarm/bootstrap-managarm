@@ -145,6 +145,12 @@ sources:
     tag: 'v547.0.0'
     version: '547.0.0'
 
+  - name: rust-starship-battery
+    subdir: 'ports'
+    git: 'https://github.com/starship/rust-battery.git'
+    tag: 'v0.10.1'
+    version: '0.10.1'
+
   - name: rust-patched-libs
     subdir: 'ports'
     sources_required:
@@ -195,6 +201,8 @@ sources:
       - name: rust-mac-address
         recursive: true
       - name: rust-lua-src
+        recursive: true
+      - name: rust-starship-battery
         recursive: true
 
 packages:
