@@ -1,0 +1,50 @@
+From 58019bb2f9346839a7a87b46091ce488fd67a9b9 Mon Sep 17 00:00:00 2001
+From: 48cf <32851089+48cf@users.noreply.github.com>
+Date: Tue, 8 Apr 2025 01:37:37 +0200
+Subject: [PATCH] Add Managarm support
+
+---
+ src/os/unix/consts.rs | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/src/os/unix/consts.rs b/src/os/unix/consts.rs
+index 4f069e2..635060b 100644
+--- a/src/os/unix/consts.rs
++++ b/src/os/unix/consts.rs
+@@ -62,6 +62,8 @@ mod posix {
+             pub(super) const RTLD_LAZY: c_int = 0;
+         } else if #[cfg(target_os = "aix")] {
+             pub(super) const RTLD_LAZY: c_int = 4;
++        } else if #[cfg(target_os = "managarm")] {
++            pub(super) const RTLD_LAZY: c_int = 32;
+         } else if #[cfg(any(
+             target_os = "linux",
+             target_os = "android",
+@@ -98,7 +100,7 @@ mod posix {
+     }
+ 
+     cfg_if! {
+-        if #[cfg(target_os = "haiku")] {
++        if #[cfg(any(target_os = "haiku", target_os = "managarm"))] {
+             pub(super) const RTLD_NOW: c_int = 1;
+         } else if #[cfg(any(
+             target_os = "linux",
+@@ -141,6 +143,7 @@ mod posix {
+     cfg_if! {
+         if #[cfg(any(
+             target_os = "haiku",
++            target_os = "managarm",
+             all(target_os = "android",target_pointer_width = "32"),
+         ))] {
+             pub(super) const RTLD_GLOBAL: c_int = 2;
+@@ -224,6 +227,7 @@ mod posix {
+             target_os = "fuchsia",
+             target_os = "redox",
+             target_os = "hurd",
++            target_os = "managarm",
+         ))] {
+             pub(super) const RTLD_LOCAL: c_int = 0;
+         } else {
+-- 
+2.47.2
+
