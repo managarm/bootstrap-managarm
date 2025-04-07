@@ -1,0 +1,37 @@
+From a08bb4251807f338b7e5a03fddc4892401507160 Mon Sep 17 00:00:00 2001
+From: 48cf <32851089+48cf@users.noreply.github.com>
+Date: Mon, 7 Apr 2025 14:22:37 +0200
+Subject: [PATCH] Add managarm support
+
+---
+ Cargo.toml          | 2 +-
+ src/platform/mod.rs | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Cargo.toml b/Cargo.toml
+index 706350d..6dd82a5 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -22,7 +22,7 @@ schemars = { version = "0.8.22", optional = true }
+ serde = { version = "1.0.219", features = ["derive"], optional = true }
+ uom = { version = "0.36", features = ["autoconvert", "f32", "si"] }
+ 
+-[target.'cfg(target_os = "linux")'.dependencies]
++[target.'cfg(any(target_os = "linux", target_os = "managarm"))'.dependencies]
+ lazycell = "~1.3"
+ 
+ [target.'cfg(any(target_os = "macos", target_os = "ios"))'.dependencies]
+diff --git a/src/platform/mod.rs b/src/platform/mod.rs
+index fcbd168..e96f340 100644
+--- a/src/platform/mod.rs
++++ b/src/platform/mod.rs
+@@ -1,5 +1,5 @@
+ cfg_if! {
+-    if #[cfg(target_os = "linux")] {
++    if #[cfg(any(target_os = "linux", target_os = "managarm"))] {
+         mod linux;
+ 
+         pub type Manager = linux::SysFsManager;
+-- 
+2.47.2
+
