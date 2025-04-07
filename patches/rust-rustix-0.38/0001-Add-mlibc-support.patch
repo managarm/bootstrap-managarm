@@ -1,20 +1,27 @@
-From bceb323f59d84cea682669b84eff6d751a22f554 Mon Sep 17 00:00:00 2001
+From 4f97d0724c0bb54c7cdf134276854d6f3bc1f61e Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Fri, 4 Apr 2025 16:02:28 +0200
 Subject: [PATCH] Add mlibc support
 
-Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
- src/backend/libc/conv.rs     | 1 +
+ src/backend/libc/conv.rs     | 2 ++
  src/backend/libc/fs/types.rs | 5 +++++
  src/ioctl/mod.rs             | 4 ++++
- 3 files changed, 10 insertions(+)
+ 3 files changed, 11 insertions(+)
 
 diff --git a/src/backend/libc/conv.rs b/src/backend/libc/conv.rs
-index 4f7bb5d..ac1ec2d 100644
+index 4f7bb5d..2578af7 100644
 --- a/src/backend/libc/conv.rs
 +++ b/src/backend/libc/conv.rs
-@@ -209,6 +209,7 @@ pub(super) fn msg_iov_len(len: usize) -> c::size_t {
+@@ -186,6 +186,7 @@ pub(super) fn ret_send_recv(len: i32) -> io::Result<usize> {
+     not(any(windows, target_os = "espidf", target_os = "redox", target_os = "wasi")),
+     any(
+         target_os = "android",
++        target_os = "managarm",
+         all(
+             target_os = "linux",
+             not(target_env = "musl"),
+@@ -209,6 +210,7 @@ pub(super) fn msg_iov_len(len: usize) -> c::size_t {
      )),
      not(any(
          target_os = "android",
@@ -82,5 +89,5 @@ index 2f0c951..8028232 100644
  #[cfg(all(
      not(linux_raw),
 -- 
-2.49.0
+2.47.2
 
