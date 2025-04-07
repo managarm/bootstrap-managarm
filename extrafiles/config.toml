@@ -45,3 +45,5 @@ libssh-rs-sys = { path = "@SOURCE_ROOT@/ports/rust-libssh-rs-sys/libssh-rs-sys" 
 wayland-backend = { path = "@SOURCE_ROOT@/ports/rust-wayland-backend/wayland-backend" }
 wayland-sys = { path = "@SOURCE_ROOT@/ports/rust-wayland-backend/wayland-sys" }
 ring = { path = "@SOURCE_ROOT@/ports/rust-ring" }
+zbus = { path = "@SOURCE_ROOT@/ports/rust-zbus/zbus" }
+zvariant = { path = "@SOURCE_ROOT@/ports/rust-zbus/zvariant" }
