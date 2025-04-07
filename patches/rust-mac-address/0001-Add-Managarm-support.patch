@@ -1,14 +1,27 @@
-From e5e7aeae711b26c197b3a4fb2f5b7aa79026621e Mon Sep 17 00:00:00 2001
+From fd15d526c3dc4ee2efb48a1146cadd4345b5c630 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Fri, 4 Apr 2025 19:37:41 +0200
 Subject: [PATCH] Add Managarm support
 
-Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
+ Cargo.toml      | 2 +-
  src/iter/mod.rs | 1 +
  src/lib.rs      | 2 ++
- 2 files changed, 3 insertions(+)
+ 3 files changed, 4 insertions(+), 1 deletion(-)
 
+diff --git a/Cargo.toml b/Cargo.toml
+index f667696..b7e8992 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -13,7 +13,7 @@ keywords = ["mac", "address", "network", "interface"]
+ [dependencies]
+ serde = { version = "1.0.198", features = ["derive"], optional = true }
+ 
+-[target.'cfg(any(target_os = "linux", target_os = "macos", target_os = "freebsd", target_os = "netbsd", target_os = "openbsd", target_os = "android", target_os = "illumos"))'.dependencies]
++[target.'cfg(any(target_os = "linux", target_os = "macos", target_os = "freebsd", target_os = "netbsd", target_os = "openbsd", target_os = "android", target_os = "illumos", target_os = "managarm"))'.dependencies]
+ nix = { version = "0.29", features = ["net"] }
+ 
+ [target.'cfg(windows)'.dependencies]
 diff --git a/src/iter/mod.rs b/src/iter/mod.rs
 index bb2213a..00ded97 100644
 --- a/src/iter/mod.rs
@@ -42,5 +55,5 @@ index f3b7440..a1749ba 100644
  impl From<nix::Error> for MacAddressError {
      fn from(_: nix::Error) -> MacAddressError {
 -- 
-2.49.0
+2.47.2
 
