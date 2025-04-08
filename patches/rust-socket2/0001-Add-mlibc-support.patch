@@ -1,0 +1,24 @@
+From bcc05f17c564b64ee5489f1367b2db3770c7e714 Mon Sep 17 00:00:00 2001
+From: 48cf <32851089+48cf@users.noreply.github.com>
+Date: Mon, 7 Apr 2025 14:24:44 +0200
+Subject: [PATCH] Add mlibc support
+
+---
+ src/sys/unix.rs | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/sys/unix.rs b/src/sys/unix.rs
+index 2e90bce..dadd827 100644
+--- a/src/sys/unix.rs
++++ b/src/sys/unix.rs
+@@ -351,6 +351,7 @@ const TCP_CA_NAME_MAX: usize = 16;
+         )
+     ),
+     target_os = "android",
++    target_os = "managarm"
+ ))]
+ type IovLen = usize;
+ 
+-- 
+2.47.2
+
