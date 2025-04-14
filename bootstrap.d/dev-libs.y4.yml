@@ -400,13 +400,14 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DBUILD_SHARED_LIBS=ON'
+        - '-DCMAKE_POLICY_VERSION_MINIMUM=3.5'
         - '@THIS_SOURCE_DIR@'
         environ:
           CC: '@OPTION:arch-triple@-gcc'
@@ -736,13 +737,14 @@ packages:
       - host-cmake
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
         - '-GNinja'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_POLICY_VERSION_MINIMUM=3.5'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']

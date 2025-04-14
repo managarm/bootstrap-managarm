@@ -14,12 +14,13 @@ packages:
     pkgs_required:
       - mlibc
       - gcc # Actually requires libstdc++.so in the system root, otherwise it links against the host libstdc++.so.6
-    revision: 9
+    revision: 10
     configure:
       - args:
         - 'cmake'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_POLICY_VERSION_MINIMUM=3.5'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['make', '-j@PARALLELISM@']

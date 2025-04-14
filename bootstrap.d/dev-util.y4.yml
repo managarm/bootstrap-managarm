@@ -317,6 +317,7 @@ packages:
 
   - name: ninja
     architecture: '@OPTION:arch@'
+    stability_level: 'broken' # Does not configure under cmake 4.0.0?
     metadata:
       summary: The Ninja build system
       description: Ninja is a small build system similar to make.
@@ -330,12 +331,14 @@ packages:
       - host-cmake
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_POLICY_VERSION_MINIMUM=3.5'
+        - '-Wno-dev'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['make', '-j@PARALLELISM@']

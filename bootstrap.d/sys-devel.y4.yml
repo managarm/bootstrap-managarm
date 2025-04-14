@@ -101,12 +101,14 @@ tools:
       version: '2.32.0'
     tools_required:
       - host-cmake
+    revision: 2
     configure:
       - args:
         - 'cmake'
         - '-GNinja'
         - '-DCMAKE_INSTALL_PREFIX=@PREFIX@'
         - '-DCMAKE_BUILD_TYPE=Release'
+        - '-DCMAKE_POLICY_VERSION_MINIMUM=3.5'
         - '@THIS_SOURCE_DIR@'
     compile:
       - args: ['cmake', '--build', '.', '--parallel', '@PARALLELISM@']

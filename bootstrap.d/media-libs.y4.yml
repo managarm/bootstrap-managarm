@@ -1548,8 +1548,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/libsdl-org/SDL.git'
-      tag: 'release-2.28.4'
-      version: '2.28.4'
+      tag: 'release-2.32.4'
+      version: '2.32.4'
     tools_required:
       - system-gcc
       - host-cmake
@@ -1573,7 +1573,7 @@ packages:
       - libxrender
       - libxxf86vm
       - libxkbcommon
-    revision: 10
+    revision: 1
     configure:
       - args:
         - 'cmake'

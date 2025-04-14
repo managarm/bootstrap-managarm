@@ -11,7 +11,7 @@ tools:
     from_source: dsda-doom
     tools_required:
       - host-cmake
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -19,6 +19,7 @@ tools:
         - '-DCMAKE_BUILD_TYPE=Release'
         - '-DBUILD_RDATAWAD_ONLY=ON'
         - '-DBUILD_GL=OFF'
+        - '-DCMAKE_POLICY_VERSION_MINIMUM=3.5'
         - '@THIS_SOURCE_DIR@/prboom2'
     compile:
       - args: ['ninja', 'rdatawad']
