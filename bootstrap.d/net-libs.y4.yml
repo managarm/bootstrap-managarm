@@ -412,6 +412,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: webkitgtk
+    stability_level: 'broken' # Libxml2 upgrade broke this version and upgrading webkit is running into issues
     architecture: '@OPTION:arch@'
     metadata:
       summary: 'An open source web browser engine, with a small example browser'
