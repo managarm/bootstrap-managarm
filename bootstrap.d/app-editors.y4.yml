@@ -65,6 +65,41 @@ packages:
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/nanorc', '@THIS_COLLECT_DIR@/home/managarm/.nanorc']
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/root-nanorc', '@THIS_COLLECT_DIR@/root/.nanorc']
 
+  - name: openvi
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Portable OpenBSD vi for UNIX systems
+      description: OpenVi is an enhanced and portable implementation of the Berkeley vi / ex text editor
+      spdx: 'BSD-3-Clause'
+      website: 'https://github.com/johnsonjh/OpenVi'
+      maintainer: "Jeffrey H. Johnson <trnsz@pobox.com>"
+      categories: ['app-editors']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/johnsonjh/OpenVi.git'
+      tag: '7.6.31'
+      version: '7.6.31'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - ncurses
+    revision: 1
+    configure:
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+        environ:
+          CC: "@OPTION:arch-triple@-gcc"
+          CFLAGS: "-DBYTE_ORDER=__BYTE_ORDER__"
+          LDFLAGS: "-lncurses -ltinfo"
+          LTO: "1"
+      - args: ['make', 'install']
+        environ:
+          PREFIX: '/usr'
+          DESTDIR: '@THIS_COLLECT_DIR@'
+          CHOWN: "true"
+
   - name: vim
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
