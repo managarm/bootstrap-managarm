@@ -266,16 +266,22 @@ packages:
       categories: ['dev-lang']
     source:
       subdir: 'ports'
-      url: 'https://www.nasm.us/pub/nasm/releasebuilds/2.14.02/nasm-2.14.02.tar.xz'
+      url: 'https://web.archive.org/web/20250310173238if_/https://www.nasm.us/pub/nasm/releasebuilds/2.16.03/nasm-2.16.03.tar.xz'
       format: 'tar.xz'
-      checksum: blake2b:deb1f3c806ffbe48eefe4163271c68f02a782f75f21980331cb03e64de20da61c118621536c1c869c1629e558cab45ce98fed8443d29c1126fb4255cd6a36ce4
-      extract_path: 'nasm-2.14.02'
-      version: '2.14.02'
+      checksum: blake2b:742cbf330341fde9f778d8ca13e8c06199f48796d47028ac973d39e3d9e434450cdfebe89f6ab248d372bdaeb0c88a25eb7153a39b66fc05e770523d4c9e11e9
+      extract_path: 'nasm-2.16.03'
+      version: '2.16.03'
+      tools_required:
+        - host-automake-v1.15
+      regenerate:
+        - args: ['cp',
+            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
+            '@THIS_SOURCE_DIR@/autoconf/helpers/']
     tools_required:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 10
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
