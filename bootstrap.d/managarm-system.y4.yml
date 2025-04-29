@@ -38,6 +38,7 @@ sources:
       - bragi
       - cli11
       - freebsd-e1000
+      - nvidia-open
     regenerate:
       - args: ['mkdir', '-p', '@THIS_SOURCE_DIR@/subprojects']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cralgo', '@THIS_SOURCE_DIR@/subprojects/']
@@ -51,6 +52,7 @@ sources:
       - args: ['ln', '-sf', '@SOURCE_ROOT@/managarm', '@SOURCE_ROOT@/ports/libarch/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cli11', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/freebsd-e1000', '@THIS_SOURCE_DIR@/subprojects/']
+      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/nvidia-open', '@THIS_SOURCE_DIR@/subprojects/']
 
 
 tools:
