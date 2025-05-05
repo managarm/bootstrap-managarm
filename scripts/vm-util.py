@@ -869,6 +869,9 @@ def do_gdb(args):
         f.write(f"set substitute-path /var/lib/managarm-buildenv/build/ ./\n")
         f.write(f"set sysroot system-root\n")
 
+    if args.gdb_debug:
+        gdb_args += ["-ex", "set debug remote 1"]
+
     if args.qemu:
         gdb_args += [
             "--symbols=pkg-builds/managarm-kernel/kernel/thor/thor",
@@ -919,6 +922,7 @@ def do_gdb(args):
 gdb_parser = main_subparsers.add_parser("gdb")
 gdb_parser.set_defaults(_fn=do_gdb)
 gdb_parser.add_argument("--ip", type=str, default="localhost")
+gdb_parser.add_argument("--gdb-debug", action='store_true')
 gdb_parser.add_argument("--uefi-base", type=str)
 
 gdb_group = gdb_parser.add_mutually_exclusive_group(required=True)
