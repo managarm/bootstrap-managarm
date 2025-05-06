@@ -1,7 +1,7 @@
-From 9184054b6fcbbd8c1ca9f49cf84fb1c9d44dac08 Mon Sep 17 00:00:00 2001
+From 394749a630570a1bb1b43afa86727b8c739fc901 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Wed, 24 Jan 2024 19:34:27 +0100
-Subject: [PATCH 3/5] Add managarm support
+Subject: [PATCH 3/6] Add managarm support
 
 ---
  block/file-posix.c | 11 +++++++++--
@@ -45,7 +45,7 @@ index 90fa543..bf45f08 100644
  {
      g_autofree char *str = NULL;
 diff --git a/meson.build b/meson.build
-index 147097c..9a47399 100644
+index 7f6f638..e17b4cb 100644
 --- a/meson.build
 +++ b/meson.build
 @@ -2487,6 +2487,7 @@ config_host_data.set('CONFIG_PIXMAN', pixman.found())
@@ -57,5 +57,5 @@ index 147097c..9a47399 100644
    config_host_data.set('CONFIG_TCG', 1)
    config_host_data.set('CONFIG_TCG_INTERPRETER', tcg_arch == 'tci')
 -- 
-2.47.1
+2.49.0
 

@@ -1,7 +1,7 @@
-From 3651120093a58f887005638adcdd26a1e08e3904 Mon Sep 17 00:00:00 2001
+From 702faa8a9f56dfc9af2e0494cb4ae792edad2311 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Sun, 3 Nov 2024 22:25:49 +0100
-Subject: [PATCH 5/5] smbios: remove unnecessary snprintf
+Subject: [PATCH 5/6] smbios: remove unnecessary snprintf
 
 ---
  hw/smbios/smbios.c | 2 --
@@ -28,5 +28,5 @@ index 6b3d015..1609e1a 100644
  
      for (i = 0; i < type11.nvalues; i++) {
 -- 
-2.47.1
+2.49.0
 
