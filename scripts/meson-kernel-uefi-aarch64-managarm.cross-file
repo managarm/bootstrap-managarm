@@ -1,0 +1,21 @@
+[binaries]
+c = 'clang'
+cpp = 'clang++'
+c_ld = 'lld'
+cpp_ld = 'lld'
+pkgconfig = 'aarch64-managarm-pkg-config'
+strip = 'true'
+
+[built-in options]
+c_args = ['-target', 'aarch64-unknown-windows']
+cpp_args = c_args
+cpp_link_args = ['-target', 'aarch64-unknown-windows']
+
+[host_machine]
+system = 'uefi'
+cpu_family = 'aarch64'
+cpu = 'aarch64'
+endian = 'little'
+
+[properties]
+native_pe_toolchain = true
