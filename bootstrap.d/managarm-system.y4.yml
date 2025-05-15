@@ -77,10 +77,10 @@ tools:
     compile:
       - args: ['ninja']
     install:
-      - args: ['ninja', 'install'] 
+      - args: ['ninja', 'install']
 
 
-packages:  
+packages:
   - name: managarm-kernel
     metadata:
       summary: The Managarm kernel
@@ -165,7 +165,7 @@ packages:
       website: 'https://managarm.org'
       maintainer: "Marvin Friedrich <contact@marvinf.com>"
       categories: ['sys-kernel']
-    labels: [riscv64]
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     default: true
     from_source: managarm
