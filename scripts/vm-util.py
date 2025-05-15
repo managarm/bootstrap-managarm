@@ -460,8 +460,8 @@ class QemuRunner:
             raise RuntimeError(f"Expected lines matching regexps {missing}")
 
 def do_qemu(args):
-    # Default to --uefi for RISC-V.
-    if args.arch == "riscv64":
+    # Default to --uefi for AArch64 and RISC-V.
+    if args.arch == "riscv64" or args.arch == "aarch64":
         if args.uefi is None:
             args.uefi = True
 
@@ -503,23 +503,20 @@ def do_qemu(args):
 
     if args.arch == "aarch64":
         # For aarch64 we use the virt machine
-        qemu_args += ["-machine", "virt"]
-
-        # For aarch64 we directly boot our kernel instead of using a bootloader
-        # The following assumes we're in the build dir
-        qemu_args += [
-            "-kernel",
-            "pkg-builds/managarm-kernel/kernel/eir/arch/arm/virt/eir-virt.bin",
-        ]
-        qemu_args += ["-initrd", "initrd.cpio"]
-        qemu_args += ["-append", f"init.launch={args.init_launch}"]
+        qemu_args += ["-machine", "virt,acpi=off"]
         qemu_args += ["-serial", "stdio"]
+        if not args.uefi:
+            qemu_args += ["-kernel", "system-root/usr/managarm/bin/eir-virt.bin"]
+            qemu_args += ["-initrd", "initrd.cpio"]
+            qemu_args += ["-append", f"init.launch={args.init_launch}"]
     elif args.arch == "riscv64":
         # Use the virt machine and -kernel, similar to aarch64.
         qemu_args += ["-machine", "virt,acpi=off"]
         qemu_args += ["-serial", "stdio"]
         if not args.uefi:
-            qemu_args += ["-kernel", "system-root/usr/managarm/bin/eir-virt"]
+            qemu_args += ["-kernel", "system-root/usr/managarm/bin/eir-virt.bin"]
+            qemu_args += ["-initrd", "initrd.cpio"]
+            qemu_args += ["-append", f"init.launch={args.init_launch}"]
     else:
         assert args.arch == "x86_64"
         qemu_args += ["-debugcon", "stdio"]
