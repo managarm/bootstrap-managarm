@@ -41,6 +41,12 @@ sources:
     git: 'https://codeberg.org/osdev/freestnd-cxx-hdrs.git'
     branch: 'trunk'
 
+  - name: nvidia-open
+    subdir: 'ports'
+    git: 'https://github.com/NVIDIA/open-gpu-kernel-modules.git'
+    tag: '575.51.02'
+    version: '575.51.02'
+
 tools:
   - name: host-freestnd-c-hdrs
     architecture: noarch
