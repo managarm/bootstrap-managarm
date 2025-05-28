@@ -1,0 +1,34 @@
+packages:
+  - name: nvidia-firmware
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Firmware for NVIDIA GPUs
+      description: This contains the firmware for NVIDIA GPU GSPs.
+      spdx: 'NVIDIA-r2'
+      website: 'https://github.com/NVIDIA/open-gpu-kernel-modules'
+      maintainer: "no92 <leo@managarm.org>"
+      categories: ['sys-firmware']
+    source:
+      subdir: ports
+      url: 'https://us.download.nvidia.com/XFree86/Linux-x86_64/575.51.02/NVIDIA-Linux-x86_64-575.51.02.run'
+      filename: 'NVIDIA-Linux-x86_64-575.51.02.run'
+      checksum: 'blake2b:c6c47095226b1a9535b0f005bd8dddff772516738c168ff2bb577c75769ef1e216cde5f83a5979dfcc9ce6876d2e112afbe86f52d02721ec0a230eff9aaffeb2'
+      format: 'raw'
+      version: '575.51.02'
+      regenerate:
+        - args:
+          - 'chmod'
+          - '+x'
+          - '@THIS_SOURCE_DIR@/NVIDIA-Linux-x86_64-575.51.02.run'
+    revision: 1
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/NVIDIA-Linux-x86_64-575.51.02.run'
+        - '--extract-only'
+        - '--target'
+        - '@THIS_BUILD_DIR@/extracted'
+    build:
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/lib/firmware/nvidia/575.51.02/']
+      - args: ['cp', '@THIS_BUILD_DIR@/extracted/LICENSE', '@THIS_COLLECT_DIR@/usr/lib/firmware/nvidia/']
+      - args: ['cp', '@THIS_BUILD_DIR@/extracted/firmware/gsp_ga10x.bin', '@THIS_COLLECT_DIR@/usr/lib/firmware/nvidia/575.51.02/']
+      - args: ['cp', '@THIS_BUILD_DIR@/extracted/firmware/gsp_tu10x.bin', '@THIS_COLLECT_DIR@/usr/lib/firmware/nvidia/575.51.02/']
