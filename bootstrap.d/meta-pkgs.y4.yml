@@ -23,9 +23,7 @@ packages:
       - tzdata
       - ca-certificates
       - managarm-kernel
-      - !managarm::arch_dep
-        arch: [x86_64]
-        item: managarm-kernel-uefi
+      - managarm-kernel-uefi
       - managarm-system
       - kmscon
       - bash
