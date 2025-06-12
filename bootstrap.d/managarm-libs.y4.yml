@@ -225,14 +225,16 @@ packages:
       - system-gcc
     pkgs_required:
       - boost
-    revision: 8
+    revision: 9
     configure:
       - args:
         - 'meson'
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
-        - '--libdir=lib'
+        # install to separate libdir and a separate includedir (instdead of /usr/include)
+        - '--includedir=share/libasync/include'
+        - '--libdir=lib/@OPTION:arch-triple@/libasync'
         - '--buildtype=debugoptimized'
         - '-Dinstall_headers=true'
         - '@THIS_SOURCE_DIR@'
@@ -242,6 +244,10 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      # symlink the pkgconfig file to the standard location
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/lib/pkgconfig']
+      - args: ['ln', '-srf', '@THIS_COLLECT_DIR@/usr/lib/@OPTION:arch-triple@/libasync/pkgconfig/libasync.pc',
+              '@THIS_COLLECT_DIR@/usr/lib/pkgconfig/libasync.pc']
 
   - name: libsmarter
     labels: [aarch64, riscv64]
@@ -254,7 +260,7 @@ packages:
       branch: 'master'
     tools_required:
       - system-gcc
-    revision: 10
+    revision: 11
     configure:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/include']
       - args:
@@ -262,8 +268,15 @@ packages:
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
+        # install to separate libdir and a separate includedir (instdead of /usr/include)
+        - '--includedir=share/libsmarter/include'
+        - '--libdir=lib/@OPTION:arch-triple@/libsmarter'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      # symlink the pkgconfig file to the standard location
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/lib/pkgconfig']
+      - args: ['ln', '-srf', '@THIS_COLLECT_DIR@/usr/lib/@OPTION:arch-triple@/libsmarter/pkgconfig/libsmarter.pc',
+              '@THIS_COLLECT_DIR@/usr/lib/pkgconfig/libsmarter.pc']
