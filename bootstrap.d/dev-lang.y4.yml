@@ -22,8 +22,8 @@ sources:
   - name: rust
     subdir: 'ports'
     git: 'https://github.com/rust-lang/rust.git'
-    tag: '1.85.1'
-    version: '1.85.1'
+    tag: '1.86.0'
+    version: '1.86.0'
 
   - name: vala
     subdir: 'ports'
@@ -35,11 +35,11 @@ sources:
 
   - name: host-bootstrap-cargo
     subdir: 'ports'
-    url: 'https://static.rust-lang.org/dist/cargo-1.85.1-x86_64-unknown-linux-gnu.tar.xz'
+    url: 'https://static.rust-lang.org/dist/cargo-1.86.0-x86_64-unknown-linux-gnu.tar.xz'
     format: 'tar.xz'
-    checksum: blake2b:ad112e8cd83ebadd355e23a621c815b7cccd058b1d1c00a5addf907550adc0943bbdd98659f211e7be7f4b34cb7dbb5dc8d2826c45277b9f1a19d5d5fc091207
-    extract_path: 'cargo-1.85.1-x86_64-unknown-linux-gnu'
-    version: '1.85.1'
+    checksum: blake2b:b26feeeb4469dea045249baf7ece4dc8252c969c5de570fc5d2bbd0264a9ec6f0c3478121b707e68ed3a50ff01f2bc2708ce34f07e6065c53a283fcf7e95af3d
+    extract_path: 'cargo-1.86.0-x86_64-unknown-linux-gnu'
+    version: '1.86.0'
 
 tools:
   - name: host-python
@@ -66,7 +66,7 @@ tools:
       - host-llvm-toolchain
       - host-python
       - host-libffi
-    revision: 6
+    revision: 1
     stages:
       - name: config
         compile:
@@ -165,8 +165,8 @@ tools:
     source:
       subdir: 'ports'
       git: 'https://github.com/rust-lang/cargo.git'
-      tag: '0.86.0'
-      version: '0.86.0'
+      tag: '0.87.0'
+      version: '0.87.0'
     tools_required:
       - tool: host-rust
         recursive: true
@@ -178,7 +178,7 @@ tools:
       - rust-patched-libs
       # Cargo requires cargo to build, so we download a binary that we can use temporarily
       - host-bootstrap-cargo
-    revision: 2
+    revision: 1
     compile:
       - args:
         - '@THIS_SOURCE_DIR@/../host-bootstrap-cargo/cargo/bin/cargo'

@@ -1,0 +1,73 @@
+From 995981449140ed5f74544cf4ec4e3c0d1f22f648 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Wed, 2 Apr 2025 01:53:32 +0200
+Subject: [PATCH] Add mlibc support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ src/backend/libc/fs/types.rs | 5 +++++
+ src/ioctl/mod.rs             | 4 ++++
+ 2 files changed, 9 insertions(+)
+
+diff --git a/src/backend/libc/fs/types.rs b/src/backend/libc/fs/types.rs
+index 8f1f479..1708d7f 100644
+--- a/src/backend/libc/fs/types.rs
++++ b/src/backend/libc/fs/types.rs
+@@ -790,6 +790,7 @@ bitflags! {
+             target_os = "l4re",
+             target_os = "linux",
+             target_os = "wasi",
++            target_os = "managarm"
+         )))]
+         const NO_HIDE_STALE = bitcast!(c::FALLOC_FL_NO_HIDE_STALE);
+         /// `FALLOC_FL_COLLAPSE_RANGE`
+@@ -801,6 +802,7 @@ bitflags! {
+             target_os = "hurd",
+             target_os = "emscripten",
+             target_os = "wasi",
++            target_os = "managarm"
+         )))]
+         const COLLAPSE_RANGE = bitcast!(c::FALLOC_FL_COLLAPSE_RANGE);
+         /// `FALLOC_FL_ZERO_RANGE`
+@@ -812,6 +814,7 @@ bitflags! {
+             target_os = "hurd",
+             target_os = "emscripten",
+             target_os = "wasi",
++            target_os = "managarm"
+         )))]
+         const ZERO_RANGE = bitcast!(c::FALLOC_FL_ZERO_RANGE);
+         /// `FALLOC_FL_INSERT_RANGE`
+@@ -823,6 +826,7 @@ bitflags! {
+             target_os = "hurd",
+             target_os = "emscripten",
+             target_os = "wasi",
++            target_os = "managarm"
+         )))]
+         const INSERT_RANGE = bitcast!(c::FALLOC_FL_INSERT_RANGE);
+         /// `FALLOC_FL_UNSHARE_RANGE`
+@@ -834,6 +838,7 @@ bitflags! {
+             target_os = "hurd",
+             target_os = "emscripten",
+             target_os = "wasi",
++            target_os = "managarm"
+         )))]
+         const UNSHARE_RANGE = bitcast!(c::FALLOC_FL_UNSHARE_RANGE);
+ 
+diff --git a/src/ioctl/mod.rs b/src/ioctl/mod.rs
+index e3e8f8e..18f43aa 100644
+--- a/src/ioctl/mod.rs
++++ b/src/ioctl/mod.rs
+@@ -309,6 +309,10 @@ type _Opcode = c::c_ulong;
+ ))]
+ type _Opcode = c::c_int;
+ 
++// mlibc uses `c_ulong`
++#[cfg(target_env = "mlibc")]
++type _Opcode = c::c_ulong;
++
+ // Android uses `c_int`.
+ #[cfg(all(not(linux_raw), target_os = "android"))]
+ type _Opcode = c::c_int;
+-- 
+2.49.0
+

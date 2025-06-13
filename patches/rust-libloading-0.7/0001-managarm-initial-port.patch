@@ -1,0 +1,48 @@
+From 5cc9cf1437f4279029c0d4eb464325ee1c105bbb Mon Sep 17 00:00:00 2001
+From: Matt Taylor <mstaveleytaylor@gmail.com>
+Date: Mon, 21 Feb 2022 02:39:12 +0000
+Subject: [PATCH] Add Managarm support
+
+---
+ src/os/unix/consts.rs | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/src/os/unix/consts.rs b/src/os/unix/consts.rs
+index ea7a6a1..4506f7f 100644
+--- a/src/os/unix/consts.rs
++++ b/src/os/unix/consts.rs
+@@ -82,6 +82,7 @@ mod posix {
+ 
+             target_os = "fuchsia",
+             target_os = "redox",
++            target_os = "managarm",
+         ))] {
+             pub(super) const RTLD_LAZY: c_int = 1;
+         } else {
+@@ -115,6 +116,7 @@ mod posix {
+ 
+             target_os = "fuchsia",
+             target_os = "redox",
++            target_os = "managarm",
+         ))] {
+             pub(super) const RTLD_NOW: c_int = 2;
+         } else if #[cfg(all(target_os = "android",target_pointer_width = "32"))] {
+@@ -162,6 +164,7 @@ mod posix {
+ 
+             target_os = "fuchsia",
+             target_os = "redox",
++            target_os = "managarm",
+         ))] {
+             pub(super) const RTLD_GLOBAL: c_int = 0x100;
+         } else {
+@@ -200,6 +203,7 @@ mod posix {
+ 
+             target_os = "fuchsia",
+             target_os = "redox",
++            target_os = "managarm",
+         ))] {
+             pub(super) const RTLD_LOCAL: c_int = 0;
+         } else {
+-- 
+2.47.2
+
