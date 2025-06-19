@@ -856,6 +856,7 @@ packages:
       - args: ['rm', '-r', '@THIS_COLLECT_DIR@/usr/lib/dracut'] # Nuke dracut
 
   - name: pciutils
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: Various utilities dealing with the PCI bus
@@ -1043,6 +1044,7 @@ packages:
       - args: ['rm', '-v', '@THIS_COLLECT_DIR@/usr/.crates2.json']
 
   - name: usbutils
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: USB enumeration utilities
