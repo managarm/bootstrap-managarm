@@ -1588,6 +1588,7 @@ packages:
         quiet: true
 
   - name: libusb
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: Library for interacting with USB devices
