@@ -752,11 +752,19 @@ timeout: 0
             "dmalog,chardev=kernel-alloc-trace,tag=kernel-alloc-trace",
         ]
 
+        if args.dmalog_int_pin == "none":
+            dmalog_pin = "0"
+        elif args.dmalog_int_pin.lower() in ['a', 'b', 'c', 'd']:
+            dmalog_pin = ['a', 'b', 'c', 'd'].index(args.dmalog_int_pin.lower()) + 1
+        else:
+            print(f"Invalid dmalog interrupt pin '{args.dmalog_int_pin}'")
+            sys.exit(1)
+
         qemu_args += [
             "-chardev",
             "socket,id=gdbsocket,host=0.0.0.0,port=5678,server=on,wait=no",
             "-device",
-            "dmalog,chardev=gdbsocket,tag=kernel-gdbserver",
+            f"dmalog,chardev=gdbsocket,tag=kernel-gdbserver,pin={dmalog_pin}",
         ]
 
     # Use serial for POSIX gdb (conflicts with headless init).
@@ -831,7 +839,7 @@ qemu_parser.add_argument(
 )
 qemu_parser.add_argument("--net-bridge", action="store_true")
 qemu_parser.add_argument("--nic", choices=["i8254x", "virtio", "rtl8139", "usb", "none"], default="virtio")
-qemu_parser.add_argument("--gfx", choices=["bga", "virtio", "vmware"], default="default")
+qemu_parser.add_argument("--gfx", choices=["bga", "virtio", "vmware", "none"], default="default")
 qemu_parser.add_argument("--ps2", action="store_true")
 qemu_parser.add_argument("--mouse", action="store_true")
 qemu_parser.add_argument("--init-launch", type=str, default="weston")
@@ -843,6 +851,7 @@ qemu_parser.add_argument("--usb-redir", type=str, action='append')
 qemu_parser.add_argument("--usb-serial", action='store_true')
 qemu_parser.add_argument("--uefi", action=argparse.BooleanOptionalAction)
 qemu_parser.add_argument("--ovmf-logs", action="store_true")
+qemu_parser.add_argument("--dmalog-int-pin", type=str, default="C")
 qemu_parser.add_argument("--cmd", type=str)
 qemu_parser.add_argument("--qmp", action="store_true")
 qemu_parser.add_argument("--use-system-qemu", action="store_true")
@@ -868,6 +877,9 @@ def do_gdb(args):
         f.write(f"set substitute-path ../../../src {src_path}\n")
         f.write(f"set substitute-path /var/lib/managarm-buildenv/build/ ./\n")
         f.write(f"set sysroot system-root\n")
+
+    if args.gdb_debug:
+        gdb_args += ["-ex", "set debug remote 1"]
 
     if args.qemu:
         gdb_args += [
@@ -919,6 +931,7 @@ def do_gdb(args):
 gdb_parser = main_subparsers.add_parser("gdb")
 gdb_parser.set_defaults(_fn=do_gdb)
 gdb_parser.add_argument("--ip", type=str, default="localhost")
+gdb_parser.add_argument("--gdb-debug", action='store_true')
 gdb_parser.add_argument("--uefi-base", type=str)
 
 gdb_group = gdb_parser.add_mutually_exclusive_group(required=True)

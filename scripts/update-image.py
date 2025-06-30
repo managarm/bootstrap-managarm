@@ -633,6 +633,7 @@ class UnmountAction:
 
         if mount_using == "loopback":
             run_elevated(["losetup", "-d", f"{blockdev}"])
+            run_regular(["udevadm", "settle"])
 
         if mount_using == "block" or mount_using == "loopback":
             run_elevated(["umount", "-l", mountpoint])

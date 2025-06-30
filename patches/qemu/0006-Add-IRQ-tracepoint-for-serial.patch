@@ -1,0 +1,38 @@
+From 84ca2aefc91a03def7976a85a0dba72c555f1337 Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Tue, 6 May 2025 17:25:57 +0200
+Subject: [PATCH 6/6] Add IRQ tracepoint for serial
+
+---
+ hw/char/serial.c     | 2 ++
+ hw/char/trace-events | 1 +
+ 2 files changed, 3 insertions(+)
+
+diff --git a/hw/char/serial.c b/hw/char/serial.c
+index b50a8a1..1d43cd1 100644
+--- a/hw/char/serial.c
++++ b/hw/char/serial.c
+@@ -138,6 +138,8 @@ static void serial_update_irq(SerialState *s)
+ 
+     s->iir = tmp_iir | (s->iir & 0xF0);
+ 
++    trace_serial_update_irq(tmp_iir != UART_IIR_NO_INT, s->iir, s->ier);
++
+     if (tmp_iir != UART_IIR_NO_INT) {
+         qemu_irq_raise(s->irq);
+     } else {
+diff --git a/hw/char/trace-events b/hw/char/trace-events
+index 59e1f73..7c1b239 100644
+--- a/hw/char/trace-events
++++ b/hw/char/trace-events
+@@ -8,6 +8,7 @@ parallel_ioport_write(const char *desc, uint16_t addr, uint8_t value) "write [%s
+ serial_read(uint16_t addr, uint8_t value) "read addr 0x%02x val 0x%02x"
+ serial_write(uint16_t addr, uint8_t value) "write addr 0x%02x val 0x%02x"
+ serial_update_parameters(uint64_t baudrate, char parity, int data_bits, int stop_bits) "baudrate=%"PRIu64" parity='%c' data=%d stop=%d"
++serial_update_irq(bool raise, uint8_t iir, uint8_t ier) "raise=%d iir=%02x ier=%02x"
+ 
+ # virtio-serial-bus.c
+ virtio_serial_send_control_event(unsigned int port, uint16_t event, uint16_t value) "port %u, event %u, value %u"
+-- 
+2.49.0
+
