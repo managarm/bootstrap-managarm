@@ -647,13 +647,13 @@ packages:
     source:
       subdir: ports
       git: 'https://git.kernel.org/pub/scm/libs/libcap/libcap.git'
-      tag: 'libcap-2.72'
-      version: '2.72'
+      tag: 'libcap-2.76'
+      version: '2.76'
     tools_required:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 1
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
