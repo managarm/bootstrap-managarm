@@ -2,7 +2,7 @@ sources:
   - name: mlibc
     git: 'https://github.com/managarm/mlibc.git'
     branch: 'master'
-    commit: '9a42937f73aff0bbf7379ee70f4f99a5774694aa'
+    commit: 'b4fb75b3379762d006e7d9b98fd739778e2d3a21'
     rolling_version: true
     version: '0.0pl@ROLLING_ID@'
     sources_required:
