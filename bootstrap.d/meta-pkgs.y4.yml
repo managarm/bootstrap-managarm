@@ -57,7 +57,9 @@ packages:
       - shadow
       - dbus
       - systemd
-    revision: 9
+      - pciutils
+      - usbutils
+    revision: 10
     configure: []
     build: []
 
