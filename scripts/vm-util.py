@@ -752,11 +752,19 @@ timeout: 0
             "dmalog,chardev=kernel-alloc-trace,tag=kernel-alloc-trace",
         ]
 
+        if args.dmalog_int_pin == "none":
+            dmalog_pin = "0"
+        elif args.dmalog_int_pin.lower() in ['a', 'b', 'c', 'd']:
+            dmalog_pin = ['a', 'b', 'c', 'd'].index(args.dmalog_int_pin.lower()) + 1
+        else:
+            print(f"Invalid dmalog interrupt pin '{args.dmalog_int_pin}'")
+            sys.exit(1)
+
         qemu_args += [
             "-chardev",
             "socket,id=gdbsocket,host=0.0.0.0,port=5678,server=on,wait=no",
             "-device",
-            "dmalog,chardev=gdbsocket,tag=kernel-gdbserver",
+            f"dmalog,chardev=gdbsocket,tag=kernel-gdbserver,pin={dmalog_pin}",
         ]
 
     # Use serial for POSIX gdb (conflicts with headless init).
@@ -843,6 +851,7 @@ qemu_parser.add_argument("--usb-redir", type=str, action='append')
 qemu_parser.add_argument("--usb-serial", action='store_true')
 qemu_parser.add_argument("--uefi", action=argparse.BooleanOptionalAction)
 qemu_parser.add_argument("--ovmf-logs", action="store_true")
+qemu_parser.add_argument("--dmalog-int-pin", type=str, default="C")
 qemu_parser.add_argument("--cmd", type=str)
 qemu_parser.add_argument("--qmp", action="store_true")
 qemu_parser.add_argument("--use-system-qemu", action="store_true")
