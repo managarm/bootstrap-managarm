@@ -48,6 +48,7 @@ imports:
   - file: bootstrap.d/sys-auth.y4.yml
   - file: bootstrap.d/sys-boot.y4.yml
   - file: bootstrap.d/sys-devel.y4.yml
+  - file: bootstrap.d/sys-firmware.y4.yml
   - file: bootstrap.d/sys-kernel.y4.yml
   - file: bootstrap.d/sys-libs.y4.yml
   - file: bootstrap.d/sys-process.y4.yml
