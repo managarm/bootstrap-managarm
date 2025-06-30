@@ -1,38 +1,25 @@
-From a15d9a3917d2ed73e435025442b6d13219268832 Mon Sep 17 00:00:00 2001
+From daa32343c824e64875f3fad7e231de713ff5e112 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Sat, 23 Nov 2024 15:34:18 +0100
 Subject: [PATCH] Add managarm support
 
 ---
- Make.Rules        |  2 +-
- libcap/cap_proc.c | 21 ++++++++++++++++++++-
- progs/capsh.c     |  1 +
- psx/psx.c         |  8 +++++++-
- 4 files changed, 29 insertions(+), 3 deletions(-)
+ libcap/cap_proc.c | 21 +++++++++++++++++++++
+ psx/psx.c         |  8 ++++++++
+ psx/psx_calls.c   |  8 ++++++++
+ 3 files changed, 37 insertions(+)
 
-diff --git a/Make.Rules b/Make.Rules
-index 2dd6916..36b55a2 100644
---- a/Make.Rules
-+++ b/Make.Rules
-@@ -63,7 +63,7 @@ GOMAJOR=1
- KERNEL_HEADERS := $(topdir)/libcap/include/uapi
- LIBCAP_INCLUDES = -I$(KERNEL_HEADERS) -I$(topdir)/libcap/include
- DEFINES := -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
--SYSTEM_HEADERS = /usr/include
-+SYSTEM_HEADERS ?= /usr/include
- 
- SUDO := sudo
- CC := $(CROSS_COMPILE)gcc
 diff --git a/libcap/cap_proc.c b/libcap/cap_proc.c
-index 09b74ca..7fc8d37 100644
+index 09b74ca..27c22c2 100644
 --- a/libcap/cap_proc.c
 +++ b/libcap/cap_proc.c
-@@ -13,13 +13,24 @@
+@@ -13,13 +13,26 @@
  #include <grp.h>
  #include <sys/prctl.h>
  #include <sys/securebits.h>
--#include <sys/syscall.h>
-+// #include <sys/syscall.h>
++#if !defined(__managarm__)
+ #include <sys/syscall.h>
++#endif
  #include <unistd.h>
  #include <sys/types.h>
  #include <sys/wait.h>
@@ -53,7 +40,7 @@ index 09b74ca..7fc8d37 100644
  /*
   * libcap uses this abstraction for all system calls that change
   * kernel managed capability state. This permits the user to redirect
-@@ -30,14 +41,22 @@
+@@ -30,14 +43,22 @@
  static long int _cap_syscall3(long int syscall_nr,
  			      long int arg1, long int arg2, long int arg3)
  {
@@ -76,32 +63,22 @@ index 09b74ca..7fc8d37 100644
  }
  
  /*
-diff --git a/progs/capsh.c b/progs/capsh.c
-index f753291..c65f1fa 100644
---- a/progs/capsh.c
-+++ b/progs/capsh.c
-@@ -18,6 +18,7 @@
- #define _GNU_SOURCE
- #endif
- 
-+#include <signal.h>
- #include <stdio.h>
- #include <string.h>
- #include <stdlib.h>
 diff --git a/psx/psx.c b/psx/psx.c
-index d66a7bf..f748374 100644
+index e3ad106..ad8f95a 100644
 --- a/psx/psx.c
 +++ b/psx/psx.c
-@@ -24,12 +24,18 @@
+@@ -24,13 +24,21 @@
  #include <stdint.h>
  #include <stdlib.h>
  #include <string.h>
--#include <sys/syscall.h>
-+// #include <sys/syscall.h>
++#if !defined(__managarm__)
+ #include <sys/syscall.h>
++#endif
  #include <sys/types.h>
  #include <unistd.h>
  
  #include "psx_syscall.h"
+ #include "libpsx.h"
  
 +#if defined(__managarm__)
 +
@@ -112,6 +89,32 @@ index d66a7bf..f748374 100644
  #ifdef _PSX_DEBUG_MEMORY
  
  static void *_psx_calloc(const char *file, const int line,
+diff --git a/psx/psx_calls.c b/psx/psx_calls.c
+index 9662fbd..21f243c 100644
+--- a/psx/psx_calls.c
++++ b/psx/psx_calls.c
+@@ -14,13 +14,21 @@
+ 
+ #include <signal.h>
+ #include <string.h>
++#if defined(__managarm__)
+ #include <sys/syscall.h>
++#endif
+ #include <sys/wait.h>
+ #include <unistd.h>
+ 
+ #include "psx_syscall.h"
+ #include "libpsx.h"
+ 
++#if defined(__managarm__)
++
++#define syscall(...) (-1)
++
++#endif
++
+ /*
+  * This is terrible, but some of the OS installed <asm/signal.h>
+  * headers only seem to know about the legacy 32-bit signal masks. So,
 -- 
-2.48.1
+2.49.0
 
