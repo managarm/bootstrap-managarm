@@ -1,0 +1,25 @@
+From 3c414fb06a5da243a11944a761add830e0224226 Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Thu, 3 Jul 2025 01:45:14 +0200
+Subject: [PATCH] Allow overriding DESTDIR
+
+---
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index 6fc946b..eb2e20f 100644
+--- a/Makefile
++++ b/Makefile
+@@ -30,7 +30,7 @@ CFLAGS += -D_FILE_OFFSET_BITS=64
+ # Pass linker flags here (can be set from environment too)
+ LDFLAGS ?=
+ 
+-DESTDIR =
++DESTDIR ?=
+ prefix  = /usr/local
+ sbindir = $(prefix)/sbin
+ mandir  = $(prefix)/share/man
+-- 
+2.49.0
+
