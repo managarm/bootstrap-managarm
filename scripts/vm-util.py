@@ -520,6 +520,7 @@ def do_qemu(args):
     else:
         assert args.arch == "x86_64"
         qemu_args += ["-debugcon", "stdio"]
+        qemu_args += ["-machine", "smbios-entry-point-type=64"]
 
     cpu_extras = []
     cpu_model = "host,migratable=no"
