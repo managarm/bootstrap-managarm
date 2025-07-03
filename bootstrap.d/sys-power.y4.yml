@@ -1,0 +1,50 @@
+packages:
+  - name: upower
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: D-Bus abstraction for enumerating power devices, querying history and statistics.
+      description: UPower is an abstraction for enumerating power devices, listening to device events and querying history and statistics. Any application or service on the system can access the org.freedesktop.UPower service via the system message bus.
+      spdx: 'GPL-2.0-or-later'
+      website: 'https://upower.freedesktop.org/'
+      maintainer: "no92 <leo@managarm.org>"
+      categories: ['sys-power']
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.freedesktop.org/upower/upower.git'
+      tag: 'v1.90.6'
+      version: '1.90.6'
+    tools_required:
+      - system-gcc
+      - host-glib
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - libgudev
+      - glib
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--buildtype=debugoptimized'
+        - '--wrap-mode=nofallback'
+        - '-Dsystemdsystemunitdir=lib/systemd/system'
+        - '-Dos_backend=linux'
+        - '-Dintrospection=disabled'
+        - '-Didevice=disabled'
+        - '-Dpolkit=disabled'
+        - '-Dgtk-doc=false'
+        - '-Dman=false'
+        - '-Dudevrulesdir=lib/udev/rules.d'
+        - '-Dudevhwdbdir=lib/udev/hwdb.d'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
