@@ -575,7 +575,7 @@ timeout: 0
 /managarm headless (UEFI)
     image_path: guid({esp_uuid}):/managarm/eir-uefi
     protocol: efi_chainload
-    cmdline: bochs init.launch=headless init.command={args.cmd} plainfb.force=1
+    cmdline: bochs init.launch=headless init.command={args.cmd} plainfb.force=1 nosystemd
 """)
         else:
             tmp_config.write(f"""limine:config:
@@ -583,7 +583,7 @@ timeout: 0
 /managarm headless
     kernel_path: guid({esp_uuid}):/managarm/eir-mb2
     protocol: multiboot2
-    cmdline: bochs init.launch=headless init.command={args.cmd} plainfb.force=1
+    cmdline: bochs init.launch=headless init.command={args.cmd} plainfb.force=1 nosystemd
     module_path: guid({esp_uuid}):/managarm/initrd.cpio
 """)
         tmp_config.flush()
