@@ -97,11 +97,11 @@ tools:
     source:
       subdir: ports
       git: 'https://github.com/rui314/mold.git'
-      tag: 'v2.32.0'
-      version: '2.32.0'
+      tag: 'v2.40.1'
+      version: '2.40.1'
     tools_required:
       - host-cmake
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -111,7 +111,7 @@ tools:
         - '-DCMAKE_POLICY_VERSION_MINIMUM=3.5'
         - '@THIS_SOURCE_DIR@'
     compile:
-      - args: ['cmake', '--build', '.', '--parallel', '@PARALLELISM@']
+      - args: ['ninja']
     install:
       - args: ['cmake', '--install', '.']
 
