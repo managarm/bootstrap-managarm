@@ -1,4 +1,4 @@
-From daa32343c824e64875f3fad7e231de713ff5e112 Mon Sep 17 00:00:00 2001
+From c5cc12ff6900876b07758ac3f3a7cee306037d81 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Sat, 23 Nov 2024 15:34:18 +0100
 Subject: [PATCH] Add managarm support
@@ -90,14 +90,14 @@ index e3ad106..ad8f95a 100644
  
  static void *_psx_calloc(const char *file, const int line,
 diff --git a/psx/psx_calls.c b/psx/psx_calls.c
-index 9662fbd..21f243c 100644
+index 9662fbd..bd321b8 100644
 --- a/psx/psx_calls.c
 +++ b/psx/psx_calls.c
 @@ -14,13 +14,21 @@
  
  #include <signal.h>
  #include <string.h>
-+#if defined(__managarm__)
++#if !defined(__managarm__)
  #include <sys/syscall.h>
 +#endif
  #include <sys/wait.h>
