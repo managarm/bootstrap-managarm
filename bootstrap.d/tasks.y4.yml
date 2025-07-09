@@ -164,3 +164,12 @@ tasks:
       - '@SOURCE_ROOT@/mlibc'
       - '@SYSROOT_DIR@/usr/src/linux-headers'
     workdir: '@BUILD_ROOT@'
+
+  - name: generate-pcap
+    tools_required:
+      - tool: host-managarm-tools
+    args:
+      - '@BUILD_ROOT@/tools/host-managarm-tools/bin/extract-ostrace'
+      - 'ostrace.bin'
+      - '--pcap'
+    workdir: '@BUILD_ROOT@'
