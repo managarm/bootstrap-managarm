@@ -910,12 +910,32 @@ packages:
       - systemd
       - hwdata
       - zlib
-    revision: 3
+    revision: 4
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
-      - args: ['make', 'PREFIX=/usr', 'SHARED=yes', 'DNS=no', 'CROSS_COMPILE=@OPTION:arch-triple@-', '-j@PARALLELISM@']
-      - args: ['make', 'PREFIX=/usr', 'SHARED=yes', 'DNS=no', 'CROSS_COMPILE=@OPTION:arch-triple@-', 'DESTDIR=@THIS_COLLECT_DIR@', 'install', 'install-lib']
+      - args:
+        - 'make'
+        - 'PREFIX=/usr'
+        - !managarm::arch_ite
+            arch: [aarch64, riscv64]
+            then: 'CFLAGS=-DBYTE_ORDER=__BYTE_ORDER__ -fPIC'
+            else: 'CFLAGS=-DBYTE_ORDER=__BYTE_ORDER__'
+        - 'SHARED=yes'
+        - 'DNS=no'
+        - 'CROSS_COMPILE=@OPTION:arch-triple@-'
+        - 'HOST=@OPTION:arch@-linux'
+        - '-j@PARALLELISM@'
+      - args:
+        - 'make'
+        - 'PREFIX=/usr'
+        - 'SHARED=yes'
+        - 'DNS=no'
+        - 'CROSS_COMPILE=@OPTION:arch-triple@-'
+        - 'HOST=@OPTION:arch@-linux'
+        - 'DESTDIR=@THIS_COLLECT_DIR@'
+        - 'install'
+        - 'install-lib'
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
