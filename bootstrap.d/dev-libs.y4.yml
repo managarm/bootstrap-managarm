@@ -1076,7 +1076,7 @@ packages:
       - glib
       - systemd
       - gobject-introspection
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -1086,7 +1086,7 @@ packages:
         - '--prefix=/usr'
         - '--buildtype=release'
         - '--wrap-mode=nodownload'
-        - '-Dintrospection=enabled'
+        - '-Dintrospection=disabled'
         - '-Dvapi=disabled'
         - '-Dgtk_doc=false'
         - '@THIS_SOURCE_DIR@'
