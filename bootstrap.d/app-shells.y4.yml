@@ -77,7 +77,7 @@ packages:
       - ncurses
       - readline
       - libiconv
-    revision: 13
+    revision: 14
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
