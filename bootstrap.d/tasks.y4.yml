@@ -103,6 +103,7 @@ tasks:
         order_only: true
     artifact_files:
       - name: image.xz
+        architecture: '@OPTION:arch@'
         path: '@BUILD_ROOT@'
     args: ['xz', '--fast', '--keep', '@BUILD_ROOT@/image']
 
