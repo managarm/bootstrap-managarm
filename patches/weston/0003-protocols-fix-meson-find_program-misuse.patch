@@ -1,4 +1,4 @@
-From 4c19aa4514fc045801eddf3c8606e4045fa4368b Mon Sep 17 00:00:00 2001
+From e2b58d64d56d03be80d0407c025b181ea919a1cc Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Fri, 14 Mar 2025 16:39:43 +0100
 Subject: [PATCH 3/3] protocols: fix meson find_program misuse
@@ -19,5 +19,5 @@ index d107354..cf0140d 100644
  dep_wp = dependency('wayland-protocols', version: '>= 1.33',
  	fallback: ['wayland-protocols', 'wayland_protocols'])
 -- 
-2.48.1
+2.49.0
 
