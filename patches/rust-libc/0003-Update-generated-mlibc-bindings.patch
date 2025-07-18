@@ -1,0 +1,310 @@
+From 44c56e92f5358924a20f31b12206a5aa608c477a Mon Sep 17 00:00:00 2001
+From: 48cf <32851089+48cf@users.noreply.github.com>
+Date: Mon, 7 Apr 2025 14:20:23 +0200
+Subject: [PATCH 3/3] Update generated mlibc bindings
+
+---
+ src/unix/linux_like/managarm/mod.rs | 157 +++++++++++++++++++++++-----
+ src/unix/linux_like/mod.rs          |   9 ++
+ 2 files changed, 137 insertions(+), 29 deletions(-)
+
+diff --git a/src/unix/linux_like/managarm/mod.rs b/src/unix/linux_like/managarm/mod.rs
+index dd2dd9f..07b0de8 100644
+--- a/src/unix/linux_like/managarm/mod.rs
++++ b/src/unix/linux_like/managarm/mod.rs
+@@ -169,6 +169,81 @@ impl siginfo_t {
+     }
+ }
+ 
++s! {
++    pub struct sockaddr_nl {
++        pub nl_family: crate::sa_family_t,
++        nl_pad: c_ushort,
++        pub nl_pid: u32,
++        pub nl_groups: u32,
++    }
++}
++
++// linux/netlink.h
++pub const NLA_ALIGNTO: c_int = 4;
++
++pub const NETLINK_ROUTE: c_int = 0;
++pub const NETLINK_UNUSED: c_int = 1;
++pub const NETLINK_USERSOCK: c_int = 2;
++pub const NETLINK_FIREWALL: c_int = 3;
++pub const NETLINK_SOCK_DIAG: c_int = 4;
++pub const NETLINK_NFLOG: c_int = 5;
++pub const NETLINK_XFRM: c_int = 6;
++pub const NETLINK_SELINUX: c_int = 7;
++pub const NETLINK_ISCSI: c_int = 8;
++pub const NETLINK_AUDIT: c_int = 9;
++pub const NETLINK_FIB_LOOKUP: c_int = 10;
++pub const NETLINK_CONNECTOR: c_int = 11;
++pub const NETLINK_NETFILTER: c_int = 12;
++pub const NETLINK_IP6_FW: c_int = 13;
++pub const NETLINK_DNRTMSG: c_int = 14;
++pub const NETLINK_KOBJECT_UEVENT: c_int = 15;
++pub const NETLINK_GENERIC: c_int = 16;
++pub const NETLINK_SCSITRANSPORT: c_int = 18;
++pub const NETLINK_ECRYPTFS: c_int = 19;
++pub const NETLINK_RDMA: c_int = 20;
++pub const NETLINK_CRYPTO: c_int = 21;
++pub const NETLINK_INET_DIAG: c_int = NETLINK_SOCK_DIAG;
++
++pub const NLM_F_REQUEST: c_int = 1;
++pub const NLM_F_MULTI: c_int = 2;
++pub const NLM_F_ACK: c_int = 4;
++pub const NLM_F_ECHO: c_int = 8;
++pub const NLM_F_DUMP_INTR: c_int = 16;
++pub const NLM_F_DUMP_FILTERED: c_int = 32;
++
++pub const NLM_F_ROOT: c_int = 0x100;
++pub const NLM_F_MATCH: c_int = 0x200;
++pub const NLM_F_ATOMIC: c_int = 0x400;
++pub const NLM_F_DUMP: c_int = NLM_F_ROOT | NLM_F_MATCH;
++
++pub const NLM_F_REPLACE: c_int = 0x100;
++pub const NLM_F_EXCL: c_int = 0x200;
++pub const NLM_F_CREATE: c_int = 0x400;
++pub const NLM_F_APPEND: c_int = 0x800;
++
++pub const NLM_F_NONREC: c_int = 0x100;
++pub const NLM_F_BULK: c_int = 0x200;
++
++pub const NLM_F_CAPPED: c_int = 0x100;
++pub const NLM_F_ACK_TLVS: c_int = 0x200;
++
++pub const NETLINK_ADD_MEMBERSHIP: c_int = 1;
++pub const NETLINK_DROP_MEMBERSHIP: c_int = 2;
++pub const NETLINK_PKTINFO: c_int = 3;
++pub const NETLINK_BROADCAST_ERROR: c_int = 4;
++pub const NETLINK_NO_ENOBUFS: c_int = 5;
++pub const NETLINK_RX_RING: c_int = 6;
++pub const NETLINK_TX_RING: c_int = 7;
++pub const NETLINK_LISTEN_ALL_NSID: c_int = 8;
++pub const NETLINK_LIST_MEMBERSHIPS: c_int = 9;
++pub const NETLINK_CAP_ACK: c_int = 10;
++pub const NETLINK_EXT_ACK: c_int = 11;
++pub const NETLINK_GET_STRICT_CHK: c_int = 12;
++
++pub const NLA_F_NESTED: c_int = 1 << 15;
++pub const NLA_F_NET_BYTEORDER: c_int = 1 << 14;
++pub const NLA_TYPE_MASK: c_int = !(NLA_F_NESTED | NLA_F_NET_BYTEORDER);
++
+ // abi-bits/access.h
+ 
+ // abi-bits/auxv.h
+@@ -450,7 +525,9 @@ pub const SO_RCVBUFFORCE: c_int = 33;
+ pub const SO_PROTOCOL: c_int = 38;
+ pub const SO_DOMAIN: c_int = 39;
+ pub const SO_RCVTIMEO: c_int = 20;
++pub const SO_RCVTIMEO_OLD: c_int = 20;
+ pub const SO_SNDTIMEO: c_int = 21;
++pub const SO_SNDTIMEO_OLD: c_int = 21;
+ pub const SO_TIMESTAMP: c_int = 29;
+ pub const SO_TIMESTAMPNS: c_int = 35;
+ pub const SO_TIMESTAMPING: c_int = 37;
+@@ -1224,7 +1301,7 @@ s! {
+         pub __si_fields: [c_char; 112],
+     }
+ }
+-pub type __sighandler = Option<unsafe extern "C" fn(c_int) -> c_void>;
++pub type __sighandler = Option<unsafe extern "C" fn(c_int)>;
+ s! {
+     pub struct sigset_t {
+         pub sig: [c_ulong; 16],
+@@ -1283,7 +1360,7 @@ s! {
+     pub struct sigaction {
+         pub sa_sigaction: sighandler_t,
+         pub sa_flags: c_ulong,
+-        pub sa_restorer: Option<unsafe extern "C" fn() -> c_void>,
++        pub sa_restorer: Option<unsafe extern "C" fn()>,
+         pub sa_mask: crate::sigset_t,
+     }
+     pub struct _fpreg {
+@@ -1413,9 +1490,9 @@ s! {
+ }
+ 
+ // abi-bits/statvfs.h
+-pub const ST_RDONLY: c_int = 1;
+-pub const ST_NOSUID: c_int = 2;
+-pub const ST_MANDLOCK: c_int = 64;
++pub const ST_RDONLY: c_ulong = 1;
++pub const ST_NOSUID: c_ulong = 2;
++pub const ST_MANDLOCK: c_ulong = 64;
+ s! {
+     pub struct statvfs {
+         pub f_bsize: c_ulong,
+@@ -1497,17 +1574,17 @@ s! {
+ // abi-bits/termios.h
+ pub const NCCS: usize = 32;
+ pub const VEOF: usize = 4;
+-pub const VTIME: c_int = 5;
+-pub const VMIN: c_int = 6;
+-pub const VSWTC: c_int = 7;
+-pub const VSTART: c_int = 8;
+-pub const VSTOP: c_int = 9;
+-pub const VSUSP: c_int = 10;
+-pub const VEOL: c_int = 11;
+-pub const VREPRINT: c_int = 12;
+-pub const VDISCARD: c_int = 13;
+-pub const VWERASE: c_int = 14;
+-pub const VEOL2: c_int = 16;
++pub const VTIME: usize = 5;
++pub const VMIN: usize = 6;
++pub const VSWTC: usize = 7;
++pub const VSTART: usize = 8;
++pub const VSTOP: usize = 9;
++pub const VSUSP: usize = 10;
++pub const VEOL: usize = 11;
++pub const VREPRINT: usize = 12;
++pub const VDISCARD: usize = 13;
++pub const VWERASE: usize = 14;
++pub const VEOL2: usize = 16;
+ pub const IUCLC: c_uint = 0o001000;
+ pub const IXON: c_uint = 0o002000;
+ pub const IXOFF: c_uint = 0o010000;
+@@ -1549,9 +1626,9 @@ pub const TOSTOP: crate::tcflag_t = 0o000400;
+ pub const IEXTEN: crate::tcflag_t = 0o100000;
+ pub const EXTA: c_int = 0o000016;
+ pub const EXTB: c_int = 0o000017;
+-pub const CBAUD: c_int = 0o010017;
+-pub const CBAUDEX: c_int = 0o010000;
+-pub const CIBAUD: c_int = 0o02003600000;
++pub const CBAUD: crate::tcflag_t = 0o010017;
++pub const CBAUDEX: crate::tcflag_t = 0o010000;
++pub const CIBAUD: crate::tcflag_t = 0o02003600000;
+ pub const CMSPAR: crate::tcflag_t = 0o10000000000;
+ pub const XCASE: c_int = 0o000004;
+ pub const ECHOCTL: crate::tcflag_t = 0o001000;
+@@ -1784,7 +1861,7 @@ extern "C" {
+     pub fn rand_r(__seed: *mut c_uint) -> c_int;
+     pub fn srand(__seed: c_uint);
+     pub fn aligned_alloc(__alignment: crate::size_t, __size: crate::size_t) -> *mut c_void;
+-    pub fn at_quick_exit(__func: Option<unsafe extern "C" fn() -> c_void>) -> c_int;
++    pub fn at_quick_exit(__func: Option<unsafe extern "C" fn()>) -> c_int;
+     pub fn _Exit(__status: c_int);
+     pub fn quick_exit(__status: c_int);
+     pub fn mktemp(__pattern: *mut c_char) -> *mut c_char;
+@@ -2077,8 +2154,8 @@ extern "C" {
+     ) -> *mut c_void;
+     pub fn strcoll_l(__s1: *const c_char, __s2: *const c_char, __locale: crate::locale_t) -> c_int;
+     pub fn strerror_l(__errnum: c_int, __locale: crate::locale_t) -> *mut c_char;
+-    pub fn strlcpy(__d: *mut c_char, __s: *const c_char, __n: crate::size_t) -> c_ulong;
+-    pub fn strlcat(__d: *mut c_char, __s: *const c_char, __n: crate::size_t) -> c_ulong;
++    pub fn strlcpy(__d: *mut c_char, __s: *const c_char, __n: crate::size_t) -> crate::size_t;
++    pub fn strlcat(__d: *mut c_char, __s: *const c_char, __n: crate::size_t) -> crate::size_t;
+ }
+ 
+ // bits/posix/posix_time.h
+@@ -2341,7 +2418,7 @@ s! {
+         pub gl_pathv: *mut *mut c_char,
+         pub gl_offs: crate::size_t,
+         pub gl_flags: c_int,
+-        pub gl_closedir: Option<unsafe extern "C" fn(*mut c_void) -> c_void>,
++        pub gl_closedir: Option<unsafe extern "C" fn(*mut c_void)>,
+         pub gl_readdir: Option<unsafe extern "C" fn(*mut c_void) -> *mut  crate::dirent>,
+         pub gl_opendir: Option<unsafe extern "C" fn(*const c_char) -> *mut c_void>,
+         pub gl_lstat: Option<unsafe extern "C" fn(*const c_char, *mut  crate::stat) -> c_int>,
+@@ -3071,7 +3148,7 @@ extern "C" {
+     ) -> c_int;
+     pub fn pthread_equal(__a: crate::pthread_t, __b: crate::pthread_t) -> c_int;
+     pub fn pthread_cleanup_push(
+-        __fn: Option<unsafe extern "C" fn(*mut c_void) -> c_void>,
++        __fn: Option<unsafe extern "C" fn(*mut c_void)>,
+         __arg: *mut c_void,
+     );
+     pub fn pthread_cleanup_pop(__execute: c_int);
+@@ -3096,13 +3173,13 @@ extern "C" {
+     pub fn pthread_testcancel();
+     pub fn pthread_cancel(__thrd: crate::pthread_t) -> c_int;
+     pub fn pthread_atfork(
+-        __prepare: Option<unsafe extern "C" fn() -> c_void>,
+-        __parent: Option<unsafe extern "C" fn() -> c_void>,
+-        __child: Option<unsafe extern "C" fn() -> c_void>,
++        __prepare: Option<unsafe extern "C" fn()>,
++        __parent: Option<unsafe extern "C" fn()>,
++        __child: Option<unsafe extern "C" fn()>,
+     ) -> c_int;
+     pub fn pthread_once(
+         __once: *mut crate::pthread_once_t,
+-        __fn: Option<unsafe extern "C" fn() -> c_void>,
++        __fn: Option<unsafe extern "C" fn()>,
+     ) -> c_int;
+     pub fn pthread_mutexattr_gettype(
+         __attr: *const crate::pthread_mutexattr_t,
+@@ -3565,6 +3642,9 @@ extern "C" {
+ }
+ 
+ // sys/ioctl.h
++pub const TIOCMGET: c_int = 0x5415;
++pub const TIOCMBIS: c_int = 0x5416;
++pub const TIOCMBIC: c_int = 0x5417;
+ pub const FIONREAD: c_ulong = 0x541B;
+ pub const FIONBIO: c_ulong = 0x5421;
+ pub const FIONCLEX: c_ulong = 0x5450;
+@@ -3649,6 +3729,19 @@ extern "C" {
+     pub fn personality(__persona: c_ulong) -> c_int;
+ }
+ 
++// sys/pidfd.h
++pub const PIDFD_NONBLOCK: c_int = O_NONBLOCK;
++extern "C" {
++    pub fn pidfd_open(__pid: crate::pid_t, __flags: c_uint) -> c_int;
++    pub fn pidfd_getpid(__fd: c_int) -> crate::pid_t;
++    pub fn pidfd_send_signal(
++        __pidfd: c_int,
++        __sig: c_int,
++        __info: *mut crate::siginfo_t,
++        __flags: c_uint,
++    ) -> c_int;
++}
++
+ // sys/poll.h
+ 
+ // sys/prctl.h
+@@ -4031,6 +4124,12 @@ pub const TCSADRAIN: c_int = 1;
+ pub const TCSAFLUSH: c_int = 2;
+ pub const TIOCM_DTR: c_int = 0x002;
+ pub const TIOCM_RTS: c_int = 0x004;
++pub const TIOCM_CTS: c_int = 0x020;
++pub const TIOCM_CAR: c_int = 0x040;
++pub const TIOCM_RNG: c_int = 0x080;
++pub const TIOCM_DSR: c_int = 0x100;
++pub const TIOCM_RI: c_int = TIOCM_RNG;
++pub const TIOCM_CD: c_int = TIOCM_CAR;
+ pub const TIOCSCTTY: c_ulong = 0x540E;
+ pub const TIOCGPGRP: c_int = 0x540F;
+ pub const TIOCSPGRP: c_int = 0x5410;
+@@ -4271,7 +4370,7 @@ extern "C" {
+     pub fn setcontext(__uctx: *const crate::ucontext_t) -> c_int;
+     pub fn makecontext(
+         __uctx: *mut crate::ucontext_t,
+-        __fn: Option<unsafe extern "C" fn() -> c_void>,
++        __fn: Option<unsafe extern "C" fn()>,
+         __argc: c_int,
+         ...
+     );
+diff --git a/src/unix/linux_like/mod.rs b/src/unix/linux_like/mod.rs
+index 877528d..f7b80e5 100644
+--- a/src/unix/linux_like/mod.rs
++++ b/src/unix/linux_like/mod.rs
+@@ -615,6 +615,15 @@ cfg_if! {
+         pub const LC_MEASUREMENT: c_int = 10;
+         pub const LC_IDENTIFICATION: c_int = 11;
+         pub const LC_ALL: c_int = 12;
++    } else if #[cfg(target_env = "mlibc")] {
++        pub const LC_CTYPE: c_int = 3;
++        pub const LC_NUMERIC: c_int = 5;
++        pub const LC_TIME: c_int = 6;
++        pub const LC_COLLATE: c_int = 2;
++        pub const LC_MONETARY: c_int = 4;
++        pub const LC_MESSAGES: c_int = 7;
++        pub const LC_ALL: c_int = 1;
++        pub const LC_MEASUREMENT: c_int = 11;
+     } else if #[cfg(not(target_env = "uclibc"))] {
+         pub const LC_CTYPE: c_int = 0;
+         pub const LC_NUMERIC: c_int = 1;
+-- 
+2.39.5
+

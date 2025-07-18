@@ -1,7 +1,7 @@
-From c8b7659ef1428dad62fbae1258c6b6962c96847e Mon Sep 17 00:00:00 2001
+From 59945f54aa74c0af8a20e59c68af5156c243cd70 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Fri, 28 Mar 2025 19:33:56 +0100
-Subject: [PATCH 2/2] Add generated managarm bindings
+Subject: [PATCH 2/3] Add generated managarm bindings
 
 ---
  src/unix/linux_like/managarm/mod.rs | 4363 +++++++++++++++++++++++++++
@@ -4378,5 +4378,5 @@ index 0000000..dd2dd9f
 +    pub fn endutxent();
 +}
 -- 
-2.48.1
+2.39.5
 

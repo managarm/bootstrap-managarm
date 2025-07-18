@@ -1,0 +1,34 @@
+From d12fe74130e3b4f2a37a32f1d0f231b2398bee10 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Fri, 4 Apr 2025 19:37:05 +0200
+Subject: [PATCH] Add Managarm support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ src/os/mod.rs | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/os/mod.rs b/src/os/mod.rs
+index 7ac120f..37baca4 100644
+--- a/src/os/mod.rs
++++ b/src/os/mod.rs
+@@ -1,6 +1,6 @@
+ //! OS-specific definitions.
+ 
+-#[cfg(target_os = "linux")] pub use self::linux as target;
++#[cfg(any(target_os = "linux", target_os = "managarm"))] pub use self::linux as target;
+ #[cfg(target_os = "android")] pub use self::android as target;
+ #[cfg(target_os = "macos")] pub use self::macos as target;
+ #[cfg(target_os = "freebsd")] pub use self::freebsd as target;
+@@ -10,7 +10,7 @@
+ #[cfg(target_os = "solaris")] pub use self::solaris as target;
+ #[cfg(target_os = "illumos")] pub use self::illumos as target;
+ 
+-#[cfg(target_os = "linux")] pub mod linux;
++#[cfg(any(target_os = "linux", target_os = "managarm"))] pub mod linux;
+ #[cfg(target_os = "android")] pub mod android;
+ #[cfg(target_os = "macos")] pub mod macos;
+ #[cfg(target_os = "freebsd")] pub mod freebsd;
+-- 
+2.49.0
+
