@@ -1,4 +1,4 @@
-From 88904e395ace22a7173f3092fd0689e228b8acfb Mon Sep 17 00:00:00 2001
+From 3fd6a4cbfa90ed065d1104cd143bf0d3690aea2a Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Thu, 13 Mar 2025 02:14:28 +0100
 Subject: [PATCH 2/3] Add systemd unit files
@@ -58,5 +58,5 @@ index 0000000..cdaf856
 +[Socket]
 +ListenStream=%t/wayland-0
 -- 
-2.48.1
+2.49.0
 
