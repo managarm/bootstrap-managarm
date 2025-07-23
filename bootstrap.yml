@@ -72,20 +72,21 @@ general:
     cargo:
         config_toml: 'extrafiles/config.toml'
 
-# Note: There are both "latest" and "rolling" repos for tools and packages.
-#       "latest" repos refer to the last entirely successful build on xbbs.
-#       "rolling" repos are updated by all (not necessary successful) builds. They are also reset
-#       on non-incremental builds on xbbs.
-#       We prefer "latest" repos here as we can expect that they are more stable.
+# NOTE: There are two special build IDs:
+# - "latest" refers to the newest build on xbbs, whether or not it succeeded
+# - "success" referes to the newest build on xbbs *that did succeed*
+# We're using "success" as that guarantees that the build from which we pull
+# packages can boot, since all build attempts have a test-image step that must
+# run.
 repositories:
     tool_archives:
-        x86_64: 'https://builds.managarm.org/repos/tools/managarm/latest'
-        aarch64: 'https://builds.managarm.org/repos/tools/managarm_aarch64/latest'
-        riscv64: 'https://builds.managarm.org/repos/tools/managarm_riscv/latest'
+        x86_64: 'https://builds.managarm.org/projects/managarm/success/repo/tools/x86_64/'
+        aarch64: 'https://builds.managarm.org/projects/managarm_aarch64/success/repo/tools/aarch64/'
+        riscv64: 'https://builds.managarm.org/projects/managarm_riscv64/success/repo/tools/riscv64/'
     xbps:
         x86_64: 'https://repos.managarm.org/repos/amd64/'
-        aarch64: 'https://builds.managarm.org/repos/packages/managarm_aarch64/latest/'
-        riscv64: 'https://builds.managarm.org/repos/packages/managarm_riscv/latest/'
+        aarch64: 'https://builds.managarm.org/projects/managarm_aarch64/success/repo/packages/aarch64/'
+        riscv64: 'https://builds.managarm.org/projects/managarm_riscv64/success/repo/packages/riscv64/'
 
 # TODO: We currently don't support computed options or anything of that sort,
 #       so we just define the architecture, and the triple as 2 options
