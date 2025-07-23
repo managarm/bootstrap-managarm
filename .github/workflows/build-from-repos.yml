@@ -1,8 +1,9 @@
 name: Build from repos
 
-on: 
+on:
     schedule:
         - cron: '0 4 * * *' # 04:00 each day
+    workflow_dispatch:
 
 jobs:
     build:
