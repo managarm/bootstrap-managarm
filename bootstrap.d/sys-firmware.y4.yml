@@ -32,3 +32,32 @@ packages:
       - args: ['cp', '@THIS_BUILD_DIR@/extracted/LICENSE', '@THIS_COLLECT_DIR@/usr/lib/firmware/nvidia/']
       - args: ['cp', '@THIS_BUILD_DIR@/extracted/firmware/gsp_ga10x.bin', '@THIS_COLLECT_DIR@/usr/lib/firmware/nvidia/575.51.02/']
       - args: ['cp', '@THIS_BUILD_DIR@/extracted/firmware/gsp_tu10x.bin', '@THIS_COLLECT_DIR@/usr/lib/firmware/nvidia/575.51.02/']
+
+  - name: raspberrypi-firmware
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Firmware for the Raspberry Pi
+      description: This package provides the firmware for the Raspberry Pi boards.
+      spdx: 'LicenseRef-Broadcom-RPi-Binary-Only GPL-2.0-only'
+      website: 'https://github.com/raspberrypi/firmware'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-firmware']
+    source:
+      subdir: ports
+      url: 'https://repos.managarm.org/sources/tarballs/raspi-firmware/raspi-firmware-1.20250430.tar.gz'
+      checksum: 'blake2b:fd0d03386c3b60a8f3fbfa75a27f949b05fb1292b7998945ed30f4b3363585050927ec3753ba76965ac0a441ff14eac2392df3eae6a4445499095269c01da317'
+      format: tar.gz
+      extract_path: 'raspi-firmware'
+      version: '1.20250430'
+    revision: 1
+    build:
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/lib/raspi-firmware']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/managarm/devicetree/overlays']
+      - args: ['cp', '@THIS_SOURCE_DIR@/boot/bootcode.bin', '@THIS_COLLECT_DIR@/usr/lib/raspi-firmware/']
+      - args: ['cp', '@THIS_SOURCE_DIR@/boot/fixup4.dat', '@THIS_COLLECT_DIR@/usr/lib/raspi-firmware/']
+      - args: ['cp', '@THIS_SOURCE_DIR@/boot/start4.elf', '@THIS_COLLECT_DIR@/usr/lib/raspi-firmware/']
+      - args: |
+          cp -r @THIS_SOURCE_DIR@/boot/*.dtb @THIS_COLLECT_DIR@/usr/managarm/devicetree/
+          cp -r @THIS_SOURCE_DIR@/boot/overlays/*.dtbo @THIS_COLLECT_DIR@/usr/managarm/devicetree/overlays/
+
