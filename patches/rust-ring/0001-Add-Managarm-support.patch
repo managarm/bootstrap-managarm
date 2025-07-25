@@ -1,0 +1,37 @@
+From 25a0e4838daea3147d89c7bbecabc1a1553df81c Mon Sep 17 00:00:00 2001
+From: 48cf <32851089+48cf@users.noreply.github.com>
+Date: Tue, 8 Apr 2025 01:40:41 +0200
+Subject: [PATCH] Add Managarm support
+
+---
+ build.rs    | 1 +
+ src/rand.rs | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/build.rs b/build.rs
+index 9843ad8aa..78bc00154 100644
+--- a/build.rs
++++ b/build.rs
+@@ -254,6 +254,7 @@ const LINUX_ABI: &[&str] = &[
+     "linux",
+     "redox",
+     "solaris",
++    "managarm",
+ ];
+ 
+ const WIN32N: &str = "win32n";
+diff --git a/src/rand.rs b/src/rand.rs
+index a451c8f6a..622c2d8bf 100644
+--- a/src/rand.rs
++++ b/src/rand.rs
+@@ -135,6 +135,7 @@ impl crate::sealed::Sealed for SystemRandom {}
+     target_os = "horizon",
+     target_os = "illumos",
+     target_os = "linux",
++    target_os = "managarm",
+     target_os = "netbsd",
+     target_os = "openbsd",
+     target_os = "redox",
+-- 
+2.47.2
+

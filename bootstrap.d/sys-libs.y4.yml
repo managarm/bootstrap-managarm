@@ -196,6 +196,13 @@ sources:
     tag: 'release-2025-01-31'
     version: '0.3.8'
 
+  - name: rust-ring
+    subdir: 'ports'
+    git: 'https://github.com/briansmith/ring.git'
+    branch: 'main'
+    commit: '2723abbca9e83347d82b056d5b239c6604f786df'
+    version: '0.17.14'
+
   - name: rust-patched-libs
     subdir: 'ports'
     sources_required:
@@ -256,6 +263,8 @@ sources:
       - name: rust-libssh-rs-sys
         recursive: true
       - name: rust-wayland-backend
+        recursive: true
+      - name: rust-ring
         recursive: true
 
 packages:
