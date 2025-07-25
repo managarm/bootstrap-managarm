@@ -29,7 +29,9 @@ patched_libs = {
     "lua-src": "547.0.0",
     "starship-battery": "0.10.1",
     "socket2": "0.5.9",
-    "libssh-rs-sys": "0.2.6"
+    "libssh-rs-sys": "0.2.6",
+    "wayland-backend": "0.3.8",
+    "wayland-sys": "0.3.8"
 }
 
 parser = argparse.ArgumentParser(description="Inject patched Rust libraries into Cargo lockfiles")

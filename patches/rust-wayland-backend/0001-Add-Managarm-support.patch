@@ -1,0 +1,66 @@
+From d4e6585b5d294bf4d6e8ed423ca249e96b03368b Mon Sep 17 00:00:00 2001
+From: 48cf <32851089+48cf@users.noreply.github.com>
+Date: Tue, 8 Apr 2025 01:39:23 +0200
+Subject: [PATCH] Add Managarm support
+
+---
+ wayland-backend/src/rs/server_impl/common_poll.rs | 8 ++++----
+ wayland-backend/src/rs/server_impl/handle.rs      | 2 +-
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/wayland-backend/src/rs/server_impl/common_poll.rs b/wayland-backend/src/rs/server_impl/common_poll.rs
+index ee8b1ff..10a4cf3 100644
+--- a/wayland-backend/src/rs/server_impl/common_poll.rs
++++ b/wayland-backend/src/rs/server_impl/common_poll.rs
+@@ -14,7 +14,7 @@ use crate::{
+     types::server::InitError,
+ };
+ 
+-#[cfg(any(target_os = "linux", target_os = "android"))]
++#[cfg(any(target_os = "linux", target_os = "android", target_os = "managarm"))]
+ use rustix::event::epoll;
+ 
+ #[cfg(any(
+@@ -34,7 +34,7 @@ pub struct InnerBackend<D: 'static> {
+ 
+ impl<D> InnerBackend<D> {
+     pub fn new() -> Result<Self, InitError> {
+-        #[cfg(any(target_os = "linux", target_os = "android"))]
++        #[cfg(any(target_os = "linux", target_os = "android", target_os = "managarm"))]
+         let poll_fd = epoll::create(epoll::CreateFlags::CLOEXEC)
+             .map_err(Into::into)
+             .map_err(InitError::Io)?;
+@@ -77,7 +77,7 @@ impl<D> InnerBackend<D> {
+         ret
+     }
+ 
+-    #[cfg(any(target_os = "linux", target_os = "android"))]
++    #[cfg(any(target_os = "linux", target_os = "android", target_os = "managarm"))]
+     pub fn dispatch_all_clients(&self, data: &mut D) -> std::io::Result<usize> {
+         use std::os::unix::io::AsFd;
+ 
+@@ -161,7 +161,7 @@ impl<D> InnerBackend<D> {
+                             }
+                         }
+                         Err(e) => {
+-                            #[cfg(any(target_os = "linux", target_os = "android"))]
++                            #[cfg(any(target_os = "linux", target_os = "android", target_os = "managarm"))]
+                             {
+                                 epoll::delete(&state.poll_fd, client)?;
+                             }
+diff --git a/wayland-backend/src/rs/server_impl/handle.rs b/wayland-backend/src/rs/server_impl/handle.rs
+index ec33f03..675bc23 100644
+--- a/wayland-backend/src/rs/server_impl/handle.rs
++++ b/wayland-backend/src/rs/server_impl/handle.rs
+@@ -318,7 +318,7 @@ impl<D> ErasedState for State<D> {
+         let client = self.clients.get_client(id.clone()).unwrap();
+ 
+         // register the client to the internal epoll
+-        #[cfg(any(target_os = "linux", target_os = "android"))]
++        #[cfg(any(target_os = "linux", target_os = "android", target_os = "managarm"))]
+         let ret = {
+             use rustix::event::epoll;
+             epoll::add(
+-- 
+2.47.2
+
