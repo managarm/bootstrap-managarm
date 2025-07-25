@@ -881,10 +881,12 @@ def do_gdb(args):
 
     if args.gdb_debug:
         gdb_args += ["-ex", "set debug remote 1"]
+        gdb_args += ["-ex", "set debug separate-debug-file 1"]
 
     if args.qemu:
         gdb_args += [
-            "--symbols=pkg-builds/managarm-kernel/kernel/thor/thor",
+            "-ex",
+            "file system-root/usr/managarm/bin/thor",
             "-ex",
             "target remote tcp:" + args.ip + ":1234",
         ]
