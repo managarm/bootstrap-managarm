@@ -1,7 +1,7 @@
-From bb243727a00d5b8ae28458d256250906ed32a656 Mon Sep 17 00:00:00 2001
+From e0250429e87043fd2af02d440c43f22a7d967e62 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Sun, 31 Mar 2024 19:21:57 +0200
-Subject: [PATCH 2/4] meta: add patched libraries
+Subject: [PATCH 2/5] meta: add patched libraries
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
@@ -104,5 +104,5 @@ index 2c1d85b0..7df6f49d 100644
  opener = "0.5"
  semver = "1.0"
 -- 
-2.49.0
+2.50.0
 

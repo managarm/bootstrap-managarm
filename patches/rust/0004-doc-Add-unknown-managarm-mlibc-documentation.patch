@@ -1,7 +1,7 @@
-From 0d0cb1fb5ef0bec2a0d18be62c95200ff9cbdd71 Mon Sep 17 00:00:00 2001
+From 45d932f3f7ad815f87584a4ab8ca6828bc9df1b7 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Mon, 1 Apr 2024 12:45:22 +0200
-Subject: [PATCH 4/4] doc: Add `*-unknown-managarm-mlibc` documentation
+Subject: [PATCH 4/5] doc: Add `*-unknown-managarm-mlibc` documentation
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
@@ -95,5 +95,5 @@ index 00000000..79cbdbb3
 +
 +This target does not support running the Rust testsuite yet.
 -- 
-2.49.0
+2.50.0
 

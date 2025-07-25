@@ -1,7 +1,7 @@
 From 4122eb7631ef5e358f88535a78bb5296dbe61588 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Sun, 31 Mar 2024 15:48:04 +0200
-Subject: [PATCH 1/4] compiler: Add
+Subject: [PATCH 1/5] compiler: Add
  `{x86_64,aarch64,riscv64gc}-unknown-managarm-mlibc` targets
 
 Co-authored-by: Dennis Bonke <dennis@managarm.org>
@@ -205,5 +205,5 @@ index cd5ca74f..2902995a 100644
  
  /// This allows the manifest to contain rust-docs for hosts that don't build
 -- 
-2.49.0
+2.50.0
 
