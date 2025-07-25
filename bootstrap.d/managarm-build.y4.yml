@@ -197,7 +197,7 @@ tools:
       - binutils
     tools_required:
       - host-cmake
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -216,6 +216,7 @@ tools:
 
         # clang configuration options.
         - '-DDEFAULT_SYSROOT=@SYSROOT_DIR@'
+        - '-DENABLE_LINKER_BUILD_ID=ON'
 
         # Gold linker configuration options.
         - '-DLLVM_BINUTILS_INCDIR=@SOURCE_ROOT@/ports/binutils/include'
