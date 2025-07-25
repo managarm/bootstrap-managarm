@@ -158,6 +158,32 @@ sources:
     commit: '660d5f843aba5096089ef123cf69199bb8caa1e4'
     version: '0.5.9'
 
+  - name: rust-libssh-rs-sys
+    subdir: 'ports'
+    git: 'https://github.com/wez/libssh-rs.git'
+    branch: 'main'
+    commit: 'e67a63d17cf41d990d7c66bf568bccca0d157ada'
+    version: '0.2.6'
+    regenerate:
+      - args:
+        - 'git'
+        - 'submodule'
+        - 'set-url'
+        - 'libssh-rs-sys/vendored'
+        - 'https://github.com/managarm/libssh-mirror.git'
+      - args:
+        - 'git'
+        - 'submodule'
+        - 'update'
+        - '--init'
+        isolate_network: false
+      - args:
+        - 'git'
+        - '-C'
+        - 'libssh-rs-sys/vendored'
+        - 'checkout'
+        - 'libssh-0.11.1-mlibc'
+
   - name: rust-patched-libs
     subdir: 'ports'
     sources_required:
@@ -212,6 +238,8 @@ sources:
       - name: rust-starship-battery
         recursive: true
       - name: rust-socket2
+        recursive: true
+      - name: rust-libssh-rs-sys
         recursive: true
 
 packages:

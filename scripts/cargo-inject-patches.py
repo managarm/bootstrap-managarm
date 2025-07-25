@@ -28,7 +28,8 @@ patched_libs = {
     "mac_address": "1.2.8",
     "lua-src": "547.0.0",
     "starship-battery": "0.10.1",
-    "socket2": "0.5.9"
+    "socket2": "0.5.9",
+    "libssh-rs-sys": "0.2.6"
 }
 
 parser = argparse.ArgumentParser(description="Inject patched Rust libraries into Cargo lockfiles")

@@ -40,3 +40,4 @@ mac_address = { path = "@SOURCE_ROOT@/ports/rust-mac-address", package = "mac_ad
 lua-src = { path = "@SOURCE_ROOT@/ports/rust-lua-src", package = "lua-src" }
 starship-battery = { path = "@SOURCE_ROOT@/ports/rust-starship-battery" }
 socket2 = { path = "@SOURCE_ROOT@/ports/rust-socket2" }
+libssh-rs-sys = { path = "@SOURCE_ROOT@/ports/rust-libssh-rs-sys/libssh-rs-sys" }
