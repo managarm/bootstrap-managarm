@@ -120,7 +120,6 @@ packages:
         - '--buildtype=debugoptimized'
         - '--wrap-mode=nofallback'
         - '-Dbuild_kernel=true'
-        - '-Dstrip=true'
         - '-Db_lto=true'
         - '@THIS_SOURCE_DIR@'
         isolate_network: false
@@ -130,6 +129,7 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      - args: ['python3', '@THIS_SOURCE_DIR@/tools/split-debug.py', '@THIS_COLLECT_DIR@']
     tasks:
     - name: clang-tidy
       args:
@@ -273,6 +273,7 @@ packages:
         environ:
           'DESTDIR': '@THIS_COLLECT_DIR@'
         quiet: true
+      - args: ['python3', '@THIS_SOURCE_DIR@/tools/split-debug.py', '@THIS_COLLECT_DIR@']
       # Workaround for drivers that are not integrated into udev yet with systemd
       - args: ['mkdir', '-pv', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/sysinit.target.wants/']
       - args: ['ln', '-svn', '../runsvr-atkbd.service', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/sysinit.target.wants/']
