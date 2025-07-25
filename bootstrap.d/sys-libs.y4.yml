@@ -203,6 +203,12 @@ sources:
     commit: '2723abbca9e83347d82b056d5b239c6604f786df'
     version: '0.17.14'
 
+  - name: rust-zbus
+    subdir: 'ports'
+    git: 'https://github.com/dbus2/zbus.git'
+    tag: 'zbus-4.4.0'
+    version: '4.4.0'
+
   - name: rust-patched-libs
     subdir: 'ports'
     sources_required:
@@ -265,6 +271,8 @@ sources:
       - name: rust-wayland-backend
         recursive: true
       - name: rust-ring
+        recursive: true
+      - name: rust-zbus
         recursive: true
 
 packages:

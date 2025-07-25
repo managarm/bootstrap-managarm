@@ -32,7 +32,9 @@ patched_libs = {
     "libssh-rs-sys": "0.2.6",
     "wayland-backend": "0.3.8",
     "wayland-sys": "0.3.8",
-    "ring": "0.17.14"
+    "ring": "0.17.14",
+    "zbus": "4.4.0",
+    "zvariant": "4.4.0"
 }
 
 parser = argparse.ArgumentParser(description="Inject patched Rust libraries into Cargo lockfiles")
