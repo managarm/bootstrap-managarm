@@ -26,9 +26,10 @@ tasks:
     tools_required:
       - cross-binutils
     args:
-      - '@SOURCE_ROOT@/managarm/tools/gen-initrd.py'
+      - '@SYSROOT_DIR@/usr/managarm/bin/gen-initrd.py'
       - '--triple'
       - '@OPTION:arch-triple@'
+      - '--sysroot=@SYSROOT_DIR@'
     workdir: '@BUILD_ROOT@'
 
   - name: initialize-empty-image
