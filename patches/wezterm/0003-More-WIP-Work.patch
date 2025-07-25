@@ -1,0 +1,24 @@
+From 20f763754021499877ac45027657796c7b5b21d4 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Wed, 9 Apr 2025 01:18:58 +0200
+Subject: [PATCH 3/3] More WIP Work
+
+---
+ window/src/os/wayland/keyboard.rs | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/window/src/os/wayland/keyboard.rs b/window/src/os/wayland/keyboard.rs
+index 6af742731..6542b7065 100644
+--- a/window/src/os/wayland/keyboard.rs
++++ b/window/src/os/wayland/keyboard.rs
+@@ -58,7 +58,6 @@ impl Dispatch<WlKeyboard, KeyboardData> for WaylandState {
+                 *state.key_repeat_delay.borrow_mut() = *delay;
+             }
+             WlKeyboardEvent::Keymap { format, fd, size } => {
+-                #[cfg(not(target_os = "managarm"))]
+                 match format.into_result().unwrap() {
+                     KeymapFormat::XkbV1 => {
+                         // In later protocol versions, the fd must be privately mmap'd.
+-- 
+2.39.5
+
