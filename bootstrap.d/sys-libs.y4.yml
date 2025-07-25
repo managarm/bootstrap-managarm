@@ -41,11 +41,17 @@ sources:
     tag: 'v0.3.2'
     version: '0.3.2'
 
-  - name: rust-libloading
+  - name: rust-libloading-0.7
     subdir: 'ports'
     git: 'https://github.com/nagisa/rust_libloading.git'
     tag: '0.7.4'
     version: '0.7.4'
+
+  - name: rust-libloading-0.8
+    subdir: 'ports'
+    git: 'https://github.com/nagisa/rust_libloading.git'
+    tag: '0.8.6'
+    version: '0.8.6'
 
   - name: rust-mio-0.6
     subdir: 'ports'
@@ -197,7 +203,9 @@ sources:
         recursive: true
       - name: rust-libc
         recursive: true
-      - name: rust-libloading
+      - name: rust-libloading-0.7
+        recursive: true
+      - name: rust-libloading-0.8
         recursive: true
       - name: rust-mio-0.6
         recursive: true

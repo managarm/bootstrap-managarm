@@ -15,7 +15,8 @@ linker = "riscv64-managarm-gcc"
 backtrace = { path = "@SOURCE_ROOT@/ports/rust-backtrace" }
 calloop = { path = "@SOURCE_ROOT@/ports/rust-calloop" }
 libc = { path = "@SOURCE_ROOT@/ports/rust-libc" }
-libloading = { path = "@SOURCE_ROOT@/ports/rust-libloading" }
+libloading-07 = { path = "@SOURCE_ROOT@/ports/rust-libloading-0.7", package = "libloading" }
+libloading-08 = { path = "@SOURCE_ROOT@/ports/rust-libloading-0.8", package = "libloading" }
 mio-06 = { path = "@SOURCE_ROOT@/ports/rust-mio-0.6", package = "mio" }
 mio-08 = { path = "@SOURCE_ROOT@/ports/rust-mio-0.8", package = "mio" }
 mio-10 = { path = "@SOURCE_ROOT@/ports/rust-mio-1.0", package = "mio" }
