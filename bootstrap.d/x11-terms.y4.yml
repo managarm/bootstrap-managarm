@@ -47,3 +47,77 @@ packages:
         isolate_network: false
         environ: # Required to build libgit2
           CC: x86_64-managarm-gcc
+
+  - name: wezterm
+    architecture: '@OPTION:arch@'
+    stability_level: 'broken' # Rustix update
+    metadata:
+      summary: A GPU-accelerated cross-platform terminal emulator and multiplexer
+      description: Wezterm is a GPU-accelerated cross-platform terminal emulator and multiplexer.
+      spdx: 'MIT'
+      website: 'https://wezterm.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['x11-terms']
+    source:
+      subdir: ports
+      git: 'https://github.com/wezterm/wezterm.git'
+      branch: 'main'
+      commit: 'a87358516004a652ad840bc1661bdf65ffc89b43'
+      version: '20250404.from.master'
+    tools_required:
+      - host-cargo
+      - host-pkg-config
+      - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: '@OPTION:arch-triple@'
+    sources_required:
+      - rust-patched-libs
+    pkgs_required:
+      - mlibc
+      - openssl
+      - wayland
+      - fontconfig
+      - libx11
+      - libxkbcommon
+      - xcb-util
+      - xcb-util-image
+    revision: 1
+    configure:
+      - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
+        isolate_network: false
+    build:
+      - args:
+        - 'cargo'
+        - 'install'
+        - '--locked'
+        - '--target-dir'
+        - '@THIS_BUILD_DIR@'
+        - '--path'
+        - '@THIS_SOURCE_DIR@/wezterm'
+        - '--root'
+        - '@THIS_COLLECT_DIR@/usr'
+        - '--target'
+        - '@OPTION:rust-arch@-unknown-managarm-mlibc'
+        - '-j@PARALLELISM@'
+        environ:
+          CC: "@OPTION:arch-triple@-gcc"
+          PKG_CONFIG: "@OPTION:arch-triple@-pkg-config"
+        isolate_network: false
+      - args:
+        - 'cargo'
+        - 'install'
+        - '--locked'
+        - '--target-dir'
+        - '@THIS_BUILD_DIR@'
+        - '--path'
+        - '@THIS_SOURCE_DIR@/wezterm-gui'
+        - '--root'
+        - '@THIS_COLLECT_DIR@/usr'
+        - '--target'
+        - '@OPTION:rust-arch@-unknown-managarm-mlibc'
+        - '-j@PARALLELISM@'
+        environ:
+          CC: "@OPTION:arch-triple@-gcc"
+          PKG_CONFIG: "@OPTION:arch-triple@-pkg-config"
+        isolate_network: false
+

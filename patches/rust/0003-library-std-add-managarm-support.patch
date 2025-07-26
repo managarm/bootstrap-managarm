@@ -1,7 +1,7 @@
-From 890d29a6a2dd7b704f51d2f1336a88b96170de09 Mon Sep 17 00:00:00 2001
+From 5d2ab091ce6b6ee26981c7d45127609594f0679c Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Fri, 1 Sep 2023 16:49:14 +0200
-Subject: [PATCH 3/4] library/std: add managarm support
+Subject: [PATCH 3/5] library/std: add managarm support
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
@@ -15,10 +15,10 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
  library/std/src/sys/pal/unix/env.rs    |  11 ++
  library/std/src/sys/pal/unix/fs.rs     |   1 +
  library/std/src/sys/pal/unix/os.rs     |   2 +
- library/std/src/sys/pal/unix/thread.rs |   3 +-
+ library/std/src/sys/pal/unix/thread.rs |   6 +-
  library/std/src/sys/random/mod.rs      |   1 +
  library/unwind/src/lib.rs              |   4 +
- 13 files changed, 255 insertions(+), 1 deletion(-)
+ 13 files changed, 257 insertions(+), 2 deletions(-)
  create mode 100644 library/std/src/os/managarm/fs.rs
  create mode 100644 library/std/src/os/managarm/mod.rs
  create mode 100644 library/std/src/os/managarm/raw.rs
@@ -308,7 +308,7 @@ index 2f9dffe8..fd0fece2 100644
      pub use crate::os::netbsd::*;
      #[cfg(target_os = "nto")]
 diff --git a/library/std/src/sys/pal/unix/args.rs b/library/std/src/sys/pal/unix/args.rs
-index 8438a61e..8b81a0f1 100644
+index 1c87a798..1d0e3caf 100644
 --- a/library/std/src/sys/pal/unix/args.rs
 +++ b/library/std/src/sys/pal/unix/args.rs
 @@ -114,6 +114,7 @@ fn next_back(&mut self) -> Option<OsString> {
@@ -339,10 +339,10 @@ index 2aee0b5d..525c7bb5 100644
 +    pub const EXE_EXTENSION: &str = "";
 +}
 diff --git a/library/std/src/sys/pal/unix/fs.rs b/library/std/src/sys/pal/unix/fs.rs
-index 54fa3162..bae62dd0 100644
+index 00cfa7a7..e87518cb 100644
 --- a/library/std/src/sys/pal/unix/fs.rs
 +++ b/library/std/src/sys/pal/unix/fs.rs
-@@ -981,6 +981,7 @@ pub fn file_type(&self) -> io::Result<FileType> {
+@@ -973,6 +973,7 @@ pub fn file_type(&self) -> io::Result<FileType> {
          target_os = "nto",
          target_os = "hurd",
          target_os = "rtems",
@@ -351,7 +351,7 @@ index 54fa3162..bae62dd0 100644
      ))]
      pub fn ino(&self) -> u64 {
 diff --git a/library/std/src/sys/pal/unix/os.rs b/library/std/src/sys/pal/unix/os.rs
-index b83772e3..f2b501dc 100644
+index 04199c56..c84c0494 100644
 --- a/library/std/src/sys/pal/unix/os.rs
 +++ b/library/std/src/sys/pal/unix/os.rs
 @@ -39,6 +39,7 @@
@@ -371,19 +371,26 @@ index b83772e3..f2b501dc 100644
  ))]
  pub fn current_exe() -> io::Result<PathBuf> {
 diff --git a/library/std/src/sys/pal/unix/thread.rs b/library/std/src/sys/pal/unix/thread.rs
-index e360ba0f..a89cf046 100644
+index 69c99782..e9adf532 100644
 --- a/library/std/src/sys/pal/unix/thread.rs
 +++ b/library/std/src/sys/pal/unix/thread.rs
-@@ -130,7 +130,7 @@ pub fn set_name(name: &CStr) {
-         }
-     }
- 
--    #[cfg(target_os = "linux")]
-+    #[cfg(any(target_os = "linux", target_os = "managarm"))]
+@@ -134,12 +134,13 @@ pub fn set_name(name: &CStr) {
+         target_os = "linux",
+         target_os = "freebsd",
+         target_os = "dragonfly",
+-        target_os = "nuttx"
++        target_os = "nuttx",
++        target_os = "managarm"
+     ))]
      pub fn set_name(name: &CStr) {
-         const TASK_COMM_LEN: usize = 16;
- 
-@@ -332,6 +332,7 @@ fn drop(&mut self) {
+         unsafe {
+             cfg_if::cfg_if! {
+-                if #[cfg(target_os = "linux")] {
++                if #[cfg(any(target_os = "linux", target_os = "managarm"))] {
+                     // Linux limits the allowed length of the name.
+                     const TASK_COMM_LEN: usize = 16;
+                     let name = truncate_cstr::<{ TASK_COMM_LEN }>(name);
+@@ -339,6 +340,7 @@ fn drop(&mut self) {
      target_os = "solaris",
      target_os = "illumos",
      target_os = "vxworks",
@@ -404,17 +411,17 @@ index f42351de..ba57262a 100644
          mod unix_legacy;
          pub use unix_legacy::fill_bytes;
 diff --git a/library/unwind/src/lib.rs b/library/unwind/src/lib.rs
-index 40d40931..d840791b 100644
+index 2650b273..a8c09c30 100644
 --- a/library/unwind/src/lib.rs
 +++ b/library/unwind/src/lib.rs
 @@ -183,3 +183,7 @@
  #[link(name = "unwind", kind = "static", modifiers = "-bundle", cfg(target_feature = "crt-static"))]
  #[link(name = "unwind", cfg(not(target_feature = "crt-static")))]
- extern "C" {}
+ unsafe extern "C" {}
 +
 +#[cfg(target_os = "managarm")]
 +#[link(name = "gcc_s")]
-+extern "C" {}
++unsafe extern "C" {}
 -- 
-2.39.5
+2.50.0
 

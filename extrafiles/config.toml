@@ -15,11 +15,13 @@ linker = "riscv64-managarm-gcc"
 backtrace = { path = "@SOURCE_ROOT@/ports/rust-backtrace" }
 calloop = { path = "@SOURCE_ROOT@/ports/rust-calloop" }
 libc = { path = "@SOURCE_ROOT@/ports/rust-libc" }
-libloading = { path = "@SOURCE_ROOT@/ports/rust-libloading" }
+libloading-07 = { path = "@SOURCE_ROOT@/ports/rust-libloading-0.7", package = "libloading" }
+libloading-08 = { path = "@SOURCE_ROOT@/ports/rust-libloading-0.8", package = "libloading" }
 mio-06 = { path = "@SOURCE_ROOT@/ports/rust-mio-0.6", package = "mio" }
 mio-08 = { path = "@SOURCE_ROOT@/ports/rust-mio-0.8", package = "mio" }
 mio-10 = { path = "@SOURCE_ROOT@/ports/rust-mio-1.0", package = "mio" }
-nix = { path = "@SOURCE_ROOT@/ports/rust-nix" }
+nix-024 = { path = "@SOURCE_ROOT@/ports/rust-nix-0.24", package = "nix" }
+nix-029 = { path = "@SOURCE_ROOT@/ports/rust-nix-0.29", package = "nix" }
 num_cpus = { path = "@SOURCE_ROOT@/ports/rust-num-cpus" }
 users = { path = "@SOURCE_ROOT@/ports/rust-users" }
 winit = { path = "@SOURCE_ROOT@/ports/rust-winit" }
@@ -30,6 +32,18 @@ glutin_glx_sys = { path = "@SOURCE_ROOT@/ports/rust-glutin/glutin_glx_sys" }
 shared_library = { path = "@SOURCE_ROOT@/ports/rust-shared-library" }
 getrandom-02 = { path = "@SOURCE_ROOT@/ports/rust-getrandom-0.2", package = "getrandom" }
 getrandom-03 = { path = "@SOURCE_ROOT@/ports/rust-getrandom-0.3", package = "getrandom" }
-rustix = { path = "@SOURCE_ROOT@/ports/rust-rustix", package = "rustix" }
+rustix-038 = { path = "@SOURCE_ROOT@/ports/rust-rustix-0.38", package = "rustix" }
+rustix-10 = { path = "@SOURCE_ROOT@/ports/rust-rustix-1.0", package = "rustix" }
 uzers = { path = "@SOURCE_ROOT@/ports/rust-uzers", package = "uzers" }
 cc = { path = "@SOURCE_ROOT@/ports/rust-cc", package = "cc" }
+termios = { path = "@SOURCE_ROOT@/ports/rust-termios", package = "termios" }
+mac_address = { path = "@SOURCE_ROOT@/ports/rust-mac-address", package = "mac_address" }
+lua-src = { path = "@SOURCE_ROOT@/ports/rust-lua-src", package = "lua-src" }
+starship-battery = { path = "@SOURCE_ROOT@/ports/rust-starship-battery" }
+socket2 = { path = "@SOURCE_ROOT@/ports/rust-socket2" }
+libssh-rs-sys = { path = "@SOURCE_ROOT@/ports/rust-libssh-rs-sys/libssh-rs-sys" }
+wayland-backend = { path = "@SOURCE_ROOT@/ports/rust-wayland-backend/wayland-backend" }
+wayland-sys = { path = "@SOURCE_ROOT@/ports/rust-wayland-backend/wayland-sys" }
+ring = { path = "@SOURCE_ROOT@/ports/rust-ring" }
+zbus = { path = "@SOURCE_ROOT@/ports/rust-zbus/zbus" }
+zvariant = { path = "@SOURCE_ROOT@/ports/rust-zbus/zvariant" }

@@ -1,0 +1,25 @@
+From 287a5a4fba4ec5057598f69d6e982ede21b7110f Mon Sep 17 00:00:00 2001
+From: 48cf <32851089+48cf@users.noreply.github.com>
+Date: Tue, 8 Apr 2025 01:41:38 +0200
+Subject: [PATCH] Add Managarm support
+
+---
+ zbus/src/connection/socket/unix.rs | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/zbus/src/connection/socket/unix.rs b/zbus/src/connection/socket/unix.rs
+index f933297..66b5d61 100644
+--- a/zbus/src/connection/socket/unix.rs
++++ b/zbus/src/connection/socket/unix.rs
+@@ -331,7 +331,7 @@ fn get_unix_peer_creds_blocking(fd: RawFd) -> io::Result<crate::fdo::ConnectionC
+     // 'static lifetime due to the Task.
+     let fd = unsafe { BorrowedFd::borrow_raw(fd) };
+ 
+-    #[cfg(any(target_os = "android", target_os = "linux"))]
++    #[cfg(any(target_os = "android", target_os = "linux", target_os = "managarm"))]
+     {
+         use nix::sys::socket::{getsockopt, sockopt::PeerCredentials};
+ 
+-- 
+2.47.2
+

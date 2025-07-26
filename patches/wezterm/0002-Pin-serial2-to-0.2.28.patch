@@ -1,0 +1,25 @@
+From 4a96c50ba2fa5bffd2923ec4c2d6396cf1a87500 Mon Sep 17 00:00:00 2001
+From: 48cf <32851089+48cf@users.noreply.github.com>
+Date: Tue, 8 Apr 2025 16:29:50 +0200
+Subject: [PATCH 2/3] Pin serial2 to 0.2.28
+
+---
+ Cargo.toml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Cargo.toml b/Cargo.toml
+index 57a6eeda3..a03855530 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -186,7 +186,7 @@ serde-funcs = { path = "lua-api-crates/serde-funcs" }
+ serde_json = "1.0"
+ serde_with = {version="2.0", features = ["chrono_0_4"]}
+ serde_yaml = "0.9"
+-serial2 = "0.2"
++serial2 = "=0.2.28"
+ sha2 = "0.10"
+ share-data = { path = "lua-api-crates/share-data" }
+ shared_library = "0.1"
+-- 
+2.39.5
+

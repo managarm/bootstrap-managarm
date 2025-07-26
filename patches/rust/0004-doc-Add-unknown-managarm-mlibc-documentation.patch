@@ -1,8 +1,9 @@
-From 0ab990f47a70d063d7ff5b35671f4144c7e73b46 Mon Sep 17 00:00:00 2001
+From 45d932f3f7ad815f87584a4ab8ca6828bc9df1b7 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Mon, 1 Apr 2024 12:45:22 +0200
-Subject: [PATCH 4/4] doc: Add `*-unknown-managarm-mlibc` documentation
+Subject: [PATCH 4/5] doc: Add `*-unknown-managarm-mlibc` documentation
 
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
  src/doc/rustc/src/SUMMARY.md                  |  1 +
  src/doc/rustc/src/platform-support.md         |  1 +
@@ -11,23 +12,23 @@ Subject: [PATCH 4/4] doc: Add `*-unknown-managarm-mlibc` documentation
  create mode 100644 src/doc/rustc/src/platform-support/managarm.md
 
 diff --git a/src/doc/rustc/src/SUMMARY.md b/src/doc/rustc/src/SUMMARY.md
-index f0c3720e..820f96a7 100644
+index 6c7cdec3..6f7892f3 100644
 --- a/src/doc/rustc/src/SUMMARY.md
 +++ b/src/doc/rustc/src/SUMMARY.md
-@@ -83,6 +83,7 @@
-     - [*-unikraft-linux-musl](platform-support/unikraft-linux-musl.md)
-     - [*-unknown-hermit](platform-support/hermit.md)
-     - [*-unknown-freebsd](platform-support/freebsd.md)
+@@ -86,6 +86,7 @@
+     - [\*-unikraft-linux-musl](platform-support/unikraft-linux-musl.md)
+     - [\*-unknown-hermit](platform-support/hermit.md)
+     - [\*-unknown-freebsd](platform-support/freebsd.md)
 +    - [\*-unknown-managarm-mlibc](platform-support/managarm.md)
      - [\*-unknown-netbsd\*](platform-support/netbsd.md)
-     - [*-unknown-openbsd](platform-support/openbsd.md)
-     - [*-unknown-redox](platform-support/redox.md)
+     - [\*-unknown-openbsd](platform-support/openbsd.md)
+     - [\*-unknown-redox](platform-support/redox.md)
 diff --git a/src/doc/rustc/src/platform-support.md b/src/doc/rustc/src/platform-support.md
-index 24e9a3c8..1f934e89 100644
+index b5cd3864..d82a8587 100644
 --- a/src/doc/rustc/src/platform-support.md
 +++ b/src/doc/rustc/src/platform-support.md
-@@ -409,6 +409,7 @@ target | std | host | notes
- `x86_64-uwp-windows-msvc` | ✓ |  |
+@@ -425,6 +425,7 @@ target | std | host | notes
+ [`x86_64-win7-windows-gnu`](platform-support/win7-windows-gnu.md) | ✓ |   | 64-bit Windows 7 support
  [`x86_64-win7-windows-msvc`](platform-support/win7-windows-msvc.md) | ✓ |   | 64-bit Windows 7 support
  [`x86_64-wrs-vxworks`](platform-support/vxworks.md) | ✓ |  |
 +[`x86_64-unknown-managarm-mlibc`](platform-support/managarm.md) | * | ? | x86_64 managarm
@@ -94,5 +95,5 @@ index 00000000..79cbdbb3
 +
 +This target does not support running the Rust testsuite yet.
 -- 
-2.39.5
+2.50.0
 

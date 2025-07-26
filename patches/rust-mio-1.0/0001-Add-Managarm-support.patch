@@ -1,11 +1,13 @@
-From 849b9be1349f30fe17741ca586d415941666c66b Mon Sep 17 00:00:00 2001
+From 1e839f89ba58425dc222aa782d311fcec72be369 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Wed, 2 Apr 2025 02:52:59 +0200
 Subject: [PATCH] Add Managarm support
 
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
  src/sys/unix/mod.rs | 2 ++
- 1 file changed, 2 insertions(+)
+ src/sys/unix/tcp.rs | 1 +
+ 2 files changed, 3 insertions(+)
 
 diff --git a/src/sys/unix/mod.rs b/src/sys/unix/mod.rs
 index 6c0c885..a2d43ac 100644
@@ -27,6 +29,18 @@ index 6c0c885..a2d43ac 100644
          )
      ), path = "waker/eventfd.rs")]
      #[cfg_attr(all(
+diff --git a/src/sys/unix/tcp.rs b/src/sys/unix/tcp.rs
+index f8dfa58..d71ea8e 100644
+--- a/src/sys/unix/tcp.rs
++++ b/src/sys/unix/tcp.rs
+@@ -75,6 +75,7 @@ pub(crate) fn accept(listener: &net::TcpListener) -> io::Result<(net::TcpStream,
+         target_os = "netbsd",
+         target_os = "openbsd",
+         target_os = "solaris",
++        target_os = "managarm"
+     ))]
+     let stream = {
+         syscall!(accept4(
 -- 
-2.39.5
+2.49.0
 

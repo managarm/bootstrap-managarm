@@ -41,11 +41,17 @@ sources:
     tag: 'v0.3.2'
     version: '0.3.2'
 
-  - name: rust-libloading
+  - name: rust-libloading-0.7
     subdir: 'ports'
     git: 'https://github.com/nagisa/rust_libloading.git'
     tag: '0.7.4'
     version: '0.7.4'
+
+  - name: rust-libloading-0.8
+    subdir: 'ports'
+    git: 'https://github.com/nagisa/rust_libloading.git'
+    tag: '0.8.6'
+    version: '0.8.6'
 
   - name: rust-mio-0.6
     subdir: 'ports'
@@ -65,11 +71,17 @@ sources:
     tag: 'v1.0.3'
     version: '1.0.3'
 
-  - name: rust-nix
+  - name: rust-nix-0.24
     subdir: 'ports'
     git: 'https://github.com/nix-rust/nix.git'
     tag: 'v0.24.3'
     version: '0.24.3'
+
+  - name: rust-nix-0.29
+    subdir: 'ports'
+    git: 'https://github.com/nix-rust/nix.git'
+    tag: 'v0.29.0'
+    version: '0.29.0'
 
   - name: rust-winit
     subdir: 'ports'
@@ -96,7 +108,13 @@ sources:
     tag: 'v0.3.10'
     version: '0.3.10'
 
-  - name: rust-rustix
+  - name: rust-rustix-0.38
+    subdir: 'ports'
+    git: 'https://github.com/bytecodealliance/rustix.git'
+    tag: 'v0.38.44'
+    version: '0.38.44'
+
+  - name: rust-rustix-1.0
     subdir: 'ports'
     git: 'https://github.com/bytecodealliance/rustix.git'
     tag: 'v1.0.5'
@@ -114,6 +132,83 @@ sources:
     tag: 'cc-v1.2.17'
     version: '1.2.17'
 
+  - name: rust-termios
+    subdir: 'ports'
+    git: 'https://github.com/dcuddeback/termios-rs.git'
+    tag: 'v0.3.3'
+    version: '0.3.3'
+
+  - name: rust-mac-address
+    subdir: 'ports'
+    git: 'https://github.com/repnop/mac_address.git'
+    branch: 'master'
+    commit: '9a1723346265a9fb04cc58c0995ca18b967c0a4a' # No tags here
+    version: '1.2.8'
+
+  - name: rust-lua-src
+    subdir: 'ports'
+    git: 'https://github.com/mlua-rs/lua-src-rs.git'
+    tag: 'v547.0.0'
+    version: '547.0.0'
+
+  - name: rust-starship-battery
+    subdir: 'ports'
+    git: 'https://github.com/starship/rust-battery.git'
+    tag: 'v0.10.1'
+    version: '0.10.1'
+
+  - name: rust-socket2
+    subdir: 'ports'
+    git: 'https://github.com/rust-lang/socket2.git'
+    branch: 'v0.5.x'
+    commit: '660d5f843aba5096089ef123cf69199bb8caa1e4'
+    version: '0.5.9'
+
+  - name: rust-libssh-rs-sys
+    subdir: 'ports'
+    git: 'https://github.com/wez/libssh-rs.git'
+    branch: 'main'
+    commit: 'e67a63d17cf41d990d7c66bf568bccca0d157ada'
+    version: '0.2.6'
+    regenerate:
+      - args:
+        - 'git'
+        - 'submodule'
+        - 'set-url'
+        - 'libssh-rs-sys/vendored'
+        - 'https://github.com/managarm/libssh-mirror.git'
+      - args:
+        - 'git'
+        - 'submodule'
+        - 'update'
+        - '--init'
+        isolate_network: false
+      - args:
+        - 'git'
+        - '-C'
+        - 'libssh-rs-sys/vendored'
+        - 'checkout'
+        - 'libssh-0.11.1-mlibc'
+
+  - name: rust-wayland-backend
+    subdir: 'ports'
+    git: 'https://github.com/Smithay/wayland-rs.git'
+    tag: 'release-2025-01-31'
+    version: '0.3.8'
+
+  - name: rust-ring
+    subdir: 'ports'
+    git: 'https://github.com/briansmith/ring.git'
+    branch: 'main'
+    commit: '2723abbca9e83347d82b056d5b239c6604f786df'
+    version: '0.17.14'
+
+  - name: rust-zbus
+    subdir: 'ports'
+    git: 'https://github.com/dbus2/zbus.git'
+    tag: 'zbus-4.4.0'
+    version: '4.4.0'
+
   - name: rust-patched-libs
     subdir: 'ports'
     sources_required:
@@ -127,7 +222,9 @@ sources:
         recursive: true
       - name: rust-libc
         recursive: true
-      - name: rust-libloading
+      - name: rust-libloading-0.7
+        recursive: true
+      - name: rust-libloading-0.8
         recursive: true
       - name: rust-mio-0.6
         recursive: true
@@ -135,7 +232,9 @@ sources:
         recursive: true
       - name: rust-mio-1.0
         recursive: true
-      - name: rust-nix
+      - name: rust-nix-0.24
+        recursive: true
+      - name: rust-nix-0.29
         recursive: true
       - name: rust-num-cpus
         recursive: true
@@ -149,11 +248,31 @@ sources:
         recursive: true
       - name: rust-errno
         recursive: true
-      - name: rust-rustix
+      - name: rust-rustix-0.38
+        recursive: true
+      - name: rust-rustix-1.0
         recursive: true
       - name: rust-uzers
         recursive: true
       - name: rust-cc
+        recursive: true
+      - name: rust-termios
+        recursive: true
+      - name: rust-mac-address
+        recursive: true
+      - name: rust-lua-src
+        recursive: true
+      - name: rust-starship-battery
+        recursive: true
+      - name: rust-socket2
+        recursive: true
+      - name: rust-libssh-rs-sys
+        recursive: true
+      - name: rust-wayland-backend
+        recursive: true
+      - name: rust-ring
+        recursive: true
+      - name: rust-zbus
         recursive: true
 
 packages:

@@ -1,0 +1,165 @@
+From 121e862b1d42a6a8aef9ccd1bf79fb5e902fac8d Mon Sep 17 00:00:00 2001
+From: 48cf <32851089+48cf@users.noreply.github.com>
+Date: Tue, 8 Apr 2025 01:36:31 +0200
+Subject: [PATCH 1/3] Add Managarm support
+
+---
+ config/src/config.rs              |  4 +-
+ deps/fontconfig/src/lib.rs        |  1 +
+ env-bootstrap/src/ringlog.rs      |  1 -
+ wezterm-version/Cargo.toml        |  2 +-
+ wezterm-version/build.rs          | 64 +++++++++++++++----------------
+ window/src/os/wayland/keyboard.rs |  1 +
+ 6 files changed, 37 insertions(+), 36 deletions(-)
+
+diff --git a/config/src/config.rs b/config/src/config.rs
+index 82065c37f..0ca873700 100644
+--- a/config/src/config.rs
++++ b/config/src/config.rs
+@@ -927,7 +927,7 @@ impl Config {
+     }
+ 
+     pub fn update_ulimit(&self) -> anyhow::Result<()> {
+-        #[cfg(unix)]
++        #[cfg(all(unix, not(target_os = "managarm")))]
+         {
+             use nix::sys::resource::{getrlimit, rlim_t, setrlimit, Resource};
+             use std::convert::TryInto;
+@@ -956,7 +956,7 @@ impl Config {
+             }
+         }
+ 
+-        #[cfg(all(unix, not(target_os = "macos")))]
++        #[cfg(all(unix, not(target_os = "macos"), not(target_os = "managarm")))]
+         {
+             use nix::sys::resource::{getrlimit, rlim_t, setrlimit, Resource};
+             use std::convert::TryInto;
+diff --git a/deps/fontconfig/src/lib.rs b/deps/fontconfig/src/lib.rs
+index ebf9a3d6c..5fea15781 100644
+--- a/deps/fontconfig/src/lib.rs
++++ b/deps/fontconfig/src/lib.rs
+@@ -197,6 +197,7 @@ pub type FcCache = struct__FcCache;
+ 
+ pub type union_unnamed1 = c_void;
+ 
++#[link(name = "fontconfig")]
+ extern "C" {
+ 
+     pub fn FcBlanksCreate() -> *mut FcBlanks;
+diff --git a/env-bootstrap/src/ringlog.rs b/env-bootstrap/src/ringlog.rs
+index 23211bb60..c01a6abbf 100644
+--- a/env-bootstrap/src/ringlog.rs
++++ b/env-bootstrap/src/ringlog.rs
+@@ -206,7 +206,6 @@ impl log::Log for Logger {
+             let mut file = self.file.lock().unwrap();
+             if file.is_none() {
+                 if let Ok(f) = std::fs::OpenOptions::new()
+-                    .append(true)
+                     .create(true)
+                     .open(&self.file_name)
+                 {
+diff --git a/wezterm-version/Cargo.toml b/wezterm-version/Cargo.toml
+index 436a67dba..6a6b34add 100644
+--- a/wezterm-version/Cargo.toml
++++ b/wezterm-version/Cargo.toml
+@@ -8,6 +8,6 @@ publish = false
+ # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+ 
+ [build-dependencies]
+-git2 = { workspace=true, default-features = false }
++# git2 = { version = "0.20", default-features = false, features = ["https"] }
+ 
+ [dependencies]
+diff --git a/wezterm-version/build.rs b/wezterm-version/build.rs
+index 23b11e0f9..9ccfbf991 100644
+--- a/wezterm-version/build.rs
++++ b/wezterm-version/build.rs
+@@ -9,41 +9,41 @@ fn main() {
+             ci_tag = s.trim().to_string();
+             println!("cargo:rerun-if-changed=../.tag");
+         }
+-    } else {
+-        // Otherwise we'll derive it from the git information
++    // } else {
++    //     // Otherwise we'll derive it from the git information
+ 
+-        if let Ok(repo) = git2::Repository::discover(".") {
+-            if let Ok(ref_head) = repo.find_reference("HEAD") {
+-                let repo_path = repo.path().to_path_buf();
++    //     if let Ok(repo) = git2::Repository::discover(".") {
++    //         if let Ok(ref_head) = repo.find_reference("HEAD") {
++    //             let repo_path = repo.path().to_path_buf();
+ 
+-                if let Ok(resolved) = ref_head.resolve() {
+-                    if let Some(name) = resolved.name() {
+-                        let path = repo_path.join(name);
+-                        if path.exists() {
+-                            println!(
+-                                "cargo:rerun-if-changed={}",
+-                                path.canonicalize().unwrap().display()
+-                            );
+-                        }
+-                    }
+-                }
+-            }
++    //             if let Ok(resolved) = ref_head.resolve() {
++    //                 if let Some(name) = resolved.name() {
++    //                     let path = repo_path.join(name);
++    //                     if path.exists() {
++    //                         println!(
++    //                             "cargo:rerun-if-changed={}",
++    //                             path.canonicalize().unwrap().display()
++    //                         );
++    //                     }
++    //                 }
++    //             }
++    //         }
+ 
+-            if let Ok(output) = std::process::Command::new("git")
+-                .args(&[
+-                    "-c",
+-                    "core.abbrev=8",
+-                    "show",
+-                    "-s",
+-                    "--format=%cd-%h",
+-                    "--date=format:%Y%m%d-%H%M%S",
+-                ])
+-                .output()
+-            {
+-                let info = String::from_utf8_lossy(&output.stdout);
+-                ci_tag = info.trim().to_string();
+-            }
+-        }
++    //         if let Ok(output) = std::process::Command::new("git")
++    //             .args(&[
++    //                 "-c",
++    //                 "core.abbrev=8",
++    //                 "show",
++    //                 "-s",
++    //                 "--format=%cd-%h",
++    //                 "--date=format:%Y%m%d-%H%M%S",
++    //             ])
++    //             .output()
++    //         {
++    //             let info = String::from_utf8_lossy(&output.stdout);
++    //             ci_tag = info.trim().to_string();
++    //         }
++    //     }
+     }
+ 
+     let target = std::env::var("TARGET").unwrap_or_else(|_| "unknown".to_string());
+diff --git a/window/src/os/wayland/keyboard.rs b/window/src/os/wayland/keyboard.rs
+index 6542b7065..6af742731 100644
+--- a/window/src/os/wayland/keyboard.rs
++++ b/window/src/os/wayland/keyboard.rs
+@@ -58,6 +58,7 @@ impl Dispatch<WlKeyboard, KeyboardData> for WaylandState {
+                 *state.key_repeat_delay.borrow_mut() = *delay;
+             }
+             WlKeyboardEvent::Keymap { format, fd, size } => {
++                #[cfg(not(target_os = "managarm"))]
+                 match format.into_result().unwrap() {
+                     KeymapFormat::XkbV1 => {
+                         // In later protocol versions, the fd must be privately mmap'd.
+-- 
+2.39.5
+

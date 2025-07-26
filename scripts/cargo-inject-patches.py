@@ -10,9 +10,9 @@ patched_libs = {
     "calloop": "0.10.0",
     'getrandom': ['0.2.15', '0.3.2'],
     "libc": "0.2.171",
-    "libloading": "0.7.4",
+    "libloading": ['0.7.4', '0.8.6'],
     "mio": ["0.6.23", "0.8.3", "1.0.3"],
-    "nix": "0.24.3",
+    "nix": ["0.24.3", "0.29.0"],
     "num_cpus": "1.15.0",
     "users": "0.11.0",
     "winit": "0.27.5",
@@ -21,9 +21,20 @@ patched_libs = {
     "glutin_egl_sys": "0.1.5",
     "shared_library": "0.1.9",
     "errno": "0.3.10",
-    "rustix": "1.0.5",
+    "rustix": ["0.38.44", "1.0.5"],
     "uzers": "0.12.1",
-    "cc": "1.2.17"
+    "cc": "1.2.17",
+    "termios": "0.3.3",
+    "mac_address": "1.2.8",
+    "lua-src": "547.0.0",
+    "starship-battery": "0.10.1",
+    "socket2": "0.5.9",
+    "libssh-rs-sys": "0.2.6",
+    "wayland-backend": "0.3.8",
+    "wayland-sys": "0.3.8",
+    "ring": "0.17.14",
+    "zbus": "4.4.0",
+    "zvariant": "4.4.0"
 }
 
 parser = argparse.ArgumentParser(description="Inject patched Rust libraries into Cargo lockfiles")

@@ -1,0 +1,339 @@
+From f231158ea82e9d1b429f4ffe6cc2c8c7df219dca Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Fri, 4 Apr 2025 16:02:28 +0200
+Subject: [PATCH] Add mlibc support
+
+---
+ src/backend/libc/conv.rs           |  5 +++-
+ src/backend/libc/event/mod.rs      |  2 +-
+ src/backend/libc/event/syscalls.rs | 38 +++++++++++++++++-------------
+ src/backend/libc/event/types.rs    |  8 ++++---
+ src/backend/libc/fs/types.rs       |  5 ++++
+ src/event/mod.rs                   | 16 +++++++------
+ src/ioctl/mod.rs                   |  4 ++++
+ 7 files changed, 49 insertions(+), 29 deletions(-)
+
+diff --git a/src/backend/libc/conv.rs b/src/backend/libc/conv.rs
+index 4f7bb5d..c087387 100644
+--- a/src/backend/libc/conv.rs
++++ b/src/backend/libc/conv.rs
+@@ -73,7 +73,8 @@ pub(super) fn ret_c_int(raw: c::c_int) -> io::Result<c::c_int> {
+ #[cfg(any(
+     linux_kernel,
+     all(target_os = "illumos", feature = "event"),
+-    all(target_os = "redox", feature = "event")
++    all(target_os = "redox", feature = "event"),
++    all(target_os = "managarm", feature = "event"),
+ ))]
+ #[inline]
+ pub(super) fn ret_u32(raw: c::c_int) -> io::Result<u32> {
+@@ -186,6 +187,7 @@ pub(super) fn ret_send_recv(len: i32) -> io::Result<usize> {
+     not(any(windows, target_os = "espidf", target_os = "redox", target_os = "wasi")),
+     any(
+         target_os = "android",
++        target_os = "managarm",
+         all(
+             target_os = "linux",
+             not(target_env = "musl"),
+@@ -209,6 +211,7 @@ pub(super) fn msg_iov_len(len: usize) -> c::size_t {
+     )),
+     not(any(
+         target_os = "android",
++        target_os = "managarm",
+         all(
+             target_os = "linux",
+             not(target_env = "musl"),
+diff --git a/src/backend/libc/event/mod.rs b/src/backend/libc/event/mod.rs
+index ff826fc..4a2ec48 100644
+--- a/src/backend/libc/event/mod.rs
++++ b/src/backend/libc/event/mod.rs
+@@ -5,5 +5,5 @@ pub(crate) mod types;
+ #[cfg_attr(windows, path = "windows_syscalls.rs")]
+ pub(crate) mod syscalls;
+ 
+-#[cfg(any(linux_kernel, target_os = "illumos", target_os = "redox"))]
++#[cfg(any(linux_kernel, target_os = "illumos", target_os = "redox", target_os = "managarm"))]
+ pub mod epoll;
+diff --git a/src/backend/libc/event/syscalls.rs b/src/backend/libc/event/syscalls.rs
+index 5beaed1..f8633ad 100644
+--- a/src/backend/libc/event/syscalls.rs
++++ b/src/backend/libc/event/syscalls.rs
+@@ -1,11 +1,11 @@
+ //! libc syscalls supporting `rustix::event`.
+ 
+ use crate::backend::c;
+-#[cfg(any(linux_kernel, solarish, target_os = "redox"))]
++#[cfg(any(linux_kernel, solarish, target_os = "redox", target_os = "managarm"))]
+ use crate::backend::conv::ret;
+ use crate::backend::conv::ret_c_int;
+ #[cfg(feature = "alloc")]
+-#[cfg(any(linux_kernel, target_os = "illumos", target_os = "redox"))]
++#[cfg(any(linux_kernel, target_os = "illumos", target_os = "redox", target_os = "managarm"))]
+ use crate::backend::conv::ret_u32;
+ #[cfg(solarish)]
+ use crate::event::port::Event;
+@@ -13,31 +13,33 @@ use crate::event::port::Event;
+     linux_kernel,
+     target_os = "freebsd",
+     target_os = "illumos",
+-    target_os = "espidf"
++    target_os = "espidf",
++    target_os = "managarm"
+ ))]
+ use crate::event::EventfdFlags;
+-#[cfg(any(bsd, linux_kernel, target_os = "wasi"))]
++#[cfg(any(bsd, linux_kernel, target_os = "wasi", target_os = "managarm"))]
+ use crate::event::FdSetElement;
+ use crate::event::PollFd;
+ use crate::io;
+ #[cfg(solarish)]
+ use crate::utils::as_mut_ptr;
+-#[cfg(any(linux_kernel, target_os = "illumos", target_os = "redox"))]
++#[cfg(any(linux_kernel, target_os = "illumos", target_os = "redox", target_os = "managarm"))]
+ use crate::utils::as_ptr;
+ #[cfg(any(
+     all(feature = "alloc", bsd),
+     solarish,
+-    all(feature = "alloc", any(linux_kernel, target_os = "redox")),
++    all(feature = "alloc", any(linux_kernel, target_os = "redox", target_os = "managarm")),
+ ))]
+ use core::mem::MaybeUninit;
+-#[cfg(any(bsd, linux_kernel, target_os = "wasi"))]
++#[cfg(any(bsd, linux_kernel, target_os = "wasi", target_os = "managarm"))]
+ use core::ptr::null;
+-#[cfg(any(bsd, linux_kernel, solarish, target_os = "redox", target_os = "wasi"))]
++#[cfg(any(bsd, linux_kernel, solarish, target_os = "redox", target_os = "wasi", target_os = "managarm"))]
+ use core::ptr::null_mut;
+ #[cfg(any(
+     linux_kernel,
+     solarish,
+     target_os = "redox",
++    target_os = "managarm",
+     all(feature = "alloc", bsd)
+ ))]
+ use {crate::backend::conv::borrowed_fd, crate::fd::BorrowedFd};
+@@ -48,6 +50,7 @@ use {crate::backend::conv::borrowed_fd, crate::fd::BorrowedFd};
+     target_os = "illumos",
+     target_os = "espidf",
+     target_os = "redox",
++    target_os = "managarm",
+     all(feature = "alloc", bsd)
+ ))]
+ use {crate::backend::conv::ret_owned_fd, crate::fd::OwnedFd};
+@@ -58,7 +61,8 @@ use {crate::event::kqueue::Event, crate::utils::as_ptr};
+     linux_kernel,
+     target_os = "freebsd",
+     target_os = "illumos",
+-    target_os = "espidf"
++    target_os = "espidf",
++    target_os = "managarm"
+ ))]
+ pub(crate) fn eventfd(initval: u32, flags: EventfdFlags) -> io::Result<OwnedFd> {
+     #[cfg(linux_kernel)]
+@@ -84,7 +88,7 @@ pub(crate) fn eventfd(initval: u32, flags: EventfdFlags) -> io::Result<OwnedFd>
+         ret_owned_fd(eventfd(initval, bitflags_bits!(flags)))
+     }
+ 
+-    #[cfg(any(target_os = "illumos", target_os = "espidf"))]
++    #[cfg(any(target_os = "illumos", target_os = "espidf", target_os = "managarm"))]
+     unsafe {
+         ret_owned_fd(c::eventfd(initval, bitflags_bits!(flags)))
+     }
+@@ -129,7 +133,7 @@ pub(crate) fn poll(fds: &mut [PollFd<'_>], timeout: c::c_int) -> io::Result<usiz
+         .map(|nready| nready as usize)
+ }
+ 
+-#[cfg(any(bsd, linux_kernel))]
++#[cfg(any(bsd, linux_kernel, target_os = "managarm"))]
+ pub(crate) unsafe fn select(
+     nfds: i32,
+     readfds: Option<&mut [FdSetElement]>,
+@@ -367,7 +371,7 @@ pub(crate) fn port_send(
+     unsafe { ret(c::port_send(borrowed_fd(port), events, userdata)) }
+ }
+ 
+-#[cfg(not(any(target_os = "redox", target_os = "wasi")))]
++#[cfg(not(any(target_os = "redox", target_os = "wasi", target_os = "managarm")))]
+ pub(crate) fn pause() {
+     let r = unsafe { c::pause() };
+     let errno = libc_errno::errno().0;
+@@ -376,13 +380,13 @@ pub(crate) fn pause() {
+ }
+ 
+ #[inline]
+-#[cfg(any(linux_kernel, target_os = "illumos", target_os = "redox"))]
++#[cfg(any(linux_kernel, target_os = "illumos", target_os = "redox", target_os = "managarm"))]
+ pub(crate) fn epoll_create(flags: super::epoll::CreateFlags) -> io::Result<OwnedFd> {
+     unsafe { ret_owned_fd(c::epoll_create1(bitflags_bits!(flags))) }
+ }
+ 
+ #[inline]
+-#[cfg(any(linux_kernel, target_os = "illumos", target_os = "redox"))]
++#[cfg(any(linux_kernel, target_os = "illumos", target_os = "redox", target_os = "managarm"))]
+ pub(crate) fn epoll_add(
+     epoll: BorrowedFd<'_>,
+     source: BorrowedFd<'_>,
+@@ -403,7 +407,7 @@ pub(crate) fn epoll_add(
+ }
+ 
+ #[inline]
+-#[cfg(any(linux_kernel, target_os = "illumos", target_os = "redox"))]
++#[cfg(any(linux_kernel, target_os = "illumos", target_os = "redox", target_os = "managarm"))]
+ pub(crate) fn epoll_mod(
+     epoll: BorrowedFd<'_>,
+     source: BorrowedFd<'_>,
+@@ -421,7 +425,7 @@ pub(crate) fn epoll_mod(
+ }
+ 
+ #[inline]
+-#[cfg(any(linux_kernel, target_os = "illumos", target_os = "redox"))]
++#[cfg(any(linux_kernel, target_os = "illumos", target_os = "redox", target_os = "managarm"))]
+ pub(crate) fn epoll_del(epoll: BorrowedFd<'_>, source: BorrowedFd<'_>) -> io::Result<()> {
+     unsafe {
+         ret(c::epoll_ctl(
+@@ -435,7 +439,7 @@ pub(crate) fn epoll_del(epoll: BorrowedFd<'_>, source: BorrowedFd<'_>) -> io::Re
+ 
+ #[inline]
+ #[cfg(feature = "alloc")]
+-#[cfg(any(linux_kernel, target_os = "illumos", target_os = "redox"))]
++#[cfg(any(linux_kernel, target_os = "illumos", target_os = "redox", target_os = "managarm"))]
+ pub(crate) fn epoll_wait(
+     epoll: BorrowedFd<'_>,
+     events: &mut [MaybeUninit<crate::event::epoll::Event>],
+diff --git a/src/backend/libc/event/types.rs b/src/backend/libc/event/types.rs
+index a04d7e6..4b56eee 100644
+--- a/src/backend/libc/event/types.rs
++++ b/src/backend/libc/event/types.rs
+@@ -1,10 +1,11 @@
+-#[cfg(any(linux_kernel, target_os = "freebsd", target_os = "illumos"))]
++#[cfg(any(linux_kernel, target_os = "freebsd", target_os = "illumos", target_os = "managarm"))]
+ use crate::backend::c;
+ #[cfg(any(
+     linux_kernel,
+     target_os = "freebsd",
+     target_os = "illumos",
+-    target_os = "espidf"
++    target_os = "espidf",
++    target_os = "managarm"
+ ))]
+ use bitflags::bitflags;
+ 
+@@ -12,7 +13,8 @@ use bitflags::bitflags;
+     linux_kernel,
+     target_os = "freebsd",
+     target_os = "illumos",
+-    target_os = "espidf"
++    target_os = "espidf",
++    target_os = "managarm"
+ ))]
+ bitflags! {
+     /// `EFD_*` flags for use with [`eventfd`].
+diff --git a/src/backend/libc/fs/types.rs b/src/backend/libc/fs/types.rs
+index 8d70615..0c2a87b 100644
+--- a/src/backend/libc/fs/types.rs
++++ b/src/backend/libc/fs/types.rs
+@@ -841,6 +841,7 @@ bitflags! {
+             target_os = "l4re",
+             target_os = "linux",
+             target_os = "wasi",
++            target_os = "managarm"
+         )))]
+         const NO_HIDE_STALE = bitcast!(c::FALLOC_FL_NO_HIDE_STALE);
+         /// `FALLOC_FL_COLLAPSE_RANGE`
+@@ -852,6 +853,7 @@ bitflags! {
+             target_os = "hurd",
+             target_os = "emscripten",
+             target_os = "wasi",
++            target_os = "managarm"
+         )))]
+         const COLLAPSE_RANGE = bitcast!(c::FALLOC_FL_COLLAPSE_RANGE);
+         /// `FALLOC_FL_ZERO_RANGE`
+@@ -863,6 +865,7 @@ bitflags! {
+             target_os = "hurd",
+             target_os = "emscripten",
+             target_os = "wasi",
++            target_os = "managarm"
+         )))]
+         const ZERO_RANGE = bitcast!(c::FALLOC_FL_ZERO_RANGE);
+         /// `FALLOC_FL_INSERT_RANGE`
+@@ -874,6 +877,7 @@ bitflags! {
+             target_os = "hurd",
+             target_os = "emscripten",
+             target_os = "wasi",
++            target_os = "managarm"
+         )))]
+         const INSERT_RANGE = bitcast!(c::FALLOC_FL_INSERT_RANGE);
+         /// `FALLOC_FL_UNSHARE_RANGE`
+@@ -885,6 +889,7 @@ bitflags! {
+             target_os = "hurd",
+             target_os = "emscripten",
+             target_os = "wasi",
++            target_os = "managarm"
+         )))]
+         const UNSHARE_RANGE = bitcast!(c::FALLOC_FL_UNSHARE_RANGE);
+ 
+diff --git a/src/event/mod.rs b/src/event/mod.rs
+index 13a52ff..3a4edcc 100644
+--- a/src/event/mod.rs
++++ b/src/event/mod.rs
+@@ -1,33 +1,35 @@
+ //! Event operations.
+ 
+-#[cfg(any(linux_kernel, target_os = "illumos", target_os = "redox"))]
++#[cfg(any(linux_kernel, target_os = "illumos", target_os = "redox", target_os = "managarm"))]
+ pub mod epoll;
+ #[cfg(any(
+     linux_kernel,
+     target_os = "freebsd",
+     target_os = "illumos",
+-    target_os = "espidf"
++    target_os = "espidf",
++    target_os = "managarm"
+ ))]
+ mod eventfd;
+ #[cfg(all(feature = "alloc", bsd))]
+ pub mod kqueue;
+-#[cfg(not(any(windows, target_os = "redox", target_os = "wasi")))]
++#[cfg(not(any(windows, target_os = "redox", target_os = "wasi", target_os = "managarm")))]
+ mod pause;
+ mod poll;
+ #[cfg(solarish)]
+ pub mod port;
+-#[cfg(any(bsd, linux_kernel, windows, target_os = "wasi"))]
++#[cfg(any(bsd, linux_kernel, windows, target_os = "wasi", target_os = "managarm"))]
+ mod select;
+ 
+ #[cfg(any(
+     linux_kernel,
+     target_os = "freebsd",
+     target_os = "illumos",
+-    target_os = "espidf"
++    target_os = "espidf",
++    target_os = "managarm"
+ ))]
+ pub use eventfd::{eventfd, EventfdFlags};
+-#[cfg(not(any(windows, target_os = "redox", target_os = "wasi")))]
++#[cfg(not(any(windows, target_os = "redox", target_os = "wasi", target_os = "managarm")))]
+ pub use pause::*;
+ pub use poll::{poll, PollFd, PollFlags};
+-#[cfg(any(bsd, linux_kernel, windows, target_os = "wasi"))]
++#[cfg(any(bsd, linux_kernel, windows, target_os = "wasi", target_os = "managarm"))]
+ pub use select::*;
+diff --git a/src/ioctl/mod.rs b/src/ioctl/mod.rs
+index 2f0c951..8028232 100644
+--- a/src/ioctl/mod.rs
++++ b/src/ioctl/mod.rs
+@@ -315,6 +315,10 @@ type _RawOpcode = c::c_uint;
+ ))]
+ type _RawOpcode = c::c_ulong;
+ 
++// mlibc uses `c_ulong`
++#[cfg(target_env = "mlibc")]
++type _RawOpcode = c::c_ulong;
++
+ // Musl uses `c_int`.
+ #[cfg(all(
+     not(linux_raw),
+-- 
+2.47.2
+
