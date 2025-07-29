@@ -32,8 +32,6 @@ sources:
       - cralgo
       - uacpi
       - libarch
-      - libasync
-      - libsmarter
       - lil
       - bragi
       - cli11
@@ -44,8 +42,6 @@ sources:
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cralgo', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/uacpi', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/libarch', '@THIS_SOURCE_DIR@/subprojects/']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/libasync', '@THIS_SOURCE_DIR@/subprojects/']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/libsmarter', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/lil', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/bragi', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['mkdir', '-p', '@SOURCE_ROOT@/ports/libarch/subprojects']
@@ -105,6 +101,8 @@ packages:
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - frigg
+      - libasync
+      - libsmarter
       - mlibc-headers
     configure:
       - args: |
@@ -183,6 +181,8 @@ packages:
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - frigg
+      - libasync
+      - libsmarter
       - mlibc-headers
       - freestnd-c-hdrs
       - freestnd-cxx-hdrs
