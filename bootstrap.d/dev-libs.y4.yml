@@ -58,13 +58,13 @@ sources:
 
   - name: wayland
     subdir: 'ports'
-    url: 'https://gitlab.freedesktop.org/wayland/wayland/-/releases/1.23.0/downloads/wayland-1.23.0.tar.xz'
-    checksum: 'blake2b:efb80e3c67db7a707a6d2ea66e7a5132173550bc13fdff447925ec3d33bfba8131532f819d5ab0dd80924cb4339b58b7ca83d9e70a436cea8268167476355bd8'
-    extract_path: 'wayland-1.23.0'
+    url: 'https://gitlab.freedesktop.org/wayland/wayland/-/releases/1.24.0/downloads/wayland-1.24.0.tar.xz'
+    checksum: 'blake2b:7ac6ac1f33cb2cae60e4058478655eeabd4f8f8e0fe07f6b9b386967ed4b31bdaac571dc2b812f3189534e3e53797822ca39f829207e45c24b494f039f82a836'
+    extract_path: 'wayland-1.24.0'
     patch-path-strip: 1
     format: 'tar.xz'
-    tag: '1.23.0'
-    version: '1.23.0'
+    tag: '1.24.0'
+    version: '1.24.0'
 
   - name: libtool
     subdir: 'ports'
