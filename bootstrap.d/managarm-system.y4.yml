@@ -79,6 +79,40 @@ tools:
 
 
 packages:
+  - name: boot-artifacts
+    metadata:
+      summary: Boot artifact generation scripts
+      description: Generates artifacts needed to boot various boards and SoCs
+      spdx: 'MIT'
+      website: 'https://managarm.org'
+      maintainer: "Alexander van der Grinten <avdgrinten@managarm.org>"
+      categories: ['sys-kernel']
+    labels: [aarch64, riscv64]
+    architecture: noarch
+    default: true
+    source:
+      rolling_version: true
+      version: '0.0pl@ROLLING_ID@'
+      subdir: 'ports'
+      git: 'https://github.com/managarm/boot-artifacts.git'
+      branch: 'main'
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--prefix=/usr/managarm'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '--wrap-mode=nofallback'
+        - '@THIS_SOURCE_DIR@'
+        isolate_network: false
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+
   - name: managarm-kernel
     metadata:
       summary: The Managarm kernel
