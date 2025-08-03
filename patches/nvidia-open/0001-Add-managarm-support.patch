@@ -1,28 +1,28 @@
-From 00ef9f483117e55d88dab7ea59b0111a18fd8dc7 Mon Sep 17 00:00:00 2001
+From ed55956e1c823c2aa461228092f56cb8a4614850 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Wed, 23 Apr 2025 13:01:40 +0200
 Subject: [PATCH] Add managarm support
 
 ---
  kernel-open/common/inc/cpuopsys.h             |   4 +
- managarm-open/meson.build                     |  12 +
  managarm-open/shader-ld.sh                    |  16 +
- meson.build                                   |   7 +
+ meson.build                                   |   8 +
+ meson.options                                 |   1 +
  src/common/sdk/nvidia/inc/cpuopsys.h          |   4 +
  src/meson.build                               | 833 ++++++++++++++++++
- src/nvidia-modeset/meson.build                | 331 +++++++
+ src/nvidia-modeset/meson.build                | 356 ++++++++
  .../include/nvidia-modeset-os-interface.h     |   2 +-
  .../os-interface/include/nvkms.h              |   2 +-
  src/nvidia-modeset/src/shaders/meson.build    |  31 +
  .../arch/nvalloc/unix/include/nv-ioctl-numa.h |   2 +-
- src/nvidia/arch/nvalloc/unix/include/nv.h     |   1 +
+ src/nvidia/arch/nvalloc/unix/include/nv.h     |   3 +
  .../arch/nvalloc/unix/src/asm/x86/nv_rdcr.c   |   4 +-
  src/nvidia/arch/nvalloc/unix/src/osinit.c     |   4 +-
- src/nvidia/meson.build                        | 289 ++++++
- 15 files changed, 1536 insertions(+), 6 deletions(-)
- create mode 100644 managarm-open/meson.build
+ src/nvidia/meson.build                        | 319 +++++++
+ 15 files changed, 1583 insertions(+), 6 deletions(-)
  create mode 100755 managarm-open/shader-ld.sh
  create mode 100644 meson.build
+ create mode 100644 meson.options
  create mode 100644 src/meson.build
  create mode 100644 src/nvidia-modeset/meson.build
  create mode 100644 src/nvidia-modeset/src/shaders/meson.build
@@ -35,7 +35,7 @@ index 9743041..f146af3 100644
 @@ -69,6 +69,10 @@
  #   define NV_LINUX
  #endif  /* defined(__linux__) */
- 
+
 +#if defined(__managarm__) && !defined(NV_LINUX)
 +#   define NV_LINUX
 +#endif  /* defined(__managarm__) */
@@ -43,24 +43,6 @@ index 9743041..f146af3 100644
  #if defined(__VMWARE__) && !defined(NV_VMWARE)
  #   define NV_VMWARE
  #endif /* defined(__VMWARE__) */
-diff --git a/managarm-open/meson.build b/managarm-open/meson.build
-new file mode 100644
-index 0000000..2925f5e
---- /dev/null
-+++ b/managarm-open/meson.build
-@@ -0,0 +1,12 @@
-+nvidia_open_lib_dep = declare_dependency(
-+	link_with: [libnvidia, libnvidia_modeset],
-+	include_directories: [src_inc, inc, modeset_inc],
-+	compile_args: ['-DNVRM'])
-+
-+nvidia_open_cpp_args = [
-+	'-fno-operator-names',
-+	'-DNVRM',
-+	'-DDEBUG',
-+	'-DNV_VERSION_STRING="575.51.02"',
-+	'-DNV_KERNEL_INTERFACE_LAYER',
-+]
 diff --git a/managarm-open/shader-ld.sh b/managarm-open/shader-ld.sh
 new file mode 100755
 index 0000000..5283c4a
@@ -85,17 +67,25 @@ index 0000000..5283c4a
 +rm "$temp_input"
 diff --git a/meson.build b/meson.build
 new file mode 100644
-index 0000000..862c1ce
+index 0000000..60554f7
 --- /dev/null
 +++ b/meson.build
-@@ -0,0 +1,7 @@
-+project('nvidia-open', ['c', 'cpp'], default_options: [
+@@ -0,0 +1,8 @@
++project('nvidia-open', ['c', 'cpp'], version: '575.51.02', default_options: [
 +	'c_std=gnu11',
 +	'cpp_std=gnu++11',
 +])
 +
++pkg = import('pkgconfig')
++
 +subdir('src')
-+subdir('managarm-open')
+diff --git a/meson.options b/meson.options
+new file mode 100644
+index 0000000..4fc12ae
+--- /dev/null
++++ b/meson.options
+@@ -0,0 +1 @@
++option('deps_only', type: 'boolean', value: false)
 diff --git a/src/common/sdk/nvidia/inc/cpuopsys.h b/src/common/sdk/nvidia/inc/cpuopsys.h
 index 230c7b5..59f26a7 100644
 --- a/src/common/sdk/nvidia/inc/cpuopsys.h
@@ -103,7 +93,7 @@ index 230c7b5..59f26a7 100644
 @@ -69,6 +69,10 @@
  #   define NV_LINUX
  #endif  /* defined(__linux__) */
- 
+
 +#if defined(__managarm__) && !defined(NV_LINUX)
 +#   define NV_LINUX
 +#endif  /* defined(__managarm__) */
@@ -952,10 +942,10 @@ index 0000000..127cf3c
 +subdir('nvidia-modeset')
 diff --git a/src/nvidia-modeset/meson.build b/src/nvidia-modeset/meson.build
 new file mode 100644
-index 0000000..13ff8b0
+index 0000000..b635688
 --- /dev/null
 +++ b/src/nvidia-modeset/meson.build
-@@ -0,0 +1,331 @@
+@@ -0,0 +1,356 @@
 +modeset_src = files(
 +	'../common/shared/nvstatus/nvstatus.c',
 +	'../common/softfloat/source/8086-SSE/s_commonNaNToF16UI.c',
@@ -1184,22 +1174,26 @@ index 0000000..13ff8b0
 +	'../common/unix/xzminidec/src/xz_dec_stream.c',
 +)
 +
-+modeset_inc = include_directories(
-+	'../nvidia/arch/nvalloc/unix/include',
-+	'interface',
-+	'os-interface/include',
-+	'kapi/interface',
++public_headers = [
++	'../common/modeset',
 +	'include',
++	'interface',
 +	'kapi/include',
++	'kapi/interface',
++	'os-interface/include',
++]
++
++modeset_inc = include_directories(
 +	'../common/displayport/inc',
 +	'../common/displayport/inc/dptestutil',
 +	'../common/inc/displayport',
-+	'../common/unix/nvidia-3d/interface',
-+	'../common/unix/nvidia-push/interface',
 +	'../common/unix/nvidia-3d/include',
-+	'../common/unix/nvidia-push/include',
-+	'../common/unix/xzminidec/interface',
++	'../common/unix/nvidia-3d/interface',
 +	'../common/unix/nvidia-headsurface',
++	'../common/unix/nvidia-push/include',
++	'../common/unix/nvidia-push/interface',
++	'../common/unix/xzminidec/interface',
++	'../nvidia/arch/nvalloc/unix/include',
 +	'src/shaders',
 +)
 +
@@ -1268,25 +1262,46 @@ index 0000000..13ff8b0
 +	'-fno-omit-frame-pointer',
 +	'-Wformat=2',
 +	'-Wno-sign-compare',
-+	'-Wno-duplicate-decl-specifier',
-+	'-Wno-overloaded-virtual',
++	'-Wno-format-zero-length',
 +]
 +
-+modeset_cpp_flags = [
++modeset_cpp_flags = modeset_c_flags + [
 +	'-fno-operator-names',
 +	'-fno-rtti',
 +	'-fno-exceptions',
 +	'-fcheck-new',
++	'-Wno-overloaded-virtual',
 +]
 +
-+subdir('src/shaders')
++modeset_c_flags += ['-Wno-duplicate-decl-specifier']
 +
-+libnvidia_modeset = static_library('nvidia-modeset',
-+	[modeset_src, embedded_shaders],
-+	include_directories: [src_inc, modeset_inc],
-+	c_args: modeset_c_flags,
-+	cpp_args: modeset_c_flags + modeset_cpp_flags,
-+	pic: false)
++if not get_option('deps_only')
++	subdir('src/shaders')
++
++	libnvidia_modeset = static_library('nvidia-open-modeset',
++		[modeset_src, embedded_shaders],
++		include_directories: [src_inc, modeset_inc, public_headers],
++		c_args: modeset_c_flags,
++		cpp_args: modeset_cpp_flags,
++		pic: false,
++		install: true)
++
++	pc_subdirs = ['nvidia-open-modeset']
++
++	foreach subdir : public_headers
++		normalized_subdir = subdir
++		if subdir.startswith('../')
++			normalized_subdir = normalized_subdir.substring(3)
++		endif
++		normalized_subdir = 'nvidia-open-modeset' / normalized_subdir
++
++		install_subdir(subdir, install_dir: get_option('includedir') / normalized_subdir, strip_directory: true)
++
++		pc_subdirs += normalized_subdir
++	endforeach
++
++	pkg.generate(libnvidia_modeset, subdirs: pc_subdirs)
++endif
 diff --git a/src/nvidia-modeset/os-interface/include/nvidia-modeset-os-interface.h b/src/nvidia-modeset/os-interface/include/nvidia-modeset-os-interface.h
 index 25bc5d0..9aa6f48 100644
 --- a/src/nvidia-modeset/os-interface/include/nvidia-modeset-os-interface.h
@@ -1294,7 +1309,7 @@ index 25bc5d0..9aa6f48 100644
 @@ -29,7 +29,7 @@
  #if !defined(_NVIDIA_MODESET_OS_INTERFACE_H_)
  #define _NVIDIA_MODESET_OS_INTERFACE_H_
- 
+
 -#if defined(NV_KERNEL_INTERFACE_LAYER) && defined(NV_LINUX)
 +#if defined(NV_KERNEL_INTERFACE_LAYER) && defined(NV_LINUX) && !defined(__managarm__)
  #include <linux/stddef.h>  /* size_t */
@@ -1306,7 +1321,7 @@ index 0ac3f79..5dc034b 100644
 +++ b/src/nvidia-modeset/os-interface/include/nvkms.h
 @@ -25,7 +25,7 @@
  #define __NV_KMS_H__
- 
+
  #include "nvtypes.h"
 -#if defined(NV_KERNEL_INTERFACE_LAYER) && defined(NV_LINUX)
 +#if defined(NV_KERNEL_INTERFACE_LAYER) && defined(NV_LINUX) && !defined(__managarm__)
@@ -1355,32 +1370,34 @@ index 0af5267..60bac5c 100644
 --- a/src/nvidia/arch/nvalloc/unix/include/nv-ioctl-numa.h
 +++ b/src/nvidia/arch/nvalloc/unix/include/nv-ioctl-numa.h
 @@ -27,7 +27,7 @@
- 
+
  #include <nv-ioctl-numbers.h>
- 
+
 -#if defined(NV_KERNEL_INTERFACE_LAYER) && defined(NV_LINUX)
 +#if defined(NV_KERNEL_INTERFACE_LAYER) && defined(NV_LINUX) && !defined(__managarm__)
  #include <linux/types.h>
  #elif defined (NV_KERNEL_INTERFACE_LAYER) && defined(NV_BSD)
  #include <sys/stdint.h>
 diff --git a/src/nvidia/arch/nvalloc/unix/include/nv.h b/src/nvidia/arch/nvalloc/unix/include/nv.h
-index bdbefe9..bd551b3 100644
+index bdbefe9..8ff4082 100644
 --- a/src/nvidia/arch/nvalloc/unix/include/nv.h
 +++ b/src/nvidia/arch/nvalloc/unix/include/nv.h
-@@ -43,6 +43,7 @@
+@@ -43,6 +43,9 @@
  #include <nv-firmware.h>
  #include <nv-ioctl.h>
  #include <nv-ioctl-numa.h>
++#ifdef __cplusplus
 +#include <nv_uvm_types.h>
++#endif
  #include <nvmisc.h>
  #include <os/nv_memory_area.h>
- 
+
 diff --git a/src/nvidia/arch/nvalloc/unix/src/asm/x86/nv_rdcr.c b/src/nvidia/arch/nvalloc/unix/src/asm/x86/nv_rdcr.c
 index 6115aa4..000dd90 100644
 --- a/src/nvidia/arch/nvalloc/unix/src/asm/x86/nv_rdcr.c
 +++ b/src/nvidia/arch/nvalloc/unix/src/asm/x86/nv_rdcr.c
 @@ -29,8 +29,10 @@
- 
+
  NvU32 osNv_rdcr4(void)
  {
 -    NvU64 val;
@@ -1390,7 +1407,7 @@ index 6115aa4..000dd90 100644
 +#endif
      return (NvU32)val;
  }
- 
+
 diff --git a/src/nvidia/arch/nvalloc/unix/src/osinit.c b/src/nvidia/arch/nvalloc/unix/src/osinit.c
 index 4a98012..ec448c7 100644
 --- a/src/nvidia/arch/nvalloc/unix/src/osinit.c
@@ -1402,20 +1419,20 @@ index 4a98012..ec448c7 100644
 -    NV_DEV_PRINTF(NV_DBG_SETUP, nv, "   registers look  like: 0x%" NvU64_fmtx " 0x%" NvU64_fmtx,
 +    NV_DEV_PRINTF(NV_DBG_SETUP, nv, "   registers look  like: 0x%" NvU64_fmtx " 0x%" NvU64_fmtx "\n",
                nv->regs->cpu_address, nv->regs->size);
- 
+
      if (nv->fb != NULL)
      {
 -        NV_DEV_PRINTF(NV_DBG_SETUP, nv, "   fb        looks like: 0x%" NvU64_fmtx " 0x%" NvU64_fmtx,
 +        NV_DEV_PRINTF(NV_DBG_SETUP, nv, "   fb        looks like: 0x%" NvU64_fmtx " 0x%" NvU64_fmtx "\n",
                  nv->fb->cpu_address, nv->fb->size);
      }
- 
+
 diff --git a/src/nvidia/meson.build b/src/nvidia/meson.build
 new file mode 100644
-index 0000000..45d651e
+index 0000000..886daee
 --- /dev/null
 +++ b/src/nvidia/meson.build
-@@ -0,0 +1,289 @@
+@@ -0,0 +1,319 @@
 +nvidia_generated_src = files(
 +	'generated/g_access_cntr_buffer_nvoc.c',
 +	'generated/g_all_dcl_pb.c',
@@ -1616,25 +1633,31 @@ index 0000000..45d651e
 +	'generated/g_zbc_api_nvoc.c',
 +)
 +
-+inc = include_directories(
++public_headers = [
++	'../common/inc',
++	'../common/nvlink/interface',
++	'../common/sdk/nvidia/inc',
++	'../common/unix/common/inc',
++	'../common/unix/common/utils/interface',
++	'../common/unix/nvidia-push/interface',
 +	'arch/nvalloc/common/inc',
 +	'arch/nvalloc/common/inc/gsp',
-+	# 'arch/nvalloc/common/inc/deprecated',
 +	'arch/nvalloc/unix/include',
-+	'inc',
-+	'inc/os',
-+	'generated',
-+	'kernel/inc',
-+	'interface',
-+	'inc/libraries',
-+	'src/libraries',
 +	'inc/kernel',
-+
++	'interface',
 +	'src/libraries/libspdm/3.1.1/include',
 +	'src/libraries/libspdm/3.1.1/include/hal',
-+	'src/libraries/libspdm/3.1.1/os_stub/include',
++]
++
++inc = include_directories(
++	'generated',
++	'inc',
++	'inc/libraries',
++	'inc/os',
++	'kernel/inc',
++	'src/libraries',
 +	'src/libraries/libspdm/3.1.1/os_stub',
-+	# 'src/libraries/libspdm/3.1.1/os_stub/cryptlib_null',
++	'src/libraries/libspdm/3.1.1/os_stub/include',
 +	'src/libraries/libspdm/nvidia',
 +)
 +
@@ -1697,14 +1720,38 @@ index 0000000..45d651e
 +	'-Wno-unused-but-set-parameter',
 +]
 +
-+libnvidia = static_library('nvidia',
-+	[
-+		nvidia_generated_src, nvidia_common_src, nvidia_libraries_src, nvidia_kernel_src,
-+		nvidia_nvalloc_src, nvidia_interface_src
-+	],
-+	include_directories: [src_inc, inc],
-+	c_args: c_flags,
-+	pic: false)
--- 
-2.49.0
++if not get_option('deps_only')
++	libnvidia = static_library('nvidia-open',
++		[
++			nvidia_generated_src, nvidia_common_src, nvidia_libraries_src, nvidia_kernel_src,
++			nvidia_nvalloc_src, nvidia_interface_src
++		],
++		include_directories: [src_inc, inc, public_headers],
++		c_args: c_flags,
++		pic: false,
++		install: true)
++
++	pc_subdirs = ['nvidia-open']
++
++	foreach subdir : public_headers
++		normalized_subdir = subdir
++		if subdir.startswith('../')
++			normalized_subdir = normalized_subdir.substring(3)
++		endif
++		normalized_subdir = 'nvidia-open' / normalized_subdir
++
++		install_subdir(subdir, install_dir: get_option('includedir') / normalized_subdir, strip_directory: true)
++
++		pc_subdirs += normalized_subdir
++	endforeach
++
++	pkg.generate(libnvidia, subdirs: pc_subdirs, extra_cflags: [
++		'-DNVRM',
++		'-DDEBUG',
++		'-DNV_VERSION_STRING=\'"@0@"\''.format(meson.project_version()),
++		'-DNV_KERNEL_INTERFACE_LAYER',
++	])
++endif
+--
+2.50.1
 

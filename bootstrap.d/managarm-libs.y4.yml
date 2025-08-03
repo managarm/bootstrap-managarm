@@ -280,3 +280,32 @@ packages:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/lib/pkgconfig']
       - args: ['ln', '-srf', '@THIS_COLLECT_DIR@/usr/lib/@OPTION:arch-triple@/libsmarter/pkgconfig/libsmarter.pc',
               '@THIS_COLLECT_DIR@/usr/lib/pkgconfig/libsmarter.pc']
+
+  - name: nvidia-open
+    architecture: '@OPTION:arch@'
+    from_source: nvidia-open
+    metadata:
+      summary: NVIDIA Linux Open GPU Kernel Module
+      description: NVIDIA Accelerated Graphics Driver
+      spdx: 'MIT'
+      maintainer: "no92 <leo@managarm.org>"
+      categories: ['x11-drivers']
+    tools_required:
+      - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: '@OPTION:arch-triple@'
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--includedir=share/nvidia-open/include'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
