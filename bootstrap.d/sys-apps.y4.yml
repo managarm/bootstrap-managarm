@@ -42,6 +42,7 @@ sources:
 
 tools:
   - name: host-dtc
+    labels: [aarch64, riscv64]
     architecture: noarch
     from_source: dtc
     tools_required:
