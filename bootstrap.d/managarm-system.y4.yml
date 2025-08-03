@@ -36,7 +36,6 @@ sources:
       - bragi
       - cli11
       - freebsd-e1000
-      - nvidia-open
     regenerate:
       - args: ['mkdir', '-p', '@THIS_SOURCE_DIR@/subprojects']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cralgo', '@THIS_SOURCE_DIR@/subprojects/']
@@ -48,7 +47,6 @@ sources:
       - args: ['ln', '-sf', '@SOURCE_ROOT@/managarm', '@SOURCE_ROOT@/ports/libarch/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cli11', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/freebsd-e1000', '@THIS_SOURCE_DIR@/subprojects/']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/nvidia-open', '@THIS_SOURCE_DIR@/subprojects/']
 
 
 tools:
@@ -283,6 +281,9 @@ packages:
       - !managarm::arch_dep
         arch: [x86_64]
         item: lil
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: nvidia-open
     configure:
       - args: |
           sed -e 's|_BUILD_ROOT_|@BUILD_ROOT@|' -e 's|_SYSROOT_DIR_|@SYSROOT_DIR@|' @SOURCE_ROOT@/scripts/meson-clang-@OPTION:arch-triple@.cross-file \
