@@ -333,3 +333,40 @@ packages:
       - '-quiet'
       - '-fix'
       - '\.(h|c|cpp|hpp)$'
+
+  - name: vendor-devicetrees
+    metadata:
+      summary: Device trees for Managarm that are not part of mainline Linux
+      description: This package contains device trees for Managarm to support boards that are not in mainline Linux.
+      spdx: 'MIT'
+      website: 'https://managarm.org'
+      maintainer: "Alexander van der Grinten <avdgrinten@managarm.org>"
+      categories: ['sys-kernel']
+    labels: [aarch64, riscv64]
+    architecture: noarch
+    default: true
+    source:
+      rolling_version: true
+      version: '0.0pl@ROLLING_ID@'
+      subdir: 'ports'
+      git: 'https://github.com/managarm/vendor-devicetrees.git'
+      branch: 'main'
+    tools_required:
+      - host-dtc
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--prefix=/usr/managarm'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '--wrap-mode=nofallback'
+        - '@THIS_SOURCE_DIR@'
+        isolate_network: false
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
