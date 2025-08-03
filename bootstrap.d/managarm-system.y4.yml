@@ -16,13 +16,6 @@ sources:
     commit: 4ab3a78006a930e2cda5a92f33fc84e1ec6b4a3d
     version: '0.0pl@ROLLING_ID@'
 
-  - name: freebsd-e1000
-    subdir: 'ports'
-    git: 'https://github.com/managarm/freebsd-e1000.git'
-    branch: 'import'
-    rolling_version: true
-    version: '0.0pl@ROLLING_ID@'
-
   - name: managarm
     git: 'https://github.com/managarm/managarm.git'
     branch: 'master'
@@ -35,7 +28,6 @@ sources:
       - lil
       - bragi
       - cli11
-      - freebsd-e1000
     regenerate:
       - args: ['mkdir', '-p', '@THIS_SOURCE_DIR@/subprojects']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cralgo', '@THIS_SOURCE_DIR@/subprojects/']
@@ -46,7 +38,6 @@ sources:
       - args: ['mkdir', '-p', '@SOURCE_ROOT@/ports/libarch/subprojects']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/managarm', '@SOURCE_ROOT@/ports/libarch/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cli11', '@THIS_SOURCE_DIR@/subprojects/']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/freebsd-e1000', '@THIS_SOURCE_DIR@/subprojects/']
 
 
 tools:
@@ -278,6 +269,9 @@ packages:
       - libasync
       - libdrm
       - libsmarter
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: freebsd-e1000
       - !managarm::arch_dep
         arch: [x86_64]
         item: lil
