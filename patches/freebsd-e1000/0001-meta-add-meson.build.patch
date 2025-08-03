@@ -1,20 +1,22 @@
-From 787a0187178ee286a671d0ef8d5b352bf2d06037 Mon Sep 17 00:00:00 2001
+From 13bdf14e78f943422392c176235fafa7e3589d73 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Wed, 21 Aug 2024 00:16:01 +0200
 Subject: [PATCH] meta: add meson.build
 
 ---
- meson.build | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+ meson.build | 55 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 55 insertions(+)
  create mode 100644 meson.build
 
 diff --git a/meson.build b/meson.build
 new file mode 100644
-index 0000000..02eb366
+index 0000000..1e8c9ca
 --- /dev/null
 +++ b/meson.build
-@@ -0,0 +1,23 @@
+@@ -0,0 +1,55 @@
 +project('freebsd-e1000', ['c'])
++
++pkg = import('pkgconfig')
 +
 +inc = include_directories('.')
 +
@@ -37,6 +39,36 @@ index 0000000..02eb366
 +	'e1000_nvm.c',
 +	'e1000_80003es2lan.c',
 +)
++
++public_headers = files(
++	'e1000_80003es2lan.h',
++	'e1000_82541.h',
++	'e1000_82543.h',
++	'e1000_82571.h',
++	'e1000_82575.h',
++	'e1000_api.h',
++	'e1000_base.h',
++	'e1000_defines.h',
++	'e1000_hw.h',
++	'e1000_i210.h',
++	'e1000_ich8lan.h',
++	'e1000_mac.h',
++	'e1000_manage.h',
++	'e1000_mbx.h',
++	'e1000_nvm.h',
++	'e1000_phy.h',
++	'e1000_regs.h',
++)
++
++lib = static_library('e1000-freebsd', src,
++	c_args : ['-Wno-implicit-fallthrough', '-Wno-unused-parameter'],
++	include_directories : [ inc ],
++	install : true,
++)
++
++install_headers(public_headers)
++
++pkg.generate(lib)
 -- 
-2.45.1
+2.50.1
 

@@ -97,6 +97,46 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
+  - name: freebsd-e1000
+    architecture: '@OPTION:arch@'
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/managarm/freebsd-e1000.git'
+      branch: 'import'
+      rolling_version: true
+      version: '0.0pl@ROLLING_ID@'
+      sources_required:
+        - managarm
+      regenerate:
+        - args: ['ln', '-frs', '@SOURCE_ROOT@/managarm/drivers/nic/freebsd-e1000/include/e1000_osdep.h', './']
+    metadata:
+      summary: e1000 driver
+      description: Port of the e1000 driver from FreeBSD.
+      spdx: 'BSD-3-Clause'
+      maintainer: "no92 <leo@managarm.org>"
+      categories: ['sys-libs']
+    tools_required:
+      - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: '@OPTION:arch-triple@'
+    pkgs_required:
+      - mlibc
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--includedir=share/freebsd-e1000/include'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: freestnd-c-hdrs
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
