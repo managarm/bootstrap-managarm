@@ -3,6 +3,12 @@ import:
   - !managarm
 ---
 sources:
+  - name: dtc
+    subdir: 'ports'
+    git: 'https://github.com/dgibson/dtc.git'
+    tag: 'v1.7.2'
+    version: '1.7.2'
+
   - name: file
     subdir: ports
     git: 'https://github.com/file/file.git'
@@ -35,6 +41,27 @@ sources:
       - args: ['./autogen.sh']
 
 tools:
+  - name: host-dtc
+    architecture: noarch
+    from_source: dtc
+    tools_required:
+      - host-pkg-config
+      - virtual: pkgconfig-for-host
+        program_name: host-pkg-config
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--prefix=@PREFIX@'
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
+
   - name: host-file
     labels: [aarch64, riscv64]
     architecture: noarch
