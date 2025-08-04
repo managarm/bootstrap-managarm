@@ -1346,7 +1346,7 @@ packages:
       - file
       - libxcrypt
       - pcre2
-    revision: 17
+    revision: 18
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1360,8 +1360,8 @@ packages:
         - '--disable-nls'
         - '--disable-static'
         - '--without-python'
-        - '--without-systemd'
-        - '--without-systemdsystemunitdir'
+        - '--with-systemd'
+        - '--with-systemdsystemunitdir=/usr/lib/systemd/system'
         - '--disable-partx'
         - '--disable-fallocate'
         - '--disable-unshare'
@@ -1423,8 +1423,12 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      # Remove items installed by util-linux-libs
       - args: ['rm', '-r', '@THIS_COLLECT_DIR@/usr/include']
-      - args: ['rm', '-r', '@THIS_COLLECT_DIR@/usr/lib']
+      - args: ['rm', '-r', '@THIS_COLLECT_DIR@/usr/lib/pkgconfig']
+      - args: |
+          rm @THIS_COLLECT_DIR@/usr/lib/*.so*
+          rm @THIS_COLLECT_DIR@/usr/lib/*.la*
       - args: ['rm', '-r', '@THIS_COLLECT_DIR@/usr/share/man/man3']
       - args: ['rm', '-r', '@THIS_COLLECT_DIR@/usr/share/man/man5/terminal-colors.d.5']
 
