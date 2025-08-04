@@ -21,15 +21,17 @@ packages:
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
-    revision: 8
+      - systemd
+    revision: 9
     configure:
       - args:
         - 'meson'
+        - 'setup'
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
         - '--buildtype=debugoptimized'
-        - '-Dlibseat-logind=disabled'
+        - '-Dlibseat-logind=systemd'
         - '@THIS_SOURCE_DIR@'
         environ:
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'

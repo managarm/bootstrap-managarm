@@ -1,0 +1,25 @@
+From 1ca6b0320850941c2c06e28917bfd101b496155d Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Mon, 4 Aug 2025 15:23:37 +0200
+Subject: [PATCH 3/3] Update systemd unit file to work with logind
+
+---
+ docs/kmscon.service.in | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/docs/kmscon.service.in b/docs/kmscon.service.in
+index 398469e..7b0fb4b 100644
+--- a/docs/kmscon.service.in
++++ b/docs/kmscon.service.in
+@@ -1,6 +1,8 @@
+ [Unit]
+ Description=KMS System Console
+ Documentation=man:kmscon(1)
++After=plymouth-quit-wait.service
++After=systemd-user-sessions.service
+ 
+ [Service]
+ ExecStartPre=@bindir@/wait-for-devices --want-graphics --want-keyboard
+-- 
+2.50.1
+

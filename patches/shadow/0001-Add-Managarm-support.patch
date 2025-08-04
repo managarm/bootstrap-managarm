@@ -1,4 +1,4 @@
-From a0a3c21b74484544e07683bed59e089707e47781 Mon Sep 17 00:00:00 2001
+From da03beed7dbabf247ad2cfb9ff7abe0dfb6e89d8 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Thu, 5 Sep 2024 00:27:05 +0200
 Subject: [PATCH] Add Managarm support
@@ -14,7 +14,8 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
  src/Makefile.am     | 10 ++++------
  src/lastlog.c       |  4 +++-
  src/login.c         |  6 ++++++
- 9 files changed, 26 insertions(+), 13 deletions(-)
+ src/newgrp.c        |  1 +
+ 10 files changed, 27 insertions(+), 13 deletions(-)
 
 diff --git a/Makefile.am b/Makefile.am
 index 8851f5d..5a58c54 100644
@@ -208,6 +209,18 @@ index 00508cd..af876c9 100644
  
  #ifndef USE_PAM			/* PAM does this */
  	/*
+diff --git a/src/newgrp.c b/src/newgrp.c
+index e3c44e1..f079320 100644
+--- a/src/newgrp.c
++++ b/src/newgrp.c
+@@ -39,6 +39,7 @@
+ #include <pwd.h>
+ #include <stdio.h>
+ #include <assert.h>
++#include <signal.h>
+ #include "defines.h"
+ #include "getdef.h"
+ #include "prototypes.h"
 -- 
-2.47.2
+2.50.1
 

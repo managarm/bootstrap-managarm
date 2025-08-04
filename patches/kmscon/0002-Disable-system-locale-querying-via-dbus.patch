@@ -1,7 +1,7 @@
-From 8f8f2b9397ad95b2f171662ebcec4492a308de0a Mon Sep 17 00:00:00 2001
+From 1601690bcd60acfbff7a80ca79afb25485f41dba Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Mon, 24 Jul 2023 18:06:22 +0200
-Subject: [PATCH 2/2] Disable system locale querying via dbus
+Subject: [PATCH 2/3] Disable system locale querying via dbus
 
 ---
  scripts/kmscon.in | 2 +-
@@ -19,5 +19,5 @@ index 61594bf..c7f74b1 100755
 +# setupLocale
  exec ${helperdir}/kmscon "$@"
 -- 
-2.47.2
+2.50.1
 

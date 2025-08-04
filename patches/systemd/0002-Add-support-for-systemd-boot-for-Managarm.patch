@@ -1,7 +1,7 @@
-From 70d8db99bb7f7e319368a28c8e892cae5d65544f Mon Sep 17 00:00:00 2001
+From f96a9c549f8c1be8b4efaa85d6a098d9b53d014a Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Fri, 10 Jan 2025 00:55:19 +0100
-Subject: [PATCH 2/3] Add support for systemd boot for Managarm
+Subject: [PATCH 2/4] Add support for systemd boot for Managarm
 
 ---
  src/basic/capability-util.c              |  2 ++
@@ -138,7 +138,7 @@ index 6157ac4..d508df7 100644
                  r = setup_credentials_internal(
                                  context,
 diff --git a/src/core/exec-invoke.c b/src/core/exec-invoke.c
-index f72eccf..dd75336 100644
+index 98d6485..03760dd 100644
 --- a/src/core/exec-invoke.c
 +++ b/src/core/exec-invoke.c
 @@ -226,8 +226,13 @@ static int connect_logger_as(
@@ -155,7 +155,7 @@ index f72eccf..dd75336 100644
  
          (void) fd_inc_sndbuf(fd, SNDBUF_SIZE);
  
-@@ -4687,6 +4692,7 @@ int exec_invoke(
+@@ -4690,6 +4695,7 @@ int exec_invoke(
  #endif
          }
  
@@ -163,7 +163,7 @@ index f72eccf..dd75336 100644
          if (needs_sandboxing) {
                  int which_failed;
  
-@@ -4699,6 +4705,7 @@ int exec_invoke(
+@@ -4702,6 +4708,7 @@ int exec_invoke(
                          return log_exec_error_errno(context, params, r, "Failed to adjust resource limit RLIMIT_%s: %m", rlimit_to_string(which_failed));
                  }
          }
@@ -171,7 +171,7 @@ index f72eccf..dd75336 100644
  
          if (needs_setuid && context->pam_name && username) {
                  /* Let's call into PAM after we set up our own idea of resource limits so that pam_limits
-@@ -5005,6 +5012,7 @@ int exec_invoke(
+@@ -5008,6 +5015,7 @@ int exec_invoke(
                  }
  #endif
  
@@ -179,7 +179,7 @@ index f72eccf..dd75336 100644
                  if (!cap_test_all(bset)) {
                          r = capability_bounding_set_drop(bset, /* right_now= */ false);
                          if (r < 0) {
-@@ -5012,6 +5020,7 @@ int exec_invoke(
+@@ -5015,6 +5023,7 @@ int exec_invoke(
                                  return log_exec_error_errno(context, params, r, "Failed to drop capabilities: %m");
                          }
                  }
@@ -187,7 +187,7 @@ index f72eccf..dd75336 100644
  
                  /* Ambient capabilities are cleared during setresuid() (in enforce_user()) even with
                   * keep-caps set.
-@@ -5129,6 +5138,7 @@ int exec_invoke(
+@@ -5132,6 +5141,7 @@ int exec_invoke(
                  }
  #endif
  
@@ -195,7 +195,7 @@ index f72eccf..dd75336 100644
                  /* PR_GET_SECUREBITS is not privileged, while PR_SET_SECUREBITS is. So to suppress potential
                   * EPERMs we'll try not to call PR_SET_SECUREBITS unless necessary. Setting securebits
                   * requires CAP_SETPCAP. */
-@@ -5160,6 +5170,7 @@ int exec_invoke(
+@@ -5163,6 +5173,7 @@ int exec_invoke(
                                  *exit_status = EXIT_NO_NEW_PRIVILEGES;
                                  return log_exec_error_errno(context, params, errno, "Failed to disable new privileges: %m");
                          }
@@ -490,5 +490,5 @@ index f4a4482..29a22b5 100644
 +#IPAddressDeny=any
  {{SERVICE_WATCHDOG}}
 -- 
-2.47.2
+2.50.1
 

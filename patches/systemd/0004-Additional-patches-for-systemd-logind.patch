@@ -1,0 +1,64 @@
+From 4ea3a70e5b2735ee3ddaa1c1e48b9f972d1eb66d Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Mon, 4 Aug 2025 14:49:35 +0200
+Subject: [PATCH 4/4] Additional patches for systemd-logind
+
+---
+ src/core/exec-invoke.c        | 4 ++++
+ src/update-utmp/update-utmp.c | 6 +++++-
+ units/user@.service.in        | 6 +++---
+ 3 files changed, 12 insertions(+), 4 deletions(-)
+
+diff --git a/src/core/exec-invoke.c b/src/core/exec-invoke.c
+index 03760dd..20f85bd 100644
+--- a/src/core/exec-invoke.c
++++ b/src/core/exec-invoke.c
+@@ -4736,6 +4736,10 @@ int exec_invoke(
+                 }
+ 
+                 ngids_after_pam = getgroups_alloc(&gids_after_pam);
++#ifdef __managarm__
++                // HACK: We don't support groups yet.
++                ngids_after_pam = 0;
++#endif
+                 if (ngids_after_pam < 0) {
+                         *exit_status = EXIT_GROUP;
+                         return log_exec_error_errno(context, params, ngids_after_pam, "Failed to obtain groups after setting up PAM: %m");
+diff --git a/src/update-utmp/update-utmp.c b/src/update-utmp/update-utmp.c
+index c376676..665c2da 100644
+--- a/src/update-utmp/update-utmp.c
++++ b/src/update-utmp/update-utmp.c
+@@ -148,7 +148,11 @@ static int on_reboot(int argc, char *argv[], void *userdata) {
+ 
+         /* If this call fails, then utmp_put_reboot() will fix to the current time. */
+         (void) get_startup_monotonic_time(c, &t);
+-        boottime = map_clock_usec(t, CLOCK_MONOTONIC, CLOCK_REALTIME);
++        t = 0;
++        // HACK: Managarm does not implement this correctly?
++        // TODO: Verify if needed, lifted from Leo's patchwork.
++        // boottime = map_clock_usec(t, CLOCK_MONOTONIC, CLOCK_REALTIME);
++        boottime = 0;
+         /* We query the recorded monotonic time here (instead of the system clock CLOCK_REALTIME), even
+          * though we actually want the system clock time. That's because there's a likely chance that the
+          * system clock wasn't set right during early boot. By manually converting the monotonic clock to the
+diff --git a/units/user@.service.in b/units/user@.service.in
+index 5695465..87b6d86 100644
+--- a/units/user@.service.in
++++ b/units/user@.service.in
+@@ -21,10 +21,10 @@ Type=notify-reload
+ ExecStart={{LIBEXECDIR}}/systemd --user
+ Slice=user-%i.slice
+ KillMode=mixed
+-Delegate=pids memory cpu
+-DelegateSubgroup=init.scope
++#Delegate=pids memory cpu
++#DelegateSubgroup=init.scope
+ TasksMax=infinity
+ TimeoutStopSec={{ DEFAULT_USER_TIMEOUT_SEC*4//3 }}s
+ KeyringMode=inherit
+-OOMScoreAdjust=100
++#OOMScoreAdjust=100
+ MemoryPressureWatch=skip
+-- 
+2.50.1
+

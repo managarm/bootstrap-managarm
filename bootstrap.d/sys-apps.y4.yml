@@ -1037,7 +1037,8 @@ packages:
       - libxcrypt
       - libiconv
       - libintl
-    revision: 6
+      - pam
+    revision: 7
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1049,7 +1050,7 @@ packages:
         - '--enable-shared'
         - '--disable-nls'
         - '--without-audit'
-        - '--without-libpam'
+        - '--with-libpam'
         - '--without-btrfs'
         - '--without-selinux'
         - '--without-acl'
@@ -1069,9 +1070,28 @@ packages:
           ac_cv_header_sys_capability_h: 'no'
     build:
       - args: ['make', '-j@PARALLELISM@']
+      # We don't set pamdir as we install our own pam config files
       - args: ['make', 'pamddir=', 'exec_prefix=/usr', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      # Install PAM files
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc/pam.d']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/login', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/chage', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/chfn', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/chgpasswd', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/chpasswd', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/chsh', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/groupadd', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/groupdel', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/groupmems', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/groupmod', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/newusers', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/passwd', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/su', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/useradd', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/userdel', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/usermod', '@THIS_COLLECT_DIR@/etc/pam.d/']
 
   - name: ripgrep
     architecture: '@OPTION:arch@'
@@ -1326,7 +1346,7 @@ packages:
       - file
       - libxcrypt
       - pcre2
-    revision: 17
+    revision: 18
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1340,8 +1360,8 @@ packages:
         - '--disable-nls'
         - '--disable-static'
         - '--without-python'
-        - '--without-systemd'
-        - '--without-systemdsystemunitdir'
+        - '--with-systemd'
+        - '--with-systemdsystemunitdir=/usr/lib/systemd/system'
         - '--disable-partx'
         - '--disable-fallocate'
         - '--disable-unshare'
@@ -1403,8 +1423,12 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      # Remove items installed by util-linux-libs
       - args: ['rm', '-r', '@THIS_COLLECT_DIR@/usr/include']
-      - args: ['rm', '-r', '@THIS_COLLECT_DIR@/usr/lib']
+      - args: ['rm', '-r', '@THIS_COLLECT_DIR@/usr/lib/pkgconfig']
+      - args: |
+          rm @THIS_COLLECT_DIR@/usr/lib/*.so*
+          rm @THIS_COLLECT_DIR@/usr/lib/*.la*
       - args: ['rm', '-r', '@THIS_COLLECT_DIR@/usr/share/man/man3']
       - args: ['rm', '-r', '@THIS_COLLECT_DIR@/usr/share/man/man5/terminal-colors.d.5']
 
@@ -1502,7 +1526,7 @@ packages:
       - libdrm
       - libtsm
       - systemd
-    revision: 12
+    revision: 13
     configure:
       - args:
         - 'meson'
@@ -1515,7 +1539,7 @@ packages:
         - '--buildtype=debugoptimized'
         - '-Dsession_dummy=enabled'
         - '-Dsession_terminal=enabled'
-        - '-Dmulti_seat=disabled'
+        - '-Dmulti_seat=enabled'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -1604,7 +1628,8 @@ packages:
       - openssl
       - util-linux-libs
       - mlibc
-    revision: 8
+      - pam
+    revision: 9
     configure:
       - args:
         - 'meson'
@@ -1617,21 +1642,23 @@ packages:
         - '--buildtype=debugoptimized'
         - '-Dadm-group=false'
         - '-Danalyze=false'
-        - '-Dapparmor=false'
-        - '-Daudit=false'
+        - '-Dapparmor=disabled'
+        - '-Daudit=disabled'
         - '-Dbacklight=false'
+        - '-Dbootloader=disabled'
         - '-Dbinfmt=false'
-        - '-Dbpf-framework=false'
-        - '-Dbzip2=false'
+        - '-Dbpf-framework=disabled'
+        - '-Dbzip2=disabled'
         - '-Dcoredump=false'
-        - '-Ddbus=false'
-        - '-Delfutils=false'
+        - '-Ddbus=disabled'
+        - '-Defi=false'
+        - '-Delfutils=disabled'
         - '-Denvironment-d=false'
-        - '-Dfdisk=false'
-        - '-Dgcrypt=false'
-        - '-Dglib=false'
+        - '-Dfdisk=disabled'
+        - '-Dgcrypt=disabled'
+        - '-Dglib=disabled'
         - '-Dgshadow=false'
-        - '-Dgnutls=false'
+        - '-Dgnutls=disabled'
         - '-Dhibernate=false'
         - '-Dhostnamed=false'
         - '-Didn=false'
@@ -1639,51 +1666,51 @@ packages:
         - '-Dinitrd=false'
         - '-Dfirstboot=false'
         - '-Dldconfig=false'
-        - '-Dlibcryptsetup=false'
-        - '-Dlibcurl=false'
-        - '-Dlibfido2=false'
-        - '-Dlibidn=false'
-        - '-Dlibidn2=false'
-        - '-Dlibiptc=false'
+        - '-Dlibcryptsetup=disabled'
+        - '-Dlibcurl=disabled'
+        - '-Dlibfido2=disabled'
+        - '-Dlibidn=disabled'
+        - '-Dlibidn2=disabled'
+        - '-Dlibiptc=disabled'
         - '-Dlocaled=false'
-        - '-Dlogind=false'
-        - '-Dlz4=false'
+        - '-Dlogind=true'
+        - '-Dlz4=disabled'
         - '-Dmachined=false'
-        - '-Dmicrohttpd=false'
+        - '-Dmicrohttpd=disabled'
         - '-Dnetworkd=false'
         - '-Dnscd=false'
         - '-Dnss-myhostname=false'
-        - '-Dnss-resolve=false'
+        - '-Dnss-resolve=disabled'
         - '-Dnss-systemd=false'
         - '-Doomd=false'
-        - '-Dopenssl=false'
-        - '-Dp11kit=false'
-        - '-Dpam=false'
-        - '-Dpcre2=false'
-        - '-Dpolkit=false'
+        - '-Dopenssl=disabled'
+        - '-Dp11kit=disabled'
+        - '-Dpam=enabled'
+        - '-Dpcre2=disabled'
+        - '-Dpolkit=disabled'
         - '-Dportabled=false'
         - '-Dpstore=false'
-        - '-Dpwquality=false'
+        - '-Dpwquality=disabled'
         - '-Drandomseed=false'
         - '-Dresolve=false'
         - '-Drfkill=false'
-        - '-Dseccomp=false'
+        - '-Dseccomp=disabled'
         - '-Dsmack=false'
         - '-Dsysext=false'
         - '-Dtimedated=false'
         - '-Dtimesyncd=false'
         - '-Dtpm=false'
-        - '-Dqrencode=false'
+        - '-Dqrencode=disabled'
         - '-Dquotacheck=false'
         - '-Duserdb=false'
         - '-Dutmp=true'
         - '-Dvconsole=false'
         - '-Dwheel-group=false'
         - '-Dxdg-autostart=false'
-        - '-Dxkbcommon=false'
-        - '-Dxz=false'
-        - '-Dzlib=false'
-        - '-Dzstd=false'
+        - '-Dxkbcommon=disabled'
+        - '-Dxz=disabled'
+        - '-Dzlib=disabled'
+        - '-Dzstd=disabled'
         - '-Dtests=true'
         - '-Dinstall-tests=true'
         - '@THIS_SOURCE_DIR@'
@@ -1697,13 +1724,9 @@ packages:
       - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/systemd-ask-password-console.path']
       - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/sysinit.target.wants/systemd-ask-password-console.path']
       - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/systemd-ask-password-console.service']
-      # These are part of utmp, but don't work yet, investigate later
-      - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/systemd-update-utmp.service']
-      - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/systemd-update-utmp-runlevel.service']
-      - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/graphical.target.wants/systemd-update-utmp-runlevel.service']
-      - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/multi-user.target.wants/systemd-update-utmp-runlevel.service']
-      - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/rescue.target.wants/systemd-update-utmp-runlevel.service']
-      - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/sysinit.target.wants/systemd-update-utmp.service']
+      # Install PAM files
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc/pam.d']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/systemd-user', '@THIS_COLLECT_DIR@/etc/pam.d/']
       # Touch up empty directories
       - args: ['touch',
           '@THIS_COLLECT_DIR@/usr/lib/systemd/system/runlevel1.target.wants/.keep',

@@ -1,0 +1,82 @@
+From 0b34bd509b14fa7bcc45ae750bdb56705bb6b4ee Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Fri, 11 Jul 2025 17:00:18 +0200
+Subject: [PATCH] Add managarm support
+
+---
+ meson.build                           | 2 +-
+ modules/pam_limits/pam_limits.c       | 4 ++--
+ modules/pam_namespace/pam_namespace.c | 2 ++
+ modules/pam_namespace/pam_namespace.h | 2 +-
+ modules/pam_unix/pam_unix_acct.c      | 1 +
+ 5 files changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/meson.build b/meson.build
+index 0827a53..0f09425 100644
+--- a/meson.build
++++ b/meson.build
+@@ -199,7 +199,7 @@ foreach ident: check_functions
+   endif
+ endforeach
+ 
+-enable_pam_keyinit = cc.get_define('__NR_keyctl', prefix: '#include <sys/syscall.h>') != ''
++enable_pam_keyinit = cc.has_header('<sys/syscall.h>') and (cc.get_define('__NR_keyctl', prefix: '#include <sys/syscall.h>') != '')
+ 
+ if get_option('mailspool') != ''
+   cdata.set_quoted('PAM_PATH_MAILDIR', get_option('mailspool'))
+diff --git a/modules/pam_limits/pam_limits.c b/modules/pam_limits/pam_limits.c
+index ff0f424..24eb106 100644
+--- a/modules/pam_limits/pam_limits.c
++++ b/modules/pam_limits/pam_limits.c
+@@ -13,8 +13,8 @@
+  * See end for Copyright information
+  */
+ 
+-#ifndef __linux__
+-#warning THIS CODE IS KNOWN TO WORK ONLY ON LINUX !!!
++#if !defined(__linux__) && !defined(__managarm__)
++#warning THIS CODE IS KNOWN TO WORK ONLY ON LINUX OR MANAGARM !!!
+ #endif
+ 
+ #include "config.h"
+diff --git a/modules/pam_namespace/pam_namespace.c b/modules/pam_namespace/pam_namespace.c
+index e7ff5b3..84e2a38 100644
+--- a/modules/pam_namespace/pam_namespace.c
++++ b/modules/pam_namespace/pam_namespace.c
+@@ -41,6 +41,8 @@
+ #include "pam_namespace.h"
+ #include "argv_parse.h"
+ 
++#include <signal.h>
++
+ #define MAGIC_LNK_FD_SIZE 64
+ 
+ /* --- evaluating all files in VENDORDIR/security/namespace.d and /etc/security/namespace.d --- */
+diff --git a/modules/pam_namespace/pam_namespace.h b/modules/pam_namespace/pam_namespace.h
+index 8a7a66b..4edca26 100644
+--- a/modules/pam_namespace/pam_namespace.h
++++ b/modules/pam_namespace/pam_namespace.h
+@@ -30,7 +30,7 @@
+  * DEALINGS IN THE SOFTWARE.
+  */
+ 
+-#ifndef __linux__
++#if !defined(__linux__) && !defined(__managarm__)
+ #error THIS CODE IS KNOWN TO WORK ONLY ON LINUX !!!
+ #endif
+ 
+diff --git a/modules/pam_unix/pam_unix_acct.c b/modules/pam_unix/pam_unix_acct.c
+index 961b766..7814159 100644
+--- a/modules/pam_unix/pam_unix_acct.c
++++ b/modules/pam_unix/pam_unix_acct.c
+@@ -50,6 +50,7 @@
+ #include <time.h>		/* for time() */
+ #include <errno.h>
+ #include <sys/wait.h>
++#include <signal.h>
+ 
+ #include <security/_pam_macros.h>
+ 
+-- 
+2.50.1
+
