@@ -1,7 +1,7 @@
-From 276440ac4830e57bddb23579b22eaae9affc30b2 Mon Sep 17 00:00:00 2001
+From 507376e53eb99475e5515366788a78091c1c7eed Mon Sep 17 00:00:00 2001
 From: Alexander Kanavin <alex.kanavin@gmail.com>
 Date: Sat, 22 May 2021 20:26:24 +0200
-Subject: [PATCH 3/3] add fallback parse_printf_format implementation
+Subject: [PATCH 3/4] add fallback parse_printf_format implementation
 
 Upstream-Status: Inappropriate [musl specific]
 
@@ -377,5 +377,5 @@ index 0000000..9d10e53
 +
 +#endif
 -- 
-2.47.2
+2.50.1
 

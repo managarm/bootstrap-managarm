@@ -2,4 +2,11 @@
 
 session   required    pam_unix.so
 
+# Begin Systemd addition
+
+session  required    pam_loginuid.so
+session  optional    pam_systemd.so
+
+# End Systemd addition
+
 # End /etc/pam.d/system-session

@@ -635,7 +635,7 @@ packages:
       - mlibc
       - libxcrypt
       - gdbm
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
