@@ -1037,7 +1037,8 @@ packages:
       - libxcrypt
       - libiconv
       - libintl
-    revision: 6
+      - pam
+    revision: 7
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1049,7 +1050,7 @@ packages:
         - '--enable-shared'
         - '--disable-nls'
         - '--without-audit'
-        - '--without-libpam'
+        - '--with-libpam'
         - '--without-btrfs'
         - '--without-selinux'
         - '--without-acl'
@@ -1069,9 +1070,28 @@ packages:
           ac_cv_header_sys_capability_h: 'no'
     build:
       - args: ['make', '-j@PARALLELISM@']
+      # We don't set pamdir as we install our own pam config files
       - args: ['make', 'pamddir=', 'exec_prefix=/usr', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      # Install PAM files
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc/pam.d']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/login', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/chage', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/chfn', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/chgpasswd', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/chpasswd', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/chsh', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/groupadd', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/groupdel', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/groupmems', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/groupmod', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/newusers', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/passwd', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/su', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/useradd', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/userdel', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/usermod', '@THIS_COLLECT_DIR@/etc/pam.d/']
 
   - name: ripgrep
     architecture: '@OPTION:arch@'
