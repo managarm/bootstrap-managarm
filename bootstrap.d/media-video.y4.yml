@@ -84,3 +84,58 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: wireplumber
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Session / policy manager implementation for PipeWire
+      description: Session / policy manager implementation for PipeWire.
+      spdx: 'MIT'
+      website: 'https://pipewire.org'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-video']
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.freedesktop.org/pipewire/wireplumber.git'
+      tag: '0.5.10'
+      version: '0.5.10'
+    tools_required:
+      - system-gcc
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - glib
+      - pipewire
+      - libintl
+      - systemd
+      - lua
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '-Ddaemon=true'
+        - '-Dtools=true'
+        - '-Dmodules=true'
+        - '-Ddoc=disabled'
+        - '-Dintrospection=disabled'
+        - '-Dsystem-lua=true'
+        - '-Dsystemd=enabled'
+        - '-Dsystemd-user-service=true'
+        - '-Dtests=false'
+        - '-Ddbus-tests=false'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
