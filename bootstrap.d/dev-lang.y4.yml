@@ -236,7 +236,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 6
+    revision: 7
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
@@ -251,9 +251,29 @@ packages:
         - 'CC=@OPTION:arch-triple@-gcc'
         - 'AR=@OPTION:arch-triple@-ar rcu'
         - 'RANLIB=@OPTION:arch-triple@-ranlib'
+        - 'CFLAGS=-fPIC'
         - '-j@PARALLELISM@'
       - args: ['make', 'install', 'INSTALL_TOP=@THIS_COLLECT_DIR@/usr']
         quiet: true
+      - args: |
+            cat > lua.pc << EOF
+            prefix=/usr
+            exec-prefix=\${prefix}
+            libdir=/usr/lib
+            includedir=\${prefix}/include
+            datarootdir=/usr/share
+            datadir=/usr/share
+
+            Name: Lua
+            Description: An Extensible Extension Language
+            Version: 5.4.6
+            Libs: -L\${libdir} -llua
+            Cflags: -I\${includedir}
+            EOF
+            install -v -Dm644 lua.pc @THIS_COLLECT_DIR@/usr/lib/pkgconfig/lua54.pc
+            ln -sf lua54.pc @THIS_COLLECT_DIR@/usr/lib/pkgconfig/lua5.4.pc
+            ln -sf lua54.pc @THIS_COLLECT_DIR@/usr/lib/pkgconfig/lua-5.4.pc
+            ln -sf lua54.pc @THIS_COLLECT_DIR@/usr/lib/pkgconfig/lua.pc
 
   - name: nasm
     architecture: '@OPTION:arch@'
