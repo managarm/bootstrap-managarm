@@ -13,8 +13,8 @@ sources:
   - name: limine
     subdir: 'ports'
     git: 'https://github.com/limine-bootloader/limine.git'
-    tag: 'v9.5.4'
-    version: '9.5.4'
+    tag: 'v9.6.0'
+    version: '9.6.0'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.16
@@ -42,7 +42,6 @@ tools:
         - '--enable-bios-cd'
         - '--enable-bios-pxe'
         - 'LDFLAGS=-static'
-        - 'TOOLCHAIN_FOR_TARGET=llvm'
     compile:
       - args: ['make', '-j@PARALLELISM@']
     install:
@@ -91,7 +90,7 @@ packages:
         - !managarm::arch_dep
           arch: [riscv64]
           item: '--enable-uefi-riscv64'
-        - 'TOOLCHAIN_FOR_TARGET=@OPTION:arch-triple@'
+        - 'TOOLCHAIN_FOR_TARGET=@OPTION:arch-triple@-'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
