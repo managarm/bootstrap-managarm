@@ -197,6 +197,12 @@ sources:
     tag: 'v6.25.0'
     version: '6.25.0'
 
+  - name: krunner
+    subdir: 'ports'
+    git: 'https://github.com/KDE/krunner.git'
+    tag: 'v6.25.0'
+    version: '6.25.0'
+
   - name: kservice
     subdir: 'ports'
     git: 'https://github.com/KDE/kservice.git'
@@ -2879,6 +2885,55 @@ packages:
         ### end ecm.class
         - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
         - '-DWITH_TEXT_TO_SPEECH=FALSE'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: krunner
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Framework for providing different actions given a string query
+      description: This package provides a framework for providing different actions given a string query.
+      spdx: 'LGPL-2.0-only LGPL-2.1-or-later'
+      website: 'https://develop.kde.org/products/frameworks/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['kde-frameworks']
+    from_source: krunner
+    tools_required:
+      - system-gcc
+      - host-cmake
+      - host-ecm
+      - host-qt6
+    pkgs_required:
+      - mlibc
+      - kconfig
+      - kcoreaddons
+      - ki18n
+      - kitemmodels
+      - kwindowsystem
+      - qtbase6
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=/usr/lib/qt6/qml'
+        - '-DKDE_INSTALL_PLUGINDIR=/usr/lib/qt6/plugins'
+        - '-DKDE_INSTALL_QTPLUGINDIR=/usr/lib/qt6/plugins'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
