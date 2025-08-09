@@ -364,8 +364,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/wlroots/wlroots/'
-      tag: '0.18.2'
-      version: '0.18.2'
+      tag: '0.19.0'
+      version: '0.19.0'
     tools_required:
       - system-gcc
       - host-libtool

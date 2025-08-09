@@ -11,8 +11,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/swaywm/sway'
-      tag: '1.10.1'
-      version: '1.10.1'
+      tag: '1.11'
+      version: '1.11'
     tools_required:
       - system-gcc
       - host-libtool
