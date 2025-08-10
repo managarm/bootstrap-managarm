@@ -197,10 +197,12 @@ tools:
   - name: host-vala
     architecture: noarch
     from_source: vala
+    exports_aclocal: true
     tools_required:
       - host-glib
       - virtual: pkgconfig-for-host
         program_name: host-pkg-config
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
