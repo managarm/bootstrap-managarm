@@ -1,13 +1,43 @@
-From 1048bcee7c52660b30c73b8b66464be2d59b6505 Mon Sep 17 00:00:00 2001
+From 774e131586fec9221f81465f53dc8279ecdac1b7 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Mon, 22 Jan 2024 19:44:13 +0100
 Subject: [PATCH] Add Managarm support
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
- gdk/wayland/gdkdisplay-wayland.c | 2 ++
- 1 file changed, 2 insertions(+)
+ gdk/loaders/gdkpng.c             | 10 +++++++++-
+ gdk/wayland/gdkdisplay-wayland.c |  2 ++
+ 2 files changed, 11 insertions(+), 1 deletion(-)
 
+diff --git a/gdk/loaders/gdkpng.c b/gdk/loaders/gdkpng.c
+index 9ecad53..1e7570a 100644
+--- a/gdk/loaders/gdkpng.c
++++ b/gdk/loaders/gdkpng.c
+@@ -167,7 +167,11 @@ gdk_load_png (GBytes  *bytes,
+ 
+   png_set_read_fn (png, &io, png_read_func);
+ 
+-  if (sigsetjmp (png_jmpbuf (png), 1))
++#ifdef __mlibc__
++    if (setjmp (png_jmpbuf (png)))
++#else
++    if (sigsetjmp (png_jmpbuf (png), 1))
++#endif
+     {
+       g_free (buffer);
+       g_free (row_pointers);
+@@ -427,7 +431,11 @@ gdk_save_png (GdkTexture *texture)
+   gdk_texture_downloader_finish (&downloader);
+   data = g_bytes_get_data (bytes, NULL);
+ 
++#ifdef __mlibc__
++  if (setjmp (png_jmpbuf (png)))
++#else
+   if (sigsetjmp (png_jmpbuf (png), 1))
++#endif
+     {
+       g_bytes_unref (bytes);
+       g_free (io.data);
 diff --git a/gdk/wayland/gdkdisplay-wayland.c b/gdk/wayland/gdkdisplay-wayland.c
 index 80c7c99..f593547 100644
 --- a/gdk/wayland/gdkdisplay-wayland.c
@@ -23,5 +53,5 @@ index 80c7c99..f593547 100644
  #include <glib.h>
  #include <gio/gio.h>
 -- 
-2.43.0
+2.50.1
 
