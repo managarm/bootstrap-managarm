@@ -222,7 +222,6 @@ packages:
           - args: ['gtk4-update-icon-cache', '-q', '-t', '-f', '/usr/share/icons/hicolor']
 
   - name: libadwaita
-    stability_level: 'broken' # Appstream is also broken
     architecture: '@OPTION:arch@'
     metadata:
       summary: Building blocks for modern GNOME applications
@@ -238,10 +237,12 @@ packages:
       version: '1.4.2'
     tools_required:
       - system-gcc
+      - host-pkg-config
       - wayland-scanner
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
       - host-vala
+      - host-glib
       - !managarm::arch_dep
         arch: [x86_64]
         item: host-mlibc
@@ -258,7 +259,7 @@ packages:
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
