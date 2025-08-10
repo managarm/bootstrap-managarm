@@ -129,7 +129,6 @@ packages:
           - args: ['glib-compile-schemas', '/usr/share/glib-2.0/schemas']
 
   - name: gtksourceview5
-    stability_level: 'broken' # Downstream user of gtk4 and that is broken
     architecture: '@OPTION:arch@'
     metadata:
       summary: A text widget implementing syntax highlighting and other features
@@ -145,10 +144,12 @@ packages:
       version: '5.11.0'
     tools_required:
       - system-gcc
+      - host-pkg-config
       - wayland-scanner
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
       - host-vala
+      - host-glib
       - !managarm::arch_dep
         arch: [x86_64]
         item: host-mlibc
@@ -168,7 +169,7 @@ packages:
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
