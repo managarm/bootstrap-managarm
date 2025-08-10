@@ -1,7 +1,7 @@
-From 65955365fa9d860138af62f8b35ab91fa7de2eab Mon Sep 17 00:00:00 2001
+From 95e913dc38c0944ac5089775656e7f5609b2559f Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Tue, 18 Feb 2025 23:40:13 +0100
-Subject: [PATCH 1/4] Add managarm support
+Subject: [PATCH 1/5] Add managarm support
 
 ---
  meson.build                        |  8 ++--

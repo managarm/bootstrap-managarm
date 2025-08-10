@@ -1,7 +1,7 @@
-From 4ea3a70e5b2735ee3ddaa1c1e48b9f972d1eb66d Mon Sep 17 00:00:00 2001
+From 8396013e72274db975be1f4f8fd2445f1f6dd7ad Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Mon, 4 Aug 2025 14:49:35 +0200
-Subject: [PATCH 4/4] Additional patches for systemd-logind
+Subject: [PATCH 4/5] Additional patches for systemd-logind
 
 ---
  src/core/exec-invoke.c        | 4 ++++
