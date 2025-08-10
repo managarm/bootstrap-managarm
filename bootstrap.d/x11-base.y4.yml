@@ -32,7 +32,7 @@ packages:
       - xorg-proto
       - libxau
       - libxdmcp
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -72,7 +72,7 @@ packages:
     pkgs_required:
       - mlibc
       - xorg-util-macros
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -125,10 +125,11 @@ packages:
       - nettle
       - xkbcomp
       - pixman
-    revision: 10
+    revision: 11
     configure:
       - args:
         - 'meson'
+        - 'setup'
         - '--native-file'
         - '@SOURCE_ROOT@/scripts/meson.native-file'
         - '--cross-file'
@@ -200,10 +201,11 @@ packages:
       - nettle
       - xkbcomp
       - pixman
-    revision: 6
+    revision: 7
     configure:
       - args:
         - 'meson'
+        - 'setup'
         - '--native-file'
         - '@SOURCE_ROOT@/scripts/meson.native-file'
         - '--cross-file'
