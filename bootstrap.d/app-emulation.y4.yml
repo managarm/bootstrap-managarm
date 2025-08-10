@@ -64,7 +64,7 @@ packages:
       - libgcrypt
       - libusb
       - curl
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
