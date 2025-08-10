@@ -344,6 +344,7 @@ packages:
       version: '1.10.8'
     tools_required:
       - system-gcc
+      - host-pkg-config
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
       - !managarm::arch_dep
@@ -360,7 +361,7 @@ packages:
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
-    revision: 4
+    revision: 5
     configure:
       - args:
         - 'meson'
@@ -372,8 +373,7 @@ packages:
         - '-Dgtk_doc=false'
         - !managarm::arch_ite
           arch: [x86_64]
-          # Disabled on all architectures for now
-          then: '-Dintrospection=disabled'
+          then: '-Dintrospection=enabled'
           else: '-Dintrospection=disabled'
         - '-Dtests=false'
         - '-Dinstalled_tests=false'
