@@ -1,0 +1,25 @@
+From 01602123f1dcfc82437cc273e628ff2dd45e5603 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Sun, 10 Aug 2025 17:18:51 +0200
+Subject: [PATCH] Add support for vulkan for mlibc users
+
+---
+ render/vulkan/vulkan.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/render/vulkan/vulkan.c b/render/vulkan/vulkan.c
+index 7cdc44a..c5268e4 100644
+--- a/render/vulkan/vulkan.c
++++ b/render/vulkan/vulkan.c
+@@ -17,7 +17,7 @@
+ #include "render/dmabuf.h"
+ #include "render/vulkan.h"
+ 
+-#if defined(__linux__)
++#if defined(__linux__) || defined(__mlibc__)
+ #include <sys/sysmacros.h>
+ #endif
+ 
+-- 
+2.50.1
+
