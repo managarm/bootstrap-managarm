@@ -1,7 +1,7 @@
-From db237ac6244e08929620f3765549f0b1e733a0b3 Mon Sep 17 00:00:00 2001
+From e40601f1efeee6349ea2785cb04aa5154158c6e0 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Tue, 5 Nov 2024 01:43:57 +0100
-Subject: [PATCH 3/4] Add managarm tests
+Subject: [PATCH 3/5] Add managarm tests
 
 ---
  .../lib/aarch64-managarm-mlibc/.keep          |   0
@@ -325,5 +325,5 @@ index 000000000..86f1e2710
 +// CHECK-RISCV64-SHARED-SAME: {{^}} "-L[[SYSROOT]]/lib"
 +// CHECK-RISCV64-SHARED-SAME: {{^}} "-L[[SYSROOT]]/usr/lib"
 -- 
-2.48.1
+2.50.1
 

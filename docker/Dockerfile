@@ -33,6 +33,8 @@ RUN apt-get update \
 		gengetopt \
 		# Used by host-gettext
 		gettext \
+		# Used by mesa if vulkan is enabled
+		glslang-tools \
 		# Git is used extensively in the build process
 		git \
 		# Used by eudev

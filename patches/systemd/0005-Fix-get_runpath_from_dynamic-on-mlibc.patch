@@ -1,0 +1,28 @@
+From 691483c1ffdac0a7ea4472618e4cf512ebc0eee9 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Sun, 10 Aug 2025 16:57:58 +0200
+Subject: [PATCH 5/5] Fix get_runpath_from_dynamic on mlibc
+
+---
+ src/basic/build-path.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/src/basic/build-path.c b/src/basic/build-path.c
+index b597265..866f5b8 100644
+--- a/src/basic/build-path.c
++++ b/src/basic/build-path.c
+@@ -35,9 +35,10 @@ static int get_runpath_from_dynamic(const ElfW(Dyn) *d, ElfW(Addr) bias, const c
+                 case DT_STRTAB:
+                         /* On MIPS and RISC-V DT_STRTAB records an offset, not a valid address, so it has to be adjusted
+                          * using the bias calculated earlier. */
++                        // Mlibc always works with an offset, so add bias if we're mlibc.
+                         if (d->d_un.d_val != 0)
+                                 strtab = (const char *) ((uintptr_t) d->d_un.d_val
+-#if defined(__mips__) || defined(__riscv)
++#if defined(__mips__) || defined(__riscv) || defined(__mlibc__)
+                                          + bias
+ #endif
+                                 );
+-- 
+2.50.1
+

@@ -50,10 +50,11 @@ tools:
       - host-bragi
       - virtual: pkgconfig-for-host
         program_name: host-pkg-config
-    revision: 3
+    revision: 1
     configure:
       - args:
         - 'meson'
+        - 'setup'
         - '--native-file'
         - '@SOURCE_ROOT@/scripts/meson.native-file'
         - '--prefix=@PREFIX@'

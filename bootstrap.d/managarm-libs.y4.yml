@@ -80,10 +80,11 @@ packages:
       branch: 'master'
     tools_required:
       - system-gcc
-    revision: 9
+    revision: 10
     configure:
       - args:
         - 'meson'
+        - 'setup'
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
@@ -121,7 +122,7 @@ packages:
         triple: '@OPTION:arch-triple@'
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -178,10 +179,11 @@ packages:
       subdir: 'ports'
       git: 'https://github.com/managarm/frigg.git'
       branch: 'master'
-    revision: 7
+    revision: 8
     configure:
       - args:
         - 'meson'
+        - 'setup'
         - '--prefix=/usr'
         - '--libdir=lib'
         # Install to /usr/share to avoid conflicts with standard C++ headers.
@@ -204,10 +206,11 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc-headers
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
+        - 'setup'
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
@@ -234,10 +237,11 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 10
+    revision: 11
     configure:
       - args:
         - 'meson'
+        - 'setup'
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
@@ -265,10 +269,11 @@ packages:
       - system-gcc
     pkgs_required:
       - boost
-    revision: 9
+    revision: 11
     configure:
       - args:
         - 'meson'
+        - 'setup'
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
@@ -300,11 +305,12 @@ packages:
       branch: 'master'
     tools_required:
       - system-gcc
-    revision: 11
+    revision: 12
     configure:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/include']
       - args:
         - 'meson'
+        - 'setup'
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
@@ -334,7 +340,7 @@ packages:
       - system-gcc
       - virtual: pkgconfig-for-target
         triple: '@OPTION:arch-triple@'
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'

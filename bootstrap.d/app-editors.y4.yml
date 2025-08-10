@@ -40,7 +40,7 @@ packages:
       - ncurses
       - libintl
       - zlib
-    revision: 7
+    revision: 8
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -84,7 +84,7 @@ packages:
     pkgs_required:
       - mlibc
       - ncurses
-    revision: 1
+    revision: 2
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -123,7 +123,7 @@ packages:
       - mlibc
       - ncurses
       - libiconv
-    revision: 1
+    revision: 2
     configure:
       # vim does not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead

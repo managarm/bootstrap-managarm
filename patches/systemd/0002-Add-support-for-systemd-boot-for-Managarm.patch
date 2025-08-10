@@ -1,7 +1,7 @@
-From f96a9c549f8c1be8b4efaa85d6a098d9b53d014a Mon Sep 17 00:00:00 2001
+From 26ad1866c83173941c0aef6a1343b934b4decd7e Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Fri, 10 Jan 2025 00:55:19 +0100
-Subject: [PATCH 2/4] Add support for systemd boot for Managarm
+Subject: [PATCH 2/5] Add support for systemd boot for Managarm
 
 ---
  src/basic/capability-util.c              |  2 ++

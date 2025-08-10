@@ -302,7 +302,7 @@ packages:
     pkgs_required:
       - mlibc
       - libintl
-    revision: 2
+    revision: 3
     configure:
       - args:
           - 'meson'
@@ -345,7 +345,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -386,7 +386,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -427,7 +427,7 @@ packages:
       - dbus
       - openssl
       - util-linux-libs
-    revision: 1
+    revision: 2
     configure:
       - args:
           - 'meson'
@@ -476,7 +476,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -514,7 +514,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -540,7 +540,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 11
+    revision: 12
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -597,7 +597,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -635,7 +635,7 @@ packages:
       - mlibc
       - libxcrypt
       - gdbm
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -673,7 +673,7 @@ packages:
     pkgs_required:
       - mlibc
       - ncurses
-    revision: 10
+    revision: 11
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -690,7 +690,7 @@ packages:
       - args: ['patchelf', '--set-soname', 'libreadline.so.8', '@THIS_COLLECT_DIR@/usr/lib/libreadline.so.8']
       - args: ['patchelf', '--set-soname', 'libhistory.so.8', '@THIS_COLLECT_DIR@/usr/lib/libhistory.so.8']
 
-  - name : tzdata
+  - name: tzdata
     labels: [aarch64, riscv64]
     architecture: noarch
     default: true
@@ -773,7 +773,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 8
+    revision: 9
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -821,7 +821,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:

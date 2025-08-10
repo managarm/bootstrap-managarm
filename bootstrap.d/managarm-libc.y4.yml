@@ -2,7 +2,7 @@ sources:
   - name: mlibc
     git: 'https://github.com/managarm/mlibc.git'
     branch: 'master'
-    commit: '0e66eb754c6b744b3fe3d8eb5fbe8e23dcf05ec2'
+    commit: 'bf177a219302e6055cc5722789356a4350fc4a15'
     rolling_version: true
     version: '0.0pl@ROLLING_ID@'
     sources_required:
@@ -234,6 +234,7 @@ packages:
         - '--buildtype=debugoptimized'
         - '--wrap-mode=nofallback'
         - '-Dno_headers=true'
+        - '-Dld_library_name=@OPTION:arch@-managarm-mlibc-ld'
         - '-Dlinux_kernel_headers=@SYSROOT_DIR@/usr/src/linux-headers'
         - '@THIS_SOURCE_DIR@'
     build:

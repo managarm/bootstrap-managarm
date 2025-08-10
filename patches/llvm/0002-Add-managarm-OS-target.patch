@@ -1,7 +1,7 @@
-From 2c0688fc0596678a864edca46b7815bd1998df0f Mon Sep 17 00:00:00 2001
+From 758cbec811f474d7fe36c43955d39664991a5ffb Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Fri, 6 Sep 2024 21:18:39 +0200
-Subject: [PATCH 2/4] Add managarm OS target
+Subject: [PATCH 2/5] Add managarm OS target
 
 ---
  clang/lib/Basic/Targets.cpp              |   9 +
@@ -432,5 +432,5 @@ index 000000000..2082e2c61
 +
 +#endif // LLVM_CLANG_LIB_DRIVER_TOOLCHAINS_MANAGARM_H
 -- 
-2.48.1
+2.50.1
 

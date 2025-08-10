@@ -82,7 +82,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 10
+    revision: 11
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:

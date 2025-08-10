@@ -20,7 +20,7 @@ packages:
           - 'chmod'
           - '+x'
           - '@THIS_SOURCE_DIR@/NVIDIA-Linux-x86_64-575.51.02.run'
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/NVIDIA-Linux-x86_64-575.51.02.run'
@@ -50,7 +50,7 @@ packages:
       format: tar.gz
       extract_path: 'raspi-firmware'
       version: '1.20250430'
-    revision: 1
+    revision: 2
     build:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/lib/raspi-firmware']
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/managarm/devicetree/overlays']

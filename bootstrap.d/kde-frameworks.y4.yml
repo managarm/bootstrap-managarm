@@ -320,7 +320,7 @@ packages:
     pkgs_required:
       - mlibc
       - qtbase6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -366,7 +366,7 @@ packages:
     pkgs_required:
       - mlibc
       - qtbase6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -412,7 +412,7 @@ packages:
       - bzip2
       - zstd
       - zlib
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -454,7 +454,7 @@ packages:
       - mlibc
       - qtbase6
       - kcoreaddons
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -503,7 +503,7 @@ packages:
       - kcoreaddons
       - kiconthemes
       - kwidgetsaddons
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -547,7 +547,7 @@ packages:
     pkgs_required:
       - mlibc
       - qtbase6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -592,7 +592,7 @@ packages:
       - kconfig
       - kguiaddons
       - ki18n
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -637,7 +637,7 @@ packages:
       - kconfig
       - kcoreaddons
       - kwidgetsaddons
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -682,7 +682,7 @@ packages:
       - mlibc
       - qtbase6
       - qtdeclarative6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -734,7 +734,7 @@ packages:
       - kguiaddons
       - ki18n
       - kwidgetsaddons
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -777,7 +777,7 @@ packages:
       - qtbase6
       - qtdeclarative6
       - systemd
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -823,7 +823,7 @@ packages:
       - libice
       - libx11
       - xorg-proto
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -868,7 +868,7 @@ packages:
     pkgs_required:
       - mlibc
       - qtbase6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -918,7 +918,7 @@ packages:
       - kcrash
       - kdbusaddons
       - kservice
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -962,7 +962,7 @@ packages:
     pkgs_required:
       - mlibc
       - qtbase6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1014,7 +1014,7 @@ packages:
       - libxcb
       - xorg-proto
       - libice
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1064,7 +1064,7 @@ packages:
       - qtdeclarative6
       - libintl
       - iso-codes
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1117,7 +1117,7 @@ packages:
       - ki18n
       - kwidgetsaddons
       - breeze-icons
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1170,7 +1170,7 @@ packages:
       - libxscrnsaver
       - plasma-wayland-protocols
       - wayland-protocols
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1240,7 +1240,7 @@ packages:
       - kwindowsystem
       - kxmlgui
       - solid
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1288,7 +1288,7 @@ packages:
       - qtdeclarative6
       - qtsvg6
       - qt5compat
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1333,7 +1333,7 @@ packages:
     pkgs_required:
       - mlibc
       - qtbase6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1383,7 +1383,7 @@ packages:
       - libx11
       - libice
       - xorg-proto
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1436,7 +1436,7 @@ packages:
       - kpackage
       - kirigami
       - kwidgetsaddons
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1483,7 +1483,7 @@ packages:
       - qtdeclarative6
       - kconfig
       - libcanberra
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1532,7 +1532,7 @@ packages:
       - ki18n
       - kio
       - libcanberra
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1579,7 +1579,7 @@ packages:
       - karchive
       - kcoreaddons
       - ki18n
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1632,7 +1632,7 @@ packages:
       - kservice
       - kwidgetsaddons
       - kxmlgui
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1684,7 +1684,7 @@ packages:
       - kservice
       - kwidgetsaddons
       - sonnet
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1733,7 +1733,7 @@ packages:
       - kcoreaddons
       - kdbusaddons
       - ki18n
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1778,7 +1778,7 @@ packages:
       - mlibc
       - qtbase6
       - kwindowsystem
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1839,7 +1839,7 @@ packages:
       - kservice
       - kwidgetsaddons
       - kwindowsystem
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1883,7 +1883,7 @@ packages:
     pkgs_required:
       - mlibc
       - qtbase6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1936,7 +1936,7 @@ packages:
       - xorg-proto
       - xcb-util-keysyms
       - libice
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1990,7 +1990,7 @@ packages:
       - kiconthemes
       - kitemviews
       - kwidgetsaddons
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -2036,7 +2036,7 @@ packages:
       - qtdeclarative6
       - util-linux-libs
       - systemd
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -2079,7 +2079,7 @@ packages:
       - qtbase6
       - qtdeclarative6
       - hunspell
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'

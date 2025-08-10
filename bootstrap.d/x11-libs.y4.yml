@@ -73,7 +73,7 @@ packages:
       - mesa
       - libxrender
       - glib
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -129,7 +129,7 @@ packages:
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
-    revision: 8
+    revision: 9
     configure:
       - args:
         - 'meson'
@@ -198,7 +198,7 @@ packages:
       - mlibc
       - gdk-pixbuf
       - libx11
-    revision: 7
+    revision: 8
     configure:
       - args:
         - 'meson'
@@ -339,7 +339,7 @@ packages:
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -435,7 +435,7 @@ packages:
       - xorg-proto
       - libx11
       - libxext
-    revision: 7
+    revision: 8
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -466,7 +466,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -532,7 +532,7 @@ packages:
       - libxtrans
       - xorg-font-util
       - zlib
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -578,7 +578,7 @@ packages:
       - xorg-proto
       - libx11
       - libxtrans
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -611,10 +611,11 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
+        - 'setup'
         - '--native-file'
         - '@SOURCE_ROOT@/scripts/meson.native-file'
         - '--cross-file'
@@ -662,7 +663,7 @@ packages:
       - libx11
       - libxtrans
       - libice
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -714,7 +715,7 @@ packages:
       - xorg-proto
       - libxcb
       - libxtrans
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -759,7 +760,7 @@ packages:
       - mlibc
       - xorg-util-macros
       - xorg-proto
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -806,7 +807,7 @@ packages:
       - libxt
       - libxmu
       - libxpm
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -858,7 +859,7 @@ packages:
       - libxau
       - libxdmcp
       - xcb-proto
-    revision: 1
+    revision: 2
     configure:
       - args: ['sed', '-i', "s/pthread-stubs//", '@THIS_SOURCE_DIR@/configure']
       - args:
@@ -911,7 +912,7 @@ packages:
       - xorg-proto
       - libx11
       - libxfixes
-    revision: 7
+    revision: 8
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -956,7 +957,7 @@ packages:
       - libx11
       - libxfixes
       - libxrender
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1002,7 +1003,7 @@ packages:
       - libx11
       - libxtrans
       - libxfixes
-    revision: 7
+    revision: 8
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1045,7 +1046,7 @@ packages:
       - xorg-util-macros
       - xorg-proto
       - libxau
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1090,7 +1091,7 @@ packages:
       - xorg-proto
       - libx11
       - libxtrans
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1136,7 +1137,7 @@ packages:
       - xorg-proto
       - libx11
       - libxtrans
-    revision: 7
+    revision: 8
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1190,7 +1191,7 @@ packages:
       - bzip2
       - libfontenc
       - zlib
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1240,7 +1241,7 @@ packages:
       - libxrender
       - freetype
       - fontconfig
-    revision: 7
+    revision: 8
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1288,7 +1289,7 @@ packages:
       - libxtrans
       - libxext
       - libxfixes
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1338,7 +1339,7 @@ packages:
       - xorg-proto
       - libx11
       - libxext
-    revision: 7
+    revision: 8
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1377,7 +1378,7 @@ packages:
       - libxcb
       - libxml
       - xkeyboard-config
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -1427,7 +1428,7 @@ packages:
       - xorg-util-macros
       - xorg-proto
       - libx11
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1475,7 +1476,7 @@ packages:
       - libxext
       - libxtrans
       - libxt
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1520,7 +1521,7 @@ packages:
       - libx11
       - libxext
       - libxt
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1567,7 +1568,7 @@ packages:
       - libxtrans
       - libxrender
       - libxext
-    revision: 7
+    revision: 8
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1613,7 +1614,7 @@ packages:
       - xorg-proto
       - libx11
       - libxtrans
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1663,7 +1664,7 @@ packages:
       - xorg-proto
       - libx11
       - libxext
-    revision: 7
+    revision: 8
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1713,7 +1714,7 @@ packages:
       - xorg-proto
       - libx11
       - libxext
-    revision: 7
+    revision: 8
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1759,7 +1760,7 @@ packages:
       - xorg-proto
       - libx11
       - libxtrans
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1807,7 +1808,7 @@ packages:
       - libxtrans
       - libsm
       - libice
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1837,7 +1838,7 @@ packages:
       - xorg-util-macros
       - xorg-proto
       - libxcb
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1884,7 +1885,7 @@ packages:
       - libxtrans
       - libxext
       - libxi
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1930,7 +1931,7 @@ packages:
       - libx11
       - libxtrans
       - libxext
-    revision: 7
+    revision: 8
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1977,7 +1978,7 @@ packages:
       - libx11
       - libxtrans
       - libxext
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -2038,7 +2039,7 @@ packages:
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -2098,7 +2099,7 @@ packages:
     pkgs_required:
       - mlibc
       - libpng
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -2149,7 +2150,7 @@ packages:
       - libx11
       - libxtrans
       - libxcb
-    revision: 8
+    revision: 9
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -2198,7 +2199,7 @@ packages:
       - xcb-util-render-util
       - xorg-proto
       - xcb-util
-    revision: 8
+    revision: 9
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -2244,7 +2245,7 @@ packages:
       - xorg-util-macros
       - xorg-proto
       - xcb-util
-    revision: 8
+    revision: 9
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -2290,7 +2291,7 @@ packages:
       - libxcb
       - xorg-util-macros
       - xorg-proto
-    revision: 8
+    revision: 9
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -2336,7 +2337,7 @@ packages:
       - libxcb
       - xorg-util-macros
       - xorg-proto
-    revision: 8
+    revision: 9
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -2381,7 +2382,7 @@ packages:
       - libxcb
       - xorg-util-macros
       - xorg-proto
-    revision: 7
+    revision: 8
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -2417,7 +2418,7 @@ packages:
       - host-pkg-config
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'

@@ -197,7 +197,7 @@ tools:
       - binutils
     tools_required:
       - host-cmake
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -265,6 +265,7 @@ tools:
     tools_required:
       - tool: cross-binutils
         recursive: true
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -327,7 +328,7 @@ tools:
     tools_required:
       - tool: cross-binutils
         recursive: true
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -339,6 +340,8 @@ tools:
         - '--enable-languages=c,c++,lto'
         - '--enable-initfini-array'
         - '--enable-libstdcxx-filesystem-ts'
+        - '--enable-linker-build-id'
+        - '--enable-default-pie'
         # -g blows up GCC's binary size.
         - 'CFLAGS=-O2'
         - 'CXXFLAGS=-O2'
@@ -385,7 +388,7 @@ tools:
     tools_required:
       - tool: cross-binutils
         recursive: true
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

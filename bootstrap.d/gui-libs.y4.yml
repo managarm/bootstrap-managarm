@@ -333,7 +333,7 @@ packages:
       - mlibc
       - mesa
       - libxkbcommon
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -394,7 +394,7 @@ packages:
       - xwayland
       - hwdata
       - mesa
-    revision: 1
+    revision: 2
     configure:
       - args: 'sed -i s#{XBSTRAP_SYSTEM_ROOT}#@SYSROOT_DIR@# @THIS_SOURCE_DIR@/xwayland/meson.build'
       - args:
@@ -443,7 +443,7 @@ packages:
       - wayland
       - libepoxy
       - glib
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
