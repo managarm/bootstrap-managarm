@@ -1,7 +1,7 @@
-From 5d551f1d1d30ec464879d51c092bc20e5bcf169f Mon Sep 17 00:00:00 2001
+From 2f509e8a12a8a8228abfec128e87fcf8abdf89e3 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Wed, 27 Aug 2025 16:02:31 +0200
-Subject: [PATCH 2/2] gallivm: support LLVM 21
+Subject: [PATCH 2/3] gallivm: support LLVM 21
 
 ---
  src/gallium/auxiliary/gallivm/lp_bld_init_orc.cpp | 7 ++++++-
