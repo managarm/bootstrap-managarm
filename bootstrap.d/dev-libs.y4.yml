@@ -967,28 +967,48 @@ packages:
       categories: ['dev-libs']
     source:
       subdir: 'ports'
-      url: 'http://ftp.gnome.org/pub/gnome/sources/libgee/0.20/libgee-0.20.6.tar.xz'
-      format: 'tar.xz'
-      checksum: 'blake2b:cdb88719e0e1bceccefd6a824823e6e514bf1f4d6b8cf5330d6d83f781649312b23554c7dfc4a6b4eeb3bbcd81ca42843666d596b85634ff95fc90e90fea44bd'
-      extract_path: 'libgee-0.20.6'
-      version: '0.20.6'
+      git: 'https://gitlab.gnome.org/GNOME/libgee.git'
+      tag: '0.20.8'
+      version: '0.20.8'
       tools_required:
+        - host-autoconf-archive
         - host-autoconf-v2.69
         - host-automake-v1.15
+        - host-gobject-introspection
         - host-libtool
         - host-pkg-config
+        - host-vala
       regenerate:
         - args: ['autoreconf', '-fvi']
     tools_required:
+      - host-autoconf-archive
+      - host-autoconf-v2.69
+      - host-automake-v1.15
+      - host-libtool
+      - host-pkg-config
       - system-gcc
       - host-vala
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-mlibc
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-gobject-introspection
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-glib
     pkgs_required:
       - mlibc
       - glib
-    revision: 3
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: gobject-introspection
+    revision: 4
     configure:
+      # libgee doesn't seem to like being compiled out of tree
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
-        - '@THIS_SOURCE_DIR@/configure'
+        - './configure'
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--disable-static'
@@ -996,10 +1016,31 @@ packages:
         - !managarm::arch_ite
           arch: [x86_64]
           # Disabled on all architectures for now
-          then: '--enable-introspection=no'
+          then: '--enable-introspection=yes'
           else: '--enable-introspection=no'
     build:
       - args: ['make', 'CC=@OPTION:arch-triple@-gcc -Wno-incompatible-pointer-types', '-j@PARALLELISM@']
+        environ:
+          INTROSPECTION_SCANNER_ENV: '@BUILD_ROOT@/tools/host-gobject-introspection/bin/g-ir-scanner'
+          INTROSPECTION_COMPILER_ENV: '@BUILD_ROOT@/tools/host-gobject-introspection/bin/g-ir-compiler'
+          INTROSPECTION_GENERATE_ENV: '@BUILD_ROOT@/tools/host-gobject-introspection/bin/g-ir-generate'
+          # Library path for our run-wrapper that allows it to load managarm libraries
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          # Similar to above, but using a nasty (but working) hack lets us use a Linux mlibc build to execute an
+          # executable that was cross-compiled for managarm
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
+          # This is a custom environment variable which tells g-ir-scanner what to use instead of ldd
+          # We point it at our native ldd-wrapper that's installed as part of host-gobject-introspection
+          GI_LDD_WRAPPER: ldd-wrapper
+          # This tells g-ir-scanner what program should be used for "cross-launching" the executables it builds
+          GI_CROSS_LAUNCHER: run-wrapper
+          # Path to the introspection data installed by other packages
+          GI_GIR_PATH: '@SYSROOT_DIR@/usr/share/gir-1.0'
+          VALADIR: '@SYSROOT_DIR@/usr/share/vala/vapi'
+          # Wrapper to add our valadir
+          VALAC: '@BUILD_ROOT@/tools/host-vala/bin/cross-valac'
+          # Wrapper to add our valadir
+          VAPIGEN: '@BUILD_ROOT@/tools/host-vala/bin/cross-vapigen'
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
