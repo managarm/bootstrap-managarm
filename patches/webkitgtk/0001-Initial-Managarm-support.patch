@@ -1,121 +1,110 @@
-From 82e891e13aac65b153e0f816e0b766579d9e31a3 Mon Sep 17 00:00:00 2001
+From f8f72d1f97466ff1879b199c9c1aa4b832a372db Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Sun, 2 Jan 2022 00:19:17 +0100
 Subject: [PATCH] Initial Managarm support
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
- Source/JavaScriptCore/heap/BlockDirectory.cpp          |  2 +-
- Source/JavaScriptCore/runtime/MachineContext.h         | 10 +++++-----
- Source/JavaScriptCore/runtime/Options.cpp              |  1 +
- Source/ThirdParty/ANGLE/include/GLSLANG/ShaderVars.h   |  1 +
- Source/ThirdParty/ANGLE/src/common/platform.h          |  2 +-
- Source/ThirdParty/xdgmime/src/xdgmimecache.c           |  1 +
- Source/ThirdParty/xdgmime/src/xdgmimeglob.c            |  1 +
- Source/WTF/wtf/CompletionHandler.h                     |  1 +
- Source/WTF/wtf/InlineASM.h                             |  8 +++++---
- Source/WTF/wtf/MallocPtr.h                             |  1 +
- Source/WTF/wtf/Platform.h                              |  1 +
- Source/WTF/wtf/PlatformHave.h                          |  4 ++--
- Source/WTF/wtf/PlatformOS.h                            |  6 ++++++
- Source/WTF/wtf/text/IntegerToStringConversion.h        |  1 +
- Source/WebCore/platform/graphics/x11/XUniqueResource.h |  2 ++
- Source/WebCore/platform/sql/SQLiteDatabase.cpp         |  6 +++---
- Source/WebKit/Platform/IPC/unix/ConnectionUnix.cpp     |  2 +-
- Source/WebKit/Platform/unix/SharedMemoryUnix.cpp       |  4 +++-
- 18 files changed, 37 insertions(+), 17 deletions(-)
+ Source/JavaScriptCore/heap/BlockDirectory.cpp     |  2 +-
+ Source/JavaScriptCore/runtime/MachineContext.h    | 12 ++++++------
+ Source/ThirdParty/ANGLE/src/common/SimpleMutex.h  |  2 +-
+ Source/ThirdParty/ANGLE/src/common/platform.h     |  2 +-
+ Source/WTF/wtf/InlineASM.h                        | 10 ++++++----
+ Source/WTF/wtf/PlatformHave.h                     |  4 ++--
+ Source/WTF/wtf/PlatformOS.h                       |  6 ++++++
+ Source/WTF/wtf/glib/FileSystemGlib.cpp            |  2 +-
+ Source/WebCore/platform/unix/SharedMemoryUnix.cpp |  6 ++++++
+ 9 files changed, 30 insertions(+), 16 deletions(-)
 
 diff --git a/Source/JavaScriptCore/heap/BlockDirectory.cpp b/Source/JavaScriptCore/heap/BlockDirectory.cpp
-index e2a3540f86..d58513333e 100644
+index eed5dacf20ab..e95c6650d07a 100644
 --- a/Source/JavaScriptCore/heap/BlockDirectory.cpp
 +++ b/Source/JavaScriptCore/heap/BlockDirectory.cpp
-@@ -60,7 +60,7 @@ void BlockDirectory::setSubspace(Subspace* subspace)
- void BlockDirectory::updatePercentageOfPagedOutPages(SimpleStats& stats)
- {
-     // FIXME: We should figure out a solution for Windows.
--#if OS(UNIX)
-+#if OS(UNIX) && !OS(MANAGARM)
+@@ -68,7 +68,7 @@ void BlockDirectory::updatePercentageOfPagedOutPages(SimpleStats& stats)
+     // FIXME: We should figure out a solution for Windows and PlayStation.
+     // QNX doesn't have mincore(), though the information can be had. But since all mapped
+     // pages are resident, does it matter?
+-#if OS(UNIX) && !PLATFORM(PLAYSTATION) && !OS(QNX) && !OS(HAIKU)
++#if OS(UNIX) && !PLATFORM(PLAYSTATION) && !OS(QNX) && !OS(HAIKU) && !OS(MANAGARM)
      size_t pageSize = WTF::pageSize();
      ASSERT(!(MarkedBlock::blockSize % pageSize));
      auto numberOfPagesInMarkedBlock = MarkedBlock::blockSize / pageSize;
 diff --git a/Source/JavaScriptCore/runtime/MachineContext.h b/Source/JavaScriptCore/runtime/MachineContext.h
-index 7857bfc167..5cb5f31ea8 100644
+index 0232941cb632..79b35e65a4b8 100644
 --- a/Source/JavaScriptCore/runtime/MachineContext.h
 +++ b/Source/JavaScriptCore/runtime/MachineContext.h
-@@ -195,7 +195,7 @@ static inline void*& stackPointerImpl(mcontext_t& machineContext)
+@@ -177,7 +177,7 @@ static inline void*& stackPointerImpl(mcontext_t& machineContext)
  #error Unknown Architecture
  #endif
  
--#elif OS(FUCHSIA) || OS(LINUX)
-+#elif OS(FUCHSIA) || OS(LINUX) || OS(MANAGARM)
+-#elif OS(FUCHSIA) || OS(LINUX) || OS(HURD)
++#elif OS(FUCHSIA) || OS(LINUX) || OS(HURD) || OS(MANAGARM)
  
- #if CPU(X86)
-     return reinterpret_cast<void*&>((uintptr_t&) machineContext.gregs[REG_ESP]);
-@@ -346,7 +346,7 @@ static inline void*& framePointerImpl(mcontext_t& machineContext)
+ #if CPU(X86_64)
+     return reinterpret_cast<void*&>((uintptr_t&) machineContext.gregs[REG_RSP]);
+@@ -294,7 +294,7 @@ static inline void*& framePointerImpl(mcontext_t& machineContext)
  #error Unknown Architecture
  #endif
  
--#elif OS(FUCHSIA) || OS(LINUX)
-+#elif OS(FUCHSIA) || OS(LINUX) || OS(MANAGARM)
+-#elif OS(FUCHSIA) || OS(LINUX) || OS(HURD)
++#elif OS(FUCHSIA) || OS(LINUX) || OS(HURD) || OS(MANAGARM)
  
  // The following sequence depends on glibc's sys/ucontext.h.
- #if CPU(X86)
-@@ -497,7 +497,7 @@ static inline void*& instructionPointerImpl(mcontext_t& machineContext)
+ #if CPU(X86_64)
+@@ -452,7 +452,7 @@ static inline void*& instructionPointerImpl(mcontext_t& machineContext)
  #error Unknown Architecture
  #endif
  
--#elif OS(FUCHSIA) || OS(LINUX)
-+#elif OS(FUCHSIA) || OS(LINUX) || OS(MANAGARM)
+-#elif OS(FUCHSIA) || OS(LINUX) || OS(HURD)
++#elif OS(FUCHSIA) || OS(LINUX) || OS(HURD) || OS(MANAGARM)
  
  // The following sequence depends on glibc's sys/ucontext.h.
- #if CPU(X86)
-@@ -655,7 +655,7 @@ inline void*& argumentPointer<1>(mcontext_t& machineContext)
+ #if CPU(X86_64)
+@@ -624,7 +624,7 @@ inline void*& argumentPointer<1>(mcontext_t& machineContext)
  #error Unknown Architecture
  #endif
  
--#elif OS(FUCHSIA) || OS(LINUX)
-+#elif OS(FUCHSIA) || OS(LINUX) || OS(MANAGARM)
+-#elif OS(FUCHSIA) || OS(LINUX) || OS(HURD)
++#elif OS(FUCHSIA) || OS(LINUX) || OS(HURD) || OS(MANAGARM)
  
  // The following sequence depends on glibc's sys/ucontext.h.
- #if CPU(X86)
-@@ -772,7 +772,7 @@ inline void*& llintInstructionPointer(mcontext_t& machineContext)
+ #if CPU(X86_64)
+@@ -681,7 +681,7 @@ inline void* wasmInstancePointer(const mcontext_t& machineContext)
  #error Unknown Architecture
  #endif
  
--#elif OS(FUCHSIA) || OS(LINUX)
-+#elif OS(FUCHSIA) || OS(LINUX) || OS(MANAGARM)
+-#elif OS(FUCHSIA) || OS(LINUX) || OS(HURD)
++#elif OS(FUCHSIA) || OS(LINUX) || OS(HURD) || OS(MANAGARM)
  
  // The following sequence depends on glibc's sys/ucontext.h.
- #if CPU(X86)
-diff --git a/Source/JavaScriptCore/runtime/Options.cpp b/Source/JavaScriptCore/runtime/Options.cpp
-index e54387ef28..d159806731 100644
---- a/Source/JavaScriptCore/runtime/Options.cpp
-+++ b/Source/JavaScriptCore/runtime/Options.cpp
-@@ -35,6 +35,7 @@
- #include <mutex>
- #include <stdlib.h>
- #include <string.h>
-+#include <strings.h>
- #include <wtf/ASCIICType.h>
- #include <wtf/Compiler.h>
- #include <wtf/DataLog.h>
-diff --git a/Source/ThirdParty/ANGLE/include/GLSLANG/ShaderVars.h b/Source/ThirdParty/ANGLE/include/GLSLANG/ShaderVars.h
-index 68dc7e2e32..08bf9e5fb5 100644
---- a/Source/ThirdParty/ANGLE/include/GLSLANG/ShaderVars.h
-+++ b/Source/ThirdParty/ANGLE/include/GLSLANG/ShaderVars.h
-@@ -12,6 +12,7 @@
+ #if CPU(X86_64)
+@@ -798,7 +798,7 @@ inline void*& llintInstructionPointer(mcontext_t& machineContext)
+ #error Unknown Architecture
+ #endif
  
- #include <algorithm>
- #include <array>
-+#include <cstdint>
- #include <string>
- #include <vector>
+-#elif OS(FUCHSIA) || OS(LINUX) || OS(HURD)
++#elif OS(FUCHSIA) || OS(LINUX) || OS(HURD) || OS(MANAGARM)
  
+ // The following sequence depends on glibc's sys/ucontext.h.
+ #if CPU(X86_64)
+diff --git a/Source/ThirdParty/ANGLE/src/common/SimpleMutex.h b/Source/ThirdParty/ANGLE/src/common/SimpleMutex.h
+index 84ffa1a1da56..799a59942984 100644
+--- a/Source/ThirdParty/ANGLE/src/common/SimpleMutex.h
++++ b/Source/ThirdParty/ANGLE/src/common/SimpleMutex.h
+@@ -33,7 +33,7 @@
+ //
+ // There is no TSAN support for futex currently, so it is disabled in that case
+ #if !defined(ANGLE_WITH_TSAN)
+-#    if defined(ANGLE_PLATFORM_LINUX) || defined(ANGLE_PLATFORM_ANDROID)
++#    if (defined(ANGLE_PLATFORM_LINUX) && !defined(__managarm__)) || defined(ANGLE_PLATFORM_ANDROID)
+ // Linux has had futexes for a very long time.  Assume support.
+ #        define ANGLE_USE_FUTEX 1
+ #    elif defined(ANGLE_PLATFORM_WINDOWS) && !defined(ANGLE_ENABLE_WINDOWS_UWP) && \
 diff --git a/Source/ThirdParty/ANGLE/src/common/platform.h b/Source/ThirdParty/ANGLE/src/common/platform.h
-index 41f3cf4ff7..77c4a91f29 100644
+index 48d6c5dfa79c..d06b4cc62235 100644
 --- a/Source/ThirdParty/ANGLE/src/common/platform.h
 +++ b/Source/ThirdParty/ANGLE/src/common/platform.h
-@@ -28,7 +28,7 @@
+@@ -25,7 +25,7 @@
  #    define ANGLE_PLATFORM_POSIX 1
  #elif defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) ||              \
      defined(__DragonFly__) || defined(__sun) || defined(__GLIBC__) || defined(__GNU__) || \
@@ -124,112 +113,52 @@ index 41f3cf4ff7..77c4a91f29 100644
  #    define ANGLE_PLATFORM_POSIX 1
  #else
  #    error Unsupported platform.
-diff --git a/Source/ThirdParty/xdgmime/src/xdgmimecache.c b/Source/ThirdParty/xdgmime/src/xdgmimecache.c
-index d06095f4e4..e26001567f 100644
---- a/Source/ThirdParty/xdgmime/src/xdgmimecache.c
-+++ b/Source/ThirdParty/xdgmime/src/xdgmimecache.c
-@@ -31,6 +31,7 @@
- #include <stdio.h>
- #include <stdlib.h>
- #include <string.h>
-+#include <strings.h>
- 
- #include <fcntl.h>
- #include <unistd.h>
-diff --git a/Source/ThirdParty/xdgmime/src/xdgmimeglob.c b/Source/ThirdParty/xdgmime/src/xdgmimeglob.c
-index ebe3a0de00..4e3f451453 100644
---- a/Source/ThirdParty/xdgmime/src/xdgmimeglob.c
-+++ b/Source/ThirdParty/xdgmime/src/xdgmimeglob.c
-@@ -35,6 +35,7 @@
- #include <stdio.h>
- #include <assert.h>
- #include <string.h>
-+#include <strings.h>
- #include <fnmatch.h>
- 
- #ifndef	FALSE
-diff --git a/Source/WTF/wtf/CompletionHandler.h b/Source/WTF/wtf/CompletionHandler.h
-index a358c0f6ee..100cb29aca 100644
---- a/Source/WTF/wtf/CompletionHandler.h
-+++ b/Source/WTF/wtf/CompletionHandler.h
-@@ -27,6 +27,7 @@
- 
- #include <wtf/Function.h>
- #include <wtf/MainThread.h>
-+#include <utility>
- 
- namespace WTF {
- 
 diff --git a/Source/WTF/wtf/InlineASM.h b/Source/WTF/wtf/InlineASM.h
-index 8379a69659..8f7493769f 100644
+index 8b1c295e483a..1663e8a11c76 100644
 --- a/Source/WTF/wtf/InlineASM.h
 +++ b/Source/WTF/wtf/InlineASM.h
-@@ -43,11 +43,11 @@
+@@ -43,9 +43,9 @@
  #define THUMB_FUNC_PARAM(name)
  #endif
  
--#if (OS(LINUX) || OS(FREEBSD)) && CPU(X86_64)
-+#if (OS(LINUX) || OS(FREEBSD) || OS(MANAGARM)) && CPU(X86_64)
+-#if (OS(LINUX) || OS(FREEBSD) || OS(HAIKU) || OS(QNX)) && CPU(X86_64)
++#if (OS(LINUX) || OS(FREEBSD) || OS(HAIKU) || OS(MANAGARM) || OS(QNX)) && CPU(X86_64)
  #define GLOBAL_REFERENCE(name) #name "@plt"
- #elif CPU(X86) && COMPILER(MINGW)
- #define GLOBAL_REFERENCE(name) "@" #name "@4"
 -#elif OS(LINUX) && CPU(X86) && defined(__PIC__)
 +#elif (OS(LINUX) || OS(MANAGARM)) && CPU(X86) && defined(__PIC__)
  #define GLOBAL_REFERENCE(name) SYMBOL_STRING(name) "@plt"
  #else
  #define GLOBAL_REFERENCE(name) SYMBOL_STRING(name)
 @@ -70,7 +70,8 @@
-     || OS(FUCHSIA)             \
-     || OS(OPENBSD)             \
      || OS(HPUX)                \
--    || OS(NETBSD)
-+    || OS(NETBSD)              \
+     || OS(NETBSD)              \
+     || OS(OPENBSD)             \
+-    || OS(QNX)
++    || OS(QNX)                 \
 +    || OS(MANAGARM)
      // ELF platform
  #define HIDE_SYMBOL(name) ".hidden " #name
  #else
-@@ -88,6 +89,7 @@
-     || OS(OPENBSD)             \
+@@ -90,7 +91,8 @@
      || OS(HURD)                \
      || OS(NETBSD)              \
-+    || OS(MANAGARM)            \
-     || COMPILER(MINGW)
+     || OS(QNX)                 \
+-    || OS(WINDOWS)
++    || OS(WINDOWS)             \
++    || OS(MANAGARM)
      // GNU as-compatible syntax.
  #define LOCAL_LABEL_STRING(name) ".L" #name
-diff --git a/Source/WTF/wtf/MallocPtr.h b/Source/WTF/wtf/MallocPtr.h
-index 2cbd861efd..0415cccea0 100644
---- a/Source/WTF/wtf/MallocPtr.h
-+++ b/Source/WTF/wtf/MallocPtr.h
-@@ -27,6 +27,7 @@
- 
- #include <wtf/FastMalloc.h>
- #include <wtf/Noncopyable.h>
-+#include <utility>
- 
- // MallocPtr is a smart pointer class that calls fastFree in its destructor.
- // It is intended to be used for pointers where the C++ lifetime semantics
-diff --git a/Source/WTF/wtf/Platform.h b/Source/WTF/wtf/Platform.h
-index 9080e98da4..89a0026ade 100644
---- a/Source/WTF/wtf/Platform.h
-+++ b/Source/WTF/wtf/Platform.h
-@@ -115,6 +115,7 @@
- /* ICU configuration. Some of these match ICU defaults on some platforms, but we would like them consistently set everywhere we build WebKit. */
- #define U_HIDE_DEPRECATED_API 1
- #define U_SHOW_CPLUSPLUS_API 0
-+#define U_SHOW_CPLUSPLUS_HEADER_API 0
- #ifdef __cplusplus
- #define UCHAR_TYPE char16_t
  #endif
 diff --git a/Source/WTF/wtf/PlatformHave.h b/Source/WTF/wtf/PlatformHave.h
-index 61f13c2b73..de93124ef8 100644
+index b6a75541ac2c..b4a6ae1a83ed 100644
 --- a/Source/WTF/wtf/PlatformHave.h
 +++ b/Source/WTF/wtf/PlatformHave.h
-@@ -226,7 +226,7 @@
- #define HAVE_HOSTED_CORE_ANIMATION 1
+@@ -229,7 +229,7 @@
+ #define HAVE_MACH_MEMORY_ENTRY 1
  #endif
  
--#if OS(DARWIN) || OS(FUCHSIA) || ((OS(FREEBSD) || OS(LINUX)) && (CPU(X86) || CPU(X86_64) || CPU(ARM) || CPU(ARM64) || CPU(MIPS)))
-+#if OS(DARWIN) || OS(FUCHSIA) || OS(MANAGARM) || ((OS(FREEBSD) || OS(LINUX)) && (CPU(X86) || CPU(X86_64) || CPU(ARM) || CPU(ARM64) || CPU(MIPS)))
+-#if OS(DARWIN) || OS(FUCHSIA) || ((OS(FREEBSD) || OS(HAIKU) || OS(NETBSD) || OS(OPENBSD) || OS(LINUX) || OS(HURD) || OS(QNX)) && (CPU(X86_64) || CPU(ARM) || CPU(ARM64) || CPU(RISCV64)))
++#if OS(DARWIN) || OS(FUCHSIA) || OS(MANAGARM) || ((OS(FREEBSD) || OS(HAIKU) || OS(NETBSD) || OS(OPENBSD) || OS(LINUX) || OS(HURD) || OS(QNX)) && (CPU(X86_64) || CPU(ARM) || CPU(ARM64) || CPU(RISCV64)))
  #define HAVE_MACHINE_CONTEXT 1
  #endif
  
@@ -237,16 +166,16 @@ index 61f13c2b73..de93124ef8 100644
  #define HAVE_BACKTRACE_SYMBOLS 1
  #endif
  
--#if OS(DARWIN) || OS(LINUX)
-+#if OS(DARWIN) || OS(LINUX) || OS(MANAGARM)
+-#if OS(DARWIN) || OS(HAIKU) || OS(LINUX) || OS(HURD)
++#if OS(DARWIN) || OS(HAIKU) || OS(LINUX) || OS(HURD) || OS(MANAGARM)
  #define HAVE_DLADDR 1
  #endif
  
 diff --git a/Source/WTF/wtf/PlatformOS.h b/Source/WTF/wtf/PlatformOS.h
-index e61715fb72..ed72f251a9 100644
+index e3184e90a160..a0c37e5e61e2 100644
 --- a/Source/WTF/wtf/PlatformOS.h
 +++ b/Source/WTF/wtf/PlatformOS.h
-@@ -118,6 +118,11 @@
+@@ -131,6 +131,11 @@
  #define WTF_OS_WINDOWS 1
  #endif
  
@@ -258,7 +187,7 @@ index e61715fb72..ed72f251a9 100644
  
  /* OS(UNIX) - Any Unix-like system */
  #if    OS(AIX)              \
-@@ -128,6 +133,7 @@
+@@ -142,6 +147,7 @@
      || OS(LINUX)            \
      || OS(NETBSD)           \
      || OS(OPENBSD)          \
@@ -266,72 +195,23 @@ index e61715fb72..ed72f251a9 100644
      || defined(unix)        \
      || defined(__unix)      \
      || defined(__unix__)
-diff --git a/Source/WTF/wtf/text/IntegerToStringConversion.h b/Source/WTF/wtf/text/IntegerToStringConversion.h
-index 03f5861c33..f8143ba977 100644
---- a/Source/WTF/wtf/text/IntegerToStringConversion.h
-+++ b/Source/WTF/wtf/text/IntegerToStringConversion.h
-@@ -21,6 +21,7 @@
+diff --git a/Source/WTF/wtf/glib/FileSystemGlib.cpp b/Source/WTF/wtf/glib/FileSystemGlib.cpp
+index 9f010bafabdb..6294949f8761 100644
+--- a/Source/WTF/wtf/glib/FileSystemGlib.cpp
++++ b/Source/WTF/wtf/glib/FileSystemGlib.cpp
+@@ -59,7 +59,7 @@ String filenameForDisplay(const String& string)
+ #endif
+ }
  
- #pragma once
- 
-+#include <array>
- #include <wtf/text/LChar.h>
- 
- namespace WTF {
-diff --git a/Source/WebCore/platform/graphics/x11/XUniqueResource.h b/Source/WebCore/platform/graphics/x11/XUniqueResource.h
-index 0da8b0c9c0..9296efca23 100644
---- a/Source/WebCore/platform/graphics/x11/XUniqueResource.h
-+++ b/Source/WebCore/platform/graphics/x11/XUniqueResource.h
-@@ -26,6 +26,8 @@
- #ifndef XUniqueResource_h
- #define XUniqueResource_h
- 
-+#include <utility>
-+
- #if PLATFORM(X11)
- 
- #if USE(GLX)
-diff --git a/Source/WebCore/platform/sql/SQLiteDatabase.cpp b/Source/WebCore/platform/sql/SQLiteDatabase.cpp
-index 743ef3dc84..3a61bc1dc3 100644
---- a/Source/WebCore/platform/sql/SQLiteDatabase.cpp
-+++ b/Source/WebCore/platform/sql/SQLiteDatabase.cpp
-@@ -148,8 +148,8 @@ bool SQLiteDatabase::open(const String& filename, OpenMode openMode)
-             LOG_ERROR("SQLite database could not set temp_store to memory");
-     }
- 
--    if (openMode != OpenMode::ReadOnly)
--        useWALJournalMode();
-+    // if (openMode != OpenMode::ReadOnly)
-+        // useWALJournalMode();
- 
-     auto shmFileName = makeString(filename, "-shm"_s);
-     if (FileSystem::fileExists(shmFileName)) {
-@@ -727,7 +727,7 @@ Expected<SQLiteStatement, int> SQLiteDatabase::prepareStatement(ASCIILiteral que
+-#if OS(LINUX)
++#if OS(LINUX) || OS(MANAGARM)
+ CString currentExecutablePath()
  {
-     auto sqlStatement = constructAndPrepareStatement(*this, query.characters(), query.length());
-     if (!sqlStatement) {
--        RELEASE_LOG_ERROR(SQLDatabase, "SQLiteDatabase::prepareStatement: Failed to prepare statement %{public}s", query.characters());
-+        RELEASE_LOG_ERROR(SQLDatabase, "SQLiteDatabase::prepareStatement: Failed to prepare statement %s" /*%{public}s"*/, query.characters());
-         return makeUnexpected(sqlStatement.error());
-     }
-     return SQLiteStatement { *this, sqlStatement.value() };
-diff --git a/Source/WebKit/Platform/IPC/unix/ConnectionUnix.cpp b/Source/WebKit/Platform/IPC/unix/ConnectionUnix.cpp
-index efcd663f84..11e5467c10 100644
---- a/Source/WebKit/Platform/IPC/unix/ConnectionUnix.cpp
-+++ b/Source/WebKit/Platform/IPC/unix/ConnectionUnix.cpp
-@@ -46,7 +46,7 @@
- 
- // Although it's available on Darwin, SOCK_SEQPACKET seems to work differently
- // than in traditional Unix so fallback to STREAM on that platform.
--#if defined(SOCK_SEQPACKET) && !OS(DARWIN)
-+#if defined(SOCK_SEQPACKET) && !OS(DARWIN) && !OS(MANAGARM)
- #define SOCKET_TYPE SOCK_SEQPACKET
- #else
- #if USE(GLIB)
-diff --git a/Source/WebKit/Platform/unix/SharedMemoryUnix.cpp b/Source/WebKit/Platform/unix/SharedMemoryUnix.cpp
-index 998a2a7679..a490b3fb5f 100644
---- a/Source/WebKit/Platform/unix/SharedMemoryUnix.cpp
-+++ b/Source/WebKit/Platform/unix/SharedMemoryUnix.cpp
+     static char readLinkBuffer[PATH_MAX];
+diff --git a/Source/WebCore/platform/unix/SharedMemoryUnix.cpp b/Source/WebCore/platform/unix/SharedMemoryUnix.cpp
+index fe2bbaf946ad..2621383aeae3 100644
+--- a/Source/WebCore/platform/unix/SharedMemoryUnix.cpp
++++ b/Source/WebCore/platform/unix/SharedMemoryUnix.cpp
 @@ -47,8 +47,10 @@
  
  #if HAVE(LINUX_MEMFD_H)
@@ -341,17 +221,20 @@ index 998a2a7679..a490b3fb5f 100644
  #endif
 +#endif
  
- #if PLATFORM(PLAYSTATION)
- #include "ArgumentCoders.h"
-@@ -132,7 +134,7 @@ static int createSharedMemory()
+ namespace WebCore {
+ 
+@@ -84,7 +86,11 @@ static UnixFileDescriptor createSharedMemory()
      static bool isMemFdAvailable = true;
      if (isMemFdAvailable) {
          do {
--            fileDescriptor = syscall(__NR_memfd_create, "WebKitSharedMemory", MFD_CLOEXEC);
++        #if OS(MANAGARM)
 +            fileDescriptor = memfd_create("WebKitSharedMemory", MFD_CLOEXEC);
++        #else
+             fileDescriptor = syscall(__NR_memfd_create, "WebKitSharedMemory", MFD_CLOEXEC);
++        #endif
          } while (fileDescriptor == -1 && errno == EINTR);
  
          if (fileDescriptor != -1)
 -- 
-2.39.5
+2.51.0
 

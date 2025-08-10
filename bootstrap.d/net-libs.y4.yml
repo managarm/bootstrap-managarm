@@ -457,7 +457,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: webkitgtk
-    stability_level: 'broken' # Libxml2 upgrade broke this version and upgrading webkit is running into issues
     architecture: '@OPTION:arch@'
     metadata:
       summary: 'An open source web browser engine, with a small example browser'
@@ -469,13 +468,13 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/WebKit/WebKit.git'
-      # I think? Apple is weird with naming
-      tag: 'Safari-612.1.27.0.24'
-      version: '2.33.3'
+      tag: 'webkitgtk-2.50.0'
+      version: '2.50.0'
     tools_required:
       - system-gcc
       - host-cmake
       - wayland-scanner
+      - host-glib
     pkgs_required:
       - mlibc
       - cairo
@@ -492,7 +491,7 @@ packages:
       - libxml
       - libwebp
       - gtk+-3
-      - libsoup
+      - libsoup3
       - libxslt
       - at-spi2-core
       - libtasn
@@ -502,12 +501,12 @@ packages:
       - libxrender
       - libxt
       - mesa
+      - systemd
+      - shared-mime-info
       - gst-plugins-base
       - gst-plugins-bad
       - gst-plugins-good
-      # - libwpe
-      # - wpebackend-fdo
-    revision: 5
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -518,31 +517,31 @@ packages:
         - '-DCMAKE_BUILD_TYPE=Release'
         - '-DCMAKE_SKIP_RPATH=ON'
         - '-DPORT=GTK'
+        - '-DUSE_GTK4=OFF'
         - '-DLIB_INSTALL_DIR=/usr/lib'
         - '-DUSE_LIBHYPHEN=OFF'
         - '-DENABLE_GAMEPAD=OFF'
         - '-DENABLE_MINIBROWSER=ON'
         - '-DUSE_WOFF2=OFF'
-        - '-DUSE_SYSTEMD=OFF'
         - '-DENABLE_BUBBLEWRAP_SANDBOX=OFF'
         - '-Wno-dev -G Ninja'
-        - '-DUSE_LIBNOTIFY=OFF'
         - '-DUSE_SYSTEM_MALLOC=ON'
         - '-DENABLE_GEOLOCATION=OFF'
-        - '-DENABLE_GLES2=ON'
         - '-DENABLE_VIDEO=ON'
         - '-DENABLE_WEB_AUDIO=ON'
         - '-DENABLE_INTROSPECTION=OFF'
         - '-DUSE_LIBSECRET=OFF'
-        - '-DUSE_OPENJPEG=OFF'
         - '-DENABLE_SPELLCHECK=OFF'
         - '-DENABLE_WAYLAND_TARGET=ON'
         - '-DENABLE_X11_TARGET=ON'
         - '-DENABLE_WEBGL=ON'
-        - '-DUSE_WPE_RENDERER=OFF'
-        - '-DENABLE_WEBGL2=OFF'
-        - '-DUSE_SOUP2=ON'
+        - '-DUSE_SOUP2=OFF'
         - '-DUSE_LCMS=OFF'
+        - '-DENABLE_SPEECH_SYNTHESIS=OFF'
+        - '-DUSE_JPEGXL=OFF'
+        - '-DUSE_AVIF=OFF'
+        - '-DUSE_LIBBACKTRACE=OFF'
+        - '-DUSE_SYSPROF_CAPTURE=NO'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja', '-j6']
@@ -550,4 +549,4 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
-      - args: ['ln', '-sv', '/usr/libexec/webkit2gtk-4.0/MiniBrowser', '@THIS_COLLECT_DIR@/usr/bin/browser']
+      - args: ['ln', '-sv', '/usr/libexec/webkit2gtk-4.1/MiniBrowser', '@THIS_COLLECT_DIR@/usr/bin/browser']
