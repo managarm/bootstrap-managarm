@@ -58,7 +58,7 @@ packages:
       - openttd-opengfx
       - openttd-openmsx
       - openttd-opensfx
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
