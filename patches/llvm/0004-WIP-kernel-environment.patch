@@ -1,7 +1,7 @@
-From 9914d66168396b435cc89121fa29ac3f78ebaf93 Mon Sep 17 00:00:00 2001
+From ca6beef488fd8a2d67f7ad3dacfaeb7563663dcd Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Tue, 5 Nov 2024 01:44:16 +0100
-Subject: [PATCH 4/4] WIP: kernel environment
+Subject: [PATCH 4/5] WIP: kernel environment
 
 ---
  llvm/include/llvm/TargetParser/Triple.h | 1 +
@@ -42,5 +42,5 @@ index 32b924729..58036baee 100644
  }
  
 -- 
-2.48.1
+2.50.1
 

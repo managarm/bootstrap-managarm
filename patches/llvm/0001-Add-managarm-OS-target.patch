@@ -1,7 +1,7 @@
-From 0263ee83e7924f0947ad1d718465eddf60743592 Mon Sep 17 00:00:00 2001
+From 218a5b2f00b5d2133ef7e319ee96e5cf7e14e7d2 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Fri, 6 Sep 2024 21:17:53 +0200
-Subject: [PATCH 1/4] Add managarm OS target
+Subject: [PATCH 1/5] Add managarm OS target
 
 ---
  llvm/include/llvm/ADT/bit.h                |  2 +-
@@ -173,5 +173,5 @@ index ae5df4621..232b1f3b6 100644
    EXPECT_EQ(Triple::wasm32, T.getArch());
    EXPECT_EQ(Triple::UnknownVendor, T.getVendor());
 -- 
-2.48.1
+2.50.1
 
