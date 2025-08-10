@@ -236,7 +236,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 6
+    revision: 7
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
@@ -281,7 +281,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -379,7 +379,7 @@ packages:
       - util-linux-libs
       - xz-utils
       - zlib
-    revision: 6
+    revision: 7
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -426,7 +426,7 @@ packages:
       - mlibc
       - sqlite
       - zlib
-    revision: 1
+    revision: 2
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
@@ -492,7 +492,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 10
+    revision: 11
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
