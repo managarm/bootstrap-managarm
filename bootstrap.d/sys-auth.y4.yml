@@ -22,7 +22,7 @@ packages:
     pkgs_required:
       - mlibc
       - systemd
-    revision: 9
+    revision: 10
     configure:
       - args:
         - 'meson'
