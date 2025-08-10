@@ -289,6 +289,37 @@ packages:
       - args: ['ln', '-srf', '@THIS_COLLECT_DIR@/usr/lib/@OPTION:arch-triple@/libasync/pkgconfig/libasync.pc',
               '@THIS_COLLECT_DIR@/usr/lib/pkgconfig/libasync.pc']
 
+  - name: libarch
+    labels: [aarch64, riscv64]
+    architecture: '@OPTION:arch@'
+    from_source: libarch
+    tools_required:
+      - system-gcc
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        # install to separate libdir and a separate includedir (instead of /usr/include)
+        - '--includedir=share/libarch/include'
+        - '--libdir=lib/@OPTION:arch-triple@/libarch'
+        - '--buildtype=debugoptimized'
+        - '-Dinstall_headers=true'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+      # symlink the pkgconfig file to the standard location
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/lib/pkgconfig']
+      - args: ['ln', '-srf', '@THIS_COLLECT_DIR@/usr/lib/@OPTION:arch-triple@/libarch/pkgconfig/libarch.pc',
+              '@THIS_COLLECT_DIR@/usr/lib/pkgconfig/libarch.pc']
+
   - name: libsmarter
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
