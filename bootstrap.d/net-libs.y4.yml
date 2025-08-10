@@ -266,7 +266,6 @@ packages:
 
   - name: libsoup3
     architecture: '@OPTION:arch@'
-    stability_level: 'broken' # Broken on gobject-introspection and sqlite? Possibly solved with an upgrade but as of writing gitlab.gnome.org is down
     metadata:
       summary: HTTP client/server library for GNOME
       description: This package provides a HTTP client/server library for GNOME. It uses GObject and the GLib main loop to integrate with GNOME applications and it also has an asynchronous API for use in threaded applications.
@@ -305,7 +304,7 @@ packages:
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
