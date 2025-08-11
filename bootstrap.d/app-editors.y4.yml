@@ -11,21 +11,17 @@ packages:
       categories: ['app-editors']
     source:
       subdir: 'ports'
-      git: 'https://git.savannah.gnu.org/git/nano.git'
+      git: 'https://https.git.savannah.gnu.org/git/nano.git'
       tag: 'v7.2'
       version: '7.2'
+      sources_required:
+        - gnulib
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
         - host-pkg-config
       regenerate:
-        - args: |
-              if ! [ -d gnulib ]; then
-                  git clone https://git.savannah.gnu.org/git/gnulib.git gnulib
-              else
-                  git -C gnulib pull --unshallow || true
-              fi
-          isolate_network: false
+        - args: ['python3', '@SOURCE_ROOT@/scripts/checkout-gnulib.py', '@SOURCE_ROOT@/ports/gnulib']
         - args: ['./autogen.sh']
     tools_required:
       - host-autoconf-v2.69
@@ -40,7 +36,7 @@ packages:
       - ncurses
       - libintl
       - zlib
-    revision: 8
+    revision: 9
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
