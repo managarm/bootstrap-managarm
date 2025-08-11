@@ -5,7 +5,7 @@ tools:
     source:
       name: autoconf-v2.64
       subdir: 'ports'
-      url: 'https://ftp.gnu.org/gnu/autoconf/autoconf-2.64.tar.xz'
+      url: 'https://ftpmirror.gnu.org/gnu/autoconf/autoconf-2.64.tar.xz'
       format: 'tar.xz'
       checksum: blake2b:598873209a67725150cd4cf09c4b78b26b3d1782f259846da48dc8106a1d32ae2b24f3a864c3be0e9e8dc7d6b6ca8781b83ff33a691c88e68391d1ea861ccf23
       extract_path: 'autoconf-2.64'
@@ -31,7 +31,7 @@ tools:
     source:
       name: autoconf-v2.71
       subdir: 'ports'
-      url: 'https://ftp.gnu.org/gnu/autoconf/autoconf-2.71.tar.xz'
+      url: 'https://ftpmirror.gnu.org/gnu/autoconf/autoconf-2.71.tar.xz'
       format: 'tar.xz'
       checksum: blake2b:7fd4b98b4cfff10720e8da6ee91045637991643b50fcb3e47a0ecfcc01600f7b7b36fd1c0a5f08b68a418f1bdbd8d5a98de1008157595dd37cc3a31facb61416
       extract_path: 'autoconf-2.71'
@@ -49,7 +49,7 @@ tools:
     source:
       name: autoconf-v2.69
       subdir: 'ports'
-      url: 'https://ftp.gnu.org/gnu/autoconf/autoconf-2.69.tar.xz'
+      url: 'https://ftpmirror.gnu.org/gnu/autoconf/autoconf-2.69.tar.xz'
       format: 'tar.xz'
       checksum: blake2b:71d33d72a06e9a05fbed0eda73bc9d8a3805c7c90bf082959862f93f3c5f01192114176e84d84ecb58fa99512eafbc0ab21ad1407be18c8c63bb3dc1117c482d
       extract_path: 'autoconf-2.69'
@@ -68,7 +68,7 @@ tools:
     source:
       name: automake-v1.11
       subdir: 'ports'
-      git: 'https://git.savannah.gnu.org/git/automake.git'
+      git: 'https://https.git.savannah.gnu.org/git/automake.git'
       tag: 'v1.11.6'
       version: '1.11.6'
       sources_required: ['gnuconfig']
@@ -77,10 +77,11 @@ tools:
       regenerate:
         - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.sub', '@THIS_SOURCE_DIR@/lib/']
         - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.guess', '@THIS_SOURCE_DIR@/lib/']
+        - args: ['python3', '@SOURCE_ROOT@/scripts/checkout-gnulib.py', '@SOURCE_ROOT@/ports/gnulib']
         - args: ['./bootstrap']
     tools_required:
       - host-autoconf-v2.69
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -113,7 +114,7 @@ tools:
     source:
       name: automake-v1.15
       subdir: 'ports'
-      git: 'https://git.savannah.gnu.org/git/automake.git'
+      git: 'https://https.git.savannah.gnu.org/git/automake.git'
       tag: 'v1.15.1'
       version: '1.15.1'
       sources_required: ['gnuconfig']
@@ -122,10 +123,11 @@ tools:
       regenerate:
         - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.sub', '@THIS_SOURCE_DIR@/lib/']
         - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.guess', '@THIS_SOURCE_DIR@/lib/']
+        - args: ['python3', '@SOURCE_ROOT@/scripts/checkout-gnulib.py', '@SOURCE_ROOT@/ports/gnulib']
         - args: ['./bootstrap']
     tools_required:
       - host-autoconf-v2.69
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -144,7 +146,7 @@ tools:
     source:
       name: automake-v1.16
       subdir: 'ports'
-      git: 'https://git.savannah.gnu.org/git/automake.git'
+      git: 'https://https.git.savannah.gnu.org/git/automake.git'
       tag: 'v1.16.5'
       version: '1.16.5'
       sources_required: ['gnuconfig']
@@ -153,10 +155,11 @@ tools:
       regenerate:
        - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.sub', '@THIS_SOURCE_DIR@/lib/']
        - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.guess', '@THIS_SOURCE_DIR@/lib/']
+       - args: ['python3', '@SOURCE_ROOT@/scripts/checkout-gnulib.py', '@SOURCE_ROOT@/ports/gnulib']
        - args: ['./bootstrap']
     tools_required:
       - host-autoconf-v2.71
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
