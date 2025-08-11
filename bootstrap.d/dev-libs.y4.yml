@@ -15,6 +15,13 @@ sources:
     tag: '2.82.4'
     version: '2.82.4'
 
+  - name: gnulib
+    subdir: ports
+    git: 'https://github.com/coreutils/gnulib.git'
+    commit: 'b65a8d11a79bd72224deb06cf379bcbbd713fe36'
+    branch: 'master'
+    version: '20250811'
+
   - name: gobject-introspection
     subdir: 'ports'
     git: 'https://gitlab.gnome.org/GNOME/gobject-introspection.git'
