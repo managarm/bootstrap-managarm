@@ -305,7 +305,7 @@ packages:
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
-      url: 'https://ftp.gnu.org/gnu/wget/wget-1.21.4.tar.gz'
+      url: 'https://ftpmirror.gnu.org/gnu/wget/wget-1.21.4.tar.gz'
       checksum: 'blake2b:ced6fb9a20343d41e4d8e0c8f171c60535847504fa4c32abc81d104a1594dc7b7c97b5b301836e31dacc7a0f2155c0a2e70e42ff60dc3fa471deb1dad33ba736'
       extract_path: 'wget-1.21.4'
       format: tar.gz
