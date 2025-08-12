@@ -316,8 +316,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.gnome.org/GNOME/libsoup.git'
-      tag: '3.4.4'
-      version: '3.4.4'
+      tag: '3.6.5'
+      version: '3.6.5'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -330,7 +330,9 @@ packages:
         arch: [x86_64]
         item: host-gobject-introspection
       - host-python
-      - host-vala
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-vala
       - host-glib
     pkgs_required:
       - mlibc
@@ -344,7 +346,7 @@ packages:
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
-    revision: 3
+    revision: 1
     configure:
       - args:
         - 'meson'
@@ -360,7 +362,10 @@ packages:
           else: '-Dintrospection=disabled'
         - '-Dinstalled_tests=false'
         - '-Dsysprof=disabled'
-        - '-Dvapi=enabled'
+        - !managarm::arch_ite
+          arch: [x86_64]
+          then: '-Dvapi=enabled'
+          else: '-Dvapi=disabled'
         - '-Dtls_check=false'
         - '-Dbrotli=disabled'
         - '-Dntlm=disabled'
