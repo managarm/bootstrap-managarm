@@ -478,17 +478,25 @@ packages:
       categories: ['media-libs']
     source:
       subdir: 'ports'
-      url: 'https://gstreamer.freedesktop.org/src/gst-plugins-base/gst-plugins-base-1.26.0.tar.xz'
+      url: 'https://gstreamer.freedesktop.org/src/gst-plugins-base/gst-plugins-base-1.26.5.tar.xz'
       format: 'tar.xz'
-      extract_path: 'gst-plugins-base-1.26.0'
-      checksum: blake2b:7d9bbbaf24d981af2794e013ece6b69b9e973ea34a1517bbb550b7d3d7ae778a676f56a56a07a67a684af458af53350f591fe1a1eff5f570d147f3a0374b35b6
-      version: '1.26.0'
+      extract_path: 'gst-plugins-base-1.26.5'
+      checksum: blake2b:a353582d1cca86b8bfaefa875f9ac0106d8fe52de82a174f1a51fd7a7906588a8809998e4681a2138227bd9e3ccef7a755ab1a73d4d7d5955343683c1497f011
+      version: '1.26.5'
     tools_required:
       - system-gcc
       - host-pkg-config
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
       - wayland-scanner
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-mlibc
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-gobject-introspection
+      - host-python
+      - host-glib
     pkgs_required:
       - mlibc
       - gstreamer
@@ -508,7 +516,10 @@ packages:
       - wayland
       - pango
       - libxext
-    revision: 2
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: gobject-introspection
+    revision: 1
     configure:
       - args:
         - 'meson'
@@ -520,17 +531,33 @@ packages:
         - '--buildtype=debugoptimized'
         - !managarm::arch_ite
           arch: [x86_64]
-          # Disabled on all architectures for now
-          then: '-Dintrospection=disabled'
+          then: '-Dintrospection=enabled'
           else: '-Dintrospection=disabled'
         - '--wrap-mode=nodownload'
         - '-Dorc=disabled'
         - '-Dexamples=disabled'
         - '-Dpackage-origin=https://managarm.org/'
-        - '-Dpackage-name="GStreamer 1.26.0 Managarm"'
+        - '-Dpackage-name="GStreamer 1.26.5 Managarm"'
         - '@THIS_SOURCE_DIR@'
+        environ:
+          # Same as below
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
     build:
       - args: ['ninja']
+        environ:
+          # Library path for our run-wrapper that allows it to load managarm libraries
+          RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
+          # Similar to above, but using a nasty (but working) hack lets us use a Linux mlibc build to execute an
+          # executable that was cross-compiled for managarm
+          RUN_WRAPPER_INTERP: '@BUILD_ROOT@/tools/host-mlibc/lib/ld.so'
+          # This is a custom environment variable which tells g-ir-scanner what to use instead of ldd
+          # We point it at our native ldd-wrapper that's installed as part of host-gobject-introspection
+          GI_LDD_WRAPPER: ldd-wrapper
+          # This tells g-ir-scanner what program should be used for "cross-launching" the executables it builds
+          GI_CROSS_LAUNCHER: run-wrapper
+          # Path to the introspection data installed by other packages
+          GI_GIR_PATH: '@SYSROOT_DIR@/usr/share/gir-1.0'
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
