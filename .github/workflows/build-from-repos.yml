@@ -72,3 +72,9 @@ jobs:
               run: |
                   xbstrap run initialize-empty-image make-image
               working-directory: ./build
+            - name: Notify about failures
+              if: ${{ failure() }}
+              run: |
+                curl -H "Content-Type: application/json" -d '{"embeds": [{"author": {"name": "GitHub Actions"}, "title": "Build from repos failure", "description": "Build failure for the build from repos job."}] }' "$DISCORD_BUILD_FROM_REPOS_URL"
+              env:
+                DISCORD_BUILD_FROM_REPOS_URL: ${{ secrets.DISCORD_BUILD_FROM_REPOS_URL }}
