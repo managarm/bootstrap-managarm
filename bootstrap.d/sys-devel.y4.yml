@@ -326,12 +326,15 @@ packages:
       git: 'https://https.git.savannah.gnu.org/git/patch.git'
       tag: 'v2.7.6'
       version: '2.7.6'
+      sources_required:
+        - gnulib
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
         - host-libtool
       regenerate:
-        - args: ['./bootstrap']
+        - args: ['git', 'submodule', 'set-url', 'gnulib', 'https://https.git.savannah.gnu.org/git/gnulib.git']
+        - args: ['./bootstrap', '--skip-po']
           isolate_network: false
         - args: ['cp',
             '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
@@ -346,7 +349,7 @@ packages:
     pkgs_required:
       - mlibc
       - diffutils
-    revision: 13
+    revision: 14
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
