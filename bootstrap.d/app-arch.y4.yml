@@ -120,8 +120,8 @@ packages:
     source:
       subdir: ports
       git: 'https://https.git.savannah.gnu.org/git/gzip.git'
-      tag: 'v1.13'
-      version: '1.13'
+      tag: 'v1.14'
+      version: '1.14'
       sources_required:
         - gnulib
       tools_required:
@@ -139,7 +139,7 @@ packages:
       - host-automake-v1.15
     pkgs_required:
       - mlibc
-    revision: 8
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
