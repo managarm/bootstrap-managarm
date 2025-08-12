@@ -2,17 +2,18 @@ sources:
   - name: bison
     subdir: 'ports'
     git: 'https://https.git.savannah.gnu.org/git/bison.git'
-    tag: 'v3.6.2'
-    version: '3.6.2'
+    tag: 'v3.8.2'
+    version: '3.8.2'
     tools_required:
-      - host-autoconf-v2.69
+      - host-autoconf-v2.71
       - host-automake-v1.15
       - host-libtool
     regenerate:
+      - args: ['git', 'submodule', 'set-url', 'gnulib', 'https://https.git.savannah.gnu.org/git/gnulib.git']
+      - args: ['git', 'submodule', 'set-url', 'submodules/autoconf', 'https://https.git.savannah.gnu.org/git/autoconf.git']
       - args: ['git', 'submodule', 'update', '--init']
         isolate_network: false
-      - args: ['./bootstrap']
-        isolate_network: false
+      - args: ['./bootstrap', '--skip-po']
       - args: ['cp',
           '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
           '@THIS_SOURCE_DIR@/build-aux/']
@@ -63,7 +64,7 @@ tools:
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.15
-    revision: 3
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -143,7 +144,6 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: bison
-    stability_level: broken
     architecture: '@OPTION:arch@'
     from_source: bison
     tools_required:
@@ -152,7 +152,7 @@ packages:
       - host-automake-v1.15
     pkgs_required:
       - mlibc
-    revision: 7
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
