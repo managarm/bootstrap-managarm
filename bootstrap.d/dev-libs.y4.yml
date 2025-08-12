@@ -60,8 +60,8 @@ sources:
   - name: nss
     subdir: 'ports'
     git: 'https://github.com/nss-dev/nss.git'
-    tag: 'NSS_3_110_RTM'
-    version: '3.110.RTM'
+    tag: 'NSS_3_114_RTM'
+    version: '3.114.RTM'
 
   - name: wayland
     subdir: 'ports'
@@ -2178,7 +2178,7 @@ packages:
       - nspr
       - sqlite
       - zlib
-    revision: 2
+    revision: 1
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
