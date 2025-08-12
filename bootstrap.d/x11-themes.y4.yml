@@ -11,26 +11,27 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/xdg/default-icon-theme.git'
-      tag: '0.17'
-      version: '0.17'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
-      regenerate:
-        - args: ['./autogen.sh', '--no-configure']
+      tag: 'v0.18'
+      version: '0.18'
     tools_required:
       - system-gcc
-    revision: 10
+      - host-pkg-config
+    revision: 1
     configure:
       - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--host=@OPTION:arch-triple@'
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@-appstream.cross-file'
         - '--prefix=/usr'
+        - '--buildtype=release'
+        - '@THIS_SOURCE_DIR@'
     build:
-      - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'install']
+      - args: ['ninja']
+      - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/keep-empty-directories.py', '@THIS_COLLECT_DIR@']
 
   - name: xcursor-themes
     architecture: '@OPTION:arch@'
