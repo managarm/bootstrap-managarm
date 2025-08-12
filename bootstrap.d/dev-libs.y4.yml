@@ -2430,8 +2430,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/KDE/plasma-wayland-protocols.git'
-      tag: 'v1.16.0'
-      version: '1.16.0'
+      tag: 'v1.18.0'
+      version: '1.18.0'
     tools_required:
       - system-gcc
       - wayland-scanner
@@ -2440,7 +2440,7 @@ packages:
     pkgs_required:
       - mlibc
       - wayland
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
