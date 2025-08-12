@@ -1604,14 +1604,14 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/Aetf/libtsm.git'
-      tag: 'v4.0.2'
-      version: '4.0.2'
+      tag: 'v4.1.0'
+      version: '4.1.0'
     tools_required:
       - system-gcc
     pkgs_required:
       - mlibc
       - libxkbcommon
-    revision: 8
+    revision: 1
     configure:
       - args:
         - 'cmake'

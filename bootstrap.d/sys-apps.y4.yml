@@ -1544,7 +1544,7 @@ packages:
       - libdrm
       - libtsm
       - systemd
-    revision: 14
+    revision: 15
     configure:
       - args:
         - 'meson'
