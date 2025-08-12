@@ -46,11 +46,12 @@ tools:
     source:
       subdir: ports
       git: 'https://github.com/lxqt/lxqt-build-tools.git'
-      tag: '2.1.0'
-      version: '2.1.0'
+      tag: '2.2.0'
+      version: '2.2.0'
     tools_required:
       - host-qt6
       - host-cmake
+    revision: 1
     configure:
       - args:
         - 'cmake'
