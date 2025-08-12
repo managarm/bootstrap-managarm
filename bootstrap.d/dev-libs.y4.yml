@@ -1027,6 +1027,10 @@ packages:
           # Disabled on all architectures for now
           then: '--enable-introspection=yes'
           else: '--enable-introspection=no'
+        environ:
+          INTROSPECTION_SCANNER_ENV: '@BUILD_ROOT@/tools/host-gobject-introspection/bin/g-ir-scanner'
+          INTROSPECTION_COMPILER_ENV: '@BUILD_ROOT@/tools/host-gobject-introspection/bin/g-ir-compiler'
+          INTROSPECTION_GENERATE_ENV: '@BUILD_ROOT@/tools/host-gobject-introspection/bin/g-ir-generate'
     build:
       - args: ['make', 'CC=@OPTION:arch-triple@-gcc -Wno-incompatible-pointer-types', '-j@PARALLELISM@']
         environ:
