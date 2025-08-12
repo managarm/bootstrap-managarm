@@ -32,7 +32,9 @@ packages:
       - libxkbcommon
       - dbus
       - gtk+-3
-    revision: 2
+      - vulkan-loader
+      - vulkan-headers
+    revision: 3
     configure:
       - args:
         - 'meson'
