@@ -1,7 +1,7 @@
 sources:
   - name: bison
     subdir: 'ports'
-    git: 'https://git.savannah.gnu.org/git/bison.git'
+    git: 'https://https.git.savannah.gnu.org/git/bison.git'
     tag: 'v3.6.2'
     version: '3.6.2'
     tools_required:
@@ -19,7 +19,7 @@ sources:
 
   - name: gettext
     subdir: ports
-    url: 'https://ftp.gnu.org/pub/gnu/gettext/gettext-0.22.3.tar.gz'
+    url: 'https://ftpmirror.gnu.org/pub/gnu/gettext/gettext-0.22.3.tar.gz'
     checksum: blake2b:aebe85a82cb94c37ed81e9801acf1e89d150f5992fb9be42d53b3f2734c5c95804f0051fabc26b8d0892dfaf89d18df16d4bca6bcb2e9b95eef5d4ae93a64379
     extract_path: 'gettext-0.22.3'
     format: 'tar.gz'
@@ -49,7 +49,7 @@ sources:
 
   - name: gnuconfig
     subdir: 'ports'
-    git: 'https://git.savannah.gnu.org/git/config.git'
+    git: 'https://https.git.savannah.gnu.org/git/config.git'
     branch: 'master'
     commit: '63acb96f92473ceb5e21d873d7c0aee266b3d6d3'
     version: '20230121'
@@ -63,7 +63,7 @@ tools:
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.15
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -152,7 +152,7 @@ packages:
       - host-automake-v1.15
     pkgs_required:
       - mlibc
-    revision: 6
+    revision: 7
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -246,7 +246,7 @@ packages:
       categories: ['sys-devel']
     source:
       subdir: 'ports'
-      git: 'https://git.savannah.gnu.org/git/m4.git'
+      git: 'https://https.git.savannah.gnu.org/git/m4.git'
       branch: 'branch-1.4'
       commit: '817edf1a766b10e132ffe595bf66606cf2ceee22'
       version: '1.4.19'
@@ -264,7 +264,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 12
+    revision: 13
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -283,7 +283,7 @@ packages:
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
-      git: 'https://git.savannah.gnu.org/git/make.git'
+      git: 'https://https.git.savannah.gnu.org/git/make.git'
       tag: '4.2'
       version: '4.2'
       tools_required:
@@ -303,7 +303,7 @@ packages:
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
-    revision: 11
+    revision: 12
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -321,7 +321,7 @@ packages:
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
-      git: 'https://git.savannah.gnu.org/git/patch.git'
+      git: 'https://https.git.savannah.gnu.org/git/patch.git'
       tag: 'v2.7.6'
       version: '2.7.6'
       tools_required:
@@ -344,7 +344,7 @@ packages:
     pkgs_required:
       - mlibc
       - diffutils
-    revision: 12
+    revision: 13
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

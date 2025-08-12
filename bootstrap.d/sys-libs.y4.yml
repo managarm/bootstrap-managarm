@@ -371,22 +371,25 @@ packages:
       categories: ['sys-libs']
     source:
       subdir: ports
-      git: 'https://git.savannah.gnu.org/git/gdbm.git'
+      git: 'https://https.git.savannah.gnu.org/git/gdbm.git'
       tag: 'v1.25'
       version: '1.25'
+      sources_required:
+        - gnulib
       tools_required:
         - host-autoconf-v2.71
         - host-automake-v1.16
         - host-libtool
       regenerate:
-        - args: ['./bootstrap']
+        - args: ['python3', '@SOURCE_ROOT@/scripts/checkout-gnulib.py', '@SOURCE_ROOT@/ports/gnulib']
+        - args: ['./bootstrap', '--no-po']
     tools_required:
       - host-autoconf-v2.71
       - host-automake-v1.16
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -665,7 +668,7 @@ packages:
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
-      git: 'https://git.savannah.gnu.org/git/readline.git'
+      git: 'https://https.git.savannah.gnu.org/git/readline.git'
       tag: 'readline-8.1'
       version: '8.1'
     tools_required:
@@ -673,7 +676,7 @@ packages:
     pkgs_required:
       - mlibc
       - ncurses
-    revision: 11
+    revision: 12
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

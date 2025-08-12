@@ -81,7 +81,7 @@ packages:
       categories: ['app-arch']
     source:
       subdir: ports
-      url: 'https://ftp.gnu.org/gnu/cpio/cpio-2.15.tar.bz2'
+      url: 'https://ftpmirror.gnu.org/gnu/cpio/cpio-2.15.tar.bz2'
       checksum: 'blake2b:ca2aae6a00239be7aff5558a2e62b4fb4b43c2ed7f4d7a23699c958ae10b348c4ebf39233f0dd0242cba895fdac4d0ff3b4e56fefa0b1afe3db41eb6916e0b23'
       format: tar.bz2
       extract_path: 'cpio-2.15'
@@ -119,15 +119,17 @@ packages:
       categories: ['app-arch']
     source:
       subdir: ports
-      git: 'https://git.savannah.gnu.org/git/gzip.git'
+      git: 'https://https.git.savannah.gnu.org/git/gzip.git'
       tag: 'v1.13'
       version: '1.13'
+      sources_required:
+        - gnulib
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
       regenerate:
-        - args: ['./bootstrap']
-          isolate_network: false
+        - args: ['python3', '@SOURCE_ROOT@/scripts/checkout-gnulib.py', '@SOURCE_ROOT@/ports/gnulib']
+        - args: ['./bootstrap', '--skip-po']
         - args: ['cp',
             '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
             '@THIS_SOURCE_DIR@/build-aux/']
@@ -137,7 +139,7 @@ packages:
       - host-automake-v1.15
     pkgs_required:
       - mlibc
-    revision: 7
+    revision: 8
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -240,7 +242,7 @@ packages:
       categories: ['app-arch']
     source:
       subdir: ports
-      url: 'https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz'
+      url: 'https://ftpmirror.gnu.org/gnu/tar/tar-1.35.tar.xz'
       checksum: 'blake2b:e1a200d21f433cd7d917dd979db16919a9167056ae62cf7d038a6118e56b2fe419cd4a396eee66f1f4dc13a8dc380e23f6ffd7ee0ca84e5dd9ad9411f60e002c'
       format: tar.xz
       extract_path: 'tar-1.35'

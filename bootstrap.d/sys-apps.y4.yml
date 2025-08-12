@@ -152,7 +152,7 @@ packages:
       categories: ['sys-apps']
     source:
       subdir: 'ports'
-      url: 'https://ftp.gnu.org/gnu/coreutils/coreutils-9.6.tar.xz'
+      url: 'https://ftpmirror.gnu.org/gnu/coreutils/coreutils-9.6.tar.xz'
       format: tar.xz
       checksum: 'blake2b:4070d3d272851d3e9c326df9c05ce67797d86852e7f5c26e545f987f444295f2cfca24e8569514d7b5edf8fd50318d07cb20dea4a4ce8c65b34bea0c5a9177be'
       extract_path: 'coreutils-9.6'
@@ -278,15 +278,17 @@ packages:
       categories: ['sys-apps']
     source:
       subdir: ports
-      git: 'https://git.savannah.gnu.org/git/diffutils.git'
+      git: 'https://https.git.savannah.gnu.org/git/diffutils.git'
       tag: 'v3.11'
       version: '3.11'
+      sources_required:
+        - gnulib
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
       regenerate:
-        - args: ['./bootstrap']
-          isolate_network: false
+        - args: ['python3', '@SOURCE_ROOT@/scripts/checkout-gnulib.py', '@SOURCE_ROOT@/ports/gnulib']
+        - args: ['./bootstrap', '--skip-po']
         - args: ['cp',
             '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
             '@THIS_SOURCE_DIR@/build-aux/']
@@ -296,7 +298,7 @@ packages:
       - host-automake-v1.15
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -467,17 +469,19 @@ packages:
       categories: ['sys-apps']
     source:
       subdir: ports
-      git: 'https://git.savannah.gnu.org/git/findutils.git'
+      git: 'https://https.git.savannah.gnu.org/git/findutils.git'
       tag: 'v4.10.0'
       version: '4.10.0'
+      sources_required:
+        - gnulib
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
         - host-libtool
         - host-pkg-config
       regenerate:
-        - args: ['./bootstrap']
-          isolate_network: false
+        - args: ['python3', '@SOURCE_ROOT@/scripts/checkout-gnulib.py', '@SOURCE_ROOT@/ports/gnulib']
+        - args: ['./bootstrap', '--skip-po']
         - args: ['cp',
             '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
             '@THIS_SOURCE_DIR@/build-aux/']
@@ -486,7 +490,7 @@ packages:
       - host-python
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -515,7 +519,7 @@ packages:
       categories: ['sys-apps']
     source:
       subdir: ports
-      git: 'https://git.savannah.gnu.org/git/gawk.git'
+      git: 'https://https.git.savannah.gnu.org/git/gawk.git'
       tag: 'gawk-5.3.1'
       version: '5.3.1'
       tools_required:
@@ -532,7 +536,7 @@ packages:
       - host-automake-v1.16
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -558,24 +562,29 @@ packages:
       categories: ['sys-apps']
     source:
       subdir: ports
-      git: 'https://git.savannah.gnu.org/git/grep.git'
+      git: 'https://https.git.savannah.gnu.org/git/grep.git'
       tag: 'v3.11'
       version: '3.11'
+      sources_required:
+        - gnulib
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
       regenerate:
-        - args: ['./bootstrap']
-          isolate_network: false
+        - args: ['python3', '@SOURCE_ROOT@/scripts/checkout-gnulib.py', '@SOURCE_ROOT@/ports/gnulib']
+        - args: ['./bootstrap', '--skip-po']
         - args: ['cp',
             '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
             '@THIS_SOURCE_DIR@/build-aux/']
     tools_required:
       - system-gcc
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: '@OPTION:arch-triple@'
     pkgs_required:
       - mlibc
-      - pcre
-    revision: 8
+      - pcre2
+    revision: 10
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -583,6 +592,7 @@ packages:
         - '--prefix=/usr'
         - '--disable-nls'
       - args: 'sed -i s/-Werror//g @THIS_BUILD_DIR@/lib/Makefile'
+      - args: 'sed -i s/-Werror//g @THIS_BUILD_DIR@/src/Makefile'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
@@ -601,17 +611,19 @@ packages:
       categories: ['sys-apps']
     source:
       subdir: ports
-      git: 'https://git.savannah.gnu.org/git/groff.git'
+      git: 'https://https.git.savannah.gnu.org/git/groff.git'
       tag: '1.22.4'
       version: '1.22.4'
+      sources_required:
+        - gnulib
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
         - host-pkg-config
         - host-libtool
       regenerate:
-        - args: ['./bootstrap']
-          isolate_network: false
+        - args: ['python3', '@SOURCE_ROOT@/scripts/checkout-gnulib.py', '@SOURCE_ROOT@/ports/gnulib']
+        - args: ['./bootstrap', '--skip-po']
         - args: ['cp',
             '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
             '@THIS_SOURCE_DIR@/build-aux/']
@@ -619,7 +631,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 13
+    revision: 14
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -750,17 +762,19 @@ packages:
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
-      git: 'https://git.savannah.gnu.org/git/man-db.git'
+      git: 'https://https.git.savannah.gnu.org/git/man-db.git'
       tag: '2.9.4'
       version: '2.9.4'
+      sources_required:
+        - gnulib
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
         - host-pkg-config
         - host-libtool
       regenerate:
-        - args: ['./bootstrap']
-          isolate_network: false
+        - args: ['python3', '@SOURCE_ROOT@/scripts/checkout-gnulib.py', '@SOURCE_ROOT@/ports/gnulib']
+        - args: ['./bootstrap', '--skip-po']
         - args: ['cp',
             '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
             '@THIS_SOURCE_DIR@/build-aux/']
@@ -773,7 +787,7 @@ packages:
       - groff
       - less
       - libiconv
-    revision: 12
+    revision: 13
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -978,15 +992,18 @@ packages:
       categories: ['sys-apps']
     source:
       subdir: ports
-      git: 'https://git.savannah.gnu.org/git/sed.git'
+      git: 'https://https.git.savannah.gnu.org/git/sed.git'
       tag: 'v4.9'
       version: '4.9'
+      sources_required:
+        - gnulib
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
+        - host-libtool
       regenerate:
-        - args: ['./bootstrap']
-          isolate_network: false
+        - args: ['python3', '@SOURCE_ROOT@/scripts/checkout-gnulib.py', '@SOURCE_ROOT@/ports/gnulib']
+        - args: ['./bootstrap', '--skip-po']
         - args: ['cp',
             '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
             '@THIS_SOURCE_DIR@/build-aux/']
@@ -994,7 +1011,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1438,7 +1455,7 @@ packages:
     architecture: '@OPTION:arch@'
     source:
       subdir: ports
-      url: 'https://ftp.gnu.org/gnu/which/which-2.21.tar.gz'
+      url: 'https://ftpmirror.gnu.org/gnu/which/which-2.21.tar.gz'
       format: 'tar.gz'
       checksum: blake2b:355888b0dfe3e4e1679a8a9e1255a935fa48be220408abc441fae69fe0b26bd39e0544ed20e75497ed5bccaa75e788d9aec17007c668f15eaf6b1599faa131a0
       extract_path: 'which-2.21'
