@@ -15,8 +15,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.gnome.org/GNOME/at-spi2-core.git'
-      tag: '2.56.1'
-      version: '2.56.1'
+      tag: '2.56.4'
+      version: '2.56.4'
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -40,7 +40,8 @@ packages:
       - libxml
       - libxtst
       - libxi
-    revision: 2
+      - systemd
+    revision: 1
     configure:
       - args:
           - 'meson'
@@ -49,7 +50,7 @@ packages:
           - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@-goi.cross-file'
           - '--prefix=/usr'
           - '--sysconfdir=/etc'
-          - '-Dsystemd_user_dir=/tmp'
+          - '-Dsystemd_user_dir=/usr/lib/systemd/user'
           - !managarm::arch_ite
             arch: [x86_64]
             then: '-Dintrospection=enabled'
