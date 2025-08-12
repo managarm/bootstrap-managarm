@@ -71,7 +71,9 @@ tools:
       git: 'https://https.git.savannah.gnu.org/git/automake.git'
       tag: 'v1.11.6'
       version: '1.11.6'
-      sources_required: ['gnuconfig']
+      sources_required:
+        - gnuconfig
+        - gnulib
       tools_required:
         - host-autoconf-v2.69
       regenerate:
@@ -117,7 +119,9 @@ tools:
       git: 'https://https.git.savannah.gnu.org/git/automake.git'
       tag: 'v1.15.1'
       version: '1.15.1'
-      sources_required: ['gnuconfig']
+      sources_required:
+        - gnuconfig
+        - gnulib
       tools_required:
         - host-autoconf-v2.69
       regenerate:
@@ -149,7 +153,9 @@ tools:
       git: 'https://https.git.savannah.gnu.org/git/automake.git'
       tag: 'v1.16.5'
       version: '1.16.5'
-      sources_required: ['gnuconfig']
+      sources_required:
+        - gnuconfig
+        - gnulib
       tools_required:
        - host-autoconf-v2.71
       regenerate:
