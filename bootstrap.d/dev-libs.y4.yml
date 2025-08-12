@@ -1119,6 +1119,7 @@ packages:
       version: '238'
     tools_required:
       - system-gcc
+      - host-pkg-config
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
       - host-mlibc
@@ -1130,7 +1131,7 @@ packages:
       - glib
       - systemd
       - gobject-introspection
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'meson'
@@ -1140,7 +1141,7 @@ packages:
         - '--prefix=/usr'
         - '--buildtype=release'
         - '--wrap-mode=nodownload'
-        - '-Dintrospection=disabled'
+        - '-Dintrospection=enabled'
         - '-Dvapi=disabled'
         - '-Dgtk_doc=false'
         - '@THIS_SOURCE_DIR@'
