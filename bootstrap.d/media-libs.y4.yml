@@ -715,8 +715,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/harfbuzz/harfbuzz.git'
-      tag: '11.0.0'
-      version: '11.0.0'
+      tag: '11.3.3'
+      version: '11.3.3'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -741,7 +741,7 @@ packages:
       - !managarm::arch_dep
         item: gobject-introspection
         arch: [x86_64]
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'meson'
