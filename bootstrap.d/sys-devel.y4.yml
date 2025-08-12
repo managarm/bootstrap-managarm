@@ -144,6 +144,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: bison
+    stability_level: 'broken'
     architecture: '@OPTION:arch@'
     from_source: bison
     tools_required:
