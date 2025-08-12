@@ -144,6 +144,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: bison
+    stability_level: 'broken'
     architecture: '@OPTION:arch@'
     from_source: bison
     tools_required:
@@ -326,8 +327,6 @@ packages:
       git: 'https://https.git.savannah.gnu.org/git/patch.git'
       tag: 'v2.7.6'
       version: '2.7.6'
-      sources_required:
-        - gnulib
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
