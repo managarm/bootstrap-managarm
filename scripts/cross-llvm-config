@@ -86,7 +86,7 @@ def do_components():
 
 
 def do_targets_built():
-    return "X86 Aarch64"
+    return "X86 Aarch64 RISCV"
 
 
 def get_includedir():
