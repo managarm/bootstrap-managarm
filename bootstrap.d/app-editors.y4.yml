@@ -12,8 +12,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://https.git.savannah.gnu.org/git/nano.git'
-      tag: 'v7.2'
-      version: '7.2'
+      tag: 'v8.5'
+      version: '8.5'
       sources_required:
         - gnulib
       tools_required:
@@ -36,14 +36,14 @@ packages:
       - ncurses
       - libintl
       - zlib
-    revision: 9
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--sysconfdir=/etc'
-        - '--docdir=/usr/share/doc/nano-7.2'
+        - '--docdir=/usr/share/doc/nano-8.5'
         - 'CFLAGS=-DSLOW_BUT_NO_HACKS'
         environ:
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'

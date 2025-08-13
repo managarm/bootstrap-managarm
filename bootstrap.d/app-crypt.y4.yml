@@ -159,7 +159,8 @@ packages:
       - mlibc
       - libffi
       - libtasn
-    revision: 2
+      - systemd
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -171,7 +172,7 @@ packages:
         - '--wrap-mode=nofallback'
         - '--sysconfdir=/etc'
         - '-Dtrust_paths=/etc/pki/anchors'
-        - '-Dsystemd=disabled'
+        - '-Dsystemd=enabled'
         - '@THIS_SOURCE_DIR@'
         isolate_network: false
     build:

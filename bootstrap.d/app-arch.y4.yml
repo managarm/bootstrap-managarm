@@ -120,8 +120,8 @@ packages:
     source:
       subdir: ports
       git: 'https://https.git.savannah.gnu.org/git/gzip.git'
-      tag: 'v1.13'
-      version: '1.13'
+      tag: 'v1.14'
+      version: '1.14'
       sources_required:
         - gnulib
       tools_required:
@@ -139,7 +139,7 @@ packages:
       - host-automake-v1.15
     pkgs_required:
       - mlibc
-    revision: 8
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -165,8 +165,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/libarchive/libarchive.git'
-      tag: 'v3.7.9'
-      version: '3.7.9'
+      tag: 'v3.8.1'
+      version: '3.8.1'
     tools_required:
       - host-cmake
       - system-gcc
@@ -180,7 +180,7 @@ packages:
       - libxml
       - zstd
       - lz4
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -332,8 +332,8 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/tukaani-project/xz.git'
-      tag: 'v5.8.0'
-      version: '5.8.0'
+      tag: 'v5.8.1'
+      version: '5.8.1'
       disable_shallow_fetch: true
       tools_required:
         - host-autoconf-v2.69
@@ -349,7 +349,7 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
-    revision: 2
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

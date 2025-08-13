@@ -157,6 +157,46 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: libmnl
+    architecture: '@OPTION:arch@'
+    labels: [aarch64, riscv64]
+    metadata:
+      summary: libmnl is a minimalistic user-space library oriented to Netlink developers
+      description: There are a lot of common tasks in parsing, validating, constructing of both the Netlink header and TLVs that are repetitive and easy to get wrong. This library aims to provide simple helpers that allows you to re-use code and to avoid re-inventing the wheel.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://www.netfilter.org/projects/libmnl/'
+      maintainer: 'no92 <leo@managarm.org>'
+      categories: ['net-libs']
+    source:
+      subdir: 'ports'
+      git: 'git://git.netfilter.org/libmnl.git'
+      tag: 'libmnl-1.0.5'
+      version: '1.0.5'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['./autogen.sh']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+    revision: 4
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--sysconfdir=/etc'
+        - '--disable-static'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: libpsl
     architecture: '@OPTION:arch@'
     metadata:
@@ -169,8 +209,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/rockdaboot/libpsl.git'
-      tag: '0.21.2'
-      version: '0.21.2'
+      tag: '0.21.5'
+      version: '0.21.5'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -186,7 +226,7 @@ packages:
       - libidn2
       - libunistring
       - libiconv
-    revision: 7
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -276,8 +316,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.gnome.org/GNOME/libsoup.git'
-      tag: '3.4.4'
-      version: '3.4.4'
+      tag: '3.6.5'
+      version: '3.6.5'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -290,7 +330,9 @@ packages:
         arch: [x86_64]
         item: host-gobject-introspection
       - host-python
-      - host-vala
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-vala
       - host-glib
     pkgs_required:
       - mlibc
@@ -304,7 +346,7 @@ packages:
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
-    revision: 3
+    revision: 1
     configure:
       - args:
         - 'meson'
@@ -320,7 +362,10 @@ packages:
           else: '-Dintrospection=disabled'
         - '-Dinstalled_tests=false'
         - '-Dsysprof=disabled'
-        - '-Dvapi=enabled'
+        - !managarm::arch_ite
+          arch: [x86_64]
+          then: '-Dvapi=enabled'
+          else: '-Dvapi=disabled'
         - '-Dtls_check=false'
         - '-Dbrotli=disabled'
         - '-Dntlm=disabled'

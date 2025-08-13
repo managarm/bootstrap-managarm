@@ -10,11 +10,11 @@ packages:
       categories: ['dev-db']
     source:
       subdir: 'ports'
-      url: 'https://sqlite.org/2025/sqlite-autoconf-3490100.tar.gz'
+      url: 'https://sqlite.org/2025/sqlite-autoconf-3500400.tar.gz'
       format: 'tar.gz'
-      checksum: blake2b:08f9379977b9a7962de5283cb532ecdd500e6e9b00d5e64e14e323777b47ea90e15745528d441328b7907060b7f594dc5054b327b471189477e595c0575c43a0
-      extract_path: 'sqlite-autoconf-3490100'
-      version: '3.49.1'
+      checksum: blake2b:cb7b3509079a6b57dd7a0443e249b8fe6d1ff43b1bb318d07a1403a754ddbfa5d25f191405c062a5cdb872315aac78daa1e95d6687aab37e18889e21bc6d8c71
+      extract_path: 'sqlite-autoconf-3500400'
+      version: '3.50.4'
     tools_required:
       - system-gcc
       - host-libtool
@@ -22,7 +22,7 @@ packages:
       - mlibc
       - readline
       - zlib
-    revision: 3
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

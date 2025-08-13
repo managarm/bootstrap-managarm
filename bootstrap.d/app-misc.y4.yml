@@ -57,10 +57,12 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/djlucas/make-ca.git'
-      tag: 'v1.7'
+      # This is version 1.16.1
+      branch: 'master'
+      commit: 'c52f1373f5d91d8d7078fe129ac28664d3bbd941'
       # While unusual, version will be the date of the last bump + the NSS version used.
       # If needed, we can always fetch a set NSS commit past the last release to fix critical bugs.
-      version: '20250331.3.110'
+      version: '20250812.3.114'
     tools_required:
       - system-gcc
     pkgs_required:
