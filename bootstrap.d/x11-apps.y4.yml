@@ -199,8 +199,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/app/xdriinfo.git'
-      tag: 'xdriinfo-1.0.7'
-      version: '1.0.7'
+      tag: 'xdriinfo-1.0.8'
+      version: '1.0.8'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.11
@@ -218,7 +218,7 @@ packages:
       - mesa
       - xorg-util-macros
       - libx11
-    revision: 7
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
