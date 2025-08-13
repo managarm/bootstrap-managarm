@@ -1216,8 +1216,8 @@ packages:
     source:
       subdir: ports
       git: 'https://gitlab.freedesktop.org/xorg/lib/libxft.git'
-      tag: 'libXft-2.3.8'
-      version: '2.3.8'
+      tag: 'libXft-2.3.9'
+      version: '2.3.9'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1241,7 +1241,7 @@ packages:
       - libxrender
       - freetype
       - fontconfig
-    revision: 8
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
