@@ -168,6 +168,9 @@ packages:
       tag: 'v3.8.1'
       version: '3.8.1'
     tools_required:
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
       - host-cmake
       - system-gcc
     pkgs_required:
@@ -180,7 +183,7 @@ packages:
       - libxml
       - zstd
       - lz4
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -195,6 +198,8 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      # Apparently libarchive installs their pkgconfig files into /pkgconfig now, let's fix that
+      - args: ['mv', '-v', '@THIS_COLLECT_DIR@/pkgconfig', '@THIS_COLLECT_DIR@/usr/lib/pkgconfig']
 
   - name: lz4
     architecture: '@OPTION:arch@'
