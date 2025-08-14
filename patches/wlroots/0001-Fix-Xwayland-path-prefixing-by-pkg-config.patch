@@ -1,0 +1,33 @@
+From 1d816d68b87bb9d57026763d919175124f3d84ea Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Sun, 27 Jul 2025 11:12:49 +0200
+Subject: [PATCH] Fix Xwayland path prefixing by pkg-config
+
+---
+ xwayland/meson.build | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/xwayland/meson.build b/xwayland/meson.build
+index 81cb018..ddae4b3 100644
+--- a/xwayland/meson.build
++++ b/xwayland/meson.build
+@@ -33,6 +33,7 @@ xwayland = dependency(
+ 		'xvfb=false',
+ 	],
+ )
++
+ if not xwayland.found()
+ 	subdir_done()
+ endif
+@@ -74,7 +75,7 @@ xwayland_feature_names = [
+ 	'terminate_delay',
+ ]
+ 
+-internal_config.set_quoted('XWAYLAND_PATH', xwayland.get_variable('xwayland'))
++internal_config.set_quoted('XWAYLAND_PATH', xwayland.get_variable('xwayland').replace('{XBSTRAP_SYSTEM_ROOT}', ''))
+ foreach name : xwayland_feature_names
+ 	have = xwayland.get_variable('have_' + name, default_value: 'false') == 'true'
+ 	internal_config.set10('HAVE_XWAYLAND_' + name.to_upper(), have)
+-- 
+2.49.0
+
