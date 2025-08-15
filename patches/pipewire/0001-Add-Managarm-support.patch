@@ -1,0 +1,80 @@
+From eb11ecc751057493c304aa67e3b1753ef4c10335 Mon Sep 17 00:00:00 2001
+From: Qwinci <qwinci222@gmail.com>
+Date: Tue, 5 Aug 2025 14:14:23 +0300
+Subject: [PATCH] Add Managarm support
+
+---
+ meson.build             | 7 ++++++-
+ src/modules/module-rt.c | 3 +++
+ src/pipewire/mem.c      | 6 +++++-
+ 3 files changed, 14 insertions(+), 2 deletions(-)
+
+diff --git a/meson.build b/meson.build
+index bfd47a5..b0d672d 100644
+--- a/meson.build
++++ b/meson.build
+@@ -87,6 +87,7 @@ common_flags = [
+   '-Wpointer-sign',
+   '-Werror=format',
+   '-Wno-error=format-overflow', # avoid some "‘%s’ directive argument is null"
++  '-Wno-error=format-truncation',
+   '-Wformat-security',
+   '-Wimplicit-fallthrough',
+   '-Wmissing-braces',
+@@ -274,8 +275,12 @@ foreach h : check_headers
+   cdata.set(h.get(1), cc.has_header(h.get(0)))
+ endforeach
+ 
+-cdata.set('HAVE_PIDFD_OPEN',
++if host_machine.system() == 'managarm'
++  cdata.set('HAVE_PIDFD_OPEN', false)
++else
++  cdata.set('HAVE_PIDFD_OPEN',
+           cc.get_define('SYS_pidfd_open', prefix: '#include <sys/syscall.h>') != '')
++endif
+ 
+ systemd = dependency('systemd', required: get_option('systemd'))
+ systemd_dep = dependency('libsystemd',required: get_option('systemd'))
+diff --git a/src/modules/module-rt.c b/src/modules/module-rt.c
+index b2d0739..25a50cc 100644
+--- a/src/modules/module-rt.c
++++ b/src/modules/module-rt.c
+@@ -42,7 +42,10 @@
+ #include <unistd.h>
+ #include <pthread.h>
+ #include <sys/resource.h>
++
++#ifdef __linux__
+ #include <sys/syscall.h>
++#endif
+ 
+ #include "config.h"
+ 
+diff --git a/src/pipewire/mem.c b/src/pipewire/mem.c
+index f5cc198..7830c7e 100644
+--- a/src/pipewire/mem.c
++++ b/src/pipewire/mem.c
+@@ -12,7 +12,11 @@
+ #include <fcntl.h>
+ #include <unistd.h>
+ #include <stdlib.h>
++
++#ifdef __linux__
+ #include <sys/syscall.h>
++#endif
++
+ #include <sys/stat.h>
+ 
+ #include <spa/utils/list.h>
+@@ -27,7 +31,7 @@ PW_LOG_TOPIC_EXTERN(log_mem);
+ #define PW_LOG_TOPIC_DEFAULT log_mem
+ 
+ #if !defined(__FreeBSD__) && !defined(__MidnightBSD__) && !defined(__GNU__) \
+-       && !defined(HAVE_MEMFD_CREATE)
++       && !defined(HAVE_MEMFD_CREATE) && !defined(__managarm__)
+ /*
+  * No glibc wrappers exist for memfd_create(2), so provide our own.
+  *
+-- 
+2.49.0
+
