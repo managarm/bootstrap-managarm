@@ -257,6 +257,12 @@ sources:
     tag: 'v6.25.0'
     version: '6.25.0'
 
+  - name: prison
+    subdir: 'ports'
+    git: 'https://github.com/KDE/prison.git'
+    tag: 'v6.25.0'
+    version: '6.25.0'
+
   - name: solid
     subdir: 'ports'
     git: 'https://github.com/KDE/solid.git'
@@ -3416,6 +3422,56 @@ packages:
         ### end ecm.class
         - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
         - '-DBUILD_PYTHON_BINDINGS=OFF'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: prison
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: QRCode and data matrix barcode library
+      description: This package provides a QRCode and data matrix barcode library.
+      spdx: 'GPL-2.0-only'
+      website: 'https://invent.kde.org/frameworks/prison'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['kde-frameworks']
+    from_source: prison
+    tools_required:
+      - system-gcc
+      - host-cmake
+      - host-ecm
+      - host-qt6
+    pkgs_required:
+      - mlibc
+      - libdmtx
+      - qrencode
+      - qtbase6
+      - qtdeclarative6
+      - qtmultimedia6
+      - zxing-cpp
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=/usr/lib/qt6/qml'
+        - '-DKDE_INSTALL_PLUGINDIR=/usr/lib/qt6/plugins'
+        - '-DKDE_INSTALL_QTPLUGINDIR=/usr/lib/qt6/plugins'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '-DBUILD_EXAMPLES=OFF'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
