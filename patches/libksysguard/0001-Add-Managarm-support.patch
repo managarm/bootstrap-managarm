@@ -1,0 +1,39 @@
+From 8ca351d4f4ceff526c651c1d6a9d717db1b38de5 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Sat, 16 Aug 2025 14:26:54 +0200
+Subject: [PATCH] Add Managarm support
+
+---
+ processcore/plugins/gpu/gpu.cpp   | 2 +-
+ processcore/processes_local_p.cpp | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/processcore/plugins/gpu/gpu.cpp b/processcore/plugins/gpu/gpu.cpp
+index 70d0922..f58ee65 100644
+--- a/processcore/plugins/gpu/gpu.cpp
++++ b/processcore/plugins/gpu/gpu.cpp
+@@ -25,7 +25,7 @@
+ 
+ #include <processcore/process.h>
+ #include <sys/stat.h>
+-#ifdef Q_OS_LINUX
++#if defined(Q_OS_LINUX) || defined(Q_OS_MANAGARM)
+ #include <sys/sysmacros.h>
+ #endif
+ #include <unistd.h>
+diff --git a/processcore/processes_local_p.cpp b/processcore/processes_local_p.cpp
+index 70697b4..47d02b4 100644
+--- a/processcore/processes_local_p.cpp
++++ b/processcore/processes_local_p.cpp
+@@ -14,7 +14,7 @@
+ #include "processes_openbsd_p.cpp"
+ #elif defined __NetBSD__
+ #include "processes_netbsd_p.cpp"
+-#elif defined __GNU__ || defined __APPLE__
++#elif defined __GNU__ || defined __APPLE__ || defined(__managarm__)
+ #include "processes_gnu_p.cpp"
+ #else
+ // Use Qt's OS detection
+-- 
+2.53.0
+
