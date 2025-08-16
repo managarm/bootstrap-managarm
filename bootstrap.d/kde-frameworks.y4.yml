@@ -17,6 +17,12 @@ sources:
     tag: 'v6.25.0'
     version: '6.25.0'
 
+  - name: frameworkintegration
+    subdir: 'ports'
+    git: 'https://github.com/KDE/frameworkintegration.git'
+    tag: 'v6.25.0'
+    version: '6.25.0'
+
   - name: karchive
     subdir: 'ports'
     git: 'https://github.com/KDE/karchive.git'
@@ -1386,6 +1392,57 @@ packages:
         - '-DBINARY_ICONS_RESOURCE=ON'
         - '-DSKIP_INSTALL_ICONS=OFF'
         - '-DKF6_HOST_TOOLING=@BUILD_ROOT@/tools/host-breeze-icons'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: frameworkintegration
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Framework for integrating Qt applications with KDE Plasma workspaces
+      description: This package provides a framework for integrating Qt applications with KDE Plasma workspaces.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://develop.kde.org/products/frameworks/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['kde-frameworks']
+    from_source: frameworkintegration
+    tools_required:
+      - system-gcc
+      - host-cmake
+      - host-ecm
+      - host-qt6
+    pkgs_required:
+      - mlibc
+      - kcolorscheme
+      - kconfig
+      - ki18n
+      - kiconthemes
+      - knewstuff
+      - knotifications
+      - kpackage
+      - kwidgetsaddons
+      - qtbase6
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '-DCMAKE_DISABLE_FIND_PACKAGE_AppStreamQt=ON'
+        - '-DCMAKE_DISABLE_FIND_PACKAGE_packagekitqt6=ON'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
