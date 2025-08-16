@@ -712,6 +712,71 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: plasma5support
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Support components for porting from KF5/Qt5 to KF6/Qt6
+      description: This package provides the support components for porting from KF5/Qt5 to KF6/Qt6.
+      spdx: 'LGPL-2.1-only'
+      website: 'https://kde.org/plasma-desktop'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['kde-plasma']
+    source:
+      subdir: 'ports'
+      git: 'https://invent.kde.org/plasma/plasma5support.git'
+      tag: 'v6.6.4'
+      version: '6.6.4'
+    tools_required:
+      - system-gcc
+      - host-cmake
+      - host-ecm
+      - host-qt6
+      - wayland-scanner
+    pkgs_required:
+      - mlibc
+      - kconfig
+      - kcoreaddons
+      - kguiaddons
+      - kholidays
+      - ki18n
+      - kidletime
+      - kio
+      - knotifications
+      - kservice
+      - kunitconversion
+      - libksysguard
+      - libx11
+      - plasma-activities
+      - qtbase6
+      - qtdeclarative6
+      - solid
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=/usr/lib/qt6/qml'
+        - '-DKDE_INSTALL_PLUGINDIR=/usr/lib/qt6/plugins'
+        - '-DKDE_INSTALL_QTPLUGINDIR=/usr/lib/qt6/plugins'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '-DWITH_X11=ON'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: plasma-activities
     architecture: '@OPTION:arch@'
     metadata:
