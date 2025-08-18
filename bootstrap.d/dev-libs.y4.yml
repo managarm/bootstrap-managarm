@@ -2840,6 +2840,54 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: qcoro
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: C++ Coroutine Library for Qt
+      description: This package provides a C++ Coroutine Library for Qt.
+      spdx: 'MIT'
+      website: 'https://qcoro.dvratil.cz/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/qcoro/qcoro.git'
+      tag: 'v0.13.0'
+      version: '0.13.0'
+    tools_required:
+      - system-gcc
+      - host-cmake
+      - host-qt6
+    pkgs_required:
+      - mlibc
+      - qtbase6
+      - qtdeclarative6
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/host-qt6'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DUSE_QT_VERSION=6'
+        - '-DQCORO_BUILD_EXAMPLES=OFF'
+        - '-DQCORO_WITH_QTDBUS=ON'
+        - '-DQCORO_WITH_QTNETWORK=ON'
+        - '-DQCORO_WITH_QML=ON'
+        - '-DQCORO_WITH_QTQUICK=ON'
+        - '-DQCORO_WITH_QTTEST=ON'
+        - '-DBUILD_TESTING=OFF'
+        - '-DQCORO_WITH_QTWEBSOCKETS=OFF'
+        - '-DBUILD_SHARED_LIBS=ON'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: wayland
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
