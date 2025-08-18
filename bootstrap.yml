@@ -50,6 +50,7 @@ imports:
   - file: bootstrap.d/net-misc.y4.yml
   - file: bootstrap.d/net-print.y4.yml
   - file: bootstrap.d/net-wireless.y4.yml
+  - file: bootstrap.d/sci-libs.y4.yml
   - file: bootstrap.d/sys-apps.y4.yml
   - file: bootstrap.d/sys-auth.y4.yml
   - file: bootstrap.d/sys-boot.y4.yml
