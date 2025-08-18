@@ -1,0 +1,40 @@
+From c2e7596dd41d3c2b54d3ab98fb6eb95866f427c0 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Fri, 15 Aug 2025 14:50:07 +0200
+Subject: [PATCH] Fix some Makefile issues
+
+---
+ Makefile | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 5d5c3ef..75d8f1d 100644
+--- a/Makefile
++++ b/Makefile
+@@ -27,7 +27,7 @@ TREE_DEST=tree
+ DESTDIR=${PREFIX}/bin
+ MAN=tree.1
+ # Probably needs to be ${PREFIX}/share/man for most systems now
+-MANDIR=${PREFIX}/man
++MANDIR=${PREFIX}/share/man
+ OBJS=tree.o list.o hash.o color.o file.o filter.o info.o unix.o xml.o json.o html.o strverscmp.o
+ 
+ # Uncomment options below for your particular OS:
+@@ -121,9 +121,11 @@ clean:
+ 
+ install: tree
+ 	$(INSTALL) -d $(DESTDIR)
+-	$(INSTALL) -d $(MANDIR)/man1
+-	$(INSTALL) $(TREE_DEST) $(DESTDIR)/$(TREE_DEST); \
+-	$(INSTALL) -m 644 doc/$(MAN) $(MANDIR)/man1/$(MAN)
++	$(INSTALL) -d $(DESTDIR)$(PREFIX)
++	$(INSTALL) -d $(DESTDIR)$(PREFIX)/bin
++	$(INSTALL) -d $(DESTDIR)$(MANDIR)/man1
++	$(INSTALL) $(TREE_DEST) $(DESTDIR)$(PREFIX)/bin/$(TREE_DEST); \
++	$(INSTALL) -m 644 doc/$(MAN) $(DESTDIR)$(MANDIR)/man1/$(MAN)
+ 
+ distclean:
+ 	rm -f *.o *~
+-- 
+2.50.1
+
