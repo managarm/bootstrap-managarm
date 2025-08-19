@@ -880,3 +880,141 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: plasma-workspace
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: KDE Plasma workspace
+      description: This package provides the KDE Plasma workspace.
+      spdx: 'GPL-2.0-only'
+      website: 'https://kde.org/plasma-desktop'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['kde-plasma']
+    source:
+      subdir: 'ports'
+      git: 'https://invent.kde.org/plasma/plasma-workspace.git'
+      tag: 'v6.6.4'
+      version: '6.6.4'
+    tools_required:
+      - system-gcc
+      - host-cmake
+      - host-ecm
+      - host-kcmutils
+      - host-kconfig
+      - host-kpackage
+      - host-qt6
+      - wayland-scanner
+    pkgs_required:
+      - mlibc
+      - breeze
+      - fontconfig
+      - icu
+      - iso-codes
+      - karchive
+      - kauth
+      - kbookmarks
+      - kcmutils
+      - kcolorscheme
+      - kcompletion
+      - kconfig
+      - kconfigwidgets
+      - kcoreaddons
+      - kcrash
+      - kdbusaddons
+      - kdeclarative
+      - kded
+      - kglobalaccel
+      - kguiaddons
+      - ki18n
+      - kiconthemes
+      - kidletime
+      - kio
+      - kirigami-addons
+      - kitemmodels
+      - kitemviews
+      - kjobwidgets
+      - knewstuff
+      - knotifications
+      - knotifyconfig
+      - kpackage
+      - kparts
+      - krunner
+      - kscreenlocker
+      - kservice
+      - kstatusnotifieritem
+      - ksvg
+      - ktexteditor
+      - ktextwidgets
+      - kunitconversion
+      - kwallet
+      - kwayland
+      - kwidgetsaddons
+      - kwin
+      - kwindowsystem
+      - kxmlgui
+      - layer-shell-qt
+      - libcanberra
+      - libice
+      - libkscreen
+      - libksysguard
+      - libplasma
+      - libqalculate
+      - libsm
+      - libx11
+      - libxau
+      - libxcb
+      - libxcursor
+      - libxfixes
+      - libxft
+      - libxrender
+      - libxrender
+      - libxtst
+      - plasma-activities
+      - plasma-activities-stats
+      - plasma-wayland-protocols
+      - plasma5support
+      - prison
+      - qcoro
+      - qt5compat
+      - qtbase6
+      - qtdeclarative6
+      - qtlocation6
+      - qtpositioning6
+      - qtshadertools6
+      - qtsvg6
+      - solid
+      - systemd
+      - wayland
+      - xcb-util
+      - xcb-util-image
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=/usr/lib/qt6/qml'
+        - '-DKDE_INSTALL_PLUGINDIR=/usr/lib/qt6/plugins'
+        - '-DKDE_INSTALL_QTPLUGINDIR=/usr/lib/qt6/plugins'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '-DWITH_X11=ON'
+        - '-DCMAKE_DISABLE_FIND_PACKAGE_PackageKitQt6=ON'
+        - '-DGLIBC_LOCALE_GEN=OFF'
+        - '-DGLIBC_LOCALE_PREGENERATED=OFF'
+        - '-DBUILD_CAMERAINDICATOR=OFF'
+        - '-DKF6_HOST_TOOLING=@BUILD_ROOT@/tools/host-kconfig/lib/x86_64-linux-gnu/cmake/;@BUILD_ROOT@/tools/host-kcmutils/lib/x86_64-linux-gnu/cmake/;@BUILD_ROOT@/tools/host-kpackage/lib/x86_64-linux-gnu/cmake/'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'

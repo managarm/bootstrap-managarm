@@ -1,0 +1,64 @@
+From 2525c0885fbb4dc73528ac19f8fb22ae50708256 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Tue, 19 Aug 2025 11:36:03 +0200
+Subject: [PATCH] Add Managarm support
+
+---
+ CMakeLists.txt                          | 2 +-
+ kcms/lookandfeel/tool/CMakeLists.txt    | 1 +
+ startkde/CMakeLists.txt                 | 1 +
+ startkde/session-restore/CMakeLists.txt | 1 +
+ 4 files changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index daf1599..7d5b56e 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -211,7 +211,7 @@ else()
+ endif()
+ 
+ # FreeBSD systems might have libxcrypt but their shadow equivalent doesn't use it
+-if(CMAKE_SYSTEM_NAME MATCHES "Linux")
++if(CMAKE_SYSTEM_NAME MATCHES "Linux" OR CMAKE_SYSTEM_NAME MATCHES "managarm")
+     pkg_check_modules(libxcrypt libxcrypt>=4)
+     if(libxcrypt_FOUND)
+         set(HAVE_CRYPT_GENSALT true)
+diff --git a/kcms/lookandfeel/tool/CMakeLists.txt b/kcms/lookandfeel/tool/CMakeLists.txt
+index 75528e9..d442191 100644
+--- a/kcms/lookandfeel/tool/CMakeLists.txt
++++ b/kcms/lookandfeel/tool/CMakeLists.txt
+@@ -14,6 +14,7 @@ target_link_libraries(plasma-apply-lookandfeel PRIVATE
+     Qt::Widgets
+     KF6::ConfigGui
+     KF6::I18n
++    krdb
+     PW::KLookAndFeel
+ )
+ 
+diff --git a/startkde/CMakeLists.txt b/startkde/CMakeLists.txt
+index f21b851..61ea8e9 100644
+--- a/startkde/CMakeLists.txt
++++ b/startkde/CMakeLists.txt
+@@ -23,6 +23,7 @@ target_link_libraries(startplasma PUBLIC
+     KF6::Package
+     Canberra::Canberra
+     PW::KLookAndFeel
++    krdb
+     PW::KWorkspace
+     KNightTime
+ )
+diff --git a/startkde/session-restore/CMakeLists.txt b/startkde/session-restore/CMakeLists.txt
+index 6949e0d..8c707e5 100644
+--- a/startkde/session-restore/CMakeLists.txt
++++ b/startkde/session-restore/CMakeLists.txt
+@@ -12,6 +12,7 @@ target_link_libraries(plasma-fallback-session-save
+     Qt6::Core
+     KF6::KIOGui
+     KF6::ConfigCore
++    PW::KWorkspace
+     PW::LibTaskManager
+     Qt6::GuiPrivate
+     Wayland::Client
+-- 
+2.53.0
+
