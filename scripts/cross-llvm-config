@@ -4,9 +4,9 @@ import argparse
 import os
 import sys
 
-our_version_major = 19
+our_version_major = 21
 our_version_minor = 1
-our_version_patch = 7
+our_version_patch = 0
 
 def do_version():
     return "{}.{}.{}".format(our_version_major, our_version_minor, our_version_patch)

@@ -216,7 +216,7 @@ tools:
       - binutils
     tools_required:
       - host-cmake
-    revision: 3
+    revision: 1
     configure:
       - args:
         - 'cmake'

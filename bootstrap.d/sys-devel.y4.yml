@@ -35,8 +35,8 @@ sources:
   - name: llvm
     subdir: 'ports'
     git: 'https://github.com/llvm/llvm-project'
-    tag: 'llvmorg-19.1.7'
-    version: '19.1.7'
+    tag: 'llvmorg-21.1.0'
+    version: '21.1.0' # bump version in cross-llvm-config, too
 
   - name: gcc
     subdir: 'ports'
@@ -370,8 +370,9 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
+      - gcc # for libstc++.so
       - zlib
-    revision: 3
+    revision: 1
     configure:
       - args:
         - 'cmake'
