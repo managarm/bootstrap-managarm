@@ -1,19 +1,19 @@
-From fd010ca74eacde2759e1350b4284212781bac7f7 Mon Sep 17 00:00:00 2001
+From 23c73390a7dea478f3c1846d01bdab6dbc633646 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Sun, 10 Aug 2025 15:03:10 +0200
-Subject: [PATCH 5/5] Managarm: Define __mlibc__ and fix ld.so paths
+Subject: [PATCH 2/2] Managarm: Define __mlibc__ and fix ld.so paths
 
 ---
  clang/lib/Basic/Targets/OSTargets.h      |  1 +
  clang/lib/Driver/ToolChains/Managarm.cpp | 10 ++++------
- clang/test/Driver/managarm.cpp           |  4 ++--
- 3 files changed, 7 insertions(+), 8 deletions(-)
+ clang/test/Driver/managarm.cpp           |  8 ++++----
+ 3 files changed, 9 insertions(+), 10 deletions(-)
 
 diff --git a/clang/lib/Basic/Targets/OSTargets.h b/clang/lib/Basic/Targets/OSTargets.h
-index 257d399b2..88adf8575 100644
+index c1a68f464..165405cb3 100644
 --- a/clang/lib/Basic/Targets/OSTargets.h
 +++ b/clang/lib/Basic/Targets/OSTargets.h
-@@ -381,6 +381,7 @@ protected:
+@@ -406,6 +406,7 @@ protected:
                      MacroBuilder &Builder) const override {
      DefineStd(Builder, "unix", Opts);
      Builder.defineMacro("__managarm__");
@@ -22,10 +22,10 @@ index 257d399b2..88adf8575 100644
        Builder.defineMacro("_REENTRANT");
      if (Opts.CPlusPlus)
 diff --git a/clang/lib/Driver/ToolChains/Managarm.cpp b/clang/lib/Driver/ToolChains/Managarm.cpp
-index 51abd8459..0764503dc 100644
+index 0f56f0f6a..03dbfb95f 100644
 --- a/clang/lib/Driver/ToolChains/Managarm.cpp
 +++ b/clang/lib/Driver/ToolChains/Managarm.cpp
-@@ -126,13 +126,11 @@ std::string Managarm::computeSysRoot() const {
+@@ -119,13 +119,11 @@ std::string Managarm::computeSysRoot() const {
  std::string Managarm::getDynamicLinker(const ArgList &Args) const {
    switch (getTriple().getArch()) {
    case llvm::Triple::aarch64:
@@ -44,7 +44,7 @@ index 51abd8459..0764503dc 100644
      llvm_unreachable("unsupported architecture");
    }
 diff --git a/clang/test/Driver/managarm.cpp b/clang/test/Driver/managarm.cpp
-index 86f1e2710..3cbeba312 100644
+index 9c3f2d4d7..607beaf90 100644
 --- a/clang/test/Driver/managarm.cpp
 +++ b/clang/test/Driver/managarm.cpp
 @@ -13,7 +13,7 @@
@@ -56,15 +56,33 @@ index 86f1e2710..3cbeba312 100644
  // CHECK-X86-64-SAME: "{{.*}}/usr/lib/gcc/x86_64-managarm-mlibc/10/crtbegin.o"
  // CHECK-X86-64-SAME: "-L
  // CHECK-X86-64-SAME: {{^}}[[SYSROOT]]/usr/lib/gcc/x86_64-managarm-mlibc/10"
-@@ -78,7 +78,7 @@
- // CHECK-AARCH64-SAME: {{^}} "-internal-externc-isystem" "[[SYSROOT]]/include"
+@@ -36,7 +36,7 @@
+ // CHECK-X86-64-LIBS-SAME: {{^}} "-internal-externc-isystem" "[[SYSROOT]]/include"
+ // CHECK-X86-64-LIBS-SAME: {{^}} "-internal-externc-isystem" "[[SYSROOT]]/usr/include"
+ // CHECK-X86-64-LIBS:      "{{.*}}ld" "--sysroot=[[SYSROOT:[^"]+]]"
+-// CHECK-X86-64-LIBS-SAME: "-dynamic-linker" "/lib/x86_64-managarm/ld.so"
++// CHECK-X86-64-LIBS-SAME: "-dynamic-linker" "/lib/x86_64-managarm-mlibc-ld.so"
+ // CHECK-X86-64-LIBS-SAME: "{{.*}}/usr/lib/gcc/x86_64-managarm-mlibc/10/crtbegin.o"
+ // CHECK-X86-64-LIBS-SAME: "-L
+ // CHECK-X86-64-LIBS-SAME: {{^}}[[SYSROOT]]/usr/lib/gcc/x86_64-managarm-mlibc/10"
+@@ -102,7 +102,7 @@
  // CHECK-AARCH64-SAME: {{^}} "-internal-externc-isystem" "[[SYSROOT]]/usr/include"
  // CHECK-AARCH64:      "{{.*}}ld" "--sysroot=[[SYSROOT:[^"]+]]"
--// CHECK-AARCH64-SAME: "-dynamic-linker" "/lib/aarch64-managarm/ld.so"
-+// CHECK-AARCH64-SAME: "-dynamic-linker" "/lib/aarch64-managarm-mlibc-ld.so"
+ // CHECK-AARCH64-SAME: "-m" "aarch64managarm"
+-// CHECK-AARCH64-SAME: {{^}} "-dynamic-linker" "/lib/aarch64-managarm/ld.so"
++// CHECK-AARCH64-SAME: {{^}} "-dynamic-linker" "/lib/aarch64-managarm-mlibc-ld.so"
  // CHECK-AARCH64-SAME: "{{.*}}/usr/lib/gcc/aarch64-managarm-mlibc/10/crtbegin.o"
- // CHECK-AARCH64-SAME: "-L
+ // CHECK-AARCH64-SAME: {{^}} "-L
  // CHECK-AARCH64-SAME: {{^}}[[SYSROOT]]/usr/lib/gcc/aarch64-managarm-mlibc/10"
+@@ -126,7 +126,7 @@
+ // CHECK-AARCH64-LIBS-SAME: {{^}} "-internal-externc-isystem" "[[SYSROOT]]/usr/include"
+ // CHECK-AARCH64-LIBS:      "{{.*}}ld" "--sysroot=[[SYSROOT:[^"]+]]"
+ // CHECK-AARCH64-LIBS-SAME: "-m" "aarch64managarm"
+-// CHECK-AARCH64-LIBS-SAME: {{^}} "-dynamic-linker" "/lib/aarch64-managarm/ld.so"
++// CHECK-AARCH64-LIBS-SAME: {{^}} "-dynamic-linker" "/lib/aarch64-managarm-mlibc-ld.so"
+ // CHECK-AARCH64-LIBS-SAME: "{{.*}}/usr/lib/gcc/aarch64-managarm-mlibc/10/crtbegin.o"
+ // CHECK-AARCH64-LIBS-SAME: {{^}} "-L
+ // CHECK-AARCH64-LIBS-SAME: {{^}}[[SYSROOT]]/usr/lib/gcc/aarch64-managarm-mlibc/10"
 -- 
 2.50.1
 

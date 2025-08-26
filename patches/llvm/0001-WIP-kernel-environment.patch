@@ -1,7 +1,7 @@
-From ca6beef488fd8a2d67f7ad3dacfaeb7563663dcd Mon Sep 17 00:00:00 2001
+From 6f4a69191cb262fc7e2171a612b0d2d14a367360 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Tue, 5 Nov 2024 01:44:16 +0100
-Subject: [PATCH 4/5] WIP: kernel environment
+Subject: [PATCH 1/2] WIP: kernel environment
 
 ---
  llvm/include/llvm/TargetParser/Triple.h | 1 +
@@ -9,10 +9,10 @@ Subject: [PATCH 4/5] WIP: kernel environment
  2 files changed, 4 insertions(+)
 
 diff --git a/llvm/include/llvm/TargetParser/Triple.h b/llvm/include/llvm/TargetParser/Triple.h
-index 302bcf030..afe3d5737 100644
+index 657f42303..02c4db3ef 100644
 --- a/llvm/include/llvm/TargetParser/Triple.h
 +++ b/llvm/include/llvm/TargetParser/Triple.h
-@@ -293,6 +293,7 @@ public:
+@@ -304,6 +304,7 @@ public:
      OpenCL,
      OpenHOS,
      Mlibc,
@@ -21,11 +21,11 @@ index 302bcf030..afe3d5737 100644
      PAuthTest,
  
 diff --git a/llvm/lib/TargetParser/Triple.cpp b/llvm/lib/TargetParser/Triple.cpp
-index 32b924729..58036baee 100644
+index 0584c941d..43d9d5a51 100644
 --- a/llvm/lib/TargetParser/Triple.cpp
 +++ b/llvm/lib/TargetParser/Triple.cpp
-@@ -361,6 +361,8 @@ StringRef Triple::getEnvironmentTypeName(EnvironmentType Kind) {
-     return "pauthtest";
+@@ -389,6 +389,8 @@ StringRef Triple::getEnvironmentTypeName(EnvironmentType Kind) {
+     return "llvm";
    case Mlibc:
      return "mlibc";
 +  case Kernel:
@@ -33,9 +33,9 @@ index 32b924729..58036baee 100644
    }
  
    llvm_unreachable("Invalid EnvironmentType!");
-@@ -743,6 +745,7 @@ static Triple::EnvironmentType parseEnvironment(StringRef EnvironmentName) {
-       .StartsWith("ohos", Triple::OpenHOS)
+@@ -773,6 +775,7 @@ static Triple::EnvironmentType parseEnvironment(StringRef EnvironmentName) {
        .StartsWith("pauthtest", Triple::PAuthTest)
+       .StartsWith("llvm", Triple::LLVM)
        .StartsWith("mlibc", Triple::Mlibc)
 +      .StartsWith("kernel", Triple::Kernel)
        .Default(Triple::UnknownEnvironment);
