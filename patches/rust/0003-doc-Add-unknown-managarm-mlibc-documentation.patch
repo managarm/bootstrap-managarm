@@ -1,0 +1,114 @@
+From a072bd88c96d28b3699f521cba2da87027236d23 Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Mon, 1 Apr 2024 12:45:22 +0200
+Subject: [PATCH 3/8] doc: Add `*-unknown-managarm-mlibc` documentation
+
+---
+ src/doc/rustc/src/SUMMARY.md                  |  1 +
+ src/doc/rustc/src/platform-support.md         |  3 ++
+ .../rustc/src/platform-support/managarm.md    | 53 +++++++++++++++++++
+ 3 files changed, 57 insertions(+)
+ create mode 100644 src/doc/rustc/src/platform-support/managarm.md
+
+diff --git a/src/doc/rustc/src/SUMMARY.md b/src/doc/rustc/src/SUMMARY.md
+index 201a5503..97ba6069 100644
+--- a/src/doc/rustc/src/SUMMARY.md
++++ b/src/doc/rustc/src/SUMMARY.md
+@@ -109,6 +109,7 @@
+     - [\*-unikraft-linux-musl](platform-support/unikraft-linux-musl.md)
+     - [\*-unknown-hermit](platform-support/hermit.md)
+     - [\*-unknown-freebsd](platform-support/freebsd.md)
++    - [\*-unknown-managarm-mlibc](platform-support/managarm.md)
+     - [\*-unknown-netbsd\*](platform-support/netbsd.md)
+     - [\*-unknown-openbsd](platform-support/openbsd.md)
+     - [\*-unknown-redox](platform-support/redox.md)
+diff --git a/src/doc/rustc/src/platform-support.md b/src/doc/rustc/src/platform-support.md
+index 285b1e51..a5979338 100644
+--- a/src/doc/rustc/src/platform-support.md
++++ b/src/doc/rustc/src/platform-support.md
+@@ -258,6 +258,7 @@ target | std | host | notes
+ [`aarch64-unknown-hermit`](platform-support/hermit.md) | ✓ |  | ARM64 Hermit
+ [`aarch64-unknown-illumos`](platform-support/illumos.md) | ✓ | ✓ | ARM64 illumos
+ `aarch64-unknown-linux-gnu_ilp32` | ✓ | ✓ | ARM64 Linux (ILP32 ABI)
++[`aarch64-unknown-managarm-mlibc`](platform-support/managarm.md) | ? |   | ARM64 managarm
+ [`aarch64-unknown-netbsd`](platform-support/netbsd.md) | ✓ | ✓ | ARM64 NetBSD
+ [`aarch64-unknown-nto-qnx700`](platform-support/nto-qnx.md) | ? |  | ARM64 QNX Neutrino 7.0 RTOS |
+ [`aarch64-unknown-nto-qnx710`](platform-support/nto-qnx.md) | ✓ |  | ARM64 QNX Neutrino 7.1 RTOS with default network stack (io-pkt) |
+@@ -384,6 +385,7 @@ target | std | host | notes
+ `riscv64gc-unknown-freebsd` | ? |   | RISC-V FreeBSD
+ `riscv64gc-unknown-fuchsia` | ? |   | RISC-V Fuchsia
+ [`riscv64gc-unknown-hermit`](platform-support/hermit.md) | ✓ |   | RISC-V Hermit
++[`riscv64gc-unknown-managarm-mlibc`](platform-support/managarm.md) | ? |   | RISC-V managarm
+ [`riscv64gc-unknown-netbsd`](platform-support/netbsd.md) | ✓ | ✓ | RISC-V NetBSD
+ [`riscv64gc-unknown-nuttx-elf`](platform-support/nuttx.md) | ✓ |  | RISC-V 64bit with NuttX
+ [`riscv64gc-unknown-openbsd`](platform-support/openbsd.md) | ✓ | ✓ | OpenBSD/riscv64
+@@ -423,6 +425,7 @@ target | std | host | notes
+ [`x86_64-unknown-hurd-gnu`](platform-support/hurd.md) | ✓ | ✓ | 64-bit GNU/Hurd
+ `x86_64-unknown-l4re-uclibc` | ? |  |
+ [`x86_64-unknown-linux-none`](platform-support/x86_64-unknown-linux-none.md) | * |  | 64-bit Linux with no libc
++[`x86_64-unknown-managarm-mlibc`](platform-support/managarm.md) | ? |   | x86_64 managarm
+ [`x86_64-unknown-openbsd`](platform-support/openbsd.md) | ✓ | ✓ | 64-bit OpenBSD
+ [`x86_64-unknown-trusty`](platform-support/trusty.md) | ✓ |  |
+ `x86_64-uwp-windows-gnu` | ✓ |  |
+diff --git a/src/doc/rustc/src/platform-support/managarm.md b/src/doc/rustc/src/platform-support/managarm.md
+new file mode 100644
+index 00000000..aa2d5a7a
+--- /dev/null
++++ b/src/doc/rustc/src/platform-support/managarm.md
+@@ -0,0 +1,53 @@
++# `*-unknown-managarm-mlibc`
++
++**Tier: 3**
++
++## Target Maintainers
++
++- [@no92](https://github.com/no92)
++- [@64](https://github.com/64)
++- [@Dennisbonke](https://github.com/Dennisbonke)
++
++## Requirements
++
++This target is cross-compiled. There is currently no support for `std` yet. It generates binaries in the ELF format. Currently, we support the `x86_64`, `aarch64` and `riscv64gc` architectures. The examples below `$ARCH` should be substituted for one of the supported architectures.
++
++## Building the target
++
++Managarm has upstream support in LLVM since the release of 21.1.0.
++
++Set up your `bootstrap.toml` like this:
++
++```toml
++change-id = 142379
++
++[llvm]
++targets = "X86;AArch64;RISCV"
++download-ci-llvm = false
++
++[build]
++target = ["$ARCH-unknown-managarm-mlibc", "x86_64-unknown-linux-gnu"]
++
++[target.x86_64-unknown-linux-gnu]
++llvm-config = "/path/to/your/llvm/bin/llvm-config"
++
++[target.$ARCH-unknown-managarm-mlibc]
++llvm-config = "/path/to/your/llvm/bin/llvm-config"
++```
++
++## Building Rust programs
++
++Build a `$ARCH-managarm-gcc` using our [gcc fork](https://github.com/managarm/gcc).
++
++```toml
++[build]
++rustc = "/path/to/the/rust-prefix/bin/rustc"
++target = "$ARCH-unknown-managarm-mlibc"
++
++[target.$ARCH-unknown-managarm-mlibc]
++linker = "/path/to/the/managarm-gcc/bin/$ARCH-managarm-gcc"
++```
++
++## Testing
++
++This target does not support running the Rust testsuite yet.
+-- 
+2.51.0
+

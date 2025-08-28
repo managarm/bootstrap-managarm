@@ -1,0 +1,288 @@
+From 1be6f0e1e73f23e63721a05fb8a52f7ebdbac004 Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Sun, 31 Mar 2024 15:48:04 +0200
+Subject: [PATCH 2/8] compiler: Add
+ `{x86_64,aarch64,riscv64gc}-unknown-managarm-mlibc` targets
+
+Co-authored-by: Dennis Bonke <dennis@managarm.org>
+---
+ .../src/spec/base/managarm_mlibc.rs           | 35 +++++++++++++++++++
+ compiler/rustc_target/src/spec/base/mod.rs    |  1 +
+ compiler/rustc_target/src/spec/mod.rs         |  4 +++
+ .../targets/aarch64_unknown_managarm_mlibc.rs | 22 ++++++++++++
+ .../riscv64gc_unknown_managarm_mlibc.rs       | 24 +++++++++++++
+ .../targets/x86_64_unknown_managarm_mlibc.rs  | 24 +++++++++++++
+ src/tools/build-manifest/src/main.rs          |  3 ++
+ tests/assembly/targets/targets-elf.rs         |  9 +++++
+ .../auxiliary/used_pre_main_constructor.rs    |  1 +
+ tests/ui/check-cfg/well-known-values.stderr   |  6 ++--
+ 10 files changed, 126 insertions(+), 3 deletions(-)
+ create mode 100644 compiler/rustc_target/src/spec/base/managarm_mlibc.rs
+ create mode 100644 compiler/rustc_target/src/spec/targets/aarch64_unknown_managarm_mlibc.rs
+ create mode 100644 compiler/rustc_target/src/spec/targets/riscv64gc_unknown_managarm_mlibc.rs
+ create mode 100644 compiler/rustc_target/src/spec/targets/x86_64_unknown_managarm_mlibc.rs
+
+diff --git a/compiler/rustc_target/src/spec/base/managarm_mlibc.rs b/compiler/rustc_target/src/spec/base/managarm_mlibc.rs
+new file mode 100644
+index 00000000..b4872205
+--- /dev/null
++++ b/compiler/rustc_target/src/spec/base/managarm_mlibc.rs
+@@ -0,0 +1,35 @@
++use crate::spec::{Cc, cvs, LinkArgs, LinkerFlavor, Lld, RelroLevel, TargetOptions};
++
++pub(crate) fn opts() -> TargetOptions {
++    let mut args = LinkArgs::new();
++    args.insert(
++        LinkerFlavor::Gnu(Cc::Yes, Lld::No),
++        vec![
++            // We want to be able to strip as much executable code as possible
++            // from the linker command line, and this flag indicates to the
++            // linker that it can avoid linking in dynamic libraries that don't
++            // actually satisfy any symbols up to that point (as with many other
++            // resolutions the linker does). This option only applies to all
++            // following libraries so we're sure to pass it as one of the first
++            // arguments.
++            "-Wl,--as-needed".to_string().into(),
++            // Always enable NX protection when it is available
++            "-Wl,-z,noexecstack".to_string().into(),
++        ],
++    );
++
++    TargetOptions {
++        os: "managarm".into(),
++        env: "mlibc".into(),
++        dynamic_linking: true,
++        executables: true,
++        families: cvs!["unix"],
++        has_rpath: true,
++        pre_link_args: args,
++        position_independent_executables: true,
++        relro_level: RelroLevel::Full,
++        has_thread_local: true,
++        crt_static_respected: true,
++        ..Default::default()
++    }
++}
+diff --git a/compiler/rustc_target/src/spec/base/mod.rs b/compiler/rustc_target/src/spec/base/mod.rs
+index b368d93f..be15da73 100644
+--- a/compiler/rustc_target/src/spec/base/mod.rs
++++ b/compiler/rustc_target/src/spec/base/mod.rs
+@@ -20,6 +20,7 @@
+ pub(crate) mod linux_uclibc;
+ pub(crate) mod linux_wasm;
+ pub(crate) mod lynxos178;
++pub(crate) mod managarm_mlibc;
+ pub(crate) mod msvc;
+ pub(crate) mod netbsd;
+ pub(crate) mod nto_qnx;
+diff --git a/compiler/rustc_target/src/spec/mod.rs b/compiler/rustc_target/src/spec/mod.rs
+index 7a49f004..c6e87768 100644
+--- a/compiler/rustc_target/src/spec/mod.rs
++++ b/compiler/rustc_target/src/spec/mod.rs
+@@ -1871,6 +1871,10 @@ fn $module() {
+     ("i586-unknown-redox", i586_unknown_redox),
+     ("x86_64-unknown-redox", x86_64_unknown_redox),
+ 
++    ("x86_64-unknown-managarm-mlibc", x86_64_unknown_managarm_mlibc),
++    ("aarch64-unknown-managarm-mlibc", aarch64_unknown_managarm_mlibc),
++    ("riscv64gc-unknown-managarm-mlibc", riscv64gc_unknown_managarm_mlibc),
++
+     ("i386-apple-ios", i386_apple_ios),
+     ("x86_64-apple-ios", x86_64_apple_ios),
+     ("aarch64-apple-ios", aarch64_apple_ios),
+diff --git a/compiler/rustc_target/src/spec/targets/aarch64_unknown_managarm_mlibc.rs b/compiler/rustc_target/src/spec/targets/aarch64_unknown_managarm_mlibc.rs
+new file mode 100644
+index 00000000..f66931b5
+--- /dev/null
++++ b/compiler/rustc_target/src/spec/targets/aarch64_unknown_managarm_mlibc.rs
+@@ -0,0 +1,22 @@
++use crate::spec::{base, StackProbeType, Target};
++
++pub(crate) fn target() -> Target {
++    let mut base = base::managarm_mlibc::opts();
++    base.max_atomic_width = Some(128);
++    base.stack_probes = StackProbeType::Inline;
++    base.features = "+v8a".into();
++
++    Target {
++        llvm_target: "aarch64-unknown-managarm-mlibc".into(),
++        metadata: crate::spec::TargetMetadata {
++            description: Some("managarm/aarch64".into()),
++            tier: Some(3),
++            host_tools: Some(false),
++            std: Some(false),
++        },
++        pointer_width: 64,
++        data_layout: "e-m:e-p270:32:32-p271:32:32-p272:64:64-i8:8:32-i16:16:32-i64:64-i128:128-n32:64-S128-Fn32".into(),
++        arch: "aarch64".into(),
++        options: base
++    }
++}
+diff --git a/compiler/rustc_target/src/spec/targets/riscv64gc_unknown_managarm_mlibc.rs b/compiler/rustc_target/src/spec/targets/riscv64gc_unknown_managarm_mlibc.rs
+new file mode 100644
+index 00000000..abf28310
+--- /dev/null
++++ b/compiler/rustc_target/src/spec/targets/riscv64gc_unknown_managarm_mlibc.rs
+@@ -0,0 +1,24 @@
++use crate::spec::{CodeModel, Target, TargetOptions, base};
++
++pub(crate) fn target() -> Target {
++    Target {
++        llvm_target: "riscv64-unknown-managarm-mlibc".into(),
++        metadata: crate::spec::TargetMetadata {
++            description: Some("managarm/riscv64".into()),
++            tier: Some(3),
++            host_tools: Some(false),
++            std: Some(false),
++        },
++        pointer_width: 64,
++        data_layout: "e-m:e-p:64:64-i64:64-i128:128-n32:64-S128".into(),
++        arch: "riscv64".into(),
++        options: TargetOptions {
++            code_model: Some(CodeModel::Medium),
++            cpu: "generic-rv64".into(),
++            features: "+m,+a,+f,+d,+c".into(),
++            llvm_abiname: "lp64d".into(),
++            max_atomic_width: Some(64),
++            ..base::managarm_mlibc::opts()
++        },
++    }
++}
+diff --git a/compiler/rustc_target/src/spec/targets/x86_64_unknown_managarm_mlibc.rs b/compiler/rustc_target/src/spec/targets/x86_64_unknown_managarm_mlibc.rs
+new file mode 100644
+index 00000000..31dc065b
+--- /dev/null
++++ b/compiler/rustc_target/src/spec/targets/x86_64_unknown_managarm_mlibc.rs
+@@ -0,0 +1,24 @@
++use crate::spec::{base, Cc, LinkerFlavor, Lld, StackProbeType, Target};
++
++pub(crate) fn target() -> Target {
++    let mut base = base::managarm_mlibc::opts();
++    base.cpu = "x86-64".into();
++    base.max_atomic_width = Some(64);
++    base.add_pre_link_args(LinkerFlavor::Gnu(Cc::Yes, Lld::No), &["-m64"]);
++    base.stack_probes = StackProbeType::Inline;
++
++    Target {
++        llvm_target: "x86_64-unknown-managarm-mlibc".into(),
++        metadata: crate::spec::TargetMetadata {
++            description: Some("managarm/amd64".into()),
++            tier: Some(3),
++            host_tools: Some(false),
++            std: Some(false),
++        },
++        pointer_width: 64,
++        data_layout: "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128"
++            .into(),
++        arch: "x86_64".into(),
++        options: base
++    }
++}
+diff --git a/src/tools/build-manifest/src/main.rs b/src/tools/build-manifest/src/main.rs
+index 4c53ea42..33967efe 100644
+--- a/src/tools/build-manifest/src/main.rs
++++ b/src/tools/build-manifest/src/main.rs
+@@ -69,6 +69,7 @@
+     "aarch64-unknown-none-softfloat",
+     "aarch64-unknown-redox",
+     "aarch64-unknown-uefi",
++    "aarch64-unknown-managarm-mlibc",
+     "amdgcn-amd-amdhsa",
+     "arm64e-apple-darwin",
+     "arm64e-apple-ios",
+@@ -153,6 +154,7 @@
+     "riscv64gc-unknown-none-elf",
+     "riscv64gc-unknown-linux-gnu",
+     "riscv64gc-unknown-linux-musl",
++    "riscv64gc-unknown-managarm-mlibc",
+     "s390x-unknown-linux-gnu",
+     "sparc64-unknown-linux-gnu",
+     "sparcv9-sun-solaris",
+@@ -192,6 +194,7 @@
+     "x86_64-unknown-redox",
+     "x86_64-unknown-hermit",
+     "x86_64-unknown-uefi",
++    "x86_64-unknown-managarm-mlibc",
+ ];
+ 
+ /// This allows the manifest to contain rust-docs for hosts that don't build
+diff --git a/tests/assembly/targets/targets-elf.rs b/tests/assembly/targets/targets-elf.rs
+index edf16548..d5e9e8f0 100644
+--- a/tests/assembly/targets/targets-elf.rs
++++ b/tests/assembly/targets/targets-elf.rs
+@@ -43,6 +43,9 @@
+ //@ revisions: aarch64_unknown_linux_ohos
+ //@ [aarch64_unknown_linux_ohos] compile-flags: --target aarch64-unknown-linux-ohos
+ //@ [aarch64_unknown_linux_ohos] needs-llvm-components: aarch64
++//@ revisions: aarch64_unknown_managarm_mlibc
++//@ [aarch64_unknown_managarm_mlibc] compile-flags: --target aarch64-unknown-managarm-mlibc
++//@ [aarch64_unknown_managarm_mlibc] needs-llvm-components: aarch64
+ //@ revisions: aarch64_unknown_netbsd
+ //@ [aarch64_unknown_netbsd] compile-flags: --target aarch64-unknown-netbsd
+ //@ [aarch64_unknown_netbsd] needs-llvm-components: aarch64
+@@ -475,6 +478,9 @@
+ //@ revisions: riscv64gc_unknown_linux_musl
+ //@ [riscv64gc_unknown_linux_musl] compile-flags: --target riscv64gc-unknown-linux-musl
+ //@ [riscv64gc_unknown_linux_musl] needs-llvm-components: riscv
++//@ revisions: riscv64gc_unknown_managarm_mlibc
++//@ [riscv64gc_unknown_managarm_mlibc] compile-flags: --target riscv64gc-unknown-managarm-mlibc
++//@ [riscv64gc_unknown_managarm_mlibc] needs-llvm-components: riscv
+ //@ revisions: riscv64gc_unknown_netbsd
+ //@ [riscv64gc_unknown_netbsd] compile-flags: --target riscv64gc-unknown-netbsd
+ //@ [riscv64gc_unknown_netbsd] needs-llvm-components: riscv
+@@ -634,6 +640,9 @@
+ //@ revisions: x86_64_unknown_linux_none
+ //@ [x86_64_unknown_linux_none] compile-flags: --target x86_64-unknown-linux-none
+ //@ [x86_64_unknown_linux_none] needs-llvm-components: x86
++//@ revisions: x86_64_unknown_managarm_mlibc
++//@ [x86_64_unknown_managarm_mlibc] compile-flags: --target x86_64-unknown-managarm-mlibc
++//@ [x86_64_unknown_managarm_mlibc] needs-llvm-components: x86
+ //@ revisions: x86_64_unknown_netbsd
+ //@ [x86_64_unknown_netbsd] compile-flags: --target x86_64-unknown-netbsd
+ //@ [x86_64_unknown_netbsd] needs-llvm-components: x86
+diff --git a/tests/ui/attributes/auxiliary/used_pre_main_constructor.rs b/tests/ui/attributes/auxiliary/used_pre_main_constructor.rs
+index 8ea7a9cb..f93a2aae 100644
+--- a/tests/ui/attributes/auxiliary/used_pre_main_constructor.rs
++++ b/tests/ui/attributes/auxiliary/used_pre_main_constructor.rs
+@@ -20,6 +20,7 @@
+         target_os = "nto",
+         target_os = "openbsd",
+         target_os = "fuchsia",
++        target_os = "managarm",
+     ),
+     link_section = ".init_array"
+ )]
+diff --git a/tests/ui/check-cfg/well-known-values.stderr b/tests/ui/check-cfg/well-known-values.stderr
+index 532c1ab1..35ce2886 100644
+--- a/tests/ui/check-cfg/well-known-values.stderr
++++ b/tests/ui/check-cfg/well-known-values.stderr
+@@ -156,7 +156,7 @@ warning: unexpected `cfg` condition value: `_UNEXPECTED_VALUE`
+ LL |     target_env = "_UNEXPECTED_VALUE",
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+-   = note: expected values for `target_env` are: ``, `gnu`, `msvc`, `musl`, `newlib`, `nto70`, `nto71`, `nto71_iosock`, `nto80`, `ohos`, `p1`, `p2`, `relibc`, `sgx`, and `uclibc`
++   = note: expected values for `target_env` are: ``, `gnu`, `mlibc`, `msvc`, `musl`, `newlib`, `nto70`, `nto71`, `nto71_iosock`, `nto80`, `ohos`, `p1`, `p2`, `relibc`, `sgx`, and `uclibc`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration
+ 
+ warning: unexpected `cfg` condition value: `_UNEXPECTED_VALUE`
+@@ -201,7 +201,7 @@ warning: unexpected `cfg` condition value: `_UNEXPECTED_VALUE`
+ LL |     target_os = "_UNEXPECTED_VALUE",
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+-   = note: expected values for `target_os` are: `aix`, `amdhsa`, `android`, `cuda`, `cygwin`, `dragonfly`, `emscripten`, `espidf`, `freebsd`, `fuchsia`, `haiku`, `hermit`, `horizon`, `hurd`, `illumos`, `ios`, `l4re`, `linux`, `lynxos178`, `macos`, `netbsd`, `none`, `nto`, `nuttx`, `openbsd`, `psp`, `psx`, `redox`, `rtems`, `solaris`, `solid_asp3`, `teeos`, `trusty`, `tvos`, `uefi`, `unknown`, `visionos`, `vita`, `vxworks`, `wasi`, `watchos`, `windows`, `xous`, and `zkvm`
++   = note: expected values for `target_os` are: `aix`, `amdhsa`, `android`, `cuda`, `cygwin`, `dragonfly`, `emscripten`, `espidf`, `freebsd`, `fuchsia`, `haiku`, `hermit`, `horizon`, `hurd`, `illumos`, `ios`, `l4re`, `linux`, `lynxos178`, `macos`, `managarm`, `netbsd`, `none`, `nto`, `nuttx`, `openbsd`, `psp`, `psx`, `redox`, `rtems`, `solaris`, `solid_asp3`, `teeos`, `trusty`, `tvos`, `uefi`, `unknown`, `visionos`, `vita`, `vxworks`, `wasi`, `watchos`, `windows`, `xous`, and `zkvm`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration
+ 
+ warning: unexpected `cfg` condition value: `_UNEXPECTED_VALUE`
+@@ -274,7 +274,7 @@ LL | #[cfg(target_os = "linuz")] // testing that we suggest `linux`
+    |                   |
+    |                   help: there is a expected value with a similar name: `"linux"`
+    |
+-   = note: expected values for `target_os` are: `aix`, `amdhsa`, `android`, `cuda`, `cygwin`, `dragonfly`, `emscripten`, `espidf`, `freebsd`, `fuchsia`, `haiku`, `hermit`, `horizon`, `hurd`, `illumos`, `ios`, `l4re`, `linux`, `lynxos178`, `macos`, `netbsd`, `none`, `nto`, `nuttx`, `openbsd`, `psp`, `psx`, `redox`, `rtems`, `solaris`, `solid_asp3`, `teeos`, `trusty`, `tvos`, `uefi`, `unknown`, `visionos`, `vita`, `vxworks`, `wasi`, `watchos`, `windows`, `xous`, and `zkvm`
++   = note: expected values for `target_os` are: `aix`, `amdhsa`, `android`, `cuda`, `cygwin`, `dragonfly`, `emscripten`, `espidf`, `freebsd`, `fuchsia`, `haiku`, `hermit`, `horizon`, `hurd`, `illumos`, `ios`, `l4re`, `linux`, `lynxos178`, `macos`, `managarm`, `netbsd`, `none`, `nto`, `nuttx`, `openbsd`, `psp`, `psx`, `redox`, `rtems`, `solaris`, `solid_asp3`, `teeos`, `trusty`, `tvos`, `uefi`, `unknown`, `visionos`, `vita`, `vxworks`, `wasi`, `watchos`, `windows`, `xous`, and `zkvm`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration
+ 
+ warning: 28 warnings emitted
+-- 
+2.51.0
+

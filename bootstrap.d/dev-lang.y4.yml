@@ -22,8 +22,8 @@ sources:
   - name: rust
     subdir: 'ports'
     git: 'https://github.com/rust-lang/rust.git'
-    tag: '1.86.0'
-    version: '1.86.0'
+    tag: '1.89.0'
+    version: '1.89.0'
 
   - name: vala
     subdir: 'ports'
@@ -71,8 +71,8 @@ tools:
       - name: config
         compile:
           - args: |
-              cat << EOF > config.toml
-              change-id = 102579
+              cat << EOF > bootstrap.toml
+              change-id = 142379
 
               [llvm]
               targets = "X86;AArch64;RISCV"

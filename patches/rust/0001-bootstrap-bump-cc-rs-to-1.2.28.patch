@@ -1,0 +1,42 @@
+From 9078586c007a09bb7c7164c8fe1ed54b8a3ec7a0 Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Thu, 28 Aug 2025 21:53:59 +0200
+Subject: [PATCH 1/8] bootstrap: bump cc-rs to 1.2.28
+
+---
+ src/bootstrap/Cargo.lock | 4 ++--
+ src/bootstrap/Cargo.toml | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/src/bootstrap/Cargo.lock b/src/bootstrap/Cargo.lock
+index a6ca699e..5b8ac723 100644
+--- a/src/bootstrap/Cargo.lock
++++ b/src/bootstrap/Cargo.lock
+@@ -90,9 +90,9 @@ dependencies = [
+ 
+ [[package]]
+ name = "cc"
+-version = "1.2.23"
++version = "1.2.28"
+ source = "registry+https://github.com/rust-lang/crates.io-index"
+-checksum = "5f4ac86a9e5bc1e2b3449ab9d7d3a6a405e3d1bb28d7b9be8614f55846ae3766"
++checksum = "4ad45f4f74e4e20eaa392913b7b33a7091c87e59628f4dd27888205ad888843c"
+ dependencies = [
+  "shlex",
+ ]
+diff --git a/src/bootstrap/Cargo.toml b/src/bootstrap/Cargo.toml
+index 9785a306..d2a5462c 100644
+--- a/src/bootstrap/Cargo.toml
++++ b/src/bootstrap/Cargo.toml
+@@ -32,7 +32,7 @@ test = false
+ # Most of the time updating these dependencies requires modifications to the
+ # bootstrap codebase(e.g., https://github.com/rust-lang/rust/issues/124565);
+ # otherwise, some targets will fail. That's why these dependencies are explicitly pinned.
+-cc = "=1.2.23"
++cc = "=1.2.28"
+ cmake = "=0.1.54"
+ 
+ build_helper = { path = "../build_helper" }
+-- 
+2.51.0
+
