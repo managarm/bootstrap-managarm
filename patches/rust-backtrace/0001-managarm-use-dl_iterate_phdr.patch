@@ -1,7 +1,7 @@
-From 368121ff8168641c9846832c244fd35443d52262 Mon Sep 17 00:00:00 2001
+From 3665504bec574129b4f8b3d86c3a3cb982c7d7b1 Mon Sep 17 00:00:00 2001
 From: Matt Taylor <mstaveleytaylor@gmail.com>
 Date: Mon, 14 Feb 2022 01:31:01 +0000
-Subject: [PATCH] managarm: use dl_iterate_phdr
+Subject: [PATCH 1/2] managarm: use dl_iterate_phdr
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
@@ -9,25 +9,25 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
  1 file changed, 2 insertions(+)
 
 diff --git a/src/symbolize/gimli.rs b/src/symbolize/gimli.rs
-index 7f1c6a5..1182598 100644
+index 31b83b5..a79d17f 100644
 --- a/src/symbolize/gimli.rs
 +++ b/src/symbolize/gimli.rs
-@@ -41,6 +41,7 @@ cfg_if::cfg_if! {
-         target_os = "openbsd",
+@@ -43,6 +43,7 @@ cfg_if::cfg_if! {
          target_os = "solaris",
          target_os = "illumos",
+         target_os = "aix",
 +        target_os = "managarm",
      ))] {
          #[path = "gimli/mmap_unix.rs"]
          mod mmap;
-@@ -216,6 +217,7 @@ cfg_if::cfg_if! {
-     } else if #[cfg(all(
-         any(
-             target_os = "linux",
+@@ -228,6 +229,7 @@ cfg_if::cfg_if! {
+             target_os = "netbsd",
+             target_os = "nto",
+             target_os = "android",
 +            target_os = "managarm",
-             target_os = "fuchsia",
-             target_os = "freebsd",
-             target_os = "openbsd",
+         ),
+         not(target_env = "uclibc"),
+     ))] {
 -- 
-2.42.0
+2.51.0
 

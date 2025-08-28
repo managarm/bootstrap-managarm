@@ -1,19 +1,18 @@
-From 93b3ecd1f0313b3a4cc334a61af96f7a7f23db30 Mon Sep 17 00:00:00 2001
+From c757e6e93a92c54e6883260ba913b8d4b125a531 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Fri, 25 Jul 2025 12:47:46 +0200
-Subject: [PATCH 5/5] tools: Do not blindly assume files exist in
+Subject: [PATCH 6/8] tools: Do not blindly assume files exist in
  generate-copyright
 
-Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
  src/tools/generate-copyright/src/cargo_metadata.rs | 6 +++++-
  1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/src/tools/generate-copyright/src/cargo_metadata.rs b/src/tools/generate-copyright/src/cargo_metadata.rs
-index b717bd53..71227fad 100644
+index 3fae26bd..eb8e0af2 100644
 --- a/src/tools/generate-copyright/src/cargo_metadata.rs
 +++ b/src/tools/generate-copyright/src/cargo_metadata.rs
-@@ -114,7 +114,11 @@ fn load_important_files(
+@@ -119,7 +119,11 @@ fn load_important_files(
  ) -> Result<(), Error> {
      let name_version = format!("{}-{}", package.name, package.version);
      println!("Scraping notices for {}...", name_version);
@@ -27,5 +26,5 @@ index b717bd53..71227fad 100644
          let entry = entry?;
          let metadata = entry.metadata()?;
 -- 
-2.50.0
+2.51.0
 

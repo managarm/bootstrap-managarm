@@ -1,0 +1,33 @@
+From 5768d14c59a71ac33789453fb5a9473fe5694399 Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Thu, 28 Aug 2025 22:29:30 +0200
+Subject: [PATCH 7/8] tools/rust-analyzer: add managarm/mlibc support
+
+---
+ .../crates/ide-completion/src/completions/attribute/cfg.rs     | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/src/tools/rust-analyzer/crates/ide-completion/src/completions/attribute/cfg.rs b/src/tools/rust-analyzer/crates/ide-completion/src/completions/attribute/cfg.rs
+index 1676a846..7ab668dd 100644
+--- a/src/tools/rust-analyzer/crates/ide-completion/src/completions/attribute/cfg.rs
++++ b/src/tools/rust-analyzer/crates/ide-completion/src/completions/attribute/cfg.rs
+@@ -85,7 +85,7 @@ pub(crate) fn complete_cfg(acc: &mut Completions, ctx: &CompletionContext<'_>) {
+     "x86_64",
+ ];
+ 
+-const KNOWN_ENV: [&str; 7] = ["eabihf", "gnu", "gnueabihf", "msvc", "relibc", "sgx", "uclibc"];
++const KNOWN_ENV: [&str; 7] = ["eabihf", "gnu", "gnueabihf", "msvc", "relibc", "sgx", "uclibc", "mlibc"];
+ 
+ const KNOWN_OS: [&str; 20] = [
+     "cuda",
+@@ -108,6 +108,7 @@ pub(crate) fn complete_cfg(acc: &mut Completions, ctx: &CompletionContext<'_>) {
+     "unknown",
+     "vxworks",
+     "windows",
++    "managarm",
+ ];
+ 
+ const KNOWN_VENDOR: [&str; 8] =
+-- 
+2.51.0
+
