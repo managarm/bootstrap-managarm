@@ -1,0 +1,34 @@
+From 1dc8bb38152bfc0cbf839bfc20a287b2828993ef Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Wed, 27 Aug 2025 03:34:00 +0200
+Subject: [PATCH 2/2] Fix unsafe extern blocks for Rust 2024
+
+---
+ src/backtrace/libunwind.rs | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/backtrace/libunwind.rs b/src/backtrace/libunwind.rs
+index 44daac5..e637510 100644
+--- a/src/backtrace/libunwind.rs
++++ b/src/backtrace/libunwind.rs
+@@ -168,7 +168,7 @@ mod uw {
+     pub type _Unwind_Trace_Fn =
+         extern "C" fn(ctx: *mut _Unwind_Context, arg: *mut c_void) -> _Unwind_Reason_Code;
+ 
+-    extern "C" {
++    unsafe extern "C" {
+         pub fn _Unwind_Backtrace(
+             trace: _Unwind_Trace_Fn,
+             trace_argument: *mut c_void,
+@@ -185,7 +185,7 @@ mod uw {
+             not(all(target_os = "rtems", target_arch = "arm")),
+             not(all(target_os = "vita", target_arch = "arm")),
+         ))] {
+-            extern "C" {
++            unsafe extern "C" {
+                 pub fn _Unwind_GetIP(ctx: *mut _Unwind_Context) -> libc::uintptr_t;
+                 pub fn _Unwind_FindEnclosingFunction(pc: *mut c_void) -> *mut c_void;
+ 
+-- 
+2.51.0
+
