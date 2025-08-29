@@ -67,7 +67,7 @@ tools:
       - host-llvm-toolchain
       - host-python
       - host-libffi
-    revision: 1
+    revision: 2
     stages:
       - name: config
         compile:
