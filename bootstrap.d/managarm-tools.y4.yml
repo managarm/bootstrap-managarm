@@ -47,7 +47,7 @@ tools:
       - host-llvm-toolchain
       - host-python
       - host-iasl
-    revision: 2
+    revision: 3
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     compile:
@@ -74,7 +74,7 @@ tools:
           esac
           . @THIS_BUILD_DIR@/edksetup.sh
           make -C @THIS_BUILD_DIR@/BaseTools
-          build -a $OVMF_ARCH -b DEBUG -p $OVMF_PKG.dsc -t CLANGDWARF
+          build -a $OVMF_ARCH -b DEBUG -p $OVMF_PKG.dsc -t CLANGDWARF -DNETWORK_HTTP_BOOT_ENABLE
         environ:
           PYTHON_COMMAND: 'python3'
     install:
