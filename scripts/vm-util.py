@@ -885,11 +885,16 @@ def do_gdb(args):
         gdb_args += ["-ex", "set debug separate-debug-file 1"]
 
     if args.qemu:
+        if args.socket:
+            remote_string = args.socket
+        else:
+            remote_string = "tcp:" + args.ip + ":1234"
+
         gdb_args += [
             "-ex",
             "file system-root/usr/managarm/bin/thor",
             "-ex",
-            "target remote tcp:" + args.ip + ":1234",
+            "target remote " + remote_string,
         ]
     elif args.uefi:
         try:
@@ -935,6 +940,7 @@ def do_gdb(args):
 gdb_parser = main_subparsers.add_parser("gdb")
 gdb_parser.set_defaults(_fn=do_gdb)
 gdb_parser.add_argument("--ip", type=str, default="localhost")
+gdb_parser.add_argument("--socket", type=str)
 gdb_parser.add_argument("--gdb-debug", action='store_true')
 gdb_parser.add_argument("--uefi-base", type=str)
 
