@@ -70,7 +70,7 @@ packages:
       - p11-kit
     sources_required:
       - nss
-    revision: 1
+    revision: 2
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args: ['cp', '@THIS_SOURCE_DIR@/../nss/lib/ckfw/builtins/certdata.txt', '@THIS_SOURCE_DIR@']
@@ -84,6 +84,7 @@ packages:
       - args: ['install', '-dm755', '@THIS_COLLECT_DIR@/etc/ssl/local']
       # Fix a small permission issue during installation
       - args: ['chmod', '0755', '@THIS_COLLECT_DIR@/etc/ssl/certs/.']
+      - args: ['@SOURCE_ROOT@/scripts/keep-empty-directories.py', '@THIS_COLLECT_DIR@']
 
   - name: cmatrix
     labels: [aarch64]
