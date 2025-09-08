@@ -1,0 +1,37 @@
+packages:
+  - name: gflags
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Google's C++ argument parsing library
+      description: The gflags package contains a C++ library that implements commandline flags processing. It includes built-in support for standard types such as string and the ability to define flags in the source file in which they are used.
+      website: 'https://gflags.github.io/gflags/'
+      spdx: 'BSD-3-Clause'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-cpp']
+    source:
+      subdir: ports
+      git: 'https://github.com/gflags/gflags.git'
+      tag: 'v2.2.2'
+      version: '2.2.2'
+    tools_required:
+      - host-cmake
+      - system-gcc
+    pkgs_required:
+      - mlibc
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DBUILD_SHARED_LIBS=ON'
+        - '-DREGISTER_INSTALL_PREFIX=OFF'
+        - '-DCMAKE_POLICY_VERSION_MINIMUM=3.5'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
