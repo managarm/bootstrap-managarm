@@ -1,0 +1,46 @@
+From 4ac74711ae5ac66e1d6cd228234fbfec47958c29 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Mon, 8 Sep 2025 17:04:53 +0200
+Subject: [PATCH 1/2] Fix cmake issues
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ CMakeLists.txt      | 2 +-
+ test/CMakeLists.txt | 3 +--
+ 2 files changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 46dc180..7217f4e 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -1,5 +1,5 @@
+ # 3.5 is actually available almost everywhere, but this a good minimum
+-cmake_minimum_required(VERSION 3.4)
++cmake_minimum_required(VERSION 3.5...3.30)
+ 
+ # enable MSVC_RUNTIME_LIBRARY target property
+ # see https://cmake.org/cmake/help/latest/policy/CMP0091.html
+diff --git a/test/CMakeLists.txt b/test/CMakeLists.txt
+index 351b03f..253cf04 100644
+--- a/test/CMakeLists.txt
++++ b/test/CMakeLists.txt
+@@ -2,7 +2,6 @@ find_package(Threads REQUIRED)
+ 
+ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+ set(BUILD_MOCK ON CACHE BOOL "" FORCE)
+-set(CMAKE_POLICY_DEFAULT_CMP0048 NEW)
+ 
+ add_subdirectory(
+   "${CMAKE_CURRENT_SOURCE_DIR}/gtest-1.11.0"
+@@ -33,7 +32,7 @@ target_include_directories(yaml-cpp-tests
+ target_compile_options(yaml-cpp-tests
+   PRIVATE
+     $<$<CXX_COMPILER_ID:Clang>:-Wno-c99-extensions -Wno-variadic-macros -Wno-sign-compare>
+-    $<$<CXX_COMPILER_ID:GNU>:-Wno-variadic-macros -Wno-sign-compare>)
++    $<$<CXX_COMPILER_ID:GNU>:-Wno-variadic-macros -Wno-sign-compare -Wno-narrowing>)
+ target_link_libraries(yaml-cpp-tests
+   PRIVATE
+     Threads::Threads
+-- 
+2.51.0
+
