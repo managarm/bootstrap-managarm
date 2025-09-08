@@ -405,6 +405,44 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: libcap
+    labels: [aarch64, riscv64]
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Not needing root to administer Linux
+      description: This is a library for getting and setting POSIX.1e (formerly POSIX 6) draft 15 capabilities.
+      spdx: 'BSD-3-Clause GPL-2.0-only'
+      website: 'https://sites.google.com/site/fullycapable/'
+      maintainer: "no92 <leo@managarm.org>"
+      categories: ['sys-libs']
+    source:
+      subdir: ports
+      git: 'https://git.kernel.org/pub/scm/libs/libcap/libcap.git'
+      tag: 'libcap-2.76'
+      version: '2.76'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+    revision: 3
+    configure:
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+    build:
+      - args: ['make', '-j@PARALLELISM@', 'prefix=/usr']
+        environ:
+          CROSS_COMPILE: '@OPTION:arch-triple@-'
+          SBINDIR: '/usr/sbin'
+          SYSTEM_HEADERS: '@SYSROOT_DIR@/usr/include'
+          BUILD_CC: 'gcc'
+          BUILD_ld: 'ld'
+      - args: ['make', 'prefix=/usr', 'lib=lib', 'install']
+        environ:
+          CROSS_COMPILE: '@OPTION:arch-triple@-'
+          DESTDIR: '@THIS_COLLECT_DIR@'
+          BUILD_CC: 'gcc'
+          BUILD_ld: 'ld'
+          SYSTEM_HEADERS: '@SYSROOT_DIR@/usr/include'
+
   - name: libnvme
     architecture: '@OPTION:arch@'
     metadata:
@@ -804,41 +842,3 @@ packages:
       #   environ:
       #     DESTDIR: '@THIS_COLLECT_DIR@'
       #   quiet: true
-
-  - name: libcap
-    labels: [aarch64, riscv64]
-    architecture: '@OPTION:arch@'
-    metadata:
-      summary: Not needing root to administer Linux
-      description: This is a library for getting and setting POSIX.1e (formerly POSIX 6) draft 15 capabilities.
-      spdx: 'BSD-3-Clause GPL-2.0-only'
-      website: 'https://sites.google.com/site/fullycapable/'
-      maintainer: "no92 <leo@managarm.org>"
-      categories: ['sys-libs']
-    source:
-      subdir: ports
-      git: 'https://git.kernel.org/pub/scm/libs/libcap/libcap.git'
-      tag: 'libcap-2.76'
-      version: '2.76'
-    tools_required:
-      - system-gcc
-    pkgs_required:
-      - mlibc
-    revision: 3
-    configure:
-      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
-    build:
-      - args: ['make', '-j@PARALLELISM@', 'prefix=/usr']
-        environ:
-          CROSS_COMPILE: '@OPTION:arch-triple@-'
-          SBINDIR: '/usr/sbin'
-          SYSTEM_HEADERS: '@SYSROOT_DIR@/usr/include'
-          BUILD_CC: 'gcc'
-          BUILD_ld: 'ld'
-      - args: ['make', 'prefix=/usr', 'lib=lib', 'install']
-        environ:
-          CROSS_COMPILE: '@OPTION:arch-triple@-'
-          DESTDIR: '@THIS_COLLECT_DIR@'
-          BUILD_CC: 'gcc'
-          BUILD_ld: 'ld'
-          SYSTEM_HEADERS: '@SYSROOT_DIR@/usr/include'
