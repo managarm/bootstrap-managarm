@@ -64,7 +64,7 @@ packages:
     pkgs_required:
       - mlibc
       - systemd
-    revision: 6
+    revision: 7
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
@@ -87,6 +87,7 @@ packages:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/multi-user.target.wants']
       - args: ['cp', '@THIS_SOURCE_DIR@/dhcpcd.service', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/']
       - args: ['ln', '-svn', '../dhcpcd.service', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/multi-user.target.wants/']
+      - args: ['@SOURCE_ROOT@/scripts/keep-empty-directories.py', '@THIS_COLLECT_DIR@']
 
   - name: iana-etc
     labels: [aarch64, riscv64]
