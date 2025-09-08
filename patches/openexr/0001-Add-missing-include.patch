@@ -1,0 +1,26 @@
+From 4d151c7460268d43834e35f15d07101412c66d37 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Mon, 8 Sep 2025 22:43:41 +0200
+Subject: [PATCH] Add missing include
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ src/lib/OpenEXRCore/internal_dwa_classifier.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/lib/OpenEXRCore/internal_dwa_classifier.h b/src/lib/OpenEXRCore/internal_dwa_classifier.h
+index d34497e..0058237 100644
+--- a/src/lib/OpenEXRCore/internal_dwa_classifier.h
++++ b/src/lib/OpenEXRCore/internal_dwa_classifier.h
+@@ -7,6 +7,8 @@
+ #    error "only include internal_dwa_helpers.h"
+ #endif
+ 
++#include <strings.h>
++
+ /**************************************/
+ 
+ typedef struct _Classifier
+-- 
+2.51.0
+
