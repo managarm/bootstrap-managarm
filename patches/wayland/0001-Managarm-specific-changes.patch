@@ -1,16 +1,30 @@
-From 8202c2d110fd49cd883fc2e85350a7447f2b97e2 Mon Sep 17 00:00:00 2001
+From ca31b227962b58dc9a545d73cbc03d6e769962b6 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Fri, 14 Jan 2022 13:47:14 +0100
 Subject: [PATCH] Managarm-specific changes
 
 ---
+ src/meson.build      | 2 +-
  src/wayland-os.c     | 1 +
  src/wayland-server.c | 4 +++-
  tests/test-runner.c  | 1 +
- 3 files changed, 5 insertions(+), 1 deletion(-)
+ 4 files changed, 6 insertions(+), 2 deletions(-)
 
+diff --git a/src/meson.build b/src/meson.build
+index 984e34a..c9b6dea 100644
+--- a/src/meson.build
++++ b/src/meson.build
+@@ -82,7 +82,7 @@ endif
+ 
+ if meson.is_cross_build() or not get_option('scanner')
+ 	scanner_dep = dependency('wayland-scanner', native: true, version: meson.project_version())
+-	wayland_scanner_for_build = find_program(scanner_dep.get_variable(pkgconfig: 'wayland_scanner'))
++	wayland_scanner_for_build = find_program('wayland-scanner', dirs: scanner_dep.get_variable(pkgconfig: 'wayland_scanner'))
+ else
+ 	wayland_scanner_for_build = wayland_scanner
+ endif
 diff --git a/src/wayland-os.c b/src/wayland-os.c
-index 27c6035..43f7b00 100644
+index f00ead4..233c678 100644
 --- a/src/wayland-os.c
 +++ b/src/wayland-os.c
 @@ -27,6 +27,7 @@
@@ -22,10 +36,10 @@ index 27c6035..43f7b00 100644
  #include <sys/socket.h>
  #include <unistd.h>
 diff --git a/src/wayland-server.c b/src/wayland-server.c
-index 02f1365..fb7c1c5 100644
+index 72a1201..a6133bc 100644
 --- a/src/wayland-server.c
 +++ b/src/wayland-server.c
-@@ -1490,6 +1490,8 @@ wl_socket_lock(struct wl_socket *socket)
+@@ -1699,6 +1699,8 @@ wl_socket_lock(struct wl_socket *socket)
  {
  	struct stat socket_stat;
  
@@ -34,7 +48,7 @@ index 02f1365..fb7c1c5 100644
  	snprintf(socket->lock_addr, sizeof socket->lock_addr,
  		 "%s%s", socket->addr.sun_path, LOCK_SUFFIX);
  
-@@ -1517,7 +1519,7 @@ wl_socket_lock(struct wl_socket *socket)
+@@ -1726,7 +1728,7 @@ wl_socket_lock(struct wl_socket *socket)
  	} else if (socket_stat.st_mode & S_IWUSR ||
  		   socket_stat.st_mode & S_IWGRP) {
  		unlink(socket->addr.sun_path);
@@ -44,7 +58,7 @@ index 02f1365..fb7c1c5 100644
  	return 0;
  err_fd:
 diff --git a/tests/test-runner.c b/tests/test-runner.c
-index c0247b5..47280d1 100644
+index 9a50d1d..8fa636a 100644
 --- a/tests/test-runner.c
 +++ b/tests/test-runner.c
 @@ -27,6 +27,7 @@
@@ -56,5 +70,5 @@ index c0247b5..47280d1 100644
  #include <stdlib.h>
  #include <sys/types.h>
 -- 
-2.34.1
+2.49.0
 
