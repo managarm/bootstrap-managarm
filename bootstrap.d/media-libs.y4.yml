@@ -1614,6 +1614,41 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
+  - name: openjph
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Open-source implementation of JPEG2000 Part-15 (or JPH or HTJ2K)
+      description: This package provides an open-source implementation of JPEG2000 Part-15 (or JPH or HTJ2K).
+      website: 'https://github.com/aous72/OpenJPH'
+      spdx: 'BSD-2-Clause'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
+    source:
+      subdir: ports
+      git: 'https://github.com/aous72/OpenJPH.git'
+      tag: '0.22.0'
+      version: '0.22.0'
+    tools_required:
+      - host-cmake
+      - system-gcc
+    pkgs_required:
+      - mlibc
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DOPENEXR_CXX_STANDARD=17'
+        - '-DBUILD_SHARED_LIBS=YES'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: vulkan-loader
     architecture: '@OPTION:arch@'
     metadata:
