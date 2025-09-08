@@ -883,17 +883,3 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
       - args: ['patchelf', '--set-soname', 'libz.so.1.2.12', '@THIS_COLLECT_DIR@/usr/lib/libz.so.1.2.12']
-      # This fails on ci, and needs further investigation.
-      # - args:
-      #   - '@THIS_SOURCE_DIR@/contrib/minizip/configure'
-      #   - '--host=@OPTION:arch-triple@'
-      #   - '--prefix=/usr'
-      #   - '--disable-static'
-      #   environ:
-      #     CHOST: '@OPTION:arch-triple@'
-      #     prefix: '/usr'
-      # - args: ['make', '-j@PARALLELISM@']
-      # - args: ['make', 'install']
-      #   environ:
-      #     DESTDIR: '@THIS_COLLECT_DIR@'
-      #   quiet: true
