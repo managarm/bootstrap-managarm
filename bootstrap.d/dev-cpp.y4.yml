@@ -75,3 +75,37 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: robin-map
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: C++ fast hash map and hash set using robin hood hashing
+      description: This package contains a C++ implementation of a fast hash map and hash set using robin hood hashing.
+      website: 'https://github.com/Tessil/robin-map'
+      spdx: 'MIT'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-cpp']
+    source:
+      subdir: ports
+      git: 'https://github.com/Tessil/robin-map.git'
+      tag: 'v1.4.0'
+      version: '1.4.0'
+    tools_required:
+      - host-cmake
+      - system-gcc
+    pkgs_required:
+      - mlibc
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DBUILD_SHARED_LIBS=ON'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
