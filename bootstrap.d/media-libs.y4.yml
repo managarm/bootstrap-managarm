@@ -1614,6 +1614,58 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
+  - name: opencolorio
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Color management framework for visual effects and animation
+      description: This package provides a complete color management solution geared towards motion picture production with an emphasis on visual effects and computer animation.
+      website: 'https://opencolorio.org/'
+      spdx: 'BSD-3-Clause'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
+    source:
+      subdir: ports
+      git: 'https://github.com/AcademySoftwareFoundation/OpenColorIO.git'
+      tag: 'v2.4.2'
+      version: '2.4.2'
+    tools_required:
+      - host-cmake
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - pystring
+      - yaml-cpp
+      - libexpat
+      - glu
+      - minizip-ng
+      - openexr
+      - freeglut
+      - glew
+      - libglvnd
+      - imath
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DOCIO_BUILD_APPS=OFF' # Blocked on lcms
+        - '-DOCIO_BUILD_DOCS=OFF'
+        - '-DOCIO_BUILD_FROZEN_DOCS=OFF'
+        - '-DOCIO_BUILD_GPU_TESTS=OFF'
+        - '-DOCIO_BUILD_JAVA=OFF'
+        - '-DOCIO_BUILD_PYTHON=OFF'
+        - '-DOCIO_BUILD_TESTS=OFF'
+        - '-DOCIO_INSTALL_EXT_PACKAGES=NONE'
+        - '-DOCIO_USE_SIMD=ON'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: openjph
     architecture: '@OPTION:arch@'
     metadata:
