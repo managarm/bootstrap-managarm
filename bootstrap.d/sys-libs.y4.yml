@@ -405,6 +405,44 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: libcap
+    labels: [aarch64, riscv64]
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Not needing root to administer Linux
+      description: This is a library for getting and setting POSIX.1e (formerly POSIX 6) draft 15 capabilities.
+      spdx: 'BSD-3-Clause GPL-2.0-only'
+      website: 'https://sites.google.com/site/fullycapable/'
+      maintainer: "no92 <leo@managarm.org>"
+      categories: ['sys-libs']
+    source:
+      subdir: ports
+      git: 'https://git.kernel.org/pub/scm/libs/libcap/libcap.git'
+      tag: 'libcap-2.76'
+      version: '2.76'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+    revision: 3
+    configure:
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+    build:
+      - args: ['make', '-j@PARALLELISM@', 'prefix=/usr']
+        environ:
+          CROSS_COMPILE: '@OPTION:arch-triple@-'
+          SBINDIR: '/usr/sbin'
+          SYSTEM_HEADERS: '@SYSROOT_DIR@/usr/include'
+          BUILD_CC: 'gcc'
+          BUILD_ld: 'ld'
+      - args: ['make', 'prefix=/usr', 'lib=lib', 'install']
+        environ:
+          CROSS_COMPILE: '@OPTION:arch-triple@-'
+          DESTDIR: '@THIS_COLLECT_DIR@'
+          BUILD_CC: 'gcc'
+          BUILD_ld: 'ld'
+          SYSTEM_HEADERS: '@SYSROOT_DIR@/usr/include'
+
   - name: libnvme
     architecture: '@OPTION:arch@'
     metadata:
@@ -495,6 +533,61 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+
+  - name: minizip-ng
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Fork of the popular zip manipulation library found in the zlib distribution
+      description: This package provides a fork of the popular zip manipulation library found in the zlib distribution.
+      website: 'https://github.com/zlib-ng/minizip-ng'
+      spdx: 'Zlib'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-libs']
+    source:
+      subdir: ports
+      git: 'https://github.com/zlib-ng/minizip-ng.git'
+      tag: '4.0.10'
+      version: '4.0.10'
+    tools_required:
+      - host-cmake
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - bzip2
+      - zlib
+      - libiconv
+      - xz-utils
+      - openssl
+      - zstd
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DBUILD_SHARED_LIBS=ON'
+        - '-DMZ_COMPAT=ON'
+        - '-DMZ_BUILD_TESTS=OFF'
+        - '-DMZ_BUILD_UNIT_TESTS=OFF'
+        - '-DMZ_FETCH_LIBS=OFF'
+        - '-DMZ_FORCE_FETCH_LIBS=OFF'
+        - '-DMZ_ZLIB=ON'
+        - '-DMZ_BZIP2=ON'
+        - '-DMZ_LZMA=ON'
+        - '-DMZ_ZSTD=ON'
+        - '-DMZ_LIBCOMP=OFF'
+        - '-DMZ_PKCRYPT=ON'
+        - '-DMZ_WZAES=ON'
+        - '-DMZ_OPENSSL=ON'
+        - '-DMZ_LIBBSD=OFF'
+        - '-DMZ_ICONV=ON'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: mtdev
     labels: [aarch64, riscv64]
@@ -790,55 +883,3 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
       - args: ['patchelf', '--set-soname', 'libz.so.1.2.12', '@THIS_COLLECT_DIR@/usr/lib/libz.so.1.2.12']
-      # This fails on ci, and needs further investigation.
-      # - args:
-      #   - '@THIS_SOURCE_DIR@/contrib/minizip/configure'
-      #   - '--host=@OPTION:arch-triple@'
-      #   - '--prefix=/usr'
-      #   - '--disable-static'
-      #   environ:
-      #     CHOST: '@OPTION:arch-triple@'
-      #     prefix: '/usr'
-      # - args: ['make', '-j@PARALLELISM@']
-      # - args: ['make', 'install']
-      #   environ:
-      #     DESTDIR: '@THIS_COLLECT_DIR@'
-      #   quiet: true
-
-  - name: libcap
-    labels: [aarch64, riscv64]
-    architecture: '@OPTION:arch@'
-    metadata:
-      summary: Not needing root to administer Linux
-      description: This is a library for getting and setting POSIX.1e (formerly POSIX 6) draft 15 capabilities.
-      spdx: 'BSD-3-Clause GPL-2.0-only'
-      website: 'https://sites.google.com/site/fullycapable/'
-      maintainer: "no92 <leo@managarm.org>"
-      categories: ['sys-libs']
-    source:
-      subdir: ports
-      git: 'https://git.kernel.org/pub/scm/libs/libcap/libcap.git'
-      tag: 'libcap-2.76'
-      version: '2.76'
-    tools_required:
-      - system-gcc
-    pkgs_required:
-      - mlibc
-    revision: 3
-    configure:
-      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
-    build:
-      - args: ['make', '-j@PARALLELISM@', 'prefix=/usr']
-        environ:
-          CROSS_COMPILE: '@OPTION:arch-triple@-'
-          SBINDIR: '/usr/sbin'
-          SYSTEM_HEADERS: '@SYSROOT_DIR@/usr/include'
-          BUILD_CC: 'gcc'
-          BUILD_ld: 'ld'
-      - args: ['make', 'prefix=/usr', 'lib=lib', 'install']
-        environ:
-          CROSS_COMPILE: '@OPTION:arch-triple@-'
-          DESTDIR: '@THIS_COLLECT_DIR@'
-          BUILD_CC: 'gcc'
-          BUILD_ld: 'ld'
-          SYSTEM_HEADERS: '@SYSROOT_DIR@/usr/include'

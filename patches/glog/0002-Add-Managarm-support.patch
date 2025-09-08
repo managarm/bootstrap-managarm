@@ -1,0 +1,49 @@
+From 9b4ca567b195bc41a1fd0ad725c7dcef17753a60 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Mon, 8 Sep 2025 15:54:19 +0200
+Subject: [PATCH 2/2] Add Managarm support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ src/glog/platform.h | 2 +-
+ src/utilities.cc    | 4 ++++
+ 2 files changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/src/glog/platform.h b/src/glog/platform.h
+index e614411..a0cbdf5 100644
+--- a/src/glog/platform.h
++++ b/src/glog/platform.h
+@@ -38,7 +38,7 @@
+ #define GLOG_OS_WINDOWS
+ #elif defined(__CYGWIN__) || defined(__CYGWIN32__)
+ #define GLOG_OS_CYGWIN
+-#elif defined(linux) || defined(__linux) || defined(__linux__)
++#elif defined(linux) || defined(__linux) || defined(__linux__) || defined(__managarm__)
+ #ifndef GLOG_OS_LINUX
+ #define GLOG_OS_LINUX
+ #endif
+diff --git a/src/utilities.cc b/src/utilities.cc
+index a332f1a..1b8ddce 100644
+--- a/src/utilities.cc
++++ b/src/utilities.cc
+@@ -262,6 +262,8 @@ pid_t GetTID() {
+ #ifndef __NR_gettid
+ #ifdef GLOG_OS_MACOSX
+ #define __NR_gettid SYS_gettid
++#elif defined(__managarm__)
++// Deliberately empty
+ #elif ! defined __i386__
+ #error "Must define __NR_gettid for non-x86 platforms"
+ #else
+@@ -274,6 +276,8 @@ pid_t GetTID() {
+     uint64_t tid64;
+     const int error = pthread_threadid_np(NULL, &tid64);
+     pid_t tid = error ? -1 : static_cast<pid_t>(tid64);
++#elif defined(__managarm__)
++    pid_t tid = gettid();
+ #else
+     pid_t tid = static_cast<pid_t>(syscall(__NR_gettid));
+ #endif
+-- 
+2.51.0
+

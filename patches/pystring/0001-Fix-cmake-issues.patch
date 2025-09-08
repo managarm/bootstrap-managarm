@@ -1,0 +1,32 @@
+From f97f1b2a2f099e1f6a70c0d3310df6108cd23426 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Mon, 8 Sep 2025 16:51:41 +0200
+Subject: [PATCH] Fix cmake issues
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ CMakeLists.txt | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index fed418f..032858b 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -1,4 +1,4 @@
+-cmake_minimum_required(VERSION 3.2)
++cmake_minimum_required(VERSION 3.5)
+ project(pystring CXX)
+ 
+ set(BUILD_SHARED_LIBS YES)
+@@ -19,4 +19,7 @@ include(GNUInstallDirs)
+ install(TARGETS pystring
+     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+ )
+-
++install (FILES pystring.h
++    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
++    COMPONENT developer
++)
+-- 
+2.51.0
+

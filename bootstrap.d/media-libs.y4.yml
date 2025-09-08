@@ -789,6 +789,52 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: libaom
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Alliance for Open Media AV1 Codec SDK
+      description: This package contains a reference version of the Alliance for Open Media video codec. This codec is a patent free alternative to H.265, and is starting to be used throughout the internet.
+      website: 'https://aomedia.org/'
+      spdx: 'BSD-2-Clause'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
+    source:
+      subdir: ports
+      git: 'https://aomedia.googlesource.com/aom.git'
+      tag: 'v3.13.1'
+      version: '3.13.1'
+    tools_required:
+      - host-cmake
+      - system-gcc
+    pkgs_required:
+      - mlibc
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DBUILD_SHARED_LIBS=ON'
+        - '-DBUILD_SHARED_LIBS=1'
+        - '-DENABLE_DOCS=no'
+        - '-DENABLE_EXAMPLES=OFF'
+        - '-DENABLE_TESTS=OFF'
+        - '-DENABLE_CCACHE=OFF'
+        - '-DENABLE_TOOLS=ON'
+        - '-DCONFIG_TUNE_BUTTERAUGLI=0'
+        # Gentoo bugs say turn them off, so we turn them off
+        - '-DENABLE_NEON_DOTPROD=OFF'
+        - '-DENABLE_NEON_I8MM=OFF'
+        - '-DENABLE_SVE=OFF'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/libaom.a']
+
   - name: libcanberra
     architecture: '@OPTION:arch@'
     metadata:
@@ -970,6 +1016,74 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: libheif
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: ISO/IEC 23008-12:2017 HEIF file format decoder and encoder
+      website: 'https://github.com/strukturag/libheif'
+      description: This package contains a HEIF and AVIF file format decoder and encoder.
+      spdx: 'GPL-3.0-only MIT'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
+    source:
+      subdir: ports
+      git: 'https://github.com/strukturag/libheif.git'
+      tag: 'v1.20.2'
+      version: '1.20.2'
+    tools_required:
+      - host-cmake
+      - system-gcc
+    # Note that libheif has many extra optional dependencies that we might want / need to enable one day
+    pkgs_required:
+      - mlibc
+      - libpng
+      - libtiff
+      - zlib
+      - libaom
+      - gdk-pixbuf
+      - libjpeg-turbo
+      - sdl2
+      - libwebp
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DBUILD_SHARED_LIBS=ON'
+        - '-DBUILD_TESTING=OFF'
+        - '-DENABLE_PLUGIN_LOADING=true'
+        - '-DWITH_LIBDE265=OFF'
+        - '-DWITH_AOM_DECODER=ON'
+        - '-DWITH_AOM_ENCODER=ON'
+        - '-DWITH_DAV1D=OFF'
+        - '-DWITH_EXAMPLES=ON' # These are the tools
+        - '-DWITH_FFMPEG_DECODER=OFF'
+        - '-DWITH_GDK_PIXBUF=ON'
+        - '-DWITH_OpenH264_DECODER=OFF'
+        - '-DWITH_OpenH264_ENCODER=OFF'
+        - '-DWITH_RAV1E=OFF'
+        - '-DWITH_SvtEnc=OFF'
+        - '-DWITH_LIBSHARPYUV=ON'
+        - '-DWITH_X265=OFF'
+        - '-DWITH_KVAZAAR=OFF'
+        - '-DWITH_JPEG_DECODER=ON'
+        - '-DWITH_JPEG_ENCODER=ON'
+        - '-DWITH_OpenJPEG_DECODER=OFF'
+        - '-DWITH_OpenJPEG_ENCODER=OFF'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+      # Something is up with the pixbuf loaders and their install location, move it manually for now
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/lib/gdk-pixbuf-2.0/2.10.0/loaders/']
+      - args: ['mv', '@THIS_COLLECT_DIR@/var/lib/managarm-buildenv/build/system-root/usr/lib/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-heif.so', '@THIS_COLLECT_DIR@/usr/lib/gdk-pixbuf-2.0/2.10.0/loaders/']
+      - args: ['rm', '-r', '@THIS_COLLECT_DIR@/var']
+      - args: ['@SOURCE_ROOT@/scripts/keep-empty-directories.py', '@THIS_COLLECT_DIR@']
 
   - name: libjpeg-turbo
     labels: [aarch64, riscv64]
@@ -1499,6 +1613,145 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+
+  - name: opencolorio
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Color management framework for visual effects and animation
+      description: This package provides a complete color management solution geared towards motion picture production with an emphasis on visual effects and computer animation.
+      website: 'https://opencolorio.org/'
+      spdx: 'BSD-3-Clause'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
+    source:
+      subdir: ports
+      git: 'https://github.com/AcademySoftwareFoundation/OpenColorIO.git'
+      tag: 'v2.4.2'
+      version: '2.4.2'
+    tools_required:
+      - host-cmake
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - pystring
+      - yaml-cpp
+      - libexpat
+      - glu
+      - minizip-ng
+      - openexr
+      - freeglut
+      - glew
+      - libglvnd
+      - imath
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DOCIO_BUILD_APPS=OFF' # Blocked on lcms
+        - '-DOCIO_BUILD_DOCS=OFF'
+        - '-DOCIO_BUILD_FROZEN_DOCS=OFF'
+        - '-DOCIO_BUILD_GPU_TESTS=OFF'
+        - '-DOCIO_BUILD_JAVA=OFF'
+        - '-DOCIO_BUILD_PYTHON=OFF'
+        - '-DOCIO_BUILD_TESTS=OFF'
+        - '-DOCIO_INSTALL_EXT_PACKAGES=NONE'
+        - '-DOCIO_USE_SIMD=ON'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: openjph
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Open-source implementation of JPEG2000 Part-15 (or JPH or HTJ2K)
+      description: This package provides an open-source implementation of JPEG2000 Part-15 (or JPH or HTJ2K).
+      website: 'https://github.com/aous72/OpenJPH'
+      spdx: 'BSD-2-Clause'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
+    source:
+      subdir: ports
+      git: 'https://github.com/aous72/OpenJPH.git'
+      tag: '0.22.0'
+      version: '0.22.0'
+    tools_required:
+      - host-cmake
+      - system-gcc
+    pkgs_required:
+      - mlibc
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DOPENEXR_CXX_STANDARD=17'
+        - '-DBUILD_SHARED_LIBS=YES'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: openexr
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: ILM's OpenEXR high dynamic-range image file format libraries
+      description: This package provides the specification and reference implementation of the EXR file format, the professional-grade image storage format of the motion picture industry.
+      website: 'http://www.openexr.com/'
+      spdx: 'BSD-3-Clause'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
+    source:
+      subdir: ports
+      git: 'https://github.com/AcademySoftwareFoundation/openexr.git'
+      tag: 'v3.4.0'
+      version: '3.4.0'
+    tools_required:
+      - host-cmake
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - libdeflate
+      - imath
+      - openjph
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DOPENEXR_CXX_STANDARD=17'
+        - '-DBUILD_SHARED_LIBS=YES'
+        - '-DBUILD_TESTING=NO'
+        - '-DBUILD_WEBSITE=NO'
+        - '-DOPENEXR_BUILD_EXAMPLES=NO'
+        - '-DOPENEXR_BUILD_PYTHON=NO'
+        - '-DOPENEXR_BUILD_TOOLS=NO'
+        - '-DOPENEXR_ENABLE_LARGE_STACK=NO'
+        - '-DOPENEXR_ENABLE_THREADING=YES'
+        - '-DOPENEXR_INSTALL=YES'
+        - '-DOPENEXR_INSTALL_DOCS=NO'
+        - '-DOPENEXR_INSTALL_PKG_CONFIG=YES'
+        - '-DOPENEXR_INSTALL_TOOLS=NO'
+        - '-DOPENEXR_USE_CLANG_TIDY=NO'
+        - '-DOPENEXR_FORCE_INTERNAL_DEFLATE=NO'
+        - '-DOPENEXR_FORCE_INTERNAL_IMATH=NO'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: vulkan-loader
     architecture: '@OPTION:arch@'

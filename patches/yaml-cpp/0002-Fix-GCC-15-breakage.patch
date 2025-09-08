@@ -1,0 +1,23 @@
+From c6e44cd8fdd8c003742e892034c58d2980f5c8f1 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Mon, 8 Sep 2025 17:06:09 +0200
+Subject: [PATCH 2/2] Fix GCC 15 breakage
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ src/emitterutils.cpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/emitterutils.cpp b/src/emitterutils.cpp
+index 6cdf6de..dbd2590 100644
+--- a/src/emitterutils.cpp
++++ b/src/emitterutils.cpp
+@@ -1,4 +1,5 @@
+ #include <algorithm>
++#include <cstdint>
+ #include <iomanip>
+ #include <sstream>
+ 
+-- 
+2.51.0
+

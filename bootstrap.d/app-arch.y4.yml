@@ -201,6 +201,49 @@ packages:
       # Apparently libarchive installs their pkgconfig files into /pkgconfig now, let's fix that
       - args: ['mv', '-v', '@THIS_COLLECT_DIR@/pkgconfig', '@THIS_COLLECT_DIR@/usr/lib/pkgconfig']
 
+  - name: libdeflate
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Heavily optimized DEFLATE/zlib/gzip (de)compression
+      description: This package provides a heavily optimized library for DEFLATE/zlib/gzip compression and decompression.
+      website: 'https://github.com/ebiggers/libdeflate'
+      spdx: 'MIT'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['app-arch']
+    source:
+      subdir: ports
+      git: 'https://github.com/ebiggers/libdeflate.git'
+      tag: 'v1.24'
+      version: '1.24'
+    tools_required:
+      - host-cmake
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - zlib
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DLIBDEFLATE_BUILD_SHARED_LIB="yes"'
+        - '-DLIBDEFLATE_BUILD_STATIC_LIB="no"'
+        - '-DLIBDEFLATE_USE_SHARED_LIB="yes"'
+        - '-DLIBDEFLATE_COMPRESSION_SUPPORT="yes"'
+        - '-DLIBDEFLATE_DECOMPRESSION_SUPPORT="yes"'
+        - '-DLIBDEFLATE_BUILD_GZIP="yes"'
+        - '-DLIBDEFLATE_GZIP_SUPPORT="yes"'
+        - '-DLIBDEFLATE_ZLIB_SUPPORT="yes"'
+        - '-DLIBDEFLATE_BUILD_TESTS="no"'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: lz4
     architecture: '@OPTION:arch@'
     labels: [aarch64, riscv64]

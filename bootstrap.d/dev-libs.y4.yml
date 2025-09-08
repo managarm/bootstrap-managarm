@@ -727,6 +727,48 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
+  - name: imath
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Imath basic math package
+      description: This package provides a C++ and python library of 2D and 3D vector, matrix, and math operations for computer graphics.
+      website: 'https://imath.readthedocs.io/'
+      spdx: 'BSD-3-Clause'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
+    source:
+      subdir: ports
+      git: 'https://github.com/AcademySoftwareFoundation/Imath.git'
+      tag: 'v3.2.1'
+      version: '3.2.1'
+    tools_required:
+      - host-cmake
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - zlib
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DBUILD_TESTING=OFF'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DBUILD_WEBSITE=OFF'
+        - '-DIMATH_ENABLE_LARGE_STACK=OFF'
+        - '-DIMATH_HALF_USE_LOOKUP_TABLE=ON'
+        - '-DIMATH_INSTALL_PKG_CONFIG=ON'
+        - '-DIMATH_USE_CLANG_TIDY=OFF'
+        - '-DIMATH_USE_DEFAULT_VISIBILITY=OFF'
+        - '-DIMATH_USE_NOEXCEPT=ON'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: json-c
     architecture: '@OPTION:arch@'
     metadata:
@@ -2489,6 +2531,40 @@ packages:
         - '--prefix=/usr'
         - '--disable-static'
         - '--disable-nls'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: pugixml
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Light-weight, simple, and fast XML parser for C++ with XPath support
+      description: This package contains a light-weight, simple and fast XML parser for C++ with XPath support.
+      website: 'https://pugixml.org/'
+      spdx: 'MIT'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-libs']
+    source:
+      subdir: ports
+      git: 'https://github.com/zeux/pugixml.git'
+      tag: 'v1.15'
+      version: '1.15'
+    tools_required:
+      - host-cmake
+      - system-gcc
+    pkgs_required:
+      - mlibc
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DBUILD_SHARED_LIBS=ON'
+        - '@THIS_SOURCE_DIR@'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
