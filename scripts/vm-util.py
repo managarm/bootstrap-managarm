@@ -491,6 +491,7 @@ def do_qemu(args):
     ]
 
     qemu_args += ["-name", f"Managarm {args.arch}"]
+    qemu_args += ["-display", "gtk,zoom-to-fit=off"]
 
     have_kvm = False
     if not args.no_kvm:
