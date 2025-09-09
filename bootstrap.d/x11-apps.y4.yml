@@ -132,7 +132,7 @@ packages:
       - libxt
       - libxkbfile
       - libiconv
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -140,6 +140,7 @@ packages:
         - '--prefix=/usr'
         - '--sysconfdir=/etc'
         - '--localstatedir=/var'
+        - '--with-appdefaultdir=/etc/X11/app-defaults'
         - '--disable-selective-werror' # strncasecmp
     build:
       - args: ['make', '-j@PARALLELISM@']

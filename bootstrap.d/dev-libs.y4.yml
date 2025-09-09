@@ -2331,7 +2331,7 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
-    revision: 3 
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/Configure'
@@ -2357,6 +2357,7 @@ packages:
       - args: ['mv', '@THIS_COLLECT_DIR@/usr/share/doc/openssl', '@THIS_COLLECT_DIR@/usr/share/doc/openssl-1.1.1w']
       # Install more documentation
       - args: ['cp', '-fr', '@THIS_SOURCE_DIR@/doc/.', '@THIS_COLLECT_DIR@/usr/share/doc/openssl-1.1.1w']
+      - args: ['@SOURCE_ROOT@/scripts/keep-empty-directories.py', '@THIS_COLLECT_DIR@']
 
   - name: pcre
     labels: [aarch64, riscv64]
