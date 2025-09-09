@@ -9,6 +9,7 @@ strip = 'true'
 [built-in options]
 c_args = [
 	'-target', 'riscv64-linux-gnu',
+	'-ffreestanding',
 	'-march=rva22u64',
 	'-mcmodel=medany',
 	'-msmall-data-limit=0',

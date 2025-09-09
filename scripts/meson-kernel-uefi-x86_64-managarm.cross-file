@@ -7,7 +7,7 @@ pkgconfig = 'x86_64-managarm-pkg-config'
 strip = 'true'
 
 [built-in options]
-c_args = ['-target', 'x86_64-unknown-windows', '-mno-red-zone', '-mno-mmx', '-mno-sse']
+c_args = ['-target', 'x86_64-unknown-windows', '-ffreestanding', '-mno-red-zone', '-mno-mmx', '-mno-sse']
 cpp_args = c_args
 cpp_link_args = ['-target', 'x86_64-unknown-windows']
 
