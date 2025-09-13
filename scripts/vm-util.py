@@ -909,8 +909,8 @@ def do_gdb(args):
                 f.seek(-8, os.SEEK_END)
                 image_base = struct.unpack("P", f.read())[0]
 
-        eir_path_pe = "pkg-builds/managarm-kernel-uefi/kernel/eir/protos/uefi/eir-uefi"
-        eir_path_debug = "pkg-builds/managarm-kernel-uefi/kernel/eir/protos/uefi/eir-uefi-elf"
+        eir_path_pe = "pkg-builds/managarm-kernel-uefi/kernel/eir/boot/uefi/eir-uefi"
+        eir_path_debug = "pkg-builds/managarm-kernel-uefi/kernel/eir/boot/uefi/eir-uefi-elf"
 
         if not os.access(eir_path_debug, os.R_OK):
             eir_path_debug = eir_path_pe
