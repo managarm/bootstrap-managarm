@@ -507,7 +507,7 @@ def do_qemu(args):
         qemu_args += ["-machine", "virt,acpi=off"]
         qemu_args += ["-serial", "stdio"]
         if not args.uefi:
-            qemu_args += ["-kernel", "system-root/usr/managarm/bin/eir-virt.bin"]
+            qemu_args += ["-kernel", "system-root/usr/managarm/bin/eir-linux.bin"]
             qemu_args += ["-initrd", "initrd.cpio"]
             qemu_args += ["-append", f"init.launch={args.init_launch}"]
     elif args.arch == "riscv64":
@@ -515,7 +515,7 @@ def do_qemu(args):
         qemu_args += ["-machine", "virt,acpi=off"]
         qemu_args += ["-serial", "stdio"]
         if not args.uefi:
-            qemu_args += ["-kernel", "system-root/usr/managarm/bin/eir-virt.bin"]
+            qemu_args += ["-kernel", "system-root/usr/managarm/bin/eir-linux.bin"]
             qemu_args += ["-initrd", "initrd.cpio"]
             qemu_args += ["-append", f"init.launch={args.init_launch}"]
     else:
