@@ -427,8 +427,9 @@ def generate_plan(arch, root_uuid, scriptdir):
             scriptdir, "limine.conf"
         ), "boot/", "@ROOT_UUID@", root_uuid
     elif arch == "aarch64-managarm":
-        # TODO(marv7000): Add limine support.
+        # TODO(marv7000): Limine seems to be broken on aarch64.
         # yield FsAction.INSTALL, "usr/managarm/bin/eir-limine", "boot/managarm"
+        yield FsAction.INSTALL, "usr/managarm/bin/eir-linux.bin", "boot/managarm"
         yield FsAction.INSTALL, "usr/managarm/bin/eir-uefi", "boot/managarm"
         yield (
             FsAction.CP,
