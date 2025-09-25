@@ -24,7 +24,6 @@ sources:
     sources_required:
       - cralgo
       - uacpi
-      - libarch
       - lil
       - bragi
       - cli11
@@ -32,11 +31,8 @@ sources:
       - args: ['mkdir', '-p', '@THIS_SOURCE_DIR@/subprojects']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cralgo', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/uacpi', '@THIS_SOURCE_DIR@/subprojects/']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/libarch', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/lil', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/bragi', '@THIS_SOURCE_DIR@/subprojects/']
-      - args: ['mkdir', '-p', '@SOURCE_ROOT@/ports/libarch/subprojects']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/managarm', '@SOURCE_ROOT@/ports/libarch/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cli11', '@THIS_SOURCE_DIR@/subprojects/']
 
 
@@ -126,6 +122,7 @@ packages:
     pkgs_required:
       - frigg
       - libasync
+      - libarch
       - libsmarter
       - mlibc-headers
     configure:
@@ -206,6 +203,7 @@ packages:
     pkgs_required:
       - frigg
       - libasync
+      - libarch
       - libsmarter
       - mlibc-headers
       - freestnd-c-hdrs
@@ -268,6 +266,7 @@ packages:
       - frigg
       - lewis
       - libasync
+      - libarch
       - libdrm
       - libsmarter
       - !managarm::arch_dep
