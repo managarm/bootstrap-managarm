@@ -332,11 +332,11 @@ packages:
       rolling_version: true
       version: '0.0pl@ROLLING_ID@'
       subdir: 'ports'
-      git: 'https://github.com/avdgrinten/libsmarter.git'
+      git: 'https://github.com/managarm/libsmarter.git'
       branch: 'master'
     tools_required:
       - system-gcc
-    revision: 12
+    revision: 13
     configure:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/include']
       - args:
