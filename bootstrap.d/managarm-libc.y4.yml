@@ -244,6 +244,31 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         # quiet: true
       - args: ['ln', '-sf', 'crt0.o', '@THIS_COLLECT_DIR@/usr/lib/crt1.o']
+    tasks:
+      - name: clang-tidy
+        tools_required:
+          - host-llvm-toolchain
+        args:
+        - 'run-clang-tidy'
+        - '-config-file'
+        - '@SOURCE_ROOT@/mlibc/.clang-tidy'
+        # suppress clang's "x warnings generated" spam
+        - '-extra-arg=-fno-caret-diagnostics'
+        - '-quiet'
+        - '-warnings-as-errors=*'
+        - '\.(h|c|cpp|hpp)$'
+      - name: clang-tidy-autofix
+        tools_required:
+          - host-llvm-toolchain
+        args:
+        - 'run-clang-tidy'
+        - '-config-file'
+        - '@SOURCE_ROOT@/mlibc/.clang-tidy'
+        # suppress clang's "x warnings generated" spam
+        - '-extra-arg=-fno-caret-diagnostics'
+        - '-quiet'
+        - '-fix'
+        - '\.(h|c|cpp|hpp)$'
 
   - name: mlibc-docs
     stability_level: 'broken' # host-hdoc is broken
