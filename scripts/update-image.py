@@ -675,11 +675,11 @@ class UnmountAction:
             raise RuntimeError(f"Unknown mount method {mount_using}")
 
         if mount_using == "loopback":
-            loopdevices = json.loads(run_regular(["losetup", "--json"]))["loopdevices"]
-
-            while len(list(filter(lambda x: x["name"] == blockdev, loopdevices))) > 0:
+            while True:
+                loopdevices = json.loads(run_elevated(["losetup", "--json"]))["loopdevices"]
+                if len(list(filter(lambda x: x["name"] == blockdev, loopdevices))) == 0:
+                    break
                 time.sleep(.2)
-                loopdevices = json.loads(run_regular(["losetup", "--json"]))["loopdevices"]
 
         # Delete mount info
         os.remove("update-image-mount-info")
