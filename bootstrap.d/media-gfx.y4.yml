@@ -13,8 +13,8 @@ packages:
       - host-cmake
     pkgs_required:
       - mlibc
-      - gcc # Actually requires libstdc++.so in the system root, otherwise it links against the host libstdc++.so.6
-    revision: 11
+      - libstdc++
+    revision: 12
     configure:
       - args:
         - 'cmake'
