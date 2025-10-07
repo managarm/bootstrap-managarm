@@ -80,6 +80,7 @@ packages:
     pkgs_required:
       - base
       - binutils
+      - gcc
       - make
       - patch
       - m4
@@ -88,7 +89,7 @@ packages:
       - cmake
       - bc
       - man-pages-posix
-    revision: 2
+    revision: 3
     configure: []
     build: []
 
