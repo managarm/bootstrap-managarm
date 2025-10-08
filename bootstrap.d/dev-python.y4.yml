@@ -5,6 +5,24 @@ sources:
     tag: '3.12.0'
     version: '3.12.0'
 
+  - name: hatchling
+    subdir: 'ports'
+    git: 'https://github.com/pypa/hatch.git'
+    tag: 'hatchling-v1.27.0'
+    version: '1.27.0'
+
+  - name: hatch-fancy-pypi-readme
+    subdir: 'ports'
+    git: 'https://github.com/hynek/hatch-fancy-pypi-readme.git'
+    tag: '25.1.0'
+    version: '25.1.0'
+
+  - name: hatch-vcs
+    subdir: 'ports'
+    git: 'https://github.com/ofek/hatch-vcs.git'
+    tag: 'v0.5.0'
+    version: '0.5.0'
+
   - name: setuptools
     subdir: 'ports'
     git: 'https://github.com/pypa/setuptools.git'
@@ -37,11 +55,14 @@ tools:
       version: '19'
     sources_required:
       - flit_core
+      - hatchling
+      - hatch-fancy-pypi-readme
+      - hatch-vcs
       - setuptools
     tools_required:
       - tool: host-python
         recursive: true
-    revision: 1
+    revision: 2
     install:
       - args: ['python3', '-m', 'venv', '.']
         workdir: '@PREFIX@'
@@ -54,6 +75,16 @@ tools:
         workdir: '@PREFIX@'
         isolate_network: false
       - args: ['bin/pip', 'install', '@THIS_SOURCE_DIR@/../flit_core']
+        workdir: '@PREFIX@'
+        isolate_network: false
+      - args: ['bin/pip', 'install', '@THIS_SOURCE_DIR@/../hatchling']
+        workdir: '@PREFIX@'
+        isolate_network: false
+      # Yes these plugins are needed, yes I think that's annoying too
+      - args: ['bin/pip', 'install', '@THIS_SOURCE_DIR@/../hatch-fancy-pypi-readme']
+        workdir: '@PREFIX@'
+        isolate_network: false
+      - args: ['bin/pip', 'install', '@THIS_SOURCE_DIR@/../hatch-vcs']
         workdir: '@PREFIX@'
         isolate_network: false
 
