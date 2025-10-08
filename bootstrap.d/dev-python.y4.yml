@@ -377,6 +377,37 @@ packages:
         environ:
           CC: '@OPTION:arch-triple@-gcc'
 
+  - name: python-rfc3986-validator
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Pure python RFC3986 validator
+      description: Pure python RFC3986 validator
+      spdx: 'MIT'
+      website: 'https://pypi.org/project/rfc3986-validator/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-python']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/naimetti/rfc3986-validator.git'
+      # Only release is old, use latest master
+      branch: 'master'
+      commit: '85e4bd52cc08b99216fac0196a9588ef3c6c52f9'
+      version: '0.1.1'
+    tools_required:
+      - host-gpep517
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - python
+      - python-rfc3987
+    revision: 1
+    configure:
+      # python modules do not seem to support out-of-tree builds, so we just copy
+      # the source tree into the build directory instead.
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+    build:
+      - args: ['python3', '-m', 'gpep517', 'install-from-source', '--destdir', '@THIS_COLLECT_DIR@', '--optimize', 'all', '--prefix', '/usr', '--sysroot', '@SYSROOT_DIR@', '--interpreter', '/usr/bin/env python3']
+
   - name: python-rfc3987
     architecture: '@OPTION:arch@'
     metadata:
