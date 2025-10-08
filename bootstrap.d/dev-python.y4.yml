@@ -409,6 +409,34 @@ packages:
         environ:
           CC: '@OPTION:arch-triple@-gcc'
 
+  - name: python-strict-rfc3339
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Strict, simple, lightweight RFC3339 functions
+      description: Strict, simple, lightweight RFC3339 functions
+      spdx: 'GPL-3.0-or-later'
+      website: 'https://pypi.org/project/strict-rfc3339/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-python']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/danielrichman/strict-rfc3339.git'
+      tag: 'version-0.7'
+      version: '0.7'
+    tools_required:
+      - host-gpep517
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - python
+    revision: 1
+    configure:
+      # python modules do not seem to support out-of-tree builds, so we just copy
+      # the source tree into the build directory instead.
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+    build:
+      - args: ['python3', '-m', 'gpep517', 'install-from-source', '--destdir', '@THIS_COLLECT_DIR@', '--optimize', 'all', '--prefix', '/usr', '--sysroot', '@SYSROOT_DIR@', '--interpreter', '/usr/bin/env python3']
+
   - name: python-zope-interface
     architecture: '@OPTION:arch@'
     metadata:
