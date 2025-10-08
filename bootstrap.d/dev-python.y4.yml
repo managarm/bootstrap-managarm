@@ -23,6 +23,18 @@ sources:
     tag: 'v0.5.0'
     version: '0.5.0'
 
+  - name: pdm
+    subdir: 'ports'
+    git: 'https://github.com/pdm-project/pdm.git'
+    tag: '2.25.9'
+    version: '2.25.9'
+
+  - name: pdm-backend
+    subdir: 'ports'
+    git: 'https://github.com/pdm-project/pdm-backend.git'
+    tag: '2.4.5'
+    version: '2.4.5'
+
   - name: setuptools
     subdir: 'ports'
     git: 'https://github.com/pypa/setuptools.git'
@@ -58,11 +70,13 @@ tools:
       - hatchling
       - hatch-fancy-pypi-readme
       - hatch-vcs
+      - pdm
+      - pdm-backend
       - setuptools
     tools_required:
       - tool: host-python
         recursive: true
-    revision: 2
+    revision: 3
     install:
       - args: ['python3', '-m', 'venv', '.']
         workdir: '@PREFIX@'
@@ -85,6 +99,12 @@ tools:
         workdir: '@PREFIX@'
         isolate_network: false
       - args: ['bin/pip', 'install', '@THIS_SOURCE_DIR@/../hatch-vcs']
+        workdir: '@PREFIX@'
+        isolate_network: false
+      - args: ['bin/pip', 'install', '@THIS_SOURCE_DIR@/../pdm']
+        workdir: '@PREFIX@'
+        isolate_network: false
+      - args: ['bin/pip', 'install', '@THIS_SOURCE_DIR@/../pdm-backend']
         workdir: '@PREFIX@'
         isolate_network: false
 
