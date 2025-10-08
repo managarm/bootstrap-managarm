@@ -25,6 +25,34 @@ tools:
     install:
       - args: ['make', 'install']
 
+  - name: host-autoconf-v2.72
+    labels: [aarch64, riscv64]
+    architecture: noarch
+    source:
+      name: autoconf-v2.72
+      subdir: 'ports'
+      git: 'https://https.git.savannah.gnu.org/git/autoconf.git'
+      tag: 'v2.72'
+      version: '2.72'
+      sources_required:
+        - gnuconfig
+        - gnulib
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+      regenerate:
+        - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.sub', '@THIS_SOURCE_DIR@/lib/']
+        - args: ['cp', '@SOURCE_ROOT@/ports/gnuconfig/config.guess', '@THIS_SOURCE_DIR@/lib/']
+        - args: ['python3', '@SOURCE_ROOT@/scripts/checkout-gnulib.py', '@SOURCE_ROOT@/ports/gnulib']
+        - args: ['autoreconf', '-fvi']
+    revision: 1
+    configure:
+      - args: ['@THIS_SOURCE_DIR@/configure', '--prefix=@PREFIX@']
+    compile:
+      - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'install']
+
   - name: host-autoconf-v2.71
     labels: [aarch64, riscv64]
     architecture: noarch
