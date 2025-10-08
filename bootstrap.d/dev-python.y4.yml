@@ -175,6 +175,34 @@ packages:
     build:
       - args: ['python3', '-m', 'gpep517', 'install-from-source', '--destdir', '@THIS_COLLECT_DIR@', '--optimize', 'all', '--prefix', '/usr', '--sysroot', '@SYSROOT_DIR@', '--interpreter', '/usr/bin/env python3']
 
+  - name: python-fqdn
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: RFC-compliant FQDN validation and manipulation for Python
+      description: RFC-compliant FQDN validation and manipulation for Python
+      spdx: 'MPL-2.0'
+      website: 'https://pypi.org/project/fqdn/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-python']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/ypcrts/fqdn.git'
+      tag: 'v1.5.1'
+      version: '1.5.1'
+    tools_required:
+      - host-gpep517
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - python
+    revision: 1
+    configure:
+      # python modules do not seem to support out-of-tree builds, so we just copy
+      # the source tree into the build directory instead.
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+    build:
+      - args: ['python3', '-m', 'gpep517', 'install-from-source', '--destdir', '@THIS_COLLECT_DIR@', '--optimize', 'all', '--prefix', '/usr', '--sysroot', '@SYSROOT_DIR@', '--interpreter', '/usr/bin/env python3']
+
   - name: python-packaging
     architecture: '@OPTION:arch@'
     metadata:
