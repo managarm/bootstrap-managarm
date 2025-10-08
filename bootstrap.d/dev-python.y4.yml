@@ -118,6 +118,34 @@ packages:
     build:
       - args: ['python3', '-m', 'gpep517', 'install-from-source', '--destdir', '@THIS_COLLECT_DIR@', '--optimize', 'all', '--prefix', '/usr', '--sysroot', '@SYSROOT_DIR@', '--interpreter', '/usr/bin/env python3']
 
+  - name: python-colorama
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: ANSI escape character sequences for colored terminal text & cursor positioning
+      description: ANSI escape character sequences for colored terminal text & cursor positioning
+      spdx: 'BSD-3-Clause'
+      website: 'https://pypi.org/project/colorama/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-python']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/tartley/colorama.git'
+      tag: '0.4.6'
+      version: '0.4.6'
+    tools_required:
+      - host-gpep517
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - python
+    revision: 1
+    configure:
+      # python modules do not seem to support out-of-tree builds, so we just copy
+      # the source tree into the build directory instead.
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+    build:
+      - args: ['python3', '-m', 'gpep517', 'install-from-source', '--destdir', '@THIS_COLLECT_DIR@', '--optimize', 'all', '--prefix', '/usr', '--sysroot', '@SYSROOT_DIR@', '--interpreter', '/usr/bin/env python3']
+
   - name: python-packaging
     architecture: '@OPTION:arch@'
     metadata:
