@@ -47,7 +47,6 @@ packages:
       - findutils
       - util-linux
       - libxcrypt
-      - gcc # Temporary solution to remove the need to copy libstdc++.so and libgcc.so from system-gcc
       - man-db
       - man-pages-posix
       - iproute2
@@ -59,7 +58,9 @@ packages:
       - systemd
       - pciutils
       - usbutils
-    revision: 10
+      - libgcc
+      - libstdc++
+    revision: 11
     configure: []
     build: []
 
@@ -79,6 +80,7 @@ packages:
     pkgs_required:
       - base
       - binutils
+      - gcc
       - make
       - patch
       - m4
@@ -87,7 +89,7 @@ packages:
       - cmake
       - bc
       - man-pages-posix
-    revision: 2
+    revision: 3
     configure: []
     build: []
 
