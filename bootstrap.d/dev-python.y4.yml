@@ -377,6 +377,38 @@ packages:
         environ:
           CC: '@OPTION:arch-triple@-gcc'
 
+  - name: python-regex
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Alternative regular expression module to replace re
+      description: Alternative regular expression module to replace re
+      spdx: 'Apache-2.0'
+      website: 'https://bitbucket.org/mrabarnett/mrab-regex'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-python']
+    source:
+      subdir: 'ports'
+      git: 'https://bitbucket.org/mrabarnett/mrab-regex.git'
+      branch: 'hg'
+      commit: 'bf5e239c0ed893330984d91f793dafed1d0ac9c5'
+      # No releases unfortunately, grab latest master
+      version: '2022.04.13.managarm'
+    tools_required:
+      - host-gpep517
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - python
+    revision: 1
+    configure:
+      # python modules do not seem to support out-of-tree builds, so we just copy
+      # the source tree into the build directory instead.
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+    build:
+      - args: ['python3', '-m', 'gpep517', 'install-from-source', '--destdir', '@THIS_COLLECT_DIR@', '--optimize', 'all', '--prefix', '/usr', '--sysroot', '@SYSROOT_DIR@', '--interpreter', '/usr/bin/env python3']
+        environ:
+          CC: '@OPTION:arch-triple@-gcc'
+
   - name: python-zope-interface
     architecture: '@OPTION:arch@'
     metadata:
