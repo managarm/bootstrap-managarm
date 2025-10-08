@@ -1,3 +1,16 @@
+sources:
+  - name: flit_core
+    subdir: 'ports'
+    git: 'https://github.com/pypa/flit.git'
+    tag: '3.12.0'
+    version: '3.12.0'
+
+  - name: setuptools
+    subdir: 'ports'
+    git: 'https://github.com/pypa/setuptools.git'
+    tag: 'v80.9.0'
+    version: '80.9.0'
+
 tools:
   - name: host-bragi
     labels: [aarch64, riscv64]
@@ -11,5 +24,35 @@ tools:
       - args: ['python3', '-m', 'venv', '.']
         workdir: '@PREFIX@'
       - args: ['bin/pip', 'install', '@THIS_SOURCE_DIR@']
+        workdir: '@PREFIX@'
+        isolate_network: false
+
+  - name: host-gpep517
+    labels: [aarch64, riscv64]
+    architecture: noarch
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/gentoo/gpep517.git'
+      tag: 'v19'
+      version: '19'
+    sources_required:
+      - flit_core
+      - setuptools
+    tools_required:
+      - tool: host-python
+        recursive: true
+    revision: 1
+    install:
+      - args: ['python3', '-m', 'venv', '.']
+        workdir: '@PREFIX@'
+      - args: ['bin/pip', 'install', '@THIS_SOURCE_DIR@']
+        workdir: '@PREFIX@'
+        isolate_network: false
+      # We need to install setuptools into the same venv, because build systems can use it
+      # Note that other build systems might need more dependencies installed in the venv for gpep517 to work with them
+      - args: ['bin/pip', 'install', '@THIS_SOURCE_DIR@/../setuptools']
+        workdir: '@PREFIX@'
+        isolate_network: false
+      - args: ['bin/pip', 'install', '@THIS_SOURCE_DIR@/../flit_core']
         workdir: '@PREFIX@'
         isolate_network: false
