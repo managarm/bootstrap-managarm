@@ -89,6 +89,35 @@ tools:
         isolate_network: false
 
 packages:
+  - name: python-attrs
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Attributes without boilerplate
+      description: Python Classes Without Boilerplate
+      spdx: 'MIT'
+      website: 'https://attrs.readthedocs.io/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-python']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/python-attrs/attrs.git'
+      tag: '25.4.0'
+      version: '25.4.0'
+    tools_required:
+      - host-gpep517
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - python
+      - python-zope-interface
+    revision: 1
+    configure:
+      # python modules do not seem to support out-of-tree builds, so we just copy
+      # the source tree into the build directory instead.
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+    build:
+      - args: ['python3', '-m', 'gpep517', 'install-from-source', '--destdir', '@THIS_COLLECT_DIR@', '--optimize', 'all', '--prefix', '/usr', '--sysroot', '@SYSROOT_DIR@', '--interpreter', '/usr/bin/env python3']
+
   - name: python-packaging
     architecture: '@OPTION:arch@'
     metadata:
