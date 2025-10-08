@@ -112,7 +112,7 @@ packages:
       - python-dateutil
     revision: 1
     configure:
-      # python modules does not seem to support out-of-tree builds, so we just copy
+      # python modules do not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead.
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -141,7 +141,7 @@ packages:
       - python-zope-interface
     revision: 1
     configure:
-      # python modules does not seem to support out-of-tree builds, so we just copy
+      # python modules do not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead.
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -169,7 +169,7 @@ packages:
       - python
     revision: 1
     configure:
-      # python modules does not seem to support out-of-tree builds, so we just copy
+      # python modules do not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead.
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -198,7 +198,7 @@ packages:
       - tzdata
     revision: 1
     configure:
-      # python modules does not seem to support out-of-tree builds, so we just copy
+      # python modules do not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead.
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -226,7 +226,7 @@ packages:
       - python
     revision: 1
     configure:
-      # python modules does not seem to support out-of-tree builds, so we just copy
+      # python modules do not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead.
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -254,7 +254,7 @@ packages:
       - python
     revision: 1
     configure:
-      # python modules does not seem to support out-of-tree builds, so we just copy
+      # python modules do not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead.
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -343,7 +343,7 @@ packages:
       - python
     revision: 1
     configure:
-      # python modules does not seem to support out-of-tree builds, so we just copy
+      # python modules do not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead.
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -373,7 +373,7 @@ packages:
       - python
     revision: 1
     configure:
-      # python modules does not seem to support out-of-tree builds, so we just copy
+      # python modules do not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead.
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -492,7 +492,7 @@ packages:
       - python
     revision: 1
     configure:
-      # python modules does not seem to support out-of-tree builds, so we just copy
+      # python modules do not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead.
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
