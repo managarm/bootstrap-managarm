@@ -377,6 +377,35 @@ packages:
         environ:
           CC: '@OPTION:arch-triple@-gcc'
 
+  - name: python-rfc3339-validator
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: A pure python RFC3339 validator
+      description: A pure python RFC3339 validator
+      spdx: 'MIT'
+      website: 'https://github.com/naimetti/rfc3339-validator'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-python']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/naimetti/rfc3339-validator.git'
+      tag: 'v0.1.4'
+      version: '0.1.4'
+    tools_required:
+      - host-gpep517
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - python
+      - python-strict-rfc3339
+    revision: 1
+    configure:
+      # python modules do not seem to support out-of-tree builds, so we just copy
+      # the source tree into the build directory instead.
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+    build:
+      - args: ['python3', '-m', 'gpep517', 'install-from-source', '--destdir', '@THIS_COLLECT_DIR@', '--optimize', 'all', '--prefix', '/usr', '--sysroot', '@SYSROOT_DIR@', '--interpreter', '/usr/bin/env python3']
+
   - name: python-rfc3986-validator
     architecture: '@OPTION:arch@'
     metadata:
