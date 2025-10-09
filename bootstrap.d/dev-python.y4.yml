@@ -533,6 +533,47 @@ packages:
         environ:
           CC: '@OPTION:arch-triple@-gcc'
 
+  - name: python-rpds-py
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Python bindings to Rust's persistent data structures (rpds)
+      description: Python bindings to Rust's persistent data structures (rpds)
+      spdx: 'Apache-2.0'
+      website: 'https://github.com/crate-py/rpds/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-python']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/crate-py/rpds.git'
+      tag: 'v0.27.1'
+      version: '0.27.1'
+    sources_required:
+      - rust-patched-libs
+    tools_required:
+      - host-gpep517
+      - system-gcc
+      - host-cargo
+    pkgs_required:
+      - mlibc
+      - python
+    revision: 1
+    configure:
+      - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
+        isolate_network: false
+      # python modules do not seem to support out-of-tree builds, so we just copy
+      # the source tree into the build directory instead.
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+    build:
+      - args: ['python3', '-m', 'gpep517', 'install-from-source', '--destdir', '@THIS_COLLECT_DIR@', '--optimize', 'all', '--prefix', '/usr', '--sysroot', '@SYSROOT_DIR@', '--interpreter', '/usr/bin/env python3']
+        isolate_network: false
+        environ:
+          PYO3_CROSS_PYTHON_VERSION: '3.14'
+          PYO3_PYTHON: 'python3.14'
+          CC: '@OPTION:arch-triple@-gcc'
+          CARGO_BUILD_TARGET: '@OPTION:rust-arch@-unknown-managarm-mlibc'
+          PYO3_CROSS_LIB_DIR: '@SYSROOT_DIR@/usr/lib'
+          PYO3_CROSS_INCLUDE_DIR: '@SYSROOT_DIR@/usr/include'
+
   - name: python-strict-rfc3339
     architecture: '@OPTION:arch@'
     metadata:
