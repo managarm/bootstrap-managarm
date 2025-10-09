@@ -1,7 +1,7 @@
 #----------------------------------------------------------------------------------------
 # "base" stage that contains all packages that we need.
 #----------------------------------------------------------------------------------------
-FROM debian:bookworm AS base
+FROM debian:trixie AS base
 
 RUN apt-get update \
 	&& apt-get -y install \
