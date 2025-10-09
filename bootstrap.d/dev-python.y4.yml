@@ -412,6 +412,35 @@ packages:
         environ:
           CC: '@OPTION:arch-triple@-gcc'
 
+  - name: python-referencing
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Cross-specification JSON referencing (JSON Schema, OpenAPI...)
+      description: Cross-specification JSON referencing (JSON Schema, OpenAPI...)
+      spdx: 'MIT'
+      website: 'https://referencing.readthedocs.io/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-python']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/python-jsonschema/referencing.git'
+      tag: 'v0.36.2'
+      version: '0.36.2'
+    tools_required:
+      - host-gpep517
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - python
+      - python-rpds-py
+    revision: 1
+    configure:
+      # python modules do not seem to support out-of-tree builds, so we just copy
+      # the source tree into the build directory instead.
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+    build:
+      - args: ['python3', '-m', 'gpep517', 'install-from-source', '--destdir', '@THIS_COLLECT_DIR@', '--optimize', 'all', '--prefix', '/usr', '--sysroot', '@SYSROOT_DIR@', '--interpreter', '/usr/bin/env python3']
+
   - name: python-rfc3339-validator
     architecture: '@OPTION:arch@'
     metadata:
