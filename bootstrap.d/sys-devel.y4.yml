@@ -414,7 +414,7 @@ packages:
       - mpfr
       - mpc
       - zlib
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -443,10 +443,11 @@ packages:
         quiet: true
       - args: ['ln', '-sf', 'gcc', '@THIS_COLLECT_DIR@/usr/bin/cc']
     subpackages:
+      # We need to add /usr/lib and /usr/lib64, because riscv doesn't use lib64 but aarch64 and amd64 do.
       - name: libgcc
-        include: ['/usr/lib64/libgcc_s.so*', '/usr/lib/gcc/*-managarm/14.2.0/libgcc*']
+        include: ['/usr/lib*/libgcc_s.so*', '/usr/lib/gcc/*-managarm/14.2.0/libgcc*']
       - name: libstdc++
-        include: ['/usr/include/**', '/usr/lib64/libstdc++*', '/usr/lib64/libsupc++.a', '/usr/share/gcc-14.2.0/**']
+        include: ['/usr/include/**', '/usr/lib*/libstdc++*', '/usr/lib*/libsupc++.a', '/usr/share/gcc-14.2.0/**']
 
   - name: binutils
     architecture: '@OPTION:arch@'
