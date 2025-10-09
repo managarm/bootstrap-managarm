@@ -47,3 +47,4 @@ wayland-sys = { path = "@SOURCE_ROOT@/ports/rust-wayland-backend/wayland-sys" }
 ring = { path = "@SOURCE_ROOT@/ports/rust-ring" }
 zbus = { path = "@SOURCE_ROOT@/ports/rust-zbus/zbus" }
 zvariant = { path = "@SOURCE_ROOT@/ports/rust-zbus/zvariant" }
+target-lexicon = { path = "@SOURCE_ROOT@/ports/rust-target-lexicon" }
