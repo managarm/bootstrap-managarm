@@ -6,10 +6,10 @@ import pathlib
 import subprocess
 
 patched_libs = {
-    "backtrace": "0.3.69",
+    "backtrace": "0.3.75",
     "calloop": "0.10.0",
     'getrandom': ['0.2.15', '0.3.2'],
-    "libc": "0.2.171",
+    "libc": "0.2.175",
     "libloading": ['0.7.4', '0.8.6'],
     "mio": ["0.6.23", "0.8.3", "1.0.3"],
     "nix": ["0.24.3", "0.29.0"],
