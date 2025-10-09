@@ -381,6 +381,48 @@ packages:
     build:
       - args: ['python3', '-m', 'gpep517', 'install-from-source', '--destdir', '@THIS_COLLECT_DIR@', '--optimize', 'all', '--prefix', '/usr', '--sysroot', '@SYSROOT_DIR@', '--interpreter', '/usr/bin/env python3']
 
+  - name: python-jsonschema
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: An implementation of JSON-Schema validation for Python
+      description: An implementation of JSON-Schema validation for Python
+      spdx: 'MIT'
+      website: 'https://pypi.org/project/jsonschema/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-python']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/python-jsonschema/jsonschema.git'
+      tag: 'v4.25.1'
+      version: '4.25.1'
+    tools_required:
+      - host-gpep517
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - python
+      - python-attrs
+      - python-pyrsistent
+      - python-fqdn
+      - python-idna
+      - python-isoduration
+      - python-jsonpointer
+      - python-jsonschema-specifications
+      - python-referencing
+      - python-rfc3339-validator
+      - python-rfc3986-validator
+      - python-rfc3987
+      - python-rpds-py
+      - python-uri-template
+      - python-webcolors
+    revision: 1
+    configure:
+      # python modules do not seem to support out-of-tree builds, so we just copy
+      # the source tree into the build directory instead.
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+    build:
+      - args: ['python3', '-m', 'gpep517', 'install-from-source', '--destdir', '@THIS_COLLECT_DIR@', '--optimize', 'all', '--prefix', '/usr', '--sysroot', '@SYSROOT_DIR@', '--interpreter', '/usr/bin/env python3']
+
   - name: python-packaging
     architecture: '@OPTION:arch@'
     metadata:
