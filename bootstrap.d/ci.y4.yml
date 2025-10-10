@@ -28,10 +28,70 @@ tasks:
     tasks_required:
       - ci-kernel-tests
       - ci-posix-tests
+      - ci-boot-bios-limine
+      - ci-boot-bios-mb2
+      - ci-boot-uefi
+      - ci-boot-uefi-limine
+      - ci-boot-uefi-mb2
     args:
       - '/usr/bin/true'
     # This and all other CI tasks should be marked as containerless
     # such that we do not need cbuildrt and a rootfs to run them on CI.
+    containerless: true
+  - name: ci-boot-bios-limine
+    tools_required: !ci-tools-required
+    tasks_required: !ci-tasks-required
+    args:
+      - !ci-common-args
+      - '--no-uefi'
+      - '--ci-protocol=limine'
+      - '--ci-script=/usr/bin/true'
+    environ: !ci-environ
+    workdir: '@BUILD_ROOT@'
+    containerless: true
+  - name: ci-boot-bios-mb2
+    tools_required: !ci-tools-required
+    tasks_required: !ci-tasks-required
+    args:
+      - !ci-common-args
+      - '--no-uefi'
+      - '--ci-protocol=mb2'
+      - '--ci-script=/usr/bin/true'
+    environ: !ci-environ
+    workdir: '@BUILD_ROOT@'
+    containerless: true
+  - name: ci-boot-uefi
+    tools_required: !ci-tools-required
+    tasks_required: !ci-tasks-required
+    args:
+      - !ci-common-args
+      - '--uefi'
+      - '--ci-protocol=uefi'
+      - '--ci-script=/usr/bin/true'
+    environ: !ci-environ
+    workdir: '@BUILD_ROOT@'
+    containerless: true
+  - name: ci-boot-uefi-limine
+    tools_required: !ci-tools-required
+    tasks_required: !ci-tasks-required
+    args:
+      - !ci-common-args
+      - '--uefi'
+      - '--ci-protocol=limine'
+      - '--ci-script=/usr/bin/true'
+    environ: !ci-environ
+    workdir: '@BUILD_ROOT@'
+    containerless: true
+  - name: ci-boot-uefi-mb2
+    tools_required: !ci-tools-required
+    tasks_required: !ci-tasks-required
+    args:
+      - !ci-common-args
+      - '--uefi'
+      - '--ci-protocol=mb2'
+      - '--ci-script=/usr/bin/true'
+    environ: !ci-environ
+    workdir: '@BUILD_ROOT@'
     containerless: true
   - name: ci-kernel-tests
     tools_required: !ci-tools-required
