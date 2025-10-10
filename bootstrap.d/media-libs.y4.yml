@@ -1572,7 +1572,9 @@ packages:
       - libglvnd
       - libexpat
       - zstd
-    revision: 2
+      - vulkan-loader
+      - vulkan-headers
+    revision: 3
     configure:
       - args: ['cp', '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file', 'meson.cross-file']
       - args:
@@ -1595,7 +1597,7 @@ packages:
         - '-Dglx=dri'
         - '-Dplatforms=wayland,x11'
         - '-Dgallium-drivers=llvmpipe'
-        - '-Dvulkan-drivers='
+        - '-Dvulkan-drivers=swrast'
         - '-Dglvnd=enabled'
         # Force Mesa to build with LLVM.
         - '-Dllvm=enabled'
