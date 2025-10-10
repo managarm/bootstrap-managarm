@@ -622,29 +622,43 @@ def do_qemu(args):
             print(f"error: no EFI System Partition found in image!")
             sys.exit(1)
 
-        tmp_config = tempfile.NamedTemporaryFile(mode='w+', suffix='.conf')
-        if args.uefi:
-            tmp_config.write(f"""limine:config:
-timeout: 0
-/managarm headless (UEFI)
-    image_path: guid({esp_uuid}):/managarm/eir-uefi
-    protocol: efi_chainload
-    cmdline: bochs systemd.unit=ci-boot.target
-""")
-        else:
-            tmp_config.write(f"""limine:config:
-timeout: 0
-/managarm headless
-    kernel_path: guid({esp_uuid}):/managarm/eir-mb2
-    protocol: multiboot2
-    cmdline: bochs systemd.unit=ci-boot.target
-    module_path: guid({esp_uuid}):/managarm/initrd.cpio
-""")
-        tmp_config.flush()
+        ci_config = os.path.join(tmpdir.name, "limine.conf")
+
+        # Build the Limine config.
+        ci_protocol = args.ci_protocol
+        if ci_protocol is None:
+            if args.uefi:
+                ci_protocol = "uefi"
+            elif args.arch == "x86_64":
+                ci_protocol = "limine"
+            else:
+                assert args.arch in {"aarch64", "riscv64"}
+                ci_protocol = "linux"
+        with open(ci_config, "w") as f:
+            f.write("limine:config:\n")
+            f.write("timeout: 0\n")
+            f.write("/ci-boot\n")
+            if ci_protocol == "limine":
+                f.write(f"kernel_path: guid({esp_uuid}):/managarm/eir-limine\n")
+                f.write("protocol: limine\n")
+            elif ci_protocol == "linux":
+                f.write(f"kernel_path: guid({esp_uuid}):/managarm/eir-linux\n")
+                f.write("protocol: linux\n")
+            elif ci_protocol == "mb2":
+                f.write(f"kernel_path: guid({esp_uuid}):/managarm/eir-mb2\n")
+                f.write("protocol: multiboot2\n")
+            elif ci_protocol == "uefi":
+                f.write(f"image_path: guid({esp_uuid}):/managarm/eir-uefi\n")
+                f.write("protocol: efi_chainload\n")
+            else:
+                raise RuntimeError(f"Bad --ci-protocol: {ci_protocol}")
+            if ci_protocol in {"limine", "linux", "mb2"}:
+                f.write(f"module_path: guid({esp_uuid}):/managarm/initrd.cpio\n")
+            f.write("cmdline: bochs systemd.unit=ci-boot.target\n")
 
         qemu_args += [
             "-smbios",
-            f"type=11,path={tmp_config.name}",
+            f"type=11,path={ci_config}",
         ]
 
     if args.uefi:
@@ -910,6 +924,7 @@ qemu_parser.add_argument("--usb-serial", action='store_true')
 qemu_parser.add_argument("--uefi", action=argparse.BooleanOptionalAction)
 qemu_parser.add_argument("--ovmf-logs", action="store_true")
 qemu_parser.add_argument("--dmalog-int-pin", type=str, default="C")
+qemu_parser.add_argument("--ci-protocol", choices=["limine", "linux", "mb2", "uefi"])
 qemu_parser.add_argument("--ci-script", type=str)
 qemu_parser.add_argument("--qmp", action="store_true")
 qemu_parser.add_argument("--use-system-qemu", action="store_true")
