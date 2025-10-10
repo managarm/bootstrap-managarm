@@ -1,7 +1,7 @@
 #----------------------------------------------------------------------------------------
 # "base" stage that contains all packages that we need.
 #----------------------------------------------------------------------------------------
-FROM debian:bookworm AS base
+FROM debian:trixie AS base
 
 RUN apt-get update \
 	&& apt-get -y install \
@@ -132,6 +132,8 @@ RUN apt-get update \
 		python3-pip \
 		python3-setuptools \
 		python3-wheel \
+		# Used by several python modules
+		python3-maturin \
 		# Used by host-glib
 		python3-packaging \
 		# Used by libxcb
