@@ -559,7 +559,7 @@ class UpdateFsAction:
         def plan_rsync(dir, exclude_files=[]):
             source = os.path.join(self.sysroot, dir)
             target = os.path.join(target_mntpoint, dir)
-            command = ["rsync", "-a", "--delete", source, target]
+            command = ["rsync", "--checksum", "-a", "--delete", source, target]
             if exclude_files:
                 for f in exclude_files:
                     command.append(f"--exclude={os.path.join(f)}")
