@@ -1,0 +1,54 @@
+!<tag:y4.managarm.org:preamble>
+import:
+  - !std
+  - !managarm
+const:
+  !ci-tools-required :
+    - tool: ovmf
+      expose: false
+  !ci-tasks-required :
+    - task: make-image
+      order_only: true
+    - task: remake-image
+      order_only: true
+  !ci-common-args :
+    # This would be cleaner if there was an unconditional std::splice.
+    !std::splice_if
+    - { item: '@SOURCE_ROOT@/scripts/vm-util.py', if: true }
+    - { item: 'qemu', if: true }
+    - { item: '--arch', if: true }
+    - { item: '@OPTION:arch@', if: true }
+    - { item: '--timeout=1200', if: true }
+    - { item: '--io-timeout=300', if: true }
+  !ci-environ :
+    QFLAGS: '-snapshot -display none'
+---
+tasks:
+  - name: ci-all
+    tasks_required:
+      - ci-kernel-tests
+      - ci-posix-tests
+    args:
+      - '/usr/bin/true'
+  - name: ci-kernel-tests
+    tools_required: !ci-tools-required
+    tasks_required: !ci-tasks-required
+    args:
+      - !ci-common-args
+      - '--uefi'
+      - '--ci-script'
+      - 'kernel-tests'
+    environ: !ci-environ
+    workdir: '@BUILD_ROOT@'
+    containerless: true
+  - name: ci-posix-tests
+    tools_required: !ci-tools-required
+    tasks_required: !ci-tasks-required
+    args:
+      - !ci-common-args
+      - '--uefi'
+      - '--ci-script'
+      - 'posix-tests'
+    environ: !ci-environ
+    workdir: '@BUILD_ROOT@'
+    containerless: true

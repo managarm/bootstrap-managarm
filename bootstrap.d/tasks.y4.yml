@@ -13,7 +13,8 @@ tasks:
 
   - name: update-initrd
     pkgs_required:
-      - gcc
+      - libgcc
+      - libstdc++
       - managarm-kernel
       - managarm-system
     tasks_required:

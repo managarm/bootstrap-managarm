@@ -307,6 +307,8 @@ packages:
       - args: ['mkdir', '-pv', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/sysinit.target.wants/']
       - args: ['ln', '-svn', '../runsvr-atkbd.service', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/sysinit.target.wants/']
       - args: ['ln', '-svn', '../runsvr-usbhid.service', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/sysinit.target.wants/']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/ci-boot.target.wants']
+      - args: ['ln', '-svn', '../ci-boot.service', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/ci-boot.target.wants/']
     tasks:
     - name: clang-tidy
       args:

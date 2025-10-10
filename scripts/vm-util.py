@@ -2,6 +2,7 @@
 
 import asyncio
 import argparse
+import base64
 import enum
 import json
 import os
@@ -20,6 +21,15 @@ import yaml
 
 main_parser = argparse.ArgumentParser()
 main_subparsers = main_parser.add_subparsers()
+
+def which(cmd):
+    path = shutil.which(cmd)
+    if path is not None:
+        return path
+    path = shutil.which(cmd, path="/usr/local/sbin:/usr/sbin:/sbin")
+    if path is not None:
+        return path
+    raise FileNotFoundError(f"Could not find executable: {cmd}")
 
 # ---------------------------------------------------------------------------------------
 # qemu subcommand.
@@ -366,7 +376,9 @@ class TftpServer:
             cs.close()
 
 class QemuRunner:
-    def __init__(self):
+    def __init__(self, *, tmpdir, ci_script=None):
+        self.tmpdir = tmpdir
+        self.ci_script = ci_script
         self.proc = None
         self.launch_time = None
         self.last_io_time = None
@@ -386,7 +398,8 @@ class QemuRunner:
         try:
             await asyncio.gather(
                 self.do_wait(),
-                self.process_stdout(expect_all=expect_all, expect_none=expect_none)
+                self.process_stdout(expect_all=expect_all, expect_none=expect_none),
+                self._do_ci_boot(),
             )
         finally:
             if self.proc.returncode is None:
@@ -459,6 +472,42 @@ class QemuRunner:
             missing = ", ".join(f"'{expr.pattern}'" for expr in expect_all)
             raise RuntimeError(f"Expected lines matching regexps {missing}")
 
+    async def _do_ci_boot(self):
+        if self.ci_script is None:
+            return
+
+        debug = False
+
+        socket_path = os.path.join(self.tmpdir, "serial.socket")
+        while not os.path.exists(socket_path):
+            await asyncio.sleep(0.1)
+        (reader, writer) = await asyncio.open_unix_connection(socket_path)
+
+        async for line in reader:
+            msg = json.loads(line)
+            m = msg["m"]
+            if m == "ready":
+                if debug:
+                    print("[vm-util] ci-boot is ready")
+                msg = {"m": "launch", "script": self.ci_script}
+                writer.write(json.dumps(msg).encode("utf8") + b"\n")
+                await writer.drain()
+            elif m in {"stdout", "stderr"}:
+                data = base64.b64decode(msg["data"]).rstrip()
+                if debug:
+                    print("[vm-util] ci-boot stdout: " + data.decode("utf8", errors="backslashreplace"))
+            elif m == "exit":
+                exitcode = msg["exitcode"]
+                self.proc.terminate()
+                if exitcode != 0:
+                    raise RuntimeError(f"ci-boot exited with code {exitcode}")
+            elif m == "error":
+                text = msg["text"]
+                self.proc.terminate()
+                raise RuntimeError(f"ci-boot error: {text}")
+            else:
+                print(f"[vm-util] ci-boot unknown packet: {m}")
+
 def do_qemu(args):
     # Default to --uefi for AArch64 and RISC-V.
     if args.arch == "riscv64" or args.arch == "aarch64":
@@ -472,6 +521,9 @@ def do_qemu(args):
             qemu = f"tools/host-qemu/bin/qemu-system-{args.arch}"
         else:
             qemu = f"qemu-system-{args.arch}"
+
+    # Create a temporary directory that we use for various files.
+    tmpdir = tempfile.TemporaryDirectory(prefix="vm-util-")
 
     # Determine if dmalog is available.
 
@@ -557,10 +609,10 @@ def do_qemu(args):
     if not args.no_smp:
         qemu_args += ["-smp", "4"]
 
-    if args.virtual_boot:
+    if args.ci_script is not None:
         esp_uuid = None
 
-        out = subprocess.check_output(['sfdisk', '-dJ', 'image'], encoding="ascii")
+        out = subprocess.check_output([which('sfdisk'), '-dJ', 'image'], encoding="ascii")
         for part in json.loads(out)['partitiontable']['partitions']:
             if part['type'].upper() == "C12A7328-F81F-11D2-BA4B-00A0C93EC93B":
                 esp_uuid = part['uuid'].upper()
@@ -577,7 +629,7 @@ timeout: 0
 /managarm headless (UEFI)
     image_path: guid({esp_uuid}):/managarm/eir-uefi
     protocol: efi_chainload
-    cmdline: bochs init.launch=headless init.command={args.cmd} plainfb.force=1 nosystemd
+    cmdline: bochs systemd.unit=ci-boot.target
 """)
         else:
             tmp_config.write(f"""limine:config:
@@ -585,16 +637,12 @@ timeout: 0
 /managarm headless
     kernel_path: guid({esp_uuid}):/managarm/eir-mb2
     protocol: multiboot2
-    cmdline: bochs init.launch=headless init.command={args.cmd} plainfb.force=1 nosystemd
+    cmdline: bochs systemd.unit=ci-boot.target
     module_path: guid({esp_uuid}):/managarm/initrd.cpio
 """)
         tmp_config.flush()
 
         qemu_args += [
-            "-chardev",
-            "file,id=serial,path=serial.out",
-            "-serial",
-            "chardev:serial",
             "-smbios",
             f"type=11,path={tmp_config.name}",
         ]
@@ -770,7 +818,7 @@ timeout: 0
         ]
 
     # Use serial for POSIX gdb (conflicts with headless init).
-    if not args.virtual_boot:
+    if not args.ci_script is not None:
         qemu_args += [
             "-chardev",
             "socket,id=posix-gdbsocket,host=0.0.0.0,port=5679,server=on,wait=off",
@@ -817,7 +865,16 @@ timeout: 0
     if args.expect_not:
         expect_none = [re.compile(expr) for expr in args.expect_not]
 
-    runner = QemuRunner()
+    # Add this last to not interfere with device probing.
+    if args.ci_script is not None:
+        qemu_args += [
+            "-chardev",
+            "socket,id=serial,server=on,wait=on,path=" + os.path.join(tmpdir.name, "serial.socket"),
+            "-serial",
+            "chardev:serial",
+        ]
+
+    runner = QemuRunner(tmpdir=tmpdir.name, ci_script=args.ci_script)
     # Adjust for the fact that non-KVM runs are much slower.
     timeout_factor = 1 if have_kvm else 3
     if args.timeout is not None:
@@ -833,7 +890,6 @@ qemu_parser.add_argument("--arch", choices=["x86_64", "aarch64", "riscv64"], def
 qemu_parser.add_argument("--no-kvm", action="store_true")
 qemu_parser.add_argument("--virtual-cpu", action="store_true")
 qemu_parser.add_argument("--no-smp", action="store_true")
-qemu_parser.add_argument("--virtual-boot", action="store_true")
 qemu_parser.add_argument(
     "--boot-drive",
     choices=["virtio", "virtio-legacy", "ahci", "usb", "ide", "nvme", "nvme-of", "none"],
@@ -854,7 +910,7 @@ qemu_parser.add_argument("--usb-serial", action='store_true')
 qemu_parser.add_argument("--uefi", action=argparse.BooleanOptionalAction)
 qemu_parser.add_argument("--ovmf-logs", action="store_true")
 qemu_parser.add_argument("--dmalog-int-pin", type=str, default="C")
-qemu_parser.add_argument("--cmd", type=str)
+qemu_parser.add_argument("--ci-script", type=str)
 qemu_parser.add_argument("--qmp", action="store_true")
 qemu_parser.add_argument("--use-system-qemu", action="store_true")
 qemu_parser.add_argument("--timeout", type=int)
