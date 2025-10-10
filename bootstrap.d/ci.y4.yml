@@ -30,6 +30,9 @@ tasks:
       - ci-posix-tests
     args:
       - '/usr/bin/true'
+    # This and all other CI tasks should be marked as containerless
+    # such that we do not need cbuildrt and a rootfs to run them on CI.
+    containerless: true
   - name: ci-kernel-tests
     tools_required: !ci-tools-required
     tasks_required: !ci-tasks-required
