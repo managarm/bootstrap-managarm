@@ -22,8 +22,6 @@ tasks:
         order_only: true
       - task: initialize-empty-image
         order_only: true
-    sources_required:
-      - managarm
     tools_required:
       - cross-binutils
     args:
