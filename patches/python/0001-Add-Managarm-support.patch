@@ -1,0 +1,112 @@
+From 1d3721982dd320f1c5cde91eecfceb2ad2a031eb Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Wed, 8 Oct 2025 21:35:17 +0200
+Subject: [PATCH] Add Managarm support
+
+---
+ Modules/_hacl/Lib_Memzero0.c      |  4 ++--
+ Objects/mimalloc/prim/unix/prim.c |  4 ++--
+ configure.ac                      | 15 ++++++++++++++-
+ 3 files changed, 18 insertions(+), 5 deletions(-)
+
+diff --git a/Modules/_hacl/Lib_Memzero0.c b/Modules/_hacl/Lib_Memzero0.c
+index f94e0e2..84ecabc 100644
+--- a/Modules/_hacl/Lib_Memzero0.c
++++ b/Modules/_hacl/Lib_Memzero0.c
+@@ -31,7 +31,7 @@
+ #include <string.h>
+ #endif
+ 
+-#if defined(__FreeBSD__) || defined(__NetBSD__)
++#if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__mlibc__)
+ #include <strings.h>
+ #endif
+ 
+@@ -57,7 +57,7 @@ void Lib_Memzero0_memzero0(void *dst, uint64_t len) {
+     SecureZeroMemory(dst, len_);
+   #elif defined(__APPLE__) && defined(__MACH__) && defined(APPLE_HAS_MEMSET_S)
+     memset_s(dst, len_, 0, len_);
+-  #elif (defined(__linux__) && !defined(LINUX_NO_EXPLICIT_BZERO)) || defined(__FreeBSD__) || defined(__OpenBSD__)
++  #elif ((defined(__linux__) || defined(__mlibc__)) && !defined(LINUX_NO_EXPLICIT_BZERO)) || defined(__FreeBSD__) || defined(__OpenBSD__)
+     explicit_bzero(dst, len_);
+   #elif defined(__NetBSD__)
+     explicit_memset(dst, 0, len_);
+diff --git a/Objects/mimalloc/prim/unix/prim.c b/Objects/mimalloc/prim/unix/prim.c
+index 1598eba..41c9845 100644
+--- a/Objects/mimalloc/prim/unix/prim.c
++++ b/Objects/mimalloc/prim/unix/prim.c
+@@ -51,7 +51,7 @@ terms of the MIT license. A copy of the license can be found in the file
+   #include <sys/sysctl.h>
+ #endif
+ 
+-#if !defined(__HAIKU__) && !defined(__APPLE__) && !defined(__CYGWIN__) && !defined(_AIX) && !defined(__OpenBSD__) && !defined(__FreeBSD__) && !defined(__sun) && !defined(__NetBSD__)
++#if !defined(__HAIKU__) && !defined(__APPLE__) && !defined(__CYGWIN__) && !defined(_AIX) && !defined(__OpenBSD__) && !defined(__FreeBSD__) && !defined(__sun) && !defined(__NetBSD__) && !defined(__managarm__)
+   #define MI_HAS_SYSCALL_H
+   #include <sys/syscall.h>
+ #endif
+@@ -759,7 +759,7 @@ bool _mi_prim_random_buf(void* buf, size_t buf_len) {
+   return true;
+ }
+ 
+-#elif defined(__linux__) || defined(__HAIKU__)
++#elif defined(__linux__) || defined(__HAIKU__) || defined(__managarm__)
+ 
+ #include <sys/types.h>
+ #include <sys/stat.h>
+diff --git a/configure.ac b/configure.ac
+index af7a962..28f4281 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -327,6 +327,9 @@ then
+ 	*-*-cygwin*)
+ 		ac_sys_system=Cygwin
+ 		;;
++	*-*-managarm*)
++		ac_sys_system=Managarm
++		;;
+ 	*-apple-ios*)
+ 		ac_sys_system=iOS
+ 		;;
+@@ -812,6 +815,9 @@ if test "$cross_compiling" = yes; then
+ 	wasm32-*-* | wasm64-*-*)
+ 		_host_ident=$host_cpu
+ 		;;
++	*-*-managarm*)
++		_host_ident=$host_cpu
++		;;
+ 	*)
+ 		# for now, limit cross builds to known configurations
+ 		MACHDEP="unknown"
+@@ -3525,6 +3531,9 @@ then
+ 	CYGWIN*)
+ 		LDSHARED="gcc -shared -Wl,--enable-auto-image-base"
+ 		LDCXXSHARED="g++ -shared -Wl,--enable-auto-image-base";;
++	Managarm*)
++		LDSHARED='$(CC) -shared'
++		LDCXXSHARED='$(CXX) -shared';;
+ 	*)	LDSHARED="ld";;
+ 	esac
+ fi
+@@ -3576,7 +3585,9 @@ then
+ 		else CCSHARED="-Kpic -belf"
+ 		fi;;
+ 	VxWorks*)
+-		CCSHARED="-fpic -D__SO_PICABILINUX__  -ftls-model=global-dynamic"
++		CCSHARED="-fpic -D__SO_PICABILINUX__  -ftls-model=global-dynamic";;
++	Managarm*)
++		CCSHARED="-fPIC";;
+ 	esac
+ fi
+ AC_MSG_RESULT([$CCSHARED])
+@@ -3650,6 +3661,8 @@ then
+ 		LINKFORSHARED='-Wl,-E -N 2048K';;
+ 	VxWorks*)
+ 		LINKFORSHARED='-Wl,-export-dynamic';;
++	Managarm*)
++		LINKFORSHARED='-export-dynamic';;
+ 	esac
+ fi
+ AC_MSG_RESULT([$LINKFORSHARED])
+-- 
+2.51.0
+
