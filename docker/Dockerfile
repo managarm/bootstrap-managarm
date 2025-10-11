@@ -23,6 +23,8 @@ RUN apt-get update \
 		cpio \
 		# Used by protobuf
 		curl \
+		# Used by image_create.sh
+		e2fsprogs \
 		# Used by binutils in the build process
 		flex \
 		# Required by flex but not a hard dependency in Debian.
