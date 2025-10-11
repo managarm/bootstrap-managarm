@@ -43,6 +43,7 @@ tasks:
     tasks_required: !ci-tasks-required
     args:
       - !ci-common-args
+      - '--logfile=ci-boot-bios-limine.txt'
       - '--no-uefi'
       - '--ci-protocol=limine'
       - '--ci-script=/usr/bin/true'
@@ -54,6 +55,7 @@ tasks:
     tasks_required: !ci-tasks-required
     args:
       - !ci-common-args
+      - '--logfile=ci-boot-bios-mb2.txt'
       - '--no-uefi'
       - '--ci-protocol=mb2'
       - '--ci-script=/usr/bin/true'
@@ -65,6 +67,7 @@ tasks:
     tasks_required: !ci-tasks-required
     args:
       - !ci-common-args
+      - '--logfile=ci-boot-uefi.txt'
       - '--uefi'
       - '--ci-protocol=uefi'
       - '--ci-script=/usr/bin/true'
@@ -76,6 +79,7 @@ tasks:
     tasks_required: !ci-tasks-required
     args:
       - !ci-common-args
+      - '--logfile=ci-boot-uefi-limine.txt'
       - '--uefi'
       - '--ci-protocol=limine'
       - '--ci-script=/usr/bin/true'
@@ -87,6 +91,7 @@ tasks:
     tasks_required: !ci-tasks-required
     args:
       - !ci-common-args
+      - '--logfile=ci-boot-uefi-mb2.txt'
       - '--uefi'
       - '--ci-protocol=mb2'
       - '--ci-script=/usr/bin/true'
@@ -98,6 +103,7 @@ tasks:
     tasks_required: !ci-tasks-required
     args:
       - !ci-common-args
+      - '--logfile=ci-kernel-tests.txt'
       - '--uefi'
       - '--ci-script'
       - 'kernel-tests'
@@ -109,6 +115,7 @@ tasks:
     tasks_required: !ci-tasks-required
     args:
       - !ci-common-args
+      - '--logfile=ci-posix-tests.txt'
       - '--uefi'
       - '--ci-script'
       - 'posix-tests'
