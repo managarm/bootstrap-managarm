@@ -3,6 +3,7 @@
 import asyncio
 import argparse
 import base64
+import contextlib
 import enum
 import json
 import os
@@ -376,8 +377,9 @@ class TftpServer:
             cs.close()
 
 class QemuRunner:
-    def __init__(self, *, tmpdir, ci_script=None):
+    def __init__(self, *, tmpdir, logfile=None, ci_script=None):
         self.tmpdir = tmpdir
+        self.logfile = logfile
         self.ci_script = ci_script
         self.proc = None
         self.launch_time = None
@@ -445,8 +447,11 @@ class QemuRunner:
             self.last_io_time = time.time()
 
             # Echo the chunk to stdout.
-            writer.write(chunk)
-            await writer.drain()
+            if self.logfile:
+                self.logfile.write(chunk)
+            else:
+                writer.write(chunk)
+                await writer.drain()
 
             # Split the chunk into lines, analyze each line.
             buf += chunk
@@ -487,18 +492,20 @@ class QemuRunner:
             msg = json.loads(line)
             m = msg["m"]
             if m == "ready":
-                if debug:
+                if self.logfile or debug:
                     print("[vm-util] ci-boot is ready")
                 msg = {"m": "launch", "script": self.ci_script}
                 writer.write(json.dumps(msg).encode("utf8") + b"\n")
                 await writer.drain()
             elif m in {"stdout", "stderr"}:
                 data = base64.b64decode(msg["data"]).rstrip()
-                if debug:
+                if self.logfile or debug:
                     print("[vm-util] ci-boot stdout: " + data.decode("utf8", errors="backslashreplace"))
             elif m == "exit":
                 exitcode = msg["exitcode"]
                 self.proc.terminate()
+                if self.logfile or debug:
+                    print(f"[vm-util] ci-boot exited with code {exitcode}")
                 if exitcode != 0:
                     raise RuntimeError(f"ci-boot exited with code {exitcode}")
             elif m == "error":
@@ -888,14 +895,18 @@ def do_qemu(args):
             "chardev:serial",
         ]
 
-    runner = QemuRunner(tmpdir=tmpdir.name, ci_script=args.ci_script)
-    # Adjust for the fact that non-KVM runs are much slower.
-    timeout_factor = 1 if have_kvm else 3
-    if args.timeout is not None:
-        runner.timeout = timeout_factor * args.timeout
-    if args.io_timeout is not None:
-        runner.io_timeout = timeout_factor * args.io_timeout
-    asyncio.run(runner.run(qemu, qemu_args, expect_all=expect_all, expect_none=expect_none))
+    with contextlib.ExitStack() as ctx_stack:
+        logfile = None
+        if args.logfile:
+            logfile = ctx_stack.enter_context(open(args.logfile, "wb"))
+        runner = QemuRunner(tmpdir=tmpdir.name, logfile=logfile, ci_script=args.ci_script)
+        # Adjust for the fact that non-KVM runs are much slower.
+        timeout_factor = 1 if have_kvm else 3
+        if args.timeout is not None:
+            runner.timeout = timeout_factor * args.timeout
+        if args.io_timeout is not None:
+            runner.io_timeout = timeout_factor * args.io_timeout
+        asyncio.run(runner.run(qemu, qemu_args, expect_all=expect_all, expect_none=expect_none))
 
 
 qemu_parser = main_subparsers.add_parser("qemu")
@@ -928,6 +939,7 @@ qemu_parser.add_argument("--ci-protocol", choices=["limine", "linux", "mb2", "ue
 qemu_parser.add_argument("--ci-script", type=str)
 qemu_parser.add_argument("--qmp", action="store_true")
 qemu_parser.add_argument("--use-system-qemu", action="store_true")
+qemu_parser.add_argument("--logfile", type=str)
 qemu_parser.add_argument("--timeout", type=int)
 qemu_parser.add_argument("--io-timeout", type=int)
 qemu_parser.add_argument("--expect", action="append")
