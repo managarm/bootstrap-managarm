@@ -488,6 +488,7 @@ class QemuRunner:
             await asyncio.sleep(0.1)
         (reader, writer) = await asyncio.open_unix_connection(socket_path)
 
+        exitcode = None
         async for line in reader:
             msg = json.loads(line)
             m = msg["m"]
@@ -506,14 +507,17 @@ class QemuRunner:
                 self.proc.terminate()
                 if self.logfile or debug:
                     print(f"[vm-util] ci-boot exited with code {exitcode}")
-                if exitcode != 0:
-                    raise RuntimeError(f"ci-boot exited with code {exitcode}")
             elif m == "error":
                 text = msg["text"]
                 self.proc.terminate()
                 raise RuntimeError(f"ci-boot error: {text}")
             else:
                 print(f"[vm-util] ci-boot unknown packet: {m}")
+
+        if exitcode is None:
+            raise RuntimeError("ci-boot did not complete")
+        if exitcode != 0:
+            raise RuntimeError(f"ci-boot exited with code {exitcode}")
 
 def do_qemu(args):
     # Default to --uefi for AArch64 and RISC-V.
