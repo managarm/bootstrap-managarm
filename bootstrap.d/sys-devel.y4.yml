@@ -8,9 +8,11 @@ sources:
       - host-autoconf-v2.71
       - host-automake-v1.15
       - host-libtool
+    sources_required:
+      - gnulib
     regenerate:
-      - args: ['git', 'submodule', 'set-url', 'gnulib', 'https://https.git.savannah.gnu.org/git/gnulib.git']
       - args: ['git', 'submodule', 'set-url', 'submodules/autoconf', 'https://https.git.savannah.gnu.org/git/autoconf.git']
+      - args: ['python3', '@SOURCE_ROOT@/scripts/checkout-gnulib.py', '@SOURCE_ROOT@/ports/gnulib']
       - args: ['git', 'submodule', 'update', '--init']
         isolate_network: false
       - args: ['./bootstrap', '--skip-po']
@@ -64,7 +66,7 @@ tools:
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.15
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
