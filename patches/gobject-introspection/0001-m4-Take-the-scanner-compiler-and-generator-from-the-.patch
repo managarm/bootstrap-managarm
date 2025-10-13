@@ -1,7 +1,7 @@
-From f0239f4a7ee220abee872ae43a66bb50da599516 Mon Sep 17 00:00:00 2001
+From 987eb7f3308928fc022c16224c659cd8b6d550e3 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Tue, 2 Apr 2024 22:44:30 +0200
-Subject: [PATCH 3/4] m4: Take the scanner, compiler and generator from the
+Subject: [PATCH 1/2] m4: Take the scanner, compiler and generator from the
  environment
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
@@ -27,5 +27,5 @@ index b0ccd68..400121b 100644
         INTROSPECTION_TYPELIBDIR="$($PKG_CONFIG --define-variable=libdir="${_GI_EXP_LIBDIR}" --variable=typelibdir gobject-introspection-1.0)"
         INTROSPECTION_CFLAGS=`$PKG_CONFIG --cflags gobject-introspection-1.0`
 -- 
-2.45.1
+2.51.0
 
