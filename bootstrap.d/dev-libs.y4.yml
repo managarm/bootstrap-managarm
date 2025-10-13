@@ -329,19 +329,15 @@ packages:
       categories: ['dev-libs']
     source:
       subdir: 'ports'
-      git: 'https://github.com/boostorg/boost.git'
-      tag: 'boost-1.62.0'
-      version: '1.62.0'
+      url: 'https://github.com/boostorg/boost/releases/download/boost-1.89.0/boost-1.89.0-b2-nodocs.tar.gz'
+      format: 'tar.gz'
+      checksum: 'blake2b:9d6a1596c597c8dadccfd36d4ad5ed3db014fac55d2490d3c33a1ffe93d241a6a352c7019d55cfbf9021d3533ec59536a3133bf621bcca8e2dfe72385e3b370d'
+      extract_path: 'boost-1.89.0'
+      version: '1.89.0'
       regenerate:
-        - args: |
-            if ! git -C '@THIS_SOURCE_DIR@' remote | grep -q origin; then
-              git -C '@THIS_SOURCE_DIR@' remote add origin https://github.com/boostorg/boost.git
-            fi
-        - args: ['git', '-C', '@THIS_SOURCE_DIR@', 'submodule', 'update', '--init']
-          isolate_network: false
         - args: ['./bootstrap.sh']
         - args: ['./b2', 'headers']
-    revision: 9
+    revision: 1
     configure: []
     build:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/include']
