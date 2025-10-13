@@ -25,8 +25,8 @@ sources:
   - name: gobject-introspection
     subdir: 'ports'
     git: 'https://gitlab.gnome.org/GNOME/gobject-introspection.git'
-    tag: '1.78.1'
-    version: '1.78.1'
+    tag: '1.86.0'
+    version: '1.86.0'
 
   - name: icu
     subdir: 'ports'
@@ -170,12 +170,12 @@ tools:
     exports_shared_libs: true
     from_source: gobject-introspection
     tools_required:
-      - host-python
+      - host-gpep517
       - host-glib
       - host-pkg-config
       - virtual: pkgconfig-for-host
         program_name: host-pkg-config
-    revision: 4
+    revision: 1
     configure:
       - args:
         - 'meson'
@@ -184,6 +184,7 @@ tools:
         - '--native-file'
         - '@SOURCE_ROOT@/scripts/meson.native-file'
         - '-Dbuild_introspection_data=false'
+        - '-Dtests=false'
         - '@THIS_SOURCE_DIR@'
         isolate_network: false
     compile:
@@ -641,7 +642,7 @@ packages:
       - host-pkg-config
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
-      - host-python
+      - host-gpep517
       - host-gobject-introspection
       - host-glib
       - host-mlibc
@@ -652,7 +653,7 @@ packages:
       - cairo
       - pcre2
       - python
-    revision: 4
+    revision: 1
     configure:
       - args:
         - 'meson'
@@ -664,6 +665,7 @@ packages:
         - '-Dgi_cross_use_prebuilt_gi=true'
         - '-Dbuild_introspection_data=true'
         - '-Dgi_cross_pkgconfig_sysroot_path=@SYSROOT_DIR@'
+        - '-Dtests=false'
         - '@THIS_SOURCE_DIR@'
         environ:
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
