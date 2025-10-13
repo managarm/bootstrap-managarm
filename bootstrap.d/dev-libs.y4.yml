@@ -45,8 +45,8 @@ sources:
   - name: libffi
     subdir: 'ports'
     git: 'https://github.com/libffi/libffi.git'
-    tag: 'v3.4.4'
-    version: '3.4.4'
+    tag: 'v3.5.2'
+    version: '3.5.2'
     tools_required:
       - host-autoconf-v2.71
       - host-automake-v1.11
@@ -210,6 +210,7 @@ tools:
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     from_source: libffi
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -941,7 +942,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 7
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
