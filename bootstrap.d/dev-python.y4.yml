@@ -23,6 +23,12 @@ sources:
     tag: 'v0.5.0'
     version: '0.5.0'
 
+  - name: maturin
+    subdir: 'ports'
+    git: 'https://github.com/PyO3/maturin.git'
+    tag: 'v1.9.6'
+    version: '1.9.6'
+
   - name: pdm
     subdir: 'ports'
     git: 'https://github.com/pdm-project/pdm.git'
@@ -70,13 +76,15 @@ tools:
       - hatchling
       - hatch-fancy-pypi-readme
       - hatch-vcs
+      - maturin
       - pdm
       - pdm-backend
       - setuptools
     tools_required:
       - tool: host-python
         recursive: true
-    revision: 3
+      - host-cargo
+    revision: 4
     install:
       - args: ['python3', '-m', 'venv', '.']
         workdir: '@PREFIX@'
@@ -107,6 +115,13 @@ tools:
       - args: ['bin/pip', 'install', '@THIS_SOURCE_DIR@/../pdm-backend']
         workdir: '@PREFIX@'
         isolate_network: false
+      - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/../maturin/Cargo.toml']
+      - args: ['bin/pip', 'install', '@THIS_SOURCE_DIR@/../maturin']
+        workdir: '@PREFIX@'
+        isolate_network: false
+        environ:
+          CARGO_BUILD_TARGET: 'x86_64-unknown-linux-gnu'
+          MATURIN_NO_INSTALL_RUST: '1'
 
 packages:
   - name: python-arrow
