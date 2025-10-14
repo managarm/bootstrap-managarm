@@ -134,8 +134,6 @@ RUN apt-get update \
 		python3-pip \
 		python3-setuptools \
 		python3-wheel \
-		# Used by several python modules
-		python3-maturin \
 		# Used by host-glib
 		python3-packaging \
 		# Used by libxcb
