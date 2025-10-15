@@ -1,0 +1,37 @@
+From 29c42a21fdfb909d389a13b8f8ae36f21e4060d9 Mon Sep 17 00:00:00 2001
+From: Qwinci <qwinci222@gmail.com>
+Date: Tue, 5 Aug 2025 14:42:46 +0300
+Subject: [PATCH] Add Managarm support
+
+---
+ seq/aplaymidi2/aplaymidi2.c   | 1 +
+ seq/aplaymidi2/arecordmidi2.c | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/seq/aplaymidi2/aplaymidi2.c b/seq/aplaymidi2/aplaymidi2.c
+index f71958d..ccce5ea 100644
+--- a/seq/aplaymidi2/aplaymidi2.c
++++ b/seq/aplaymidi2/aplaymidi2.c
+@@ -10,6 +10,7 @@
+ #include <string.h>
+ #include <getopt.h>
+ #include <unistd.h>
++#include <endian.h>
+ #include <alsa/asoundlib.h>
+ #include <alsa/ump_msg.h>
+ #include "version.h"
+diff --git a/seq/aplaymidi2/arecordmidi2.c b/seq/aplaymidi2/arecordmidi2.c
+index 68a9d7d..98efa78 100644
+--- a/seq/aplaymidi2/arecordmidi2.c
++++ b/seq/aplaymidi2/arecordmidi2.c
+@@ -8,6 +8,7 @@
+ #include <signal.h>
+ #include <getopt.h>
+ #include <poll.h>
++#include <endian.h>
+ #include <alsa/asoundlib.h>
+ #include <alsa/ump_msg.h>
+ #include "aconfig.h"
+-- 
+2.49.0
+

@@ -40,6 +40,8 @@ imports:
   - file: bootstrap.d/media-fonts.y4.yml
   - file: bootstrap.d/media-gfx.y4.yml
   - file: bootstrap.d/media-libs.y4.yml
+  - file: bootstrap.d/media-sound.y4.yml
+  - file: bootstrap.d/media-video.y4.yml
   - file: bootstrap.d/meta-pkgs.y4.yml
   - file: bootstrap.d/net-dns.y4.yml
   - file: bootstrap.d/net-irc.y4.yml

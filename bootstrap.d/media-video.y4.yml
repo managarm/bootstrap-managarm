@@ -1,0 +1,141 @@
+!<tag:y4.managarm.org:preamble>
+import:
+  - !managarm
+---
+packages:
+  - name: pipewire
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Low-latency audio/video router and processor
+      description: Low-latency audio/video router and processor.
+      spdx: 'MIT'
+      website: 'https://pipewire.org'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-video']
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.freedesktop.org/pipewire/pipewire.git'
+      tag: '1.4.7'
+      version: '1.4.7'
+    tools_required:
+      - system-gcc
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - alsa-lib
+      - ncurses
+      - systemd
+      - dbus
+      - gstreamer
+      - gst-plugins-base
+      - glib
+      - libcanberra
+      - libx11
+      - libxfixes
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '-Ddbus=enabled'
+        - '-Dtests=disabled'
+        - '-Dinstalled_tests=disabled'
+        - '-Dgstreamer=enabled'
+        - '-Dgstreamer-device-provider=enabled'
+        - '-Dgsettings=enabled'
+        - '-Dsystemd=enabled'
+        - '-Dlogind=enabled'
+        - '-Dlogind-provider=libsystemd'
+        - '-Dsystemd-user-service=enabled'
+        - '-Dpipewire-alsa=enabled'
+        - '-Dspa-plugins=enabled'
+        - '-Dalsa=enabled'
+        - '-Dcompress-offload=disabled'
+        - '-Daudiomixer=enabled'
+        - '-Daudioconvert=enabled'
+        - '-Dcontrol=enabled'
+        - '-Dffmpeg=disabled'
+        - '-Dsupport=enabled'
+        - '-Devl=disabled'
+        - '-Dtest=disabled'
+        - '-Dlibcamera=disabled'
+        - '-Dvideoconvert=enabled'
+        - '-Dvolume=enabled'
+        - '-Dvulkan=disabled'
+        - '-Dudev=enabled'
+        - '-Dlibmysofa=disabled'
+        - '-Dsession-managers=[]'
+        - '-Dx11=enabled'
+        - '-Dx11-xfixes=enabled'
+        - '-Dlibcanberra=enabled'
+        - '-Dgsettings-pulse-schema=enabled'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: wireplumber
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Session / policy manager implementation for PipeWire
+      description: Session / policy manager implementation for PipeWire.
+      spdx: 'MIT'
+      website: 'https://pipewire.org'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-video']
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.freedesktop.org/pipewire/wireplumber.git'
+      tag: '0.5.10'
+      version: '0.5.10'
+    tools_required:
+      - system-gcc
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - glib
+      - pipewire
+      - libintl
+      - systemd
+      - lua
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '-Ddaemon=true'
+        - '-Dtools=true'
+        - '-Dmodules=true'
+        - '-Ddoc=disabled'
+        - '-Dintrospection=disabled'
+        - '-Dsystem-lua=true'
+        - '-Dsystemd=enabled'
+        - '-Dsystemd-user-service=true'
+        - '-Dtests=false'
+        - '-Ddbus-tests=false'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
