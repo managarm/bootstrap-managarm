@@ -1,0 +1,459 @@
+From d078a069ab68941ea78ee3ac5e3416b10d780021 Mon Sep 17 00:00:00 2001
+From: Qwinci <32550582+Qwinci@users.noreply.github.com>
+Date: Sun, 22 Dec 2024 00:51:04 +0200
+Subject: [PATCH] Add Managarm support
+
+---
+ make/autoconf/platform.m4                     |  4 ++++
+ .../java.desktop/lib/Awt2dLibraries.gmk       |  1 +
+ make/modules/java.instrument/Lib.gmk          |  2 +-
+ make/modules/jdk.jdwp.agent/Lib.gmk           |  2 +-
+ src/hotspot/os/linux/gc/z/zSyscall_linux.cpp  | 17 +++++++++++++++++
+ src/hotspot/os/linux/os_linux.cpp             |  8 ++++++++
+ src/hotspot/os/linux/waitBarrier_linux.cpp    | 19 +++++++++++++++++++
+ src/hotspot/os/posix/vmError_posix.cpp        |  5 ++++-
+ .../linux_x86/gc/z/zSyscall_linux_x86.hpp     |  2 ++
+ src/java.base/share/native/libjli/jli_util.h  |  3 +++
+ .../unix/native/jspawnhelper/jspawnhelper.c   |  2 --
+ .../native/libjava/ProcessHandleImpl_unix.c   |  6 +++---
+ .../unix/native/libjava/TimeZone_md.c         |  4 ++--
+ .../unix/native/libjava/io_util_md.c          |  2 +-
+ .../unix/native/libjava/jni_util_md.c         |  2 +-
+ .../unix/native/libnet/Inet6AddressImpl.c     |  1 +
+ .../unix/native/libnet/NetworkInterface.c     |  4 ++--
+ .../unix/native/libnet/net_util_md.h          |  1 +
+ .../unix/native/libnio/ch/FileChannelImpl.c   |  2 +-
+ .../native/libnio/ch/FileDispatcherImpl.c     |  4 ++++
+ .../unix/native/libnio/ch/NativeThread.c      |  2 +-
+ .../native/libnio/fs/UnixNativeDispatcher.c   |  2 +-
+ .../native/libprefs/FileSystemPreferences.c   |  3 ++-
+ .../libmanagement_ext/OperatingSystemImpl.c   |  2 +-
+ 24 files changed, 81 insertions(+), 19 deletions(-)
+
+diff --git a/make/autoconf/platform.m4 b/make/autoconf/platform.m4
+index 2dd13d0d5..9e206f39f 100644
+--- a/make/autoconf/platform.m4
++++ b/make/autoconf/platform.m4
+@@ -214,6 +214,10 @@ AC_DEFUN([PLATFORM_EXTRACT_VARS_FROM_OS],
+       VAR_OS=aix
+       VAR_OS_TYPE=unix
+       ;;
++    *managarm*)
++      VAR_OS=linux
++      VAR_OS_TYPE=unix
++      ;;
+     *)
+       AC_MSG_ERROR([unsupported operating system $1])
+       ;;
+diff --git a/make/modules/java.desktop/lib/Awt2dLibraries.gmk b/make/modules/java.desktop/lib/Awt2dLibraries.gmk
+index 4d0c0c00d..0a95a2460 100644
+--- a/make/modules/java.desktop/lib/Awt2dLibraries.gmk
++++ b/make/modules/java.desktop/lib/Awt2dLibraries.gmk
+@@ -751,6 +751,7 @@ ifeq ($(ENABLE_HEADLESS_ONLY), false)
+       LIBS := $(JDKLIB_LIBS) $(LIBSPLASHSCREEN_LIBS) $(LIBZ_LIBS) \
+           $(GIFLIB_LIBS) $(LIBJPEG_LIBS) $(PNG_LIBS), \
+       LIBS_aix := -liconv, \
++      LIBS_linux := -liconv, \
+   ))
+ 
+   TARGETS += $(BUILD_LIBSPLASHSCREEN)
+diff --git a/make/modules/java.instrument/Lib.gmk b/make/modules/java.instrument/Lib.gmk
+index 3996ad213..727f312da 100644
+--- a/make/modules/java.instrument/Lib.gmk
++++ b/make/modules/java.instrument/Lib.gmk
+@@ -49,7 +49,7 @@ $(eval $(call SetupJdkLibrary, BUILD_LIBINSTRUMENT, \
+     LDFLAGS_aix := -L$(SUPPORT_OUTPUTDIR)/native/java.base, \
+     LIBS := $(JDKLIB_LIBS), \
+     LIBS_unix := -ljava -ljvm $(LIBZ_LIBS), \
+-    LIBS_linux := -ljli $(LIBDL), \
++    LIBS_linux := -ljli -liconv $(LIBDL), \
+     LIBS_aix := -liconv -ljli_static $(LIBDL), \
+     LIBS_macosx := -ljli -liconv -framework Cocoa -framework Security \
+         -framework ApplicationServices, \
+diff --git a/make/modules/jdk.jdwp.agent/Lib.gmk b/make/modules/jdk.jdwp.agent/Lib.gmk
+index aef358c14..fbc1750bc 100644
+--- a/make/modules/jdk.jdwp.agent/Lib.gmk
++++ b/make/modules/jdk.jdwp.agent/Lib.gmk
+@@ -61,7 +61,7 @@ $(eval $(call SetupJdkLibrary, BUILD_LIBJDWP, \
+     LDFLAGS := $(LDFLAGS_JDKLIB) \
+         $(call SET_SHARED_LIBRARY_ORIGIN), \
+     LIBS := $(JDKLIB_LIBS), \
+-    LIBS_linux := $(LIBDL), \
++    LIBS_linux := -liconv $(LIBDL), \
+     LIBS_macosx := -liconv, \
+     LIBS_aix := -liconv, \
+ ))
+diff --git a/src/hotspot/os/linux/gc/z/zSyscall_linux.cpp b/src/hotspot/os/linux/gc/z/zSyscall_linux.cpp
+index ba26cbfcb..0ce2cd356 100644
+--- a/src/hotspot/os/linux/gc/z/zSyscall_linux.cpp
++++ b/src/hotspot/os/linux/gc/z/zSyscall_linux.cpp
+@@ -27,14 +27,31 @@
+ 
+ #include <unistd.h>
+ 
++#ifdef __managarm__
++#include <sys/mman.h>
++#include <fcntl.h>
++#endif
++
+ int ZSyscall::memfd_create(const char *name, unsigned int flags) {
++#ifdef __managarm__
++  return ::memfd_create(name, flags);
++#else
+   return syscall(SYS_memfd_create, name, flags);
++#endif
+ }
+ 
+ int ZSyscall::fallocate(int fd, int mode, size_t offset, size_t length) {
++#ifdef __managarm__
++  return ::fallocate(fd, mode, offset, length);
++#else
+   return syscall(SYS_fallocate, fd, mode, offset, length);
++#endif
+ }
+ 
+ long ZSyscall::get_mempolicy(int* mode, unsigned long* nodemask, unsigned long maxnode, void* addr, unsigned long flags) {
++#ifdef __managarm__
++  return 0;
++#else
+   return syscall(SYS_get_mempolicy, mode, nodemask, maxnode, addr, flags);
++#endif
+ }
+diff --git a/src/hotspot/os/linux/os_linux.cpp b/src/hotspot/os/linux/os_linux.cpp
+index 239cd0d75..4a76d5a86 100644
+--- a/src/hotspot/os/linux/os_linux.cpp
++++ b/src/hotspot/os/linux/os_linux.cpp
+@@ -98,7 +98,11 @@
+ # include <poll.h>
+ # include <fcntl.h>
+ # include <string.h>
++
++#ifndef __managarm__
+ # include <syscall.h>
++#endif
++
+ # include <sys/sysinfo.h>
+ # include <sys/ipc.h>
+ # include <sys/shm.h>
+@@ -348,9 +352,13 @@ bool os::have_special_privileges() {
+ // Returns the kernel thread id of the currently running thread. Kernel
+ // thread id is used to access /proc.
+ pid_t os::Linux::gettid() {
++#ifdef __managarm__
++  return ::gettid();
++#else
+   int rslt = syscall(SYS_gettid);
+   assert(rslt != -1, "must be."); // old linuxthreads implementation?
+   return (pid_t)rslt;
++#endif
+ }
+ 
+ // Most versions of linux have a bug where the number of processors are
+diff --git a/src/hotspot/os/linux/waitBarrier_linux.cpp b/src/hotspot/os/linux/waitBarrier_linux.cpp
+index 491f9e6b8..cc52326ac 100644
+--- a/src/hotspot/os/linux/waitBarrier_linux.cpp
++++ b/src/hotspot/os/linux/waitBarrier_linux.cpp
+@@ -26,7 +26,15 @@
+ #include "runtime/orderAccess.hpp"
+ #include "runtime/os.hpp"
+ #include "waitBarrier_linux.hpp"
++
++#ifdef __managarm__
++#include <hel.h>
++#include <hel-syscalls.h>
++#include <stdio.h>
++#else
+ #include <sys/syscall.h>
++#endif
++
+ #include <linux/futex.h>
+ 
+ #define check_with_errno(check_type, cond, msg)                             \
+@@ -39,7 +47,18 @@
+ #define guarantee_with_errno(cond, msg) check_with_errno(guarantee, cond, msg)
+ 
+ static int futex(volatile int *addr, int futex_op, int op_arg) {
++#ifdef __managarm__
++  if (futex_op == FUTEX_WAKE_PRIVATE) {
++    return helFutexWake((int *)addr) ? -1 : 0;
++  } else if (futex_op == FUTEX_WAIT_PRIVATE) {
++    return helFutexWait((int *)addr, op_arg, -1) ? -1 : 0;
++  } else {
++    fprintf(stderr, "unhandled futex op %d\n", futex_op);
++    __builtin_trap();
++  }
++#else
+   return syscall(SYS_futex, addr, futex_op, op_arg, NULL, NULL, 0);
++#endif
+ }
+ 
+ void LinuxWaitBarrier::arm(int barrier_tag) {
+diff --git a/src/hotspot/os/posix/vmError_posix.cpp b/src/hotspot/os/posix/vmError_posix.cpp
+index 845dda67f..45ec4d631 100644
+--- a/src/hotspot/os/posix/vmError_posix.cpp
++++ b/src/hotspot/os/posix/vmError_posix.cpp
+@@ -35,7 +35,7 @@
+ #include <sys/types.h>
+ #include <sys/wait.h>
+ 
+-#ifdef LINUX
++#if defined(LINUX) && !defined(__managarm__)
+ #include <sys/syscall.h>
+ #include <unistd.h>
+ #endif
+@@ -46,6 +46,9 @@
+ #include <sys/syscall.h>
+ #include <unistd.h>
+ #endif
++#ifdef __managarm__
++#include <unistd.h>
++#endif
+ 
+ 
+ // Needed for cancelable steps.
+diff --git a/src/hotspot/os_cpu/linux_x86/gc/z/zSyscall_linux_x86.hpp b/src/hotspot/os_cpu/linux_x86/gc/z/zSyscall_linux_x86.hpp
+index 8b578ab1d..1871d236c 100644
+--- a/src/hotspot/os_cpu/linux_x86/gc/z/zSyscall_linux_x86.hpp
++++ b/src/hotspot/os_cpu/linux_x86/gc/z/zSyscall_linux_x86.hpp
+@@ -24,7 +24,9 @@
+ #ifndef OS_CPU_LINUX_X86_GC_Z_ZSYSCALL_LINUX_X86_HPP
+ #define OS_CPU_LINUX_X86_GC_Z_ZSYSCALL_LINUX_X86_HPP
+ 
++#ifndef __managarm__
+ #include <sys/syscall.h>
++#endif
+ 
+ //
+ // Support for building on older Linux systems
+diff --git a/src/java.base/share/native/libjli/jli_util.h b/src/java.base/share/native/libjli/jli_util.h
+index 3512b1e96..ebfb9a3bc 100644
+--- a/src/java.base/share/native/libjli/jli_util.h
++++ b/src/java.base/share/native/libjli/jli_util.h
+@@ -114,6 +114,9 @@ JLI_CmdToArgs(char *cmdline);
+ #ifdef _AIX
+ #define JLI_Lseek                       lseek
+ #endif
++#ifdef __managarm__
++#define JLI_Lseek                       lseek
++#endif
+ #endif /* _WIN32 */
+ 
+ /*
+diff --git a/src/java.base/unix/native/jspawnhelper/jspawnhelper.c b/src/java.base/unix/native/jspawnhelper/jspawnhelper.c
+index 138820171..db471190f 100644
+--- a/src/java.base/unix/native/jspawnhelper/jspawnhelper.c
++++ b/src/java.base/unix/native/jspawnhelper/jspawnhelper.c
+@@ -33,8 +33,6 @@
+ 
+ #include "childproc.h"
+ 
+-extern int errno;
+-
+ #define ALLOC(X,Y) { \
+     void *mptr; \
+     mptr = malloc (Y); \
+diff --git a/src/java.base/unix/native/libjava/ProcessHandleImpl_unix.c b/src/java.base/unix/native/libjava/ProcessHandleImpl_unix.c
+index d53e88764..9bee2d82c 100644
+--- a/src/java.base/unix/native/libjava/ProcessHandleImpl_unix.c
++++ b/src/java.base/unix/native/libjava/ProcessHandleImpl_unix.c
+@@ -485,10 +485,10 @@ void unix_getUserInfo(JNIEnv* env, jobject jinfo, uid_t uid) {
+ }
+ 
+ /*
+- * The following functions are common on Solaris, Linux and AIX.
++ * The following functions are common on Solaris, Linux, AIX and Managarm.
+  */
+ 
+-#if defined (__linux__) || defined(_AIX)
++#if defined (__linux__) || defined(_AIX) || defined(__managarm__)
+ 
+ /*
+  * Returns the children of the requested pid and optionally each parent and
+@@ -607,7 +607,7 @@ jint unix_getChildren(JNIEnv *env, jlong jpid, jlongArray jarray,
+     return count;
+ }
+ 
+-#endif // defined (__linux__) || defined(_AIX)
++#endif // defined (__linux__) || defined(_AIX) || defined(__managarm__)
+ 
+ /*
+  * The following functions are for AIX.
+diff --git a/src/java.base/unix/native/libjava/TimeZone_md.c b/src/java.base/unix/native/libjava/TimeZone_md.c
+index 94dfc207f..d2aba6857 100644
+--- a/src/java.base/unix/native/libjava/TimeZone_md.c
++++ b/src/java.base/unix/native/libjava/TimeZone_md.c
+@@ -59,7 +59,7 @@ static char *isFileIdentical(char* buf, size_t size, char *pathname);
+ #define fstat64 fstat
+ #endif
+ 
+-#if defined(__linux__) || defined(_ALLBSD_SOURCE)
++#if defined(__linux__) || defined(_ALLBSD_SOURCE) || defined(__managarm__)
+ static const char *ETC_TIMEZONE_FILE = "/etc/timezone";
+ static const char *ZONEINFO_DIR = "/usr/share/zoneinfo";
+ static const char *DEFAULT_ZONEINFO_FILE = "/etc/localtime";
+@@ -75,7 +75,7 @@ static const char popularZones[][4] = {"UTC", "GMT"};
+ static const char *ETC_ENVIRONMENT_FILE = "/etc/environment";
+ #endif
+ 
+-#if defined(__linux__) || defined(MACOSX)
++#if defined(__linux__) || defined(MACOSX) || defined(__managarm__)
+ 
+ /*
+  * Returns a pointer to the zone ID portion of the given zoneinfo file
+diff --git a/src/java.base/unix/native/libjava/io_util_md.c b/src/java.base/unix/native/libjava/io_util_md.c
+index e207c57d4..841352a71 100644
+--- a/src/java.base/unix/native/libjava/io_util_md.c
++++ b/src/java.base/unix/native/libjava/io_util_md.c
+@@ -30,7 +30,7 @@
+ #include <string.h>
+ #include <unistd.h>
+ 
+-#if defined(__linux__) || defined(_ALLBSD_SOURCE) || defined(_AIX)
++#if defined(__linux__) || defined(_ALLBSD_SOURCE) || defined(_AIX) || defined(__managarm__)
+ #include <sys/ioctl.h>
+ #endif
+ 
+diff --git a/src/java.base/unix/native/libjava/jni_util_md.c b/src/java.base/unix/native/libjava/jni_util_md.c
+index 460503cd7..47a0236d3 100644
+--- a/src/java.base/unix/native/libjava/jni_util_md.c
++++ b/src/java.base/unix/native/libjava/jni_util_md.c
+@@ -31,7 +31,7 @@
+ #include "jni_util.h"
+ #include "dlfcn.h"
+ 
+-#if defined(LINUX) && (defined(_GNU_SOURCE) || \
++#if defined(__linux__) && (defined(_GNU_SOURCE) || \
+          (defined(_POSIX_C_SOURCE) && _POSIX_C_SOURCE < 200112L \
+              && defined(_XOPEN_SOURCE) && _XOPEN_SOURCE < 600))
+ extern int __xpg_strerror_r(int, char *, size_t);
+diff --git a/src/java.base/unix/native/libnet/Inet6AddressImpl.c b/src/java.base/unix/native/libnet/Inet6AddressImpl.c
+index 058f3d3a7..bcfd46f0d 100644
+--- a/src/java.base/unix/native/libnet/Inet6AddressImpl.c
++++ b/src/java.base/unix/native/libnet/Inet6AddressImpl.c
+@@ -29,6 +29,7 @@
+ #include <sys/time.h>
+ #include <sys/types.h>
+ #include <netinet/in.h>
++#include <netinet/ip.h>
+ #include <netinet/icmp6.h>
+ 
+ #if defined(_ALLBSD_SOURCE)
+diff --git a/src/java.base/unix/native/libnet/NetworkInterface.c b/src/java.base/unix/native/libnet/NetworkInterface.c
+index 990bc1bcc..f01de5227 100644
+--- a/src/java.base/unix/native/libnet/NetworkInterface.c
++++ b/src/java.base/unix/native/libnet/NetworkInterface.c
+@@ -47,7 +47,7 @@
+ 
+ #include "java_net_InetAddress.h"
+ 
+-#if defined(__linux__)
++#if defined(__linux__) || defined(__managarm__)
+     #define _PATH_PROCNET_IFINET6 "/proc/net/if_inet6"
+ #endif
+ 
+@@ -1144,7 +1144,7 @@ static int openSocket(JNIEnv *env, int proto) {
+ }
+ 
+ /** Linux **/
+-#if defined(__linux__)
++#if defined(__linux__) || defined(__managarm__)
+ 
+ /*
+  * Opens a socket for further ioctl calls. Tries AF_INET socket first and
+diff --git a/src/java.base/unix/native/libnet/net_util_md.h b/src/java.base/unix/native/libnet/net_util_md.h
+index 68835987b..8a175728d 100644
+--- a/src/java.base/unix/native/libnet/net_util_md.h
++++ b/src/java.base/unix/native/libnet/net_util_md.h
+@@ -29,6 +29,7 @@
+ #include <netdb.h>
+ #include <poll.h>
+ #include <sys/socket.h>
++#include <netinet/in.h>
+ 
+ /************************************************************************
+  * Macros and constants
+diff --git a/src/java.base/unix/native/libnio/ch/FileChannelImpl.c b/src/java.base/unix/native/libnio/ch/FileChannelImpl.c
+index e0debb09f..f8c80ce30 100644
+--- a/src/java.base/unix/native/libnio/ch/FileChannelImpl.c
++++ b/src/java.base/unix/native/libnio/ch/FileChannelImpl.c
+@@ -29,7 +29,7 @@
+ #include <sys/types.h>
+ #include <unistd.h>
+ 
+-#if defined(__linux__)
++#if defined(__linux__) || defined(__managarm__)
+ #include <sys/sendfile.h>
+ #elif defined(_AIX)
+ #include <string.h>
+diff --git a/src/java.base/unix/native/libnio/ch/FileDispatcherImpl.c b/src/java.base/unix/native/libnio/ch/FileDispatcherImpl.c
+index 882146127..9f80842bf 100644
+--- a/src/java.base/unix/native/libnio/ch/FileDispatcherImpl.c
++++ b/src/java.base/unix/native/libnio/ch/FileDispatcherImpl.c
+@@ -40,6 +40,10 @@
+ #include <sys/ioctl.h>
+ #endif
+ 
++#ifdef __managarm__
++#include <sys/ioctl.h>
++#endif
++
+ #if defined(_ALLBSD_SOURCE)
+ #define lseek64 lseek
+ #define stat64 stat
+diff --git a/src/java.base/unix/native/libnio/ch/NativeThread.c b/src/java.base/unix/native/libnio/ch/NativeThread.c
+index 92dcb9e56..48598346e 100644
+--- a/src/java.base/unix/native/libnio/ch/NativeThread.c
++++ b/src/java.base/unix/native/libnio/ch/NativeThread.c
+@@ -34,7 +34,7 @@
+ #include <signal.h>
+ #include <pthread.h>
+ 
+-#ifdef __linux__
++#if defined(__linux__) || defined(__managarm__)
+   /* Also defined in net/linux_close.c */
+   #define INTERRUPT_SIGNAL (SIGRTMAX - 2)
+ #elif defined(_AIX)
+diff --git a/src/java.base/unix/native/libnio/fs/UnixNativeDispatcher.c b/src/java.base/unix/native/libnio/fs/UnixNativeDispatcher.c
+index 9df8be1e6..ba629484b 100644
+--- a/src/java.base/unix/native/libnio/fs/UnixNativeDispatcher.c
++++ b/src/java.base/unix/native/libnio/fs/UnixNativeDispatcher.c
+@@ -41,7 +41,7 @@
+ #endif
+ #include <sys/time.h>
+ 
+-#if defined(__linux__) || defined(_ALLBSD_SOURCE)
++#if defined(__linux__) || defined(_ALLBSD_SOURCE) || defined(__managarm__)
+ #include <sys/xattr.h>
+ #endif
+ 
+diff --git a/src/java.prefs/unix/native/libprefs/FileSystemPreferences.c b/src/java.prefs/unix/native/libprefs/FileSystemPreferences.c
+index c591f04d3..fd1d07ead 100644
+--- a/src/java.prefs/unix/native/libprefs/FileSystemPreferences.c
++++ b/src/java.prefs/unix/native/libprefs/FileSystemPreferences.c
+@@ -55,8 +55,9 @@ Java_java_util_prefs_FileSystemPreferences_chmod(JNIEnv *env,
+     return (jint) result;
+ }
+ 
+-#if defined(_ALLBSD_SOURCE)
++#if defined(_ALLBSD_SOURCE) || defined(__managarm__)
+ typedef struct flock FLOCK;
++#define F_SETLK64 F_SETLK
+ #else
+ typedef struct flock64 FLOCK;
+ #endif
+diff --git a/src/jdk.management/unix/native/libmanagement_ext/OperatingSystemImpl.c b/src/jdk.management/unix/native/libmanagement_ext/OperatingSystemImpl.c
+index e33d9b41e..75913abb3 100644
+--- a/src/jdk.management/unix/native/libmanagement_ext/OperatingSystemImpl.c
++++ b/src/jdk.management/unix/native/libmanagement_ext/OperatingSystemImpl.c
+@@ -63,7 +63,7 @@
+ 
+ static jlong page_size = 0;
+ 
+-#if defined(_ALLBSD_SOURCE) || defined(_AIX)
++#if defined(_ALLBSD_SOURCE) || defined(_AIX) || defined(__managarm__)
+ #define MB      (1024UL * 1024UL)
+ #else
+ 
+-- 
+2.45.2
+
