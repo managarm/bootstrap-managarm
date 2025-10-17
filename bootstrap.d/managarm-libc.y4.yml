@@ -37,6 +37,26 @@ tools:
     install:
       - args: ['ninja', 'install']
 
+  - name: host-libsmarter
+    labels: [aarch64, riscv64]
+    architecture: noarch
+    from_source: libsmarter
+    tools_required:
+      - virtual: pkgconfig-for-host
+        program_name: host-pkg-config
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--prefix=@PREFIX@'
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
+
   - name: host-xxd
     labels: [aarch64]
     architecture: '@OPTION:arch@'
@@ -124,6 +144,7 @@ tools:
       - host-freestnd-cxx-hdrs
       - host-linux-headers
       - host-frigg
+      - host-libsmarter
       - virtual: pkgconfig-for-host
         program_name: host-pkg-config
     revision: 1
@@ -221,6 +242,7 @@ packages:
       - mlibc-headers
       - libdrm-headers
       - frigg
+      - libsmarter
     revision: 1
     configure:
       - args: ['ln', '-sf', '@SYSROOT_DIR@/usr/src/libdrm-headers', '@THIS_SOURCE_DIR@/subprojects/']
