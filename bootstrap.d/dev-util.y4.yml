@@ -427,3 +427,39 @@ packages:
     build:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/bin']
       - args: ['@OPTION:arch-triple@-gcc', '-Os', '-s', '@THIS_SOURCE_DIR@/pc.c', '-o', '@THIS_COLLECT_DIR@/usr/bin/pc']
+
+  - name: os-test
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: POSIX operating system test suite
+      description: A set of test suites for POSIX operating systems designed to make it easy to compare differences and to find bugs
+      spdx: 'ISC'
+      website: 'https://sortix.org/os-test/'
+      maintainer: "no92 <leo@managarm.org>"
+      categories: ['dev-util']
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.com/sortix/os-test.git'
+      branch: 'main'
+      commit: '645f26525bd1a83b6929c6ad253ea3c64aa7fad9'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - make
+    revision: 1
+    configure:
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+    build:
+      - args:
+        - 'make'
+        - '-j@PARALLELISM@'
+        - 'OS=Managarm'
+        - 'CC=@OPTION:arch-triple@-gcc'
+        - 'all'
+      - args: |
+          mkdir -p @THIS_COLLECT_DIR@/opt/os-test/
+          cp -r ./ @THIS_COLLECT_DIR@/opt/os-test/
+          rm @THIS_COLLECT_DIR@/opt/os-test/*.xbstrap
+          echo panic > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/process/limbo-getpgid.out
+          echo panic > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/process/limbo-setpgid.out
