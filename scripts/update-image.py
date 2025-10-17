@@ -26,6 +26,7 @@ EFI_SYSTEM_PART_TYPE = "C12A7328-F81F-11D2-BA4B-00A0C93EC93B"
 global_mount_info = None
 sfdisk_command = None
 
+tmpdirs = []
 
 class MountInfo:
     def __init__(self, blockdev, mount_using, image, mountpoint, root_idx, efi_idx, root_uuid):
@@ -380,6 +381,8 @@ FsAction = Enum("FsAction", "CREATE_DIR ENSURE_LINKS INSTALL CP CP_SED RSYNC")
 
 
 def generate_plan(arch, root_uuid, scriptdir):
+    tmpdir = tempfile.TemporaryDirectory()
+    tmpdirs.append(tmpdir) # Prevent GC until script terminates.
 
     for x in [
         "root",
@@ -404,6 +407,16 @@ def generate_plan(arch, root_uuid, scriptdir):
 
     yield FsAction.INSTALL, "initrd.cpio", "boot/managarm", dict(ignore_sysroot=True)
 
+    limine_conf = os.path.join(tmpdir.name, "limine.conf")
+    subprocess.run(
+        [
+            os.path.join(scriptdir, "gen-limine-conf.py"),
+            "--arch=" + arch.split('-')[0],
+            limine_conf,
+        ],
+        check=True,
+    )
+
     if arch == "x86_64-managarm":
         yield FsAction.INSTALL, "usr/managarm/bin/eir-mb2", "boot/managarm"
         yield FsAction.INSTALL, "usr/managarm/bin/eir-limine", "boot/managarm"
@@ -423,9 +436,7 @@ def generate_plan(arch, root_uuid, scriptdir):
             "boot/",
         )
 
-        yield FsAction.CP_SED, os.path.join(
-            scriptdir, "limine.conf"
-        ), "boot/", "@ROOT_UUID@", root_uuid
+        yield FsAction.CP_SED, limine_conf, "boot/", "@ROOT_UUID@", root_uuid
     elif arch == "aarch64-managarm":
         # TODO(marv7000): Limine seems to be broken on aarch64.
         # yield FsAction.INSTALL, "usr/managarm/bin/eir-limine", "boot/managarm"
@@ -437,11 +448,10 @@ def generate_plan(arch, root_uuid, scriptdir):
             "boot/EFI/BOOT",
         )
 
-        yield FsAction.CP_SED, os.path.join(
-            scriptdir, "limine.conf"
-        ), "boot/", "@ROOT_UUID@", root_uuid
+        yield FsAction.CP_SED, limine_conf, "boot/", "@ROOT_UUID@", root_uuid
     elif arch == "riscv64-managarm":
         yield FsAction.INSTALL, "usr/managarm/bin/eir-limine", "boot/managarm"
+        yield FsAction.INSTALL, "usr/managarm/bin/eir-linux.bin", "boot/managarm"
         yield FsAction.INSTALL, "usr/managarm/bin/eir-uefi", "boot/managarm"
         yield (
             FsAction.CP,
@@ -449,9 +459,7 @@ def generate_plan(arch, root_uuid, scriptdir):
             "boot/EFI/BOOT",
         )
 
-        yield FsAction.CP_SED, os.path.join(
-            scriptdir, "limine.conf"
-        ), "boot/", "@ROOT_UUID@", root_uuid
+        yield FsAction.CP_SED, limine_conf, "boot/", "@ROOT_UUID@", root_uuid
 
     yield FsAction.RSYNC, "bin"
     yield FsAction.RSYNC, "lib"
