@@ -16,7 +16,7 @@ packages:
       version: '1.17.0'
       tools_required:
         - host-autoconf-v2.69
-        - host-automake-v1.15
+        - host-automake-v1.16
         - host-libtool
         - host-pkg-config
         - host-xorg-macros
@@ -32,7 +32,7 @@ packages:
       - xorg-proto
       - libxau
       - libxdmcp
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -42,7 +42,7 @@ packages:
         - '--localstatedir=/var'
         - '--disable-static'
         environ:
-          PYTHON: '@BUILD_ROOT@/tools/host-python/bin/python3.10'
+          PYTHON: '@BUILD_ROOT@/tools/host-python/bin/python3.14'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
