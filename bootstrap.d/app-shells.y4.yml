@@ -77,7 +77,7 @@ packages:
       - ncurses
       - readline
       - libiconv
-    revision: 17
+    revision: 18
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -88,6 +88,7 @@ packages:
         - '--with-installed-readline=$SYSROOT_DIR$/usr'
         environ:
           ac_cv_func_wcswidth: 'no'
+          bash_cv_getcwd_malloc: 'yes'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
