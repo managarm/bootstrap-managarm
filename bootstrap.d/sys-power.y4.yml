@@ -1,6 +1,7 @@
 packages:
   - name: upower
     architecture: '@OPTION:arch@'
+    stability_level: broken # GLib memes, fix next week
     metadata:
       summary: D-Bus abstraction for enumerating power devices, querying history and statistics.
       description: UPower is an abstraction for enumerating power devices, listening to device events and querying history and statistics. Any application or service on the system can access the org.freedesktop.UPower service via the system message bus.
