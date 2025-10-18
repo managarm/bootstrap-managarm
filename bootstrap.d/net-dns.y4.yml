@@ -51,9 +51,11 @@ packages:
         - host-automake-v1.15
         - host-libtool
         - host-pkg-config
+      sources_required:
+        - gnulib
       regenerate:
-        - args: ['./bootstrap']
-          isolate_network: false
+        - args: ['python3', '@SOURCE_ROOT@/scripts/checkout-gnulib.py', '@SOURCE_ROOT@/ports/gnulib']
+        - args: ['./bootstrap', '--skip-po']
         - args: ['autoreconf', '-fvi']
     tools_required:
       - system-gcc
@@ -65,7 +67,7 @@ packages:
       - mlibc
       - libunistring
       - libiconv
-    revision: 12
+    revision: 13
     configure:
       # Remove some files from the source directory if they exist.
       - args: |
