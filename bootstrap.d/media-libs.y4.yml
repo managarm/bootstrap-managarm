@@ -739,10 +739,11 @@ packages:
       - freetype
       - cairo
       - icu
+      - libgcc
       - !managarm::arch_dep
         item: gobject-introspection
         arch: [x86_64]
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
