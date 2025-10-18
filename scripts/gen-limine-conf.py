@@ -84,7 +84,7 @@ def make_default_entries(writer, *, protocol):
     writer.write_entry(
         f"kmscon (via {name_of_protocol(protocol)})",
         protocol=protocol,
-        extra_cmdline="plainfb.force=1 systemd.unit=kmscon.target",
+        extra_cmdline="systemd.unit=kmscon.target",
     )
 
 

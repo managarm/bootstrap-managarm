@@ -776,7 +776,7 @@ def do_qemu(args):
     # Add graphics output.
     if args.gfx == "default":
         if args.arch == "x86_64":
-            qemu_args += ["-vga", "vmware"]
+            qemu_args += ["-vga", "virtio"]
         else:
             assert args.arch in {"aarch64", "riscv64"}
             qemu_args += ["-device", "virtio-gpu"]
