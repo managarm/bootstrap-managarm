@@ -424,7 +424,7 @@ packages:
       format: 'tar.gz'
       checksum: blake2b:821de373492a0158f2f38c9fe4ebfda8966a75f62df01c5a2d5640b0a5ec06d883bb7385acdc1772cf4139c56be5d9f0b1c75d261c6c70a940e3e4a156c7ce4b
       extract_path: 'tcl8.6.15'
-      patch-path-strip: 1 
+      patch-path-strip: 1
       version: '8.6.15'
     tools_required:
       - system-gcc

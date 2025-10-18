@@ -62,7 +62,7 @@ packages:
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
         - '--disable-update-mimedb'
-        environ:  
+        environ:
           'ITSTOOL': '/usr/bin/itstool'
     build:
       - args: ['make', '-j@PARALLELISM@']

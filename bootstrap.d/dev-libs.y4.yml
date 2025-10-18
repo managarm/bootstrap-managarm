@@ -1631,7 +1631,7 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
-  
+
   - name: libtsm
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
