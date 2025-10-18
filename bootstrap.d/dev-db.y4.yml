@@ -1,5 +1,6 @@
 packages:
   - name: sqlite
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: SQL database engine
