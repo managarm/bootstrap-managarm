@@ -416,13 +416,14 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/johnsonjh/pc.git'
-      tag: '2019.07.21.02'
-      version: '2019.07.21.02'
+      branch: 'master'
+      commit: 'cc93a281237e995bca29c0c2c2c4ae86e3e1d548'
+      version: '2025.10.19'
     tools_required:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 1
     build:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/bin']
       - args: ['@OPTION:arch-triple@-gcc', '-Os', '-s', '@THIS_SOURCE_DIR@/pc.c', '-o', '@THIS_COLLECT_DIR@/usr/bin/pc']
