@@ -27,11 +27,11 @@ sources:
 
   - name: vala
     subdir: 'ports'
-    url: 'https://download.gnome.org/sources/vala/0.56/vala-0.56.17.tar.xz'
+    url: 'https://download.gnome.org/sources/vala/0.56/vala-0.56.18.tar.xz'
     format: 'tar.xz'
-    checksum: blake2b:c4b8d5b7c810893728f82d2cbbf2f0dd70ad17bd4eeb323ab5d31d99f37b5a5508b7d2447f0249f3a925013d7110bb6f145b32c833b990b15f18d9949035293f
-    extract_path: 'vala-0.56.17'
-    version: '0.56.17'
+    checksum: blake2b:ee3eaf719a59e1d562ec5d5334ba6fe6490a92aba90b3a89600a483f896219a2428edf3228b4abaa1a6ad5e7b0bd4d5234c7c8862f47ec1236427f50420f1b1c
+    extract_path: 'vala-0.56.18'
+    version: '0.56.18'
 
   - name: host-bootstrap-cargo
     subdir: 'ports'
@@ -203,7 +203,7 @@ tools:
       - host-glib
       - virtual: pkgconfig-for-host
         program_name: host-pkg-config
-    revision: 2
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
