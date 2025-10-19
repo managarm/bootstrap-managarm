@@ -85,7 +85,7 @@ tools:
       - tool: host-python
         recursive: true
       - host-cargo
-    revision: 5
+    revision: 6
     install:
       - args: ['python3', '-m', 'venv', '.']
         workdir: '@PREFIX@'
@@ -117,6 +117,7 @@ tools:
         workdir: '@PREFIX@'
         isolate_network: false
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/../maturin/Cargo.toml']
+        isolate_network: false
       - args: ['bin/pip', 'install', '@THIS_SOURCE_DIR@/../maturin']
         workdir: '@PREFIX@'
         isolate_network: false
