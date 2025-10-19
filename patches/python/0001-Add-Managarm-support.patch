@@ -1,4 +1,4 @@
-From 1d3721982dd320f1c5cde91eecfceb2ad2a031eb Mon Sep 17 00:00:00 2001
+From 76291ee1c8ec5d1b0a72abeaba22a19a57b88c71 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Wed, 8 Oct 2025 21:35:17 +0200
 Subject: [PATCH] Add Managarm support
@@ -6,8 +6,8 @@ Subject: [PATCH] Add Managarm support
 ---
  Modules/_hacl/Lib_Memzero0.c      |  4 ++--
  Objects/mimalloc/prim/unix/prim.c |  4 ++--
- configure.ac                      | 15 ++++++++++++++-
- 3 files changed, 18 insertions(+), 5 deletions(-)
+ configure.ac                      | 17 +++++++++++++++--
+ 3 files changed, 19 insertions(+), 6 deletions(-)
 
 diff --git a/Modules/_hacl/Lib_Memzero0.c b/Modules/_hacl/Lib_Memzero0.c
 index f94e0e2..84ecabc 100644
@@ -54,7 +54,7 @@ index 1598eba..41c9845 100644
  #include <sys/types.h>
  #include <sys/stat.h>
 diff --git a/configure.ac b/configure.ac
-index af7a962..28f4281 100644
+index af7a962..ecc0e49 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -327,6 +327,9 @@ then
@@ -77,6 +77,15 @@ index af7a962..28f4281 100644
  	*)
  		# for now, limit cross builds to known configurations
  		MACHDEP="unknown"
+@@ -1569,7 +1575,7 @@ if test $enable_shared = "yes"; then
+         PY3LIBRARY=libpython3.so
+       fi
+       ;;
+-    Linux*|GNU*|NetBSD*|FreeBSD*|DragonFly*|OpenBSD*|VxWorks*)
++    Linux*|GNU*|NetBSD*|FreeBSD*|DragonFly*|OpenBSD*|VxWorks*|Managarm*)
+       LDLIBRARY='libpython$(LDVERSION).so'
+       BLDLIBRARY='-L. -lpython$(LDVERSION)'
+       RUNSHARED=LD_LIBRARY_PATH=`pwd`${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 @@ -3525,6 +3531,9 @@ then
  	CYGWIN*)
  		LDSHARED="gcc -shared -Wl,--enable-auto-image-base"
