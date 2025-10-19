@@ -170,12 +170,13 @@ tools:
     exports_shared_libs: true
     from_source: gobject-introspection
     tools_required:
-      - host-gpep517
+      - tool: host-gpep517
+        recursive: true
       - host-glib
       - host-pkg-config
       - virtual: pkgconfig-for-host
         program_name: host-pkg-config
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
