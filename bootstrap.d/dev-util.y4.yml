@@ -162,7 +162,7 @@ packages:
       - xz-utils
       - zlib
       - zstd
-    revision: 2
+    revision: 3
     configure:
       - args: ['sed', '-i', '/"lib64"/s/64//', '@THIS_SOURCE_DIR@/Modules/GNUInstallDirs.cmake']
       - args: ['cp', '-f', '@SOURCE_ROOT@/scripts/managarm.cmake', '@THIS_SOURCE_DIR@/Modules/Platform/']
@@ -215,7 +215,7 @@ packages:
     pkgs_required:
       - mlibc
       - glib
-    revision: 7
+    revision: 8
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -248,7 +248,7 @@ packages:
       - rust-patched-libs
     pkgs_required:
       - mlibc
-    revision: 4
+    revision: 5
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
         isolate_network: false
@@ -302,7 +302,7 @@ packages:
       - mlibc
       - libxml
       - python
-    revision: 11
+    revision: 12
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -332,7 +332,7 @@ packages:
       - host-cmake
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -355,7 +355,7 @@ packages:
     pkgs_required:
       - mlibc
       - glib
-    revision: 11
+    revision: 12
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -388,7 +388,7 @@ packages:
     pkgs_required:
       # This is only a build-time dependency.
       - mlibc
-    revision: 7
+    revision: 8
     configure:
       - args:
         - 'cmake'
@@ -423,7 +423,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     build:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/bin']
       - args: ['@OPTION:arch-triple@-gcc', '-Os', '-s', '@THIS_SOURCE_DIR@/pc.c', '-o', '@THIS_COLLECT_DIR@/usr/bin/pc']

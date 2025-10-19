@@ -349,7 +349,7 @@ packages:
       branch: 'main'
     tools_required:
       - host-dtc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'

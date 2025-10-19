@@ -33,7 +33,7 @@ packages:
       - curl
       - libiconv
       - pcre2
-    revision: 2
+    revision: 3
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:

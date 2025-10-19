@@ -150,7 +150,7 @@ packages:
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     from_source: 'libdrm'
-    revision: 1
+    revision: 2
     build:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/src/libdrm-headers']
       - args: |

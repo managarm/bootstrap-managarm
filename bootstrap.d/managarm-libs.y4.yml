@@ -80,7 +80,7 @@ packages:
       branch: 'master'
     tools_required:
       - system-gcc
-    revision: 10
+    revision: 11
     configure:
       - args:
         - 'meson'
@@ -122,7 +122,7 @@ packages:
         triple: '@OPTION:arch-triple@'
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -142,7 +142,7 @@ packages:
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     from_source: freestnd-c-hdrs
-    revision: 2
+    revision: 3
     configure:
       - args: ['cp', '-rpv', '@THIS_SOURCE_DIR@/.', './']
     build:
@@ -156,7 +156,7 @@ packages:
     from_source: freestnd-cxx-hdrs
     pkgs_required:
       - freestnd-c-hdrs
-    revision: 2
+    revision: 3
     configure:
       - args: ['cp', '-rpv', '@THIS_SOURCE_DIR@/.', './']
     build:
@@ -179,7 +179,7 @@ packages:
       subdir: 'ports'
       git: 'https://github.com/managarm/frigg.git'
       branch: 'master'
-    revision: 8
+    revision: 9
     configure:
       - args:
         - 'meson'
@@ -206,7 +206,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc-headers
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'meson'
@@ -237,7 +237,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 11
+    revision: 12
     configure:
       - args:
         - 'meson'
@@ -269,7 +269,7 @@ packages:
       - system-gcc
     pkgs_required:
       - boost
-    revision: 11
+    revision: 12
     configure:
       - args:
         - 'meson'
@@ -300,7 +300,7 @@ packages:
     from_source: libarch
     tools_required:
       - system-gcc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -336,7 +336,7 @@ packages:
       branch: 'master'
     tools_required:
       - system-gcc
-    revision: 13
+    revision: 14
     configure:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/include']
       - args:
@@ -371,7 +371,7 @@ packages:
       - system-gcc
       - virtual: pkgconfig-for-target
         triple: '@OPTION:arch-triple@'
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'

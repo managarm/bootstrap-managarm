@@ -147,7 +147,7 @@ packages:
       - mlibc
       - python
       - python-dateutil
-    revision: 1
+    revision: 2
     configure:
       # python modules do not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead.
@@ -176,7 +176,7 @@ packages:
       - mlibc
       - python
       - python-zope-interface
-    revision: 1
+    revision: 2
     configure:
       # python modules do not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead.
@@ -204,7 +204,7 @@ packages:
     pkgs_required:
       - mlibc
       - python
-    revision: 1
+    revision: 2
     configure:
       # python modules do not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead.
@@ -233,7 +233,7 @@ packages:
       - mlibc
       - python
       - tzdata
-    revision: 1
+    revision: 2
     configure:
       # python modules do not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead.
@@ -261,7 +261,7 @@ packages:
     pkgs_required:
       - mlibc
       - python
-    revision: 1
+    revision: 2
     configure:
       # python modules do not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead.
@@ -289,7 +289,7 @@ packages:
     pkgs_required:
       - mlibc
       - python
-    revision: 1
+    revision: 2
     configure:
       # python modules do not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead.
@@ -318,7 +318,7 @@ packages:
       - mlibc
       - python
       - python-arrow
-    revision: 1
+    revision: 2
     configure:
       # python modules do not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead.
@@ -346,7 +346,7 @@ packages:
     pkgs_required:
       - mlibc
       - python
-    revision: 1
+    revision: 2
     configure:
       # python modules do not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead.
@@ -375,7 +375,7 @@ packages:
       - mlibc
       - python
       - python-referencing
-    revision: 1
+    revision: 2
     configure:
       # python modules do not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead.
@@ -417,7 +417,7 @@ packages:
       - python-rpds-py
       - python-uri-template
       - python-webcolors
-    revision: 1
+    revision: 2
     configure:
       # python modules do not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead.
@@ -445,7 +445,7 @@ packages:
     pkgs_required:
       - mlibc
       - python
-    revision: 1
+    revision: 2
     configure:
       # python modules do not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead.
@@ -475,7 +475,7 @@ packages:
     pkgs_required:
       - mlibc
       - python
-    revision: 1
+    revision: 2
     configure:
       # python modules do not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead.
@@ -506,7 +506,7 @@ packages:
       - mlibc
       - python
       - python-rpds-py
-    revision: 1
+    revision: 2
     configure:
       # python modules do not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead.
@@ -535,7 +535,7 @@ packages:
       - mlibc
       - python
       - python-strict-rfc3339
-    revision: 1
+    revision: 2
     configure:
       # python modules do not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead.
@@ -566,7 +566,7 @@ packages:
       - mlibc
       - python
       - python-rfc3987
-    revision: 1
+    revision: 2
     configure:
       # python modules do not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead.
@@ -595,7 +595,7 @@ packages:
       - mlibc
       - python
       - python-regex
-    revision: 1
+    revision: 2
     configure:
       # python modules do not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead.
@@ -625,7 +625,7 @@ packages:
     pkgs_required:
       - mlibc
       - python
-    revision: 1
+    revision: 2
     configure:
       # python modules do not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead.
@@ -658,7 +658,7 @@ packages:
     pkgs_required:
       - mlibc
       - python
-    revision: 1
+    revision: 2
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
         isolate_network: false
@@ -696,7 +696,7 @@ packages:
     pkgs_required:
       - mlibc
       - python
-    revision: 1
+    revision: 2
     configure:
       # python modules do not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead.
@@ -724,7 +724,7 @@ packages:
     pkgs_required:
       - mlibc
       - python
-    revision: 1
+    revision: 2
     configure:
       # python modules do not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead.
@@ -752,7 +752,7 @@ packages:
     pkgs_required:
       - mlibc
       - python
-    revision: 1
+    revision: 2
     configure:
       # python modules do not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead.
@@ -780,7 +780,7 @@ packages:
     pkgs_required:
       - mlibc
       - python
-    revision: 1
+    revision: 2
     configure:
       # python modules do not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead.
@@ -808,7 +808,7 @@ packages:
     pkgs_required:
       - mlibc
       - python
-    revision: 1
+    revision: 2
     configure:
       # python modules do not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead.

@@ -70,7 +70,7 @@ packages:
         arch: [x86_64]
         item: gobject-introspection
       - libxslt
-    revision: 2
+    revision: 3
     configure:
       - args:
           - 'meson'
@@ -160,7 +160,7 @@ packages:
       - libffi
       - libtasn
       - systemd
-    revision: 4
+    revision: 5
     configure:
       - args:
         - 'meson'
@@ -205,7 +205,7 @@ packages:
       - libgcrypt
       - nss
       - openssl
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'

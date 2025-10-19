@@ -32,7 +32,7 @@ packages:
       - xorg-proto
       - libxau
       - libxdmcp
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -72,7 +72,7 @@ packages:
     pkgs_required:
       - mlibc
       - xorg-util-macros
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -125,7 +125,7 @@ packages:
       - nettle
       - xkbcomp
       - pixman
-    revision: 11
+    revision: 12
     configure:
       - args:
         - 'meson'
@@ -201,7 +201,7 @@ packages:
       - nettle
       - xkbcomp
       - pixman
-    revision: 7
+    revision: 8
     configure:
       - args:
         - 'meson'

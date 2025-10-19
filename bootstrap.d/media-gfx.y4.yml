@@ -14,7 +14,7 @@ packages:
     pkgs_required:
       - mlibc
       - libstdc++
-    revision: 12
+    revision: 13
     configure:
       - args:
         - 'cmake'
