@@ -79,12 +79,13 @@ tools:
       - maturin
       - pdm
       - pdm-backend
+      - rust-patched-libs
       - setuptools
     tools_required:
       - tool: host-python
         recursive: true
       - host-cargo
-    revision: 4
+    revision: 5
     install:
       - args: ['python3', '-m', 'venv', '.']
         workdir: '@PREFIX@'
