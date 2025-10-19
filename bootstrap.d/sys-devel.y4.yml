@@ -8,9 +8,11 @@ sources:
       - host-autoconf-v2.71
       - host-automake-v1.15
       - host-libtool
+    sources_required:
+      - gnulib
     regenerate:
-      - args: ['git', 'submodule', 'set-url', 'gnulib', 'https://https.git.savannah.gnu.org/git/gnulib.git']
       - args: ['git', 'submodule', 'set-url', 'submodules/autoconf', 'https://https.git.savannah.gnu.org/git/autoconf.git']
+      - args: ['python3', '@SOURCE_ROOT@/scripts/checkout-gnulib.py', '@SOURCE_ROOT@/ports/gnulib']
       - args: ['git', 'submodule', 'update', '--init']
         isolate_network: false
       - args: ['./bootstrap', '--skip-po']
@@ -20,7 +22,7 @@ sources:
 
   - name: gettext
     subdir: ports
-    url: 'https://ftpmirror.gnu.org/pub/gnu/gettext/gettext-0.22.3.tar.gz'
+    url: 'https://ftpmirror.gnu.org/gnu/gettext/gettext-0.22.3.tar.gz'
     checksum: blake2b:aebe85a82cb94c37ed81e9801acf1e89d150f5992fb9be42d53b3f2734c5c95804f0051fabc26b8d0892dfaf89d18df16d4bca6bcb2e9b95eef5d4ae93a64379
     extract_path: 'gettext-0.22.3'
     format: 'tar.gz'
@@ -64,7 +66,7 @@ tools:
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.15
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -370,9 +372,9 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-      - gcc # for libstc++.so
+      - libstdc++
       - zlib
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'

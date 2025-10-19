@@ -2,7 +2,7 @@ packages:
   - name: havoc
     architecture: '@OPTION:arch@'
     metadata:
-      summary: Minimal terminal emulator for wayland 
+      summary: Minimal terminal emulator for wayland
       description: This package contains a minimalistic terminal emulator for wayland.
       spdx: 'MIT'
       website: 'https://github.com/ii8/havoc'

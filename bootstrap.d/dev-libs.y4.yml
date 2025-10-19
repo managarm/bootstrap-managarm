@@ -25,8 +25,8 @@ sources:
   - name: gobject-introspection
     subdir: 'ports'
     git: 'https://gitlab.gnome.org/GNOME/gobject-introspection.git'
-    tag: '1.78.1'
-    version: '1.78.1'
+    tag: '1.86.0'
+    version: '1.86.0'
 
   - name: icu
     subdir: 'ports'
@@ -45,8 +45,8 @@ sources:
   - name: libffi
     subdir: 'ports'
     git: 'https://github.com/libffi/libffi.git'
-    tag: 'v3.4.4'
-    version: '3.4.4'
+    tag: 'v3.5.2'
+    version: '3.5.2'
     tools_required:
       - host-autoconf-v2.71
       - host-automake-v1.11
@@ -170,12 +170,12 @@ tools:
     exports_shared_libs: true
     from_source: gobject-introspection
     tools_required:
-      - host-python
+      - host-gpep517
       - host-glib
       - host-pkg-config
       - virtual: pkgconfig-for-host
         program_name: host-pkg-config
-    revision: 4
+    revision: 1
     configure:
       - args:
         - 'meson'
@@ -184,6 +184,7 @@ tools:
         - '--native-file'
         - '@SOURCE_ROOT@/scripts/meson.native-file'
         - '-Dbuild_introspection_data=false'
+        - '-Dtests=false'
         - '@THIS_SOURCE_DIR@'
         isolate_network: false
     compile:
@@ -210,6 +211,7 @@ tools:
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     from_source: libffi
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -329,19 +331,15 @@ packages:
       categories: ['dev-libs']
     source:
       subdir: 'ports'
-      git: 'https://github.com/boostorg/boost.git'
-      tag: 'boost-1.62.0'
-      version: '1.62.0'
+      url: 'https://github.com/boostorg/boost/releases/download/boost-1.89.0/boost-1.89.0-b2-nodocs.tar.gz'
+      format: 'tar.gz'
+      checksum: 'blake2b:9d6a1596c597c8dadccfd36d4ad5ed3db014fac55d2490d3c33a1ffe93d241a6a352c7019d55cfbf9021d3533ec59536a3133bf621bcca8e2dfe72385e3b370d'
+      extract_path: 'boost-1.89.0'
+      version: '1.89.0'
       regenerate:
-        - args: |
-            if ! git -C '@THIS_SOURCE_DIR@' remote | grep -q origin; then
-              git -C '@THIS_SOURCE_DIR@' remote add origin https://github.com/boostorg/boost.git
-            fi
-        - args: ['git', '-C', '@THIS_SOURCE_DIR@', 'submodule', 'update', '--init']
-          isolate_network: false
         - args: ['./bootstrap.sh']
         - args: ['./b2', 'headers']
-    revision: 9
+    revision: 1
     configure: []
     build:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/include']
@@ -644,7 +642,7 @@ packages:
       - host-pkg-config
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
-      - host-python
+      - host-gpep517
       - host-gobject-introspection
       - host-glib
       - host-mlibc
@@ -655,7 +653,7 @@ packages:
       - cairo
       - pcre2
       - python
-    revision: 4
+    revision: 1
     configure:
       - args:
         - 'meson'
@@ -667,6 +665,7 @@ packages:
         - '-Dgi_cross_use_prebuilt_gi=true'
         - '-Dbuild_introspection_data=true'
         - '-Dgi_cross_pkgconfig_sysroot_path=@SYSROOT_DIR@'
+        - '-Dtests=false'
         - '@THIS_SOURCE_DIR@'
         environ:
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
@@ -945,7 +944,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 7
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1632,7 +1631,7 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
-  
+
   - name: libtsm
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'

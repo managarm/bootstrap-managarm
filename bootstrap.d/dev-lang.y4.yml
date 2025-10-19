@@ -8,11 +8,11 @@ sources:
   - name: python
     subdir: 'ports'
     git: 'https://github.com/python/cpython.git'
-    tag: 'v3.10.12'
-    version: '3.10.12'
+    tag: 'v3.14.0'
+    version: '3.14.0'
     tools_required:
-      - host-autoconf-v2.69
-      - host-automake-v1.15
+      - host-autoconf-v2.72
+      - host-automake-v1.16
       - host-libtool
       - host-pkg-config
       - host-autoconf-archive
@@ -27,11 +27,11 @@ sources:
 
   - name: vala
     subdir: 'ports'
-    url: 'https://download.gnome.org/sources/vala/0.56/vala-0.56.17.tar.xz'
+    url: 'https://download.gnome.org/sources/vala/0.56/vala-0.56.18.tar.xz'
     format: 'tar.xz'
-    checksum: blake2b:c4b8d5b7c810893728f82d2cbbf2f0dd70ad17bd4eeb323ab5d31d99f37b5a5508b7d2447f0249f3a925013d7110bb6f145b32c833b990b15f18d9949035293f
-    extract_path: 'vala-0.56.17'
-    version: '0.56.17'
+    checksum: blake2b:ee3eaf719a59e1d562ec5d5334ba6fe6490a92aba90b3a89600a483f896219a2428edf3228b4abaa1a6ad5e7b0bd4d5234c7c8862f47ec1236427f50420f1b1c
+    extract_path: 'vala-0.56.18'
+    version: '0.56.18'
 
   - name: host-bootstrap-cargo
     subdir: 'ports'
@@ -50,6 +50,7 @@ tools:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--prefix=@PREFIX@'
+    revision: 1
     compile:
       - args: ['make', '-j@PARALLELISM@']
     install:
@@ -202,7 +203,7 @@ tools:
       - host-glib
       - virtual: pkgconfig-for-host
         program_name: host-pkg-config
-    revision: 2
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -381,7 +382,9 @@ packages:
       - util-linux-libs
       - xz-utils
       - zlib
-    revision: 7
+      - zstd
+      - sqlite
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -389,11 +392,12 @@ packages:
         - '--build=x86_64-linux-gnu'
         - '--prefix=/usr'
         - '--enable-shared'
-        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
-        - '--with-system-ffi'
         - '--with-system-expat'
         - '--disable-ipv6'
         - '--without-ensurepip'
+        - '--without-static-libpython'
+        - '--with-build-python=python3.14' # Use the host python to bootstrap
+        - '--enable-loadable-sqlite-extensions'
         environ:
           CONFIG_SITE: '@SOURCE_ROOT@/scripts/python-config-site'
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
@@ -420,7 +424,7 @@ packages:
       format: 'tar.gz'
       checksum: blake2b:821de373492a0158f2f38c9fe4ebfda8966a75f62df01c5a2d5640b0a5ec06d883bb7385acdc1772cf4139c56be5d9f0b1c75d261c6c70a940e3e4a156c7ce4b
       extract_path: 'tcl8.6.15'
-      patch-path-strip: 1 
+      patch-path-strip: 1
       version: '8.6.15'
     tools_required:
       - system-gcc

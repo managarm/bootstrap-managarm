@@ -15,8 +15,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.gnome.org/GNOME/gtk.git'
-      tag: '4.12.5'
-      version: '4.12.5'
+      tag: '4.18.5'
+      version: '4.18.5'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -63,7 +63,7 @@ packages:
         item: gobject-introspection
       - gst-plugins-good
       - gst-plugins-bad
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'meson'
@@ -140,8 +140,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.gnome.org/GNOME/gtksourceview.git'
-      tag: '5.11.0'
-      version: '5.11.0'
+      tag: '5.16.0'
+      version: '5.16.0'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -169,7 +169,7 @@ packages:
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
-    revision: 2
+    revision: 1
     configure:
       - args:
         - 'meson'
@@ -179,13 +179,13 @@ packages:
         - '--prefix=/usr'
         - '--buildtype=release'
         - '--wrap-mode=nodownload'
-        - '-Dinstall_tests=false'
+        - '-Dinstall-tests=false'
         - !managarm::arch_ite
           arch: [x86_64]
           then: '-Dintrospection=enabled'
           else: '-Dintrospection=disabled'
         - '-Dvapi=true'
-        - '-Dgtk_doc=false'
+        - '-Ddocumentation=false'
         - '-Dsysprof=false'
         - '@THIS_SOURCE_DIR@'
         environ:

@@ -34,6 +34,7 @@ tools:
 packages:
   - name: qemu
     architecture: '@OPTION:arch@'
+    stability_level: broken # GLib memes, fix next week
     metadata:
       summary: A generic and open source machine emulator and virtualizer
       description: A generic and open source machine emulator and virtualizer

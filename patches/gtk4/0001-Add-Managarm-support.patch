@@ -1,34 +1,20 @@
-From 774e131586fec9221f81465f53dc8279ecdac1b7 Mon Sep 17 00:00:00 2001
+From bfc377608dad078fd25d569cbf5125d71296ef24 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
-Date: Mon, 22 Jan 2024 19:44:13 +0100
+Date: Sat, 18 Oct 2025 16:08:37 +0200
 Subject: [PATCH] Add Managarm support
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
- gdk/loaders/gdkpng.c             | 10 +++++++++-
- gdk/wayland/gdkdisplay-wayland.c |  2 ++
- 2 files changed, 11 insertions(+), 1 deletion(-)
+ gdk/loaders/gdkpng.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
 diff --git a/gdk/loaders/gdkpng.c b/gdk/loaders/gdkpng.c
-index 9ecad53..1e7570a 100644
+index b82fd05..f642100 100644
 --- a/gdk/loaders/gdkpng.c
 +++ b/gdk/loaders/gdkpng.c
-@@ -167,7 +167,11 @@ gdk_load_png (GBytes  *bytes,
- 
-   png_set_read_fn (png, &io, png_read_func);
- 
--  if (sigsetjmp (png_jmpbuf (png), 1))
-+#ifdef __mlibc__
-+    if (setjmp (png_jmpbuf (png)))
-+#else
-+    if (sigsetjmp (png_jmpbuf (png), 1))
-+#endif
-     {
-       g_free (buffer);
-       g_free (row_pointers);
-@@ -427,7 +431,11 @@ gdk_save_png (GdkTexture *texture)
-   gdk_texture_downloader_finish (&downloader);
-   data = g_bytes_get_data (bytes, NULL);
+@@ -344,7 +344,11 @@ gdk_load_png (GBytes      *bytes,
+   png_set_read_user_chunk_fn (png, &cicp, png_read_chunk_func);
+ #endif
  
 +#ifdef __mlibc__
 +  if (setjmp (png_jmpbuf (png)))
@@ -36,22 +22,20 @@ index 9ecad53..1e7570a 100644
    if (sigsetjmp (png_jmpbuf (png), 1))
 +#endif
      {
-       g_bytes_unref (bytes);
-       g_free (io.data);
-diff --git a/gdk/wayland/gdkdisplay-wayland.c b/gdk/wayland/gdkdisplay-wayland.c
-index 80c7c99..f593547 100644
---- a/gdk/wayland/gdkdisplay-wayland.c
-+++ b/gdk/wayland/gdkdisplay-wayland.c
-@@ -30,7 +30,9 @@
- #endif
+       g_free (buffer);
+       g_free (row_pointers);
+@@ -639,7 +643,11 @@ gdk_save_png (GdkTexture *texture)
+   gdk_color_state_ref (color_state);
+   bytes = NULL;
  
- #include <sys/mman.h>
-+#ifndef __managarm__
- #include <sys/syscall.h>
++#ifdef __mlibc__
++  if (setjmp (png_jmpbuf (png)))
++#else
+   if (sigsetjmp (png_jmpbuf (png), 1))
 +#endif
- 
- #include <glib.h>
- #include <gio/gio.h>
+     {
+       gdk_color_state_unref (color_state);
+       g_clear_pointer (&bytes, g_bytes_unref);
 -- 
-2.50.1
+2.51.0
 

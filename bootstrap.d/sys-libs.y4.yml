@@ -209,6 +209,12 @@ sources:
     tag: 'zbus-4.4.0'
     version: '4.4.0'
 
+  - name: rust-target-lexicon
+    subdir: 'ports'
+    git: 'https://github.com/bytecodealliance/target-lexicon.git'
+    tag: 'v0.13.3'
+    version: '0.13.3'
+
   - name: rust-patched-libs
     subdir: 'ports'
     sources_required:
@@ -273,6 +279,8 @@ sources:
       - name: rust-ring
         recursive: true
       - name: rust-zbus
+        recursive: true
+      - name: rust-target-lexicon
         recursive: true
 
 packages:
@@ -594,23 +602,24 @@ packages:
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
-      git: 'https://bitmath.org/git/mtdev.git'
-      disable_shallow_fetch: true
-      tag: 'v1.1.7'
+      url: 'https://bitmath.se/org/code/mtdev/mtdev-1.1.7.tar.gz'
+      checksum: 'blake2b:3170de9b83e996ea75fc8530de1d33dbc45d818dbf2b7efb30a1d40981ea48e6b30b572f7791ca0375428464cf6c34e647ebf35ef057abc52d08af2ee333de95'
+      extract_path: 'mtdev-1.1.7'
+      format: 'tar.gz'
       version: '1.1.7'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
         - host-libtool
       regenerate:
-        - args: ['./autogen.sh']
+        - args: ['autoreconf', '-fvi']
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.15
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

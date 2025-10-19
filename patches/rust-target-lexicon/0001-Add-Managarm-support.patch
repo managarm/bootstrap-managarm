@@ -1,0 +1,77 @@
+From 2679e776e6d996bf91ef0f710b740f13d8ee4c8d Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Thu, 9 Oct 2025 12:40:59 +0200
+Subject: [PATCH] Add Managarm support
+
+---
+ src/targets.rs | 6 ++++++
+ src/triple.rs  | 1 +
+ 2 files changed, 7 insertions(+)
+
+diff --git a/src/targets.rs b/src/targets.rs
+index c908269..d0d32a1 100644
+--- a/src/targets.rs
++++ b/src/targets.rs
+@@ -727,6 +727,7 @@ pub enum OperatingSystem {
+     /// WARNING: This does _not_ match the macOS triples when parsing `rustc`
+     /// target triples, for that see the [`darwin`](Self::Darwin) OS name.
+     MacOSX(Option<DeploymentTarget>),
++    Managarm,
+     Nebulet,
+     Netbsd,
+     None_,
+@@ -789,6 +790,7 @@ impl OperatingSystem {
+             L4re => Cow::Borrowed("l4re"),
+             Linux => Cow::Borrowed("linux"),
+             MacOSX(deployment_target) => darwin_version("macosx", deployment_target),
++            Managarm => Cow::Borrowed("managarm"),
+             Nebulet => Cow::Borrowed("nebulet"),
+             Netbsd => Cow::Borrowed("netbsd"),
+             None_ => Cow::Borrowed("none"),
+@@ -855,6 +857,7 @@ pub enum Environment {
+     HurdKernel,
+     LinuxKernel,
+     Macabi,
++    Mlibc,
+     Musl,
+     Musleabi,
+     Musleabihf,
+@@ -898,6 +901,7 @@ impl Environment {
+             HurdKernel => Cow::Borrowed("hurdkernel"),
+             LinuxKernel => Cow::Borrowed("linuxkernel"),
+             Macabi => Cow::Borrowed("macabi"),
++            Mlibc => Cow::Borrowed("mlibc"),
+             Musl => Cow::Borrowed("musl"),
+             Musleabi => Cow::Borrowed("musleabi"),
+             Musleabihf => Cow::Borrowed("musleabihf"),
+@@ -1640,6 +1644,7 @@ impl FromStr for OperatingSystem {
+             "illumos" => Illumos,
+             "l4re" => L4re,
+             "linux" => Linux,
++            "managarm" => Managarm,
+             "nebulet" => Nebulet,
+             "netbsd" => Netbsd,
+             "none" => None_,
+@@ -1691,6 +1696,7 @@ impl FromStr for Environment {
+             "hurdkernel" => HurdKernel,
+             "linuxkernel" => LinuxKernel,
+             "macabi" => Macabi,
++            "mlibc" => Mlibc,
+             "musl" => Musl,
+             "musleabi" => Musleabi,
+             "musleabihf" => Musleabihf,
+diff --git a/src/triple.rs b/src/triple.rs
+index d92ea67..dc12562 100644
+--- a/src/triple.rs
++++ b/src/triple.rs
+@@ -136,6 +136,7 @@ impl Triple {
+             | OperatingSystem::Hurd
+             | OperatingSystem::L4re
+             | OperatingSystem::Linux
++            | OperatingSystem::Managarm
+             | OperatingSystem::Netbsd
+             | OperatingSystem::Openbsd
+             | OperatingSystem::Redox
+-- 
+2.51.0
+

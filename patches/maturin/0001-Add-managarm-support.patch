@@ -1,0 +1,92 @@
+From 2c5b20b77b126362e94828860466ee5a3dfd4df7 Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Fri, 17 Oct 2025 11:45:31 +0200
+Subject: [PATCH] Add managarm support
+
+---
+ setup.py          |  2 +-
+ src/target/mod.rs | 14 +++++++++++++-
+ 2 files changed, 14 insertions(+), 2 deletions(-)
+
+diff --git a/setup.py b/setup.py
+index 5d9fd28..916b061 100644
+--- a/setup.py
++++ b/setup.py
+@@ -60,6 +60,6 @@ else:
+ setup(
+     version=version,
+     cmdclass={"bdist_wheel": bdist_wheel},
+-    rust_extensions=[RustBin("maturin", args=cargo_args, cargo_manifest_args=["--locked"], env=env)],
++    rust_extensions=[RustBin("maturin", args=cargo_args, cargo_manifest_args=[], env=env)],
+     zip_safe=False,
+ )
+diff --git a/src/target/mod.rs b/src/target/mod.rs
+index 8f5a98b..2cbc63e 100644
+--- a/src/target/mod.rs
++++ b/src/target/mod.rs
+@@ -43,6 +43,7 @@ pub enum Os {
+     Wasi,
+     Aix,
+     Hurd,
++    Managarm,
+ }
+ 
+ impl fmt::Display for Os {
+@@ -63,6 +64,7 @@ impl fmt::Display for Os {
+             Os::Wasi => write!(f, "Wasi"),
+             Os::Aix => write!(f, "AIX"),
+             Os::Hurd => write!(f, "Hurd"),
++            Os::Managarm => write!(f, "Managarm"),
+         }
+     }
+ }
+@@ -209,6 +211,7 @@ fn get_supported_architectures(os: &Os) -> Vec<Arch> {
+         Os::Emscripten | Os::Wasi => vec![Arch::Wasm32],
+         Os::Aix => vec![Arch::Powerpc64],
+         Os::Hurd => vec![Arch::X86, Arch::X86_64],
++        Os::Managarm => vec![Arch::X86_64, Arch::Aarch64, Arch::Riscv64],
+     }
+ }
+ 
+@@ -283,6 +286,7 @@ impl Target {
+             OperatingSystem::Wasi | OperatingSystem::WasiP1 | OperatingSystem::WasiP2 => Os::Wasi,
+             OperatingSystem::Aix => Os::Aix,
+             OperatingSystem::Hurd => Os::Hurd,
++            OperatingSystem::Managarm => Os::Managarm,
+             unsupported => bail!("The operating system {:?} is not supported", unsupported),
+         };
+ 
+@@ -459,6 +463,7 @@ impl Target {
+             Os::Illumos => "sunos",
+             Os::Haiku => "haiku",
+             Os::Emscripten => "emscripten",
++            Os::Managarm => "managarm",
+             // This isn't real, there's no sys.platform here
+             Os::Wasi => "wasi",
+             Os::Aix => "aix",
+@@ -558,7 +563,8 @@ impl Target {
+             | Os::Emscripten
+             | Os::Wasi
+             | Os::Aix
+-            | Os::Hurd => true,
++            | Os::Hurd
++            | Os::Managarm => true,
+         }
+     }
+ 
+@@ -646,6 +652,12 @@ impl Target {
+         self.os == Os::Aix
+     }
+ 
++    /// Returns true if we're building a binary for managarm
++    #[inline]
++    pub fn is_managarm(&self) -> bool {
++        self.os == Os::Managarm
++    }
++
+     /// Returns true if the current platform's target env is Musl
+     #[inline]
+     pub fn is_musl_libc(&self) -> bool {
+-- 
+2.51.0
+
