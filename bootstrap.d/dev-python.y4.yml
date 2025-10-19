@@ -55,7 +55,7 @@ tools:
     tools_required:
       - tool: host-python
         recursive: true
-    revision: 1
+    revision: 2
     install:
       - args: ['python3', '-m', 'venv', '.']
         workdir: '@PREFIX@'
