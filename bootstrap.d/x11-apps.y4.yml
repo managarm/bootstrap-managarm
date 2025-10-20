@@ -32,7 +32,7 @@ packages:
       - libxkbcommon
       - dbus
       - gtk+-3
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -89,7 +89,7 @@ packages:
       - libxi
       - mlibc
       - mtdev
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -132,7 +132,7 @@ packages:
       - libxt
       - libxkbfile
       - libiconv
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -180,7 +180,7 @@ packages:
       - libxi
       - libxrender
       - libxtst
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -219,7 +219,7 @@ packages:
       - mesa
       - xorg-util-macros
       - libx11
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -269,7 +269,7 @@ packages:
       - libxmu
       - libxrender
       - libxt
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -308,7 +308,7 @@ packages:
       - xorg-util-macros
       - libx11
       - libxkbfile
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -347,7 +347,7 @@ packages:
       - xorg-util-macros
       - libx11
       - libxmu
-    revision: 7
+    revision: 8
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -386,7 +386,7 @@ packages:
       - mlibc
       - xorg-util-macros
       - libxcb
-    revision: 7
+    revision: 8
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -423,7 +423,7 @@ packages:
       - mlibc
       - xorg-util-macros
       - libx11
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -462,7 +462,7 @@ packages:
       - libxmu
       - libx11
       - libxext
-    revision: 7
+    revision: 8
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -503,7 +503,7 @@ packages:
       - xorg-util-macros
       - libx11
       - xcb-util
-    revision: 7
+    revision: 8
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -544,7 +544,7 @@ packages:
       - pixman
       - cairo
       - systemd
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'meson'
@@ -585,7 +585,7 @@ packages:
     pkgs_required:
       - mlibc
       - mesa
-    revision: 11
+    revision: 12
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

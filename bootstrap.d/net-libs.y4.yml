@@ -27,7 +27,7 @@ packages:
       - glib
       - gnutls
       - gsettings-desktop-schemas
-    revision: 9
+    revision: 10
     configure:
       - args:
         - 'meson'
@@ -88,7 +88,7 @@ packages:
       - libiconv
       - libintl
       - openssl
-    revision: 10
+    revision: 11
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -134,7 +134,7 @@ packages:
     pkgs_required:
       - mlibc
       - glib
-    revision: 6
+    revision: 7
     configure:
       - args:
         - 'meson'
@@ -183,7 +183,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -226,7 +226,7 @@ packages:
       - libidn2
       - libunistring
       - libiconv
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -273,7 +273,7 @@ packages:
       - libxml
       - sqlite
       - libpsl
-    revision: 7
+    revision: 8
     configure:
       - args:
         - 'meson'
@@ -346,7 +346,7 @@ packages:
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -435,7 +435,7 @@ packages:
       - zlib
       - c-ares
       - boost
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -506,7 +506,7 @@ packages:
       - gst-plugins-base
       - gst-plugins-bad
       - gst-plugins-good
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'

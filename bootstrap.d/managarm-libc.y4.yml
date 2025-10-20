@@ -2,7 +2,7 @@ sources:
   - name: mlibc
     git: 'https://github.com/managarm/mlibc.git'
     branch: 'master'
-    commit: 'fc7465b648d7a6d3fcca37a02600360712778149'
+    commit: '0d1e04f76690c9707924e14b759e6199640833ee'
     rolling_version: true
     version: '0.0pl@ROLLING_ID@'
     sources_required:
@@ -150,7 +150,7 @@ packages:
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     from_source: 'libdrm'
-    revision: 1
+    revision: 2
     build:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/src/libdrm-headers']
       - args: |

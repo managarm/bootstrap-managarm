@@ -25,7 +25,7 @@ packages:
       - kwindowsystem
       - libx11
       - libxscrnsaver
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -68,7 +68,7 @@ packages:
       - layer-shell-qt
       - kwindowsystem
       - qtbase6
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'

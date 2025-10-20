@@ -18,7 +18,7 @@ packages:
       - host-cmake
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -67,7 +67,7 @@ packages:
       - mlibc
       - libunistring
       - libiconv
-    revision: 13
+    revision: 14
     configure:
       # Remove some files from the source directory if they exist.
       - args: |

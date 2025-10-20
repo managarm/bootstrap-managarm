@@ -28,7 +28,7 @@ packages:
     pkgs_required:
       - mlibc
       - ncurses
-    revision: 10
+    revision: 11
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -79,7 +79,7 @@ packages:
       - mlibc
       - ncurses
       - systemd
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -119,7 +119,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 5
+    revision: 6
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args: 'echo @OPTION:arch-triple@-gcc -O2 -Wall > @THIS_BUILD_DIR@/src/conf-cc'

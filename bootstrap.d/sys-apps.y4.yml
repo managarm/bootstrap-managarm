@@ -116,7 +116,7 @@ packages:
       - rust-patched-libs
     pkgs_required:
       - mlibc
-    revision: 4
+    revision: 5
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
         isolate_network: false
@@ -167,7 +167,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       # Huge hack: coreutils does not compile the build-machine binary make-prime-list
       # using the build-machine compiler. Hence, build and invoke the binary manually here.
@@ -230,7 +230,7 @@ packages:
       - glib
       - libexpat
       - systemd
-    revision: 12
+    revision: 13
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -298,7 +298,7 @@ packages:
       - host-automake-v1.15
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -332,7 +332,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -363,7 +363,7 @@ packages:
       - mlibc
       - libdrm
       - json-c
-    revision: 9
+    revision: 10
     configure:
       - args:
         - 'meson'
@@ -402,7 +402,7 @@ packages:
       - rust-patched-libs
     pkgs_required:
       - mlibc
-    revision: 4
+    revision: 5
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
         isolate_network: false
@@ -443,7 +443,7 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -490,7 +490,7 @@ packages:
       - host-python
     pkgs_required:
       - mlibc
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -537,7 +537,7 @@ packages:
       - host-automake-v1.16
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -585,7 +585,7 @@ packages:
     pkgs_required:
       - mlibc
       - pcre2
-    revision: 10
+    revision: 11
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -632,7 +632,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 15
+    revision: 16
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -667,7 +667,7 @@ packages:
     from_source: hwdata
     tools_required:
       - system-gcc
-    revision: 1
+    revision: 2
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
@@ -702,7 +702,7 @@ packages:
     pkgs_required:
       - mlibc
       - libmnl
-    revision: 2
+    revision: 3
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
@@ -748,7 +748,7 @@ packages:
     pkgs_required:
       - mlibc
       - ncurses
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -789,7 +789,7 @@ packages:
       - groff
       - less
       - libiconv
-    revision: 13
+    revision: 14
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -821,7 +821,7 @@ packages:
       version: '2017a'
     tools_required:
       - system-gcc
-    revision: 6
+    revision: 7
     configure: []
     build:
       - args: ['mkdir', '-pv', '@THIS_COLLECT_DIR@/usr/share/man']
@@ -851,7 +851,7 @@ packages:
     pkgs_required:
       - mlibc
       - pciids
-    revision: 8
+    revision: 9
     configure:
       - args:
         - 'meson'
@@ -876,7 +876,7 @@ packages:
       branch: 'master'
       commit: 'd27a0bd748310d8ace673a614f745303b444e00e'
       version: '7.2.0'
-    revision: 8
+    revision: 9
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -907,7 +907,7 @@ packages:
       - libnvme
       - json-c
       - zlib
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -955,7 +955,7 @@ packages:
       - systemd
       - hwdata
       - zlib
-    revision: 6
+    revision: 7
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -1013,7 +1013,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1058,7 +1058,7 @@ packages:
       - libiconv
       - libintl
       - pam
-    revision: 8
+    revision: 9
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1133,7 +1133,7 @@ packages:
       - rust-patched-libs
     pkgs_required:
       - mlibc
-    revision: 4
+    revision: 5
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
         isolate_network: false
@@ -1183,7 +1183,7 @@ packages:
       - systemd
       - hwdata
       - libiconv
-    revision: 4
+    revision: 5
     configure:
       - args:
         - 'meson'
@@ -1216,7 +1216,7 @@ packages:
       - libiconv
       - file
       - libxcrypt
-    revision: 14
+    revision: 15
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1366,7 +1366,7 @@ packages:
       - file
       - libxcrypt
       - pcre2
-    revision: 19
+    revision: 20
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1466,7 +1466,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 11
+    revision: 12
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1503,7 +1503,7 @@ packages:
       - openssl
       - zlib
       - lz4
-    revision: 4
+    revision: 5
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
@@ -1546,7 +1546,7 @@ packages:
       - libdrm
       - libtsm
       - systemd
-    revision: 15
+    revision: 16
     configure:
       - args:
         - 'meson'
@@ -1594,7 +1594,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1649,7 +1649,7 @@ packages:
       - util-linux-libs
       - mlibc
       - pam
-    revision: 10
+    revision: 11
     configure:
       - args:
         - 'meson'

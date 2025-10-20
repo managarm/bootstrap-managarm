@@ -27,7 +27,7 @@ packages:
       - libiconv
       - ncurses
       - readline
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -63,7 +63,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -93,7 +93,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       # tree does not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead

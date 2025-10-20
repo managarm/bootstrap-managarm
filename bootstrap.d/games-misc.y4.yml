@@ -24,7 +24,7 @@ packages:
       - cairo
       - libx11
       - glib
-    revision: 9
+    revision: 10
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
@@ -82,7 +82,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 11
+    revision: 12
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -110,7 +110,7 @@ packages:
       filename: 'opengfx-7.1-all.zip'
       checksum: blake2b:337f15bf0f6d3c111a3ae1ca84601568a452922b2ced09f76d1fd5902c1a3da62153df35da490979b68c8d2a35d936a1fc6b7c06c18f934ae58a6e3535de315a
       version: '7.1'
-    revision: 5
+    revision: 6
     configure:
       - args: ['unzip', '@THIS_SOURCE_DIR@/opengfx-7.1-all.zip', '-d', '@THIS_BUILD_DIR@']
       - args: ['tar', 'xf', '@THIS_BUILD_DIR@/opengfx-7.1.tar', '-C', '@THIS_BUILD_DIR@']
@@ -140,7 +140,7 @@ packages:
       filename: 'openmsx-0.4.2-all.zip'
       checksum: blake2b:4f72f7ab383ec64889a96e410b4d23e90058143cda812173dab24b6db474e5c1192c99e57f7620fab5f4c7a0b1599e5437025cb476ef1c4fe3ea6c91a8961466
       version: '0.4.2'
-    revision: 5
+    revision: 6
     configure:
       - args: ['unzip', '@THIS_SOURCE_DIR@/openmsx-0.4.2-all.zip', '-d', '@THIS_BUILD_DIR@']
       - args: ['tar', 'xf', '@THIS_BUILD_DIR@/openmsx-0.4.2.tar', '-C', '@THIS_BUILD_DIR@']
@@ -170,7 +170,7 @@ packages:
       filename: 'opensfx-1.0.3-all.zip'
       checksum: blake2b:d2eb7f9734d048fc9ef9938805ed573751cfa0fce9ab3561b671cde10f408905442949a911c13024365aafaf525a5fa974cd43dc57de09352c8404025e0909a0
       version: '1.0.3'
-    revision: 5
+    revision: 6
     configure:
       - args: ['unzip', '@THIS_SOURCE_DIR@/opensfx-1.0.3-all.zip', '-d', '@THIS_BUILD_DIR@']
       - args: ['tar', 'xf', '@THIS_BUILD_DIR@/opensfx-1.0.3.tar', '-C', '@THIS_BUILD_DIR@']

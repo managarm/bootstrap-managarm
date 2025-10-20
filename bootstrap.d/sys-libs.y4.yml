@@ -310,7 +310,7 @@ packages:
     pkgs_required:
       - mlibc
       - libintl
-    revision: 3
+    revision: 4
     configure:
       - args:
           - 'meson'
@@ -353,7 +353,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -397,7 +397,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -432,7 +432,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -476,7 +476,7 @@ packages:
       - dbus
       - openssl
       - util-linux-libs
-    revision: 1
+    revision: 2
     configure:
       - args:
           - 'meson'
@@ -525,7 +525,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -567,7 +567,7 @@ packages:
       - xz-utils
       - openssl
       - zstd
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -619,7 +619,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -645,7 +645,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 12
+    revision: 13
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -702,7 +702,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -740,7 +740,7 @@ packages:
       - mlibc
       - libxcrypt
       - gdbm
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'meson'
@@ -778,7 +778,7 @@ packages:
     pkgs_required:
       - mlibc
       - ncurses
-    revision: 12
+    revision: 13
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -807,7 +807,7 @@ packages:
       version: '2025b'
     tools_required:
       - system-gcc
-    revision: 1
+    revision: 2
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -878,7 +878,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 9
+    revision: 10
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

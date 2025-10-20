@@ -25,7 +25,7 @@ packages:
       - openssl
       - zlib
       - zstd
-    revision: 7
+    revision: 8
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -64,7 +64,7 @@ packages:
     pkgs_required:
       - mlibc
       - systemd
-    revision: 7
+    revision: 8
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
@@ -106,7 +106,7 @@ packages:
       checksum: blake2b:c49fe6730a4cadf932c8522bbe60c853f99ada19cc1e63d5127d09cbb347059dff4577e346a7899fc53a75b324f0738a3764a10794baf60da83b403c9dd51656
       extract_path: 'iana-etc-20250311'
       version: '20250311'
-    revision: 1
+    revision: 2
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -145,7 +145,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -176,7 +176,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
           - 'meson'
@@ -231,7 +231,7 @@ packages:
       - xxhash
       - zstd
       - popt
-    revision: 7
+    revision: 8
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -283,7 +283,7 @@ packages:
       - ncurses
       - readline
       - openssl
-    revision: 7
+    revision: 8
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -326,7 +326,7 @@ packages:
       - mlibc
       - pcre
       - openssl
-    revision: 8
+    revision: 9
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

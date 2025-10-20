@@ -16,7 +16,7 @@ packages:
     tools_required:
       - system-gcc
       - host-pkg-config
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -63,7 +63,7 @@ packages:
       - mlibc
       - xorg-util-macros
       - libxcursor
-    revision: 8
+    revision: 9
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
