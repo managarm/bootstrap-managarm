@@ -305,5 +305,3 @@ packages:
     build:
       - args: ['hdoc']
         workdir: '@THIS_BUILD_DIR@'
-
-
