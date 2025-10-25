@@ -1,4 +1,4 @@
-From c757e6e93a92c54e6883260ba913b8d4b125a531 Mon Sep 17 00:00:00 2001
+From e34ed86385ebcca81195f7f71744650f9ba897e6 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Fri, 25 Jul 2025 12:47:46 +0200
 Subject: [PATCH 6/8] tools: Do not blindly assume files exist in

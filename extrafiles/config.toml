@@ -1,6 +1,5 @@
 [build]
 rustc = "@BUILD_ROOT@/tools/host-rust/bin/rustc"
-target = "x86_64-unknown-managarm-mlibc"
 
 [target.x86_64-unknown-managarm-mlibc]
 linker = "x86_64-managarm-gcc"

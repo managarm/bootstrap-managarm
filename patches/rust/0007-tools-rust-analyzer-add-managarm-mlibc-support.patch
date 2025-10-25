@@ -1,4 +1,4 @@
-From 5768d14c59a71ac33789453fb5a9473fe5694399 Mon Sep 17 00:00:00 2001
+From 79ecb38deb44ef100adf2652efeae5551f640cdd Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Thu, 28 Aug 2025 22:29:30 +0200
 Subject: [PATCH 7/8] tools/rust-analyzer: add managarm/mlibc support
