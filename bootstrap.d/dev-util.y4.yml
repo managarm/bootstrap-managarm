@@ -25,6 +25,20 @@ sources:
         environ:
           'NOCONFIGURE': 'yes'
 
+  - name: 'pkgconf'
+    subdir: 'ports'
+    git: 'https://github.com/pkgconf/pkgconf.git'
+    tag: 'pkgconf-2.5.1'
+    version: '2.5.1'
+    tools_required:
+      - host-autoconf-v2.71
+      - host-automake-v1.16
+      - host-libtool
+    regenerate:
+      - args: ['./autogen.sh']
+        environ:
+          'NOCONFIGURE': 'yes'
+
 tools:
   - name: host-cmake
     labels: [aarch64, riscv64]
@@ -127,6 +141,26 @@ tools:
       - args: ['make', '-j@PARALLELISM@']
     install:
       - args: ['make', 'install']
+
+  # We could run an external pkg-config; however, we need the aclocal files.
+  # The easiest way to ensure that they are available is to just install pkg-config.
+  - name: host-pkgconf
+    labels: [aarch64, riscv64]
+    architecture: noarch
+    exports_aclocal: true
+    from_source: pkgconf
+    revision: 1
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--prefix=@PREFIX@'
+        - '--with-system-includedir=@SYSROOT_DIR@/usr/include'
+        - '--with-system-libdir=@SYSROOT_DIR@/usr/lib'
+    compile:
+      - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'install']
+      - args: ['ln', '-svf', pkgconf, '@PREFIX@/bin/pkg-config']
 
   - name: host-tzdb
     stability_level: 'broken' # XXX xbstrap does not handle tar.lz?
