@@ -215,6 +215,12 @@ sources:
     tag: 'v0.13.3'
     version: '0.13.3'
 
+  - name: rust-cfg-expr
+    subdir: 'ports'
+    git: 'https://github.com/EmbarkStudios/cfg-expr.git'
+    tag: '0.20.3'
+    version: '0.20.3'
+
   - name: rust-patched-libs
     subdir: 'ports'
     sources_required:
@@ -281,6 +287,8 @@ sources:
       - name: rust-zbus
         recursive: true
       - name: rust-target-lexicon
+        recursive: true
+      - name: rust-cfg-expr
         recursive: true
 
 packages:

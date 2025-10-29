@@ -1,0 +1,92 @@
+From bd1ac6cb4a0eff7d8560934a069e32208b38293d Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Wed, 29 Oct 2025 16:25:00 +0100
+Subject: [PATCH] Add Managarm support
+
+---
+ src/targets/builtins.rs | 41 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 41 insertions(+)
+
+diff --git a/src/targets/builtins.rs b/src/targets/builtins.rs
+index 6f37123..c5c7ed8 100644
+--- a/src/targets/builtins.rs
++++ b/src/targets/builtins.rs
+@@ -169,6 +169,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
+         has_atomics: HasAtomics::atomic_8_16_32_64_128_ptr,
+         panic: Panic::unwind,
+     },
++    TargetInfo {
++        triple: Triple::new_const("aarch64-unknown-managarm-mlibc"),
++        os: Some(Os::managarm),
++        abi: None,
++        arch: Arch::aarch64,
++        env: Some(Env::mlibc),
++        vendor: Some(Vendor::unknown),
++        families: Families::unix,
++        pointer_width: 64,
++        endian: Endian::little,
++        has_atomics: HasAtomics::atomic_8_16_32_64_128_ptr,
++        panic: Panic::unwind,
++    },
+     TargetInfo {
+         triple: Triple::new_const("aarch64-nintendo-switch-freestanding"),
+         os: Some(Os::horizon),
+@@ -2574,6 +2587,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
+         has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+         panic: Panic::unwind,
+     },
++    TargetInfo {
++        triple: Triple::new_const("riscv64gc-unknown-managarm-mlibc"),
++        os: Some(Os::managarm),
++        abi: None,
++        arch: Arch::riscv64,
++        env: Some(Env::mlibc),
++        vendor: Some(Vendor::unknown),
++        families: Families::unix,
++        pointer_width: 64,
++        endian: Endian::little,
++        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
++        panic: Panic::unwind,
++    },
+     TargetInfo {
+         triple: Triple::new_const("riscv64gc-unknown-netbsd"),
+         os: Some(Os::netbsd),
+@@ -3549,6 +3575,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
+         has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+         panic: Panic::unwind,
+     },
++    TargetInfo {
++        triple: Triple::new_const("x86_64-unknown-managarm-mlibc"),
++        os: Some(Os::managarm),
++        abi: None,
++        arch: Arch::x86_64,
++        env: Some(Env::mlibc),
++        vendor: Some(Vendor::unknown),
++        families: Families::unix,
++        pointer_width: 64,
++        endian: Endian::little,
++        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
++        panic: Panic::unwind,
++    },
+     TargetInfo {
+         triple: Triple::new_const("x86_64-unknown-netbsd"),
+         os: Some(Os::netbsd),
+@@ -3881,6 +3920,7 @@ impl super::Os {
+     pub const linux: Os = Os::new_const("linux");
+     pub const lynxos178: Os = Os::new_const("lynxos178");
+     pub const macos: Os = Os::new_const("macos");
++    pub const managarm: Os = Os::new_const("managarm");
+     pub const netbsd: Os = Os::new_const("netbsd");
+     pub const nto: Os = Os::new_const("nto");
+     pub const nuttx: Os = Os::new_const("nuttx");
+@@ -3928,6 +3968,7 @@ impl super::Env {
+     pub const gnu: Env = Env::new_const("gnu");
+     pub const msvc: Env = Env::new_const("msvc");
+     pub const musl: Env = Env::new_const("musl");
++    pub const mlibc: Env = Env::new_const("mlibc");
+     pub const newlib: Env = Env::new_const("newlib");
+     pub const nto70: Env = Env::new_const("nto70");
+     pub const nto71: Env = Env::new_const("nto71");
+-- 
+2.51.0
+
