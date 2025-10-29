@@ -309,6 +309,7 @@ packages:
         arch: [x86_64]
         item: host-gobject-introspection
       - host-python
+      - host-pkg-config
     pkgs_required:
       - mlibc
       - at-spi2-core
@@ -339,7 +340,7 @@ packages:
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
-    revision: 4
+    revision: 5
     configure:
       - args:
         - 'meson'
@@ -347,14 +348,14 @@ packages:
         - '--native-file'
         - '@SOURCE_ROOT@/scripts/meson.native-file'
         - '--cross-file'
-        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@-goi.cross-file'
         - '--prefix=/usr'
         - '--libdir=lib'
         - '--buildtype=debugoptimized'
         - '-Dprint_backends=file'
         - !managarm::arch_ite
           arch: [x86_64]
-          then: '-Dintrospection=false' # Broke due to rtld changes
+          then: '-Dintrospection=true'
           else: '-Dintrospection=false'
         - '-Dx11_backend=true'
         - '-Dbroadway_backend=true'
