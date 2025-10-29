@@ -41,6 +41,40 @@ tools:
       - args: ['make', 'install']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/scripts/managarm.cmake', '@PREFIX@/share/cmake-4.0/Modules/Platform/']
 
+  - name: host-cargo-cbuild
+    architecture: noarch
+    labels: [aarch64, riscv64]
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/lu-zero/cargo-c.git'
+      tag: 'v0.10.16'
+      version: '0.10.16'
+    tools_required:
+      - tool: host-rust
+        recursive: true
+      - tool: system-gcc # GCC is used for linking
+        recursive: true
+      - host-cargo
+    sources_required:
+      # This cargo runs on the host, so we don't actually need any patches here. We just
+      # add the sources used by cargo so that the dependency resolver doesn't complain.
+      - rust-patched-libs
+    revision: 1
+    compile:
+      - args:
+        - 'cargo'
+        - 'install'
+        - '--target'
+        - 'x86_64-unknown-linux-gnu'
+        - '--target-dir'
+        - '@THIS_BUILD_DIR@'
+        - '--path'
+        - '@THIS_SOURCE_DIR@'
+        - '-j@PARALLELISM@'
+        - '--root'
+        - '@PREFIX@'
+        isolate_network: false
+
   - name: host-lxqt-build-tools
     architecture: noarch
     source:
