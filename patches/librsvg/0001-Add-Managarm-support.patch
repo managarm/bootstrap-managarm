@@ -1,0 +1,41 @@
+From 7007354ca7e1d0457ea71a2ed0382d118cf69082 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Wed, 29 Oct 2025 16:29:52 +0100
+Subject: [PATCH] Add Managarm support
+
+---
+ gdk-pixbuf-loader/meson.build | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/gdk-pixbuf-loader/meson.build b/gdk-pixbuf-loader/meson.build
+index 6fa10a6..e19ff42 100644
+--- a/gdk-pixbuf-loader/meson.build
++++ b/gdk-pixbuf-loader/meson.build
+@@ -36,9 +36,9 @@ pixbuf_thumbnailer = configure_file(
+   install_dir: get_option('datadir') / 'thumbnailers'
+ )
+ 
+-if meson.can_run_host_binaries()
+-  gdk_pixbuf_query_loaders = find_program(pixbuf_dep.get_variable(pkgconfig: 'gdk_pixbuf_query_loaders', default_value: 'gdk-pixbuf-query-loaders'))
+-endif
++# if meson.can_run_host_binaries()
++#   gdk_pixbuf_query_loaders = find_program(pixbuf_dep.get_variable(pkgconfig: 'gdk_pixbuf_query_loaders', default_value: 'gdk-pixbuf-query-loaders'))
++# endif
+ 
+ pixbufloader_svg_install_args = [
+   '--gdk-pixbuf-moduledir',
+@@ -48,9 +48,9 @@ pixbufloader_svg_install_args = [
+ ]
+ 
+ # Tell people to run gdk-pixbuf-query-loaders manually for cross builds
+-if not meson.can_run_host_binaries()
++# if not meson.can_run_host_binaries()
+   pixbufloader_svg_install_args += '--show-cross-message'
+-endif
++# endif
+ 
+ meson.add_install_script(
+   find_program('meson_install.py', native: true),
+-- 
+2.51.0
+
