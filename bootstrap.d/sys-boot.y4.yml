@@ -13,8 +13,8 @@ sources:
   - name: limine
     subdir: 'ports'
     git: 'https://codeberg.org/Limine/Limine.git'
-    tag: 'v9.6.7'
-    version: '9.6.7'
+    tag: 'v10.2.1'
+    version: 'v10.2.1'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.16
@@ -57,7 +57,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
