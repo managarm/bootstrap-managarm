@@ -609,8 +609,8 @@ def do_qemu(args):
             cpu_model = "cortex-a72"
     else:
         assert args.arch == "riscv64"
-        cpu_model = "rva22s64"
-        cpu_extras = ["sv48=on", "svadu=on", "svade=off"]
+        cpu_model = "rv64"
+        cpu_extras = ["sv48=on", "svadu=on"]
 
     if cpu_extras:
         qemu_args += ["-cpu", cpu_model + "," + ",".join(cpu_extras)]
