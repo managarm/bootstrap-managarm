@@ -13,7 +13,7 @@ packages:
     source:
       subdir: meta-sources
       version: '1.0'
-    revision: 14
+    revision: 15
     configure: []
     build:
       # Create initial directories
@@ -31,6 +31,7 @@ packages:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/bin']
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/lib']
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/sbin']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/opt']
       # xbps does not install empty directories, .keep files fixes this
       - args: ['touch', '@THIS_COLLECT_DIR@/etc/.keep']
       - args: ['touch', '@THIS_COLLECT_DIR@/run/.keep']
@@ -45,6 +46,7 @@ packages:
       - args: ['touch', '@THIS_COLLECT_DIR@/usr/sbin/.keep']
       - args: ['touch', '@THIS_COLLECT_DIR@/usr/lib/.keep']
       - args: ['touch', '@THIS_COLLECT_DIR@/usr/share/.keep']
+      - args: ['touch', '@THIS_COLLECT_DIR@/opt/.keep']
       # Install a default passwd, group and resolv.conf
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/passwd', '@THIS_COLLECT_DIR@/etc']
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/group', '@THIS_COLLECT_DIR@/etc']

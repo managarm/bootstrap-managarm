@@ -400,6 +400,7 @@ def generate_plan(arch, root_uuid, scriptdir):
         "boot/EFI/BOOT",
         "boot/grub",
         "boot/managarm",
+        "opt",
     ]:
         yield FsAction.CREATE_DIR, x
 
@@ -469,6 +470,7 @@ def generate_plan(arch, root_uuid, scriptdir):
     yield FsAction.RSYNC, "etc/", ['machine-id', '.updated', 'group']
     yield FsAction.RSYNC, "var/"
     yield FsAction.RSYNC, "home/"
+    yield FsAction.RSYNC, "opt/"
 
 
 def ensure_sysroot_links(sysroot):
