@@ -48,24 +48,16 @@ if os.path.exists(lockfile):
     print("cargo-inject-patches: workaround cargo bug by removing existing lockfile...")
     os.remove(lockfile)
 
-for lib, versions in patched_libs.items():
-    if not isinstance(versions, list):
-        versions = [versions]
+cmd = ["cargo", "update", "--manifest-path", manifest]
 
-    for version in versions:
-        cmd = [
-            "cargo",
-            "update",
-            "--manifest-path",
-            manifest,
-            "--package",
-            lib,
-            "--precise",
-            version,
-        ]
+for name, versions in patched_libs.items():
+    if isinstance(versions, str):
+        cmd.append(f"-p{name}@{versions}")
+    else:
+        for v in versions:
+            cmd.append(f"-p{name}@{v}")
 
-        output = subprocess.run(cmd, capture_output=True)
-        if "did not match any packages" in str(output.stderr):
-            print(f"cargo-inject-patches: Injecting {lib} v{version} failed, patch not used")
-        else:
-            print(f"cargo-inject-patches: Injected {lib} v{version}")
+output = subprocess.run(cmd, capture_output=True)
+for line in output.stderr.decode('utf-8').splitlines():
+    if line.startswith("Patch `"):
+        print(line)
