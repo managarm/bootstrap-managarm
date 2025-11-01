@@ -1,0 +1,25 @@
+From 9caa52e4b1ced6272f81b68f18af0f7cc0198fb5 Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Sun, 2 Nov 2025 00:28:46 +0100
+Subject: [PATCH] Add managarm support
+
+---
+ meson.build | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/meson.build b/meson.build
+index 5dd299b..357595e 100644
+--- a/meson.build
++++ b/meson.build
+@@ -1051,7 +1051,7 @@ if iconv.found()
+     }
+   '''
+ 
+-  if compiler.run(iconv_omits_bom_source,
++  if not meson.can_run_host_binaries() or compiler.run(iconv_omits_bom_source,
+     dependencies: iconv,
+     name: 'iconv omits BOM',
+   ).returncode() != 0
+-- 
+2.51.0
+
