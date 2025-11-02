@@ -441,12 +441,15 @@ packages:
       subdir: 'ports'
       git: 'https://gitlab.com/sortix/os-test.git'
       branch: 'main'
-      commit: '645f26525bd1a83b6929c6ad253ea3c64aa7fad9'
+      commit: '83c313f7d6ae9d04533156ded05304f835fbf23e'
+      version: '0.0.1+git20251102'
     tools_required:
       - system-gcc
     pkgs_required:
       - mlibc
       - make
+      - libiconv
+      - libintl
     revision: 1
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
@@ -456,10 +459,10 @@ packages:
         - '-j@PARALLELISM@'
         - 'OS=Managarm'
         - 'CC=@OPTION:arch-triple@-gcc'
+        - 'CC_FOR_BUILD=gcc'
+        - 'LDFLAGS_FOR_BUILD='
         - 'all'
       - args: |
           mkdir -p @THIS_COLLECT_DIR@/opt/os-test/
           cp -r ./ @THIS_COLLECT_DIR@/opt/os-test/
           rm @THIS_COLLECT_DIR@/opt/os-test/*.xbstrap
-          echo panic > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/process/limbo-getpgid.out
-          echo panic > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/process/limbo-setpgid.out

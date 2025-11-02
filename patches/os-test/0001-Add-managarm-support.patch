@@ -1,0 +1,41 @@
+From 91a821b4c6f1257df72bb4583ed038c40305d70d Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Sun, 2 Nov 2025 15:22:24 +0100
+Subject: [PATCH] Add managarm support
+
+---
+ misc/BSDmakefile.shared | 3 +++
+ misc/GNUmakefile.shared | 3 +++
+ 2 files changed, 6 insertions(+)
+
+diff --git a/misc/BSDmakefile.shared b/misc/BSDmakefile.shared
+index f8bf4c0..f8a9158 100644
+--- a/misc/BSDmakefile.shared
++++ b/misc/BSDmakefile.shared
+@@ -51,6 +51,9 @@ LDFLAGS += -lm
+ .if ${OS} == Linux
+   EXTRA_LDFLAGS += -lcrypt -latomic
+ .endif
++.if ${OS} == Managarm
++  EXTRA_LDFLAGS += -lintl -liconv
++.endif
+ .if ${OS} == Minix
+   EXTRA_LDFLAGS += -lintl
+   STD_C17 = -std=c11
+diff --git a/misc/GNUmakefile.shared b/misc/GNUmakefile.shared
+index e649c2a..b531bea 100644
+--- a/misc/GNUmakefile.shared
++++ b/misc/GNUmakefile.shared
+@@ -47,6 +47,9 @@ endif
+ ifeq ($(OS),Linux)
+   EXTRA_LDFLAGS += -lcrypt -latomic
+ endif
++ifeq ($(OS),Managarm)
++  EXTRA_LDFLAGS += -lintl -liconv
++endif
+ ifeq ($(OS),Minix)
+   EXTRA_LDFLAGS += -lintl
+   STD_C17 = -std=c11
+-- 
+2.51.0
+
