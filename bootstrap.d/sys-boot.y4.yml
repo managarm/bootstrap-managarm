@@ -14,7 +14,7 @@ sources:
     subdir: 'ports'
     git: 'https://codeberg.org/Limine/Limine.git'
     tag: 'v10.2.1'
-    version: 'v10.2.1'
+    version: '10.2.1'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.16
@@ -42,6 +42,7 @@ tools:
         - '--enable-bios-cd'
         - '--enable-bios-pxe'
         - 'LDFLAGS=-static'
+    revision: 2
     compile:
       - args: ['make', '-j@PARALLELISM@']
     install:
@@ -57,7 +58,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
