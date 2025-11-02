@@ -7,7 +7,7 @@ sources:
     subdir: 'ports'
     git: 'https://github.com/CLIUtils/CLI11.git'
     tag: 'v2.4.1'
-    version: 'v2.4.1'
+    version: '2.4.1'
 
   - name: uacpi
     subdir: 'ports'
