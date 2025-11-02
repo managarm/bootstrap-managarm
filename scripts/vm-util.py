@@ -377,10 +377,11 @@ class TftpServer:
             cs.close()
 
 class QemuRunner:
-    def __init__(self, *, tmpdir, logfile=None, ci_script=None):
+    def __init__(self, *, tmpdir, logfile=None, ci_script=None, ci_downloads=[]):
         self.tmpdir = tmpdir
         self.logfile = logfile
         self.ci_script = ci_script
+        self.ci_downloads = ci_downloads
         self.proc = None
         self.launch_time = None
         self.last_io_time = None
@@ -489,30 +490,55 @@ class QemuRunner:
         (reader, writer) = await asyncio.open_unix_connection(socket_path)
 
         exitcode = None
-        async for line in reader:
-            msg = json.loads(line)
-            m = msg["m"]
-            if m == "ready":
-                if self.logfile or debug:
-                    print("[vm-util] ci-boot is ready")
-                msg = {"m": "launch", "script": self.ci_script}
-                writer.write(json.dumps(msg).encode("utf8") + b"\n")
-                await writer.drain()
-            elif m in {"stdout", "stderr"}:
-                data = base64.b64decode(msg["data"]).rstrip()
-                if self.logfile or debug:
-                    print("[vm-util] ci-boot stdout: " + data.decode("utf8", errors="backslashreplace"))
-            elif m == "exit":
-                exitcode = msg["exitcode"]
-                self.proc.terminate()
-                if self.logfile or debug:
-                    print(f"[vm-util] ci-boot exited with code {exitcode}")
-            elif m == "error":
-                text = msg["text"]
-                self.proc.terminate()
-                raise RuntimeError(f"ci-boot error: {text}")
-            else:
-                print(f"[vm-util] ci-boot unknown packet: {m}")
+        with contextlib.ExitStack() as stack:
+            open_files = {}
+
+            async for line in reader:
+                contextlib.ExitStack
+
+                msg = json.loads(line)
+                m = msg["m"]
+                if m == "ready":
+                    if self.logfile or debug:
+                        print("[vm-util] ci-boot is ready")
+                    msg = {"m": "launch", "script": self.ci_script}
+                    writer.write(json.dumps(msg).encode("utf8") + b"\n")
+
+                    for file in self.ci_downloads:
+                        print(f"[vm-util] requesting artifact '{file}' after script")
+                        download = {"m": "download", "path": file}
+                        writer.write(json.dumps(download).encode("utf8") + b"\n")
+                    writer.write(json.dumps({"m": "done"}).encode("utf8") + b"\n")
+
+                    await writer.drain()
+                elif m == "download-data":
+                    path = msg["path"]
+                    if path in self.ci_downloads:
+                        f = open_files.get(path)
+                        if f is None:
+                            f = stack.enter_context(open(os.path.basename(path), "wb"))
+                            open_files[path] = f
+                            print(f"[vm-util] downloading artifact '{path}'")
+
+                        f.write(base64.b64decode(msg["data"]))
+                    else:
+                        print(f"[vm-util] unexpected download for file '{path}' supplied")
+                elif m in {"stdout", "stderr"}:
+                    data = base64.b64decode(msg["data"]).rstrip()
+                    if self.logfile or debug:
+                        print("[vm-util] ci-boot stdout: " + data.decode("utf8", errors="backslashreplace"))
+                elif m == "exit":
+                    exitcode = msg["exitcode"]
+                    if self.logfile or debug:
+                        print(f"[vm-util] ci-boot command exited with code {exitcode}")
+                elif m == "done":
+                    self.proc.terminate()
+                elif m == "error":
+                    text = msg["text"]
+                    self.proc.terminate()
+                    raise RuntimeError(f"ci-boot error: {text}")
+                else:
+                    print(f"[vm-util] ci-boot unknown packet: {m}")
 
         if exitcode is None:
             raise RuntimeError("ci-boot did not complete")
@@ -903,7 +929,7 @@ def do_qemu(args):
         logfile = None
         if args.logfile:
             logfile = ctx_stack.enter_context(open(args.logfile, "wb"))
-        runner = QemuRunner(tmpdir=tmpdir.name, logfile=logfile, ci_script=args.ci_script)
+        runner = QemuRunner(tmpdir=tmpdir.name, logfile=logfile, ci_script=args.ci_script, ci_downloads=args.ci_download)
         # Adjust for the fact that non-KVM runs are much slower.
         timeout_factor = 1 if have_kvm else 3
         if args.timeout is not None:
@@ -941,6 +967,7 @@ qemu_parser.add_argument("--ovmf-logs", action="store_true")
 qemu_parser.add_argument("--dmalog-int-pin", type=str, default="C")
 qemu_parser.add_argument("--ci-protocol", choices=["limine", "linux", "mb2", "uefi"])
 qemu_parser.add_argument("--ci-script", type=str)
+qemu_parser.add_argument("--ci-download", type=str, nargs="*", default=[])
 qemu_parser.add_argument("--qmp", action="store_true")
 qemu_parser.add_argument("--use-system-qemu", action="store_true")
 qemu_parser.add_argument("--logfile", type=str)
