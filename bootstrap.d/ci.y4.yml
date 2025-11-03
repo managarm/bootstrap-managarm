@@ -35,6 +35,9 @@ tasks:
       - ci-boot-uefi
       - ci-boot-uefi-limine
       - ci-boot-uefi-mb2
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: ci-os-test
     args:
       - '/usr/bin/true'
     # This and all other CI tasks should be marked as containerless
@@ -121,6 +124,23 @@ tasks:
       - '--uefi'
       - '--ci-script'
       - 'posix-tests'
+    environ: !ci-environ
+    workdir: '@BUILD_ROOT@'
+    containerless: true
+  - name: ci-os-test
+    tools_required: !ci-tools-required
+    tasks_required: !ci-tasks-required
+    args:
+      - !ci-common-args
+      - '--logfile=ci-os-test.txt'
+      - '--uefi'
+      - '--ci-script'
+      - |
+          cd /opt/os-test/
+          make test
+          tar -czf os-test-results.tar.gz out/managarm/
+      - '--ci-download'
+      - '/opt/os-test/os-test-results.tar.gz'
     environ: !ci-environ
     workdir: '@BUILD_ROOT@'
     containerless: true
