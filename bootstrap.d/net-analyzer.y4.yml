@@ -1,0 +1,31 @@
+packages:
+  - name: netcat
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: The OpenBSD network swiss army knife
+      description: This package provides the OpenBSD network swiss army knife.
+      spdx: 'BSD'
+      website: 'https://cvsweb.openbsd.org/src/usr.bin/nc/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['net-analyzer']
+    source:
+      subdir: 'ports'
+      git: 'https://salsa.debian.org/debian/netcat-openbsd.git'
+      tag: 'debian/1.234-1'
+      version: '1.234.1'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - libbsd
+    revision: 1
+    configure:
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+        environ:
+          CC: "@OPTION:arch-triple@-gcc"
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/bin']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/share/man/man1']
+      - args: ['cp', '@THIS_BUILD_DIR@/nc', '@THIS_COLLECT_DIR@/usr/bin/nc']
+      - args: ['cp', '-r', '@THIS_BUILD_DIR@/nc.1', '@THIS_COLLECT_DIR@/usr/share/man/man1']

@@ -1,0 +1,34 @@
+From f36fb5d012bdbd25cec34d54a62cfb52bf2fe787 Mon Sep 17 00:00:00 2001
+From: Aron Xu <aron@debian.org>
+Date: Mon, 13 Feb 2012 14:45:08 +0800
+Subject: [PATCH 04/17] Add ability to specify destination ports by name
+
+---
+ netcat.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/netcat.c b/netcat.c
+index 39cbfe1..9d4fa4f 100644
+--- a/netcat.c
++++ b/netcat.c
+@@ -1705,11 +1705,16 @@ strtoport(char *portstr, int udp)
+ void
+ build_ports(char *p)
+ {
++	struct servent *sv;
+ 	char *n;
+ 	int hi, lo, cp;
+ 	int x = 0;
+ 
+-	if (isdigit((unsigned char)*p) && (n = strchr(p, '-')) != NULL) {
++	sv = getservbyname(p, uflag ? "udp" : "tcp");
++	if (sv) {
++		if (asprintf(&portlist[0], "%d", ntohs(sv->s_port)) < 0)
++			err(1, "asprintf");
++	} else if (isdigit((unsigned char)*p) && (n = strchr(p, '-')) != NULL) {
+ 		*n = '\0';
+ 		n++;
+ 
+-- 
+2.51.0
+
