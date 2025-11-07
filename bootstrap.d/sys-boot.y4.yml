@@ -34,6 +34,7 @@ tools:
         - '@THIS_SOURCE_DIR@/configure'
         - '--prefix=@PREFIX@'
         - '--enable-all'
+        - '--disable-uefi-loongarch64'
         - 'LDFLAGS=-static'
     compile:
       - args: ['make', '-j@PARALLELISM@']
