@@ -13,8 +13,8 @@ sources:
   - name: limine
     subdir: 'ports'
     git: 'https://codeberg.org/Limine/Limine.git'
-    tag: 'v10.2.1'
-    version: '10.2.1'
+    tag: 'v10.3.0'
+    version: '10.3.0'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.16
@@ -33,16 +33,8 @@ tools:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--prefix=@PREFIX@'
-        - '--enable-uefi-ia32'
-        - '--enable-uefi-x86-64'
-        - '--enable-uefi-aarch64'
-        - '--enable-uefi-riscv64'
-        - '--enable-uefi-cd'
-        - '--enable-bios'
-        - '--enable-bios-cd'
-        - '--enable-bios-pxe'
+        - '--enable-all'
         - 'LDFLAGS=-static'
-    revision: 2
     compile:
       - args: ['make', '-j@PARALLELISM@']
     install:
@@ -58,7 +50,6 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
