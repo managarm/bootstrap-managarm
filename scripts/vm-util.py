@@ -1004,6 +1004,16 @@ def do_gdb(args):
         gdb_args += ["-ex", "set debug remote 1"]
         gdb_args += ["-ex", "set debug separate-debug-file 1"]
 
+    if args.kernel:
+        gdb_args += ["-ex", "python"]
+        gdb_args += ["-ex", "import glob, os, sys"]
+        gdb_args += ["-ex", "matches = glob.glob(\"system-root/usr/share/gcc*/python/\")"]
+        gdb_args += ["-ex", "if matches:"]
+        gdb_args += ["-ex", "\tsys.path.insert(0, matches[0])"]
+        gdb_args += ["-ex", "\timport libstdcxx.v6.printers as libstdcxx_printers"]
+        gdb_args += ["-ex", "\tlibstdcxx_printers.register_libstdcxx_printers(None)"]
+        gdb_args += ["-ex", "end"]
+
     if args.qemu:
         if args.socket:
             remote_string = args.socket
