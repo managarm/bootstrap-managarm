@@ -158,9 +158,7 @@ packages:
       # suppress clang's "x warnings generated" spam
       - '-extra-arg=-fno-caret-diagnostics'
       - '-source-filter=^(?!@SOURCE_ROOT@/managarm/subprojects/)'
-      - !managarm::arch_dep
-        arch: [x86_64]
-        item: '-warnings-as-errors=*'
+      - '-warnings-as-errors=*'
       - '-quiet'
       - '\.(h|c|cpp|hpp)$'
     - name: clang-tidy-autofix
@@ -241,9 +239,7 @@ packages:
       # suppress clang's "x warnings generated" spam
       - '-extra-arg=-fno-caret-diagnostics'
       - '-source-filter=^(?!@SOURCE_ROOT@/managarm/subprojects/)'
-      - !managarm::arch_dep
-        arch: [x86_64]
-        item: '-warnings-as-errors=*'
+      - '-warnings-as-errors=*'
       - '-quiet'
       - '\.(h|c|cpp|hpp)$'
 
@@ -327,9 +323,7 @@ packages:
       # suppress clang's "x warnings generated" spam
       - '-extra-arg=-fno-caret-diagnostics'
       - '-source-filter=^(?!@SOURCE_ROOT@/managarm/subprojects/)'
-      - !managarm::arch_dep
-        arch: [x86_64]
-        item: '-warnings-as-errors=*'
+      - '-warnings-as-errors=*'
       - '-quiet'
       - '\.(h|c|cpp|hpp)$'
     - name: clang-tidy-autofix
