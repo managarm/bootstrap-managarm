@@ -114,6 +114,44 @@ packages:
       - args: ['cp', '@THIS_BUILD_DIR@/services', '@THIS_COLLECT_DIR@/etc/']
       - args: ['cp', '@THIS_BUILD_DIR@/protocols', '@THIS_COLLECT_DIR@/etc/']
 
+  - name: iperf2
+    labels: [aarch64, riscv64]
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: iperf is a tool for active measurements of the maximum achievable bandwidth on IP networks.
+      description: iperf is a tool for active measurements of the maximum achievable bandwidth on IP networks. It supports tuning of various parameters related to timing, protocols, and buffers. For each test it reports the measured throughput / bitrate, loss, and other parameters.
+      spdx: 'BSD-3-Clause'
+      website: 'https://sourceforge.net/projects/iperf2/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['net-misc']
+    source:
+      subdir: ports
+      git: git://git.code.sf.net/p/iperf2/code
+      branch: 'master'
+      commit: '3f308ab9c30575f105c865e58f19ae183023012b'
+      version: '2.2.1'
+      tools_required:
+        - host-autoconf-v2.71
+        - host-automake-v1.16
+        - host-libtool
+      regenerate:
+        - args: ['autoreconf', '-fiv']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+    revision: 1
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: iperf3
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
