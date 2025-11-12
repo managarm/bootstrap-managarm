@@ -4,6 +4,7 @@ import:
 ---
 packages:
   - name: eog
+    stability_level: 'broken' # librsvg seems to be missing a patch?
     architecture: '@OPTION:arch@'
     metadata:
       summary: Eye of GNOME is an image viewer for the GNOME desktop
