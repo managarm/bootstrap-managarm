@@ -25,6 +25,20 @@ sources:
         environ:
           'NOCONFIGURE': 'yes'
 
+  - name: 'pkgconf'
+    subdir: 'ports'
+    git: 'https://github.com/pkgconf/pkgconf.git'
+    tag: 'pkgconf-2.5.1'
+    version: '2.5.1'
+    tools_required:
+      - host-autoconf-v2.71
+      - host-automake-v1.16
+      - host-libtool
+    regenerate:
+      - args: ['./autogen.sh']
+        environ:
+          'NOCONFIGURE': 'yes'
+
 tools:
   - name: host-cmake
     labels: [aarch64, riscv64]
@@ -40,6 +54,40 @@ tools:
     install:
       - args: ['make', 'install']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/scripts/managarm.cmake', '@PREFIX@/share/cmake-4.0/Modules/Platform/']
+
+  - name: host-cargo-cbuild
+    architecture: noarch
+    labels: [aarch64, riscv64]
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/lu-zero/cargo-c.git'
+      tag: 'v0.10.16'
+      version: '0.10.16'
+    tools_required:
+      - tool: host-rust
+        recursive: true
+      - tool: system-gcc # GCC is used for linking
+        recursive: true
+      - host-cargo
+    sources_required:
+      # This cargo runs on the host, so we don't actually need any patches here. We just
+      # add the sources used by cargo so that the dependency resolver doesn't complain.
+      - rust-patched-libs
+    revision: 1
+    compile:
+      - args:
+        - 'cargo'
+        - 'install'
+        - '--target'
+        - 'x86_64-unknown-linux-gnu'
+        - '--target-dir'
+        - '@THIS_BUILD_DIR@'
+        - '--path'
+        - '@THIS_SOURCE_DIR@'
+        - '-j@PARALLELISM@'
+        - '--root'
+        - '@PREFIX@'
+        isolate_network: false
 
   - name: host-lxqt-build-tools
     architecture: noarch
@@ -93,6 +141,26 @@ tools:
       - args: ['make', '-j@PARALLELISM@']
     install:
       - args: ['make', 'install']
+
+  # We could run an external pkg-config; however, we need the aclocal files.
+  # The easiest way to ensure that they are available is to just install pkg-config.
+  - name: host-pkgconf
+    labels: [aarch64, riscv64]
+    architecture: noarch
+    exports_aclocal: true
+    from_source: pkgconf
+    revision: 1
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--prefix=@PREFIX@'
+        - '--with-system-includedir=@SYSROOT_DIR@/usr/include'
+        - '--with-system-libdir=@SYSROOT_DIR@/usr/lib'
+    compile:
+      - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'install']
+      - args: ['ln', '-svf', pkgconf, '@PREFIX@/bin/pkg-config']
 
   - name: host-tzdb
     stability_level: 'broken' # XXX xbstrap does not handle tar.lz?

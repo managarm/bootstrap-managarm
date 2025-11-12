@@ -1,0 +1,26 @@
+From c60539c9fa52e28e7506a1db4a8af1c2877d8fca Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Wed, 12 Nov 2025 21:05:16 +0100
+Subject: [PATCH] Add Managarm support
+
+---
+ src/closures.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/src/closures.c b/src/closures.c
+index 02cf78f..2555010 100644
+--- a/src/closures.c
++++ b/src/closures.c
+@@ -141,6 +141,9 @@ ffi_tramp_is_present (__attribute__((unused)) void *ptr)
+    executable memory. */
+ #  define FFI_MMAP_EXEC_WRIT 1
+ # endif
++#if defined(__managarm__)
++#  define FFI_MMAP_EXEC_WRIT 1
++#endif
+ #endif
+ 
+ #if FFI_MMAP_EXEC_WRIT && defined(__linux__) && !defined(__ANDROID__)
+-- 
+2.51.0
+

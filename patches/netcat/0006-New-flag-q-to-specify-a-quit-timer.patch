@@ -1,0 +1,165 @@
+From 2f72272fdf7e29d80edc7e431e716ba02c3b9bfc Mon Sep 17 00:00:00 2001
+From: Aron Xu <aron@debian.org>
+Date: Mon, 13 Feb 2012 15:16:04 +0800
+Subject: [PATCH 06/17] New flag '-q' to specify a quit timer
+
+---
+ nc.1     | 10 ++++++++++
+ netcat.c | 59 +++++++++++++++++++++++++++++++++++++++++++++-----------
+ 2 files changed, 58 insertions(+), 11 deletions(-)
+
+diff --git a/nc.1 b/nc.1
+index 5c12630..1724081 100644
+--- a/nc.1
++++ b/nc.1
+@@ -41,6 +41,7 @@
+ .Op Fl O Ar length
+ .Op Fl P Ar proxy_username
+ .Op Fl p Ar source_port
++.Op Fl q Ar seconds
+ .Op Fl s Ar sourceaddr
+ .Op Fl T Ar keyword
+ .Op Fl V Ar rtable
+@@ -167,6 +168,15 @@ Proxy authentication is only supported for HTTP CONNECT proxies at present.
+ Specify the source port
+ .Nm
+ should use, subject to privilege restrictions and availability.
++.It Fl q Ar seconds
++after EOF on stdin, wait the specified number of
++.Ar seconds
++and then quit. If
++.Ar seconds
++is negative, wait forever (default).  Specifying a non-negative
++.Ar seconds
++implies
++.Fl N .
+ .It Fl r
+ Choose source and/or destination ports randomly
+ instead of sequentially within a range or in the order that the system
+diff --git a/netcat.c b/netcat.c
+index 7b38f40..bda96ce 100644
+--- a/netcat.c
++++ b/netcat.c
+@@ -139,6 +139,7 @@ int	Nflag;					/* shutdown() network socket */
+ int	nflag;					/* Don't do name look up */
+ char   *Pflag;					/* Proxy username */
+ char   *pflag;					/* Localport flag */
++int    qflag = -1;				/* Quit after some secs */
+ int	rflag;					/* Random ports flag */
+ char   *sflag;					/* Source Address */
+ int	tflag;					/* Telnet Emulation */
+@@ -224,6 +225,7 @@ ssize_t fillbuf(int, unsigned char *, size_t *);
+ #endif
+ 
+ static int connect_with_timeout(int, const struct sockaddr *, socklen_t, int);
++static void quit(int sig);
+ 
+ int
+ main(int argc, char *argv[])
+@@ -256,9 +258,9 @@ main(int argc, char *argv[])
+ 
+ 	while ((ch = getopt(argc, argv,
+ #ifdef HAVE_TLS
+-	    "46C:cDde:FH:hI:i:K:klM:m:NnO:o:P:p:R:rSs:T:tUuV:vW:w:X:x:Z:z"))
++	    "46C:cDde:FH:hI:i:K:klM:m:NnO:o:P:p:q:R:rSs:T:tUuV:vW:w:X:x:Z:z"))
+ #else
+-	    "46CDdFhI:i:klM:m:NnO:P:p:rSs:T:tUuV:vW:w:X:x:z"))
++	    "46CDdFhI:i:klM:m:NnO:P:p:q:rSs:T:tUuV:vW:w:X:x:z"))
+ #endif
+ 	    != -1) {
+ 		switch (ch) {
+@@ -352,6 +354,13 @@ main(int argc, char *argv[])
+ 		case 'p':
+ 			pflag = optarg;
+ 			break;
++		case 'q':
++			qflag = strtonum(optarg, INT_MIN, INT_MAX, &errstr);
++			if (errstr)
++				errx(1, "quit timer %s: %s", errstr, optarg);
++			if (qflag >= 0)
++				Nflag = 1;
++			break;
+ #ifdef HAVE_TLS
+ 		case 'R':
+ 			tls_cachanged = 1;
+@@ -1340,15 +1349,27 @@ readwrite(int net_fd)
+ 	while (1) {
+ 		/* both inputs are gone, buffers are empty, we are done */
+ 		if (pfd[POLL_STDIN].fd == -1 && pfd[POLL_NETIN].fd == -1 &&
+-		    stdinbufpos == 0 && netinbufpos == 0)
+-			return;
++		    stdinbufpos == 0 && netinbufpos == 0) {
++			if (qflag <= 0)
++				return;
++			goto delay_exit;
++		}
+ 		/* both outputs are gone, we can't continue */
+-		if (pfd[POLL_NETOUT].fd == -1 && pfd[POLL_STDOUT].fd == -1)
+-			return;
++		if (pfd[POLL_NETOUT].fd == -1 && pfd[POLL_STDOUT].fd == -1) {
++			if (qflag <= 0)
++				return;
++			goto delay_exit;
++		}
+ 		/* listen and net in gone, queues empty, done */
+ 		if (lflag && pfd[POLL_NETIN].fd == -1 &&
+-		    stdinbufpos == 0 && netinbufpos == 0)
+-			return;
++		    stdinbufpos == 0 && netinbufpos == 0) {
++			if (qflag <= 0)
++				return;
++delay_exit:
++			close(net_fd);
++			signal(SIGALRM, quit);
++			alarm(qflag);
++		}
+ 
+ 		/* poll */
+ 		num_fds = poll(pfd, 4, timeout);
+@@ -1505,6 +1526,13 @@ readwrite(int net_fd)
+ 			if (pfd[POLL_NETOUT].fd != -1 && Nflag)
+ 				shutdown(pfd[POLL_NETOUT].fd, SHUT_WR);
+ 			pfd[POLL_NETOUT].fd = -1;
++			/* #817050: handle UDP sockets and kflag */
++			if ((lflag || uflag) && pfd[POLL_NETIN].fd != -1 &&
++			    qflag >= 0 && netinbufpos == 0) {
++				shutdown(pfd[POLL_NETIN].fd, SHUT_RD);
++				pfd[POLL_NETIN].fd = -1;
++				kflag = 0;
++			}
+ 		}
+ 		/* net in gone and queue empty? */
+ 		if (pfd[POLL_NETIN].fd == -1 && netinbufpos == 0) {
+@@ -2116,6 +2144,7 @@ help(void)
+ 	\t-O length	TCP send buffer length\n\
+ 	\t-P proxyuser\tUsername for proxy authentication\n\
+ 	\t-p port\t	Specify local port for remote connects\n\
++	\t-q secs\t	quit after EOF on stdin and delay of secs\n\
+ 	\t-r		Randomize remote ports\n\
+ 	\t-S		Enable the TCP MD5 signature option\n\
+ 	\t-s sourceaddr	Local source address\n\
+@@ -2140,10 +2169,18 @@ usage(int ret)
+ 	fprintf(stderr,
+ 	    "usage: nc [-46CDdFhklNnrStUuvz] [-I length] [-i interval] [-M ttl]\n"
+ 	    "\t  [-m minttl] [-O length] [-P proxy_username] [-p source_port]\n"
+-	    "\t  [-s sourceaddr] [-T keyword] [-V rtable] [-W recvlimit] "
+-	    "[-w timeout]\n"
+-	    "\t  [-X proxy_protocol] [-x proxy_address[:port]]\n"
++	    "\t  [-q seconds] [-s sourceaddr] [-T keyword] [-V rtable] [-W recvlimit]\n"
++	    "\t  [-w timeout] [-X proxy_protocol] [-x proxy_address[:port]]\n"
+ 	    "\t  [destination] [port]\n");
+ 	if (ret)
+ 		exit(1);
+ }
++
++/*
++ * quit()
++ * handler for a "-q" timeout (exit 0 instead of 1)
++ */
++static void quit(__attribute__((unused)) int sig)
++{
++	exit(0);
++}
+-- 
+2.51.0
+

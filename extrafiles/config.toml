@@ -47,3 +47,4 @@ ring = { path = "@SOURCE_ROOT@/ports/rust-ring" }
 zbus = { path = "@SOURCE_ROOT@/ports/rust-zbus/zbus" }
 zvariant = { path = "@SOURCE_ROOT@/ports/rust-zbus/zvariant" }
 target-lexicon = { path = "@SOURCE_ROOT@/ports/rust-target-lexicon" }
+cfg-expr = { path = "@SOURCE_ROOT@/ports/rust-cfg-expr" }

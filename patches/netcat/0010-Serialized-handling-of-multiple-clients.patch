@@ -1,0 +1,55 @@
+From d2f8f9b06dbab9623c6a2597cf7b22f78536c248 Mon Sep 17 00:00:00 2001
+From: Aron Xu <aron@debian.org>
+Date: Tue, 14 Feb 2012 23:02:00 +0800
+Subject: [PATCH 10/17] Serialized handling of multiple clients
+
+---
+ netcat.c | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
+
+diff --git a/netcat.c b/netcat.c
+index 2768ef8..af3559e 100644
+--- a/netcat.c
++++ b/netcat.c
+@@ -718,7 +718,10 @@ main(int argc, char *argv[])
+ 				s = unix_bind(host, 0);
+ 			else
+ 				s = unix_listen(host);
+-		}
++		} else
++			s = local_listen(host, uport, hints);
++		if (s < 0)
++			err(1, NULL);
+ 
+ #ifdef HAVE_TLS
+ 		if (usetls) {
+@@ -732,13 +735,6 @@ main(int argc, char *argv[])
+ #endif
+ 		/* Allow only one connection at a time, but stay alive. */
+ 		for (;;) {
+-			if (family != AF_UNIX) {
+-				if (s != -1)
+-					close(s);
+-				s = local_listen(host, uport, hints);
+-			}
+-			if (s == -1)
+-				err(1, NULL);
+ 			if (uflag && kflag) {
+ 				/*
+ 				 * For UDP and -k, don't connect the socket,
+@@ -812,8 +808,11 @@ main(int argc, char *argv[])
+ #endif
+ 			}
+ 
+-			if (!kflag)
++			if (!kflag) {
++				if (s != -1)
++					close(s);
+ 				break;
++			}
+ 		}
+ 	} else if (family == AF_UNIX) {
+ 		ret = 0;
+-- 
+2.51.0
+

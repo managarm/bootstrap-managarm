@@ -1,0 +1,189 @@
+From a5e2c7a7c99234c4b13bba8a324386f2c2e842c4 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Wed, 5 Nov 2025 23:50:39 +0100
+Subject: [PATCH] Add Managarm support
+
+---
+ configure.ac           | 53 ++++++++++++++++++++++++++++++++++++++++++
+ src/getentropy.c       |  2 +-
+ src/getentropy_linux.c | 14 ++++++-----
+ src/getpeereid.c       |  2 +-
+ src/progname.c         |  4 ++++
+ 5 files changed, 67 insertions(+), 8 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 2a15d72..6821338 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -148,6 +148,59 @@ AS_CASE([$host_os],
+     abi_vis=yes
+     abi_wcsl=yes
+   ],
++  [*mlibc*], [
++    api_time_macros=no
++
++    abi_accmode=yes
++    abi_arc4random=yes
++    abi_arc4random_stir=no
++    abi_asprintf=no
++    abi_bsd_getopt=yes
++    abi_closefrom=no
++    abi_err=yes
++    abi_errc=yes
++    abi_expand_number=yes
++    abi_explicit_bzero=yes
++    abi_fgetln=yes
++    abi_flopen=yes
++    abi_fmtcheck=no
++    abi_fpurge=yes
++    abi_freezero=yes
++    abi_funopen=yes
++    abi_getbsize=yes
++    abi_getpeereid=yes
++    abi_humanize_number=yes
++    abi_id_from_name=yes
++    # DROP: On glibc.
++    abi_inet_net_pton=no
++    # DROP: On libmd.
++    abi_md5=no
++    abi_name_from_id=yes
++    abi_nlist=yes
++    abi_pidfile=yes
++    abi_proctitle=yes
++    abi_progname=yes
++    abi_readpassphrase=yes
++    # DROP: On glibc >= 2.26.
++    #abi_reallocarray=no
++    abi_reallocarray=yes
++    abi_reallocf=yes
++    abi_recallocarray=yes
++    abi_stringlist=yes
++    abi_sort=yes
++    # DROP: On glibc >= 2.38.
++    #abi_strl=no
++    abi_strl=yes
++    abi_strmode=yes
++    abi_strnstr=yes
++    abi_strtonum=yes
++    abi_strtox=yes
++    abi_timeconv=yes
++    # DROP: On libmd.
++    abi_transparent_libmd=no
++    abi_vis=yes
++    abi_wcsl=yes
++  ],
+   [*-musl*], [
+     api_time_macros=no
+ 
+diff --git a/src/getentropy.c b/src/getentropy.c
+index b4b3fe3..317c02f 100644
+--- a/src/getentropy.c
++++ b/src/getentropy.c
+@@ -24,7 +24,7 @@
+  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  */
+ 
+-#if defined(__linux__)
++#if defined(__linux__) || defined(__managarm__)
+ #include "getentropy_linux.c"
+ #elif defined(__GNU__)
+ #include "getentropy_hurd.c"
+diff --git a/src/getentropy_linux.c b/src/getentropy_linux.c
+index 9cb3368..9e5f3ee 100644
+--- a/src/getentropy_linux.c
++++ b/src/getentropy_linux.c
+@@ -26,10 +26,12 @@
+ #include <sys/param.h>
+ #include <sys/ioctl.h>
+ #include <sys/resource.h>
++#ifndef __managarm__
+ #include <sys/syscall.h>
+ #ifdef SYS__sysctl
+ #include <linux/sysctl.h>
+ #endif
++#endif
+ #include <sys/statvfs.h>
+ #include <sys/socket.h>
+ #include <sys/mount.h>
+@@ -75,11 +77,11 @@
+ int	getentropy(void *buf, size_t len);
+ 
+ static int gotdata(char *buf, size_t len);
+-#if defined(SYS_getrandom) && defined(GRND_NONBLOCK)
++#if defined(SYS_getrandom) && defined(GRND_NONBLOCK) && !defined(__managarm__)
+ static int getentropy_getrandom(void *buf, size_t len);
+ #endif
+ static int getentropy_urandom(void *buf, size_t len);
+-#ifdef SYS__sysctl
++#if defined(SYS__sysctl) && !defined(__managarm__)
+ static int getentropy_sysctl(void *buf, size_t len);
+ #endif
+ static int getentropy_fallback(void *buf, size_t len);
+@@ -95,7 +97,7 @@ getentropy(void *buf, size_t len)
+ 		return (-1);
+ 	}
+ 
+-#if defined(SYS_getrandom) && defined(GRND_NONBLOCK)
++#if defined(SYS_getrandom) && defined(GRND_NONBLOCK) && !defined(__managarm__)
+ 	/*
+ 	 * Try descriptor-less getrandom(), in non-blocking mode.
+ 	 *
+@@ -119,7 +121,7 @@ getentropy(void *buf, size_t len)
+ 	if (ret != -1)
+ 		return (ret);
+ 
+-#ifdef SYS__sysctl
++#if defined(SYS__sysctl) && !defined(__managarm__)
+ 	/*
+ 	 * Try to use sysctl CTL_KERN, KERN_RANDOM, RANDOM_UUID.
+ 	 * sysctl is a failsafe API, so it guarantees a result.  This
+@@ -194,7 +196,7 @@ gotdata(char *buf, size_t len)
+ 	return (0);
+ }
+ 
+-#if defined(SYS_getrandom) && defined(GRND_NONBLOCK)
++#if defined(SYS_getrandom) && defined(GRND_NONBLOCK) && !defined(__managarm__)
+ static int
+ getentropy_getrandom(void *buf, size_t len)
+ {
+@@ -271,7 +273,7 @@ nodevrandom:
+ 	return (-1);
+ }
+ 
+-#ifdef SYS__sysctl
++#if defined(SYS__sysctl) && !defined(__managarm__)
+ static int
+ getentropy_sysctl(void *buf, size_t len)
+ {
+diff --git a/src/getpeereid.c b/src/getpeereid.c
+index 193f366..5ae6574 100644
+--- a/src/getpeereid.c
++++ b/src/getpeereid.c
+@@ -40,7 +40,7 @@ int
+ getpeereid(int s, uid_t *euid, gid_t *egid)
+ {
+ /* XXX: This should be autodetected at build time instead. */
+-#if defined(__linux__)
++#if defined(__linux__) || defined(__managarm__)
+ 	struct ucred cred;
+ #elif defined(__OpenBSD__)
+ 	struct sockpeercred cred;
+diff --git a/src/progname.c b/src/progname.c
+index 83e8652..b35412b 100644
+--- a/src/progname.c
++++ b/src/progname.c
+@@ -50,7 +50,11 @@
+ #endif
+ 
+ #ifdef HAVE___PROGNAME
++#if defined(__mlibc__)
++extern char *__progname;
++#else
+ extern const char *__progname;
++#endif
+ #else
+ static const char *__progname = NULL;
+ #endif
+-- 
+2.51.0
+
