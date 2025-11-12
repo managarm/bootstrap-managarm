@@ -189,6 +189,7 @@ packages:
           - args: 'glib-compile-schemas /usr/share/glib-2.0/schemas'
 
   - name: librsvg
+    stability_level: 'broken' # librsvg seems to be missing a patch?
     architecture: '@OPTION:arch@'
     metadata:
       summary: Scalable Vector Graphics (SVG) rendering library
@@ -291,6 +292,7 @@ packages:
           GI_GIR_PATH: '@SYSROOT_DIR@/usr/share/gir-1.0'
 
   - name: gdk-pixbuf-svg
+    stability_level: 'broken' # librsvg seems to be missing a patch?
     architecture: '@OPTION:arch@'
     metadata:
       summary: Scalable Vector Graphics (SVG) rendering library - pixbuf loader
