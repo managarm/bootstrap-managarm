@@ -384,7 +384,7 @@ packages:
       - zlib
       - zstd
       - sqlite
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
