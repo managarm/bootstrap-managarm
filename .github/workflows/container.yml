@@ -6,7 +6,7 @@ jobs:
     build-rootfs:
         name: Build cbuildrt rootfs
         runs-on: ubuntu-24.04
-        container: fedora:40
+        container: fedora:42
         steps:
           - name: Install prerequisites
             run: |

@@ -1,4 +1,4 @@
-From 76291ee1c8ec5d1b0a72abeaba22a19a57b88c71 Mon Sep 17 00:00:00 2001
+From d765f778e34dbeeb287624d7ff20ead211dc90fd Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Wed, 8 Oct 2025 21:35:17 +0200
 Subject: [PATCH] Add Managarm support
@@ -10,18 +10,18 @@ Subject: [PATCH] Add Managarm support
  3 files changed, 19 insertions(+), 6 deletions(-)
 
 diff --git a/Modules/_hacl/Lib_Memzero0.c b/Modules/_hacl/Lib_Memzero0.c
-index f94e0e2..84ecabc 100644
+index f94e0e2..3260e6c 100644
 --- a/Modules/_hacl/Lib_Memzero0.c
 +++ b/Modules/_hacl/Lib_Memzero0.c
-@@ -31,7 +31,7 @@
+@@ -26,7 +26,7 @@
+ #  endif
+ #endif
+ 
+-#if (defined(__APPLE__) && defined(__MACH__)) || defined(__linux__) || defined(__OpenBSD__)
++#if (defined(__APPLE__) && defined(__MACH__)) || defined(__linux__) || defined(__OpenBSD__) || defined(__mlibc__)
+ #define __STDC_WANT_LIB_EXT1__ 1
  #include <string.h>
  #endif
- 
--#if defined(__FreeBSD__) || defined(__NetBSD__)
-+#if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__mlibc__)
- #include <strings.h>
- #endif
- 
 @@ -57,7 +57,7 @@ void Lib_Memzero0_memzero0(void *dst, uint64_t len) {
      SecureZeroMemory(dst, len_);
    #elif defined(__APPLE__) && defined(__MACH__) && defined(APPLE_HAS_MEMSET_S)
@@ -117,5 +117,5 @@ index af7a962..ecc0e49 100644
  fi
  AC_MSG_RESULT([$LINKFORSHARED])
 -- 
-2.51.0
+2.51.1
 

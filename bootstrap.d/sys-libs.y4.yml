@@ -653,7 +653,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 13
+    revision: 14
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
