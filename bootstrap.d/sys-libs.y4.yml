@@ -647,13 +647,13 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/ThomasDickey/ncurses-snapshots.git'
-      tag: 'v6_2'
-      version: '6.2'
+      tag: 'v6_5'
+      version: '6.5'
     tools_required:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 14
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
