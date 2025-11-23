@@ -1,0 +1,43 @@
+From 42c9e57d233ee11d8c809b162c03058e926a7c5f Mon Sep 17 00:00:00 2001
+From: no92 <leo@managarm.org>
+Date: Tue, 9 Feb 2021 22:45:04 +0100
+Subject: [PATCH] Add mlibc support
+
+---
+ configure | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/configure b/configure
+index 488d93f..af80abe 100755
+--- a/configure
++++ b/configure
+@@ -6801,7 +6801,7 @@ echo "${ECHO_T}$cf_cv_ldflags_search_paths_first" >&6
+ 		fi
+ 		cf_cv_rm_so_locs=yes
+ 		;;
+-	(linux*|gnu*|k*bsd*-gnu)
++	(linux*|gnu*|k*bsd*-gnu|*mlibc)
+ 		if test "$DFT_LWR_MODEL" = "shared" && test -n "$LD_RPATH_OPT" ; then
+ 			LOCAL_LDFLAGS="${LD_RPATH_OPT}\$(LOCAL_LIBDIR)"
+ 			LOCAL_LDFLAGS2="$LOCAL_LDFLAGS"
+@@ -10418,7 +10418,7 @@ case "$host_os" in
+ 	cf_xopen_source="-D_SGI_SOURCE"
+ 	cf_XOPEN_SOURCE=
+ 	;;
+-(linux*gnu|linux*gnuabi64|linux*gnuabin32|linux*gnueabi|linux*gnueabihf|linux*gnux32|uclinux*|gnu*|mint*|k*bsd*-gnu|cygwin|msys|mingw*|linux*uclibc)
++(linux*gnu|linux*gnuabi64|linux*gnuabin32|linux*gnueabi|linux*gnueabihf|linux*gnux32|uclinux*|gnu*|mint*|k*bsd*-gnu|cygwin|msys|mingw*|linux*uclibc|*mlibc)
+ 
+ cf_gnu_xopen_source=$cf_XOPEN_SOURCE
+ 
+@@ -10440,6 +10440,8 @@ main (void)
+ 		return 0;
+ 	#elif __NEWLIB__ > 0 && __NEWLIB_MINOR__ >= 0
+ 		return 0;
++	#elif __mlibc__ > 0
++		return 0;
+ 	#else
+ 	#	error not GNU C library
+ 	#endif
+-- 
+2.51.1
+
