@@ -70,6 +70,44 @@ packages:
       - args: ['ln', '-sf', 'bzgrep', '@THIS_COLLECT_DIR@/usr/bin/bzfgrep']
       - args: ['ln', '-sf', 'bzmore', '@THIS_COLLECT_DIR@/usr/bin/bzless']
 
+  - name: bzip3
+    labels: [aarch64, riscv64]
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: A better and stronger spiritual successor to BZip2
+      description: This package provides a better, faster and stronger spiritual successor to BZip2. Features higher compression ratios and better performance thanks to a order-0 context mixing entropy coder, a fast Burrows-Wheeler transform code making use of suffix arrays and a RLE with Lempel Ziv+Prediction pass based on LZ77-style string matching and PPM-style context modeling. Like its ancestor, BZip3 excels at compressing text or code.
+      spdx: 'LGPL-3.0-or-later'
+      website: 'https://github.com/iczelia/bzip3'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['app-arch']
+    source:
+      subdir: ports
+      git: 'https://github.com/iczelia/bzip3.git'
+      tag: '1.5.3'
+      version: '1.5.3'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['./bootstrap.sh']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+    revision: 1
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: cpio
     architecture: '@OPTION:arch@'
     metadata:
