@@ -96,12 +96,13 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
+        - '--disable-arch-native'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
