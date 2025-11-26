@@ -509,8 +509,8 @@ packages:
       subdir: 'ports'
       git: 'https://gitlab.com/sortix/os-test.git'
       branch: 'main'
-      commit: '83c313f7d6ae9d04533156ded05304f835fbf23e'
-      version: '0.0.1+git20251102'
+      commit: '7e2a6506230a0a7cd1ed77a3f8024e61893b8291'
+      version: '0.0.1+git20251125'
     tools_required:
       - system-gcc
     pkgs_required:
