@@ -6,8 +6,8 @@ sources:
   - name: cli11
     subdir: 'ports'
     git: 'https://github.com/CLIUtils/CLI11.git'
-    tag: 'v2.4.1'
-    version: '2.4.1'
+    tag: 'v2.6.1'
+    version: '2.6.1'
 
   - name: uacpi
     subdir: 'ports'
@@ -26,14 +26,12 @@ sources:
       - uacpi
       - lil
       - bragi
-      - cli11
     regenerate:
       - args: ['mkdir', '-p', '@THIS_SOURCE_DIR@/subprojects']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cralgo', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/uacpi', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/lil', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/bragi', '@THIS_SOURCE_DIR@/subprojects/']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cli11', '@THIS_SOURCE_DIR@/subprojects/']
 
 
 tools:
@@ -44,6 +42,7 @@ tools:
     tools_required:
       - host-frigg
       - host-bragi
+      - host-cli11
       - virtual: pkgconfig-for-host
         program_name: host-pkg-config
     revision: 1
@@ -274,6 +273,7 @@ packages:
       - libarch
       - libdrm
       - libsmarter
+      - cli11
       - !managarm::arch_dep
         arch: [x86_64]
         item: freebsd-e1000

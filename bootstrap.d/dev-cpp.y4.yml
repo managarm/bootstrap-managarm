@@ -1,4 +1,67 @@
+tools:
+  - name: host-cli11
+    labels: [aarch64, riscv64]
+    architecture: '@OPTION:arch@'
+    from_source: cli11
+    tools_required:
+      - host-pkg-config
+      - virtual: pkgconfig-for-host
+        program_name: host-pkg-config
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--prefix=@PREFIX@'
+        - '--includedir=share/cli11/include'
+        - '-Ddefault_library=static'
+        - '-Dprecompiled=true'
+        - '@THIS_SOURCE_DIR@'
+        isolate_network: false
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
+        quiet: true
+
 packages:
+  - name: cli11
+    labels: [aarch64, riscv64]
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: C++11 command line parser.
+      description: CLI11 is a command line parser for C++11 and beyond that provides a rich feature set with a simple and intuitive interface.
+      website: 'https://cliutils.github.io/CLI11/book/'
+      spdx: 'BSD-3-Clause'
+      maintainer: "no92 <leo@managarm.org>"
+      categories: ['dev-cpp']
+    from_source: cli11
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--includedir=share/cli11/include'
+        - '-Ddefault_library=static'
+        - '-Dprecompiled=true'
+        - '@THIS_SOURCE_DIR@'
+        isolate_network: false
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+
   - name: gflags
     architecture: '@OPTION:arch@'
     metadata:
