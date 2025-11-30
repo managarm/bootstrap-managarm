@@ -1503,7 +1503,7 @@ packages:
       - openssl
       - zlib
       - lz4
-    revision: 5
+    revision: 6
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:

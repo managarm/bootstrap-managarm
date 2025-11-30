@@ -1,7 +1,7 @@
 From 50e1913a4b2e5da378f631ab1e848c1986babc16 Mon Sep 17 00:00:00 2001
 From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
 Date: Sat, 9 May 2020 18:46:34 +0200
-Subject: [PATCH 1/4] Managarm-specific changes
+Subject: [PATCH 1/5] Managarm-specific changes
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
@@ -135,5 +135,5 @@ index f7b9142..b068464 100644
  #include <unistd.h>
  
 -- 
-2.39.5
+2.51.1
 

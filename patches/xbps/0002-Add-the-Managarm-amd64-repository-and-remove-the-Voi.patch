@@ -1,7 +1,7 @@
 From 76f5f7f66c9e9ab497df84bb5ee1eed3eb940407 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Thu, 15 Jul 2021 02:10:26 +0200
-Subject: [PATCH 2/4] Add the Managarm amd64 repository and remove the Void
+Subject: [PATCH 2/5] Add the Managarm amd64 repository and remove the Void
  Linux repository
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
@@ -57,5 +57,5 @@ index 9890a84..225bbe5 100644
 -repository=https://a-hel-fi.m.voidlinux.org/current
 +repository=https://repos.managarm.org/repos/amd64/
 -- 
-2.39.5
+2.51.1
 
