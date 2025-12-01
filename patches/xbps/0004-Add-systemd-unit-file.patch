@@ -1,7 +1,7 @@
-From 826a52b5db2905fc0b46f532d354d3b916abdd74 Mon Sep 17 00:00:00 2001
+From 5693f1455bc126f55ad226f6e2bd3d2c5e589597 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Mon, 17 Mar 2025 20:34:07 +0100
-Subject: [PATCH 4/4] Add systemd unit file
+Subject: [PATCH 4/5] Add systemd unit file
 
 ---
  xbps.service | 18 ++++++++++++++++++
@@ -33,5 +33,5 @@ index 0000000..e1468cb
 +[Install]
 +WantedBy=sysinit.target
 -- 
-2.39.5
+2.51.1
 

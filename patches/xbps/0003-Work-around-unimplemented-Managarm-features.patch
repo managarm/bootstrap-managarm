@@ -1,7 +1,7 @@
 From f3e841dc5779bcebddf1a70ece858ae63fe1ad06 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Thu, 15 Jul 2021 02:53:59 +0200
-Subject: [PATCH 3/4] Work around unimplemented Managarm features
+Subject: [PATCH 3/5] Work around unimplemented Managarm features
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
@@ -31,5 +31,5 @@ index 865649f..f2d6e9b 100644
  
  	return rv;
 -- 
-2.39.5
+2.51.1
 

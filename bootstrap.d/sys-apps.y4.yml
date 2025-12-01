@@ -702,7 +702,7 @@ packages:
     pkgs_required:
       - mlibc
       - libmnl
-    revision: 3
+    revision: 4
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
@@ -1503,7 +1503,7 @@ packages:
       - openssl
       - zlib
       - lz4
-    revision: 5
+    revision: 6
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:

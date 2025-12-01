@@ -1,0 +1,54 @@
+From fbba4244a24cf9454885ccf0ed0d7ef68d8becc0 Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Mon, 1 Dec 2025 00:44:22 +0100
+Subject: [PATCH 5/5] Define _XOPEN_SOURCE=700 and _GNU_SOURCE for managarm
+
+---
+ configure        | 3 +++
+ lib/fetch/ftp.c  | 2 +-
+ lib/fetch/http.c | 2 +-
+ 3 files changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/configure b/configure
+index 444cf95..f8e2f32 100755
+--- a/configure
++++ b/configure
+@@ -225,6 +225,9 @@ linux)
+ 	echo "CPPFLAGS += 	-D_XOPEN_SOURCE=700" >>$CONFIG_MK
+ 	echo "CPPFLAGS += 	-D_FILE_OFFSET_BITS=64" >> $CONFIG_MK
+ 	;;
++managarm)
++	echo "CPPFLAGS += 	-D_XOPEN_SOURCE=700" >>$CONFIG_MK
++	;;
+ *)
+ 	;;
+ esac
+diff --git a/lib/fetch/ftp.c b/lib/fetch/ftp.c
+index 0fac406..c07e139 100644
+--- a/lib/fetch/ftp.c
++++ b/lib/fetch/ftp.c
+@@ -57,7 +57,7 @@
+  *
+  */
+ 
+-#ifdef __linux__
++#if defined(__linux__) || defined(__managarm__)
+ /* Keep this down to Linux, it can create surprises else where. */
+ #define _GNU_SOURCE
+ #endif
+diff --git a/lib/fetch/http.c b/lib/fetch/http.c
+index b068464..abc24db 100644
+--- a/lib/fetch/http.c
++++ b/lib/fetch/http.c
+@@ -62,7 +62,7 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#if defined(__linux__)
++#if defined(__linux__) || defined(__managarm__)
+ #define _GNU_SOURCE
+ #endif
+ 
+-- 
+2.51.1
+

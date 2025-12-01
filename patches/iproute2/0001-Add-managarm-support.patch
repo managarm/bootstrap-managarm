@@ -1,14 +1,16 @@
-From d09db56552938ffd09f0db1e4f756c87a51442fe Mon Sep 17 00:00:00 2001
+From 7371f4254574b3580a440069f93b9b2a505b94a0 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Tue, 28 Mar 2023 23:05:26 +0200
 Subject: [PATCH] Add managarm support
 
 ---
- Makefile            | 2 +-
- include/namespace.h | 2 +-
- ip/ipnetns.c        | 2 +-
- lib/bpf_glue.c      | 1 -
- 4 files changed, 3 insertions(+), 4 deletions(-)
+ Makefile             | 2 +-
+ include/libnetlink.h | 1 +
+ include/namespace.h  | 2 +-
+ ip/iplink.c          | 1 +
+ ip/ipnetns.c         | 2 +-
+ lib/bpf_glue.c       | 1 -
+ 6 files changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/Makefile b/Makefile
 index 2b2c3de..071a8e1 100644
@@ -23,8 +25,20 @@ index 2b2c3de..071a8e1 100644
  YACCFLAGS = -d -t -v
  
  SUBDIRS=lib ip tc bridge misc netem genl man
+diff --git a/include/libnetlink.h b/include/libnetlink.h
+index 30f0c2d..7074e91 100644
+--- a/include/libnetlink.h
++++ b/include/libnetlink.h
+@@ -4,6 +4,7 @@
+ 
+ #include <stdio.h>
+ #include <string.h>
++#include <endian.h>
+ #include <asm/types.h>
+ #include <linux/netlink.h>
+ #include <linux/rtnetlink.h>
 diff --git a/include/namespace.h b/include/namespace.h
-index 8600054..9ba2564 100644
+index 98f4af5..0e4a0bc 100644
 --- a/include/namespace.h
 +++ b/include/namespace.h
 @@ -5,7 +5,7 @@
@@ -36,8 +50,20 @@ index 8600054..9ba2564 100644
  #include <errno.h>
  #include <libnetlink.h>
  
+diff --git a/ip/iplink.c b/ip/iplink.c
+index e650a5c..ea1242d 100644
+--- a/ip/iplink.c
++++ b/ip/iplink.c
+@@ -8,6 +8,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <unistd.h>
++#include <limits.h>
+ #include <fcntl.h>
+ #include <dlfcn.h>
+ #include <errno.h>
 diff --git a/ip/ipnetns.c b/ip/ipnetns.c
-index 594b2ef..b718b9f 100644
+index 5c94340..91d10e8 100644
 --- a/ip/ipnetns.c
 +++ b/ip/ipnetns.c
 @@ -6,7 +6,7 @@
@@ -62,5 +88,5 @@ index 88a2475..2ee0646 100644
  #include <unistd.h>
  #include <errno.h>
 -- 
-2.45.1
+2.51.1
 
