@@ -32,7 +32,7 @@ packages:
       - libxkbcommon
       - dbus
       - gtk+-3
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'meson'
