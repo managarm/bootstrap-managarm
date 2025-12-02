@@ -1,0 +1,25 @@
+From caea1218734b7d2c6eefd5511efc85baca8cf6c9 Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Tue, 2 Dec 2025 14:09:44 +0100
+Subject: [PATCH] Add managarm support
+
+---
+ meson.build | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/meson.build b/meson.build
+index c1853f9..4dd287d 100644
+--- a/meson.build
++++ b/meson.build
+@@ -163,7 +163,7 @@ if cc.has_function('sincos', prefix: '#define _GNU_SOURCE\n#include <math.h>',
+   add_project_arguments('-DHAVE_SINCOS', language: 'c')
+ endif
+ 
+-if ['linux', 'cygwin', 'gnu', 'freebsd', 'gnu/kfreebsd', 'haiku', 'android'].contains(host_machine.system())
++if ['linux', 'cygwin', 'gnu', 'freebsd', 'gnu/kfreebsd', 'haiku', 'android', 'managarm'].contains(host_machine.system())
+   add_project_arguments('-D_GNU_SOURCE', language: ['c', 'cpp'])
+ elif host_machine.system() == 'windows'
+   add_project_arguments(['-D_USE_MATH_DEFINES'], language: ['c', 'cpp'])
+-- 
+2.52.0
+
