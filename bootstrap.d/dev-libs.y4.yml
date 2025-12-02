@@ -2711,7 +2711,7 @@ packages:
       - mlibc
       - libexpat
       - libffi
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'meson'
@@ -2724,6 +2724,7 @@ packages:
         - '--buildtype=debugoptimized'
         - '-Ddtd_validation=false'
         - '-Ddocumentation=false'
+        - '-Dtests=false'
         - '-Dscanner=true'
         - '@THIS_SOURCE_DIR@'
         environ:
