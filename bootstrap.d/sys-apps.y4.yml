@@ -1649,7 +1649,7 @@ packages:
       - util-linux-libs
       - mlibc
       - pam
-    revision: 11
+    revision: 12
     configure:
       - args:
         - 'meson'
@@ -1767,7 +1767,6 @@ packages:
           '@THIS_COLLECT_DIR@/etc/udev/rules.d/.keep',
           '@THIS_COLLECT_DIR@/etc/systemd/user/.keep',
           '@THIS_COLLECT_DIR@/var/log/journal/.keep',
-          '@THIS_COLLECT_DIR@/etc/udev/hwdb.d/.keep',
           '@THIS_COLLECT_DIR@/var/lib/systemd/.keep',
           '@THIS_COLLECT_DIR@/etc/tmpfiles.d/.keep',
           '@THIS_COLLECT_DIR@/etc/credstore/.keep',
@@ -1775,5 +1774,5 @@ packages:
           '@THIS_COLLECT_DIR@/etc/kernel/.keep'
         ]
       - args: ['ln', '-sr', '@THIS_COLLECT_DIR@/usr/lib', '@THIS_COLLECT_DIR@/lib']
-      - args: ['systemd-hwdb', '-r', '@THIS_COLLECT_DIR@', 'update']
+      - args: ['systemd-hwdb', '--usr', '-r', '@THIS_COLLECT_DIR@', 'update']
       - args: ['rm', '@THIS_COLLECT_DIR@/lib']
