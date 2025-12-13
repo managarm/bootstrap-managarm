@@ -48,6 +48,7 @@ tools:
     configure:
       - args:
         - 'meson'
+        - 'setup'
         - '--native-file'
         - '@SOURCE_ROOT@/scripts/meson.native-file'
         - '--prefix=@PREFIX@'

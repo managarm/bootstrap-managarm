@@ -336,16 +336,12 @@ packages:
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     from_source: libsmarter
-    tools_required:
-      - bootstrap-system-gcc
-    revision: 15
+    revision: 16
     configure:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/include']
       - args:
         - 'meson'
         - 'setup'
-        - '--cross-file'
-        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
         # install to separate libdir and a separate includedir (instdead of /usr/include)
         - '--includedir=share/libsmarter/include'
