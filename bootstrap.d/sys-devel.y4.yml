@@ -416,7 +416,7 @@ packages:
       - mpfr
       - mpc
       - zlib
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -430,6 +430,7 @@ packages:
         - '--enable-languages=c,c++'
         - '--enable-initfini-array'
         - '--disable-nls'
+        - '--disable-fixincludes'
         - '--enable-lto'
         - '--with-system-zlib'
         - '--enable-linker-build-id'

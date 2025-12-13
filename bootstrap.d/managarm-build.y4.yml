@@ -312,7 +312,7 @@ tools:
     tools_required:
       - tool: cross-binutils
         recursive: true
-    revision: 2
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -328,6 +328,7 @@ tools:
         - '--disable-libquadmath'
         - '--disable-libssp'
         - '--disable-libsanitizer'
+        - '--disable-fixincludes'
         # -g blows up GCC's binary size.
         - 'CFLAGS=-O2'
         - 'CXXFLAGS=-O2'
@@ -375,7 +376,7 @@ tools:
     tools_required:
       - tool: cross-binutils
         recursive: true
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -389,6 +390,7 @@ tools:
         - '--enable-libstdcxx-filesystem-ts'
         - '--enable-linker-build-id'
         - '--enable-default-pie'
+        - '--disable-fixincludes'
         # -g blows up GCC's binary size.
         - 'CFLAGS=-O2'
         - 'CXXFLAGS=-O2'
@@ -435,7 +437,7 @@ tools:
     tools_required:
       - tool: cross-binutils
         recursive: true
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -447,6 +449,7 @@ tools:
         - '--without-headers'
         - '--without-newlib'
         - '--enable-languages=c,c++,lto'
+        - '--disable-fixincludes'
         - '--disable-shared'
         - '--disable-hosted-libstdcxx'
         # libstdc++ can detect that wchar_t is supported by @SYSROOT_DIR@ and
