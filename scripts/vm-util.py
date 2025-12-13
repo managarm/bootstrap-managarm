@@ -575,12 +575,16 @@ def do_qemu(args):
 
     qemu_args = [
         "-s",
-        "-m",
-        "2048",
     ]
 
+    if args.memory is not None:
+        qemu_args += ["-m", args.memory]
+
     qemu_args += ["-name", f"Managarm {args.arch}"]
-    qemu_args += ["-display", "gtk,zoom-to-fit=off"]
+    if args.sdl:
+        qemu_args += ["-display", "sdl"]
+    else:
+        qemu_args += ["-display", "gtk,zoom-to-fit=off"]
 
     have_kvm = False
     if not args.no_kvm:
@@ -942,6 +946,7 @@ def do_qemu(args):
 qemu_parser = main_subparsers.add_parser("qemu")
 qemu_parser.set_defaults(_fn=do_qemu)
 qemu_parser.add_argument("--arch", choices=["x86_64", "aarch64", "riscv64"], default="x86_64")
+qemu_parser.add_argument("--memory", type=str, default="2G")
 qemu_parser.add_argument("--no-kvm", action="store_true")
 qemu_parser.add_argument("--virtual-cpu", action="store_true")
 qemu_parser.add_argument("--no-smp", action="store_true")
@@ -955,6 +960,7 @@ qemu_parser.add_argument("--nic", choices=["i8254x", "virtio", "rtl8139", "usb",
 qemu_parser.add_argument("--gfx", choices=["bga", "virtio", "vmware", "none"], default="default")
 qemu_parser.add_argument("--ps2", action="store_true")
 qemu_parser.add_argument("--mouse", action="store_true")
+qemu_parser.add_argument("--sdl", action="store_true")
 qemu_parser.add_argument("--init-launch", type=str, default="weston")
 qemu_parser.add_argument("--device-spec", type=argparse.FileType('r'))
 qemu_parser.add_argument("--pci-passthrough", type=str)
