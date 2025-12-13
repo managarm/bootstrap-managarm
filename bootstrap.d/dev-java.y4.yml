@@ -10,6 +10,17 @@ tools:
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/jdk-17.0.9+9', '@PREFIX@']
 
+  - name: host-openjdk8
+    architecture: 'x86_64'
+    source:
+      subdir: 'ports'
+      url: 'https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u472-b08/OpenJDK8U-jdk_x64_linux_hotspot_8u472b08.tar.gz'
+      format: 'tar.gz'
+      checksum: 'blake2b:196942695228323e352c7e7d515f8e13511d83e467bf259d641a1138238f2a464da10127673ec7b55cbd26e61fc201541ec643d877d9c4283c8aace392fa1b4f'
+      version: '8u472b08'
+    configure:
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/jdk8u472-b08', '@PREFIX@']
+
 packages:
   - name: openjdk17
     architecture: '@OPTION:arch@'
