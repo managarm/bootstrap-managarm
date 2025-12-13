@@ -195,7 +195,7 @@ RUN apt-get update \
 		&& apt-get clean
 
 # Meson is outdated in debian repos, xbstrap is used by the build process.
-RUN pip3 install --break-system-packages meson \
+RUN pip3 install --break-system-packages meson==1.9.2 \
 	&& pip3 install --break-system-packages xbstrap
 
 # Install mdbook.
