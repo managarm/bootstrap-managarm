@@ -312,7 +312,7 @@ tools:
     tools_required:
       - tool: cross-binutils
         recursive: true
-    revision: 1
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
