@@ -274,9 +274,7 @@ packages:
       version: '0.0pl@ROLLING_ID@'
     tools_required:
       - system-gcc
-    pkgs_required:
-      - boost
-    revision: 12
+    revision: 13
     configure:
       - args:
         - 'meson'

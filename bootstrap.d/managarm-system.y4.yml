@@ -274,6 +274,7 @@ packages:
       - libdrm
       - libsmarter
       - cli11
+      - boost
       - !managarm::arch_dep
         arch: [x86_64]
         item: freebsd-e1000
