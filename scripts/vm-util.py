@@ -994,11 +994,11 @@ def do_gdb(args):
     gdb_args = ["gdb"]
 
     src_path = os.path.dirname(os.path.realpath("bootstrap.link"))
-    with open('.gdbinit', 'w+') as f:
-        f.write(f"source {src_path}/scripts/gdb-commands.py\n")
-        f.write(f"set substitute-path ../../../src {src_path}\n")
-        f.write(f"set substitute-path /var/lib/managarm-buildenv/build/ ./\n")
-        f.write(f"set sysroot system-root\n")
+    gdb_args += ["-ex", f"source {src_path}/scripts/gdb-commands.py"]
+    gdb_args += ["-ex", f"set substitute-path ../../../src {src_path}"]
+    gdb_args += ["-ex", f"set substitute-path /var/lib/managarm-buildenv/ ../"]
+    gdb_args += ["-ex", f"set sysroot system-root"]
+    gdb_args += ["-ex", f"set debuginfod enabled off"]
 
     if args.gdb_debug:
         gdb_args += ["-ex", "set debug remote 1"]
