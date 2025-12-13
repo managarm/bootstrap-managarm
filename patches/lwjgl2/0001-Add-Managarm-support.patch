@@ -1,0 +1,186 @@
+From 0b529e20e2b8ed75396b71503ca5f9668f675fca Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Sat, 13 Dec 2025 21:47:52 +0100
+Subject: [PATCH] Add Managarm support
+
+---
+ build.xml                             | 29 ++++++++----
+ platform_build/managarm_ant/build.xml | 68 +++++++++++++++++++++++++++
+ src/java/org/lwjgl/LWJGLUtil.java     |  2 +-
+ 3 files changed, 89 insertions(+), 10 deletions(-)
+ create mode 100644 platform_build/managarm_ant/build.xml
+
+diff --git a/build.xml b/build.xml
+index 7f6bb68..24fe7a8 100644
+--- a/build.xml
++++ b/build.xml
+@@ -30,6 +30,7 @@
+ 		<mkdir dir="${lwjgl.temp}/doc"              taskname="initialiazing temp/doc folder" />
+ 		<mkdir dir="${lwjgl.temp}/res"              taskname="initialiazing temp/res folder" />
+ 		<mkdir dir="${lwjgl.temp}/native"           taskname="initialiazing temp/native folder" />
++		<mkdir dir="${lwjgl.temp}/native/managarm"  taskname="initialiazing temp/managarm folder" />
+ 		<mkdir dir="${lwjgl.temp}/native/windows"   taskname="initialiazing temp/windows folder" />
+ 		<mkdir dir="${lwjgl.temp}/native/linux"     taskname="initialiazing temp/linux folder" />
+ 		<mkdir dir="${lwjgl.temp}/native/freebsd"   taskname="initialiazing temp/freebsd folder" />
+@@ -58,7 +59,7 @@
+ 	<!-- Creates a distribution of LWJGL -->
+ 	<target name="release" description="Creates a distribution of LWJGL using supplied native binaries">
+ 		<!-- Warn user -->
+-        <echo message="Before running the release target, please manually compile all platforms and place required files in ${lwjgl.lib}/windows, ${lwjgl.lib}/linux, ${lwjgl.lib}/freebsd and ${lwjgl.lib}/macosx${line.separator}Missing files will result in a successfull built, but with incomplete release zips"/>
++        <echo message="Before running the release target, please manually compile all platforms and place required files in ${lwjgl.lib}/managarm, ${lwjgl.lib}/windows, ${lwjgl.lib}/linux, ${lwjgl.lib}/freebsd and ${lwjgl.lib}/macosx${line.separator}Missing files will result in a successfull built, but with incomplete release zips"/>
+         <input
+             message="All data in the ${lwjgl.dist} folder will be deleted. Continue? "
+             validargs="yes,no"
+@@ -235,6 +236,11 @@
+ 		<copy todir="${lwjgl.temp}/jar">
+ 			<fileset dir="${lwjgl.lib}/" includes="*.jar"/>
+ 		</copy>
++		<copy todir="${lwjgl.temp}/native/managarm">
++			<fileset dir="${lwjgl.lib}/managarm">
++				<patternset refid="lwjgl-managarm.fileset" />
++			</fileset>
++		</copy>
+ 		<copy todir="${lwjgl.temp}/native/windows">
+ 			<fileset dir="${lwjgl.lib}/windows">
+ 				<patternset refid="lwjgl-windows.fileset" />
+@@ -423,6 +429,8 @@
+ 			</filterchain>
+ 		</loadfile>
+ 		<echo>
++			lwjgl.java.managarm.version = ${lwjgl.java.managarm.version}
++			lwjgl.native.managarm.version = ${lwjgl.native.managarm.version}
+ 			lwjgl.java.windows.version = ${lwjgl.java.windows.version}
+ 			lwjgl.native.windows.version = ${lwjgl.native.windows.version}
+ 			lwjgl.java.linux.version = ${lwjgl.java.linux.version}
+@@ -485,10 +493,10 @@
+ 		</condition>
+ 		<antcall target="-compile_native_win32" />
+ 
+-		<condition property="lwjgl.platform.linux">
+-			<os name="Linux" />
++		<condition property="lwjgl.platform.managarm">
++			<os name="Managarm" />
+ 		</condition>
+-		<antcall target="-compile_native_linux" />
++		<antcall target="-compile_native_managarm" />
+ 
+ 		<condition property="lwjgl.platform.freebsd">
+ 			<os name="FreeBSD" />
+@@ -520,6 +528,14 @@
+ 		<version-check platform="windows"/>
+ 	</target>
+ 
++	<target name="-compile_native_managarm" if="lwjgl.platform.managarm">
++		<ant antfile="platform_build/managarm_ant/build.xml" inheritAll="false"/>
++		<copy todir="${lwjgl.lib}/managarm">
++			<fileset dir="${lwjgl.bin}/lwjgl" includes="liblwjgl*.so"/>
++		</copy>
++		<!-- headless issues <version-check platform="managarm"/> -->
++	</target>
++
+ 	<!-- Compiles LWJGL on Linux platforms -->
+ 	<target name="-compile_native_linux" if="lwjgl.platform.linux">
+ 		<ant antfile="platform_build/linux_ant/build.xml" inheritAll="false"/>
+@@ -568,11 +584,6 @@
+ 			<os family="windows"/>
+ 		</condition>
+ 		<antcall target="-compile_native_win32_es"/>
+-
+-		<condition property="lwjgl.platform.linux">
+-			<os name="Linux"/>
+-		</condition>
+-		<antcall target="-compile_native_linux_es"/>
+ 	</target>
+ 
+ 	<!-- Compiles LWJGL ES on Win32 platforms  -->
+diff --git a/platform_build/managarm_ant/build.xml b/platform_build/managarm_ant/build.xml
+new file mode 100644
+index 0000000..a5be2ba
+--- /dev/null
++++ b/platform_build/managarm_ant/build.xml
+@@ -0,0 +1,68 @@
++<?xml version="1.0"?>
++
++<project name="lwjgl native code, managarm" basedir="../../bin/lwjgl" default="compile">
++	<property name="native" location="../../src/native"/>
++	<property name="libname64" value="liblwjgl64.so"/>
++	<property name="libs64" value="-L${sysroot}/usr/X11R6/lib -lm -lX11 -lXext -lXcursor -lXrandr -lXxf86vm -pthread -L${sysroot}/${cross.java.home}/lib -ljawt" />
++
++	<target name="clean">
++		<delete>
++			<fileset dir="x64"/>
++			<fileset dir="." includes="*.o"/>
++			<fileset dir="." includes="*.so"/>
++		</delete>
++	</target>
++
++    <target name="compile">
++		<exec executable="uname" outputproperty="hwplatform">
++			<arg value="-m"/>
++		</exec>
++		<condition property="cflags_pthread" value="-pthreads" else="-pthread">
++			<os name="SunOS" />
++		</condition>
++		<condition property="version_script_flags64" value="-m64" else="-Wl,--version-script='${native}/linux/lwjgl.map'">
++			<and>
++				<os name="SunOS" />
++			</and>
++		</condition>
++    	<condition property="cflags64" value="-O2 -m64 -Wall -c -fPIC -std=c99 -Wunused" else="-O2 -Wall -c -fPIC -std=c99 -Wunused">
++    		<os name="SunOS" />
++    	</condition>
++
++		<property name="linker_flags64" value="${version_script_flags64} -shared -O2 -Wall -o ${libname64} ${libs64}"/>
++
++    	<antcall target="compile64"/>
++    </target>
++
++    <target name="compile64">
++	    <mkdir dir="x64"/>
++	<apply dir="x64" executable="${CC}" skipemptyfilesets="true" failonerror="true">
++			<arg line="${cflags64} ${cflags_pthread}"/>
++			<arg value="-I${sysroot}/${cross.java.home}/include"/>
++			<arg value="-I${sysroot}/${cross.java.home}/include/linux"/>
++			<arg value="-I${sysroot}/${cross.java.home}/include/managarm"/>
++			<arg value="-I${sysroot}/${cross.java.home}/../include"/>
++			<arg value="-I${sysroot}/${cross.java.home}/../include/linux"/>
++			<arg value="-I${sysroot}/${cross.java.home}/../include/managarm"/>
++			<arg value="-I${sysroot}/usr/local/include"/>
++			<arg value="-I${sysroot}/usr/X11R6/include"/>
++            <arg value="-I${native}/common"/>
++		    <arg value="-I${native}/common/opengl"/>
++			<arg value="-I${native}/linux"/>
++		    <arg value="-I${native}/linux/opengl"/>
++			<mapper type="glob" from="*.c" to="*.o"/>
++		    <fileset dir="${native}/common" includes="*.c"/>
++		    <fileset dir="${native}/common/opengl" includes="*.c"/>
++		    <fileset dir="${native}/generated/openal" includes="*.c"/>
++		    <fileset dir="${native}/generated/opencl" includes="*.c"/>    		
++		    <fileset dir="${native}/generated/opengl" includes="*.c"/>
++		    <fileset dir="${native}/linux" includes="*.c"/>
++		    <fileset dir="${native}/linux/opengl" includes="*.c"/>
++	    </apply>
++	    <apply dir="." parallel="true" executable="${CC}" failonerror="true">
++			<srcfile/>
++			<arg line="${linker_flags64}"/>
++			<fileset dir="x64" includes="*.o"/>
++		</apply>
++    </target>
++</project>
+\ No newline at end of file
+diff --git a/src/java/org/lwjgl/LWJGLUtil.java b/src/java/org/lwjgl/LWJGLUtil.java
+index 0ab810e..24bc855 100644
+--- a/src/java/org/lwjgl/LWJGLUtil.java
++++ b/src/java/org/lwjgl/LWJGLUtil.java
+@@ -272,7 +272,7 @@ public class LWJGLUtil {
+ 		final String osName = getPrivilegedProperty("os.name");
+ 		if ( osName.startsWith("Windows") )
+ 			PLATFORM = PLATFORM_WINDOWS;
+-		else if ( osName.startsWith("Linux") || osName.startsWith("FreeBSD") || osName.startsWith("OpenBSD") || osName.startsWith("SunOS") || osName.startsWith("Unix") )
++		else if ( osName.startsWith("Linux") || osName.startsWith("FreeBSD") || osName.startsWith("OpenBSD") || osName.startsWith("SunOS") || osName.startsWith("Unix") || osName.contains("Managarm") )
+ 			PLATFORM = PLATFORM_LINUX;
+ 		else if ( osName.startsWith("Mac OS X") || osName.startsWith("Darwin") )
+ 			PLATFORM = PLATFORM_MACOSX;
+-- 
+2.51.0
+

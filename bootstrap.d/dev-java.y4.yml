@@ -22,6 +22,42 @@ tools:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/jdk8u472-b08', '@PREFIX@']
 
 packages:
+  - name: lwjgl2
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: The Lightweight Java Game Library, version 2
+      description: The Lightweight Java Game Library, version 2
+      spdx: 'BSD-3-Clause'
+      website: 'http://legacy.lwjgl.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-java']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/LWJGL/lwjgl.git'
+      tag: 'lwjgl2.9.3'
+      version: '2.9.3'
+    tools_required:
+      - system-gcc
+      - host-openjdk8
+    pkgs_required:
+      - mlibc
+      - openjdk17
+      - libxcursor
+      - xrandr
+    revision: 1
+    configure:
+      # lwjgl does not seem to support out-of-tree builds, so we just copy
+      # the source tree into the build directory instead
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+    build:
+      - args: |
+          JAVA_HOME=@BUILD_ROOT@/tools/host-openjdk8/ ant -DCC=@OPTION:arch-triple@-gcc -Dhwplatform=x86_64 -Dlwjgl.platform.linux=false -Dlwjgl.platform.managarm=true -Dsysroot=@SYSROOT_DIR@ -Dcross.java.home="/usr/lib/jvm/java-17/"
+      - args: [mkdir, '-p', '@THIS_COLLECT_DIR@/usr/share/lwjgl']
+      - args: |
+          cp -r libs/*.jar @THIS_COLLECT_DIR@/usr/share/lwjgl
+      - args: |
+          cp -r libs/managarm/* @THIS_COLLECT_DIR@/usr/share/lwjgl
+
   - name: openjdk17
     architecture: '@OPTION:arch@'
     metadata:
