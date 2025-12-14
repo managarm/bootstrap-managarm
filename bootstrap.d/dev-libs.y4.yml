@@ -170,8 +170,7 @@ tools:
     exports_shared_libs: true
     from_source: gobject-introspection
     tools_required:
-      - tool: host-gpep517
-        recursive: true
+      - host-gpep517
       - host-glib
       - host-pkg-config
       - virtual: pkgconfig-for-host
