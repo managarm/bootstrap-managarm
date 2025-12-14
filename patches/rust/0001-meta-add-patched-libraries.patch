@@ -1,19 +1,19 @@
-From f54b3fd5edb98990235c1273c0e056c8c8d228e1 Mon Sep 17 00:00:00 2001
+From aea7f7cb181138dbced771090b344b34474f1b69 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Sun, 31 Mar 2024 19:21:57 +0200
 Subject: [PATCH 1/6] meta: add patched libraries
 
 ---
- Cargo.lock             | 7 ++++---
+ Cargo.lock             | 4 +---
  Cargo.toml             | 2 ++
  library/Cargo.lock     | 4 +---
  library/Cargo.toml     | 1 +
  library/std/Cargo.toml | 2 +-
  library/std/src/lib.rs | 2 +-
- 6 files changed, 10 insertions(+), 8 deletions(-)
+ 6 files changed, 7 insertions(+), 8 deletions(-)
 
 diff --git a/Cargo.lock b/Cargo.lock
-index 2c290b39..721618d0 100644
+index 2c290b39..5a20ffc2 100644
 --- a/Cargo.lock
 +++ b/Cargo.lock
 @@ -2091,9 +2091,7 @@ checksum = "9fa0e2a1fcbe2f6be6c42e342259976206b383122fc152e872795338b5a3f3a7"
@@ -27,13 +27,6 @@ index 2c290b39..721618d0 100644
  
  [[package]]
  name = "libdbus-sys"
-@@ -6839,3 +6837,6 @@ dependencies = [
-  "quote",
-  "syn 2.0.106",
- ]
-+
-+[patch.crates-io]
-+libc = { path = '../rust-libc' }
 diff --git a/Cargo.toml b/Cargo.toml
 index 67c7a9d6..c9892d15 100644
 --- a/Cargo.toml
