@@ -1,47 +1,45 @@
-From d915c2920359afb2e51e2861551340016df21325 Mon Sep 17 00:00:00 2001
+From 39b169cc9577d64e0ea1d33787503cf1540a3d40 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Fri, 1 Sep 2023 16:49:14 +0200
-Subject: [PATCH 5/8] library/std: add managarm support
+Subject: [PATCH 2/6] library/std: add managarm support
 
 ---
- library/std/build.rs                         |   1 +
- library/std/src/env.rs                       |   1 +
- library/std/src/os/managarm/fs.rs            | 148 +++++++++++++++++++
- library/std/src/os/managarm/mod.rs           |   6 +
- library/std/src/os/managarm/raw.rs           |  74 ++++++++++
- library/std/src/os/mod.rs                    |   2 +
- library/std/src/os/unix/mod.rs               |   2 +
- library/std/src/sys/args/unix.rs             |   1 +
- library/std/src/sys/env_consts.rs            |  11 ++
- library/std/src/sys/fd/unix.rs               |   2 +
- library/std/src/sys/fs/unix.rs               |  17 ++-
- library/std/src/sys/net/connection/socket.rs |   2 +-
- library/std/src/sys/pal/unix/os.rs           |   2 +
- library/std/src/sys/pal/unix/thread.rs       |   7 +-
- library/std/src/sys/random/mod.rs            |   1 +
- library/unwind/src/lib.rs                    |   4 +
- 16 files changed, 276 insertions(+), 5 deletions(-)
+ library/std/build.rs               |   1 +
+ library/std/src/env.rs             |   1 +
+ library/std/src/os/managarm/fs.rs  | 148 +++++++++++++++++++++++++++++
+ library/std/src/os/managarm/mod.rs |   6 ++
+ library/std/src/os/managarm/raw.rs |  74 +++++++++++++++
+ library/std/src/os/mod.rs          |   2 +
+ library/std/src/os/unix/mod.rs     |   2 +
+ library/std/src/sys/args/unix.rs   |   1 +
+ library/std/src/sys/env_consts.rs  |  11 +++
+ library/std/src/sys/fd/unix.rs     |   2 +
+ library/std/src/sys/fs/unix.rs     |  15 ++-
+ library/std/src/sys/pal/unix/os.rs |   2 +
+ library/std/src/sys/random/mod.rs  |   1 +
+ library/unwind/src/lib.rs          |   4 +
+ 14 files changed, 269 insertions(+), 1 deletion(-)
  create mode 100644 library/std/src/os/managarm/fs.rs
  create mode 100644 library/std/src/os/managarm/mod.rs
  create mode 100644 library/std/src/os/managarm/raw.rs
 
 diff --git a/library/std/build.rs b/library/std/build.rs
-index ef695601..705a077d 100644
+index bee28e88..0f3b7b4b 100644
 --- a/library/std/build.rs
 +++ b/library/std/build.rs
-@@ -52,6 +52,7 @@ fn main() {
-         || target_os == "rtems"
+@@ -54,6 +54,7 @@ fn main() {
          || target_os == "nuttx"
          || target_os == "cygwin"
+         || target_os == "vexos"
 +        || target_os == "managarm"
  
          // See src/bootstrap/src/core/build_steps/synthetic_targets.rs
          || env::var("RUSTC_BOOTSTRAP_SYNTHETIC_TARGET").is_ok()
 diff --git a/library/std/src/env.rs b/library/std/src/env.rs
-index 6d7d576b..efcd149f 100644
+index 6d716bd8..adaee696 100644
 --- a/library/std/src/env.rs
 +++ b/library/std/src/env.rs
-@@ -1109,6 +1109,7 @@ pub mod consts {
+@@ -1102,6 +1102,7 @@ pub mod consts {
      /// * `"vita"`
      /// * `"vxworks"`
      /// * `"xous"`
@@ -296,7 +294,7 @@ index 00000000..ce950064
 +    pub st_blocks: libc::blkcnt_t,
 +}
 diff --git a/library/std/src/os/mod.rs b/library/std/src/os/mod.rs
-index ab7734a7..fcd8fdd6 100644
+index 76374402..cda1f46f 100644
 --- a/library/std/src/os/mod.rs
 +++ b/library/std/src/os/mod.rs
 @@ -155,6 +155,8 @@ pub mod windows {}
@@ -305,9 +303,9 @@ index ab7734a7..fcd8fdd6 100644
  pub mod macos;
 +#[cfg(target_os = "managarm")]
 +pub mod managarm;
+ #[cfg(target_os = "motor")]
+ pub mod motor;
  #[cfg(target_os = "netbsd")]
- pub mod netbsd;
- #[cfg(target_os = "nto")]
 diff --git a/library/std/src/os/unix/mod.rs b/library/std/src/os/unix/mod.rs
 index 78c95727..d465c2ee 100644
 --- a/library/std/src/os/unix/mod.rs
@@ -334,7 +332,7 @@ index 0dfbd5f0..696ebd32 100644
  mod imp {
      use crate::ffi::c_char;
 diff --git a/library/std/src/sys/env_consts.rs b/library/std/src/sys/env_consts.rs
-index 9683fd47..ab02fced 100644
+index 573f5404..066353b6 100644
 --- a/library/std/src/sys/env_consts.rs
 +++ b/library/std/src/sys/env_consts.rs
 @@ -202,6 +202,17 @@ pub mod os {
@@ -356,10 +354,10 @@ index 9683fd47..ab02fced 100644
  pub mod os {
      pub const FAMILY: &str = "unix";
 diff --git a/library/std/src/sys/fd/unix.rs b/library/std/src/sys/fd/unix.rs
-index cdca73cd..99e92a90 100644
+index 2b2dfe48..43687efa 100644
 --- a/library/std/src/sys/fd/unix.rs
 +++ b/library/std/src/sys/fd/unix.rs
-@@ -541,6 +541,7 @@ fn pwritev(
+@@ -560,6 +560,7 @@ fn pwritev(
          target_os = "redox",
          target_os = "vxworks",
          target_os = "nto",
@@ -367,7 +365,7 @@ index cdca73cd..99e92a90 100644
      )))]
      pub fn set_cloexec(&self) -> io::Result<()> {
          unsafe {
-@@ -564,6 +565,7 @@ pub fn set_cloexec(&self) -> io::Result<()> {
+@@ -583,6 +584,7 @@ pub fn set_cloexec(&self) -> io::Result<()> {
          target_os = "redox",
          target_os = "vxworks",
          target_os = "nto",
@@ -376,7 +374,7 @@ index cdca73cd..99e92a90 100644
      pub fn set_cloexec(&self) -> io::Result<()> {
          unsafe {
 diff --git a/library/std/src/sys/fs/unix.rs b/library/std/src/sys/fs/unix.rs
-index dc278274..ae29bed9 100644
+index 3efe6739..f3a9ee2a 100644
 --- a/library/std/src/sys/fs/unix.rs
 +++ b/library/std/src/sys/fs/unix.rs
 @@ -14,6 +14,7 @@
@@ -387,67 +385,63 @@ index dc278274..ae29bed9 100644
  ))]
  use libc::dirfd;
  #[cfg(any(target_os = "fuchsia", target_os = "illumos"))]
-@@ -44,9 +45,10 @@
-     target_os = "nto",
+@@ -30,6 +31,7 @@
+     target_os = "redox",
+     target_os = "solaris",
      target_os = "vita",
-     target_os = "hurd",
 +    target_os = "managarm",
- )))]
- use libc::readdir_r as readdir64_r;
--#[cfg(any(all(target_os = "linux", not(target_env = "musl")), target_os = "hurd"))]
-+#[cfg(any(all(target_os = "linux", not(target_env = "musl")), target_os = "hurd", target_os = "managarm"))]
- use libc::readdir64;
- #[cfg(target_os = "l4re")]
- use libc::readdir64_r;
-@@ -280,6 +282,7 @@ unsafe impl Sync for Dir {}
-     target_os = "nto",
+     all(target_os = "linux", target_env = "musl"),
+ ))]
+ use libc::readdir as readdir64;
+@@ -284,6 +286,7 @@ unsafe impl Sync for Dir {}
+     target_os = "redox",
+     target_os = "solaris",
      target_os = "vita",
-     target_os = "hurd",
 +    target_os = "managarm",
  ))]
  pub struct DirEntry {
      dir: Arc<InnerReadDir>,
-@@ -304,6 +307,7 @@ pub struct DirEntry {
-     target_os = "nto",
+@@ -309,6 +312,7 @@ pub struct DirEntry {
+     target_os = "redox",
+     target_os = "solaris",
      target_os = "vita",
-     target_os = "hurd",
 +    target_os = "managarm",
  ))]
  struct dirent64_min {
      d_ino: u64,
-@@ -328,6 +332,7 @@ struct dirent64_min {
-     target_os = "nto",
+@@ -334,6 +338,7 @@ struct dirent64_min {
+     target_os = "redox",
+     target_os = "solaris",
      target_os = "vita",
-     target_os = "hurd",
 +    target_os = "managarm",
  )))]
  pub struct DirEntry {
      dir: Arc<InnerReadDir>,
-@@ -707,6 +712,7 @@ impl Iterator for ReadDir {
-         target_os = "nto",
+@@ -714,6 +719,7 @@ impl Iterator for ReadDir {
+         target_os = "redox",
+         target_os = "solaris",
          target_os = "vita",
-         target_os = "hurd",
 +        target_os = "managarm",
      ))]
      fn next(&mut self) -> Option<io::Result<DirEntry>> {
          use crate::sys::os::{errno, set_errno};
-@@ -800,6 +806,7 @@ fn next(&mut self) -> Option<io::Result<DirEntry>> {
-         target_os = "nto",
+@@ -811,6 +817,7 @@ fn next(&mut self) -> Option<io::Result<DirEntry>> {
+         target_os = "redox",
+         target_os = "solaris",
          target_os = "vita",
-         target_os = "hurd",
 +        target_os = "managarm",
      )))]
      fn next(&mut self) -> Option<io::Result<DirEntry>> {
          if self.end_of_stream {
-@@ -987,6 +994,7 @@ pub fn file_type(&self) -> io::Result<FileType> {
-         target_os = "nto",
-         target_os = "hurd",
-         target_os = "rtems",
+@@ -999,6 +1006,7 @@ pub fn file_type(&self) -> io::Result<FileType> {
+         target_os = "solaris",
+         target_os = "vita",
+         target_os = "vxworks",
 +        target_os = "managarm",
          target_vendor = "apple",
      ))]
      pub fn ino(&self) -> u64 {
-@@ -1048,6 +1056,7 @@ fn name_bytes(&self) -> &[u8] {
+@@ -1054,6 +1062,7 @@ fn name_bytes(&self) -> &[u8] {
          target_os = "nto",
          target_os = "vita",
          target_os = "hurd",
@@ -455,7 +449,7 @@ index dc278274..ae29bed9 100644
      )))]
      fn name_cstr(&self) -> &CStr {
          unsafe { CStr::from_ptr(self.entry.d_name.as_ptr()) }
-@@ -1063,6 +1072,7 @@ fn name_cstr(&self) -> &CStr {
+@@ -1070,6 +1079,7 @@ fn name_cstr(&self) -> &CStr {
          target_os = "nto",
          target_os = "vita",
          target_os = "hurd",
@@ -463,7 +457,7 @@ index dc278274..ae29bed9 100644
      ))]
      fn name_cstr(&self) -> &CStr {
          &self.name
-@@ -1237,6 +1247,7 @@ unsafe fn os_datasync(fd: c_int) -> c_int {
+@@ -1264,6 +1274,7 @@ unsafe fn os_datasync(fd: c_int) -> c_int {
              target_os = "openbsd",
              target_os = "nto",
              target_os = "hurd",
@@ -471,7 +465,7 @@ index dc278274..ae29bed9 100644
          ))]
          unsafe fn os_datasync(fd: c_int) -> c_int {
              libc::fdatasync(fd)
-@@ -1251,6 +1262,7 @@ unsafe fn os_datasync(fd: c_int) -> c_int {
+@@ -1278,6 +1289,7 @@ unsafe fn os_datasync(fd: c_int) -> c_int {
              target_os = "openbsd",
              target_os = "nto",
              target_os = "hurd",
@@ -479,7 +473,7 @@ index dc278274..ae29bed9 100644
              target_vendor = "apple",
          )))]
          unsafe fn os_datasync(fd: c_int) -> c_int {
-@@ -1661,7 +1673,7 @@ unsafe fn from_raw_fd(raw_fd: RawFd) -> Self {
+@@ -1822,7 +1834,7 @@ unsafe fn from_raw_fd(raw_fd: RawFd) -> Self {
  
  impl fmt::Debug for File {
      fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -488,7 +482,7 @@ index dc278274..ae29bed9 100644
          fn get_path(fd: c_int) -> Option<PathBuf> {
              let mut p = PathBuf::from("/proc/self/fd");
              p.push(&fd.to_string());
-@@ -1722,6 +1734,7 @@ fn get_path(fd: c_int) -> Option<PathBuf> {
+@@ -1884,6 +1896,7 @@ fn get_path(fd: c_int) -> Option<PathBuf> {
  
          #[cfg(not(any(
              target_os = "linux",
@@ -496,24 +490,11 @@ index dc278274..ae29bed9 100644
              target_os = "vxworks",
              target_os = "freebsd",
              target_os = "netbsd",
-diff --git a/library/std/src/sys/net/connection/socket.rs b/library/std/src/sys/net/connection/socket.rs
-index 7301bde6..5a5152c8 100644
---- a/library/std/src/sys/net/connection/socket.rs
-+++ b/library/std/src/sys/net/connection/socket.rs
-@@ -60,7 +60,7 @@
-         target_os = "openbsd", target_os = "netbsd",
-         target_os = "solaris", target_os = "illumos",
-         target_os = "haiku", target_os = "nto",
--        target_os = "cygwin"))] {
-+        target_os = "cygwin", target_os = "managarm"))] {
-         use libc::MSG_NOSIGNAL;
-     } else {
-         const MSG_NOSIGNAL: c_int = 0x0;
 diff --git a/library/std/src/sys/pal/unix/os.rs b/library/std/src/sys/pal/unix/os.rs
-index 850bdfdf..a4e20747 100644
+index 7c9f3b79..9c4af731 100644
 --- a/library/std/src/sys/pal/unix/os.rs
 +++ b/library/std/src/sys/pal/unix/os.rs
-@@ -34,6 +34,7 @@
+@@ -27,6 +27,7 @@
              target_os = "fuchsia",
              target_os = "l4re",
              target_os = "hurd",
@@ -521,7 +502,7 @@ index 850bdfdf..a4e20747 100644
          ),
          link_name = "__errno_location"
      )]
-@@ -408,6 +409,7 @@ pub fn current_exe() -> io::Result<PathBuf> {
+@@ -387,6 +388,7 @@ pub fn current_exe() -> io::Result<PathBuf> {
      target_os = "hurd",
      target_os = "android",
      target_os = "nuttx",
@@ -529,59 +510,23 @@ index 850bdfdf..a4e20747 100644
      target_os = "emscripten"
  ))]
  pub fn current_exe() -> io::Result<PathBuf> {
-diff --git a/library/std/src/sys/pal/unix/thread.rs b/library/std/src/sys/pal/unix/thread.rs
-index 5f2b81b0..2eae010e 100644
---- a/library/std/src/sys/pal/unix/thread.rs
-+++ b/library/std/src/sys/pal/unix/thread.rs
-@@ -136,12 +136,13 @@ pub fn set_name(name: &CStr) {
-         target_os = "freebsd",
-         target_os = "dragonfly",
-         target_os = "nuttx",
--        target_os = "cygwin"
-+        target_os = "cygwin",
-+        target_os = "managarm"
-     ))]
-     pub fn set_name(name: &CStr) {
-         unsafe {
-             cfg_if::cfg_if! {
--                if #[cfg(any(target_os = "linux", target_os = "cygwin"))] {
-+                if #[cfg(any(target_os = "linux", target_os = "cygwin", target_os = "managarm"))] {
-                     // Linux and Cygwin limits the allowed length of the name.
-                     const TASK_COMM_LEN: usize = 16;
-                     let name = truncate_cstr::<{ TASK_COMM_LEN }>(name);
-@@ -335,6 +336,7 @@ fn drop(&mut self) {
-     target_os = "illumos",
-     target_os = "vxworks",
-     target_os = "cygwin",
-+    target_os = "managarm",
-     target_vendor = "apple",
- ))]
- fn truncate_cstr<const MAX_WITH_NUL: usize>(cstr: &CStr) -> [libc::c_char; MAX_WITH_NUL] {
-@@ -356,6 +358,7 @@ pub fn available_parallelism() -> io::Result<NonZero<usize>> {
-             target_os = "aix",
-             target_vendor = "apple",
-             target_os = "cygwin",
-+            target_os = "managarm",
-         ))] {
-             #[allow(unused_assignments)]
-             #[allow(unused_mut)]
 diff --git a/library/std/src/sys/random/mod.rs b/library/std/src/sys/random/mod.rs
-index 013e886a..4e23a1f7 100644
+index 91f72d07..5e703013 100644
 --- a/library/std/src/sys/random/mod.rs
 +++ b/library/std/src/sys/random/mod.rs
-@@ -43,6 +43,7 @@
-         target_os = "aix",
+@@ -54,6 +54,7 @@
          target_os = "hurd",
          target_os = "l4re",
-+        target_os = "managarm",
          target_os = "nto",
-         target_os = "nuttx",
-     ))] {
++        target_os = "managarm",
+     ) => {
+         mod unix_legacy;
+         pub use unix_legacy::fill_bytes;
 diff --git a/library/unwind/src/lib.rs b/library/unwind/src/lib.rs
-index 5451a38a..70c8ac2c 100644
+index cd3a2f33..759be752 100644
 --- a/library/unwind/src/lib.rs
 +++ b/library/unwind/src/lib.rs
-@@ -184,3 +184,7 @@
+@@ -197,3 +197,7 @@
  #[link(name = "unwind", kind = "static", modifiers = "-bundle", cfg(target_feature = "crt-static"))]
  #[link(name = "unwind", cfg(not(target_feature = "crt-static")))]
  unsafe extern "C" {}
@@ -590,5 +535,5 @@ index 5451a38a..70c8ac2c 100644
 +#[link(name = "gcc_s")]
 +unsafe extern "C" {}
 -- 
-2.51.0
+2.52.0
 

@@ -1,17 +1,17 @@
-From 9a92b0074b66ca3105768e97154d07001e0efcba Mon Sep 17 00:00:00 2001
+From 6690951ac63b542557a2e2ea6af2688a0ca6d5f7 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Thu, 28 Aug 2025 22:29:53 +0200
-Subject: [PATCH 8/8] librustdoc: add managarm/mlibc support
+Subject: [PATCH 5/6] librustdoc: add managarm/mlibc support
 
 ---
  src/librustdoc/clean/cfg.rs | 2 ++
  1 file changed, 2 insertions(+)
 
 diff --git a/src/librustdoc/clean/cfg.rs b/src/librustdoc/clean/cfg.rs
-index b6ce8551..87935b86 100644
+index 6c77e419..f339435e 100644
 --- a/src/librustdoc/clean/cfg.rs
 +++ b/src/librustdoc/clean/cfg.rs
-@@ -506,6 +506,7 @@ fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
+@@ -531,6 +531,7 @@ fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
                          "watchos" => "watchOS",
                          "windows" => "Windows",
                          "visionos" => "visionOS",
@@ -19,7 +19,7 @@ index b6ce8551..87935b86 100644
                          _ => "",
                      },
                      (sym::target_arch, Some(arch)) => match arch.as_str() {
-@@ -545,6 +546,7 @@ fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
+@@ -570,6 +571,7 @@ fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
                          "newlib" => "Newlib",
                          "uclibc" => "uClibc",
                          "sgx" => "SGX",
@@ -28,5 +28,5 @@ index b6ce8551..87935b86 100644
                      },
                      (sym::target_endian, Some(endian)) => return write!(fmt, "{endian}-endian"),
 -- 
-2.51.0
+2.52.0
 
