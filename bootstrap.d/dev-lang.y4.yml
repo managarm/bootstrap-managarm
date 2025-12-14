@@ -22,8 +22,8 @@ sources:
   - name: rust
     subdir: 'ports'
     git: 'https://github.com/rust-lang/rust.git'
-    tag: '1.89.0'
-    version: '1.89.0'
+    tag: '1.92.0'
+    version: '1.92.0'
 
   - name: vala
     subdir: 'ports'
@@ -67,7 +67,7 @@ tools:
       - host-llvm-toolchain
       - host-python
       - host-libffi
-    revision: 2
+    revision: 1
     stages:
       - name: config
         compile:

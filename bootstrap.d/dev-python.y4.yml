@@ -85,7 +85,7 @@ tools:
       - tool: host-python
         recursive: true
       - host-cargo
-    revision: 6
+    revision: 7
     install:
       - args: ['python3', '-m', 'venv', '.']
         workdir: '@PREFIX@'
@@ -658,7 +658,7 @@ packages:
     pkgs_required:
       - mlibc
       - python
-    revision: 2
+    revision: 3
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
         isolate_network: false

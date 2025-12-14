@@ -1,22 +1,22 @@
-From 93f68993aed761d52f8f16bf58d39c20159dafb5 Mon Sep 17 00:00:00 2001
+From f54b3fd5edb98990235c1273c0e056c8c8d228e1 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Sun, 31 Mar 2024 19:21:57 +0200
-Subject: [PATCH 4/8] meta: add patched libraries
+Subject: [PATCH 1/6] meta: add patched libraries
 
 ---
- Cargo.lock             | 4 +---
- Cargo.toml             | 3 +++
+ Cargo.lock             | 7 ++++---
+ Cargo.toml             | 2 ++
  library/Cargo.lock     | 4 +---
  library/Cargo.toml     | 1 +
  library/std/Cargo.toml | 2 +-
  library/std/src/lib.rs | 2 +-
- 6 files changed, 8 insertions(+), 8 deletions(-)
+ 6 files changed, 10 insertions(+), 8 deletions(-)
 
 diff --git a/Cargo.lock b/Cargo.lock
-index a170ece0..715709d3 100644
+index 2c290b39..721618d0 100644
 --- a/Cargo.lock
 +++ b/Cargo.lock
-@@ -2045,9 +2045,7 @@ checksum = "9fa0e2a1fcbe2f6be6c42e342259976206b383122fc152e872795338b5a3f3a7"
+@@ -2091,9 +2091,7 @@ checksum = "9fa0e2a1fcbe2f6be6c42e342259976206b383122fc152e872795338b5a3f3a7"
  
  [[package]]
  name = "libc"
@@ -27,56 +27,62 @@ index a170ece0..715709d3 100644
  
  [[package]]
  name = "libdbus-sys"
-diff --git a/Cargo.toml b/Cargo.toml
-index e08f14d2..dbb08354 100644
---- a/Cargo.toml
-+++ b/Cargo.toml
-@@ -89,3 +89,6 @@ codegen-units = 1
- # FIXME: LTO cannot be enabled for binaries in a workspace
- # <https://github.com/rust-lang/cargo/issues/9330>
- # lto = true
+@@ -6839,3 +6837,6 @@ dependencies = [
+  "quote",
+  "syn 2.0.106",
+ ]
 +
 +[patch.crates-io]
 +libc = { path = '../rust-libc' }
+diff --git a/Cargo.toml b/Cargo.toml
+index 67c7a9d6..c9892d15 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -93,3 +93,5 @@ codegen-units = 1
+ # For git dependencies, also add your source to ALLOWED_SOURCES in src/tools/tidy/src/extdeps.rs.
+ #[patch.crates-io]
+ 
++[patch.crates-io]
++libc = { path = '../rust-libc' }
 diff --git a/library/Cargo.lock b/library/Cargo.lock
-index 4f0e7aed..9648678e 100644
+index 50fb060f..8352c393 100644
 --- a/library/Cargo.lock
 +++ b/library/Cargo.lock
-@@ -141,9 +141,7 @@ dependencies = [
+@@ -139,9 +139,7 @@ dependencies = [
  
  [[package]]
  name = "libc"
--version = "0.2.174"
+-version = "0.2.177"
 -source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "1171693293099992e19cddea4e8b849964e9846f4acee11b3948bcc337be8776"
+-checksum = "2874a2af47a2325c2001a6e6fad9b16a53b802102b528163885171cf92b15976"
 +version = "0.2.175"
  dependencies = [
   "rustc-std-workspace-core",
  ]
 diff --git a/library/Cargo.toml b/library/Cargo.toml
-index c66f621f..7191bf9c 100644
+index e30e6240..a761277b 100644
 --- a/library/Cargo.toml
 +++ b/library/Cargo.toml
-@@ -61,3 +61,4 @@ rustc-std-workspace-core = { path = 'rustc-std-workspace-core' }
+@@ -59,3 +59,4 @@ rustflags = ["-Cpanic=abort"]
+ rustc-std-workspace-core = { path = 'rustc-std-workspace-core' }
  rustc-std-workspace-alloc = { path = 'rustc-std-workspace-alloc' }
  rustc-std-workspace-std = { path = 'rustc-std-workspace-std' }
- compiler_builtins = { path = "compiler-builtins/compiler-builtins" }
 +libc = { path = '../../rust-libc' }
 diff --git a/library/std/Cargo.toml b/library/std/Cargo.toml
-index ae710793..696324e4 100644
+index 685c2cf1..53b60f27 100644
 --- a/library/std/Cargo.toml
 +++ b/library/std/Cargo.toml
-@@ -35,7 +35,7 @@ miniz_oxide = { version = "0.8.0", optional = true, default-features = false }
+@@ -33,7 +33,7 @@ miniz_oxide = { version = "0.8.0", optional = true, default-features = false }
  addr2line = { version = "0.25.0", optional = true, default-features = false }
  
  [target.'cfg(not(all(windows, target_env = "msvc")))'.dependencies]
--libc = { version = "0.2.172", default-features = false, features = [
+-libc = { version = "0.2.177", default-features = false, features = [
 +libc = { path = "../../../rust-libc", default-features = false, features = [
      'rustc-dep-of-std',
  ], public = true }
  
 diff --git a/library/std/src/lib.rs b/library/std/src/lib.rs
-index 2bb7a637..fdbd9781 100644
+index a8c50cec..548e868c 100644
 --- a/library/std/src/lib.rs
 +++ b/library/std/src/lib.rs
 @@ -695,7 +695,7 @@ pub mod arch {
@@ -89,5 +95,5 @@ index 2bb7a637..fdbd9781 100644
  mod backtrace_rs;
  
 -- 
-2.51.0
+2.52.0
 

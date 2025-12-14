@@ -1,0 +1,185 @@
+From 2ca85b6e71a68eb735ca850fecbd6671cdf61646 Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Sun, 14 Dec 2025 15:16:00 +0100
+Subject: [PATCH 6/6] std enablement
+
+---
+ library/std/src/sys/fd/unix.rs                    |  6 ++++++
+ library/std/src/sys/fs/unix.rs                    |  4 +++-
+ library/std/src/sys/net/connection/socket/unix.rs | 11 +++++++----
+ library/std/src/sys/process/unix/unix.rs          |  2 +-
+ library/std/src/sys/thread/unix.rs                |  3 ++-
+ 5 files changed, 19 insertions(+), 7 deletions(-)
+
+diff --git a/library/std/src/sys/fd/unix.rs b/library/std/src/sys/fd/unix.rs
+index 43687efa..673b1827 100644
+--- a/library/std/src/sys/fd/unix.rs
++++ b/library/std/src/sys/fd/unix.rs
+@@ -76,6 +76,7 @@ const fn max_iov() -> usize {
+     target_os = "android",
+     target_os = "emscripten",
+     target_os = "linux",
++    target_os = "managarm",
+     target_os = "nto",
+ ))]
+ const fn max_iov() -> usize {
+@@ -89,6 +90,7 @@ const fn max_iov() -> usize {
+     target_os = "espidf",
+     target_os = "freebsd",
+     target_os = "linux",
++    target_os = "managarm",
+     target_os = "netbsd",
+     target_os = "nuttx",
+     target_os = "nto",
+@@ -217,6 +219,7 @@ pub fn read_buf_at(&self, mut cursor: BorrowedCursor<'_>, offset: u64) -> io::Re
+         target_os = "hurd",
+         target_os = "illumos",
+         target_os = "linux",
++        target_os = "managarm",
+         target_os = "netbsd",
+         target_os = "openbsd", // OpenBSD 2.7
+     ))]
+@@ -242,6 +245,7 @@ pub fn read_vectored_at(&self, bufs: &mut [IoSliceMut<'_>], offset: u64) -> io::
+         target_os = "hurd",
+         target_os = "illumos",
+         target_os = "linux",
++        target_os = "managarm",
+         target_os = "netbsd",
+         target_os = "openbsd",
+         target_vendor = "apple",
+@@ -423,6 +427,7 @@ pub fn write_at(&self, buf: &[u8], offset: u64) -> io::Result<usize> {
+         target_os = "hurd",
+         target_os = "illumos",
+         target_os = "linux",
++        target_os = "managarm",
+         target_os = "netbsd",
+         target_os = "openbsd", // OpenBSD 2.7
+     ))]
+@@ -448,6 +453,7 @@ pub fn write_vectored_at(&self, bufs: &[IoSlice<'_>], offset: u64) -> io::Result
+         target_os = "hurd",
+         target_os = "illumos",
+         target_os = "linux",
++        target_os = "managarm",
+         target_os = "netbsd",
+         target_os = "openbsd",
+         target_vendor = "apple",
+diff --git a/library/std/src/sys/fs/unix.rs b/library/std/src/sys/fs/unix.rs
+index f3a9ee2a..5751dbbc 100644
+--- a/library/std/src/sys/fs/unix.rs
++++ b/library/std/src/sys/fs/unix.rs
+@@ -17,7 +17,7 @@
+     target_os = "managarm"
+ ))]
+ use libc::dirfd;
+-#[cfg(any(target_os = "fuchsia", target_os = "illumos"))]
++#[cfg(any(target_os = "fuchsia", target_os = "illumos", target_os = "managarm"))]
+ use libc::fstatat as fstatat64;
+ #[cfg(any(all(target_os = "linux", not(target_env = "musl")), target_os = "hurd"))]
+ use libc::fstatat64;
+@@ -914,6 +914,7 @@ pub fn file_name(&self) -> OsString {
+             target_os = "fuchsia",
+             target_os = "hurd",
+             target_os = "illumos",
++            target_os = "managarm",
+         ),
+         not(miri) // no dirfd on Miri
+     ))]
+@@ -944,6 +945,7 @@ pub fn metadata(&self) -> io::Result<FileAttr> {
+             target_os = "fuchsia",
+             target_os = "hurd",
+             target_os = "illumos",
++            target_os = "managarm",
+         )),
+         miri
+     ))]
+diff --git a/library/std/src/sys/net/connection/socket/unix.rs b/library/std/src/sys/net/connection/socket/unix.rs
+index 559e2760..3c12531e 100644
+--- a/library/std/src/sys/net/connection/socket/unix.rs
++++ b/library/std/src/sys/net/connection/socket/unix.rs
+@@ -77,6 +77,7 @@ pub fn new(family: c_int, ty: c_int) -> io::Result<Socket> {
+                 target_os = "cygwin",
+                 target_os = "nto",
+                 target_os = "solaris",
++                target_os = "managarm",
+             ) => {
+                 // On platforms that support it we pass the SOCK_CLOEXEC
+                 // flag to atomically create the socket and set it as
+@@ -120,6 +121,7 @@ pub fn new_pair(fam: c_int, ty: c_int) -> io::Result<(Socket, Socket)> {
+                     target_os = "illumos",
+                     target_os = "linux",
+                     target_os = "hurd",
++                    target_os = "managarm",
+                     target_os = "netbsd",
+                     target_os = "openbsd",
+                     target_os = "cygwin",
+@@ -251,6 +253,7 @@ pub fn accept(&self, storage: *mut sockaddr, len: *mut socklen_t) -> io::Result<
+                 target_os = "illumos",
+                 target_os = "linux",
+                 target_os = "hurd",
++                target_os = "managarm",
+                 target_os = "netbsd",
+                 target_os = "openbsd",
+                 target_os = "cygwin",
+@@ -351,7 +354,7 @@ pub fn recv_from(&self, buf: &mut [u8]) -> io::Result<(usize, SocketAddr)> {
+         self.recv_from_with_flags(buf, 0)
+     }
+ 
+-    #[cfg(any(target_os = "android", target_os = "linux", target_os = "cygwin"))]
++    #[cfg(any(target_os = "android", target_os = "linux", target_os = "cygwin", target_os = "managarm"))]
+     pub fn recv_msg(&self, msg: &mut libc::msghdr) -> io::Result<usize> {
+         let n = cvt(unsafe { libc::recvmsg(self.as_raw_fd(), msg, libc::MSG_CMSG_CLOEXEC) })?;
+         Ok(n as usize)
+@@ -374,7 +377,7 @@ pub fn is_write_vectored(&self) -> bool {
+         self.0.is_write_vectored()
+     }
+ 
+-    #[cfg(any(target_os = "android", target_os = "linux", target_os = "cygwin"))]
++    #[cfg(any(target_os = "android", target_os = "linux", target_os = "cygwin", target_os = "managarm"))]
+     pub fn send_msg(&self, msg: &mut libc::msghdr) -> io::Result<usize> {
+         let n = cvt(unsafe { libc::sendmsg(self.as_raw_fd(), msg, 0) })?;
+         Ok(n as usize)
+@@ -534,12 +537,12 @@ pub fn exclbind(&self) -> io::Result<bool> {
+         Ok(raw != 0)
+     }
+ 
+-    #[cfg(any(target_os = "android", target_os = "linux", target_os = "cygwin"))]
++    #[cfg(any(target_os = "android", target_os = "linux", target_os = "cygwin", target_os = "managarm"))]
+     pub fn set_passcred(&self, passcred: bool) -> io::Result<()> {
+         unsafe { setsockopt(self, libc::SOL_SOCKET, libc::SO_PASSCRED, passcred as libc::c_int) }
+     }
+ 
+-    #[cfg(any(target_os = "android", target_os = "linux", target_os = "cygwin"))]
++    #[cfg(any(target_os = "android", target_os = "linux", target_os = "cygwin", target_os = "managarm"))]
+     pub fn passcred(&self) -> io::Result<bool> {
+         let passcred: libc::c_int =
+             unsafe { getsockopt(self, libc::SOL_SOCKET, libc::SO_PASSCRED)? };
+diff --git a/library/std/src/sys/process/unix/unix.rs b/library/std/src/sys/process/unix/unix.rs
+index 7d944f2f..dd1967c2 100644
+--- a/library/std/src/sys/process/unix/unix.rs
++++ b/library/std/src/sys/process/unix/unix.rs
+@@ -1187,7 +1187,7 @@ fn signal_string(signal: i32) -> &'static str {
+             )
+         ))]
+         libc::SIGSTKFLT => " (SIGSTKFLT)",
+-        #[cfg(any(target_os = "linux", target_os = "nto", target_os = "cygwin"))]
++        #[cfg(any(target_os = "linux", target_os = "nto", target_os = "cygwin", target_os = "managarm"))]
+         libc::SIGPWR => " (SIGPWR)",
+         #[cfg(any(
+             target_os = "freebsd",
+diff --git a/library/std/src/sys/thread/unix.rs b/library/std/src/sys/thread/unix.rs
+index 2a3e3a97..2c1c56d6 100644
+--- a/library/std/src/sys/thread/unix.rs
++++ b/library/std/src/sys/thread/unix.rs
+@@ -427,7 +427,8 @@ pub fn set_name(name: &CStr) {
+     target_os = "freebsd",
+     target_os = "dragonfly",
+     target_os = "nuttx",
+-    target_os = "cygwin"
++    target_os = "cygwin",
++    target_os = "managarm",
+ ))]
+ pub fn set_name(name: &CStr) {
+     unsafe {
+-- 
+2.52.0
+
