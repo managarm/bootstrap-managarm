@@ -7,6 +7,8 @@ RUN apt-get update \
 	&& apt-get -y install \
 		# Don't install recommended stuff
 		--no-install-recommends \
+		# Used by lwjgl2
+		ant \
 		# Used by gnutls
 		autogen \
 		# Used by host-bison
