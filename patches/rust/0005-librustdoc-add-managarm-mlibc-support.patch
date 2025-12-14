@@ -1,4 +1,4 @@
-From 6690951ac63b542557a2e2ea6af2688a0ca6d5f7 Mon Sep 17 00:00:00 2001
+From 67155f6887111a2830a2915d377e8cdaea5f42b7 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Thu, 28 Aug 2025 22:29:53 +0200
 Subject: [PATCH 5/6] librustdoc: add managarm/mlibc support
