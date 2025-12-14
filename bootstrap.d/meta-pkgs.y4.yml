@@ -60,7 +60,8 @@ packages:
       - usbutils
       - libgcc
       - libstdc++
-    revision: 11
+      - locale-data
+    revision: 12
     configure: []
     build: []
 
