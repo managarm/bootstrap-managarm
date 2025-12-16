@@ -88,9 +88,9 @@ tools:
         # Avoid exposing the original python3.
         expose: false
       - host-cargo
-    revision: 8
+    revision: 9
     install:
-      - args: ['python3', '-m', 'venv', '.']
+      - args: ['@BUILD_ROOT@/tools/host-python/bin/python3', '-m', 'venv', '.']
         workdir: '@PREFIX@'
       - args: ['bin/pip', 'install', '@THIS_SOURCE_DIR@']
         workdir: '@PREFIX@'
