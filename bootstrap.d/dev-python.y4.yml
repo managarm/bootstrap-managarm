@@ -84,8 +84,11 @@ tools:
     tools_required:
       - tool: host-python
         recursive: true
+        # host-gpep517 uses a venv with a python3 symlink.
+        # Avoid exposing the original python3.
+        expose: false
       - host-cargo
-    revision: 7
+    revision: 8
     install:
       - args: ['python3', '-m', 'venv', '.']
         workdir: '@PREFIX@'
