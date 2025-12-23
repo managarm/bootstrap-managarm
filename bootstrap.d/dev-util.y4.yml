@@ -509,7 +509,7 @@ packages:
       subdir: 'ports'
       git: 'https://gitlab.com/sortix/os-test.git'
       branch: 'main'
-      commit: '98dc18159aef085bce9110464a0d9f593a85fd9b'
+      commit: 'dd42f6278323d5633293624ad3819280f97b211c'
       rolling_version: true
       version: '0.0pl@ROLLING_ID@'
     tools_required:
