@@ -1,0 +1,26 @@
+From e5e5935f915973929829b0957ae64dd9023afa43 Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Wed, 24 Dec 2025 01:03:12 +0100
+Subject: [PATCH 2/2] Disable the fixincludes misfeature on mlibc for good
+
+---
+ fixincludes/mkfixinc.sh | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/fixincludes/mkfixinc.sh b/fixincludes/mkfixinc.sh
+index df90720b716..b4ede666e2f 100755
+--- a/fixincludes/mkfixinc.sh
++++ b/fixincludes/mkfixinc.sh
+@@ -20,7 +20,8 @@ case $machine in
+     powerpcle-*-eabisim* | \
+     powerpcle-*-eabi* | \
+     *-*-vxworks7* | \
+-    *-musl* )
++    *-musl* | \
++    *-mlibc* )
+ 	#  IF there is no include fixing,
+ 	#  THEN create a no-op fixer and exit
+ 	(echo "#! /bin/sh" ; echo "exit 0" ) > ${target}
+-- 
+2.52.0
+
