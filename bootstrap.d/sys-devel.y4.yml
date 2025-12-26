@@ -416,7 +416,7 @@ packages:
       - mpfr
       - mpc
       - zlib
-    revision: 6
+    revision: 7
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

@@ -1,8 +1,8 @@
-From 59650138ac89368d1de499e79ee46c37ec7d0058 Mon Sep 17 00:00:00 2001
+From f1a939bfd34f0c676a4092606c0f63f08717c36d Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Sat, 9 Aug 2025 00:06:54 +0200
-Subject: [PATCH] Fix dynamic linker paths and add support for backtracing into
- libgcc
+Subject: [PATCH 1/2] Fix dynamic linker paths and add support for backtracing
+ into libgcc
 
 ---
  gcc/config/aarch64/aarch64-managarm.h | 2 +-
@@ -14,7 +14,7 @@ Subject: [PATCH] Fix dynamic linker paths and add support for backtracing into
  6 files changed, 15 insertions(+), 7 deletions(-)
 
 diff --git a/gcc/config/aarch64/aarch64-managarm.h b/gcc/config/aarch64/aarch64-managarm.h
-index 9143fa673..7b84bd395 100644
+index 9143fa67301..7b84bd39588 100644
 --- a/gcc/config/aarch64/aarch64-managarm.h
 +++ b/gcc/config/aarch64/aarch64-managarm.h
 @@ -2,7 +2,7 @@
@@ -27,7 +27,7 @@ index 9143fa673..7b84bd395 100644
  #define MANAGARM_TARGET_LINK_SPEC  "%{h*}		\
     %{static:-Bstatic}				\
 diff --git a/gcc/config/i386/i386-managarm.h b/gcc/config/i386/i386-managarm.h
-index eeba4ba00..f86cf6391 100644
+index eeba4ba008e..f86cf63911b 100644
 --- a/gcc/config/i386/i386-managarm.h
 +++ b/gcc/config/i386/i386-managarm.h
 @@ -6,6 +6,6 @@
@@ -41,7 +41,7 @@ index eeba4ba00..f86cf6391 100644
 +#define GNU_USER_DYNAMIC_LINKER64 "/lib/x86_64-managarm-mlibc-ld.so"
 +#define GNU_USER_DYNAMIC_LINKERX32 "/lib/x86_64-managarm-x32-mlibc-ld.so"
 diff --git a/gcc/config/managarm.h b/gcc/config/managarm.h
-index 517e68c38..a5fdf77fe 100644
+index 517e68c38c8..a5fdf77fe05 100644
 --- a/gcc/config/managarm.h
 +++ b/gcc/config/managarm.h
 @@ -6,6 +6,7 @@
@@ -53,7 +53,7 @@ index 517e68c38..a5fdf77fe 100644
      builtin_assert ("system=managarm");		\
      builtin_assert ("system=unix");		\
 diff --git a/gcc/config/riscv/managarm.h b/gcc/config/riscv/managarm.h
-index 2c5db5521..64cbdd4aa 100644
+index 2c5db55214d..64cbdd4aa01 100644
 --- a/gcc/config/riscv/managarm.h
 +++ b/gcc/config/riscv/managarm.h
 @@ -41,7 +41,7 @@ along with GCC; see the file COPYING3.  If not see
@@ -66,7 +66,7 @@ index 2c5db5521..64cbdd4aa 100644
  #define LINK_SPEC "\
  -melf" XLEN_SPEC DEFAULT_ENDIAN_SPEC "riscv" LD_EMUL_SUFFIX " \
 diff --git a/libgcc/config.host b/libgcc/config.host
-index 6317343ea..4289f7a4f 100644
+index 6317343ea95..4289f7a4f2b 100644
 --- a/libgcc/config.host
 +++ b/libgcc/config.host
 @@ -321,7 +321,7 @@ case ${host} in
@@ -97,7 +97,7 @@ index 6317343ea..4289f7a4f 100644
    i[34567]86-*-gnu* | x86_64-*-gnu*)
  	tmake_file="${tmake_file} t-tls i386/t-linux i386/t-msabi t-slibgcc-libgcc"
 diff --git a/libgcc/unwind-dw2-fde-dip.c b/libgcc/unwind-dw2-fde-dip.c
-index 57d0c8812..38913e490 100644
+index 57d0c8812b1..38913e490a2 100644
 --- a/libgcc/unwind-dw2-fde-dip.c
 +++ b/libgcc/unwind-dw2-fde-dip.c
 @@ -83,6 +83,11 @@
@@ -113,5 +113,5 @@ index 57d0c8812..38913e490 100644
  
  #include <link.h>
 -- 
-2.50.1
+2.52.0
 
