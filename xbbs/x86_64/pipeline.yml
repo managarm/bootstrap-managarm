@@ -15,6 +15,11 @@ jobs:
     packages:
       - icu
 
+  - name: webkitgtk
+    capabilities: ["heavy"]
+    packages:
+      - webkitgtk
+
   - name: image
     capabilities: ["!builder", "test-images"]
     tasks:
