@@ -1,6 +1,7 @@
 default_capabilities: ["builder"]
 jobs:
   - name: system-toolchain
+    capabilities: ["heavy"]
     tools:
       - bootstrap-system-gcc
       - system-gcc

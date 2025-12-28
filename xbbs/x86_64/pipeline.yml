@@ -1,6 +1,7 @@
 default_capabilities: ["builder"]
 jobs:
   - name: system-toolchain
+    capabilities: ["heavy"]
     tools:
       - bootstrap-system-gcc
       - system-gcc
@@ -13,6 +14,11 @@ jobs:
       - host-icu
     packages:
       - icu
+
+  - name: webkitgtk
+    capabilities: ["heavy"]
+    packages:
+      - webkitgtk
 
   - name: image
     capabilities: ["!builder", "test-images"]
