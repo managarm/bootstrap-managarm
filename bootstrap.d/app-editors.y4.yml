@@ -36,7 +36,7 @@ packages:
       - ncurses
       - libintl
       - zlib
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -44,7 +44,6 @@ packages:
         - '--prefix=/usr'
         - '--sysconfdir=/etc'
         - '--docdir=/usr/share/doc/nano-8.5'
-        - 'CFLAGS=-DSLOW_BUT_NO_HACKS'
         environ:
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
           PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
