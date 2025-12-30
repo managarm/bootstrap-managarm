@@ -312,7 +312,7 @@ tools:
     tools_required:
       - tool: cross-binutils
         recursive: true
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -376,7 +376,7 @@ tools:
     tools_required:
       - tool: cross-binutils
         recursive: true
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -437,7 +437,7 @@ tools:
     tools_required:
       - tool: cross-binutils
         recursive: true
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
