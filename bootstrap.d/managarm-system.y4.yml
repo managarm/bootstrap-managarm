@@ -13,7 +13,7 @@ sources:
     subdir: 'ports'
     git: 'https://github.com/uACPI/uACPI.git'
     branch: 'master'
-    commit: c4d70797a54f3a1843a3e26426e9b57c40fbba7b
+    commit: e5e5deea6f4dea0ea81237db39ca061ead048e60
     version: '0.0pl@ROLLING_ID@'
 
   - name: managarm
