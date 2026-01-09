@@ -96,6 +96,7 @@ tools:
 
 packages:
   - name: bat
+    stability_level: broken # rustix update
     architecture: '@OPTION:arch@'
     metadata:
       summary: cat clone with syntax highlighting and Git integration
@@ -402,7 +403,7 @@ packages:
       - rust-patched-libs
     pkgs_required:
       - mlibc
-    revision: 7
+    revision: 8
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
         isolate_network: false
@@ -1133,7 +1134,7 @@ packages:
       - rust-patched-libs
     pkgs_required:
       - mlibc
-    revision: 7
+    revision: 8
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
         isolate_network: false

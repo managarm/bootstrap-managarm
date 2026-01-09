@@ -1,7 +1,7 @@
-From 6427ae0de05b82e419e328533ccc1af87f16c621 Mon Sep 17 00:00:00 2001
+From 33b5cda53d92894a67b0ddc62c3ebefe3a90a1d4 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Mon, 12 Feb 2024 00:32:53 +0100
-Subject: [PATCH 2/3] Add managarm support
+Subject: [PATCH 2/4] Add managarm support
 
 ---
  Cargo.toml                                  |   3 +
@@ -18,7 +18,7 @@ Subject: [PATCH 2/3] Add managarm support
  create mode 100644 src/unix/linux_like/managarm/x86_64/mod.rs
 
 diff --git a/Cargo.toml b/Cargo.toml
-index afeb07bc7..1d39c821e 100644
+index f49c45986..9752c50ce 100644
 --- a/Cargo.toml
 +++ b/Cargo.toml
 @@ -24,6 +24,7 @@ targets = [
@@ -46,15 +46,15 @@ index afeb07bc7..1d39c821e 100644
      "x86_64-unknown-openbsd",
      "x86_64-unknown-redox",
 diff --git a/build.rs b/build.rs
-index 070354f1e..a0ff4466d 100644
+index 199a9ac42..755523511 100644
 --- a/build.rs
 +++ b/build.rs
-@@ -32,12 +32,20 @@ const CHECK_CFG_EXTRA: &[(&str, &[&str])] = &[
+@@ -38,12 +38,20 @@ const CHECK_CFG_EXTRA: &[(&str, &[&str])] = &[
      (
          "target_os",
          &[
--            "switch", "aix", "ohos", "hurd", "rtems", "visionos", "nuttx", "cygwin",
-+            "switch", "aix", "ohos", "hurd", "rtems", "visionos", "nuttx", "cygwin", "managarm",
+-            "switch", "aix", "ohos", "hurd", "rtems", "visionos", "nuttx", "cygwin", "qurt",
++            "switch", "aix", "ohos", "hurd", "rtems", "visionos", "nuttx", "cygwin", "qurt", "managarm",
          ],
      ),
      (
@@ -400,19 +400,10 @@ index 000000000..4fa64623d
 +pub const O_DIRECTORY: c_int = 0x10000;
 +pub const O_NOFOLLOW: c_int = 0x20000;
 diff --git a/src/unix/linux_like/mod.rs b/src/unix/linux_like/mod.rs
-index b044caf10..da9f449a2 100644
+index 3ded4da44..95800ca6d 100644
 --- a/src/unix/linux_like/mod.rs
 +++ b/src/unix/linux_like/mod.rs
-@@ -64,7 +64,7 @@ s! {
-         pub ai_protocol: c_int,
-         pub ai_addrlen: socklen_t,
- 
--        #[cfg(any(target_os = "linux", target_os = "emscripten"))]
-+        #[cfg(any(target_os = "linux", target_os = "emscripten", target_os = "managarm"))]
-         pub ai_addr: *mut crate::sockaddr,
- 
-         pub ai_canonname: *mut c_char,
-@@ -237,6 +237,7 @@ cfg_if! {
+@@ -258,6 +258,7 @@ cfg_if! {
      if #[cfg(any(
          target_env = "gnu",
          target_os = "android",
@@ -420,15 +411,17 @@ index b044caf10..da9f449a2 100644
          all(target_env = "musl", musl_v1_2_3)
      ))] {
          s! {
-@@ -1670,6 +1671,7 @@ cfg_if! {
-     if #[cfg(any(
+@@ -1613,7 +1614,8 @@ cfg_if! {
          target_env = "gnu",
          target_os = "android",
-+        target_os = "managarm",
-         all(target_env = "musl", musl_v1_2_3)
+         all(target_env = "musl", musl_v1_2_3),
+-        target_os = "l4re"
++        target_os = "l4re",
++        target_os = "managarm"
      ))] {
          pub const AT_STATX_SYNC_TYPE: c_int = 0x6000;
-@@ -2219,6 +2221,9 @@ cfg_if! {
+         pub const AT_STATX_SYNC_AS_STAT: c_int = 0x0000;
+@@ -2199,6 +2201,9 @@ cfg_if! {
      } else if #[cfg(target_os = "android")] {
          mod android;
          pub use self::android::*;
@@ -439,10 +432,10 @@ index b044caf10..da9f449a2 100644
          // Unknown target_os
      }
 diff --git a/src/unix/mod.rs b/src/unix/mod.rs
-index 941f2faa9..c777437dc 100644
+index 227334a9d..13a7e2be5 100644
 --- a/src/unix/mod.rs
 +++ b/src/unix/mod.rs
-@@ -1836,7 +1836,8 @@ cfg_if! {
+@@ -2371,7 +2371,8 @@ cfg_if! {
          target_os = "linux",
          target_os = "l4re",
          target_os = "android",
@@ -453,10 +446,10 @@ index 941f2faa9..c777437dc 100644
          mod linux_like;
          pub use self::linux_like::*;
 diff --git a/triagebot.toml b/triagebot.toml
-index 54d848f8f..d6a30b633 100644
+index f01074c5e..7e0a6d9f6 100644
 --- a/triagebot.toml
 +++ b/triagebot.toml
-@@ -122,6 +122,7 @@ trigger_files = [
+@@ -131,6 +131,7 @@ trigger_files = [
      "src/unix/linux_like/linux/gnu/b64/riscv64",
      "src/unix/linux_like/linux/musl/b32/riscv32",
      "src/unix/linux_like/linux/musl/b64/riscv64",
@@ -464,7 +457,7 @@ index 54d848f8f..d6a30b633 100644
      "src/vxworks/riscv32.rs",
      "src/vxworks/riscv64.rs",
  ]
-@@ -169,6 +170,7 @@ trigger_files = [
+@@ -178,6 +179,7 @@ trigger_files = [
      "src/unix/linux_like/linux/musl/b32/x86",
      "src/unix/linux_like/linux/musl/b64/x86_64",
      "src/unix/linux_like/linux/uclibc/x86_64",
