@@ -9,6 +9,7 @@ imports:
   - file: bootstrap.d/app-shells.y4.yml
   - file: bootstrap.d/app-text.y4.yml
   - file: bootstrap.d/ci.y4.yml
+  - file: bootstrap.d/dev-build.y4.yml
   - file: bootstrap.d/dev-cpp.y4.yml
   - file: bootstrap.d/dev-db.y4.yml
   - file: bootstrap.d/dev-java.y4.yml
