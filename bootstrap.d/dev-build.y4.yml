@@ -1,0 +1,28 @@
+packages:
+  - name: meson
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: A high performance build system
+      description: Meson is an open source build system meant to be both extremely fast, and, even more importantly, as user friendly as possible.
+      spdx: 'Apache-2.0'
+      website: 'https://pypi.org/project/meson/'
+      maintainer: "no92 <leo@managarm.org>"
+      categories: ['dev-build']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/mesonbuild/meson.git'
+      tag: '1.10.0'
+      version: '1.10.0'
+    tools_required:
+      - host-gpep517
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - python
+    revision: 1
+    configure:
+      # python modules do not seem to support out-of-tree builds, so we just copy
+      # the source tree into the build directory instead.
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+    build:
+      - args: ['python3', '-m', 'gpep517', 'install-from-source', '--destdir', '@THIS_COLLECT_DIR@', '--optimize', 'all', '--prefix', '/usr', '--sysroot', '@SYSROOT_DIR@', '--interpreter', '/usr/bin/python3']
