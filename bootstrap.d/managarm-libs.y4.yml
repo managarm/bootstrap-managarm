@@ -76,6 +76,41 @@ tools:
       - args: ['make', 'install', 'PREFIX=@PREFIX@']
 
 packages:
+  - name: bragi
+    labels: [aarch64, riscv64]
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: A small and efficient IDL language
+      description: This package provides header files for bragi use.
+      spdx: 'MIT'
+      maintainer: "Alexander van der Grinten <avdgrinten@managarm.org>"
+      categories: ['sys-libs']
+    from_source: 'bragi'
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        # install to separate libdir and a separate includedir (instdead of /usr/include)
+        - '--includedir=share/bragi/include'
+        - '--libdir=lib/@OPTION:arch-triple@/bragi'
+        - '--buildtype=debugoptimized'
+        - '-Dinstall_headers=true'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+      # symlink the pkgconfig file to the standard location
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/lib/pkgconfig']
+      - args: ['ln', '-srf', '@THIS_COLLECT_DIR@/usr/lib/@OPTION:arch-triple@/bragi/pkgconfig/bragi.pc',
+              '@THIS_COLLECT_DIR@/usr/lib/pkgconfig/bragi.pc']
+
   - name: fafnir
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'

@@ -20,10 +20,8 @@ sources:
     sources_required:
       - libdrm
       - managarm
-      - bragi
     regenerate:
       - args: ['ln', '-sf', '@SOURCE_ROOT@/managarm', '@THIS_SOURCE_DIR@/subprojects/']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/bragi', '@THIS_SOURCE_DIR@/subprojects/']
 
 tools:
   - name: host-frigg
@@ -275,6 +273,7 @@ packages:
       - linux-headers
       - mlibc-headers
       - libdrm-headers
+      - bragi
       - frigg
       - libsmarter
     revision: 1

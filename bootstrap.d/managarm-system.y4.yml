@@ -25,13 +25,11 @@ sources:
       - cralgo
       - uacpi
       - lil
-      - bragi
     regenerate:
       - args: ['mkdir', '-p', '@THIS_SOURCE_DIR@/subprojects']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cralgo', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/uacpi', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/lil', '@THIS_SOURCE_DIR@/subprojects/']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/bragi', '@THIS_SOURCE_DIR@/subprojects/']
 
 
 tools:
@@ -119,6 +117,7 @@ packages:
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
     pkgs_required:
+      - bragi
       - frigg
       - libasync
       - libarch
@@ -203,6 +202,7 @@ packages:
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
     pkgs_required:
+      - bragi
       - frigg
       - libasync
       - libarch
@@ -275,6 +275,7 @@ packages:
       - libsmarter
       - cli11
       - boost
+      - bragi
       - !managarm::arch_dep
         arch: [x86_64]
         item: freebsd-e1000
