@@ -40,6 +40,101 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: libpulse
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Libraries for PulseAudio clients
+      description: Libraries for PulseAudio clients.
+      spdx: 'LGPL-2.1+'
+      website: 'https://www.freedesktop.org/wiki/Software/PulseAudio'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.freedesktop.org/pulseaudio/pulseaudio.git'
+      tag: 'v17.0'
+      version: '17.0'
+      regenerate:
+        - args: ['sed', '-i', '-e', 's:; autospawn = yes:autospawn = no:g', 'src/pulse/client.conf.in']
+    tools_required:
+      - system-gcc
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+      - host-xorg-macros
+    pkgs_required:
+      - mlibc
+      - libsndfile
+      - systemd
+      - dbus
+      - glib
+      - gtk+-3
+      - libx11
+      - libxcb
+      - xorg-proto
+      - libintl
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '--localstatedir=/var'
+        - '-Ddaemon=false'
+        - '-Dclient=true'
+        - '-Ddoxygen=false'
+        - '-Dgcov=false'
+        - '-Dtests=false'
+        - '-Ddatabase=simple'
+        - '-Dstream-restore-clear-old-devices=true'
+        - '-Drunning-from-build-tree=false'
+        - '-Dmodlibexecdir=/usr/lib/pulseaudio/modules'
+        - '-Dalsa=disabled'
+        - '-Dasyncns=disabled'
+        - '-Davahi=disabled'
+        - '-Dbluez5=disabled'
+        - '-Dbluez5-gstreamer=disabled'
+        - '-Dbluez5-native-headset=false'
+        - '-Dbluez5-ofono-headset=false'
+        - '-Ddbus=enabled'
+        - '-Delogind=disabled'
+        - '-Dfftw=disabled'
+        - '-Dglib=enabled'
+        - '-Dgsettings=disabled'
+        - '-Dgstreamer=disabled'
+        - '-Dgtk=enabled'
+        - '-Dhal-compat=false'
+        - '-Dipv6=false'
+        - '-Djack=disabled'
+        - '-Dlirc=disabled'
+        - '-Dopenssl=disabled'
+        - '-Dorc=disabled'
+        - '-Doss-output=disabled'
+        - '-Dsamplerate=disabled'
+        - '-Dsoxr=disabled'
+        - '-Dspeex=disabled'
+        - '-Dsystemd=enabled'
+        - '-Dtcpwrap=disabled'
+        - '-Dudev=disabled'
+        - '-Dvalgrind=disabled'
+        - '-Dx11=enabled'
+        - '-Dadrian-aec=false'
+        - '-Dwebrtc-aec=disabled'
+        - '@THIS_SOURCE_DIR@'
+        environ:
+          LDFLAGS: '-lintl'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: flac
     architecture: '@OPTION:arch@'
     metadata:
