@@ -8,8 +8,8 @@ sources:
   - name: ninja
     subdir: ports
     git: 'https://github.com/ninja-build/ninja.git'
-    tag: 'v1.12.1'
-    version: '1.12.1'
+    tag: 'v1.13.2'
+    version: '1.13.2'
 
   - name: 'pkg-config'
     subdir: 'ports'
@@ -113,6 +113,9 @@ tools:
   - name: host-ninja
     architecture: noarch
     from_source: ninja
+    tools_required:
+      - host-cmake
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -386,7 +389,6 @@ packages:
 
   - name: ninja
     architecture: '@OPTION:arch@'
-    stability_level: 'broken' # Does not configure under cmake 4.0.0?
     metadata:
       summary: The Ninja build system
       description: Ninja is a small build system similar to make.
@@ -400,13 +402,14 @@ packages:
       - host-cmake
     pkgs_required:
       - mlibc
-    revision: 4
+    revision: 1
     configure:
       - args:
         - 'cmake'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_POLICY_VERSION_MINIMUM=3.5'
+        - '-DBUILD_TESTING=false'
         - '-Wno-dev'
         - '@THIS_SOURCE_DIR@'
     build:
