@@ -1930,3 +1930,35 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+
+  - name: openal-soft
+    architecture: '@OPTION:arch@'
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/kcat/openal-soft.git'
+      tag: '1.25.0'
+      version: '1.25.0'
+    tools_required:
+      - system-gcc
+      - host-cmake
+    pkgs_required:
+      - mlibc
+      - alsa-lib
+      - sdl2
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DALSOFT_BACKEND_SDL2=ON'
+        - '-DALSOFT_REQUIRE_SDL2=ON'
+        - '-DALSOFT_NO_CONFIG_UTIL=ON'
+        - '@THIS_SOURCE_DIR@/'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
