@@ -13,7 +13,8 @@ sources:
     subdir: 'ports'
     git: 'https://github.com/uACPI/uACPI.git'
     branch: 'master'
-    commit: e5e5deea6f4dea0ea81237db39ca061ead048e60
+    commit: b36af9df8ea6b49142389a232ed0c2fd50209e2b
+    rolling_version: true
     version: '0.0pl@ROLLING_ID@'
 
   - name: managarm
@@ -23,12 +24,10 @@ sources:
     version: '0.0pl@ROLLING_ID@'
     sources_required:
       - cralgo
-      - uacpi
       - lil
     regenerate:
       - args: ['mkdir', '-p', '@THIS_SOURCE_DIR@/subprojects']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cralgo', '@THIS_SOURCE_DIR@/subprojects/']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/uacpi', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/lil', '@THIS_SOURCE_DIR@/subprojects/']
 
 
@@ -123,6 +122,7 @@ packages:
       - libasync
       - libarch
       - libsmarter
+      - uacpi
       - mlibc-headers
     configure:
       - args: |
@@ -211,6 +211,7 @@ packages:
       - mlibc-headers
       - freestnd-c-hdrs
       - freestnd-cxx-hdrs
+      - uacpi
     configure:
       - args:
         - 'meson'
@@ -439,6 +440,25 @@ packages:
         CC: '@OPTION:arch@-managarm-gcc'
         # Link the server binaries statically and don't touch SIGPIPE on startup
         RUSTFLAGS: "-C relocation-model=static -Z on-broken-pipe=inherit"
+
+  - name: uacpi
+    labels: [aarch64, riscv64]
+    architecture: '@OPTION:arch@'
+    from_source: 'uacpi'
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--prefix=/usr'
+        - '-Dinstall_pkgconfig=true'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
 
   - name: vendor-devicetrees
     metadata:
