@@ -269,7 +269,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc-headers
-    revision: 4
+    revision: 5
     configure:
       - args:
         - 'meson'
@@ -277,7 +277,8 @@ packages:
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
-        - '--libdir=lib'
+        - '--includedir=share/lil/include'
+        - '--libdir=lib/@OPTION:arch-triple@/lil'
         - '--buildtype=debugoptimized'
         - '@THIS_SOURCE_DIR@'
     build:
@@ -286,6 +287,10 @@ packages:
         environ:
           'DESTDIR': '@THIS_COLLECT_DIR@'
         quiet: true
+      # symlink the pkgconfig file to the standard location
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/lib/pkgconfig']
+      - args: ['ln', '-srf', '@THIS_COLLECT_DIR@/usr/lib/@OPTION:arch-triple@/lil/pkgconfig/lil.pc',
+              '@THIS_COLLECT_DIR@/usr/lib/pkgconfig/lil.pc']
 
   - name: lewis
     labels: [aarch64, riscv64]
