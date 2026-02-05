@@ -21,21 +21,33 @@ tools:
     source:
       subdir: ports
       git: 'https://github.com/tianocore/edk2.git'
-      tag: 'edk2-stable202511'
-      version: '2025.11'
+      tag: 'edk2-stable202408'
+      version: '2024.08'
       patch_keep_crlf: true
+      # don't judge, submodules are borked so we gotta do it manually
+      # which is why we need to run this in regenerate instead of checkout
       regenerate:
         - args:
           - 'git'
           - 'submodule'
           - 'update'
           - '--init'
+          - 'BaseTools/Source/C/BrotliCompress/brotli'
+          - 'CryptoPkg/Library/MbedTlsLib/mbedtls'
+          - 'CryptoPkg/Library/OpensslLib/openssl'
+          - 'MdeModulePkg/Library/BrotliCustomDecompressLib/brotli'
+          - 'MdeModulePkg/Universal/RegularExpressionDxe/oniguruma'
+          - 'MdePkg/Library/BaseFdtLib/libfdt'
+          - 'MdePkg/Library/MipiSysTLib/mipisyst'
+          - 'RedfishPkg/Library/JsonLib/jansson'
+          - 'SecurityPkg/DeviceSecurity/SpdmLib/libspdm'
+          - 'ArmPkg/Library/ArmSoftFloatLib/berkeley-softfloat-3'
           isolate_network: false
     tools_required:
       - host-llvm-toolchain
       - host-python
       - host-iasl
-    revision: 1
+    revision: 3
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     compile:
@@ -62,7 +74,7 @@ tools:
           esac
           . @THIS_BUILD_DIR@/edksetup.sh
           make -C @THIS_BUILD_DIR@/BaseTools
-          build -a $OVMF_ARCH -b RELEASE -p $OVMF_PKG.dsc -t CLANGDWARF -DNETWORK_HTTP_BOOT_ENABLE
+          build -a $OVMF_ARCH -b DEBUG -p $OVMF_PKG.dsc -t CLANGDWARF -DNETWORK_HTTP_BOOT_ENABLE
         environ:
           PYTHON_COMMAND: 'python3'
     install:
@@ -71,17 +83,17 @@ tools:
           TRUNCATE_SIZE=""
           case "$ARCH" in
             "x86_64")
-              OVMF_CODE="OvmfX64/RELEASE_CLANGDWARF/FV/OVMF_CODE.fd"
-              OVMF_VARS="OvmfX64/RELEASE_CLANGDWARF/FV/OVMF_VARS.fd"
+              OVMF_CODE="OvmfX64/DEBUG_CLANGDWARF/FV/OVMF_CODE.fd"
+              OVMF_VARS="OvmfX64/DEBUG_CLANGDWARF/FV/OVMF_VARS.fd"
               ;;
             "aarch64")
-              OVMF_CODE="ArmVirtQemu-AARCH64/RELEASE_CLANGDWARF/FV/QEMU_EFI.fd"
-              OVMF_VARS="ArmVirtQemu-AARCH64/RELEASE_CLANGDWARF/FV/QEMU_VARS.fd"
+              OVMF_CODE="ArmVirtQemu-AARCH64/DEBUG_CLANGDWARF/FV/QEMU_EFI.fd"
+              OVMF_VARS="ArmVirtQemu-AARCH64/DEBUG_CLANGDWARF/FV/QEMU_VARS.fd"
               TRUNCATE_SIZE="64M"
               ;;
             "riscv64")
-              OVMF_CODE="RiscVVirtQemu/RELEASE_CLANGDWARF/FV/RISCV_VIRT_CODE.fd"
-              OVMF_VARS="RiscVVirtQemu/RELEASE_CLANGDWARF/FV/RISCV_VIRT_VARS.fd"
+              OVMF_CODE="RiscVVirtQemu/DEBUG_CLANGDWARF/FV/RISCV_VIRT_CODE.fd"
+              OVMF_VARS="RiscVVirtQemu/DEBUG_CLANGDWARF/FV/RISCV_VIRT_VARS.fd"
               TRUNCATE_SIZE="32M"
               ;;
             *)
@@ -95,5 +107,5 @@ tools:
             truncate -s $TRUNCATE_SIZE @PREFIX@/OVMF_CODE_@OPTION:arch@.fd
             truncate -s $TRUNCATE_SIZE @PREFIX@/OVMF_VARS_@OPTION:arch@.fd
           fi
-          mkdir -p @PREFIX@/bin
+          mkdir @PREFIX@/bin
           cp "@THIS_BUILD_DIR@/BaseTools/Source/C/bin/GenFw" "@PREFIX@/bin/"
