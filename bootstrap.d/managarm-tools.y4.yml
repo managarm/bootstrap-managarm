@@ -111,10 +111,10 @@ tools:
           cp "@THIS_BUILD_DIR@/BaseTools/Source/C/bin/GenFw" "@PREFIX@/bin/"
 
   - name: lil-utils
-    labels: [aarch64, riscv64]
+    labels: [aarch64, riscv64, not-on-xbbs]
     architecture: noarch
     from_source: lil
-    revision: 1
+    revision: 2
     containerless: true
     configure:
       - args:
