@@ -720,6 +720,73 @@ def do_qemu(args):
         qemu_args += ["-chardev", "file,id=ovmf-logs,path=ovmf.log"]
         qemu_args += ["-device", "isa-debugcon,iobase=0x402,chardev=ovmf-logs"]
 
+    # we have to handle this before other PCI devices, as we require this to be at 0000:00:02.0
+    if args.gpu_passthrough and args.gpu_passthrough == "intel":
+        gpu_memory_table = {
+            32: 0x01,
+            64: 0x02,
+            96: 0x03,
+            128: 0x04,
+            160: 0x05,
+            192: 0x06,
+            224: 0x07,
+            256: 0x08,
+            288: 0x09,
+            320: 0x0A,
+            352: 0x0B,
+            384: 0x0C,
+            416: 0x0D,
+            448: 0x0E,
+            480: 0x0F,
+            512: 0x10,
+        }
+
+        if args.gfx != "none":
+            print("Intel GPU passthrough requires '--gfx none'")
+            sys.exit(1)
+        if args.intel_gpu_memory not in gpu_memory_table:
+            print(f"{args.intel_gpu_memory} MiB memory is not a supported configuration for Intel Integrated GPUs")
+            sys.exit(1)
+        else:
+            igd_gms = gpu_memory_table[args.intel_gpu_memory]
+        with open("/sys/bus/pci/devices/0000:00:02.0/vendor") as f:
+            if f.readline().strip() != "0x8086":
+                print(f"No Intel integrated GPU available")
+                sys.exit(1)
+        with open("/sys/bus/pci/devices/0000:00:02.0/device") as f:
+            devid = int(f.readline().strip()[2:], 16)
+
+        igd_rom = None
+        rom_mappings = {
+            'SKL-1061': [0x1921, 0x1902, 0x1912, 0x1932, 0x1913, 0x1906, 0x1916, 0x1926, 0x1923, 0x1927, 0x193A, 0x190B, 0x191B, 0x192B, 0x193B, 0x190E, 0x191E, 0x191D, 0x192D, 0x193D, 0x5921, 0x5902, 0x5912, 0x5913, 0x5915, 0x5906, 0x5916, 0x5926, 0x5917, 0x590A, 0x591A, 0x590B, 0x591B, 0x593B, 0x591D, 0x590E, 0x591E, 0x5923, 0x5927, 0x5908],
+        }
+
+        for rom_name, ids in rom_mappings.items():
+            if devid in ids:
+                igd_rom = rom_name
+                break
+        if not igd_rom:
+            print(f"No IGD ROM found for the GPU 8086:{devid:04x}")
+            sys.exit(1)
+
+        with open("/sys/bus/pci/devices/0000:00:02.0/class") as f:
+            if not f.readline().strip().startswith("0x03"):
+                print(f"No Intel integrated GPU available")
+                sys.exit(1)
+        if os.path.basename(os.readlink("/sys/bus/pci/devices/0000:00:02.0/driver")) != "vfio-pci":
+            print(f"Intel integrated GPU not bound to vfio-pci")
+            sys.exit(1)
+        if not os.access("/sys/bus/pci/devices/0000:00:02.0/iommu_group", os.F_OK):
+            print(f"Intel integrated GPU not bound to an IOMMU group")
+            sys.exit(1)
+
+        igd_rom_path = f"tools/igd-roms/{igd_rom}.rom"
+        if not os.access(igd_rom_path, os.F_OK):
+            print(f"IGD ROM file '{igd_rom_path}' is missing; please build the igd-roms tool!")
+            sys.exit(1)
+
+        qemu_args += ["-device", f"vfio-pci,host=00:02.0,x-igd-gms={igd_gms:#x},bus=pci.0,addr=2,x-igd-opregion=on,romfile={igd_rom_path},driver=vfio-pci-nohotplug"]
+
     # Add USB HCDs.
     if not args.inhibit_usb:
         qemu_args += [
@@ -804,7 +871,9 @@ def do_qemu(args):
         qemu_args += ["-device", f"vfio-pci,host={args.pci_passthrough}"]
 
     # Add graphics output.
-    if args.gfx == "default":
+    if args.gfx == "none":
+        qemu_args += ["-vga", "none", "-display", "none"]
+    elif args.gfx == "default":
         if args.arch == "x86_64":
             qemu_args += ["-vga", "virtio"]
         else:
@@ -974,6 +1043,8 @@ qemu_parser.add_argument("--dmalog-int-pin", type=str, default="C")
 qemu_parser.add_argument("--ci-protocol", choices=["limine", "linux", "mb2", "uefi"])
 qemu_parser.add_argument("--ci-script", type=str)
 qemu_parser.add_argument("--ci-download", type=str, nargs="*", default=[])
+qemu_parser.add_argument("--gpu-passthrough", choices=["intel", "none"], default="none")
+qemu_parser.add_argument("--intel-gpu-memory", type=int, default="160")
 qemu_parser.add_argument("--qmp", action="store_true")
 qemu_parser.add_argument("--use-system-qemu", action="store_true")
 qemu_parser.add_argument("--logfile", type=str)
