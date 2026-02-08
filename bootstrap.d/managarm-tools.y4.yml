@@ -131,3 +131,36 @@ tools:
       - args: ['ninja']
     install:
       - args: ['ninja', 'install']
+
+  - name: igd-roms
+    labels: [not-on-xbbs]
+    architecture: noarch
+    source:
+      subdir: ports
+      git: 'https://github.com/tianocore/edk2.git'
+      tag: 'edk2-stable202508'
+      version: '2025.08'
+      regenerate:
+        - args: ['git', 'submodule', 'add', '--force', 'https://github.com/tomitamoeko/VfioIgdPkg', 'VfioIgdPkg']
+          isolate_network: false
+        - args: ['git', '-C', 'VfioIgdPkg', 'checkout', '348860da70ca3a9ed6c1d95c30a97c757f54336b']
+        - args:
+          - 'git'
+          - 'submodule'
+          - 'update'
+          - '--init'
+          isolate_network: false
+    tools_required:
+      - host-python
+      - host-iasl
+    configure:
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+    compile:
+      - args: |
+          source edksetup.sh
+          make -C @THIS_BUILD_DIR@/BaseTools -j@PARALLELISM@
+          mkdir -p @PREFIX@
+          VfioIgdPkg/build.sh --gop @BUILD_ROOT@/tools/intel-gop-dxe/SKL-1061.efi SKL-1061.rom
+          cp *.rom @PREFIX@/
+        environ:
+          PYTHON_COMMAND: 'python3'
