@@ -828,7 +828,7 @@ def do_qemu(args):
         assert args.boot_drive == "none"
 
     # Add networking.
-    netdev_extra = ""
+    netdev_extra = ",hostfwd=tcp::2222-:22"
     if args.boot_drive == "nvme-of":
         netdev_extra += f",tftp={tftp_dir.name},bootfile="
         if args.uefi:

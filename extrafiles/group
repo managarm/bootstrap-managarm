@@ -24,6 +24,7 @@ systemd-timesync:x:78:
 systemd-coredump:x:79:
 uuidd:x:80:
 systemd-oom:x:81:
+sshd:x:82:
 wheel:x:97:
 users:x:999:
 managarm:x:1000:
