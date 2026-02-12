@@ -1201,8 +1201,12 @@ packages:
       - host-pkg-config
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
-      - host-mlibc
-      - host-gobject-introspection
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-mlibc
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: host-gobject-introspection
       - host-python
       - host-glib
     pkgs_required:
@@ -1220,7 +1224,10 @@ packages:
         - '--prefix=/usr'
         - '--buildtype=release'
         - '--wrap-mode=nodownload'
-        - '-Dintrospection=enabled'
+        - !managarm::arch_ite
+          arch: [x86_64]
+          then: '-Dintrospection=enabled'
+          else: '-Dintrospection=disabled'
         - '-Dvapi=disabled'
         - '-Dgtk_doc=false'
         - '@THIS_SOURCE_DIR@'
