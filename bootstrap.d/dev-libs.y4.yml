@@ -65,13 +65,13 @@ sources:
 
   - name: wayland
     subdir: 'ports'
-    url: 'https://gitlab.freedesktop.org/wayland/wayland/-/releases/1.23.0/downloads/wayland-1.23.0.tar.xz'
-    checksum: 'blake2b:efb80e3c67db7a707a6d2ea66e7a5132173550bc13fdff447925ec3d33bfba8131532f819d5ab0dd80924cb4339b58b7ca83d9e70a436cea8268167476355bd8'
-    extract_path: 'wayland-1.23.0'
+    url: 'https://gitlab.freedesktop.org/wayland/wayland/-/releases/1.24.0/downloads/wayland-1.24.0.tar.xz'
+    checksum: 'blake2b:7ac6ac1f33cb2cae60e4058478655eeabd4f8f8e0fe07f6b9b386967ed4b31bdaac571dc2b812f3189534e3e53797822ca39f829207e45c24b494f039f82a836'
+    extract_path: 'wayland-1.24.0'
     patch-path-strip: 1
     format: 'tar.xz'
-    tag: '1.23.0'
-    version: '1.23.0'
+    tag: '1.24.0'
+    version: '1.24.0'
 
   - name: libtool
     subdir: 'ports'
@@ -2747,11 +2747,11 @@ packages:
       categories: ['dev-libs']
     source:
       subdir: 'ports'
-      url: 'https://gitlab.freedesktop.org/wayland/wayland-protocols/-/releases/1.42/downloads/wayland-protocols-1.42.tar.xz'
-      checksum: 'blake2b:7dc9cf43f82ee7522419327eaeaa36ebfe2a05f45687a2068951125af0de587d3a496bb2eb80f1e0afa96c960090d8d80ff7806117c578fb3771126fd2b8d65d'
-      extract_path: 'wayland-protocols-1.42'
+      url: 'https://gitlab.freedesktop.org/wayland/wayland-protocols/-/releases/1.45/downloads/wayland-protocols-1.45.tar.xz'
+      checksum: 'blake2b:9c70bf8975056e4038492101c38acdc476b28e277200144ff6e436e573b1e023e609b0a7bbf8f5acedecbfb268af6b41d11d4c101ffecebafe29440f4dcee4c1'
+      extract_path: 'wayland-protocols-1.45'
       format: 'tar.xz'
-      version: '1.42'
+      version: '1.45'
     tools_required:
       - system-gcc
       - wayland-scanner

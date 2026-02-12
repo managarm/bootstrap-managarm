@@ -190,6 +190,7 @@ tools:
     tools_required:
       - virtual: pkgconfig-for-host
         program_name: host-pkg-config
+    revision: 1
     configure:
       - args:
         - 'meson'
