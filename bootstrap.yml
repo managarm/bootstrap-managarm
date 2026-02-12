@@ -19,6 +19,7 @@ imports:
   - file: bootstrap.d/dev-util.y4.yml
   - file: bootstrap.d/dev-vcs.y4.yml
   - file: bootstrap.d/dev-qt.y4.yml
+  - file: bootstrap.d/games-action.y4.yml
   - file: bootstrap.d/games-board.y4.yml
   - file: bootstrap.d/games-emulation.y4.yml
   - file: bootstrap.d/games-fps.y4.yml
