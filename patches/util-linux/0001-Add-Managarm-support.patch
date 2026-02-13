@@ -1,0 +1,424 @@
+From a920361fc16af80f5696571d76a792c1492a0bdb Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Fri, 13 Feb 2026 18:08:38 +0100
+Subject: [PATCH] Add Managarm support
+
+---
+ include/mount-api-utils.h        | 46 +++++++++++++--
+ lib/meson.build                  |  4 +-
+ libblkid/src/topology/ioctl.c    |  2 +
+ libmount/meson.build             | 35 +++++-------
+ libmount/src/hook_mount_legacy.c |  1 +
+ libmount/src/hook_subdir.c       |  1 +
+ meson.build                      | 96 ++++++++++++++++----------------
+ sys-utils/meson.build            | 12 ----
+ 8 files changed, 111 insertions(+), 86 deletions(-)
+
+diff --git a/include/mount-api-utils.h b/include/mount-api-utils.h
+index a916f99..6e62cde 100644
+--- a/include/mount-api-utils.h
++++ b/include/mount-api-utils.h
+@@ -8,7 +8,9 @@
+ #ifdef HAVE_LINUX_MOUNT_H
+ #include <linux/mount.h>
+ #include <linux/unistd.h>
++#ifndef __managarm__
+ #include <sys/syscall.h>
++#endif
+ #include <inttypes.h>
+ 
+ /*
+@@ -32,7 +34,11 @@
+ #if !defined(HAVE_OPEN_TREE) && defined(SYS_open_tree)
+ static inline int open_tree(int dfd, const char *filename, unsigned int flags)
+ {
++#ifdef __managarm__
++	return ENOSYS;
++#else
+ 	return syscall(SYS_open_tree, dfd, filename, flags);
++#endif
+ }
+ #endif
+ 
+@@ -72,8 +78,12 @@ static inline int open_tree(int dfd, const char *filename, unsigned int flags)
+ static inline int move_mount(int from_dfd, const char *from_pathname, int to_dfd,
+ 			     const char *to_pathname, unsigned int flags)
+ {
++#ifdef __managarm__
++	return ENOSYS;
++#else
+ 	return syscall(SYS_move_mount, from_dfd, from_pathname, to_dfd,
+ 		       to_pathname, flags);
++#endif
+ }
+ #endif
+ 
+@@ -137,7 +147,11 @@ struct mount_attr {
+ static inline int mount_setattr(int dfd, const char *path, unsigned int flags,
+ 				struct mount_attr *attr, size_t size)
+ {
++#ifdef __managarm__
++	return ENOSYS;
++#else
+ 	return syscall(SYS_mount_setattr, dfd, path, flags, attr, size);
++#endif
+ }
+ #endif
+ 
+@@ -160,7 +174,11 @@ enum fsconfig_command {
+ static inline int fsconfig(int fd, unsigned int cmd, const char *key,
+                     const void *value, int aux)
+ {
+-        return syscall(SYS_fsconfig, fd, cmd, key, value, aux);
++#ifdef __managarm__
++	return ENOSYS;
++#else
++    return syscall(SYS_fsconfig, fd, cmd, key, value, aux);
++#endif
+ }
+ #endif
+ 
+@@ -171,7 +189,11 @@ static inline int fsconfig(int fd, unsigned int cmd, const char *key,
+ #if !defined(HAVE_FSOPEN) && defined(SYS_fsopen)
+ static inline int fsopen(const char *fsname, unsigned int flags)
+ {
+-        return syscall(SYS_fsopen, fsname, flags);
++#ifdef __managarm__
++	return ENOSYS;
++#else
++    return syscall(SYS_fsopen, fsname, flags);
++#endif
+ }
+ #endif
+ 
+@@ -182,7 +204,11 @@ static inline int fsopen(const char *fsname, unsigned int flags)
+ #if !defined(HAVE_FSMOUNT) && defined(SYS_fsmount)
+ static inline int fsmount(int fd, unsigned int flags, unsigned int mount_attrs)
+ {
+-        return syscall(SYS_fsmount, fd, flags, mount_attrs);
++#ifdef __managarm__
++	return ENOSYS;
++#else
++    return syscall(SYS_fsmount, fd, flags, mount_attrs);
++#endif
+ }
+ #endif
+ 
+@@ -205,7 +231,11 @@ static inline int fsmount(int fd, unsigned int flags, unsigned int mount_attrs)
+ #if !defined(HAVE_FSPICK) && defined(SYS_fspick)
+ static inline int fspick(int dfd, const char *pathname, unsigned int flags)
+ {
+-        return syscall(SYS_fspick, dfd, pathname, flags);
++#ifdef __managarm__
++	return ENOSYS;
++#else
++    return syscall(SYS_fspick, dfd, pathname, flags);
++#endif
+ }
+ #endif
+ 
+@@ -354,6 +384,9 @@ static inline int ul_statmount(uint64_t mnt_id,
+ 			struct ul_statmount *buf,
+ 			size_t bufsize, unsigned int flags)
+ {
++#ifdef __managarm__
++	return ENOSYS;
++#else
+        struct ul_mnt_id_req req = {
+ 		.size = MNT_ID_REQ_SIZE_VER1,
+ 		.mnt_id = mnt_id,
+@@ -362,6 +395,7 @@ static inline int ul_statmount(uint64_t mnt_id,
+        };
+ 
+        return syscall(SYS_statmount, &req, buf, bufsize, flags);
++#endif
+ }
+ #endif
+ 
+@@ -372,6 +406,9 @@ static inline ssize_t ul_listmount(uint64_t mnt_id,
+ 			uint64_t list[], size_t num,
+ 			unsigned int flags)
+ {
++#ifdef __managarm__
++	return ENOSYS;
++#else
+        struct ul_mnt_id_req req = {
+ 		.size = MNT_ID_REQ_SIZE_VER1,
+ 		.mnt_id = mnt_id,
+@@ -380,6 +417,7 @@ static inline ssize_t ul_listmount(uint64_t mnt_id,
+        };
+ 
+        return syscall(SYS_listmount, &req, list, num, flags);
++#endif
+ }
+ #endif
+ 
+diff --git a/lib/meson.build b/lib/meson.build
+index 25febbc..9e50918 100644
+--- a/lib/meson.build
++++ b/lib/meson.build
+@@ -28,6 +28,8 @@ lib_common_sources = '''
+ 	timeutils.c
+ 	ttyutils.c
+ 	xxhash.c
++	linux_version.c
++	loopdev.c
+ '''.split()
+ 
+ idcache_c = files('idcache.c')
+@@ -62,8 +64,6 @@ selinux_utils_c = files('selinux-utils.c')
+ if LINUX
+   lib_common_sources += '''
+     caputils.c
+-    linux_version.c
+-    loopdev.c
+ '''.split()
+ endif
+ 
+diff --git a/libblkid/src/topology/ioctl.c b/libblkid/src/topology/ioctl.c
+index e95d677..fee95c3 100644
+--- a/libblkid/src/topology/ioctl.c
++++ b/libblkid/src/topology/ioctl.c
+@@ -16,6 +16,8 @@
+ #include <unistd.h>
+ #include <errno.h>
+ 
++#include <linux/fs.h>
++
+ #include "topology.h"
+ 
+ static int probe_ioctl_tp(blkid_probe pr,
+diff --git a/libmount/meson.build b/libmount/meson.build
+index 29a43be..da9606c 100644
+--- a/libmount/meson.build
++++ b/libmount/meson.build
+@@ -38,31 +38,26 @@ lib_mount_sources = '''
+   src/test.c
+   src/utils.c
+   src/version.c
++  src/optlist.c
++  src/context.c
++  src/context_umount.c
++  src/context_mount.c
++  src/hooks.c
++  src/monitor.c
++  src/hook_veritydev.c
++  src/hook_subdir.c
++  src/hook_owner.c
++  src/hook_mount.c
++  src/hook_mount_legacy.c
++  src/hook_mkdir.c
++  src/hook_selinux.c
++  src/hook_loopdev.c
++  src/hook_idmap.c
+ '''.split() + [
+   list_h,
+   monotonic_c,
+ ]
+ 
+-if LINUX
+-  lib_mount_sources += '''
+-    src/hooks.c
+-    src/monitor.c
+-    src/optlist.c
+-    src/hook_veritydev.c
+-    src/hook_subdir.c
+-    src/hook_owner.c
+-    src/hook_mount.c
+-    src/hook_mount_legacy.c
+-    src/hook_mkdir.c
+-    src/hook_selinux.c
+-    src/hook_loopdev.c
+-    src/hook_idmap.c
+-    src/context_umount.c
+-    src/context_mount.c
+-    src/context.c
+-'''.split()
+-endif
+-
+ if enable_btrfs
+   lib_mount_sources += 'src/btrfs.c'
+ endif
+diff --git a/libmount/src/hook_mount_legacy.c b/libmount/src/hook_mount_legacy.c
+index 18b7a00..5615781 100644
+--- a/libmount/src/hook_mount_legacy.c
++++ b/libmount/src/hook_mount_legacy.c
+@@ -15,6 +15,7 @@
+  * Please, see the comment in libmount/src/hooks.c to understand how hooks work.
+  */
+ 
++#include <sys/mount.h>
+ #include "mountP.h"
+ 
+ /* mount(2) flags for additional propagation changes etc. */
+diff --git a/libmount/src/hook_subdir.c b/libmount/src/hook_subdir.c
+index 7cbb2c8..8ca2dba 100644
+--- a/libmount/src/hook_subdir.c
++++ b/libmount/src/hook_subdir.c
+@@ -16,6 +16,7 @@
+  * Please, see the comment in libmount/src/hooks.c to understand how hooks work.
+  */
+ #include <sched.h>
++#include <sys/mount.h>
+ 
+ #include "mountP.h"
+ #include "fileutils.h"
+diff --git a/meson.build b/meson.build
+index 1647a84..b7a369b 100644
+--- a/meson.build
++++ b/meson.build
+@@ -99,7 +99,7 @@ login_lastlogin = get_option('login-lastlogin')
+ conf.set('USE_LOGIN_LASTLOG', login_lastlogin ? 1 : false)
+ summary('login-lastlogin', login_lastlogin ? 'enabled' : 'disabled', section : 'components')
+ 
+-have_mountfd_api = cc.has_type('struct mount_attr', prefix : '#include <linux/mount.h>')
++have_mountfd_api = false #cc.has_type('struct mount_attr', prefix : '#include <linux/mount.h>')
+ conf.set('HAVE_STRUCT_MOUNT_ATTR', have_mountfd_api ? 1 : false)
+ conf.set('HAVE_MOUNTFD_API', have_mountfd_api ? 1 : false)
+ 
+@@ -1992,20 +1992,20 @@ if opt and not is_disabler(exe)
+   bashcompletions += ['swapoff']
+ endif
+ 
+-exe = executable(
+-  'lscpu',
+-  lscpu_sources,
+-  include_directories : includes,
+-  link_with : [lib_common,
+-               lib_smartcols],
+-  dependencies : [rtas_libs],
+-  install_dir : usrbin_exec_dir,
+-  install : true)
+-if not is_disabler(exe)
+-  exes += exe
+-  manadocs += lscpu_manadocs
+-  bashcompletions += ['lscpu']
+-endif
++# exe = executable(
++#   'lscpu',
++#   lscpu_sources,
++#   include_directories : includes,
++#   link_with : [lib_common,
++#                lib_smartcols],
++#   dependencies : [rtas_libs],
++#   install_dir : usrbin_exec_dir,
++#   install : true)
++# if not is_disabler(exe)
++#   exes += exe
++#   manadocs += lscpu_manadocs
++#   bashcompletions += ['lscpu']
++# endif
+ 
+ opt = get_option('build-chcpu').require(have_cpu_set_t).allowed()
+ exe = executable(
+@@ -3217,19 +3217,19 @@ if opt and not is_disabler(exe)
+   bashcompletions += ['getopt']
+ endif
+ 
+-exe = executable(
+-  'fincore',
+-  fincore_sources,
+-  include_directories : includes,
+-  link_with : [lib_common,
+-               lib_smartcols],
+-  install_dir : usrbin_exec_dir,
+-  install : true)
+-if not is_disabler(exe)
+-  exes += exe
+-  manadocs += fincore_manadocs
+-  bashcompletions += ['fincore']
+-endif
++# exe = executable(
++#   'fincore',
++#   fincore_sources,
++#   include_directories : includes,
++#   link_with : [lib_common,
++#                lib_smartcols],
++#   install_dir : usrbin_exec_dir,
++#   install : true)
++# if not is_disabler(exe)
++#   exes += exe
++#   manadocs += fincore_manadocs
++#   bashcompletions += ['fincore']
++# endif
+ 
+ opt = get_option('build-hardlink').allowed()
+ exe = executable(
+@@ -3306,31 +3306,31 @@ if opt and not is_disabler(exe)
+   bashcompletions += ['waitpid']
+ endif
+ 
+-syscalls_h = custom_target('syscalls.h',
+-  input : 'tools/all_syscalls',
+-  output : 'syscalls.h',
+-  command : ['tools/all_syscalls', sed.full_path(), '@OUTPUT@',
+-             cc.cmd_array(), get_option('c_args')],
+-)
++# syscalls_h = custom_target('syscalls.h',
++#   input : 'tools/all_syscalls',
++#   output : 'syscalls.h',
++#   command : ['tools/all_syscalls', sed.full_path(), '@OUTPUT@',
++#              cc.cmd_array(), get_option('c_args')],
++# )
+ 
+ have_linux_audit_h = cc.has_header('linux/audit.h')
+ have_linux_seccomp_h = cc.has_header('linux/seccomp.h')
+ have_audit_arch_native = cc.compiles(fs.read('include/audit-arch.h'), name : 'has AUDIT_ARCH_NATIVE')
+ 
+-opt = get_option('build-enosys').require(have_linux_audit_h and have_linux_seccomp_h and have_audit_arch_native).allowed()
+-exe = executable(
+-  'enosys',
+-  'misc-utils/enosys.c', syscalls_h, errnos_h,
+-  include_directories : includes,
+-  link_with : [lib_common],
+-  install_dir : usrbin_exec_dir,
+-  install : opt,
+-  build_by_default : opt)
+-if opt and not is_disabler(exe)
+-  exes += exe
+-  manadocs += enosys_manadocs
+-  bashcompletions += ['enosys']
+-endif
++# opt = get_option('build-enosys').require(have_linux_audit_h and have_linux_seccomp_h and have_audit_arch_native).allowed()
++# exe = executable(
++#   'enosys',
++#   'misc-utils/enosys.c', syscalls_h, errnos_h,
++#   include_directories : includes,
++#   link_with : [lib_common],
++#   install_dir : usrbin_exec_dir,
++#   install : opt,
++#   build_by_default : opt)
++# if opt and not is_disabler(exe)
++#   exes += exe
++#   manadocs += enosys_manadocs
++#   bashcompletions += ['enosys']
++# endif
+ 
+ opt = get_option('build-lsclocks').require(have_linux_rtc_h).allowed()
+ exe = executable(
+diff --git a/sys-utils/meson.build b/sys-utils/meson.build
+index 2fdcc63..f96ff66 100644
+--- a/sys-utils/meson.build
++++ b/sys-utils/meson.build
+@@ -175,18 +175,6 @@ swapoff_sources = files(
+ ) + \
+   swapprober_c
+ 
+-lscpu_sources = files(
+-  'lscpu.c',
+-  'lscpu.h',
+-  'lscpu-cputype.c',
+-  'lscpu-cpu.c',
+-  'lscpu-topology.c',
+-  'lscpu-virt.c',
+-  'lscpu-arm.c',
+-  'lscpu-dmi.c',
+-)
+-lscpu_manadocs = files('lscpu.1.adoc')
+-
+ chcpu_sources = files(
+   'chcpu.c',
+ )
+-- 
+2.51.0
+
