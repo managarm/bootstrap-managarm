@@ -1583,8 +1583,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/systemd/systemd.git'
-      tag: 'v256.8'
-      version: '256.8'
+      tag: 'v259'
+      version: '259'
     tools_required:
       - system-gcc
       - virtual: pkgconfig-for-target
@@ -1598,7 +1598,7 @@ packages:
       - util-linux-libs
       - mlibc
       - pam
-    revision: 12
+    revision: 1
     configure:
       - args:
         - 'meson'
@@ -1609,6 +1609,7 @@ packages:
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
         - '--buildtype=debugoptimized'
+        - '-Dlibc=mlibc'
         - '-Dadm-group=false'
         - '-Danalyze=false'
         - '-Dapparmor=disabled'
@@ -1647,7 +1648,6 @@ packages:
         - '-Dmachined=false'
         - '-Dmicrohttpd=disabled'
         - '-Dnetworkd=false'
-        - '-Dnscd=false'
         - '-Dnss-myhostname=false'
         - '-Dnss-resolve=disabled'
         - '-Dnss-systemd=false'
@@ -1680,8 +1680,17 @@ packages:
         - '-Dxz=disabled'
         - '-Dzlib=disabled'
         - '-Dzstd=disabled'
-        - '-Dtests=true'
-        - '-Dinstall-tests=true'
+        - '-Dtests=false'
+        - '-Dinstall-tests=false'
+        - '-Dsysusers=false'
+        - '-Drpmmacrosdir=no'
+        - '-Dhomed=disabled'
+        - '-Dpamconfdir=no'
+        - '-Ddev-kvm-mode=0660'
+        - '-Dnobody-group=nogroup'
+        - '-Dsysupdate=disabled'
+        - '-Dukify=disabled'
+        - '-Ddocdir=/usr/share/doc/systemd-259'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -1698,13 +1707,6 @@ packages:
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/systemd-user', '@THIS_COLLECT_DIR@/etc/pam.d/']
       # Touch up empty directories
       - args: ['touch',
-          '@THIS_COLLECT_DIR@/usr/lib/systemd/system/runlevel1.target.wants/.keep',
-          '@THIS_COLLECT_DIR@/usr/lib/systemd/system/runlevel2.target.wants/.keep',
-          '@THIS_COLLECT_DIR@/usr/lib/systemd/system/runlevel3.target.wants/.keep',
-          '@THIS_COLLECT_DIR@/usr/lib/systemd/system/runlevel4.target.wants/.keep',
-          '@THIS_COLLECT_DIR@/usr/lib/systemd/system/runlevel5.target.wants/.keep',
-          '@THIS_COLLECT_DIR@/usr/lib/systemd/system/rescue.target.wants/.keep',
-          '@THIS_COLLECT_DIR@/usr/lib/systemd/system/graphical.target.wants/.keep',
           '@THIS_COLLECT_DIR@/usr/lib/systemd/user-generators/.keep',
           '@THIS_COLLECT_DIR@/usr/lib/systemd/system-shutdown/.keep',
           '@THIS_COLLECT_DIR@/usr/lib/systemd/system-sleep/.keep',
