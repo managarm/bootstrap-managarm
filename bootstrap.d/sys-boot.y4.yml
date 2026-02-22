@@ -13,8 +13,8 @@ sources:
   - name: limine
     subdir: 'ports'
     git: 'https://codeberg.org/Limine/Limine.git'
-    tag: 'v10.7.0'
-    version: '10.7.0'
+    tag: 'v10.8.0'
+    version: '10.8.0'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.16
