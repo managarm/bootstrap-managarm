@@ -299,6 +299,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: git-delta
+    stability_level: 'broken' # Rustix new version got imported, ignore for now.
     architecture: '@OPTION:arch@'
     metadata:
       summary: A syntax-highlighting pager for git
