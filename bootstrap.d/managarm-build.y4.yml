@@ -437,7 +437,7 @@ tools:
     tools_required:
       - tool: cross-binutils
         recursive: true
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -458,6 +458,7 @@ tools:
         - '--disable-libssp'
         - '--disable-libsanitizer'
         - '--disable-libquadmath'
+        - '--enable-linker-build-id'
         # -g blows up GCC's binary size.
         - 'CFLAGS=-O2'
         - 'CXXFLAGS=-O2'
