@@ -299,6 +299,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         # quiet: true
       - args: ['ln', '-sf', 'crt0.o', '@THIS_COLLECT_DIR@/usr/lib/crt1.o']
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
     tasks:
       - name: clang-tidy
         tools_required:
