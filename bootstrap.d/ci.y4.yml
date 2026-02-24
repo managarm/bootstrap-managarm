@@ -138,7 +138,7 @@ tasks:
       - '--ci-script'
       - |
           cd /opt/os-test/
-          make test
+          make -j$(nproc) test
           tar -czf os-test-results.tar.gz out/managarm/
       - '--ci-download'
       - '/opt/os-test/os-test-results.tar.gz'
