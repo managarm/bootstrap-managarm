@@ -384,6 +384,7 @@ packages:
 
   - name: eza
     architecture: '@OPTION:arch@'
+    stability_level: broken
     metadata:
       summary: A modern replacement for 'ls' written in Rust
       description: Eza is a modern `ls` replacement written in rust.
