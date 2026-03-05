@@ -60,8 +60,8 @@ sources:
   - name: nss
     subdir: 'ports'
     git: 'https://github.com/nss-dev/nss.git'
-    tag: 'NSS_3_117_RTM'
-    version: '3.117.RTM'
+    tag: 'NSS_3_121_RTM'
+    version: '3.121.RTM'
 
   - name: wayland
     subdir: 'ports'
