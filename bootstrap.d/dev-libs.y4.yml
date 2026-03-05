@@ -2439,14 +2439,14 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/openssl/openssl.git'
-      tag: 'OpenSSL_1_1_1w'
-      version: '1.1.1w'
+      tag: 'openssl-3.6.1'
+      version: '3.6.1'
     tools_required:
       - system-gcc
     pkgs_required:
       - mlibc
       - zlib
-    revision: 5
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/Configure'
@@ -2469,9 +2469,9 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
       # Move the doc dir to a versioned directory
-      - args: ['mv', '@THIS_COLLECT_DIR@/usr/share/doc/openssl', '@THIS_COLLECT_DIR@/usr/share/doc/openssl-1.1.1w']
+      - args: ['mv', '@THIS_COLLECT_DIR@/usr/share/doc/openssl', '@THIS_COLLECT_DIR@/usr/share/doc/openssl-3.6.1']
       # Install more documentation
-      - args: ['cp', '-fr', '@THIS_SOURCE_DIR@/doc/.', '@THIS_COLLECT_DIR@/usr/share/doc/openssl-1.1.1w']
+      - args: ['cp', '-fr', '@THIS_SOURCE_DIR@/doc/.', '@THIS_COLLECT_DIR@/usr/share/doc/openssl-3.6.1']
       - args: ['@SOURCE_ROOT@/scripts/keep-empty-directories.py', '@THIS_COLLECT_DIR@']
 
   - name: pcre
