@@ -88,7 +88,7 @@ packages:
       - libiconv
       - libintl
       - openssl
-    revision: 11
+    revision: 12
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -435,7 +435,7 @@ packages:
       - zlib
       - c-ares
       - boost
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

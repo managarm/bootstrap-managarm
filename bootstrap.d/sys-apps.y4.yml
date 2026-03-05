@@ -1505,7 +1505,7 @@ packages:
       - openssl
       - zlib
       - lz4
-    revision: 6
+    revision: 7
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
@@ -1651,7 +1651,7 @@ packages:
       - util-linux-libs
       - mlibc
       - pam
-    revision: 12
+    revision: 13
     configure:
       - args:
         - 'meson'
