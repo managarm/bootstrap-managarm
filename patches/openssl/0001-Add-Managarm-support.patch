@@ -1,19 +1,17 @@
-From be64e6ace7fd67eb828fe998fa1d08026e6f2dca Mon Sep 17 00:00:00 2001
+From ec27a48f63e0767d291704cd4c0ee3009b8b9730 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
-Date: Tue, 1 Jun 2021 22:03:10 +0200
-Subject: [PATCH 2/3] Add configuration file for Managarm targets. Initial work
- done by Qookie
+Date: Thu, 5 Mar 2026 21:54:20 +0100
+Subject: [PATCH] Add Managarm support
 
-Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
- Configurations/10-main.conf | 52 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 52 insertions(+)
+ Configurations/10-main.conf | 61 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 61 insertions(+)
 
 diff --git a/Configurations/10-main.conf b/Configurations/10-main.conf
-index f815a09b..598aa410 100644
+index 7e93968..43e93b6 100644
 --- a/Configurations/10-main.conf
 +++ b/Configurations/10-main.conf
-@@ -925,6 +925,58 @@ my %targets = (
+@@ -1010,6 +1010,67 @@ my %targets = (
          ranlib           => "true",
      },
  
@@ -26,9 +24,11 @@ index f815a09b..598aa410 100644
 +        CXXFLAGS        => picker(default   => "-Wall",
 +                        debug       => "-O0 -g",
 +                        release     => "-O3"),
-+        cxxflags        => add("-std=c++11"),
-+        lib_cppflags        => combine("-DOPENSSL_USE_NODELETE", "-DL_ENDIAN"),
-+        bn_ops          => "SIXTY_FOUR_BIT_LONG RC4_CHAR",
++        cflags           => threads("-pthread"),
++        cxxflags         => combine("-std=c++11", threads("-pthread")),
++        lib_cppflags     => "-DOPENSSL_USE_NODELETE",
++        ex_libs          => add("-ldl", threads("-pthread")),
++        bn_ops           => "SIXTY_FOUR_BIT_LONG RC4_CHAR",
 +        thread_scheme       => "pthreads",
 +        dso_scheme      => "dlfcn",
 +        shared_target       => "linux-shared",
@@ -41,8 +41,11 @@ index f815a09b..598aa410 100644
 +    # convenient for us, since it matches the target triples
 +
 +    "x86_64-managarm" => {
-+        inherit_from        => [ "managarm-generic", asm("x86_64_asm") ],
++        inherit_from        => [ "managarm-generic" ],
++        asm_arch         => 'x86_64',
 +        perlasm_scheme      => "elf",
++        lib_cppflags     => add("-DL_ENDIAN"),
++        bn_ops           => "SIXTY_FOUR_BIT_LONG",
 +
 +        # Configure doesn't want to play nice and passes "--cross-compile-suffix"
 +        # on to the GCC invocation
@@ -53,6 +56,8 @@ index f815a09b..598aa410 100644
 +    "aarch64-managarm" => {
 +        inherit_from        => [ "managarm-generic" ],
 +        perlasm_scheme      => "linux64",
++        asm_arch         => 'aarch64',
++        lib_cppflags     => add("-DL_ENDIAN"),
 +
 +        # Configure doesn't want to play nice and passes "--cross-compile-suffix"
 +        # on to the GCC invocation
@@ -62,6 +67,8 @@ index f815a09b..598aa410 100644
 +    "riscv64-managarm" => {
 +        inherit_from        => [ "managarm-generic" ],
 +        perlasm_scheme      => "linux64",
++        asm_arch         => 'riscv64',
++        lib_cppflags     => add("-DL_ENDIAN"),
 +
 +        # Configure doesn't want to play nice and passes "--cross-compile-suffix"
 +        # on to the GCC invocation
@@ -73,5 +80,5 @@ index f815a09b..598aa410 100644
      "BSD-generic32" => {
          # As for thread cflag. Idea is to maintain "collective" set of
 -- 
-2.45.2
+2.53.0
 
