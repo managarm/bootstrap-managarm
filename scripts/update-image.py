@@ -467,7 +467,7 @@ def generate_plan(arch, root_uuid, scriptdir):
     yield FsAction.RSYNC, "sbin"
     yield FsAction.RSYNC, "root/"
     yield FsAction.RSYNC, "usr/"
-    yield FsAction.RSYNC, "etc/", ['machine-id', '.updated', 'group']
+    yield FsAction.RSYNC, "etc/", ['machine-id', '.updated']
     yield FsAction.RSYNC, "var/"
     yield FsAction.RSYNC, "home/"
     yield FsAction.RSYNC, "opt/"

@@ -1,0 +1,1009 @@
+From 9f9dc8667989feea9408db1ac731a9b1e13b11a6 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Fri, 13 Feb 2026 18:11:00 +0100
+Subject: [PATCH 3/3] HACK: Managarm support
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ src/basic/capability-util.c        |  8 ++++++++
+ src/basic/chase.c                  |  4 ++++
+ src/basic/mountpoint-util.c        |  7 +++++++
+ src/basic/process-util.c           |  2 ++
+ src/basic/raw-clone.c              |  7 +++++++
+ src/core/exec-credential.c         |  5 +++++
+ src/core/exec-invoke.c             | 21 ++++++++++++++++++++-
+ src/core/execute.c                 |  3 +++
+ src/core/main.c                    |  3 +++
+ src/core/manager.c                 |  3 +++
+ src/include/override/sys/syscall.h |  4 ++++
+ src/journal/journald.conf.in       |  6 +++---
+ src/libc/bpf.c                     |  9 +++++++++
+ src/libc/ioprio.c                  | 13 +++++++++++++
+ src/libc/kcmp.c                    | 11 +++++++++++
+ src/libc/keyctl.c                  | 30 ++++++++++++++++++++++++++++++
+ src/libc/mempolicy.c               | 16 ++++++++++++++++
+ src/libc/mount.c                   | 18 ++++++++++++++++++
+ src/libc/quota.c                   |  8 ++++++++
+ src/libc/sched.c                   |  7 +++++++
+ src/libc/signal.c                  |  8 ++++++++
+ src/libc/stat.c                    |  8 ++++++++
+ src/libc/unistd.c                  | 27 +++++++++++++++++++++++++++
+ src/libc/xattr.c                   | 18 ++++++++++++++++++
+ src/shared/async.c                 |  4 ++++
+ src/shared/copy.c                  |  4 ++++
+ src/shared/mount-setup.c           |  8 ++++++++
+ src/shared/mount-util.c            |  4 ++++
+ src/shared/reboot-util.c           |  6 ++++++
+ src/shared/serialize.c             |  5 +++++
+ units/systemd-journald.service.in  | 22 +++++++++++-----------
+ units/systemd-udevd.service.in     | 26 +++++++++++++-------------
+ 32 files changed, 297 insertions(+), 28 deletions(-)
+
+diff --git a/src/basic/capability-util.c b/src/basic/capability-util.c
+index f67add1..d2cb35a 100644
+--- a/src/basic/capability-util.c
++++ b/src/basic/capability-util.c
+@@ -21,6 +21,9 @@
+ #include "user-util.h"
+ 
+ int capability_get(CapabilityQuintet *ret) {
++#ifdef __managarm__
++        return -ENOSYS; /* Capabilities are not supported on Managarm, so just return an empty set. */
++#else
+         assert(ret);
+ 
+         struct __user_cap_header_struct hdr = {
+@@ -41,9 +44,13 @@ int capability_get(CapabilityQuintet *ret) {
+                 .ambient = UINT64_MAX,
+         };
+         return 0;
++#endif
+ }
+ 
+ static int capability_apply(const CapabilityQuintet *q) {
++#ifdef __managarm__
++        return -ENOSYS; /* Capabilities are not supported on Managarm, so just ignore any changes. */
++#else
+         assert(q);
+ 
+         struct __user_cap_header_struct hdr = {
+@@ -64,6 +71,7 @@ static int capability_apply(const CapabilityQuintet *q) {
+                 },
+         };
+         return RET_NERRNO(syscall(SYS_capset, &hdr, data));
++#endif
+ }
+ 
+ unsigned cap_last_cap(void) {
+diff --git a/src/basic/chase.c b/src/basic/chase.c
+index 0199f5d..0646ab1 100644
+--- a/src/basic/chase.c
++++ b/src/basic/chase.c
+@@ -88,7 +88,11 @@ static int log_prohibited_symlink(int fd, ChaseFlags flags) {
+ }
+ 
+ static int openat_opath_with_automount(int dir_fd, const char *path, bool automount) {
++#ifdef __managarm__
++        static bool can_open_tree = false;
++#else
+         static bool can_open_tree = true;
++#endif
+         int r;
+ 
+         /* Pin an inode via O_PATH semantics. Sounds pretty obvious to do this, right? You just do open()
+diff --git a/src/basic/mountpoint-util.c b/src/basic/mountpoint-util.c
+index b7c4870..638fd9b 100644
+--- a/src/basic/mountpoint-util.c
++++ b/src/basic/mountpoint-util.c
+@@ -761,6 +761,12 @@ not_supported:
+ }
+ 
+ int mount_option_supported(const char *fstype, const char *key, const char *value) {
++#ifdef __managarm__
++        (void)fstype;
++        (void)key;
++        (void)value;
++        return false;
++#else
+         _cleanup_close_ int fd = -EBADF;
+         int r;
+ 
+@@ -805,6 +811,7 @@ int mount_option_supported(const char *fstype, const char *key, const char *valu
+         }
+ 
+         return true; /* works! */
++#endif
+ }
+ 
+ bool path_below_api_vfs(const char *p) {
+diff --git a/src/basic/process-util.c b/src/basic/process-util.c
+index 31dbdff..cfcc0be 100644
+--- a/src/basic/process-util.c
++++ b/src/basic/process-util.c
+@@ -1748,6 +1748,7 @@ int pidref_safe_fork_full(
+                 }
+         }
+ 
++#ifndef __managarm__
+         if (FLAGS_SET(flags, FORK_NEW_MOUNTNS | FORK_MOUNTNS_SLAVE)) {
+                 /* Optionally, make sure we never propagate mounts to the host. */
+                 if (mount(NULL, "/", NULL, MS_SLAVE | MS_REC, NULL) < 0) {
+@@ -1755,6 +1756,7 @@ int pidref_safe_fork_full(
+                         _exit(EXIT_FAILURE);
+                 }
+         }
++#endif
+ 
+         if (FLAGS_SET(flags, FORK_PRIVATE_TMP)) {
+                 assert(FLAGS_SET(flags, FORK_NEW_MOUNTNS));
+diff --git a/src/basic/raw-clone.c b/src/basic/raw-clone.c
+index 5f56017..504453e 100644
+--- a/src/basic/raw-clone.c
++++ b/src/basic/raw-clone.c
+@@ -73,6 +73,13 @@ pid_t raw_clone(unsigned long flags) {
+                 } else
+                         ret = in_child ? 0 : child_pid;
+         }
++#elif defined(__managarm__)
++#include <fcntl.h>
++        int helout = open("/dev/helout", O_RDWR);
++        dprintf(helout, "systemd: clone unsupported, falling back to fork\n");
++        close(helout);
++
++        ret = fork();
+ #else
+         ret = (pid_t) syscall(__NR_clone, flags, NULL);
+ #endif
+diff --git a/src/core/exec-credential.c b/src/core/exec-credential.c
+index 3d7f066..987d80a 100644
+--- a/src/core/exec-credential.c
++++ b/src/core/exec-credential.c
+@@ -1030,6 +1030,10 @@ static int setup_credentials_internal(
+                         return 0;
+                 }
+         }
++// HACK: We don't implement fsopen and friends, fall back!
++#ifdef __managarm__
++        return setup_credentials_plain_dir(context, cgroup_context, params, unit, cred_dir, uid, gid);
++#else
+ 
+         r = path_is_mount_point(cred_dir);
+         if (r < 0)
+@@ -1093,6 +1097,7 @@ static int setup_credentials_internal(
+                 return log_debug_errno(errno, "Failed to move credentials fs into place: %m");
+ 
+         return 0;
++#endif
+ }
+ 
+ int exec_setup_credentials(
+diff --git a/src/core/exec-invoke.c b/src/core/exec-invoke.c
+index fe836de..da218ef 100644
+--- a/src/core/exec-invoke.c
++++ b/src/core/exec-invoke.c
+@@ -5438,6 +5438,8 @@ int exec_invoke(
+          * case this is a tty, regardless if we opened it ourselves or got it passed in pre-opened. */
+         prepare_terminal(context, params);
+ 
++// HACK: Managarm doesn't implement this at all
++#ifndef __managarm__
+         if (context->oom_score_adjust_set) {
+                 /* When we can't make this change due to EPERM, then let's silently skip over it. User
+                  * namespaces prohibit write access to this file, and we shouldn't trip up over that. */
+@@ -5449,6 +5451,7 @@ int exec_invoke(
+                         return log_error_errno(r, "Failed to adjust OOM setting: %m");
+                 }
+         }
++#endif
+ 
+         if (context->coredump_filter_set) {
+                 r = set_coredump_filter(context->coredump_filter);
+@@ -5583,6 +5586,8 @@ int exec_invoke(
+                 }
+         }
+ 
++// HACK: Managarm doesn't implement cgroups at all, so skip all of this
++#ifndef __managarm__
+         if (params->cgroup_path) {
+                 /* If delegation is enabled we'll pass ownership of the cgroup to the user of the new process. On cgroup v1
+                  * this is only about systemd's own hierarchy, i.e. not the controller hierarchies, simply because that's not
+@@ -5647,6 +5652,7 @@ int exec_invoke(
+                         }
+                 }
+         }
++#endif
+ 
+         needs_mount_namespace = exec_needs_mount_namespace(context, params, runtime);
+ 
+@@ -5755,6 +5761,8 @@ int exec_invoke(
+ #endif
+         }
+ 
++// HACK: At least missing rlimit stuff, should investigate
++#ifndef __managarm__
+         if (needs_sandboxing) {
+                 int which_failed;
+ 
+@@ -5767,6 +5775,7 @@ int exec_invoke(
+                         return log_error_errno(r, "Failed to adjust resource limit RLIMIT_%s: %m", rlimit_to_string(which_failed));
+                 }
+         }
++#endif
+ 
+         if (needs_setuid && context->pam_name && username) {
+                 /* Let's call into PAM after we set up our own idea of resource limits so that pam_limits
+@@ -5783,11 +5792,16 @@ int exec_invoke(
+                 /* PAM modules might have set some ambient caps. Query them here and merge them into
+                  * the caps we want to set in the end, so that we don't end up unsetting them. */
+                 uint64_t ambient_after_pam;
++// HACK: Managarm doesn't implement capabilities at all, so skip all of this
++#ifndef __managarm__
+                 r = capability_get_ambient(&ambient_after_pam);
+                 if (r < 0) {
+                         *exit_status = EXIT_CAPABILITIES;
+                         return log_error_errno(r, "Failed to query ambient caps: %m");
+                 }
++#else
++                ambient_after_pam = 0;
++#endif
+ 
+                 capability_ambient_set |= ambient_after_pam;
+ 
+@@ -6099,6 +6113,8 @@ int exec_invoke(
+                 }
+ #endif
+ 
++// HACK: Capabilities are currently not supported in managarm, ignore it
++#ifndef __managarm__
+                 if (!cap_test_all(bset)) {
+                         r = capability_bounding_set_drop(bset, /* right_now= */ false);
+                         if (r < 0) {
+@@ -6125,6 +6141,7 @@ int exec_invoke(
+                                 return log_error_errno(r, "Failed to apply ambient capabilities (before UID change): %m");
+                         }
+                 }
++#endif
+         }
+ 
+         /* chroot to root directory first, before we lose the ability to chroot */
+@@ -6218,6 +6235,8 @@ int exec_invoke(
+                 }
+ #endif
+ 
++// HACK: Capabilities are currently not supported in managarm, ignore it
++#ifndef __managarm__
+                 /* PR_GET_SECUREBITS is not privileged, while PR_SET_SECUREBITS is. So to suppress potential
+                  * EPERMs we'll try not to call PR_SET_SECUREBITS unless necessary. Setting securebits
+                  * requires CAP_SETPCAP. */
+@@ -6384,7 +6403,7 @@ int exec_invoke(
+                         }
+                 }
+ #endif
+-
++#endif
+         }
+ 
+         if (!strv_isempty(context->unset_environment)) {
+diff --git a/src/core/execute.c b/src/core/execute.c
+index a5cb664..72a0145 100644
+--- a/src/core/execute.c
++++ b/src/core/execute.c
+@@ -572,11 +572,14 @@ int exec_spawn(
+         _cleanup_(pidref_done) PidRef pidref = PIDREF_NULL;
+         dual_timestamp start_timestamp;
+ 
++// HACK: Capabilities aren't a thing here
++#ifndef __managarm__
+         /* Restore the original ambient capability set the manager was started with to pass it to
+          * sd-executor. */
+         r = capability_ambient_set_apply(unit->manager->saved_ambient_set, /* also_inherit= */ false);
+         if (r < 0)
+                 return log_unit_error_errno(unit, r, "Failed to apply the starting ambient set: %m");
++#endif
+ 
+         /* Record the start timestamp before we fork so that it is guaranteed to be earlier than the
+          * handoff timestamp. */
+diff --git a/src/core/main.c b/src/core/main.c
+index 61a5a23..46ae85c 100644
+--- a/src/core/main.c
++++ b/src/core/main.c
+@@ -2463,7 +2463,10 @@ static int initialize_runtime(
+                                                 (arg_machine_id_from_firmware ? MACHINE_ID_SETUP_FORCE_FIRMWARE : 0),
+                                                 /* ret= */ NULL);
+                         (void) hostname_setup(/* really= */ true);
++// Apparently hangs on Managarm?
++#ifndef __managarm__
+                         (void) loopback_setup();
++#endif
+ 
+                         bump_unix_max_dgram_qlen();
+                         bump_file_max_and_nr_open();
+diff --git a/src/core/manager.c b/src/core/manager.c
+index 7938c98..9ec007a 100644
+--- a/src/core/manager.c
++++ b/src/core/manager.c
+@@ -4065,6 +4065,8 @@ static int manager_execute_generators(Manager *m, char * const *paths, bool remo
+         if (r < 0)
+                 return log_error_errno(r, "Failed to build generator environment: %m");
+ 
++// Bind mounts are not implemented in Managarm
++#ifndef __managarm__
+         if (remount_ro) {
+                 /* Remount most of the filesystem tree read-only. We leave /sys/ as-is, because our code
+                  * checks whether it is read-only to detect containerized execution environments. We leave
+@@ -4076,6 +4078,7 @@ static int manager_execute_generators(Manager *m, char * const *paths, bool remo
+                 if (r < 0)
+                         log_warning_errno(r, "Read-only bind remount failed, ignoring: %m");
+         }
++#endif
+ 
+         const char *argv[] = {
+                 NULL, /* Leave this empty, execute_directory() will fill something in */
+diff --git a/src/include/override/sys/syscall.h b/src/include/override/sys/syscall.h
+index b6922a0..1cf092a 100644
+--- a/src/include/override/sys/syscall.h
++++ b/src/include/override/sys/syscall.h
+@@ -9,6 +9,8 @@
+  */
+ #pragma once
+ 
++#ifndef __managarm__
++
+ #include_next <sys/syscall.h>   /* IWYU pragma: export */
+ 
+ #ifdef ARCH_MIPS
+@@ -613,3 +615,5 @@ static_assert(__NR_setxattrat == systemd_NR_setxattrat, "");
+ #    endif
+ #  endif
+ #endif
++
++#endif
+diff --git a/src/journal/journald.conf.in b/src/journal/journald.conf.in
+index 805b79b..9f60f3c 100644
+--- a/src/journal/journald.conf.in
++++ b/src/journal/journald.conf.in
+@@ -35,16 +35,16 @@
+ #MaxRetentionSec=0
+ #MaxFileSec=1month
+ #ForwardToSyslog=no
+-#ForwardToKMsg=no
++ForwardToKMsg=yes
+ #ForwardToConsole=no
+ #ForwardToWall=yes
+ #TTYPath=/dev/console
+ #MaxLevelStore=debug
+ #MaxLevelSyslog=debug
+-#MaxLevelKMsg=notice
++MaxLevelKMsg=debug
+ #MaxLevelConsole=info
+ #MaxLevelWall=emerg
+ #MaxLevelSocket=debug
+ #LineMax=48K
+-#ReadKMsg=yes
++ReadKMsg=no
+ #Audit=yes
+diff --git a/src/libc/bpf.c b/src/libc/bpf.c
+index 4a7498e..a4d9d32 100644
+--- a/src/libc/bpf.c
++++ b/src/libc/bpf.c
+@@ -1,11 +1,20 @@
+ /* SPDX-License-Identifier: LGPL-2.1-or-later */
+ 
++#include <errno.h>
+ #include <sys/bpf.h>
+ #include <sys/syscall.h>
+ #include <unistd.h>
+ 
+ #if !HAVE_BPF
+ int missing_bpf(int cmd, union bpf_attr *attr, size_t size) {
++#ifdef __managarm__
++        (void)cmd;
++        (void)attr;
++        (void)size;
++        errno = ENOSYS;
++        return -1;
++#else
+         return syscall(__NR_bpf, cmd, attr, size);
++#endif
+ }
+ #endif
+diff --git a/src/libc/ioprio.c b/src/libc/ioprio.c
+index 5bb6404..33af067 100644
+--- a/src/libc/ioprio.c
++++ b/src/libc/ioprio.c
+@@ -6,12 +6,25 @@
+ 
+ #if !HAVE_IOPRIO_GET
+ int missing_ioprio_get(int which, int who) {
++#ifdef __managarm__
++        (void)which;
++        (void)who;
++        return 0;
++#else
+         return syscall(__NR_ioprio_get, which, who);
++#endif
+ }
+ #endif
+ 
+ #if !HAVE_IOPRIO_SET
+ int missing_ioprio_set(int which, int who, int ioprio) {
++#ifdef __managarm__
++        (void)which;
++        (void)who;
++        (void)ioprio;
++        return 0;
++#else
+         return syscall(__NR_ioprio_set, which, who, ioprio);
++#endif
+ }
+ #endif
+diff --git a/src/libc/kcmp.c b/src/libc/kcmp.c
+index aafff99..8777573 100644
+--- a/src/libc/kcmp.c
++++ b/src/libc/kcmp.c
+@@ -1,11 +1,22 @@
+ /* SPDX-License-Identifier: LGPL-2.1-or-later */
+ 
++#include <errno.h>
+ #include <sys/kcmp.h>
+ #include <sys/syscall.h>
+ #include <unistd.h>
+ 
+ #if !HAVE_KCMP
+ int missing_kcmp(pid_t pid1, pid_t pid2, int type, unsigned long idx1, unsigned long idx2) {
++#ifdef __managarm__
++        (void)pid1;
++        (void)pid2;
++        (void)type;
++        (void)idx1;
++        (void)idx2;
++        errno = ENOSYS;
++        return -1;
++#else
+         return syscall(__NR_kcmp, pid1, pid2, type, idx1, idx2);
++#endif
+ }
+ #endif
+diff --git a/src/libc/keyctl.c b/src/libc/keyctl.c
+index af4bca8..7edc9e4 100644
+--- a/src/libc/keyctl.c
++++ b/src/libc/keyctl.c
+@@ -1,23 +1,53 @@
+ /* SPDX-License-Identifier: LGPL-2.1-or-later */
+ 
++#include <errno.h>
+ #include <sys/keyctl.h>
+ #include <sys/syscall.h>
+ #include <unistd.h>
+ 
+ #if !HAVE_KEYCTL
+ long missing_keyctl(int cmd, unsigned long arg2, unsigned long arg3, unsigned long arg4, unsigned long arg5) {
++#ifdef __managarm__
++        (void)cmd;
++        (void)arg2;
++        (void)arg3;
++        (void)arg4;
++        (void)arg5;
++        errno = ENOSYS;
++        return -1;
++#else
+         return syscall(__NR_keyctl, cmd, arg2, arg3, arg4, arg5);
++#endif
+ }
+ #endif
+ 
+ #if !HAVE_ADD_KEY
+ key_serial_t missing_add_key(const char *type, const char *description, const void *payload, size_t plen, key_serial_t ringid) {
++#ifdef __managarm__
++        (void)type;
++        (void)description;
++        (void)payload;
++        (void)plen;
++        (void)ringid;
++        errno = ENOSYS;
++        return -1;
++#else
+         return syscall(__NR_add_key, type, description, payload, plen, ringid);
++#endif
+ }
+ #endif
+ 
+ #if !HAVE_REQUEST_KEY
+ key_serial_t missing_request_key(const char *type, const char *description, const char *callout_info, key_serial_t destringid) {
++#ifdef __managarm__
++        (void)type;
++        (void)description;
++        (void)callout_info;
++        (void)destringid;
++        errno = ENOSYS;
++        return -1;
++#else
+         return syscall(__NR_request_key, type, description, callout_info, destringid);
++#endif
+ }
+ #endif
+diff --git a/src/libc/mempolicy.c b/src/libc/mempolicy.c
+index 77b0e1a..d6e9d8b 100644
+--- a/src/libc/mempolicy.c
++++ b/src/libc/mempolicy.c
+@@ -6,12 +6,28 @@
+ 
+ #if !HAVE_SET_MEMPOLICY
+ int missing_set_mempolicy(int mode, const unsigned long *nodemask, unsigned long maxnode) {
++#ifdef __managarm__
++        (void)mode;
++        (void)nodemask;
++        (void)maxnode;
++        return 0;
++#else
+         return syscall(__NR_set_mempolicy, mode, nodemask, maxnode);
++#endif
+ }
+ #endif
+ 
+ #if !HAVE_GET_MEMPOLICY
+ int missing_get_mempolicy(int *mode, unsigned long *nodemask, unsigned long maxnode, void *addr, unsigned long flags) {
++#ifdef __managarm__
++        (void)mode;
++        (void)nodemask;
++        (void)maxnode;
++        (void)addr;
++        (void)flags;
++        return 0;
++#else
+         return syscall(__NR_get_mempolicy, mode, nodemask, maxnode, addr, flags);
++#endif
+ }
+ #endif
+diff --git a/src/libc/mount.c b/src/libc/mount.c
+index 1d324ef..03ea022 100644
+--- a/src/libc/mount.c
++++ b/src/libc/mount.c
+@@ -36,12 +36,30 @@ int missing_open_tree(int dfd, const char *filename, unsigned flags) {
+ 
+ #if !HAVE_MOUNT_SETATTR
+ int missing_mount_setattr(int dfd, const char *path, unsigned flags, struct mount_attr *attr, size_t size) {
++#ifdef __managarm__
++        (void)dfd;
++        (void)path;
++        (void)flags;
++        (void)attr;
++        (void)size;
++        return 0;
++#else
+         return syscall(__NR_mount_setattr, dfd, path, flags, attr, size);
++#endif
+ }
+ #endif
+ 
+ #if !HAVE_OPEN_TREE_ATTR
+ int missing_open_tree_attr(int dfd, const char *filename, unsigned int flags, struct mount_attr *attr, size_t size) {
++#ifdef __managarm__
++        (void)dfd;
++        (void)filename;
++        (void)flags;
++        (void)attr;
++        (void)size;
++        return 0;
++#else
+         return syscall(__NR_open_tree_attr, dfd, filename, flags, attr, size);
++#endif
+ }
+ #endif
+diff --git a/src/libc/quota.c b/src/libc/quota.c
+index 19695df..503c1bf 100644
+--- a/src/libc/quota.c
++++ b/src/libc/quota.c
+@@ -6,6 +6,14 @@
+ 
+ #if !HAVE_QUOTACTL_FD
+ int missing_quotactl_fd(int fd, int cmd, int id, void *addr) {
++#ifdef __managarm__
++        (void)fd;
++        (void)cmd;
++        (void)id;
++        (void)addr;
++        return 0;
++#else
+         return syscall(__NR_quotactl_fd, fd, cmd, id, addr);
++#endif
+ }
+ #endif
+diff --git a/src/libc/sched.c b/src/libc/sched.c
+index cf17526..ce5e574 100644
+--- a/src/libc/sched.c
++++ b/src/libc/sched.c
+@@ -6,6 +6,13 @@
+ 
+ #if !HAVE_SCHED_SETATTR
+ int missing_sched_setattr(pid_t pid, struct sched_attr *attr, unsigned flags) {
++#ifdef __managarm__
++        (void)pid;
++        (void)attr;
++        (void)flags;
++        return 0;
++#else
+         return syscall(__NR_sched_setattr, pid, attr, flags);
++#endif
+ }
+ #endif
+diff --git a/src/libc/signal.c b/src/libc/signal.c
+index 1908331..5d1936f 100644
+--- a/src/libc/signal.c
++++ b/src/libc/signal.c
+@@ -6,6 +6,14 @@
+ 
+ #if !HAVE_RT_TGSIGQUEUEINFO
+ int missing_rt_tgsigqueueinfo(pid_t tgid, pid_t tid, int sig, siginfo_t *info) {
++#ifdef __managarm__
++        (void)tgid;
++        (void)tid;
++        (void)sig;
++        (void)info;
++        return 0;
++#else
+         return syscall(__NR_rt_tgsigqueueinfo, tgid, tid, sig, info);
++#endif
+ }
+ #endif
+diff --git a/src/libc/stat.c b/src/libc/stat.c
+index b283005..e17063b 100644
+--- a/src/libc/stat.c
++++ b/src/libc/stat.c
+@@ -6,6 +6,14 @@
+ 
+ #if !HAVE_FCHMODAT2
+ int missing_fchmodat2(int dirfd, const char *path, mode_t mode, int flags) {
++#ifdef __managarm__
++        (void)dirfd;
++        (void)path;
++        (void)mode;
++        (void)flags;
++        return 0;
++#else
+         return syscall(__NR_fchmodat2, dirfd, path, mode, flags);
++#endif
+ }
+ #endif
+diff --git a/src/libc/unistd.c b/src/libc/unistd.c
+index 99777b3..21dd4ad 100644
+--- a/src/libc/unistd.c
++++ b/src/libc/unistd.c
+@@ -2,24 +2,51 @@
+ 
+ #include <sys/syscall.h>
+ #include <unistd.h>
++#ifdef __managarm__
++#include <errno.h>
++#endif
+ 
+ #if !HAVE_CLOSE_RANGE
+ int missing_close_range(unsigned first_fd, unsigned end_fd, unsigned flags) {
++#ifdef __managarm__
++        (void)first_fd;
++        (void)end_fd;
++        (void)flags;
++        errno = ENOSYS;
++        return -1;
++#else
+         /* Kernel-side the syscall expects fds as unsigned integers (just like close() actually), while
+          * userspace exclusively uses signed integers for fds. glibc chose to expose it 1:1 however, hence we
+          * do so here too, even if we end up passing signed fds to it most of the time. */
+         return syscall(__NR_close_range, first_fd, end_fd, flags);
++#endif
+ }
+ #endif
+ 
+ #if !HAVE_EXECVEAT
+ int missing_execveat(int dirfd, const char *pathname, char * const argv[], char * const envp[], int flags) {
++#ifdef __managarm__
++        (void)dirfd;
++        (void)pathname;
++        (void)argv;
++        (void)envp;
++        (void)flags;
++        errno = ENOSYS;
++        return -1;
++#else
+         return syscall(__NR_execveat, dirfd, pathname, argv, envp, flags);
++#endif
+ }
+ #endif
+ 
+ #if !HAVE_PIVOT_ROOT
+ int missing_pivot_root(const char *new_root, const char *put_old) {
++#ifdef __managarm__
++        (void)new_root;
++        (void)put_old;
++        return 0;
++#else
+         return syscall(__NR_pivot_root, new_root, put_old);
++#endif
+ }
+ #endif
+diff --git a/src/libc/xattr.c b/src/libc/xattr.c
+index 68fa97a..85f42a9 100644
+--- a/src/libc/xattr.c
++++ b/src/libc/xattr.c
+@@ -6,12 +6,30 @@
+ 
+ #if !HAVE_SETXATTRAT
+ int missing_setxattrat(int fd, const char *path, int at_flags, const char *name, const struct xattr_args *args, size_t size) {
++#ifdef __managarm__
++        (void)fd;
++        (void)path;
++        (void)at_flags;
++        (void)name;
++        (void)args;
++        (void)size;
++        return 0;
++#else
+         return syscall(__NR_setxattrat, fd, path, at_flags, name, args, size);
++#endif
+ }
+ #endif
+ 
+ #if !HAVE_REMOVEXATTRAT
+ int missing_removexattrat(int fd, const char *path, int at_flags, const char *name) {
++#ifdef __managarm__
++        (void)fd;
++        (void)path;
++        (void)at_flags;
++        (void)name;
++        return 0;
++#else
+         return syscall(__NR_removexattrat, fd, path, at_flags, name);
++#endif
+ }
+ #endif
+diff --git a/src/shared/async.c b/src/shared/async.c
+index 0d5fbc1..4c456da 100644
+--- a/src/shared/async.c
++++ b/src/shared/async.c
+@@ -87,6 +87,9 @@ static int close_func(void *p) {
+ }
+ 
+ int asynchronous_close(int fd) {
++#ifdef __managarm__
++        safe_close(fd); /* local fallback */
++#else
+         unsigned v;
+         pid_t pid;
+         int r;
+@@ -131,6 +134,7 @@ int asynchronous_close(int fd) {
+                                 break;
+         }
+ 
++#endif
+         return -EBADF; /* return an invalidated fd */
+ }
+ 
+diff --git a/src/shared/copy.c b/src/shared/copy.c
+index 0598759..63d2b4d 100644
+--- a/src/shared/copy.c
++++ b/src/shared/copy.c
+@@ -164,7 +164,11 @@ int copy_bytes_full(
+                 void *userdata) {
+ 
+         _cleanup_close_ int fdf_opened = -EBADF, fdt_opened = -EBADF;
++#ifndef __managarm__
+         bool try_cfr = true, try_sendfile = true, try_splice = true;
++#else
++        bool try_cfr = false, try_sendfile = false, try_splice = false;
++#endif
+         uint64_t copied_total = 0;
+         int r, nonblock_pipe = -1;
+ 
+diff --git a/src/shared/mount-setup.c b/src/shared/mount-setup.c
+index b044c16..57b448c 100644
+--- a/src/shared/mount-setup.c
++++ b/src/shared/mount-setup.c
+@@ -132,12 +132,14 @@ static const MountPoint mount_table[] = {
+                 .flags = MS_NOSUID|MS_STRICTATIME,
+                 .mode = MNT_FATAL|MNT_IN_CONTAINER,
+         },
++#ifndef __managarm__
+         {
+                 .what = "securityfs",
+                 .where = "/sys/kernel/security",
+                 .type = "securityfs",
+                 .flags = MS_NOSUID|MS_NOEXEC|MS_NODEV,
+         },
++#endif
+ #if ENABLE_SMACK
+         {
+                 .what = "smackfs",
+@@ -221,6 +223,7 @@ static const MountPoint mount_table[] = {
+                 .condition_fn = is_efi_boot,
+         },
+ #endif
++#ifndef __managarm__
+         {
+                 .what = "bpf",
+                 .where = "/sys/fs/bpf",
+@@ -228,6 +231,7 @@ static const MountPoint mount_table[] = {
+                 .options = "mode=0700",
+                 .flags = MS_NOSUID|MS_NOEXEC|MS_NODEV,
+         },
++#endif
+ };
+ 
+ /* The first three entries we might need before SELinux is up. The
+@@ -236,6 +240,8 @@ static const MountPoint mount_table[] = {
+  * SMACK is enabled we need smackfs, too, so it's a fifth one. */
+ #if ENABLE_SMACK
+ #define N_EARLY_MOUNT 5
++#elif defined(__managarm__)
++#define N_EARLY_MOUNT 3
+ #else
+ #define N_EARLY_MOUNT 4
+ #endif
+@@ -509,6 +515,7 @@ int mount_setup(bool loaded_policy, bool leave_propagation) {
+          * udevd. */
+         dev_setup(NULL, UID_INVALID, GID_INVALID);
+ 
++#ifndef __managarm__
+         /* Mark the root directory as shared in regards to mount propagation. The kernel defaults to "private", but we
+          * think it makes more sense to have a default of "shared" so that nspawn and the container tools work out of
+          * the box. If specific setups need other settings they can reset the propagation mode to private if
+@@ -518,6 +525,7 @@ int mount_setup(bool loaded_policy, bool leave_propagation) {
+         if (detect_container() <= 0 && !leave_propagation)
+                 if (mount(NULL, "/", NULL, MS_REC|MS_SHARED, NULL) < 0)
+                         log_warning_errno(errno, "Failed to set up the root directory for shared mount propagation: %m");
++#endif
+ 
+         /* Create a few directories we always want around, Note that sd_booted() checks for /run/systemd/system, so
+          * this mkdir really needs to stay for good, otherwise software that copied sd-daemon.c into their sources will
+diff --git a/src/shared/mount-util.c b/src/shared/mount-util.c
+index ca383f6..e0ccec7 100644
+--- a/src/shared/mount-util.c
++++ b/src/shared/mount-util.c
+@@ -2009,6 +2009,9 @@ int fsmount_credentials_fs(int *ret_fsfd) {
+ }
+ 
+ int mount_credentials_fs(const char *path) {
++#ifdef __managarm__
++        return 0;
++#else
+         _cleanup_close_ int mfd = -EBADF;
+ 
+         assert(path);
+@@ -2018,6 +2021,7 @@ int mount_credentials_fs(const char *path) {
+                 return mfd;
+ 
+         return RET_NERRNO(move_mount(mfd, "", AT_FDCWD, path, MOVE_MOUNT_F_EMPTY_PATH));
++#endif
+ }
+ 
+ int make_fsmount(
+diff --git a/src/shared/reboot-util.c b/src/shared/reboot-util.c
+index 948e156..47c2d13 100644
+--- a/src/shared/reboot-util.c
++++ b/src/shared/reboot-util.c
+@@ -26,7 +26,13 @@
+ #include "virt.h"
+ 
+ int raw_reboot(int cmd, const void *arg) {
++#ifdef __managarm__
++        (void)cmd;
++        (void)arg;
++        return 0;
++#else
+         return syscall(SYS_reboot, LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2, cmd, arg);
++#endif
+ }
+ 
+ bool reboot_parameter_is_valid(const char *parameter) {
+diff --git a/src/shared/serialize.c b/src/shared/serialize.c
+index ab19689..2db3be8 100644
+--- a/src/shared/serialize.c
++++ b/src/shared/serialize.c
+@@ -630,5 +630,10 @@ int finish_serialization_file(FILE *f) {
+         if (fd < 0)
+                 return -EBADF;
+ 
++// HACK: EPERM on memfd memes?
++#ifndef __managarm__
+         return memfd_set_sealed(fd);
++#else
++        return 0;
++#endif
+ }
+diff --git a/units/systemd-journald.service.in b/units/systemd-journald.service.in
+index 1fb080d..bce1cde 100644
+--- a/units/systemd-journald.service.in
++++ b/units/systemd-journald.service.in
+@@ -35,18 +35,18 @@ FileDescriptorStoreMax=4224
+ # Ensure services using StandardOutput=journal do not break when journald is stopped
+ FileDescriptorStorePreserve=yes
+ ImportCredential=journal.*
+-IPAddressDeny=any
++#IPAddressDeny=any
+ LockPersonality=yes
+ MemoryDenyWriteExecute=yes
+ NoNewPrivileges=yes
+-OOMScoreAdjust=-250
++#OOMScoreAdjust=-250
+ ProtectClock=yes
+ Restart=always
+ RestartSec=0
+-RestrictAddressFamilies=AF_UNIX AF_NETLINK AF_VSOCK AF_INET AF_INET6
+-RestrictNamespaces=yes
+-RestrictRealtime=yes
+-RestrictSUIDSGID=yes
++#RestrictAddressFamilies=AF_UNIX AF_NETLINK AF_VSOCK AF_INET AF_INET6
++#RestrictNamespaces=yes
++#RestrictRealtime=yes
++#RestrictSUIDSGID=yes
+ RuntimeDirectory=systemd/journal
+ RuntimeDirectoryPreserve=yes
+ # Audit socket is not listed here because this unit can be turned off. However
+@@ -54,9 +54,9 @@ RuntimeDirectoryPreserve=yes
+ # the 'Service=' setting specified in the socket unit.
+ Sockets=systemd-journald.socket systemd-journald-dev-log.socket
+ StandardOutput=null
+-SystemCallArchitectures=native
+-SystemCallErrorNumber=EPERM
+-SystemCallFilter=@system-service
++#SystemCallArchitectures=native
++#SystemCallErrorNumber=EPERM
++#SystemCallFilter=@system-service
+ Type=notify-reload
+ PassEnvironment=TERM
+ {{SERVICE_WATCHDOG}}
+@@ -64,8 +64,8 @@ PassEnvironment=TERM
+ # In case you're wondering why CAP_SYS_PTRACE is needed, access to
+ # /proc/<pid>/exe requires this capability. Thus if this capability is missing
+ # the _EXE=/OBJECT_EXE= fields will be missing from the journal entries.
+-CapabilityBoundingSet=CAP_SYS_ADMIN CAP_DAC_OVERRIDE CAP_SYS_PTRACE CAP_SYSLOG CAP_AUDIT_CONTROL CAP_AUDIT_READ CAP_CHOWN CAP_DAC_READ_SEARCH CAP_FOWNER CAP_SETUID CAP_SETGID CAP_MAC_OVERRIDE
++#CapabilityBoundingSet=CAP_SYS_ADMIN CAP_DAC_OVERRIDE CAP_SYS_PTRACE CAP_SYSLOG CAP_AUDIT_CONTROL CAP_AUDIT_READ CAP_CHOWN CAP_DAC_READ_SEARCH CAP_FOWNER CAP_SETUID CAP_SETGID CAP_MAC_OVERRIDE
+ 
+ # If there are many split up journal files we need a lot of fds to access them
+ # all in parallel.
+-LimitNOFILE={{HIGH_RLIMIT_NOFILE}}
++#LimitNOFILE={{HIGH_RLIMIT_NOFILE}}
+diff --git a/units/systemd-udevd.service.in b/units/systemd-udevd.service.in
+index 658c19b..7b3ea80 100644
+--- a/units/systemd-udevd.service.in
++++ b/units/systemd-udevd.service.in
+@@ -38,7 +38,7 @@ Delegate=
+ DelegateSubgroup=udev
+ Type=notify-reload
+ # Note that udev will reset the value internally for its workers
+-OOMScoreAdjust=-1000
++#OOMScoreAdjust=-1000
+ Sockets=systemd-udevd-control.socket systemd-udevd-kernel.socket systemd-udevd-varlink.socket
+ Restart=always
+ RestartSec=0
+@@ -47,16 +47,16 @@ FileDescriptorStoreMax=512
+ FileDescriptorStorePreserve=yes
+ KillMode=mixed
+ TasksMax=infinity
+-PrivateMounts=yes
+-ProtectHostname=yes
+-MemoryDenyWriteExecute=yes
+-RestrictAddressFamilies=AF_UNIX AF_NETLINK AF_INET AF_INET6
+-RestrictRealtime=yes
+-RestrictSUIDSGID=yes
+-SystemCallFilter=@system-service @module @raw-io bpf
+-SystemCallFilter=~@clock
+-SystemCallErrorNumber=EPERM
+-SystemCallArchitectures=native
+-LockPersonality=yes
+-IPAddressDeny=any
++#PrivateMounts=yes
++#ProtectHostname=yes
++#MemoryDenyWriteExecute=yes
++#RestrictAddressFamilies=AF_UNIX AF_NETLINK AF_INET AF_INET6
++#RestrictRealtime=yes
++#RestrictSUIDSGID=yes
++#SystemCallFilter=@system-service @module @raw-io bpf
++#SystemCallFilter=~@clock
++#SystemCallErrorNumber=EPERM
++#SystemCallArchitectures=native
++#LockPersonality=yes
++#IPAddressDeny=any
+ {{SERVICE_WATCHDOG}}
+-- 
+2.53.0
+

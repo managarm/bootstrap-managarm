@@ -1,0 +1,63 @@
+From 95e547633011c9c53b0e9816d0eb79c4d0f18c88 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Thu, 29 Jan 2026 22:16:05 +0100
+Subject: [PATCH 2/3] HACK: mlibc specific hacks
+
+These changes are considered hackarounds that need fixing in systemd to be upstreamable.
+or changes in mlibc which might break ABI or are complicated in other ways.
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ src/basic/basic-forward.h | 7 ++-----
+ src/test/test-path-util.c | 2 ++
+ 2 files changed, 4 insertions(+), 5 deletions(-)
+
+diff --git a/src/basic/basic-forward.h b/src/basic/basic-forward.h
+index c0dbb80..ee10aa3 100644
+--- a/src/basic/basic-forward.h
++++ b/src/basic/basic-forward.h
+@@ -3,6 +3,7 @@
+ 
+ /* IWYU pragma: always_keep */
+ 
++#include <dirent.h>             /* IWYU pragma: export */
+ #include <errno.h>              /* IWYU pragma: export */
+ #include <inttypes.h>           /* IWYU pragma: export */
+ #include <limits.h>             /* IWYU pragma: export */
+@@ -11,6 +12,7 @@
+ #include <stdbool.h>            /* IWYU pragma: export */
+ #include <stddef.h>             /* IWYU pragma: export */
+ #include <stdint.h>             /* IWYU pragma: export */
++#include <stdio.h>              /* IWYU pragma: export */
+ #include <sys/types.h>          /* IWYU pragma: export */
+ #include <uchar.h>              /* IWYU pragma: export */
+ 
+@@ -55,11 +57,6 @@ struct termios;
+ struct tm;
+ struct ucred;
+ 
+-/* To forward declare FILE and DIR, we have to declare the internal struct names for them. Since these are
+- * used for C++ symbol name mangling, they're effectively part of the ABI and won't actually change. */
+-typedef struct _IO_FILE FILE;
+-typedef struct __dirstream DIR;
+-
+ /* 3rd-party library forward declarations */
+ 
+ enum bpf_map_type;
+diff --git a/src/test/test-path-util.c b/src/test/test-path-util.c
+index e1a43b8..be38588 100644
+--- a/src/test/test-path-util.c
++++ b/src/test/test-path-util.c
+@@ -1362,7 +1362,9 @@ TEST(print_MAX) {
+                  (size_t) FILENAME_MAX,
+                  (size_t) NAME_MAX);
+ 
++#ifndef __mlibc__
+         assert_cc(FILENAME_MAX == PATH_MAX);
++#endif
+ }
+ 
+ TEST(path_implies_directory) {
+-- 
+2.53.0
+
