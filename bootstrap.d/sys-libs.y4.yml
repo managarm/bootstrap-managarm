@@ -484,7 +484,7 @@ packages:
       - dbus
       - openssl
       - util-linux-libs
-    revision: 2
+    revision: 3
     configure:
       - args:
           - 'meson'
@@ -496,7 +496,7 @@ packages:
           - '-Dpython=disabled'
           - '-Djson-c=enabled'
           - '-Dlibdbus=enabled'
-          - '-Dopenssl=disabled' # Needs openssl 3.0
+          - '-Dopenssl=enabled'
           - '-Dtests=false'
           - '@THIS_SOURCE_DIR@'
     build:
@@ -575,7 +575,7 @@ packages:
       - xz-utils
       - openssl
       - zstd
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'

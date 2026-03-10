@@ -27,7 +27,7 @@ packages:
       - curl
       - libiconv
       - pcre2
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -40,6 +40,7 @@ packages:
         - '@THIS_SOURCE_DIR@'
         - '-Dtests=false'
         - '-Dgettext=disabled'
+        - '-Diconv=disabled'
     build:
       - args: ['ninja']
       - args: ['ninja', 'install']

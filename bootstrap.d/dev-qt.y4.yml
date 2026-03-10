@@ -145,7 +145,7 @@ packages:
       - brotli
       - dbus
       - at-spi2-core
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'

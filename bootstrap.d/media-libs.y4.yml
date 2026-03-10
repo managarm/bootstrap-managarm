@@ -446,7 +446,7 @@ packages:
       - libmodplug
       - vulkan-headers
       - libusb
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -520,7 +520,7 @@ packages:
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -601,7 +601,7 @@ packages:
       - libpng
       - nettle
       - libxml
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -656,7 +656,7 @@ packages:
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
