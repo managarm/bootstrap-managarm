@@ -513,7 +513,7 @@ packages:
       subdir: 'ports'
       git: 'https://gitlab.com/sortix/os-test.git'
       branch: 'main'
-      commit: '70fcce501cfbd1cf0879c1ac5e476a36b7ecf6d9'
+      commit: 'b1e9db329c0e3ce60044d778c9c57b4fc7722b4a'
       rolling_version: true
       version: '0.0pl@ROLLING_ID@'
     tools_required:
@@ -548,14 +548,7 @@ packages:
           echo panic > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/basic/pthread/pthread_condattr_setpshared.out
           echo panic > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/basic/spawn/posix_spawnattr_setschedparam.out
           echo panic > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/basic/spawn/posix_spawnattr_setschedpolicy.out
-          echo panic > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/basic/dirent/seekdir.out
-          echo panic > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/basic/dirent/telldir.out
           echo panic > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/basic/poll/poll.out
-          echo panic > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/basic/semaphore/sem_close.out
-          echo panic > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/basic/semaphore/sem_open.out
-          echo panic > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/basic/semaphore/sem_getvalue.out
-          echo panic > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/basic/semaphore/sem_unlink.out
-          echo hang > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/basic/semaphore/sem_timedwait.out
           echo panic > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/basic/ftw/ftw.out
           echo panic > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/basic/ftw/nftw.out
           rm @THIS_COLLECT_DIR@/opt/os-test/*.xbstrap
