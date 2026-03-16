@@ -1,7 +1,7 @@
-From cb0f0831b08d35d265fd4378ecfb6aba05e367cf Mon Sep 17 00:00:00 2001
+From 3779626cc133e69e5c012ca647671d4c6e7f8438 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Fri, 14 Mar 2025 15:27:37 +0100
-Subject: [PATCH 2/2] Add systemd unit file
+Subject: [PATCH 2/3] Add systemd unit file
 
 ---
  dhcpcd.service | 17 +++++++++++++++++
@@ -32,5 +32,5 @@ index 0000000..1a88202
 +[Install]
 +WantedBy=multi-user.target
 -- 
-2.47.2
+2.53.0
 
