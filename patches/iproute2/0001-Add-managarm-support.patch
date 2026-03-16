@@ -1,4 +1,4 @@
-From 7371f4254574b3580a440069f93b9b2a505b94a0 Mon Sep 17 00:00:00 2001
+From 33c775365d9340e2cc9854aa99964731861c2df5 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Tue, 28 Mar 2023 23:05:26 +0200
 Subject: [PATCH] Add managarm support
@@ -8,9 +8,10 @@ Subject: [PATCH] Add managarm support
  include/libnetlink.h | 1 +
  include/namespace.h  | 2 +-
  ip/iplink.c          | 1 +
+ ip/iplink_bond.c     | 1 +
  ip/ipnetns.c         | 2 +-
  lib/bpf_glue.c       | 1 -
- 6 files changed, 5 insertions(+), 4 deletions(-)
+ 7 files changed, 6 insertions(+), 4 deletions(-)
 
 diff --git a/Makefile b/Makefile
 index 2b2c3de..071a8e1 100644
@@ -62,6 +63,18 @@ index e650a5c..ea1242d 100644
  #include <fcntl.h>
  #include <dlfcn.h>
  #include <errno.h>
+diff --git a/ip/iplink_bond.c b/ip/iplink_bond.c
+index 19af67d..9569ce7 100644
+--- a/ip/iplink_bond.c
++++ b/ip/iplink_bond.c
+@@ -10,6 +10,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <linux/if_bonding.h>
++#include <linux/in6.h>
+ 
+ #include "list.h"
+ #include "rt_names.h"
 diff --git a/ip/ipnetns.c b/ip/ipnetns.c
 index 5c94340..91d10e8 100644
 --- a/ip/ipnetns.c
@@ -88,5 +101,5 @@ index 88a2475..2ee0646 100644
  #include <unistd.h>
  #include <errno.h>
 -- 
-2.51.1
+2.53.0
 
