@@ -697,7 +697,7 @@ packages:
     pkgs_required:
       - mlibc
       - libmnl
-    revision: 4
+    revision: 5
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
