@@ -63,6 +63,8 @@ RUN apt-get update \
 		udev \
 		# Used by host-appstream
 		libcurl4-openssl-dev \
+		# Used by newer versions of the Qt6 superbuild
+		libegl-dev \
 		# Used by the Linux kernel
 		libelf-dev \
 		# Used by wayland-scanner
