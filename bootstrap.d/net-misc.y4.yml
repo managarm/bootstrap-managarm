@@ -412,7 +412,7 @@ packages:
       - pam
       - zlib
       - openssl
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -424,6 +424,7 @@ packages:
         - '--with-superuser-path=/usr/sbin:/usr/bin'
         - '--with-pid-dir=/run'
         - '--with-pam'
+        - '--disable-strip'
         environ:
           ac_cv_iconv_omits_bom: 'yes'
           ac_cv_fread_reads_directories: 'no'
