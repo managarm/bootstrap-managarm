@@ -132,6 +132,8 @@ RUN apt-get update \
 		python3-jinja2 \
 		# Used by itstool
 		python3-libxml2 \
+		# Used by breeze-icons
+		python3-lxml \
 		# Used by mesa
 		python3-mako \
 		# We need pip, setuptools and wheel for installing python packages
