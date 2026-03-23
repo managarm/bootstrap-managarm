@@ -89,7 +89,7 @@ repositories:
         aarch64: 'https://builds.managarm.org/projects/managarm_aarch64/success/repo/tools/aarch64/'
         riscv64: 'https://builds.managarm.org/projects/managarm_riscv64/success/repo/tools/riscv64/'
     xbps:
-        x86_64: 'https://repos.managarm.org/repos/amd64/'
+        x86_64: 'https://builds.managarm.org/projects/managarm/success/repo/packages/x86_64/'
         aarch64: 'https://builds.managarm.org/projects/managarm_aarch64/success/repo/packages/aarch64/'
         riscv64: 'https://builds.managarm.org/projects/managarm_riscv64/success/repo/packages/riscv64/'
 

@@ -1,0 +1,167 @@
+name: Build stable image
+
+on:
+    schedule:
+        - cron: '0 4 * * *' # 04:00 each day
+    workflow_dispatch:
+
+jobs:
+    create-empty-image:
+        name: Create empty image (${{ matrix.arch }})
+        runs-on: ubuntu-24.04
+        if: github.repository_owner == 'managarm' && github.ref == 'refs/heads/master'
+        strategy:
+            matrix:
+                arch: [x86_64, aarch64, riscv64]
+                include:
+                    - arch: x86_64
+                      triple: x86_64-managarm
+                    - arch: aarch64
+                      triple: aarch64-managarm
+                    - arch: riscv64
+                      triple: riscv64-managarm
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v2
+              with:
+                path: src
+            - name: Install prerequisites
+              run: |
+                  pip3 install xbstrap y4
+                  xbstrap prereqs cbuildrt xbps
+            - name: Download and unpack rootfs
+              run: |
+                  curl https://repos.managarm.org/buildenv/managarm-buildenv.tar.gz -o managarm-rootfs.tar.gz
+                  tar xvf managarm-rootfs.tar.gz
+            - name: Permit unprivileged user namespaces
+              run: |
+                  set -x
+                  sudo sysctl -w kernel.apparmor_restrict_unprivileged_unconfined=0
+                  sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+            - name: Prepare build directory
+              run: |
+                  mkdir build
+                  cd build
+                  cat << EOF > bootstrap-site.yml
+                  auto_pull: true
+                  define_options:
+                    mount-using: 'loopback'
+                    arch: '${{ matrix.arch }}'
+                    arch-triple: '${{ matrix.triple }}'
+                  pkg_management:
+                    format: xbps
+                  container:
+                    runtime: cbuildrt
+                    rootfs:  $GITHUB_WORKSPACE/rootfs
+                    uid: 1000
+                    gid: 1000
+                    src_mount: /var/lib/managarm-buildenv/src
+                    build_mount: /var/lib/managarm-buildenv/build
+                    allow_containerless: true
+                  EOF
+                  xbstrap init ../src
+            - name: Create empty image
+              run: |
+                  xbstrap run initialize-empty-image
+              working-directory: ./build
+            - name: Compress image and collect artifacts
+              run: |
+                  zstd build/image -o image.zst
+                  if [ "${{ matrix.arch }}" = "x86_64" ]; then
+                      cp build/tools/host-limine/share/limine/limine-bios.sys limine-bios.sys
+                  fi
+            - name: Upload artifacts
+              uses: actions/upload-artifact@v4
+              with:
+                name: empty-image-${{ matrix.arch }}
+                path: |
+                    image.zst
+                    limine-bios.sys
+                if-no-files-found: ignore
+            - name: Notify about failures
+              if: ${{ failure() }}
+              run: |
+                curl -H "Content-Type: application/json" -d '{"embeds": [{"author": {"name": "GitHub Actions"}, "title": "Image build failure", "description": "Build failure in create-empty-image job (${{ matrix.arch }})."}] }' "$DISCORD_BUILD_FROM_REPOS_URL"
+              env:
+                DISCORD_BUILD_FROM_REPOS_URL: ${{ secrets.DISCORD_BUILD_FROM_REPOS_URL }}
+
+    build-image:
+        name: Build ${{ matrix.image-type }} image (${{ matrix.arch }})
+        runs-on: ubuntu-24.04
+        needs: create-empty-image
+        strategy:
+            matrix:
+                arch: [x86_64, aarch64, riscv64]
+                image-type: [stable, nightly]
+                include:
+                    - arch: x86_64
+                      triple: x86_64-managarm
+                    - arch: aarch64
+                      triple: aarch64-managarm
+                    - arch: riscv64
+                      triple: riscv64-managarm
+                    - arch: x86_64
+                      image-type: stable
+                      repo-url: https://repos.managarm.org/repos/amd64/
+                    - arch: aarch64
+                      image-type: stable
+                      repo-url: https://repos.managarm.org/repos/aarch64/
+                    - arch: riscv64
+                      image-type: stable
+                      repo-url: https://repos.managarm.org/repos/riscv64/
+                    - arch: x86_64
+                      image-type: nightly
+                      repo-url: https://builds.managarm.org/projects/managarm/success/repo/packages/x86_64/
+                    - arch: aarch64
+                      image-type: nightly
+                      repo-url: https://builds.managarm.org/projects/managarm_aarch64/success/repo/packages/aarch64/
+                    - arch: riscv64
+                      image-type: nightly
+                      repo-url: https://builds.managarm.org/projects/managarm_riscv64/success/repo/packages/riscv64/
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v2
+              with:
+                path: src
+            - name: Install prerequisites
+              run: |
+                  pip3 install xbstrap y4
+                  xbstrap prereqs xbps
+            - name: Install system packages
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install -y dosfstools e2fsprogs mtools util-linux zstd
+            - name: Download empty image artifact
+              uses: actions/download-artifact@v4
+              with:
+                name: empty-image-${{ matrix.arch }}
+            - name: Decompress image and place artifacts
+              run: |
+                  zstd -d image.zst
+                  if [ "${{ matrix.arch }}" = "x86_64" ]; then
+                      mkdir -p tools/host-limine/share/limine
+                      mv limine-bios.sys tools/host-limine/share/limine/limine-bios.sys
+                  fi
+            - name: Create sysroot
+              run: |
+                  src/scripts/build-image.py --arch ${{ matrix.arch }} --repo-url ${{ matrix.repo-url }} sysroot
+            - name: Generate initrd
+              run: |
+                  system-root/usr/managarm/bin/gen-initrd.py --triple ${{ matrix.triple }} --sysroot=system-root
+            - name: Build image
+              run: |
+                  src/scripts/update-image.py --triple ${{ matrix.triple }} remake
+            - name: Compress final image
+              run: |
+                  zstd image -o image.zst --force
+            - name: Upload image
+              uses: actions/upload-artifact@v4
+              with:
+                name: ${{ matrix.image-type }}-image-${{ matrix.arch }}
+                path: image.zst
+            - name: Notify about failures
+              if: ${{ failure() }}
+              run: |
+                curl -H "Content-Type: application/json" -d '{"embeds": [{"author": {"name": "GitHub Actions"}, "title": "Image build failure", "description": "Build failure in build-image job (${{ matrix.image-type }}, ${{ matrix.arch }})."}] }' "$DISCORD_BUILD_FROM_REPOS_URL"
+              env:
+                DISCORD_BUILD_FROM_REPOS_URL: ${{ secrets.DISCORD_BUILD_FROM_REPOS_URL }}
