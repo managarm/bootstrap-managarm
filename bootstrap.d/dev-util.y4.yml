@@ -523,7 +523,7 @@ packages:
       - make
       - libiconv
       - libintl
-    revision: 1
+    revision: 2
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args: ['rm', '-rf', '@THIS_BUILD_DIR@/out/']
@@ -541,18 +541,8 @@ packages:
       - args: |
           mkdir -p @THIS_COLLECT_DIR@/opt/os-test/
           cp -r ./ @THIS_COLLECT_DIR@/opt/os-test/
-          echo panic > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/basic/pthread/pthread_mutex_consistent.out
-          echo panic > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/basic/pthread/pthread_condattr_setpshared.out
           echo panic > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/basic/spawn/posix_spawnattr_setschedparam.out
           echo panic > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/basic/spawn/posix_spawnattr_setschedpolicy.out
-          echo panic > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/basic/poll/poll.out
           echo panic > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/basic/ftw/ftw.out
           echo panic > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/basic/ftw/nftw.out
-          echo panic > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/basic/mqueue/mq_getattr.out
-          echo panic > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/basic/mqueue/mq_setattr.out
-          echo panic > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/basic/mqueue/mq_unlink.out
-          echo panic > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/basic/mqueue/mq_open.out
-          echo panic > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/basic/mqueue/mq_receive.out
-          echo panic > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/basic/search/lfind.out
-          echo panic > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/basic/search/lsearch.out
           rm @THIS_COLLECT_DIR@/opt/os-test/*.xbstrap
