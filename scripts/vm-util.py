@@ -647,8 +647,7 @@ def do_qemu(args):
     else:
         qemu_args += ["-cpu", cpu_model]
 
-    if not args.no_smp:
-        qemu_args += ["-smp", "4"]
+    qemu_args += ["-smp", str(args.smp)]
 
     if args.ci_script is not None:
         esp_uuid = None
@@ -1018,7 +1017,9 @@ qemu_parser.add_argument("--arch", choices=["x86_64", "aarch64", "riscv64"], def
 qemu_parser.add_argument("--memory", type=str, default="2G")
 qemu_parser.add_argument("--no-kvm", action="store_true")
 qemu_parser.add_argument("--virtual-cpu", action="store_true")
-qemu_parser.add_argument("--no-smp", action="store_true")
+smp_group = qemu_parser.add_mutually_exclusive_group()
+smp_group.add_argument("--no-smp", action="store_const", const=1, dest="smp")
+smp_group.add_argument("--smp", type=int, default=4)
 qemu_parser.add_argument(
     "--boot-drive",
     choices=["virtio", "virtio-legacy", "ahci", "usb", "ide", "nvme", "nvme-of", "none"],
