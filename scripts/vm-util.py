@@ -1018,8 +1018,8 @@ qemu_parser.add_argument("--memory", type=str, default="2G")
 qemu_parser.add_argument("--no-kvm", action="store_true")
 qemu_parser.add_argument("--virtual-cpu", action="store_true")
 smp_group = qemu_parser.add_mutually_exclusive_group()
-smp_group.add_argument("--no-smp", action="store_const", const=1, dest="smp")
 smp_group.add_argument("--smp", type=int, default=4)
+smp_group.add_argument("--no-smp", action="store_const", const=1, dest="smp")
 qemu_parser.add_argument(
     "--boot-drive",
     choices=["virtio", "virtio-legacy", "ahci", "usb", "ide", "nvme", "nvme-of", "none"],
