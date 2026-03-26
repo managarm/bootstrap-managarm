@@ -1210,7 +1210,7 @@ packages:
       - ncurses
       - readline
       - zlib
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -1360,7 +1360,7 @@ packages:
       - file
       - libxcrypt
       - pcre2
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'

@@ -1,4 +1,4 @@
-From a920361fc16af80f5696571d76a792c1492a0bdb Mon Sep 17 00:00:00 2001
+From 420806ffe721204e35a6ec190d18f0ac8584e5c5 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Fri, 13 Feb 2026 18:08:38 +0100
 Subject: [PATCH] Add Managarm support
@@ -10,9 +10,10 @@ Subject: [PATCH] Add Managarm support
  libmount/meson.build             | 35 +++++-------
  libmount/src/hook_mount_legacy.c |  1 +
  libmount/src/hook_subdir.c       |  1 +
+ libmount/src/hooks.c             |  2 +-
  meson.build                      | 96 ++++++++++++++++----------------
  sys-utils/meson.build            | 12 ----
- 8 files changed, 111 insertions(+), 86 deletions(-)
+ 9 files changed, 112 insertions(+), 87 deletions(-)
 
 diff --git a/include/mount-api-utils.h b/include/mount-api-utils.h
 index a916f99..6e62cde 100644
@@ -263,6 +264,19 @@ index 7cbb2c8..8ca2dba 100644
  
  #include "mountP.h"
  #include "fileutils.h"
+diff --git a/libmount/src/hooks.c b/libmount/src/hooks.c
+index 23eca4e..f413ebe 100644
+--- a/libmount/src/hooks.c
++++ b/libmount/src/hooks.c
+@@ -31,7 +31,7 @@
+ /* built-in hooksets */
+ static const struct libmnt_hookset *const hooksets[] =
+ {
+-#ifdef __linux__
++#if defined(__linux__) || defined(__managarm__)
+ 	&hookset_loopdev,
+ #ifdef HAVE_CRYPTSETUP
+ 	&hookset_veritydev,
 diff --git a/meson.build b/meson.build
 index 1647a84..b7a369b 100644
 --- a/meson.build
@@ -420,5 +434,5 @@ index 2fdcc63..f96ff66 100644
    'chcpu.c',
  )
 -- 
-2.51.0
+2.53.0
 
