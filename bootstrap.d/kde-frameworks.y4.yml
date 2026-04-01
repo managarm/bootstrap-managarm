@@ -230,6 +230,7 @@ tools:
       - host-qt6
       - host-ecm
       - host-ninja
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -247,6 +248,7 @@ tools:
         - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
         - '-DBINARY_ICONS_RESOURCE=ON'
         - '-DSKIP_INSTALL_ICONS=OFF'
+        - '-DINSTALL_HOST_TOOLS=ON'
         - '@THIS_SOURCE_DIR@'
     compile:
       - args: ['ninja']
@@ -366,7 +368,7 @@ packages:
     pkgs_required:
       - mlibc
       - qtbase6
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -384,6 +386,7 @@ packages:
         - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
         - '-DBINARY_ICONS_RESOURCE=ON'
         - '-DSKIP_INSTALL_ICONS=OFF'
+        - '-DKF6_HOST_TOOLING=@BUILD_ROOT@/tools/host-breeze-icons/'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
