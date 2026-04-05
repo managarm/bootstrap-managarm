@@ -1,0 +1,73 @@
+From 023ca6fddf223d7ef6211d4a4edb8709b78cf92f Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Sun, 5 Apr 2026 22:47:05 +0200
+Subject: [PATCH] Avoid namespace pollution in strict POSIX mode
+
+---
+ gettext-runtime/intl/libgnuintl.in.h | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
+
+diff --git a/gettext-runtime/intl/libgnuintl.in.h b/gettext-runtime/intl/libgnuintl.in.h
+index 6fb1920..712b2a5 100644
+--- a/gettext-runtime/intl/libgnuintl.in.h
++++ b/gettext-runtime/intl/libgnuintl.in.h
+@@ -17,7 +17,14 @@
+ #ifndef _LIBINTL_H
+ #define _LIBINTL_H 1
+ 
++#if !_DEFAULT_SOURCE && (_POSIX_C_SOURCE-0) >= 202405L
++# define __STRICT_POSIX2024_MODE 1
++#endif
++
++#if !__STRICT_POSIX2024_MODE
+ #include <locale.h>
++#endif
++
+ #if (defined __APPLE__ && defined __MACH__) && @HAVE_NEWLOCALE@
+ # include <xlocale.h>
+ #endif
+@@ -29,7 +36,7 @@
+    then includes <libintl.h> (i.e. this file!) and then only defines
+    LC_MESSAGES.  To avoid a redefinition warning, don't define LC_MESSAGES
+    in this case.  */
+-#if !defined LC_MESSAGES && !(defined __LOCALE_H || (defined _LOCALE_H && defined __sun))
++#if !defined LC_MESSAGES && !(defined __LOCALE_H || (defined _LOCALE_H && defined __sun)) && !__STRICT_POSIX2024_MODE
+ # define LC_MESSAGES 1729
+ #endif
+ 
+@@ -52,10 +59,11 @@
+ extern "C" {
+ #endif
+ 
+-
++#if !__STRICT_POSIX2024_MODE
+ /* Version number: (major<<16) + (minor<<8) + subminor */
+ #define LIBINTL_VERSION 0x001500
+ extern int libintl_version;
++#endif
+ 
+ 
+ /* We redirect the functions to those prefixed with "libintl_".  This is
+@@ -507,6 +515,7 @@ extern locale_t newlocale (int, const char *, locale_t);
+ 
+ /* Support for relocatable packages.  */
+ 
++#if !__STRICT_POSIX2024_MODE
+ /* Sets the original and the current installation prefix of the package.
+    Relocation simply replaces a pathname starting with the original prefix
+    by the corresponding pathname with the current prefix instead.  Both
+@@ -514,8 +523,9 @@ extern locale_t newlocale (int, const char *, locale_t);
+    instead of "/").  */
+ #define libintl_set_relocation_prefix libintl_set_relocation_prefix
+ extern void
+-       libintl_set_relocation_prefix (const char *orig_prefix,
+-                                      const char *curr_prefix);
++       libintl_set_relocation_prefix (const char *__orig_prefix,
++                                      const char *__curr_prefix);
++#endif
+ 
+ 
+ #ifdef __cplusplus
+-- 
+2.53.0
+
