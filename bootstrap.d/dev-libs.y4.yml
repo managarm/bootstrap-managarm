@@ -1402,7 +1402,7 @@ packages:
     pkgs_required:
       - mlibc
       - libiconv
-    revision: 13
+    revision: 14
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
