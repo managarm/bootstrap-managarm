@@ -276,21 +276,21 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtimageformats.git'
-      tag: 'v6.8.1'
-      version: '6.8.1'
+      tag: 'v6.11.0'
+      version: '6.11.0'
     tools_required:
       - system-gcc
       - host-cmake
       - host-qt6
     pkgs_required:
       - mlibc
-      - qtbase6
-      - mesa
       - libjpeg-turbo
-      - libwebp
       - libtiff
+      - libwebp
+      - mesa
+      - qtbase6
       - zlib
-    revision: 3
+    revision: 1
     configure:
       - args:
         - 'cmake'
