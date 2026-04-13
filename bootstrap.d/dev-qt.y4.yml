@@ -145,7 +145,7 @@ packages:
       - xcb-util-wm
       - zlib
       - zstd
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -612,7 +612,7 @@ packages:
       - qtbase6
       - qtdeclarative6
       - wayland
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'

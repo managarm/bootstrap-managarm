@@ -1141,7 +1141,7 @@ packages:
       - wayland
       - wayland-protocols
       - xorg-proto
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1298,7 +1298,7 @@ packages:
       - qtwayland6
       - wayland
       - wayland-protocols
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -2121,7 +2121,7 @@ packages:
       - wayland-protocols
       - xcb-util-keysyms
       - xorg-proto
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
