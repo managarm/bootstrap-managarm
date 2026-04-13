@@ -357,21 +357,21 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtmultimedia.git'
-      tag: 'v6.8.1'
-      version: '6.8.1'
+      tag: 'v6.11.0'
+      version: '6.11.0'
     tools_required:
       - system-gcc
       - host-cmake
       - host-qt6
     pkgs_required:
       - mlibc
+      - gst-plugins-bad
+      - gstreamer
+      - libglvnd
       - qtbase6
       - qtdeclarative6
       - qtshadertools6
-      - libglvnd
-      - gstreamer
-      - gst-plugins-bad
-    revision: 3
+    revision: 1
     configure:
       - args:
         - 'cmake'
