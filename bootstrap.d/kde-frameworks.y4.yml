@@ -164,8 +164,8 @@ sources:
   - name: kpackage
     subdir: 'ports'
     git: 'https://github.com/KDE/kpackage.git'
-    tag: 'v6.11.0'
-    version: '6.11.0'
+    tag: 'v6.25.0'
+    version: '6.25.0'
 
   - name: kparts
     subdir: 'ports'
@@ -1580,15 +1580,15 @@ packages:
     tools_required:
       - system-gcc
       - host-cmake
-      - host-qt6
       - host-ecm
+      - host-qt6
     pkgs_required:
       - mlibc
-      - qtbase6
       - karchive
       - kcoreaddons
       - ki18n
-    revision: 3
+      - qtbase6
+    revision: 1
     configure:
       - args:
         - 'cmake'
