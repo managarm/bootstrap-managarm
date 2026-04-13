@@ -128,8 +128,8 @@ sources:
   - name: kirigami
     subdir: 'ports'
     git: 'https://github.com/KDE/kirigami.git'
-    tag: 'v6.11.0'
-    version: '6.11.0'
+    tag: 'v6.25.0'
+    version: '6.25.0'
 
   - name: kitemviews
     subdir: 'ports'
@@ -1291,11 +1291,11 @@ packages:
       - host-ecm
     pkgs_required:
       - mlibc
+      - qt5compat
       - qtbase6
       - qtdeclarative6
       - qtsvg6
-      - qt5compat
-    revision: 3
+    revision: 1
     configure:
       - args:
         - 'cmake'
