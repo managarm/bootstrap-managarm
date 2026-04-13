@@ -402,8 +402,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'http://code.qt.io/qt/qtsensors.git'
-      tag: 'v6.8.1'
-      version: '6.8.1'
+      tag: 'v6.11.0'
+      version: '6.11.0'
     tools_required:
       - system-gcc
       - host-cmake
@@ -412,7 +412,7 @@ packages:
       - mlibc
       - qtbase6
       - qtdeclarative6
-    revision: 3
+    revision: 1
     configure:
       - args:
         - 'cmake'
