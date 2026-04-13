@@ -3,16 +3,16 @@ sources:
     subdir: 'ports'
     # This may seem strange, but is actually correct
     git: 'https://code.qt.io/qt/qt5.git'
-    tag: 'v6.8.1'
-    version: '6.8.1'
+    tag: 'v6.11.0'
+    version: '6.11.0'
     regenerate:
       # Get the submodules that we'll need as a host tool
       - args: ['git', 'remote', 'set-url', 'origin', 'https://code.qt.io/qt/qt5.git']
-      - args: ['./init-repository', '-f', '--module-subset', 'qtbase,qtsvg,qtimageformats,qtshadertools,qtlanguageserver,qtdeclarative,qtwayland,qtmultimedia,qttools,qt5compat,qtsensors,qtcharts,qtpositioning,qtspeech']
+      - args: ['./init-repository', '-f', '--module-subset', 'qtbase,qtsvg,qtimageformats,qtshadertools,qtlanguageserver,qtdeclarative,qtwayland,qtmultimedia,qttools,qt5compat,qtsensors,qtcharts,qtpositioning,qtspeech,qtlocation']
         isolate_network: false
       - args: |
           cd @THIS_SOURCE_DIR@/qtbase
-          git pull origin 6.8.1
+          git pull origin 6.11.0
         isolate_network: false
 
 tools:
@@ -56,19 +56,19 @@ packages:
     source:
       subdir: 'ports'
       git: 'http://code.qt.io/qt/qt5compat.git'
-      tag: 'v6.8.1'
-      version: '6.8.1'
+      tag: 'v6.11.0'
+      version: '6.11.0'
     tools_required:
       - system-gcc
       - host-cmake
       - host-qt6
     pkgs_required:
       - mlibc
+      - icu
       - qtbase6
       - qtdeclarative6
       - qtshadertools6
-      - icu
-    revision: 3
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -96,8 +96,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtbase.git'
-      tag: 'v6.8.1'
-      version: '6.8.1'
+      tag: 'v6.11.0'
+      version: '6.11.0'
     tools_required:
       - system-gcc
       - host-cmake
@@ -107,50 +107,53 @@ packages:
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
-      - zlib
-      - zstd
-      - pcre2
-      - double-conversion
-      - libiconv
-      - icu
-      - glib
-      - libxkbcommon
-      - libinput
-      - libevdev
-      - mtdev
-      - mesa
-      - freetype
-      - fontconfig
-      - libpng
-      - harfbuzz
-      - libx11
-      - libjpeg-turbo
-      - libsm
-      - libice
-      - libdrm
-      - libxcb
-      - xcb-util-image
-      - xcb-util-keysyms
-      - xcb-util-wm
-      - xcb-util-render-util
-      - xcb-util-cursor
-      - openssl
-      - wayland
-      - wayland-protocols
-      - libxcursor
-      - libxinerama
-      - libxrender
-      - libxi
-      - sqlite
+      - at-spi2-core
       - brotli
       - dbus
-      - at-spi2-core
-    revision: 3
+      - double-conversion
+      - fontconfig
+      - freetype
+      - glib
+      - harfbuzz
+      - icu
+      - libdrm
+      - libevdev
+      - libice
+      - libiconv
+      - libinput
+      - libjpeg-turbo
+      - libpng
+      - libsm
+      - libx11
+      - libxcb
+      - libxcursor
+      - libxi
+      - libxinerama
+      - libxkbcommon
+      - libxrender
+      - mesa
+      - mtdev
+      - openssl
+      - pcre2
+      - sqlite
+      - wayland
+      - wayland-protocols
+      - xcb-util-cursor
+      - xcb-util-image
+      - xcb-util-keysyms
+      - xcb-util-render-util
+      - xcb-util-wm
+      - zlib
+      - zstd
+    revision: 1
     configure:
       - args:
         - 'cmake'
         - '-GNinja'
         - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/host-qt6'
+        - '-DQT_FORCE_BUILD_TOOLS=ON'
+        - '-DQT_NO_GENERATE_QMAKE_WRAPPER_FOR_TARGET=ON'
+        - '-DBUILD_WITH_PCH=OFF'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_BUILD_TYPE=Debug'
@@ -201,6 +204,9 @@ packages:
         - '-DFEATURE_system_sqlite=ON'
         - '-DFEATURE_cups=OFF'
         - '-DFEATURE_ssl=ON'
+        - '-DQT_FEATURE_jemalloc=OFF'
+        - '-DQT_FEATURE_androiddeployqt=OFF'
+        - '-DQT_UNITY_BUILD=ON'
         - '@THIS_SOURCE_DIR@'
         environ:
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
@@ -227,22 +233,22 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtdeclarative.git'
-      tag: 'v6.8.1'
-      version: '6.8.1'
+      tag: 'v6.11.0'
+      version: '6.11.0'
     tools_required:
       - system-gcc
       - host-cmake
       - host-qt6
     pkgs_required:
       - mlibc
+      - libxkbcommon
+      - mesa
       - qtbase6
       - qtimageformats6
       - qtlanguageserver6
       - qtshadertools6
       - qtsvg6
-      - libxkbcommon
-      - mesa
-    revision: 3
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -270,21 +276,21 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtimageformats.git'
-      tag: 'v6.8.1'
-      version: '6.8.1'
+      tag: 'v6.11.0'
+      version: '6.11.0'
     tools_required:
       - system-gcc
       - host-cmake
       - host-qt6
     pkgs_required:
       - mlibc
-      - qtbase6
-      - mesa
       - libjpeg-turbo
-      - libwebp
       - libtiff
+      - libwebp
+      - mesa
+      - qtbase6
       - zlib
-    revision: 3
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -314,8 +320,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtlanguageserver.git'
-      tag: 'v6.8.1'
-      version: '6.8.1'
+      tag: 'v6.11.0'
+      version: '6.11.0'
     tools_required:
       - system-gcc
       - host-cmake
@@ -323,7 +329,7 @@ packages:
     pkgs_required:
       - mlibc
       - qtbase6
-    revision: 3
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -351,21 +357,21 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtmultimedia.git'
-      tag: 'v6.8.1'
-      version: '6.8.1'
+      tag: 'v6.11.0'
+      version: '6.11.0'
     tools_required:
       - system-gcc
       - host-cmake
       - host-qt6
     pkgs_required:
       - mlibc
+      - gst-plugins-bad
+      - gstreamer
+      - libglvnd
       - qtbase6
       - qtdeclarative6
       - qtshadertools6
-      - libglvnd
-      - gstreamer
-      - gst-plugins-bad
-    revision: 3
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -396,8 +402,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'http://code.qt.io/qt/qtsensors.git'
-      tag: 'v6.8.1'
-      version: '6.8.1'
+      tag: 'v6.11.0'
+      version: '6.11.0'
     tools_required:
       - system-gcc
       - host-cmake
@@ -406,7 +412,7 @@ packages:
       - mlibc
       - qtbase6
       - qtdeclarative6
-    revision: 3
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -434,18 +440,18 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtshadertools.git'
-      tag: 'v6.8.1'
-      version: '6.8.1'
+      tag: 'v6.11.0'
+      version: '6.11.0'
     tools_required:
       - system-gcc
       - host-cmake
       - host-qt6
     pkgs_required:
       - mlibc
-      - qtbase6
-      - mesa
       - libxkbcommon
-    revision: 3
+      - mesa
+      - qtbase6
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -474,8 +480,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'http://code.qt.io/qt/qtspeech.git'
-      tag: 'v6.8.1'
-      version: '6.8.1'
+      tag: 'v6.11.0'
+      version: '6.11.0'
     tools_required:
       - system-gcc
       - host-cmake
@@ -485,7 +491,7 @@ packages:
       - qtbase6
       - qtdeclarative6
       - qtmultimedia6
-    revision: 3
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -513,8 +519,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtsvg.git'
-      tag: 'v6.8.1'
-      version: '6.8.1'
+      tag: 'v6.11.0'
+      version: '6.11.0'
     tools_required:
       - system-gcc
       - host-cmake
@@ -523,7 +529,7 @@ packages:
       - mlibc
       - qtbase6
       - zlib
-    revision: 3
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -551,20 +557,20 @@ packages:
     source:
       subdir: 'ports'
       git: 'http://code.qt.io/qt/qtwayland.git'
-      tag: 'v6.8.1'
-      version: '6.8.1'
+      tag: 'v6.11.0'
+      version: '6.11.0'
     tools_required:
       - system-gcc
       - host-cmake
       - host-qt6
     pkgs_required:
       - mlibc
+      - libxkbcommon
+      - mesa
       - qtbase6
       - qtdeclarative6
-      - mesa
       - wayland
-      - libxkbcommon
-    revision: 4
+    revision: 1
     configure:
       - args:
         - 'cmake'

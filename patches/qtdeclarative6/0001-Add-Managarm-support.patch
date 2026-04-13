@@ -1,26 +1,73 @@
-From 64d1a83f9f104179fdb6e9aca4e27693959c2bf5 Mon Sep 17 00:00:00 2001
+From 9eafc5e3bed17ca8353f88b8c0471c33e76d9017 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
-Date: Tue, 17 Dec 2024 18:45:39 +0100
+Date: Mon, 13 Apr 2026 14:04:43 +0200
 Subject: [PATCH] Add Managarm support
 
-Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
  src/qml/jit/qv4assemblercommon_p.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/qmleasing/CMakeLists.txt     | 3 +++
+ tools/qmltestrunner/CMakeLists.txt | 4 ++++
+ tools/svgtoqml/CMakeLists.txt      | 4 ++++
+ 4 files changed, 12 insertions(+), 1 deletion(-)
 
 diff --git a/src/qml/jit/qv4assemblercommon_p.h b/src/qml/jit/qv4assemblercommon_p.h
-index e83608ae..622e41e6 100644
+index 47c5e37e..61b1f1d1 100644
 --- a/src/qml/jit/qv4assemblercommon_p.h
 +++ b/src/qml/jit/qv4assemblercommon_p.h
-@@ -33,7 +33,7 @@ namespace QV4 {
+@@ -34,7 +34,7 @@ namespace QV4 {
  namespace JIT {
  
  #if defined(Q_PROCESSOR_X86_64) || defined(ENABLE_ALL_ASSEMBLERS_FOR_REFACTORING_PURPOSES)
--#if defined(Q_OS_LINUX) || defined(Q_OS_QNX) || defined(Q_OS_FREEBSD) || defined(Q_OS_DARWIN) || defined(Q_OS_SOLARIS) || defined(Q_OS_VXWORKS)
-+#if defined(Q_OS_LINUX) || defined(Q_OS_QNX) || defined(Q_OS_FREEBSD) || defined(Q_OS_DARWIN) || defined(Q_OS_SOLARIS) || defined(Q_OS_VXWORKS) || defined(Q_OS_MANAGARM)
+-#if defined(Q_OS_LINUX) || defined(Q_OS_QNX) || defined(Q_OS_FREEBSD) || defined(Q_OS_DARWIN) || defined(Q_OS_SOLARIS) || defined(Q_OS_VXWORKS) || defined(Q_OS_HURD)
++#if defined(Q_OS_LINUX) || defined(Q_OS_QNX) || defined(Q_OS_FREEBSD) || defined(Q_OS_DARWIN) || defined(Q_OS_SOLARIS) || defined(Q_OS_VXWORKS) || defined(Q_OS_HURD) || defined(Q_OS_MANAGARM)
  
  class PlatformAssembler_X86_64_SysV : public JSC::MacroAssembler<JSC::MacroAssemblerX86_64>
  {
+diff --git a/tools/qmleasing/CMakeLists.txt b/tools/qmleasing/CMakeLists.txt
+index 7bbb0ce7..849f5d4d 100644
+--- a/tools/qmleasing/CMakeLists.txt
++++ b/tools/qmleasing/CMakeLists.txt
+@@ -19,6 +19,9 @@ qt_internal_add_app(qmleasing
+     LIBRARIES
+         Qt::Gui
+         Qt::Qml
++        Qt::QmlMeta
++        Qt::QmlModels
++        Qt::QmlWorkerScript
+         Qt::Quick
+         Qt::Widgets
+     ENABLE_AUTOGEN_TOOLS
+diff --git a/tools/qmltestrunner/CMakeLists.txt b/tools/qmltestrunner/CMakeLists.txt
+index 2bf40e7c..ba35aa20 100644
+--- a/tools/qmltestrunner/CMakeLists.txt
++++ b/tools/qmltestrunner/CMakeLists.txt
+@@ -51,6 +51,10 @@ qt_internal_add_tool(${target_name}
+     LIBRARIES
+         Qt::Gui
+         Qt::Qml
++        Qt::QmlMeta
++        Qt::QmlModels
++        Qt::QmlWorkerScript
++        Qt::Quick
+         Qt::QuickTest
+ )
+ qt_internal_return_unless_building_tools()
+diff --git a/tools/svgtoqml/CMakeLists.txt b/tools/svgtoqml/CMakeLists.txt
+index ed70ea59..5ac69f55 100644
+--- a/tools/svgtoqml/CMakeLists.txt
++++ b/tools/svgtoqml/CMakeLists.txt
+@@ -19,7 +19,11 @@ qt_internal_add_tool(${target_name}
+         Qt::Core
+         Qt::Gui
+         Qt::GuiPrivate
++        Qt::QuickShapes
+         Qt::Qml
++        Qt::QmlMeta
++        Qt::QmlModels
++        Qt::QmlWorkerScript
+         Qt::Quick
+         Qt::QuickVectorImageGeneratorPrivate
+ )
 -- 
-2.45.2
+2.53.0
 
