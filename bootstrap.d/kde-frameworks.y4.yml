@@ -98,8 +98,8 @@ sources:
   - name: kguiaddons
     subdir: 'ports'
     git: 'https://github.com/KDE/kguiaddons.git'
-    tag: 'v6.11.0'
-    version: '6.11.0'
+    tag: 'v6.25.0'
+    version: '6.25.0'
 
   - name: ki18n
     subdir: 'ports'
@@ -1006,21 +1006,21 @@ packages:
     tools_required:
       - system-gcc
       - host-cmake
-      - host-qt6
       - host-ecm
+      - host-qt6
       - wayland-scanner
     pkgs_required:
       - mlibc
+      - libice
+      - libx11
+      - libxcb
+      - plasma-wayland-protocols
       - qtbase6
       - qtwayland6
       - wayland
-      - plasma-wayland-protocols
       - wayland-protocols
-      - libx11
-      - libxcb
       - xorg-proto
-      - libice
-    revision: 3
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -1042,6 +1042,7 @@ packages:
         - '-DWITH_DBUS=ON'
         - '-DWITH_WAYLAND=ON'
         - '-DWITH_X11=ON'
+        - '-DBUILD_PYTHON_BINDINGS=OFF'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
