@@ -397,22 +397,22 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/KDE/layer-shell-qt.git'
-      tag: 'v6.3.90'
-      version: '6.3.90'
+      tag: 'v6.6.4'
+      version: '6.6.4'
     tools_required:
       - system-gcc
       - host-cmake
-      - host-qt6
       - host-ecm
+      - host-qt6
       - wayland-scanner
     pkgs_required:
       - mlibc
+      - libxkbcommon
       - qtbase6
       - qtdeclarative6
       - qtwayland6
       - wayland
       - wayland-protocols
-      - libxkbcommon
     revision: 1
     configure:
       - args:
