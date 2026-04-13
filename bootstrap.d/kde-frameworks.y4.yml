@@ -110,8 +110,8 @@ sources:
   - name: kiconthemes
     subdir: 'ports'
     git: 'https://github.com/KDE/kiconthemes.git'
-    tag: 'v6.11.0'
-    version: '6.11.0'
+    tag: 'v6.25.0'
+    version: '6.25.0'
 
   - name: kidletime
     subdir: 'ports'
@@ -1110,21 +1110,21 @@ packages:
     tools_required:
       - system-gcc
       - host-cmake
-      - host-qt6
       - host-ecm
+      - host-qt6
     pkgs_required:
       - mlibc
-      - qtbase6
-      - qtdeclarative6
-      - qtsvg6
+      - breeze-icons
       - karchive
       - kcolorscheme
       - kconfig
       - kconfigwidgets
       - ki18n
       - kwidgetsaddons
-      - breeze-icons
-    revision: 3
+      - qtbase6
+      - qtdeclarative6
+      - qtsvg6
+    revision: 1
     configure:
       - args:
         - 'cmake'
