@@ -200,8 +200,8 @@ sources:
   - name: kwindowsystem
     subdir: 'ports'
     git: 'https://github.com/KDE/kwindowsystem.git'
-    tag: 'v6.11.0'
-    version: '6.11.0'
+    tag: 'v6.25.0'
+    version: '6.25.0'
 
   - name: kxmlgui
     subdir: 'ports'
@@ -1929,24 +1929,24 @@ packages:
     tools_required:
       - system-gcc
       - host-cmake
-      - host-qt6
       - host-ecm
+      - host-qt6
       - wayland-scanner
     pkgs_required:
       - mlibc
-      - qtbase6
-      - qtdeclarative6
-      - qtwayland6
-      - plasma-wayland-protocols
-      - wayland
-      - wayland-protocols
+      - libice
       - libx11
       - libxcb
       - libxfixes
-      - xorg-proto
+      - plasma-wayland-protocols
+      - qtbase6
+      - qtdeclarative6
+      - qtwayland6
+      - wayland
+      - wayland-protocols
       - xcb-util-keysyms
-      - libice
-    revision: 3
+      - xorg-proto
+    revision: 1
     configure:
       - args:
         - 'cmake'
