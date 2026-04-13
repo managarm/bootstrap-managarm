@@ -146,8 +146,8 @@ sources:
   - name: knewstuff
     subdir: 'ports'
     git: 'https://github.com/KDE/knewstuff.git'
-    tag: 'v6.11.0'
-    version: '6.11.0'
+    tag: 'v6.25.0'
+    version: '6.25.0'
 
   - name: knotifications
     subdir: 'ports'
@@ -1434,17 +1434,17 @@ packages:
       - host-ecm
     pkgs_required:
       - mlibc
-      - qtbase6
-      - qtdeclarative6
       - attica
       - karchive
       - kconfig
       - kcoreaddons
       - ki18n
-      - kpackage
       - kirigami
+      - kpackage
       - kwidgetsaddons
-    revision: 3
+      - qtbase6
+      - qtdeclarative6
+    revision: 1
     configure:
       - args:
         - 'cmake'
