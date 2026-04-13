@@ -76,16 +76,11 @@ packages:
     tools_required:
       - system-gcc
       - host-cmake
-      - host-qt6
       - host-ecm
       - host-kconfig
+      - host-qt6
     pkgs_required:
       - mlibc
-      - qt5compat
-      - qtbase6
-      - qtmultimedia6
-      - qtsvg6
-      - qca
       - karchive
       - kbookmarks
       - kcodecs
@@ -111,7 +106,12 @@ packages:
       - kwidgetsaddons
       - kwindowsystem
       - kxmlgui
-    revision: 3
+      - qca
+      - qt5compat
+      - qtbase6
+      - qtmultimedia6
+      - qtsvg6
+    revision: 4
     configure:
       - args:
         - 'cmake'
