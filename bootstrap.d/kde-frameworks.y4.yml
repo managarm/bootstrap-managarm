@@ -182,8 +182,8 @@ sources:
   - name: kstatusnotifieritem
     subdir: 'ports'
     git: 'https://github.com/KDE/kstatusnotifieritem.git'
-    tag: 'v6.11.0'
-    version: '6.11.0'
+    tag: 'v6.25.0'
+    version: '6.25.0'
 
   - name: ktextwidgets
     subdir: 'ports'
@@ -1781,13 +1781,13 @@ packages:
     tools_required:
       - system-gcc
       - host-cmake
-      - host-qt6
       - host-ecm
+      - host-qt6
     pkgs_required:
       - mlibc
-      - qtbase6
       - kwindowsystem
-    revision: 3
+      - qtbase6
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -1806,6 +1806,7 @@ packages:
         - '-DKDE_INSTALL_QTPLUGINDIR=/usr/lib/qt6/plugins'
         ### end ecm.class
         - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '-DBUILD_PYTHON_BINDINGS=OFF'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
