@@ -96,8 +96,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://code.qt.io/qt/qtbase.git'
-      tag: 'v6.8.1'
-      version: '6.8.1'
+      tag: 'v6.11.0'
+      version: '6.11.0'
     tools_required:
       - system-gcc
       - host-cmake
@@ -107,50 +107,53 @@ packages:
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
-      - zlib
-      - zstd
-      - pcre2
-      - double-conversion
-      - libiconv
-      - icu
-      - glib
-      - libxkbcommon
-      - libinput
-      - libevdev
-      - mtdev
-      - mesa
-      - freetype
-      - fontconfig
-      - libpng
-      - harfbuzz
-      - libx11
-      - libjpeg-turbo
-      - libsm
-      - libice
-      - libdrm
-      - libxcb
-      - xcb-util-image
-      - xcb-util-keysyms
-      - xcb-util-wm
-      - xcb-util-render-util
-      - xcb-util-cursor
-      - openssl
-      - wayland
-      - wayland-protocols
-      - libxcursor
-      - libxinerama
-      - libxrender
-      - libxi
-      - sqlite
+      - at-spi2-core
       - brotli
       - dbus
-      - at-spi2-core
-    revision: 3
+      - double-conversion
+      - fontconfig
+      - freetype
+      - glib
+      - harfbuzz
+      - icu
+      - libdrm
+      - libevdev
+      - libice
+      - libiconv
+      - libinput
+      - libjpeg-turbo
+      - libpng
+      - libsm
+      - libx11
+      - libxcb
+      - libxcursor
+      - libxi
+      - libxinerama
+      - libxkbcommon
+      - libxrender
+      - mesa
+      - mtdev
+      - openssl
+      - pcre2
+      - sqlite
+      - wayland
+      - wayland-protocols
+      - xcb-util-cursor
+      - xcb-util-image
+      - xcb-util-keysyms
+      - xcb-util-render-util
+      - xcb-util-wm
+      - zlib
+      - zstd
+    revision: 1
     configure:
       - args:
         - 'cmake'
         - '-GNinja'
         - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/host-qt6'
+        - '-DQT_FORCE_BUILD_TOOLS=ON'
+        - '-DQT_NO_GENERATE_QMAKE_WRAPPER_FOR_TARGET=ON'
+        - '-DBUILD_WITH_PCH=OFF'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_BUILD_TYPE=Debug'
@@ -201,6 +204,9 @@ packages:
         - '-DFEATURE_system_sqlite=ON'
         - '-DFEATURE_cups=OFF'
         - '-DFEATURE_ssl=ON'
+        - '-DQT_FEATURE_jemalloc=OFF'
+        - '-DQT_FEATURE_androiddeployqt=OFF'
+        - '-DQT_UNITY_BUILD=ON'
         - '@THIS_SOURCE_DIR@'
         environ:
           PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
