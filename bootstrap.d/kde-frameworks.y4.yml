@@ -8,8 +8,8 @@ sources:
   - name: breeze-icons
     subdir: 'ports'
     git: 'https://github.com/KDE/breeze-icons.git'
-    tag: 'v6.11.0'
-    version: '6.11.0'
+    tag: 'v6.25.0'
+    version: '6.25.0'
 
   - name: extra-cmake-modules
     subdir: 'ports'
@@ -227,10 +227,10 @@ tools:
     from_source: breeze-icons
     tools_required:
       - host-cmake
-      - host-qt6
       - host-ecm
       - host-ninja
-    revision: 2
+      - host-qt6
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -362,15 +362,15 @@ packages:
     from_source: breeze-icons
     tools_required:
       - system-gcc
+      - host-breeze-icons
       - host-cmake
-      - host-qt6
       - host-ecm
       - host-ninja
-      - host-breeze-icons
+      - host-qt6
     pkgs_required:
       - mlibc
       - qtbase6
-    revision: 4
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -388,7 +388,7 @@ packages:
         - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
         - '-DBINARY_ICONS_RESOURCE=ON'
         - '-DSKIP_INSTALL_ICONS=OFF'
-        - '-DKF6_HOST_TOOLING=@BUILD_ROOT@/tools/host-breeze-icons/'
+        - '-DKF6_HOST_TOOLING=@BUILD_ROOT@/tools/host-breeze-icons'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
