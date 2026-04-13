@@ -1826,19 +1826,16 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/KDE/kwallet.git'
-      tag: 'v6.11.0'
-      version: '6.11.0'
+      tag: 'v6.25.0'
+      version: '6.25.0'
     tools_required:
       - system-gcc
       - host-cmake
-      - host-qt6
       - host-ecm
       - host-qca
+      - host-qt6
     pkgs_required:
       - mlibc
-      - qtbase6
-      - qca
-      - libgcrypt
       - kcolorscheme
       - kconfig
       - kcoreaddons
@@ -1849,7 +1846,11 @@ packages:
       - kservice
       - kwidgetsaddons
       - kwindowsystem
-    revision: 3
+      - libgcrypt
+      - libsecret
+      - qca
+      - qtbase6
+    revision: 1
     configure:
       - args:
         - 'cmake'
