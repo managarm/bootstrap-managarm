@@ -176,8 +176,8 @@ sources:
   - name: kservice
     subdir: 'ports'
     git: 'https://github.com/KDE/kservice.git'
-    tag: 'v6.11.0'
-    version: '6.11.0'
+    tag: 'v6.25.0'
+    version: '6.25.0'
 
   - name: kstatusnotifieritem
     subdir: 'ports'
@@ -1731,16 +1731,16 @@ packages:
     tools_required:
       - system-gcc
       - host-cmake
-      - host-qt6
       - host-ecm
+      - host-qt6
     pkgs_required:
       - mlibc
-      - qtbase6
       - kconfig
       - kcoreaddons
       - kdbusaddons
       - ki18n
-    revision: 3
+      - qtbase6
+    revision: 1
     configure:
       - args:
         - 'cmake'
