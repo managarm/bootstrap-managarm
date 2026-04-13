@@ -15,7 +15,7 @@ index 6fb1920..712b2a5 100644
  #ifndef _LIBINTL_H
  #define _LIBINTL_H 1
  
-+#if !_DEFAULT_SOURCE && (_POSIX_C_SOURCE-0) >= 202405L
++#if !defined _DEFAULT_SOURCE && (_POSIX_C_SOURCE-0) >= 202405L
 +# define __STRICT_POSIX2024_MODE 1
 +#endif
 +
