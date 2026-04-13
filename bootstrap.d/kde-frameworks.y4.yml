@@ -20,8 +20,8 @@ sources:
   - name: karchive
     subdir: 'ports'
     git: 'https://github.com/KDE/karchive.git'
-    tag: 'v6.11.0'
-    version: '6.11.0'
+    tag: 'v6.25.0'
+    version: '6.25.0'
 
   - name: kauth
     subdir: 'ports'
@@ -409,15 +409,15 @@ packages:
     tools_required:
       - system-gcc
       - host-cmake
-      - host-qt6
       - host-ecm
+      - host-qt6
     pkgs_required:
       - mlibc
-      - qtbase6
       - bzip2
-      - zstd
+      - qtbase6
       - zlib
-    revision: 3
+      - zstd
+    revision: 1
     configure:
       - args:
         - 'cmake'
