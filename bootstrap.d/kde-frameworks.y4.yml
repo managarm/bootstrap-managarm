@@ -38,8 +38,8 @@ sources:
   - name: kcodecs
     subdir: 'ports'
     git: 'https://github.com/KDE/kcodecs.git'
-    tag: 'v6.11.0'
-    version: '6.11.0'
+    tag: 'v6.25.0'
+    version: '6.25.0'
 
   - name: kcolorscheme
     subdir: 'ports'
@@ -547,12 +547,12 @@ packages:
     tools_required:
       - system-gcc
       - host-cmake
-      - host-qt6
       - host-ecm
+      - host-qt6
     pkgs_required:
       - mlibc
       - qtbase6
-    revision: 3
+    revision: 1
     configure:
       - args:
         - 'cmake'
