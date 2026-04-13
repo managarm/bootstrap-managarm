@@ -2748,11 +2748,11 @@ packages:
       categories: ['dev-libs']
     source:
       subdir: 'ports'
-      url: 'https://gitlab.freedesktop.org/wayland/wayland-protocols/-/releases/1.42/downloads/wayland-protocols-1.42.tar.xz'
-      checksum: 'blake2b:7dc9cf43f82ee7522419327eaeaa36ebfe2a05f45687a2068951125af0de587d3a496bb2eb80f1e0afa96c960090d8d80ff7806117c578fb3771126fd2b8d65d'
-      extract_path: 'wayland-protocols-1.42'
+      url: 'https://gitlab.freedesktop.org/wayland/wayland-protocols/-/releases/1.48/downloads/wayland-protocols-1.48.tar.xz'
+      checksum: 'blake2b:8e3b6797aa10e668b0c950e5ea4d234d0da756297bfe45f5a2fbb8f280ae81261ec0efc48a334d2c57cbe57a94cddce7a3e95b33abc88a9c67508a90120f9297'
+      extract_path: 'wayland-protocols-1.48'
       format: 'tar.xz'
-      version: '1.42'
+      version: '1.48'
     tools_required:
       - system-gcc
       - wayland-scanner
@@ -2760,7 +2760,7 @@ packages:
         triple: "@OPTION:arch-triple@"
       - virtual: pkgconfig-for-host
         program_name: host-pkg-config
-    revision: 3
+    revision: 1
     configure:
       - args:
         - 'meson'
