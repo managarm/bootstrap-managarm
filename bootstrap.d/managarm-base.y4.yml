@@ -13,7 +13,7 @@ packages:
     source:
       subdir: meta-sources
       version: '1.0'
-    revision: 16
+    revision: 17
     configure: []
     build:
       # Create initial directories
@@ -54,6 +54,8 @@ packages:
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/gshadow', '@THIS_COLLECT_DIR@/etc']
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/resolv.conf', '@THIS_COLLECT_DIR@/etc']
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/hosts', '@THIS_COLLECT_DIR@/etc']
+      # Install the default config.site
+      - args: ['cp', '@SOURCE_ROOT@/scripts/config.site', '@THIS_COLLECT_DIR@/usr/share']
       # Link /bin, /lib and /sbin to their /usr counterparts
       - args: ['ln', '-svf', 'usr/bin', '@THIS_COLLECT_DIR@/bin']
       - args: ['ln', '-svf', 'usr/lib', '@THIS_COLLECT_DIR@/lib']
