@@ -544,3 +544,44 @@ packages:
           echo panic > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/basic/spawn/posix_spawnattr_setschedparam.out
           echo panic > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/basic/spawn/posix_spawnattr_setschedpolicy.out
           rm @THIS_COLLECT_DIR@/opt/os-test/*.xbstrap
+
+  - name: gnome-desktop-testing
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: GNOME test runner
+      description: gnome-desktop-testing is a basic runner for installed tests.
+      spdx: 'GPL-2.0-only'
+      website: 'https://gitlab.gnome.org/GNOME/gnome-desktop-testing'
+      maintainer: "no92 <leo@managarm.org>"
+      categories: ['dev-utils']
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.gnome.org/GNOME/gnome-desktop-testing.git'
+      branch: 'master'
+      commit: 036b7357f1892b3bdf19aba8d0be7d7b75bda291
+      version: '2024.01.10'
+    tools_required:
+      - host-pkg-config
+      - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - glib
+      - systemd
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
