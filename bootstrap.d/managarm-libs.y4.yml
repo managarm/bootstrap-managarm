@@ -134,6 +134,24 @@ packages:
       - args: ['ln', '-srf', '@THIS_COLLECT_DIR@/usr/lib/@OPTION:arch-triple@/bragi/pkgconfig/bragi.pc',
               '@THIS_COLLECT_DIR@/usr/lib/pkgconfig/bragi.pc']
 
+  - name: bragi-bin
+    architecture: '@OPTION:arch@'
+    from_source: 'bragi'
+    tools_required:
+      - host-gpep517
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - python
+      - python-lark
+    revision: 1
+    configure:
+      # python modules do not seem to support out-of-tree builds, so we just copy
+      # the source tree into the build directory instead.
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+    build:
+      - args: ['python3', '-m', 'gpep517', 'install-from-source', '--destdir', '@THIS_COLLECT_DIR@', '--optimize', 'all', '--prefix', '/usr', '--sysroot', '@SYSROOT_DIR@', '--interpreter', '/usr/bin/python3']
+
   - name: fafnir
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
