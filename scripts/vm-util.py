@@ -815,8 +815,7 @@ def do_qemu(args):
             "ide-hd,drive=boot-drive,bus=ahci.0",
         ]
     elif args.boot_drive == "usb":
-        # Use EHCI for now since XHCI hangs on boot.
-        qemu_args += ["-device", "usb-storage,drive=boot-drive,bus=ehci.0"]
+        qemu_args += ["-device", "usb-storage,drive=boot-drive,bus=xhci.0"]
     elif args.boot_drive == "nvme":
         qemu_args += ["-device", "nvme,serial=deadbeef,drive=boot-drive"]
     elif args.boot_drive == "nvme-of":
@@ -878,6 +877,9 @@ def do_qemu(args):
         else:
             assert args.arch in {"aarch64", "riscv64"}
             qemu_args += ["-device", "virtio-gpu"]
+    elif args.gfx == "ramfb":
+        assert args.arch in {"aarch64", "riscv64"}
+        qemu_args += ["-device", "ramfb"]
     else:
         if args.arch == "x86_64":
             if args.gfx == "bga":
@@ -1027,7 +1029,7 @@ qemu_parser.add_argument(
 )
 qemu_parser.add_argument("--net-bridge", action="store_true")
 qemu_parser.add_argument("--nic", choices=["i8254x", "virtio", "rtl8139", "usb", "none"], default="virtio")
-qemu_parser.add_argument("--gfx", choices=["bga", "virtio", "vmware", "none"], default="default")
+qemu_parser.add_argument("--gfx", choices=["bga", "virtio", "vmware", "ramfb", "none"], default="default")
 qemu_parser.add_argument("--ps2", action="store_true")
 qemu_parser.add_argument("--mouse", action="store_true")
 qemu_parser.add_argument("--sdl", action="store_true")

@@ -107,7 +107,7 @@ tools:
             truncate -s $TRUNCATE_SIZE @PREFIX@/OVMF_CODE_@OPTION:arch@.fd
             truncate -s $TRUNCATE_SIZE @PREFIX@/OVMF_VARS_@OPTION:arch@.fd
           fi
-          mkdir @PREFIX@/bin
+          mkdir -p @PREFIX@/bin
           cp "@THIS_BUILD_DIR@/BaseTools/Source/C/bin/GenFw" "@PREFIX@/bin/"
 
   - name: lil-utils
