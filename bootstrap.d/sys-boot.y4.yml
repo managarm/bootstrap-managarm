@@ -12,9 +12,9 @@ sources:
 
   - name: limine
     subdir: 'ports'
-    git: 'https://codeberg.org/Limine/Limine.git'
-    tag: 'v10.8.5'
-    version: '10.8.5'
+    git: 'https://github.com/Limine-Bootloader/Limine'
+    tag: 'v12.1.0'
+    version: '12.1.0'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.16
