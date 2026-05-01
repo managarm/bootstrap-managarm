@@ -54,7 +54,7 @@ class Writer:
                 f"{subindent}path: boot():/managarm/{eir}\n",
             ]
         )
-        if protocol in {"limine", "multiboot2"}:
+        if protocol in {"limine", "multiboot2", "linux"}:
             self.out.write(f"{subindent}module_path: boot():/managarm/initrd.cpio\n")
 
         cmdlines = []
@@ -121,7 +121,7 @@ def main():
         mb2_available = args.arch in {"x86_64"}
 
         # TODO: On RISC-V, we probably want to switch to eir-uefi but that is currently broken.
-        if args.arch in {"x86_64", "riscv64"}:
+        if args.arch in {"x86_64", "aarch64", "riscv64"}:
             # Limine can be loaded either by UEFI or by BIOS on x86.
             # We can either use the Limine protocol or MB2 to cover both cases.
             default_protocol = "limine"
