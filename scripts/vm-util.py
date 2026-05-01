@@ -815,8 +815,7 @@ def do_qemu(args):
             "ide-hd,drive=boot-drive,bus=ahci.0",
         ]
     elif args.boot_drive == "usb":
-        # Use EHCI for now since XHCI hangs on boot.
-        qemu_args += ["-device", "usb-storage,drive=boot-drive,bus=ehci.0"]
+        qemu_args += ["-device", "usb-storage,drive=boot-drive,bus=xhci.0"]
     elif args.boot_drive == "nvme":
         qemu_args += ["-device", "nvme,serial=deadbeef,drive=boot-drive"]
     elif args.boot_drive == "nvme-of":
