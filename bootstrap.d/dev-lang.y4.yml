@@ -269,14 +269,18 @@ packages:
       categories: ['dev-lang']
     source:
       subdir: 'ports'
-      url: 'https://web.archive.org/web/20250310173238if_/https://www.nasm.us/pub/nasm/releasebuilds/2.16.03/nasm-2.16.03.tar.xz'
-      format: 'tar.xz'
-      checksum: blake2b:742cbf330341fde9f778d8ca13e8c06199f48796d47028ac973d39e3d9e434450cdfebe89f6ab248d372bdaeb0c88a25eb7153a39b66fc05e770523d4c9e11e9
-      extract_path: 'nasm-2.16.03'
+      git: 'https://github.com/netwide-assembler/nasm.git'
+      tag: 'nasm-2.16.03'
       version: '2.16.03'
       tools_required:
+        - host-autoconf-v2.71
         - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
       regenerate:
+        - args: ['./autogen.sh']
+          environ:
+            'NOCONFIGURE': 'yes'
         - args: ['cp',
             '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
             '@THIS_SOURCE_DIR@/autoconf/helpers/']
@@ -284,14 +288,16 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
+      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
-        - '@THIS_SOURCE_DIR@/configure'
+        - '@THIS_BUILD_DIR@/configure'
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
     build:
       - args: ['make', '-j@PARALLELISM@']
+      - args: ['touch', 'nasm.1', 'ndisasm.1']
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
