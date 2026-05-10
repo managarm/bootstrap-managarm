@@ -458,7 +458,7 @@ packages:
       - mlibc
       - bzip2
       - libiconv
-    revision: 12
+    revision: 13
     configure:
       # Fixup their makefile, thanks gentoo!
       - args: |
@@ -480,6 +480,10 @@ packages:
       - args: ['cp', '@THIS_BUILD_DIR@/man/unzipsfx.1', '@THIS_COLLECT_DIR@/usr/share/man/man1/']
       - args: ['cp', '@THIS_BUILD_DIR@/man/zipgrep.1', '@THIS_COLLECT_DIR@/usr/share/man/man1/']
       - args: ['cp', '@THIS_BUILD_DIR@/man/zipinfo.1', '@THIS_COLLECT_DIR@/usr/share/man/man1/']
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: unzip-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: xz-utils
     labels: [aarch64, riscv64]
