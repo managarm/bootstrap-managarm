@@ -132,6 +132,46 @@ packages:
       - name: cmatrix-dbg
         include: ['/usr/lib/debug/**']
 
+  - name: evtest
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: kernel input device debugging
+      description: evtest is a tool to print evdev kernel events. It reads directly from the kernel device and prints a device description and the events with the value and the symbolic name.
+      spdx: 'GPL-2.0-or-later'
+      website: 'https://gitlab.freedesktop.org/libevdev/evtest'
+      maintainer: "no92 <leo@managarm.org>"
+      categories: ['app-misc']
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.freedesktop.org/libevdev/evtest.git'
+      tag: 'evtest-1.35'
+      version: '1.35'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+      regenerate:
+        - args: ['autoreconf', '-fvi']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+    revision: 4
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: evtest-dbg
+        include: ['/usr/lib/debug/**']
+
   - name: fastfetch
     architecture: '@OPTION:arch@'
     metadata:
@@ -206,42 +246,6 @@ packages:
     subpackages:
       - name: fastfetch-dbg
         include: ['/usr/lib/debug/**']
-
-  - name: evtest
-    labels: [aarch64]
-    architecture: '@OPTION:arch@'
-    metadata:
-      summary: kernel input device debugging
-      description: evtest is a tool to print evdev kernel events. It reads directly from the kernel device and prints a device description and the events with the value and the symbolic name.
-      spdx: 'GPL-2.0-or-later'
-      website: 'https://gitlab.freedesktop.org/libevdev/evtest'
-      maintainer: "no92 <leo@managarm.org>"
-      categories: ['app-misc']
-    source:
-      subdir: 'ports'
-      git: 'https://gitlab.freedesktop.org/libevdev/evtest.git'
-      tag: 'evtest-1.35'
-      version: '1.35'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
-      regenerate:
-        - args: ['autoreconf', '-fvi']
-    tools_required:
-      - system-gcc
-    pkgs_required:
-      - mlibc
-    revision: 3
-    configure:
-      - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--host=@OPTION:arch-triple@'
-        - '--prefix=/usr'
-    build:
-      - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'install']
-        environ:
-          DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: sl
     labels: [aarch64]
