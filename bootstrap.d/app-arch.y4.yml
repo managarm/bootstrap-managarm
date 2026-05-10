@@ -180,7 +180,7 @@ packages:
       - mlibc
       - libiconv
       - libintl
-    revision: 3
+    revision: 4
     configure:
       # Fix a build issue when building with gcc 10 and higher
       - args: ['sed', '-i', '/The name/,+2 d', '@THIS_SOURCE_DIR@/src/global.c']
@@ -194,6 +194,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: cpio-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: gzip
     labels: [aarch64, riscv64]
