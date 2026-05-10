@@ -88,7 +88,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 12
+    revision: 13
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       # Remove the test directory from the Makefile, as it tries to run (and fail on) the tests
@@ -99,10 +99,21 @@ packages:
       - args: ['make', 'clean']
       - args: ['make', 'CC=@OPTION:arch-triple@-gcc', 'CFLAGS=-fPIC', '-j@PARALLELISM@']
       - args: ['make', 'PREFIX=@THIS_COLLECT_DIR@/usr', 'install']
+      - args: ['cp', '-av', '@THIS_BUILD_DIR@/libbz2.so.1.0.8', '@THIS_COLLECT_DIR@/usr/lib']
+      - args: ['ln', '-sfv', 'libbz2.so.1.0.8', '@THIS_COLLECT_DIR@/usr/lib/libbz2.so.1']
+      - args: ['ln', '-sfv', 'libbz2.so.1.0.8', '@THIS_COLLECT_DIR@/usr/lib/libbz2.so']
+      - args: ['cp', '-v', 'bzip2-shared', '@THIS_COLLECT_DIR@/usr/bin/bzip2']
       - args: ['ln', '-sf', 'bzdiff', '@THIS_COLLECT_DIR@/usr/bin/bzcmp']
       - args: ['ln', '-sf', 'bzgrep', '@THIS_COLLECT_DIR@/usr/bin/bzegrep']
       - args: ['ln', '-sf', 'bzgrep', '@THIS_COLLECT_DIR@/usr/bin/bzfgrep']
       - args: ['ln', '-sf', 'bzmore', '@THIS_COLLECT_DIR@/usr/bin/bzless']
+      - args: ['ln', '-sf', 'bzip2', '@THIS_COLLECT_DIR@/usr/bin/bzcat']
+      - args: ['ln', '-sf', 'bzip2', '@THIS_COLLECT_DIR@/usr/bin/bunzip2']
+      - args: ['rm', '-fv', '@THIS_COLLECT_DIR@/usr/lib/libbz2.a']
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: bzip2-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: bzip3
     labels: [aarch64, riscv64]
