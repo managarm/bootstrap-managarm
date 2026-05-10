@@ -33,10 +33,10 @@ packages:
     pkgs_required:
       - mlibc
       - file
-      - ncurses
       - libintl
+      - ncurses
       - zlib
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -59,6 +59,10 @@ packages:
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/nanorc', '@THIS_COLLECT_DIR@/etc/nanorc']
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/nanorc', '@THIS_COLLECT_DIR@/home/managarm/.nanorc']
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/root-nanorc', '@THIS_COLLECT_DIR@/root/.nanorc']
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: nano-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: openvi
     architecture: '@OPTION:arch@'
