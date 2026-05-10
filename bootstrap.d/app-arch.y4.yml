@@ -271,15 +271,15 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-      - openssl
-      - zlib
-      - xz-utils
-      - libiconv
       - libexpat
+      - libiconv
       - libxml
-      - zstd
       - lz4
-    revision: 3
+      - openssl
+      - xz-utils
+      - zlib
+      - zstd
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -287,6 +287,7 @@ packages:
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DBUILD_SHARED_LIBS=ON'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -296,6 +297,10 @@ packages:
         quiet: true
       # Apparently libarchive installs their pkgconfig files into /pkgconfig now, let's fix that
       - args: ['mv', '-v', '@THIS_COLLECT_DIR@/pkgconfig', '@THIS_COLLECT_DIR@/usr/lib/pkgconfig']
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libarchive-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libdeflate
     architecture: '@OPTION:arch@'
