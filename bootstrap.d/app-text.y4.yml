@@ -97,7 +97,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       # tree does not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead
@@ -109,3 +109,7 @@ packages:
       - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'PREFIX=/usr', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: tree-dbg
+        include: ['/usr/lib/debug/**']
