@@ -42,7 +42,6 @@ tools:
       - args: ['./build', 'install', 'macros', '@PREFIX@']
         workdir: '@THIS_SOURCE_DIR@/yodl'
 
-
 packages:
   - name: bash
     labels: [aarch64, riscv64]
@@ -74,10 +73,10 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
+      - libiconv
       - ncurses
       - readline
-      - libiconv
-    revision: 18
+    revision: 19
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -103,6 +102,10 @@ packages:
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/profile', '@THIS_COLLECT_DIR@/etc']
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/bash.bashrc', '@THIS_COLLECT_DIR@/etc']
       - args: ['ln', '-sf', 'bash', '@THIS_COLLECT_DIR@/usr/bin/sh']
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: bash-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: dash
     architecture: '@OPTION:arch@'
