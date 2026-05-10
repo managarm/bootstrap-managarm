@@ -151,23 +151,23 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-      - yyjson
-      - zlib
       - elfutils
+      - freetype
       - libdrm
       - libglvnd
       - libx11
-      - sqlite
-      - wayland
       - libxcb
       - libxrandr
-      - freetype
-    revision: 5
+      - sqlite
+      - wayland
+      - yyjson
+      - zlib
+    revision: 6
     configure:
       - args:
         - 'cmake'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DENABLE_RPM=no'
         - '-DENABLE_ZLIB=yes'
@@ -202,6 +202,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: fastfetch-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: evtest
     labels: [aarch64]
