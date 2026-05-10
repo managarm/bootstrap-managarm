@@ -322,12 +322,12 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DLIBDEFLATE_BUILD_SHARED_LIB="yes"'
         - '-DLIBDEFLATE_BUILD_STATIC_LIB="no"'
@@ -344,6 +344,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libdeflate-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: lz4
     architecture: '@OPTION:arch@'
