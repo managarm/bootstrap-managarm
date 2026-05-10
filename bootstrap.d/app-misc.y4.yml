@@ -115,7 +115,7 @@ packages:
     pkgs_required:
       - mlibc
       - ncurses
-    revision: 10
+    revision: 11
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -127,6 +127,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: cmatrix-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: fastfetch
     architecture: '@OPTION:arch@'
