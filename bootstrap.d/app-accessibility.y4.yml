@@ -37,26 +37,27 @@ packages:
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
+      - libxi
       - libxml
       - libxtst
-      - libxi
       - systemd
-    revision: 2
+    revision: 3
     configure:
       - args:
-          - 'meson'
-          - 'setup'
-          - '--cross-file'
-          - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@-goi.cross-file'
-          - '--prefix=/usr'
-          - '--sysconfdir=/etc'
-          - '-Dsystemd_user_dir=/usr/lib/systemd/user'
-          - !managarm::arch_ite
-            arch: [x86_64]
-            then: '-Dintrospection=enabled'
-            else: '-Dintrospection=disabled'
-          - '-Dgtk2_atk_adaptor=false'
-          - '@THIS_SOURCE_DIR@'
+        - 'meson'
+        - 'setup'
+        - '--buildtype=debugoptimized'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@-goi.cross-file'
+        - '--prefix=/usr'
+        - '--sysconfdir=/etc'
+        - '-Dsystemd_user_dir=/usr/lib/systemd/user'
+        - !managarm::arch_ite
+          arch: [x86_64]
+          then: '-Dintrospection=enabled'
+          else: '-Dintrospection=disabled'
+        - '-Dgtk2_atk_adaptor=false'
+        - '@THIS_SOURCE_DIR@'
         environ:
           # Same as below
           RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
@@ -79,3 +80,7 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: at-spi2-core-dbg
+        include: ['/usr/lib/debug/**']

@@ -43,7 +43,7 @@ packages:
       git: 'https://github.com/google/brotli.git'
       tag: 'v1.1.0'
       version: '1.1.0'
-    revision: 8
+    revision: 9
     tools_required:
       - system-gcc
       - host-cmake
@@ -55,13 +55,17 @@ packages:
         - '-GNinja'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
-        - '-DCMAKE_BUILD_TYPE=Release'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: brotli-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: bzip2
     labels: [aarch64, riscv64]
@@ -84,7 +88,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 12
+    revision: 13
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       # Remove the test directory from the Makefile, as it tries to run (and fail on) the tests
@@ -95,10 +99,21 @@ packages:
       - args: ['make', 'clean']
       - args: ['make', 'CC=@OPTION:arch-triple@-gcc', 'CFLAGS=-fPIC', '-j@PARALLELISM@']
       - args: ['make', 'PREFIX=@THIS_COLLECT_DIR@/usr', 'install']
+      - args: ['cp', '-av', '@THIS_BUILD_DIR@/libbz2.so.1.0.8', '@THIS_COLLECT_DIR@/usr/lib']
+      - args: ['ln', '-sfv', 'libbz2.so.1.0.8', '@THIS_COLLECT_DIR@/usr/lib/libbz2.so.1']
+      - args: ['ln', '-sfv', 'libbz2.so.1.0.8', '@THIS_COLLECT_DIR@/usr/lib/libbz2.so']
+      - args: ['cp', '-v', 'bzip2-shared', '@THIS_COLLECT_DIR@/usr/bin/bzip2']
       - args: ['ln', '-sf', 'bzdiff', '@THIS_COLLECT_DIR@/usr/bin/bzcmp']
       - args: ['ln', '-sf', 'bzgrep', '@THIS_COLLECT_DIR@/usr/bin/bzegrep']
       - args: ['ln', '-sf', 'bzgrep', '@THIS_COLLECT_DIR@/usr/bin/bzfgrep']
       - args: ['ln', '-sf', 'bzmore', '@THIS_COLLECT_DIR@/usr/bin/bzless']
+      - args: ['ln', '-sf', 'bzip2', '@THIS_COLLECT_DIR@/usr/bin/bzcat']
+      - args: ['ln', '-sf', 'bzip2', '@THIS_COLLECT_DIR@/usr/bin/bunzip2']
+      - args: ['rm', '-fv', '@THIS_COLLECT_DIR@/usr/lib/libbz2.a']
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: bzip2-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: bzip3
     labels: [aarch64, riscv64]
@@ -126,7 +141,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -138,6 +153,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: bzip3-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: cpio
     architecture: '@OPTION:arch@'
@@ -161,7 +180,7 @@ packages:
       - mlibc
       - libiconv
       - libintl
-    revision: 3
+    revision: 4
     configure:
       # Fix a build issue when building with gcc 10 and higher
       - args: ['sed', '-i', '/The name/,+2 d', '@THIS_SOURCE_DIR@/src/global.c']
@@ -175,6 +194,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: cpio-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: gzip
     labels: [aarch64, riscv64]
@@ -208,7 +231,7 @@ packages:
       - host-automake-v1.15
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -220,6 +243,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: gzip-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libarchive
     labels: [aarch64, riscv64]
@@ -244,15 +271,15 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-      - openssl
-      - zlib
-      - xz-utils
-      - libiconv
       - libexpat
+      - libiconv
       - libxml
-      - zstd
       - lz4
-    revision: 3
+      - openssl
+      - xz-utils
+      - zlib
+      - zstd
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -260,6 +287,7 @@ packages:
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DBUILD_SHARED_LIBS=ON'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -269,6 +297,10 @@ packages:
         quiet: true
       # Apparently libarchive installs their pkgconfig files into /pkgconfig now, let's fix that
       - args: ['mv', '-v', '@THIS_COLLECT_DIR@/pkgconfig', '@THIS_COLLECT_DIR@/usr/lib/pkgconfig']
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libarchive-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libdeflate
     architecture: '@OPTION:arch@'
@@ -290,12 +322,12 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DLIBDEFLATE_BUILD_SHARED_LIB="yes"'
         - '-DLIBDEFLATE_BUILD_STATIC_LIB="no"'
@@ -312,6 +344,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libdeflate-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: lz4
     architecture: '@OPTION:arch@'
@@ -333,19 +369,24 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
         - '-GNinja'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '@THIS_SOURCE_DIR@/build/cmake'
     build:
       - args: ['ninja']
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: lz4-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: tar
     labels: [aarch64, riscv64]
@@ -374,7 +415,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -388,6 +429,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: tar-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: unzip
     architecture: '@OPTION:arch@'
@@ -413,7 +458,7 @@ packages:
       - mlibc
       - bzip2
       - libiconv
-    revision: 12
+    revision: 13
     configure:
       # Fixup their makefile, thanks gentoo!
       - args: |
@@ -435,6 +480,10 @@ packages:
       - args: ['cp', '@THIS_BUILD_DIR@/man/unzipsfx.1', '@THIS_COLLECT_DIR@/usr/share/man/man1/']
       - args: ['cp', '@THIS_BUILD_DIR@/man/zipgrep.1', '@THIS_COLLECT_DIR@/usr/share/man/man1/']
       - args: ['cp', '@THIS_BUILD_DIR@/man/zipinfo.1', '@THIS_COLLECT_DIR@/usr/share/man/man1/']
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: unzip-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: xz-utils
     labels: [aarch64, riscv64]
@@ -466,7 +515,7 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -479,6 +528,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: xz-utils-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: zip
     architecture: '@OPTION:arch@'
@@ -495,7 +548,7 @@ packages:
     pkgs_required:
       - mlibc
       - bzip2
-    revision: 12
+    revision: 13
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -510,6 +563,10 @@ packages:
       - args: ['cp', '@THIS_BUILD_DIR@/man/zipcloak.1', '@THIS_COLLECT_DIR@/usr/share/man/man1/']
       - args: ['cp', '@THIS_BUILD_DIR@/man/zipnote.1', '@THIS_COLLECT_DIR@/usr/share/man/man1/']
       - args: ['cp', '@THIS_BUILD_DIR@/man/zipsplit.1', '@THIS_COLLECT_DIR@/usr/share/man/man1/']
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: zip-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: zstd
     labels: [aarch64, riscv64]
@@ -530,9 +587,9 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-      - zlib
       - xz-utils
-    revision: 3
+      - zlib
+    revision: 4
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -543,3 +600,7 @@ packages:
       - args: ['make', 'prefix=/usr', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: zstd-dbg
+        include: ['/usr/lib/debug/**']

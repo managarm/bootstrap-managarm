@@ -20,7 +20,7 @@ packages:
       - rust-patched-libs
     pkgs_required:
       - mlibc
-    revision: 7
+    revision: 8
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
         isolate_network: false
@@ -43,6 +43,10 @@ packages:
         isolate_network: false
       - args: ['rm', '-v', '@THIS_COLLECT_DIR@/usr/.crates.toml']
       - args: ['rm', '-v', '@THIS_COLLECT_DIR@/usr/.crates2.json']
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: broot-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: ca-certificates
     labels: [aarch64, riscv64]
@@ -111,7 +115,7 @@ packages:
     pkgs_required:
       - mlibc
       - ncurses
-    revision: 10
+    revision: 11
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -123,6 +127,50 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: cmatrix-dbg
+        include: ['/usr/lib/debug/**']
+
+  - name: evtest
+    labels: [aarch64]
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: kernel input device debugging
+      description: evtest is a tool to print evdev kernel events. It reads directly from the kernel device and prints a device description and the events with the value and the symbolic name.
+      spdx: 'GPL-2.0-or-later'
+      website: 'https://gitlab.freedesktop.org/libevdev/evtest'
+      maintainer: "no92 <leo@managarm.org>"
+      categories: ['app-misc']
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.freedesktop.org/libevdev/evtest.git'
+      tag: 'evtest-1.35'
+      version: '1.35'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+      regenerate:
+        - args: ['autoreconf', '-fvi']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+    revision: 4
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: evtest-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: fastfetch
     architecture: '@OPTION:arch@'
@@ -143,23 +191,23 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-      - yyjson
-      - zlib
       - elfutils
+      - freetype
       - libdrm
       - libglvnd
       - libx11
-      - sqlite
-      - wayland
       - libxcb
       - libxrandr
-      - freetype
-    revision: 5
+      - sqlite
+      - wayland
+      - yyjson
+      - zlib
+    revision: 6
     configure:
       - args:
         - 'cmake'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DENABLE_RPM=no'
         - '-DENABLE_ZLIB=yes'
@@ -194,42 +242,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
-
-  - name: evtest
-    labels: [aarch64]
-    architecture: '@OPTION:arch@'
-    metadata:
-      summary: kernel input device debugging
-      description: evtest is a tool to print evdev kernel events. It reads directly from the kernel device and prints a device description and the events with the value and the symbolic name.
-      spdx: 'GPL-2.0-or-later'
-      website: 'https://gitlab.freedesktop.org/libevdev/evtest'
-      maintainer: "no92 <leo@managarm.org>"
-      categories: ['app-misc']
-    source:
-      subdir: 'ports'
-      git: 'https://gitlab.freedesktop.org/libevdev/evtest.git'
-      tag: 'evtest-1.35'
-      version: '1.35'
-      tools_required:
-        - host-autoconf-v2.69
-        - host-automake-v1.15
-      regenerate:
-        - args: ['autoreconf', '-fvi']
-    tools_required:
-      - system-gcc
-    pkgs_required:
-      - mlibc
-    revision: 3
-    configure:
-      - args:
-        - '@THIS_SOURCE_DIR@/configure'
-        - '--host=@OPTION:arch-triple@'
-        - '--prefix=/usr'
-    build:
-      - args: ['make', '-j@PARALLELISM@']
-      - args: ['make', 'install']
-        environ:
-          DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: fastfetch-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: sl
     labels: [aarch64]
@@ -252,7 +268,7 @@ packages:
     pkgs_required:
       - mlibc
       - ncurses
-    revision: 14
+    revision: 15
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -261,6 +277,10 @@ packages:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/share/man/man1']
       - args: ['cp', '@THIS_BUILD_DIR@/sl', '@THIS_COLLECT_DIR@/usr/bin']
       - args: ['cp', '@THIS_BUILD_DIR@/sl.1', '@THIS_COLLECT_DIR@/usr/share/man/man1']
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: sl-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: pciids
     labels: [aarch64]
@@ -317,7 +337,7 @@ packages:
       - mlibc
       - libevent
       - ncurses
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -329,4 +349,7 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
-
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: tmux-dbg
+        include: ['/usr/lib/debug/**']

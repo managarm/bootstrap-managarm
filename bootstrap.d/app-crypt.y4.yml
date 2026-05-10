@@ -65,16 +65,17 @@ packages:
     pkgs_required:
       - mlibc
       - glib
-      - libgcrypt
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
+      - libgcrypt
       - libxslt
-    revision: 3
+    revision: 4
     configure:
       - args:
           - 'meson'
           - 'setup'
+          - '--buildtype=debugoptimized'
           - '--cross-file'
           - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
           - '--prefix=/usr'
@@ -135,6 +136,10 @@ packages:
           VALAC: 'cross-valac'
           # Wrapper to add our valadir
           VAPIGEN: 'cross-vapigen'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libsecret-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: p11-kit
     labels: [aarch64, riscv64]
@@ -160,7 +165,7 @@ packages:
       - libffi
       - libtasn
       - systemd
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'meson'
@@ -182,6 +187,10 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
       - args: ['ln', '-sfv', '/usr/libexec/p11-kit/trust-extract-compat', '@THIS_COLLECT_DIR@/usr/bin/update-ca-certificates']
       - args: ['@SOURCE_ROOT@/scripts/keep-empty-directories.py', '@THIS_COLLECT_DIR@']
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: p11-kit-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: qca
     architecture: '@OPTION:arch@'

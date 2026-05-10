@@ -33,10 +33,10 @@ packages:
     pkgs_required:
       - mlibc
       - file
-      - ncurses
       - libintl
+      - ncurses
       - zlib
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -59,6 +59,10 @@ packages:
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/nanorc', '@THIS_COLLECT_DIR@/etc/nanorc']
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/nanorc', '@THIS_COLLECT_DIR@/home/managarm/.nanorc']
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/root-nanorc', '@THIS_COLLECT_DIR@/root/.nanorc']
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: nano-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: openvi
     architecture: '@OPTION:arch@'
@@ -79,7 +83,7 @@ packages:
     pkgs_required:
       - mlibc
       - ncurses
-    revision: 3
+    revision: 4
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -94,6 +98,10 @@ packages:
           PREFIX: '/usr'
           DESTDIR: '@THIS_COLLECT_DIR@'
           CHOWN: "true"
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: openvi-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: vim
     labels: [aarch64, riscv64]
@@ -116,9 +124,9 @@ packages:
       - host-automake-v1.15
     pkgs_required:
       - mlibc
-      - ncurses
       - libiconv
-    revision: 4
+      - ncurses
+    revision: 5
     configure:
       # vim does not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead
@@ -164,3 +172,7 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: vim-dbg
+        include: ['/usr/lib/debug/**']
