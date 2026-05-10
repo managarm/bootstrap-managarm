@@ -83,7 +83,7 @@ packages:
     pkgs_required:
       - mlibc
       - ncurses
-    revision: 3
+    revision: 4
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -98,6 +98,10 @@ packages:
           PREFIX: '/usr'
           DESTDIR: '@THIS_COLLECT_DIR@'
           CHOWN: "true"
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: openvi-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: vim
     labels: [aarch64, riscv64]
