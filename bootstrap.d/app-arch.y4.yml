@@ -369,19 +369,24 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
         - '-GNinja'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '@THIS_SOURCE_DIR@/build/cmake'
     build:
       - args: ['ninja']
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: lz4-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: tar
     labels: [aarch64, riscv64]
