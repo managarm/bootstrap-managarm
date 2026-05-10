@@ -180,9 +180,9 @@ packages:
     pkgs_required:
       - mlibc
       - gdbm
-      - pcre
       - ncurses
-    revision: 6
+      - pcre
+    revision: 7
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -198,4 +198,7 @@ packages:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'install']
         quiet: true
-
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: zsh-dbg
+        include: ['/usr/lib/debug/**']
