@@ -548,7 +548,7 @@ packages:
     pkgs_required:
       - mlibc
       - bzip2
-    revision: 12
+    revision: 13
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -563,6 +563,10 @@ packages:
       - args: ['cp', '@THIS_BUILD_DIR@/man/zipcloak.1', '@THIS_COLLECT_DIR@/usr/share/man/man1/']
       - args: ['cp', '@THIS_BUILD_DIR@/man/zipnote.1', '@THIS_COLLECT_DIR@/usr/share/man/man1/']
       - args: ['cp', '@THIS_BUILD_DIR@/man/zipsplit.1', '@THIS_COLLECT_DIR@/usr/share/man/man1/']
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: zip-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: zstd
     labels: [aarch64, riscv64]
