@@ -587,9 +587,9 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-      - zlib
       - xz-utils
-    revision: 3
+      - zlib
+    revision: 4
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -600,3 +600,7 @@ packages:
       - args: ['make', 'prefix=/usr', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: zstd-dbg
+        include: ['/usr/lib/debug/**']
