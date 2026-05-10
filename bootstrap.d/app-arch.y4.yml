@@ -43,7 +43,7 @@ packages:
       git: 'https://github.com/google/brotli.git'
       tag: 'v1.1.0'
       version: '1.1.0'
-    revision: 8
+    revision: 9
     tools_required:
       - system-gcc
       - host-cmake
@@ -55,13 +55,17 @@ packages:
         - '-GNinja'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
-        - '-DCMAKE_BUILD_TYPE=Release'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: brotli-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: bzip2
     labels: [aarch64, riscv64]
