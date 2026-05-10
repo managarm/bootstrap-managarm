@@ -20,7 +20,7 @@ packages:
       - rust-patched-libs
     pkgs_required:
       - mlibc
-    revision: 7
+    revision: 8
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
         isolate_network: false
@@ -43,6 +43,10 @@ packages:
         isolate_network: false
       - args: ['rm', '-v', '@THIS_COLLECT_DIR@/usr/.crates.toml']
       - args: ['rm', '-v', '@THIS_COLLECT_DIR@/usr/.crates2.json']
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: broot-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: ca-certificates
     labels: [aarch64, riscv64]
