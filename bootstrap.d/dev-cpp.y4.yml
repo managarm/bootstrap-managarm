@@ -47,6 +47,7 @@ packages:
       - args:
         - 'meson'
         - 'setup'
+        - '--buildtype=debugoptimized'
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
