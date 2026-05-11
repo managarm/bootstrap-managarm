@@ -412,7 +412,7 @@ packages:
       - pam
       - zlib
       - openssl
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -426,9 +426,7 @@ packages:
         - '--with-pam'
         - '--disable-strip'
         environ:
-          ac_cv_iconv_omits_bom: 'yes'
-          ac_cv_fread_reads_directories: 'no'
-          ac_cv_snprintf_returns_bogus: 'no'
+          CONFIG_SITE: '@SOURCE_ROOT@/scripts/config.site'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
