@@ -887,7 +887,7 @@ packages:
       - qtbase6
       - qtdeclarative6
       - qtmultimedia6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -895,7 +895,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'

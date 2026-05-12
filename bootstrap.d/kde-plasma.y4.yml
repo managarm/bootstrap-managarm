@@ -40,7 +40,7 @@ packages:
       - qtbase6
       - qtdeclarative6
       - qtsvg6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -48,7 +48,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -96,7 +96,7 @@ packages:
       - ki18n
       - kio
       - qtbase6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -104,7 +104,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -146,7 +146,7 @@ packages:
       - mlibc
       - ki18n
       - qtbase6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -154,7 +154,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -205,7 +205,7 @@ packages:
       - libxcb
       - qtbase6
       - xcb-util-keysyms
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -213,7 +213,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -262,7 +262,7 @@ packages:
       - ki18n
       - qtbase6
       - qtpositioning6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -270,7 +270,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -339,7 +339,7 @@ packages:
       - solid
       - wayland
       - xcb-util-keysyms
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -347,7 +347,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -399,7 +399,7 @@ packages:
       - qtwayland6
       - wayland
       - wayland-protocols
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -407,7 +407,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -492,7 +492,7 @@ packages:
       - qttools6
       - qtwayland6
       - xwayland
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -500,7 +500,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -548,7 +548,7 @@ packages:
       - qtwayland6
       - wayland
       - wayland-protocols
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -556,7 +556,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -603,7 +603,7 @@ packages:
       - qttools6
       - qtwayland6
       - wayland
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -611,7 +611,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -663,7 +663,7 @@ packages:
       - qtdeclarative6
       - solid
       - zlib
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -671,7 +671,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -739,7 +739,7 @@ packages:
       - qtwayland6
       - wayland
       - wayland-protocols
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -747,7 +747,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -803,7 +803,7 @@ packages:
       - qtbase6
       - qtdeclarative6
       - solid
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -811,7 +811,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -857,7 +857,7 @@ packages:
       - kcoreaddons
       - qtbase6
       - qtdeclarative6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -865,7 +865,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -908,7 +908,7 @@ packages:
       - kconfig
       - plasma-activities
       - qtbase6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -916,7 +916,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -1004,7 +1004,7 @@ packages:
       - solid
       - sonnet
       - xkeyboard-config
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1014,7 +1014,7 @@ packages:
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
         # Avoid double sysroot prepending
         - '-DXKBDIR=/usr/share/X11/xkb'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -1076,7 +1076,7 @@ packages:
       - kxmlgui
       - qtbase6
       - qtdeclarative6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1084,7 +1084,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -1211,7 +1211,7 @@ packages:
       - wayland
       - xcb-util
       - xcb-util-image
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1219,7 +1219,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -1272,7 +1272,7 @@ packages:
       - kirigami
       - qtbase6
       - qtdeclarative6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1280,7 +1280,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
