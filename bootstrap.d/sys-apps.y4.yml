@@ -224,7 +224,7 @@ packages:
       - glib
       - libexpat
       - systemd
-    revision: 13
+    revision: 14
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -248,6 +248,7 @@ packages:
         - '--disable-launchd'
         - '--enable-systemd'
         - '--disable-tests'
+        - '--enable-user-session'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
