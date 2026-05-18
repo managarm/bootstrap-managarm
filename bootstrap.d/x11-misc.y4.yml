@@ -31,6 +31,7 @@ tools:
 
 packages:
   - name: sddm
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: Simple Desktop Display Manager

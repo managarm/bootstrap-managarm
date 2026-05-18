@@ -445,6 +445,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: double-conversion
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: Efficient binary-decimal and decimal-binary conversion routines for IEEE doubles
