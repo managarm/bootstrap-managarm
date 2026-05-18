@@ -30,6 +30,63 @@ tools:
       - args: ['make', 'install']
 
 packages:
+  - name: sddm
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Simple Desktop Display Manager
+      description: This package provides SDDM, a simple display manager.
+      spdx: 'GPL-2.0-or-later'
+      website: 'https://github.com/sddm/sddm'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['x11-misc']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/sddm/sddm.git'
+      tag: 'v0.21.0'
+      version: '0.21.0'
+    tools_required:
+      - system-gcc
+      - host-cmake
+      - host-qt6
+    pkgs_required:
+      - mlibc
+      - qtbase6
+      - qtdeclarative6
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
+        - '-DBUILD_MAN_PAGES=OFF'
+        - '-DBUILD_WITH_QT6=ON'
+        - '-DDBUS_CONFIG_FILENAME="org.freedesktop.sddm.conf"'
+        - '-DRUNTIME_DIR=/run/sddm'
+        - '-DSYSTEMD_TMPFILES_DIR=/usr/lib/tmpfiles.d'
+        - '-DSYSTEMD_SYSTEM_UNIT_DIR=/usr/lib/systemd/system'
+        - '-DSYSTEMD_SYSUSERS_DIR=/usr/lib/sysusers.d'
+        - '-DNO_SYSTEMD=OFF'
+        - '-DUSE_ELOGIND=OFF'
+        - '-DCMAKE_POLICY_VERSION_MINIMUM=3.5'
+        - '-DENV_QT_IMPORTS_DIR=/usr/lib/qt6/qml'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/sddm.target.wants']
+      # - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/graphical.target.wants']
+      - args: ['ln', '-svn', '../sddm.service', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/sddm.target.wants/']
+      # - args: ['ln', '-svn', '../sddm.service', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/graphical.target.wants/']
+      - args: ['cp', '@THIS_SOURCE_DIR@/sddm.target', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/sddm.target']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/sddm', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/sddm-autologin', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/sddm-greeter', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/sddm.conf', '@THIS_COLLECT_DIR@/etc/']
+
   # TODO: why is this so old?
   - name: shared-mime-info
     architecture: '@OPTION:arch@'

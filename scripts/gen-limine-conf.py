@@ -86,6 +86,11 @@ def make_default_entries(writer, *, protocol):
         protocol=protocol,
         extra_cmdline="systemd.unit=kmscon.target",
     )
+    writer.write_entry(
+        f"SDDM (via {name_of_protocol(protocol)})",
+        protocol=protocol,
+        extra_cmdline="systemd.unit=sddm.target",
+    )
 
 
 def make_extra_entries(writer, *, protocol):
