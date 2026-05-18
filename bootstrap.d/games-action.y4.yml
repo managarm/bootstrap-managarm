@@ -1,0 +1,46 @@
+packages:
+  - name: supertuxkart
+    architecture: '@OPTION:arch@'
+    source:
+      subdir: 'ports'
+      url: 'https://github.com/supertuxkart/stk-code/releases/download/1.5/SuperTuxKart-1.5-src.tar.gz'
+      format: 'tar.gz'
+      filename: 'SuperTuxKart-1.5-src.tar.gz'
+      checksum: blake2b:8becdf6be705c8549f3158ea0798fa46ec116c50f8002ff6a927c412a81534d195aaa40242a4cf68312a6336db559f85bd4bff5074ca4d54c18896f8aa3afddc
+      version: '1.5'
+      extract_path: 'SuperTuxKart-1.5-src'
+    tools_required:
+      - system-gcc
+      - host-cmake
+    pkgs_required:
+      - mlibc
+      - openal-soft
+      - libogg
+      - libvorbis
+      - freetype
+      - harfbuzz
+      - curl
+      - openssl
+      - libpng
+      - zlib
+      - libjpeg-turbo
+      - libsquish
+      - sdl2
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DBUILD_SHARED_LIBS=ON'
+        - '-DNO_SHADERC=ON'
+        - '-DBUILD_RECORDER=0'
+        - '-DUSE_WIIUSE=OFF'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
