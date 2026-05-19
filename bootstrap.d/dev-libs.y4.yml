@@ -97,6 +97,14 @@ sources:
     tag: '1.25.0'
     version: '1.25.0'
 
+  - name: wayland-protocols
+    subdir: 'ports'
+    url: 'https://gitlab.freedesktop.org/wayland/wayland-protocols/-/releases/1.48/downloads/wayland-protocols-1.48.tar.xz'
+    checksum: 'blake2b:8e3b6797aa10e668b0c950e5ea4d234d0da756297bfe45f5a2fbb8f280ae81261ec0efc48a334d2c57cbe57a94cddce7a3e95b33abc88a9c67508a90120f9297'
+    extract_path: 'wayland-protocols-1.48'
+    format: 'tar.xz'
+    version: '1.48'
+
 tools:
   - name: host-appstream
     architecture: noarch
@@ -240,6 +248,30 @@ tools:
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
         - '-DBUILD_TESTING=OFF'
         - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
+
+  - name: host-wayland-protocols
+    architecture: 'noarch'
+    from_source: wayland-protocols
+    tools_required:
+      - system-gcc
+      - wayland-scanner
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--prefix=@PREFIX@'
+        - '--buildtype=release'
+        - '-Dtests=false'
+        - '@THIS_SOURCE_DIR@'
+        environ:
+          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/tools/wayland-scanner/lib/x86_64-linux-gnu/pkgconfig:/usr/lib/x86_64-linux-gnu/pkgconfig'
     compile:
       - args: ['ninja']
     install:
@@ -2765,13 +2797,7 @@ packages:
       website: 'https://wayland.freedesktop.org/'
       maintainer: "Dennis Bonke <dennis@managarm.org>"
       categories: ['dev-libs']
-    source:
-      subdir: 'ports'
-      url: 'https://gitlab.freedesktop.org/wayland/wayland-protocols/-/releases/1.48/downloads/wayland-protocols-1.48.tar.xz'
-      checksum: 'blake2b:8e3b6797aa10e668b0c950e5ea4d234d0da756297bfe45f5a2fbb8f280ae81261ec0efc48a334d2c57cbe57a94cddce7a3e95b33abc88a9c67508a90120f9297'
-      extract_path: 'wayland-protocols-1.48'
-      format: 'tar.xz'
-      version: '1.48'
+    from_source: wayland-protocols
     tools_required:
       - system-gcc
       - wayland-scanner
