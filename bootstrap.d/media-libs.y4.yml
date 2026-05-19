@@ -975,6 +975,44 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
+  - name: libdmtx
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: The DMTX library for Data Matrix barcodes
+      description: This package contains the DMTX library for creating and decoding Data Matrix barcodes.
+      spdx: 'BSD'
+      website: 'https://github.com/dmtx/libdmtx'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/dmtx/libdmtx.git'
+      tag: 'v0.7.8'
+      version: '0.7.8'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['./autogen.sh']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+    revision: 1
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--disable-static'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: libepoxy
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
@@ -1975,3 +2013,43 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+
+  - name: zxing-cpp
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: ZXing ("Zebra Crossing") barcode image processing library
+      description: ZXing ("Zebra Crossing") is an open-source library for reading and generating barcodes.
+      spdx: 'Apache-2.0'
+      website: 'https://github.com/zxing-cpp/zxing-cpp'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-gfx']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/zxing-cpp/zxing-cpp.git'
+      tag: 'v2.3.0'
+      version: '2.3.0'
+    tools_required:
+      - system-gcc
+      - host-cmake
+    pkgs_required:
+      - mlibc
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DZXING_USE_BUNDLED_ZINT=OFF'
+        - '-DZXING_EXAMPLES=OFF'
+        - '-DZXING_BLACKBOX_TESTS=OFF'
+        - '-DZXING_UNIT_TESTS=OFF'
+        - '-DZXING_DEPENDENCIES=LOCAL'
+        - '-DZXING_WRITERS=OLD'
+        - '-DZXING_EXPERIMENTAL_API=FALSE'
+        - '@THIS_SOURCE_DIR@/'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'

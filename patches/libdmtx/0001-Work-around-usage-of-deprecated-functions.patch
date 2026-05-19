@@ -1,0 +1,25 @@
+From 7ec519ba54bf4588a25c0956d8ba9f1c66b78770 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Mon, 30 Mar 2026 22:50:45 +0200
+Subject: [PATCH] Work around usage of deprecated functions
+
+---
+ dmtx.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/dmtx.c b/dmtx.c
+index 2a30484..1caea08 100644
+--- a/dmtx.c
++++ b/dmtx.c
+@@ -14,6 +14,8 @@
+  * \brief Main libdmtx source file
+  */
+ 
++#define _DEFAULT_SOURCE
++
+ #include <stdlib.h>
+ #include <stdio.h>
+ #include <sys/types.h>
+-- 
+2.53.0
+
