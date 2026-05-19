@@ -113,6 +113,12 @@ sources:
     tag: 'v6.25.0'
     version: '6.25.0'
 
+  - name: kholidays
+    subdir: 'ports'
+    git: 'https://github.com/KDE/kholidays.git'
+    tag: 'v6.25.0'
+    version: '6.25.0'
+
   - name: ki18n
     subdir: 'ports'
     git: 'https://github.com/KDE/ki18n.git'
@@ -2101,6 +2107,51 @@ packages:
         - '-DWITH_WAYLAND=ON'
         - '-DWITH_X11=ON'
         - '-DBUILD_PYTHON_BINDINGS=OFF'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: kholidays
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Library to determine holidays and other special events for a geographical region
+      description: This package provides a framework for determining holidays and other special events for a geographical region.
+      spdx: 'LGPL-2.0-or-later'
+      website: 'https://develop.kde.org/products/frameworks/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['kde-frameworks']
+    from_source: kholidays
+    tools_required:
+      - system-gcc
+      - host-cmake
+      - host-ecm
+      - host-qt6
+      - wayland-scanner
+    pkgs_required:
+      - mlibc
+      - qtbase6
+      - qtdeclarative6
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=/usr/lib/qt6/qml'
+        - '-DKDE_INSTALL_QTPLUGINDIR=/usr/lib/qt6/plugins'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
