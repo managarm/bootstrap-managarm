@@ -35,6 +35,12 @@ sources:
     tag: 'v6.25.0'
     version: '6.25.0'
 
+  - name: kcmutils
+    subdir: 'ports'
+    git: 'https://github.com/KDE/kcmutils.git'
+    tag: 'v6.25.0'
+    version: '6.25.0'
+
   - name: kcodecs
     subdir: 'ports'
     git: 'https://github.com/KDE/kcodecs.git'
@@ -80,6 +86,12 @@ sources:
   - name: kdbusaddons
     subdir: 'ports'
     git: 'https://github.com/KDE/kdbusaddons.git'
+    tag: 'v6.25.0'
+    version: '6.25.0'
+
+  - name: kdeclarative
+    subdir: 'ports'
+    git: 'https://github.com/KDE/kdeclarative.git'
     tag: 'v6.25.0'
     version: '6.25.0'
 
@@ -182,6 +194,12 @@ sources:
   - name: kstatusnotifieritem
     subdir: 'ports'
     git: 'https://github.com/KDE/kstatusnotifieritem.git'
+    tag: 'v6.25.0'
+    version: '6.25.0'
+
+  - name: ksvg
+    subdir: 'ports'
+    git: 'https://github.com/KDE/ksvg.git'
     tag: 'v6.25.0'
     version: '6.25.0'
 
@@ -525,6 +543,57 @@ packages:
         - '-DKDE_INSTALL_QMLDIR=/usr/lib/qt6/qml'
         - '-DKDE_INSTALL_PLUGINDIR=/usr/lib/qt6/plugins'
         - '-DKDE_INSTALL_QTPLUGINDIR=/usr/lib/qt6/plugins'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: kcmutils
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Framework to work with KDE System Settings modules
+      description: This package provides a framework to work with KDE System Settings modules.
+      spdx: 'LGPL-2.0-only'
+      website: 'https://develop.kde.org/products/frameworks/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['kde-frameworks']
+    from_source: kcmutils
+    tools_required:
+      - system-gcc
+      - host-cmake
+      - host-ecm
+      - host-qt6
+    pkgs_required:
+      - mlibc
+      - kconfig
+      - kconfigwidgets
+      - kcoreaddons
+      - kguiaddons
+      - ki18n
+      - kio
+      - kitemviews
+      - kwidgetsaddons
+      - kxmlgui
+      - qtbase6
+      - qtdeclarative6
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
         ### end ecm.class
         - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
         - '@THIS_SOURCE_DIR@'
@@ -901,6 +970,58 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: kdeclarative
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Framework providing integration of QML and KDE work spaces
+      description: This package provides a framework for integration of QML and KDE work spaces.
+      spdx: 'LGPL-2.0-or-later'
+      website: 'https://develop.kde.org/products/frameworks/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['kde-frameworks']
+    from_source: kdeclarative
+    tools_required:
+      - system-gcc
+      - host-cmake
+      - host-ecm
+      - host-qt6
+    pkgs_required:
+      - mlibc
+      - kconfig
+      - kcoreaddons
+      - kglobalaccel
+      - kguiaddons
+      - ki18n
+      - kservice
+      - kwidgetsaddons
+      - qtbase6
+      - qtdeclarative6
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=/usr/lib/qt6/qml'
+        - '-DKDE_INSTALL_PLUGINDIR=/usr/lib/qt6/plugins'
+        - '-DKDE_INSTALL_QTPLUGINDIR=/usr/lib/qt6/plugins'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: kded
     architecture: '@OPTION:arch@'
     metadata:
@@ -1020,7 +1141,7 @@ packages:
       - wayland
       - wayland-protocols
       - xorg-proto
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1177,7 +1298,7 @@ packages:
       - qtwayland6
       - wayland
       - wayland-protocols
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1814,6 +1935,58 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: ksvg
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Components for handling SVGs
+      description: This package provides components for handling SVGs.
+      spdx: 'LGPL-2.0-or-later'
+      website: 'https://develop.kde.org/products/frameworks/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['kde-frameworks']
+    from_source: ksvg
+    tools_required:
+      - system-gcc
+      - host-cmake
+      - host-ecm
+      - host-qt6
+    pkgs_required:
+      - mlibc
+      - karchive
+      - kcolorscheme
+      - kconfig
+      - kcoreaddons
+      - kguiaddons
+      - kirigami
+      - qtbase6
+      - qtdeclarative6
+      - qtsvg6
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=/usr/lib/qt6/qml'
+        - '-DKDE_INSTALL_PLUGINDIR=/usr/lib/qt6/plugins'
+        - '-DKDE_INSTALL_QTPLUGINDIR=/usr/lib/qt6/plugins'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: kwallet
     architecture: '@OPTION:arch@'
     metadata:
@@ -1948,7 +2121,7 @@ packages:
       - wayland-protocols
       - xcb-util-keysyms
       - xorg-proto
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'

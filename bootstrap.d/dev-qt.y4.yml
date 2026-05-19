@@ -145,7 +145,7 @@ packages:
       - xcb-util-wm
       - zlib
       - zstd
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -544,6 +544,48 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+  
+  - name: qttools6
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Qt Tools Collection
+      description: This package provides the Qt6 tools and supporting libraries.
+      spdx: 'GPL-2.0-only GPL-3.0-only LGPL-3.0-only GFDL-1.3-only'
+      website: 'https://code.qt.io/cgit/qt/qtdeclarative.git/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-qt']
+    source:
+      subdir: 'ports'
+      git: 'https://code.qt.io/qt/qttools.git'
+      tag: 'v6.11.0'
+      version: '6.11.0'
+      regenerate:
+        - args: ['git', 'submodule', 'update', '--init', '--recursive']
+          isolate_network: false
+    tools_required:
+      - system-gcc
+      - host-cmake
+      - host-qt6
+    pkgs_required:
+      - mlibc
+      - qtbase6
+      - qtdeclarative6
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/host-qt6'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_DISABLE_FIND_PACKAGE_litehtml=ON'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: qtwayland6
     architecture: '@OPTION:arch@'
@@ -570,7 +612,7 @@ packages:
       - qtbase6
       - qtdeclarative6
       - wayland
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'

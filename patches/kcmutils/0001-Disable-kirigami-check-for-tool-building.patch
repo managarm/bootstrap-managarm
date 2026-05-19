@@ -1,0 +1,25 @@
+From b82d68ce6399c3bc09d907b824bc5ea4d71a7f4b Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Fri, 27 Mar 2026 00:18:47 +0100
+Subject: [PATCH] Disable kirigami check for tool building
+
+---
+ CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 02a87d9..acd68fc 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -71,7 +71,7 @@ ecm_set_disabled_deprecation_versions(
+     KF 6.23.0
+ )
+ 
+-ecm_find_qmlmodule(org.kde.kirigami REQUIRED)
++#ecm_find_qmlmodule(org.kde.kirigami REQUIRED)
+ 
+ add_definitions(-DTRANSLATION_DOMAIN=\"kcmutils6\")
+ ki18n_install(po)
+-- 
+2.53.0
+
