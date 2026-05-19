@@ -387,6 +387,55 @@ tools:
     install:
       - args: ['ninja', 'install']
 
+  - name: host-kcmutils
+    architecture: noarch
+    from_source: kcmutils
+    tools_required:
+      - host-cmake
+      - host-ecm
+      - host-kbookmarks
+      - host-kcodecs
+      - host-kcolorscheme
+      - host-kcompletion
+      - host-kconfig
+      - host-kconfigwidgets
+      - host-kcoreaddons
+      - host-kguiaddons
+      - host-ki18n
+      - host-kio
+      - host-kitemviews
+      - host-kjobwidgets
+      - host-kservice
+      - host-kwidgetsaddons
+      - host-kwindowsystem
+      - host-kxmlgui
+      - host-ninja
+      - host-qt6
+      - host-solid
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=@PREFIX@'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=@PREFIX@/lib/qt6/qml'
+        - '-DKDE_INSTALL_LIBEXECDIR_KF=@PREFIX@/libexec'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '-DKCONFIG_USE_DBUS=TRUE'
+        - '-DKCONFIG_USE_QML=TRUE'
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
+
   - name: host-kcodecs
     architecture: noarch
     from_source: kcodecs
@@ -653,6 +702,36 @@ tools:
     install:
       - args: ['ninja', 'install']
 
+  - name: host-kglobalaccel
+    architecture: noarch
+    from_source: kglobalaccel
+    tools_required:
+      - host-cmake
+      - host-ecm
+      - host-ninja
+      - host-qt6
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=@PREFIX@'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=@PREFIX@/lib/qt6/qml'
+        - '-DKDE_INSTALL_LIBEXECDIR_KF=@PREFIX@/libexec'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
+
   - name: host-kguiaddons
     architecture: noarch
     from_source: kguiaddons
@@ -733,6 +812,58 @@ tools:
       - host-kwidgetsaddons
       - host-ninja
       - host-qt6
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=@PREFIX@'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=@PREFIX@/lib/qt6/qml'
+        - '-DKDE_INSTALL_LIBEXECDIR_KF=@PREFIX@/libexec'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
+
+  - name: host-kio
+    architecture: noarch
+    from_source: kio
+    tools_required:
+      - host-cmake
+      - host-ecm
+      - host-karchive
+      - host-kauth
+      - host-kbookmarks
+      - host-kcodecs
+      - host-kcolorscheme
+      - host-kcompletion
+      - host-kconfig
+      - host-kcoreaddons
+      - host-kcrash
+      - host-kdbusaddons
+      - host-kguiaddons
+      - host-ki18n
+      - host-kiconthemes
+      - host-kitemviews
+      - host-kjobwidgets
+      - host-knotifications
+      - host-kservice
+      - host-ktextwidgets
+      - host-kwidgetsaddons
+      - host-kwindowsystem
+      - host-kxmlgui
+      - host-ninja
+      - host-qt6
+      - host-solid
     revision: 1
     configure:
       - args:
@@ -851,6 +982,114 @@ tools:
     install:
       - args: ['ninja', 'install']
 
+  - name: host-kpackage
+    architecture: noarch
+    from_source: kpackage
+    tools_required:
+      - host-cmake
+      - host-ecm
+      - host-karchive
+      - host-kcoreaddons
+      - host-ki18n
+      - host-ninja
+      - host-qt6
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=@PREFIX@'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=@PREFIX@/lib/qt6/qml'
+        - '-DKDE_INSTALL_LIBEXECDIR_KF=@PREFIX@/libexec'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '-DKCONFIG_USE_DBUS=TRUE'
+        - '-DKCONFIG_USE_QML=TRUE'
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
+
+  - name: host-kservice
+    architecture: noarch
+    from_source: kservice
+    tools_required:
+      - host-cmake
+      - host-ecm
+      - host-kconfig
+      - host-kcoreaddons
+      - host-kdbusaddons
+      - host-ki18n
+      - host-kwidgetsaddons
+      - host-ninja
+      - host-qt6
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=@PREFIX@'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=@PREFIX@/lib/qt6/qml'
+        - '-DKDE_INSTALL_LIBEXECDIR_KF=@PREFIX@/libexec'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
+
+  - name: host-ktextwidgets
+    architecture: noarch
+    from_source: ktextwidgets
+    tools_required:
+      - host-cmake
+      - host-ecm
+      - host-kcolorscheme
+      - host-kcompletion
+      - host-kconfig
+      - host-kcoreaddons
+      - host-ki18n
+      - host-kservice
+      - host-kwidgetsaddons
+      - host-ninja
+      - host-qt6
+      - host-sonnet
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=@PREFIX@'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=@PREFIX@/lib/qt6/qml'
+        - '-DKDE_INSTALL_LIBEXECDIR_KF=@PREFIX@/libexec'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
+
   - name: host-kwidgetsaddons
     architecture: noarch
     from_source: kwidgetsaddons
@@ -912,6 +1151,110 @@ tools:
         - '@THIS_SOURCE_DIR@'
         environ:
           PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/tools/host-wayland-protocols/share/pkgconfig:@BUILD_ROOT@/tools/wayland-scanner/lib/x86_64-linux-gnu/pkgconfig:/usr/lib/x86_64-linux-gnu/pkgconfig'
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
+
+  - name: host-kxmlgui
+    architecture: noarch
+    from_source: kxmlgui
+    tools_required:
+      - host-cmake
+      - host-ecm
+      - host-kcodecs
+      - host-kcolorscheme
+      - host-kconfig
+      - host-kconfigwidgets
+      - host-kcoreaddons
+      - host-kglobalaccel
+      - host-kguiaddons
+      - host-ki18n
+      - host-kiconthemes
+      - host-kitemviews
+      - host-kwidgetsaddons
+      - host-ninja
+      - host-qt6
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=@PREFIX@'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=@PREFIX@/lib/qt6/qml'
+        - '-DKDE_INSTALL_LIBEXECDIR_KF=@PREFIX@/libexec'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '-DKCONFIG_USE_DBUS=TRUE'
+        - '-DKCONFIG_USE_QML=TRUE'
+        - '-DBUILD_PYTHON_BINDINGS=OFF'
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
+
+  - name: host-solid
+    architecture: noarch
+    from_source: solid
+    tools_required:
+      - host-cmake
+      - host-ecm
+      - host-ninja
+      - host-qt6
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=@PREFIX@'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=@PREFIX@/lib/qt6/qml'
+        - '-DKDE_INSTALL_LIBEXECDIR_KF=@PREFIX@/libexec'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
+
+  - name: host-sonnet
+    architecture: noarch
+    from_source: sonnet
+    tools_required:
+      - host-cmake
+      - host-ecm
+      - host-ninja
+      - host-qt6
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=@PREFIX@'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=@PREFIX@/lib/qt6/qml'
+        - '-DKDE_INSTALL_LIBEXECDIR_KF=@PREFIX@/libexec'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '@THIS_SOURCE_DIR@'
     compile:
       - args: ['ninja']
     install:
