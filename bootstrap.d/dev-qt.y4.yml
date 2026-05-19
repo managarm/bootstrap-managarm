@@ -345,6 +345,45 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: qtlocation6
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Location (places, maps, navigation) library for the Qt6 framework
+      description: This package provides the Qt6 location library, containing support for locations like places, maps and navigating.
+      spdx: 'GPL-2.0-only GPL-3.0-only LGPL-3.0-only FDL-1.3-only'
+      website: 'https://github.com/qt/qtlocation'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['dev-qt']
+    source:
+      subdir: 'ports'
+      git: 'http://code.qt.io/qt/qtlocation.git'
+      tag: 'v6.11.0'
+      version: '6.11.0'
+    tools_required:
+      - system-gcc
+      - host-cmake
+      - host-qt6
+    pkgs_required:
+      - mlibc
+      - qtbase6
+      - qtdeclarative6
+      - qtpositioning6
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/host-qt6'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
   - name: qtmultimedia6
     architecture: '@OPTION:arch@'
     metadata:
