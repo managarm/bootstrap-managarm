@@ -856,6 +856,7 @@ tools:
       - host-karchive
       - host-kcolorscheme
       - host-kconfig
+      - host-kguiaddons
       - host-ki18n
       - host-kwidgetsaddons
       - host-ninja
