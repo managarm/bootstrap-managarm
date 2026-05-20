@@ -439,8 +439,10 @@ tools:
     architecture: noarch
     from_source: kcmutils
     tools_required:
+      - host-breeze-icons
       - host-cmake
       - host-ecm
+      - host-karchive
       - host-kbookmarks
       - host-kcodecs
       - host-kcolorscheme
@@ -448,8 +450,10 @@ tools:
       - host-kconfig
       - host-kconfigwidgets
       - host-kcoreaddons
+      - host-kglobalaccel
       - host-kguiaddons
       - host-ki18n
+      - host-kiconthemes
       - host-kio
       - host-kitemviews
       - host-kjobwidgets
