@@ -258,7 +258,7 @@ packages:
     build:
       - args: ['make', '-j@PARALLELISM@']
         environ:
-          CC: "x86_64-managarm-gcc"
+          CC: "@OPTION:arch-triple@-gcc"
       - args: ['make', 'PREFIX=/usr', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
