@@ -1181,6 +1181,7 @@ tools:
       - host-ecm
       - host-ninja
       - host-qt6
+      - wayland-scanner
     revision: 1
     configure:
       - args:
