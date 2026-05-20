@@ -48,7 +48,10 @@ packages:
         - 'setup'
         - '--buildtype=debugoptimized'
         - '--cross-file'
-        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@-goi.cross-file'
+        - !managarm::arch_ite
+          arch: [x86_64]
+          then: '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@-goi.cross-file'
+          else: '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
         - '--sysconfdir=/etc'
         - '-Dsystemd_user_dir=/usr/lib/systemd/user'
