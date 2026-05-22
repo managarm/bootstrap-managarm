@@ -1012,6 +1012,8 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        # Avoid double sysroot prepending
+        - '-DXKBDIR=/usr/share/X11/xkb'
         - '-DCMAKE_BUILD_TYPE=Debug'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
