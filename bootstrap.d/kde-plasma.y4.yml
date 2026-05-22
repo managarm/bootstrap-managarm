@@ -1003,6 +1003,7 @@ packages:
       - qtsvg6
       - solid
       - sonnet
+      - xkeyboard-config
     revision: 1
     configure:
       - args:
