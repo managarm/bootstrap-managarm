@@ -1,0 +1,27 @@
+From c703613b3fbf4b06af95b90a1efacb8982a62906 Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Fri, 22 May 2026 18:47:02 +0200
+Subject: [PATCH] Prevent double sysroot prepending for XKBDIR
+
+---
+ ConfigureChecks.cmake | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/ConfigureChecks.cmake b/ConfigureChecks.cmake
+index b10965e..6f26d16 100644
+--- a/ConfigureChecks.cmake
++++ b/ConfigureChecks.cmake
+@@ -1,6 +1,9 @@
+ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH} )
+ 
+-pkg_get_variable(XKBDIR xkeyboard-config xkb_base)
++if(NOT DEFINED XKBDIR)
++    pkg_get_variable(XKBDIR xkeyboard-config xkb_base)
++endif()
++
+ if (NOT XKBDIR)
+     message(FATAL_ERROR "Couldn't find xkb_base using pkg-config: is xkeyboard-config installed?")
+ elseif (CMAKE_CROSSCOMPILING)
+-- 
+2.54.0
+
