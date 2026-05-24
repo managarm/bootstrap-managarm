@@ -46,7 +46,7 @@ packages:
       - libxcursor
       - openjdk17
       - xrandr
-    revision: 2
+    revision: 3
     configure:
       # lwjgl does not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead
@@ -59,6 +59,10 @@ packages:
           cp -r libs/*.jar @THIS_COLLECT_DIR@/usr/share/lwjgl
       - args: |
           cp -r libs/managarm/* @THIS_COLLECT_DIR@/usr/share/lwjgl
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: lwjgl2-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: openjdk17
     architecture: '@OPTION:arch@'
@@ -109,7 +113,7 @@ packages:
       - managarm-system
       - xorg-proto
       - zlib
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -136,3 +140,7 @@ packages:
       - args: ['touch', 'images/jdk/.systemPrefs/.systemRootModFile']
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/lib/jvm']
       - args: ['cp', '-pPr', 'images/jdk', '@THIS_COLLECT_DIR@/usr/lib/jvm/java-17']
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: openjdk17-dbg
+        include: ['/usr/lib/debug/**']
