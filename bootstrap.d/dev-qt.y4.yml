@@ -69,7 +69,7 @@ packages:
       - qtbase6
       - qtdeclarative6
       - qtshadertools6
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -84,6 +84,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: qt5compat-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: qtbase6
     labels: [aarch64, riscv64]
@@ -147,7 +151,7 @@ packages:
       - xcb-util-wm
       - zlib
       - zstd
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -222,6 +226,10 @@ packages:
       # This command makes xbstrap error out if there are empty directories, since its not entirely guaranteed there wont be more again in the future,
       # and chances are we will need to again place .keep files in them.
       - args: ['find', '@THIS_COLLECT_DIR@/', '-type', 'd', '-empty', '-print', '-exec', 'false', '{}', '+']
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: qtbase6-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: qtdeclarative6
     labels: [aarch64, riscv64]
@@ -251,7 +259,7 @@ packages:
       - qtlanguageserver6
       - qtshadertools6
       - qtsvg6
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -268,6 +276,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: qtdeclarative6-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: qtimageformats6
     labels: [aarch64, riscv64]
@@ -296,7 +308,7 @@ packages:
       - mesa
       - qtbase6
       - zlib
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -313,6 +325,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: qtimageformats6-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: qtlanguageserver6
     labels: [aarch64, riscv64]
@@ -336,7 +352,7 @@ packages:
     pkgs_required:
       - mlibc
       - qtbase6
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -351,6 +367,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: qtlanguageserver6-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: qtlocation6
     architecture: '@OPTION:arch@'
@@ -375,7 +395,7 @@ packages:
       - qtbase6
       - qtdeclarative6
       - qtpositioning6
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -390,6 +410,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: qtlocation6-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: qtmultimedia6
     architecture: '@OPTION:arch@'
@@ -417,7 +441,7 @@ packages:
       - qtbase6
       - qtdeclarative6
       - qtshadertools6
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -435,6 +459,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: qtmultimedia6-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: qtpositioning6
     architecture: '@OPTION:arch@'
@@ -458,7 +486,7 @@ packages:
       - mlibc
       - qtbase6
       - qtdeclarative6
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -473,6 +501,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: qtpositioning6-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: qtsensors6
     architecture: '@OPTION:arch@'
@@ -496,7 +528,7 @@ packages:
       - mlibc
       - qtbase6
       - qtdeclarative6
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -511,6 +543,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: qtsensors6-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: qtshadertools6
     labels: [aarch64, riscv64]
@@ -536,7 +572,7 @@ packages:
       - libxkbcommon
       - mesa
       - qtbase6
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -552,6 +588,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: qtshadertools6-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: qtspeech6
     architecture: '@OPTION:arch@'
@@ -576,7 +616,7 @@ packages:
       - qtbase6
       - qtdeclarative6
       - qtmultimedia6
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -591,6 +631,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: qtspeech6-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: qtsvg6
     labels: [aarch64, riscv64]
@@ -615,7 +659,7 @@ packages:
       - mlibc
       - qtbase6
       - zlib
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -630,6 +674,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: qtsvg6-dbg
+        include: ['/usr/lib/debug/**']
   
   - name: qttools6
     architecture: '@OPTION:arch@'
@@ -656,7 +704,7 @@ packages:
       - mlibc
       - qtbase6
       - qtdeclarative6
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -672,6 +720,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: qttools6-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: qtwayland6
     architecture: '@OPTION:arch@'
@@ -698,7 +750,7 @@ packages:
       - qtbase6
       - qtdeclarative6
       - wayland
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -713,3 +765,7 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: qtwayland6-dbg
+        include: ['/usr/lib/debug/**']
