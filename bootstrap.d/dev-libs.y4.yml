@@ -1214,7 +1214,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1227,6 +1227,10 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libffi-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libgcrypt
     architecture: '@OPTION:arch@'
@@ -1254,7 +1258,7 @@ packages:
     pkgs_required:
       - mlibc
       - libgpg-error
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1275,6 +1279,10 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libgcrypt-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libgee
     architecture: '@OPTION:arch@'
@@ -1323,7 +1331,7 @@ packages:
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
-    revision: 6
+    revision: 7
     configure:
       # libgee doesn't seem to like being compiled out of tree
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
@@ -1335,7 +1343,7 @@ packages:
         - '--enable-vala=yes'
         - !managarm::arch_ite
           arch: [x86_64]
-          # Disabled on all architectures for now
+          # Disabled on !amd64
           then: '--enable-introspection=yes'
           else: '--enable-introspection=no'
         environ:
@@ -1368,6 +1376,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libgee-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libgpg-error
     architecture: '@OPTION:arch@'
@@ -1394,7 +1406,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       # libgpg-error does not know about managarm, teach it
       - args: ['cp', '-v', '@THIS_SOURCE_DIR@/src/syscfg/lock-obj-pub.x86_64-unknown-linux-gnu.h',
@@ -1413,6 +1425,10 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libgpg-error-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libgudev
     architecture: '@OPTION:arch@'
@@ -1442,7 +1458,7 @@ packages:
       - glib
       - gobject-introspection
       - systemd
-    revision: 6
+    revision: 7
     configure:
       - args:
         - 'meson'
@@ -1450,7 +1466,7 @@ packages:
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
-        - '--buildtype=release'
+        - '--buildtype=debugoptimized'
         - '--wrap-mode=nodownload'
         - '-Dintrospection=enabled'
         - '-Dvapi=disabled'
@@ -1480,6 +1496,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libgudev-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libiconv
     labels: [aarch64, riscv64]
@@ -1540,7 +1560,7 @@ packages:
       - host-libtool
     pkgs_required:
       - mlibc
-    revision: 12
+    revision: 13
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1556,6 +1576,10 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libiconv-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libinput
     labels: [aarch64, riscv64]
@@ -1582,7 +1606,7 @@ packages:
       - libevdev
       - mtdev
       - systemd
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'meson'
@@ -1604,6 +1628,10 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
       - args: ['@SOURCE_ROOT@/scripts/keep-empty-directories.py', '@THIS_COLLECT_DIR@']
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libinput-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libintl
     labels: [aarch64, riscv64]
@@ -1634,7 +1662,7 @@ packages:
     pkgs_required:
       - mlibc
       - libiconv
-    revision: 14
+    revision: 15
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1664,6 +1692,10 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libintl-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libtool
     architecture: '@OPTION:arch@'
