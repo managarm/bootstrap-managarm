@@ -35,14 +35,14 @@ packages:
       - mlibc
       - glib
       - gtk4
-      - libxml
-      - libsoup3
-      - libgee
-      - mpfr
-      - mpc
-      - libadwaita
       - gtksourceview5
-    revision: 3
+      - libadwaita
+      - libgee
+      - libsoup3
+      - libxml
+      - mpc
+      - mpfr
+    revision: 4
     configure:
       - args:
         - 'meson'

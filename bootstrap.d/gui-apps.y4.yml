@@ -75,10 +75,10 @@ packages:
     pkgs_required:
       - mlibc
       - cairo
+      - gdk-pixbuf
       - wayland
       - wayland-protocols
-      - gdk-pixbuf
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'meson'
@@ -168,9 +168,9 @@ packages:
         program_name: host-pkg-config
     pkgs_required:
       - mlibc
-      - wayland
       - gtk+-3
-    revision: 4
+      - wayland
+    revision: 5
     configure:
       - args:
         - 'meson'

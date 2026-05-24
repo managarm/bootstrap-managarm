@@ -122,14 +122,14 @@ packages:
     pkgs_required:
       - mlibc
       - glib
-      - libjpeg-turbo
-      - libpng
-      - shared-mime-info
-      - libx11
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
-    revision: 10
+      - libjpeg-turbo
+      - libpng
+      - libx11
+      - shared-mime-info
+    revision: 11
     configure:
       - args:
         - 'meson'
@@ -198,7 +198,7 @@ packages:
       - mlibc
       - gdk-pixbuf
       - libx11
-    revision: 9
+    revision: 10
     configure:
       - args:
         - 'meson'
@@ -314,33 +314,33 @@ packages:
       - mlibc
       - at-spi2-core
       - cairo
-      - glib
-      - gdk-pixbuf
-      - libx11
-      - libxext
-      - libxcb
-      - libxrender
-      - libxrandr
-      - libxfixes
-      - libxdamage
-      - pango
-      - fribidi
-      - libepoxy
-      - libxkbcommon
-      - wayland
-      - wayland-protocols
+      - dbus
       - fontconfig
       - freetype
-      - libxi
-      - harfbuzz
-      - libxcursor
-      - gsettings-desktop-schemas
-      - dbus
-      - libxinerama
+      - fribidi
+      - gdk-pixbuf
+      - glib
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
-    revision: 5
+      - gsettings-desktop-schemas
+      - harfbuzz
+      - libepoxy
+      - libx11
+      - libxcb
+      - libxcursor
+      - libxdamage
+      - libxext
+      - libxfixes
+      - libxi
+      - libxinerama
+      - libxkbcommon
+      - libxrandr
+      - libxrender
+      - pango
+      - wayland
+      - wayland-protocols
+    revision: 6
     configure:
       - args:
         - 'meson'
@@ -2025,22 +2025,22 @@ packages:
       - host-python
     pkgs_required:
       - mlibc
-      - glib
+      - cairo
       - fontconfig
       - freetype
       - fribidi
-      - cairo
-      - xorg-proto
-      - libx11
-      - libxtrans
-      - libxext
-      - harfbuzz
-      - libxft
-      - pcre
+      - glib
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
-    revision: 3
+      - harfbuzz
+      - libx11
+      - libxext
+      - libxft
+      - libxtrans
+      - pcre
+      - xorg-proto
+    revision: 4
     configure:
       - args:
         - 'meson'

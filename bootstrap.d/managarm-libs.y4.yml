@@ -461,7 +461,7 @@ packages:
       - mlibc
       - python
       - python-lark
-    revision: 1
+    revision: 2
     configure:
       # python modules do not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead.

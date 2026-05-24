@@ -45,7 +45,7 @@ packages:
         item: gobject-introspection
       - gdk-pixbuf
       - gtk4
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -134,7 +134,7 @@ packages:
       - mlibc
       - glib
       - gobject-introspection
-    revision: 4
+    revision: 5
     configure:
       - args: |
               sed -i -r 's:"(/system):"/org/gnome\1:g' @THIS_SOURCE_DIR@/schemas/*.in

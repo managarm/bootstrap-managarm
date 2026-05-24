@@ -362,7 +362,7 @@ packages:
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
-    revision: 6
+    revision: 7
     configure:
       - args:
         - 'meson'
@@ -427,26 +427,26 @@ packages:
       - wayland-scanner
     pkgs_required:
       - mlibc
-      - gstreamer
-      - gst-plugins-base
       - curl
+      - gst-plugins-base
+      - gst-plugins-good
+      - gstreamer
+      - gtk+-3
+      - libmodplug
       - libsndfile
       - libsoup
+      - libusb
       - libwebp
       - libxkbcommon
+      - libxml
+      - nettle
+      - openssl
+      - opus
+      - pango
+      - vulkan-headers
       - wayland
       - wayland-protocols
-      - gtk+-3
-      - opus
-      - gst-plugins-good
-      - pango
-      - libxml
-      - openssl
-      - nettle
-      - libmodplug
-      - vulkan-headers
-      - libusb
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -500,27 +500,27 @@ packages:
       - host-glib
     pkgs_required:
       - mlibc
-      - gstreamer
-      - mesa
-      - wayland-protocols
-      - libogg
-      - libtheora
-      - libvorbis
-      - libjpeg-turbo
-      - libpng
-      - libx11
-      - glib
       - gdk-pixbuf
-      - gtk+-3
-      - zlib
-      - libdrm
-      - wayland
-      - pango
-      - libxext
+      - glib
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
-    revision: 2
+      - gstreamer
+      - gtk+-3
+      - libdrm
+      - libjpeg-turbo
+      - libogg
+      - libpng
+      - libtheora
+      - libvorbis
+      - libx11
+      - libxext
+      - mesa
+      - pango
+      - wayland
+      - wayland-protocols
+      - zlib
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -587,21 +587,21 @@ packages:
       - wayland-scanner
     pkgs_required:
       - mlibc
-      - gstreamer
-      - gst-plugins-base
+      - cairo
       - flac
       - gdk-pixbuf
-      - libsoup
-      - libvpx
-      - cairo
-      - wayland
-      - wayland-protocols
+      - gst-plugins-base
+      - gstreamer
       - gtk+-3
       - libjpeg-turbo
       - libpng
-      - nettle
+      - libsoup
+      - libvpx
       - libxml
-    revision: 2
+      - nettle
+      - wayland
+      - wayland-protocols
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -656,7 +656,7 @@ packages:
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -733,17 +733,17 @@ packages:
       - host-glib
     pkgs_required:
       - mlibc
-      - graphite2
-      - glib
-      - zlib
-      - freetype
       - cairo
-      - icu
-      - libgcc
+      - freetype
+      - glib
       - !managarm::arch_dep
         item: gobject-introspection
         arch: [x86_64]
-    revision: 3
+      - graphite2
+      - icu
+      - libgcc
+      - zlib
+    revision: 4
     configure:
       - args:
         - 'meson'
@@ -911,12 +911,12 @@ packages:
       - host-libtool
     pkgs_required:
       - mlibc
-      - libvorbis
       - alsa-lib
-      - gtk+-3
       - gstreamer
+      - gtk+-3
       - libtool
-    revision: 5
+      - libvorbis
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1122,15 +1122,15 @@ packages:
     # Note that libheif has many extra optional dependencies that we might want / need to enable one day
     pkgs_required:
       - mlibc
+      - gdk-pixbuf
+      - libaom
+      - libjpeg-turbo
       - libpng
       - libtiff
-      - zlib
-      - libaom
-      - gdk-pixbuf
-      - libjpeg-turbo
-      - sdl2
       - libwebp
-    revision: 2
+      - sdl2
+      - zlib
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -1598,13 +1598,13 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
+      - freeglut
+      - giflib
       - libjpeg-turbo
       - libpng
-      - freeglut
-      - sdl2
       - libtiff
-      - giflib
-    revision: 3
+      - sdl2
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1718,17 +1718,17 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-      - pystring
-      - yaml-cpp
-      - libexpat
-      - glu
-      - minizip-ng
-      - openexr
       - freeglut
       - glew
-      - libglvnd
+      - glu
       - imath
-    revision: 2
+      - libexpat
+      - libglvnd
+      - minizip-ng
+      - openexr
+      - pystring
+      - yaml-cpp
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -1948,22 +1948,22 @@ packages:
     pkgs_required:
       - mlibc
       - libdrm
-      - systemd
-      - mesa
-      - wayland
-      - wayland-protocols
       - libiconv
       - libx11
-      - libxext
       - libxcursor
-      - libxinerama
-      - libxi
+      - libxext
       - libxfixes
+      - libxi
+      - libxinerama
+      - libxkbcommon
       - libxrandr
       - libxrender
       - libxxf86vm
-      - libxkbcommon
-    revision: 3
+      - mesa
+      - systemd
+      - wayland
+      - wayland-protocols
+    revision: 4
     configure:
       - args:
         - 'cmake'

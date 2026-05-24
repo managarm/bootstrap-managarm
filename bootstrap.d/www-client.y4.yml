@@ -15,17 +15,17 @@ packages:
         triple: x86_64-managarm
     pkgs_required:
       - mlibc
-      - zlib
-      - openssl
       - bzip2
-      - libpng
-      - zstd
-      - libxext
-      - freetype
       - fontconfig
+      - freetype
       - libjpeg-turbo
+      - libpng
+      - libxext
+      - openssl
       - xz-utils
-    revision: 3
+      - zlib
+      - zstd
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

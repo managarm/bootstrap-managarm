@@ -385,12 +385,12 @@ packages:
       - ncurses
       - openssl
       - readline
+      - sqlite
       - util-linux-libs
       - xz-utils
       - zlib
       - zstd
-      - sqlite
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

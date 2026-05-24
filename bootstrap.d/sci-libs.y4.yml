@@ -33,7 +33,7 @@ packages:
       - libxml
       - mpfr
       - readline
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

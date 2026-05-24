@@ -79,7 +79,7 @@ packages:
       - mlibc
       - ncurses
       - systemd
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

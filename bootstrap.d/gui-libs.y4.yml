@@ -33,37 +33,37 @@ packages:
       - host-glib
     pkgs_required:
       - mlibc
-      - glib
       - cairo
-      - pango
-      - fribidi
-      - harfbuzz
-      - gdk-pixbuf
-      - libpng
-      - libtiff
-      - libjpeg-turbo
-      - libepoxy
-      - libxkbcommon
-      - graphene
-      - iso-codes
-      - wayland
-      - wayland-protocols
-      - libx11
-      - libxrandr
-      - libxrender
-      - libxi
-      - libxext
-      - libxcursor
-      - libxdamage
-      - libxfixes
       - fontconfig
-      - libxinerama
+      - fribidi
+      - gdk-pixbuf
+      - glib
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
-      - gst-plugins-good
+      - graphene
       - gst-plugins-bad
-    revision: 2
+      - gst-plugins-good
+      - harfbuzz
+      - iso-codes
+      - libepoxy
+      - libjpeg-turbo
+      - libpng
+      - libtiff
+      - libx11
+      - libxcursor
+      - libxdamage
+      - libxext
+      - libxfixes
+      - libxi
+      - libxinerama
+      - libxkbcommon
+      - libxrandr
+      - libxrender
+      - pango
+      - wayland
+      - wayland-protocols
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -159,17 +159,17 @@ packages:
       - host-python
     pkgs_required:
       - mlibc
-      - glib
-      - gtk4
-      - libxml
-      - fribidi
       - fontconfig
-      - pango
-      - pcre2
+      - fribidi
+      - glib
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
-    revision: 2
+      - gtk4
+      - libxml
+      - pango
+      - pcre2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -253,14 +253,14 @@ packages:
       - host-python
     pkgs_required:
       - mlibc
-      - glib
-      - gtk4
       - appstream
       - fribidi
+      - glib
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
-    revision: 3
+      - gtk4
+    revision: 4
     configure:
       - args:
         - 'meson'
@@ -348,7 +348,7 @@ packages:
         arch: [x86_64]
         item: gobject-introspection
       - gtk+-3
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -486,22 +486,22 @@ packages:
         program_name: host-pkg-config
     pkgs_required:
       - mlibc
-      - systemd
+      - hwdata
       - libdisplay-info
       - libdrm
       - libinput
       - libxcb
       - libxkbcommon
+      - mesa
       - pixman
       - seatd
+      - systemd
       - wayland
       - wayland-protocols
       - xcb-util-image
       - xcb-util-wm
       - xwayland
-      - hwdata
-      - mesa
-    revision: 3
+    revision: 4
     configure:
       - args: 'sed -i s#{XBSTRAP_SYSTEM_ROOT}#@SYSROOT_DIR@# @THIS_SOURCE_DIR@/xwayland/meson.build'
       - args:
