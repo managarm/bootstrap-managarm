@@ -2990,7 +2990,7 @@ packages:
     pkgs_required:
       - mlibc
       - libiconv
-    revision: 8
+    revision: 9
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -3003,6 +3003,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: popt-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: pugixml
     architecture: '@OPTION:arch@'
@@ -3023,12 +3027,12 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DBUILD_SHARED_LIBS=ON'
         - '@THIS_SOURCE_DIR@'
@@ -3037,6 +3041,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: pugixml-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: qcoro
     architecture: '@OPTION:arch@'
@@ -3060,7 +3068,7 @@ packages:
       - mlibc
       - qtbase6
       - qtdeclarative6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -3068,7 +3076,7 @@ packages:
         - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/host-qt6'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '-DUSE_QT_VERSION=6'
         - '-DQCORO_BUILD_EXAMPLES=OFF'
         - '-DQCORO_WITH_QTDBUS=ON'
@@ -3085,6 +3093,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: qcoro-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: wayland
     labels: [aarch64, riscv64]
@@ -3110,7 +3122,7 @@ packages:
       - mlibc
       - libexpat
       - libffi
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -3133,6 +3145,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: wayland-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: wayland-protocols
     labels: [aarch64, riscv64]
@@ -3212,7 +3228,7 @@ packages:
       - xcb-proto
       - xcb-util-cursor
       - xwayland
-    revision: 8
+    revision: 9
     configure:
       - args:
         - 'meson'
@@ -3246,6 +3262,10 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: weston-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: xxhash
     architecture: '@OPTION:arch@'
@@ -3265,7 +3285,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -3282,6 +3302,10 @@ packages:
           LIBDIR: '/usr/lib'
           MANDIR: '/usr/share/man/man1'
       - args: ['rm', '-v', '@THIS_COLLECT_DIR@/usr/lib/libxxhash.a']
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: xxhash-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: yyjson
     labels: [aarch64, riscv64]
@@ -3303,14 +3327,14 @@ packages:
       - host-cmake
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
         - '-GNinja'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
-        - '-DCMAKE_BUILD_TYPE=Release'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '-DBUILD_SHARED_LIBS=ON'
         - '-DYYJSON_BUILD_DOC=OFF'
         - '-DYYJSON_BUILD_TESTS=OFF'
@@ -3321,3 +3345,7 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: yyjson-dbg
+        include: ['/usr/lib/debug/**']
