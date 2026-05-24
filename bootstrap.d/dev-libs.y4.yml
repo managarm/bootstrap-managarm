@@ -1711,7 +1711,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1725,6 +1725,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libtool-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libnl
     architecture: '@OPTION:arch@'
@@ -1751,7 +1755,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1764,6 +1768,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libnl-dbg
+        include: ['/usr/lib/debug/**']
 
   # The mirroring task doesn't respect stability_level, comment out the port for now.
   #- name: libotf
@@ -1840,13 +1848,14 @@ packages:
         arch: [x86_64]
         item: gobject-introspection
       - gtk+-3
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
         - 'setup'
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@-goi.cross-file'
+        - '--buildtype=debugoptimized'
         - '--prefix=/usr'
         - '--sysconfdir=/etc'
         - !managarm::arch_ite
@@ -1882,6 +1891,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libpeas-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libpipeline
     labels: [aarch64, riscv64]
@@ -1915,7 +1928,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1926,6 +1939,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libpipeline-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libqtxdg
     architecture: '@OPTION:arch@'
@@ -1951,13 +1968,13 @@ packages:
       - glib
       - qtbase6
       - qtsvg6
-    revision: 4
+    revision: 5
     configure:
       - args:
         - 'cmake'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/host-qt6'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DBUILD_SHARED_LIBS=ON'
         - '@THIS_SOURCE_DIR@'
@@ -1966,6 +1983,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libqtxdg-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libtasn
     labels: [aarch64, riscv64]
@@ -1999,7 +2020,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 10
+    revision: 11
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -2012,6 +2033,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libtasn-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libtsm
     labels: [aarch64, riscv64]
@@ -2033,14 +2058,14 @@ packages:
     pkgs_required:
       - mlibc
       - libxkbcommon
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
         - '-GNinja'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
-        - '-DCMAKE_BUILD_TYPE=Release'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -2048,6 +2073,10 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libtsm-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libunistring
     architecture: '@OPTION:arch@'
@@ -2076,7 +2105,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -2091,6 +2120,10 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libunistring-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libusb
     labels: [aarch64, riscv64]
@@ -2125,7 +2158,7 @@ packages:
     pkgs_required:
       - mlibc
       - systemd
-    revision: 13
+    revision: 14
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -2139,6 +2172,10 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libusb-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libuv
     architecture: '@OPTION:arch@'
@@ -2165,7 +2202,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 13
+    revision: 14
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -2176,6 +2213,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libuv-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libxml
     labels: [aarch64, riscv64]
