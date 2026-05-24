@@ -18,6 +18,7 @@ sources:
 tools:
   # We do a limited superbuild with only the needed modules of Qt6 to satisfy host tooling.
   - name: host-qt6
+    labels: [aarch64, riscv64]
     architecture: noarch
     from_source: qt6
     revision: 1
@@ -68,7 +69,7 @@ packages:
       - qtbase6
       - qtdeclarative6
       - qtshadertools6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -76,7 +77,7 @@ packages:
         - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/host-qt6'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -85,6 +86,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: qtbase6
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: The Qt6 base libraries
@@ -145,7 +147,7 @@ packages:
       - xcb-util-wm
       - zlib
       - zstd
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -156,7 +158,7 @@ packages:
         - '-DBUILD_WITH_PCH=OFF'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '-DINSTALL_BINDIR=bin'
         - '-DINSTALL_INCLUDEDIR=include/qt6'
         - '-DINSTALL_LIBDIR=lib'
@@ -222,6 +224,7 @@ packages:
       - args: ['find', '@THIS_COLLECT_DIR@/', '-type', 'd', '-empty', '-print', '-exec', 'false', '{}', '+']
 
   - name: qtdeclarative6
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: The Qt6 declarative library
@@ -248,7 +251,7 @@ packages:
       - qtlanguageserver6
       - qtshadertools6
       - qtsvg6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -256,7 +259,9 @@ packages:
         - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/host-qt6'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
+        - '-DQT_BUILD_EXAMPLES=OFF'
+        - '-DQT_BUILD_TESTS=OFF'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -265,6 +270,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: qtimageformats6
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: The Qt6 imageformats library
@@ -290,7 +296,7 @@ packages:
       - mesa
       - qtbase6
       - zlib
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -298,7 +304,7 @@ packages:
         - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/host-qt6'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '-DINPUT_webp=system'
         - '-DINPUT_tiff=system'
         - '@THIS_SOURCE_DIR@'
@@ -309,6 +315,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: qtlanguageserver6
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: The Qt6 LSP library
@@ -329,7 +336,7 @@ packages:
     pkgs_required:
       - mlibc
       - qtbase6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -337,7 +344,7 @@ packages:
         - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/host-qt6'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -368,7 +375,7 @@ packages:
       - qtbase6
       - qtdeclarative6
       - qtpositioning6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -376,7 +383,7 @@ packages:
         - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/host-qt6'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -410,7 +417,7 @@ packages:
       - qtbase6
       - qtdeclarative6
       - qtshadertools6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -418,7 +425,7 @@ packages:
         - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/host-qt6'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '-DFEATURE_gstreamer=ON'
         - '-DFEATURE_alsa=OFF'
         - '-DFEATURE_pulseaudio=OFF'
@@ -451,7 +458,7 @@ packages:
       - mlibc
       - qtbase6
       - qtdeclarative6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -459,7 +466,7 @@ packages:
         - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/host-qt6'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -489,7 +496,7 @@ packages:
       - mlibc
       - qtbase6
       - qtdeclarative6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -497,7 +504,7 @@ packages:
         - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/host-qt6'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -506,6 +513,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: qtshadertools6
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: The Qt6 shadertools library
@@ -528,7 +536,7 @@ packages:
       - libxkbcommon
       - mesa
       - qtbase6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -537,7 +545,7 @@ packages:
         - '-DQT_FORCE_BUILD_TOOLS=ON'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -568,7 +576,7 @@ packages:
       - qtbase6
       - qtdeclarative6
       - qtmultimedia6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -576,7 +584,7 @@ packages:
         - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/host-qt6'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -585,6 +593,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: qtsvg6
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: The Qt6 SVG library
@@ -606,7 +615,7 @@ packages:
       - mlibc
       - qtbase6
       - zlib
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -614,7 +623,7 @@ packages:
         - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/host-qt6'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -647,7 +656,7 @@ packages:
       - mlibc
       - qtbase6
       - qtdeclarative6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -655,7 +664,7 @@ packages:
         - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/host-qt6'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '-DCMAKE_DISABLE_FIND_PACKAGE_litehtml=ON'
         - '@THIS_SOURCE_DIR@'
     build:
@@ -697,7 +706,7 @@ packages:
         - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/host-qt6'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']

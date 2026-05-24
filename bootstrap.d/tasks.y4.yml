@@ -141,7 +141,7 @@ tasks:
       - '--timeout=1200'
       - '--io-timeout=300'
       - '--expect'
-      - "launching '/usr/libexec/weston-desktop-shell'"
+      - "Starting Wayland user session: \"/usr/share/sddm/scripts/wayland-session\" \"weston --xwayland\""
     environ:
       QFLAGS: '-snapshot -display none'
     workdir: '@BUILD_ROOT@'

@@ -139,6 +139,7 @@ packages:
       - args: ['@SOURCE_ROOT@/scripts/keep-empty-directories.py', '@THIS_COLLECT_DIR@']
 
   - name: freeglut
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: A free OpenGL utility toolkit, the open-sourced alternative to the GLUT library
@@ -235,6 +236,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: giflib
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: Library to handle, display and manipulate GIF images
@@ -297,6 +299,7 @@ packages:
           M_ARCH: ""
 
   - name: glu
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     source:
       subdir: 'ports'
@@ -1342,6 +1345,7 @@ packages:
         quiet: true
 
   - name: libtiff
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: Tag Image File Format (TIFF) library
@@ -1574,6 +1578,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: libwebp
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: A lossy image compression format
@@ -1927,6 +1932,7 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
 
   - name: sdl2
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: Simple Direct Media Layer version 2

@@ -4,6 +4,7 @@ import:
 ---
 packages:
   - name: at-spi2-core
+    labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
     metadata:
       summary: D-Bus accessibility specifications and registration daemon

@@ -110,13 +110,14 @@ packages:
       categories: ['meta-pkgs']
     pkgs_required:
       - base
+      - sddm
       - weston
-      - xwininfo
-      - xkill
       - xclock
-      - xlsclients
       - xdpyinfo
       - xdriinfo
-    revision: 2
+      - xkill
+      - xlsclients
+      - xwininfo
+    revision: 3
     configure: []
     build: []

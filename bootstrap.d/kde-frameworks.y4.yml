@@ -203,6 +203,12 @@ sources:
     tag: 'v6.25.0'
     version: '6.25.0'
 
+  - name: kpty
+    subdir: 'ports'
+    git: 'https://github.com/KDE/kpty.git'
+    tag: 'v6.25.0'
+    version: '6.25.0'
+
   - name: krunner
     subdir: 'ports'
     git: 'https://github.com/KDE/krunner.git'
@@ -1334,7 +1340,7 @@ packages:
     pkgs_required:
       - mlibc
       - qtbase6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1342,7 +1348,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -1380,7 +1386,7 @@ packages:
     pkgs_required:
       - mlibc
       - qtbase6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1388,7 +1394,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -1432,7 +1438,7 @@ packages:
       - kpackage
       - kwidgetsaddons
       - qtbase6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1440,12 +1446,15 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
         - '-DBUILD_QCH=FALSE'
         - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=/usr/lib/qt6/qml'
+        - '-DKDE_INSTALL_PLUGINDIR=/usr/lib/qt6/plugins'
+        - '-DKDE_INSTALL_QTPLUGINDIR=/usr/lib/qt6/plugins'
         ### end ecm.class
         - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
         - '-DCMAKE_DISABLE_FIND_PACKAGE_AppStreamQt=ON'
@@ -1478,7 +1487,7 @@ packages:
       - qtbase6
       - zlib
       - zstd
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1486,7 +1495,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -1520,7 +1529,7 @@ packages:
       - mlibc
       - kcoreaddons
       - qtbase6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1528,7 +1537,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -1569,7 +1578,7 @@ packages:
       - kiconthemes
       - kwidgetsaddons
       - qtbase6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1577,7 +1586,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -1623,7 +1632,7 @@ packages:
       - kxmlgui
       - qtbase6
       - qtdeclarative6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1631,12 +1640,15 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
         - '-DBUILD_QCH=FALSE'
         - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=/usr/lib/qt6/qml'
+        - '-DKDE_INSTALL_PLUGINDIR=/usr/lib/qt6/plugins'
+        - '-DKDE_INSTALL_QTPLUGINDIR=/usr/lib/qt6/plugins'
         ### end ecm.class
         - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
         - '@THIS_SOURCE_DIR@'
@@ -1664,7 +1676,7 @@ packages:
     pkgs_required:
       - mlibc
       - qtbase6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1672,7 +1684,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -1709,7 +1721,7 @@ packages:
       - ki18n
       - qtbase6
       - qtdeclarative6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1717,7 +1729,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -1754,7 +1766,7 @@ packages:
       - kcoreaddons
       - kwidgetsaddons
       - qtbase6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1762,7 +1774,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -1799,7 +1811,7 @@ packages:
       - mlibc
       - qtbase6
       - qtdeclarative6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1807,7 +1819,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -1851,7 +1863,7 @@ packages:
       - ki18n
       - kwidgetsaddons
       - qtbase6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1859,7 +1871,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -1894,7 +1906,7 @@ packages:
       - qtbase6
       - qtdeclarative6
       - systemd
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1902,7 +1914,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -1941,7 +1953,7 @@ packages:
       - libx11
       - qtbase6
       - xorg-proto
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1949,7 +1961,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -1986,7 +1998,7 @@ packages:
     pkgs_required:
       - mlibc
       - qtbase6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -1994,7 +2006,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -2039,7 +2051,7 @@ packages:
       - kwidgetsaddons
       - qtbase6
       - qtdeclarative6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -2047,7 +2059,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -2088,7 +2100,7 @@ packages:
       - kdbusaddons
       - kservice
       - qtbase6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -2096,7 +2108,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -2132,7 +2144,7 @@ packages:
     pkgs_required:
       - mlibc
       - qtbase6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -2140,7 +2152,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -2192,7 +2204,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -2234,7 +2246,7 @@ packages:
       - mlibc
       - qtbase6
       - qtdeclarative6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -2242,7 +2254,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -2280,7 +2292,7 @@ packages:
       - libintl
       - qtbase6
       - qtdeclarative6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -2288,7 +2300,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -2333,7 +2345,7 @@ packages:
       - qtbase6
       - qtdeclarative6
       - qtsvg6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -2341,7 +2353,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -2394,7 +2406,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -2456,7 +2468,7 @@ packages:
       - qtbase6
       - qtdeclarative6
       - solid
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -2464,7 +2476,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -2504,7 +2516,7 @@ packages:
       - qtbase6
       - qtdeclarative6
       - qtsvg6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -2512,7 +2524,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -2550,7 +2562,7 @@ packages:
       - mlibc
       - qtbase6
       - qtdeclarative6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -2558,7 +2570,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -2594,7 +2606,7 @@ packages:
     pkgs_required:
       - mlibc
       - qtbase6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -2602,7 +2614,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -2644,7 +2656,7 @@ packages:
       - libx11
       - qtbase6
       - xorg-proto
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -2652,7 +2664,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -2698,7 +2710,7 @@ packages:
       - kwidgetsaddons
       - qtbase6
       - qtdeclarative6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -2706,7 +2718,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -2745,7 +2757,7 @@ packages:
       - libcanberra
       - qtbase6
       - qtdeclarative6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -2753,7 +2765,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -2795,7 +2807,7 @@ packages:
       - kio
       - libcanberra
       - qtbase6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -2803,7 +2815,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -2842,7 +2854,7 @@ packages:
       - kcoreaddons
       - ki18n
       - qtbase6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -2850,7 +2862,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -2895,7 +2907,7 @@ packages:
       - kwidgetsaddons
       - kxmlgui
       - qtbase6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -2903,7 +2915,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -2961,7 +2973,7 @@ packages:
       - qtspeech6
       - sonnet
       - syntax-highlighting
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -2969,7 +2981,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -3014,7 +3026,7 @@ packages:
       - kwidgetsaddons
       - qtbase6
       - sonnet
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -3022,7 +3034,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -3034,6 +3046,53 @@ packages:
         ### end ecm.class
         - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
         - '-DWITH_TEXT_TO_SPEECH=FALSE'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: kpty
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Framework for pseudo terminal devices and running child processes
+      description: This package provides a framework for pseudo terminal devices and running child processes.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://develop.kde.org/products/frameworks/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['kde-frameworks']
+    from_source: kpty
+    tools_required:
+      - system-gcc
+      - host-cmake
+      - host-qt6
+      - host-ecm
+    pkgs_required:
+      - mlibc
+      - qtbase6
+      - kcoreaddons
+      - ki18n
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=/usr/lib/qt6/qml'
+        - '-DKDE_INSTALL_PLUGINDIR=/usr/lib/qt6/plugins'
+        - '-DKDE_INSTALL_QTPLUGINDIR=/usr/lib/qt6/plugins'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '-DCMAKE_DISABLE_FIND_PACKAGE_UTEMPTER=ON'
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -3064,7 +3123,7 @@ packages:
       - kitemmodels
       - kwindowsystem
       - qtbase6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -3072,7 +3131,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -3112,7 +3171,7 @@ packages:
       - kdbusaddons
       - ki18n
       - qtbase6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -3120,7 +3179,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -3157,7 +3216,7 @@ packages:
       - mlibc
       - kwindowsystem
       - qtbase6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -3165,7 +3224,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -3210,7 +3269,7 @@ packages:
       - qtbase6
       - qtdeclarative6
       - qtsvg6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -3218,7 +3277,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -3255,7 +3314,7 @@ packages:
       - mlibc
       - ki18n
       - qtbase6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -3263,7 +3322,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -3315,7 +3374,7 @@ packages:
       - libsecret
       - qca
       - qtbase6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -3323,7 +3382,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -3359,7 +3418,7 @@ packages:
     pkgs_required:
       - mlibc
       - qtbase6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -3367,7 +3426,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -3421,7 +3480,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -3467,7 +3526,7 @@ packages:
       - kitemviews
       - kwidgetsaddons
       - qtbase6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -3475,7 +3534,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -3516,7 +3575,7 @@ packages:
       - qtdeclarative6
       - qtmultimedia6
       - zxing-cpp
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -3524,7 +3583,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -3536,6 +3595,61 @@ packages:
         ### end ecm.class
         - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
         - '-DBUILD_EXAMPLES=OFF'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: qqc2-desktop-style
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Style for QtQuickControls 2 that uses QWidget's QStyle for painting
+      description: This package provides the Style for QtQuickControls 2 that uses QWidget's QStyle for painting.
+      spdx: 'LGPL-3.0-or-later'
+      website: 'https://kde.org/plasma-desktop'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['kde-plasma']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/KDE/qqc2-desktop-style.git'
+      tag: 'v6.25.0'
+      version: '6.25.0'
+    tools_required:
+      - system-gcc
+      - host-cmake
+      - host-ecm
+      - host-qt6
+      - wayland-scanner
+    pkgs_required:
+      - mlibc
+      - kcolorscheme
+      - kconfig
+      - kiconthemes
+      - kirigami
+      - qtbase6
+      - qtdeclarative6
+      - sonnet
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=/usr/lib/qt6/qml'
+        - '-DKDE_INSTALL_PLUGINDIR=/usr/lib/qt6/plugins'
+        - '-DKDE_INSTALL_QTPLUGINDIR=/usr/lib/qt6/plugins'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
         - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
@@ -3564,7 +3678,7 @@ packages:
       - qtdeclarative6
       - systemd
       - util-linux-libs
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -3572,7 +3686,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -3607,7 +3721,7 @@ packages:
       - hunspell
       - qtbase6
       - qtdeclarative6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -3615,7 +3729,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -3653,7 +3767,7 @@ packages:
       - mlibc
       - qtbase6
       - qtdeclarative6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -3661,7 +3775,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'

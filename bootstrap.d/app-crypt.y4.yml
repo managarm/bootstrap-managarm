@@ -209,19 +209,19 @@ packages:
       - host-ecm
     pkgs_required:
       - mlibc
-      - qtbase6
-      - qt5compat
       - libgcrypt
       - nss
       - openssl
-    revision: 3
+      - qt5compat
+      - qtbase6
+    revision: 4
     configure:
       - args:
         - 'cmake'
         - '-GNinja'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '-DBUILD_WITH_QT6=ON'
         - '-DQCA_FEATURE_INSTALL_DIR=/usr/lib/qt6/mkspecs/features'
         - '-DQCA_PLUGINS_INSTALL_DIR=/usr/lib/qt6/plugins'

@@ -1,0 +1,1674 @@
+From e36a863493e575b41574362aefed7a136a12d65f Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Mon, 4 May 2026 23:02:58 +0200
+Subject: [PATCH 2/2] tests: Add missing explicit dependency on QtDBus
+
+---
+ .../bindableproperties/bindablesubscription/CMakeLists.txt       | 1 +
+ examples/corelib/bindableproperties/subscription/CMakeLists.txt  | 1 +
+ examples/corelib/ipc/localfortuneclient/CMakeLists.txt           | 1 +
+ examples/corelib/ipc/localfortuneserver/CMakeLists.txt           | 1 +
+ examples/corelib/ipc/sharedmemory/CMakeLists.txt                 | 1 +
+ examples/corelib/mimetypes/mimetypebrowser/CMakeLists.txt        | 1 +
+ examples/corelib/serialization/streambookmarks/CMakeLists.txt    | 1 +
+ examples/corelib/threads/mandelbrot/CMakeLists.txt               | 1 +
+ examples/corelib/threads/queuedcustomtype/CMakeLists.txt         | 1 +
+ .../time/calendarbackendplugin/application/CMakeLists.txt        | 1 +
+ examples/corelib/tools/contiguouscache/CMakeLists.txt            | 1 +
+ examples/gui/rasterwindow/CMakeLists.txt                         | 1 +
+ examples/gui/rhiwindow/CMakeLists.txt                            | 1 +
+ examples/network/blockingfortuneclient/CMakeLists.txt            | 1 +
+ examples/network/broadcastreceiver/CMakeLists.txt                | 1 +
+ examples/network/broadcastsender/CMakeLists.txt                  | 1 +
+ examples/network/fortuneclient/CMakeLists.txt                    | 1 +
+ examples/network/fortuneserver/CMakeLists.txt                    | 1 +
+ examples/network/http/CMakeLists.txt                             | 1 +
+ examples/network/multicastreceiver/CMakeLists.txt                | 1 +
+ examples/network/multicastsender/CMakeLists.txt                  | 1 +
+ examples/network/network-chat/CMakeLists.txt                     | 1 +
+ examples/network/rsslisting/CMakeLists.txt                       | 1 +
+ examples/network/securesocketclient/CMakeLists.txt               | 1 +
+ examples/network/secureudpclient/CMakeLists.txt                  | 1 +
+ examples/network/secureudpserver/CMakeLists.txt                  | 1 +
+ examples/network/threadedfortuneserver/CMakeLists.txt            | 1 +
+ examples/network/torrent/CMakeLists.txt                          | 1 +
+ examples/opengl/2dpainting/CMakeLists.txt                        | 1 +
+ examples/opengl/cube/CMakeLists.txt                              | 1 +
+ examples/opengl/hellogl2/CMakeLists.txt                          | 1 +
+ examples/opengl/hellogles3/CMakeLists.txt                        | 1 +
+ examples/opengl/openglwindow/CMakeLists.txt                      | 1 +
+ examples/opengl/stereoqopenglwidget/CMakeLists.txt               | 1 +
+ examples/opengl/textures/CMakeLists.txt                          | 1 +
+ examples/qtconcurrent/imagescaling/CMakeLists.txt                | 1 +
+ examples/qtconcurrent/primecounter/CMakeLists.txt                | 1 +
+ examples/qtconcurrent/wordcount/CMakeLists.txt                   | 1 +
+ examples/qtestlib/tutorial1/CMakeLists.txt                       | 1 +
+ examples/qtestlib/tutorial2/CMakeLists.txt                       | 1 +
+ examples/qtestlib/tutorial3/CMakeLists.txt                       | 1 +
+ examples/qtestlib/tutorial4/CMakeLists.txt                       | 1 +
+ examples/qtestlib/tutorial5/CMakeLists.txt                       | 1 +
+ examples/sql/books/CMakeLists.txt                                | 1 +
+ examples/sql/cachedtable/CMakeLists.txt                          | 1 +
+ examples/sql/drilldown/CMakeLists.txt                            | 1 +
+ examples/sql/masterdetail/CMakeLists.txt                         | 1 +
+ examples/sql/querymodel/CMakeLists.txt                           | 1 +
+ examples/sql/relationaltablemodel/CMakeLists.txt                 | 1 +
+ examples/sql/sqlwidgetmapper/CMakeLists.txt                      | 1 +
+ examples/sql/tablemodel/CMakeLists.txt                           | 1 +
+ examples/widgets/animation/easing/CMakeLists.txt                 | 1 +
+ examples/widgets/desktop/screenshot/CMakeLists.txt               | 1 +
+ examples/widgets/desktop/systray/CMakeLists.txt                  | 1 +
+ examples/widgets/dialogs/standarddialogs/CMakeLists.txt          | 1 +
+ examples/widgets/dialogs/tabdialog/CMakeLists.txt                | 1 +
+ examples/widgets/dialogs/trivialwizard/CMakeLists.txt            | 1 +
+ examples/widgets/draganddrop/draggableicons/CMakeLists.txt       | 1 +
+ examples/widgets/draganddrop/draggabletext/CMakeLists.txt        | 1 +
+ examples/widgets/draganddrop/dropsite/CMakeLists.txt             | 1 +
+ examples/widgets/gallery/CMakeLists.txt                          | 1 +
+ examples/widgets/gestures/imagegestures/CMakeLists.txt           | 1 +
+ .../widgets/graphicsview/basicgraphicslayouts/CMakeLists.txt     | 1 +
+ examples/widgets/graphicsview/chip/CMakeLists.txt                | 1 +
+ examples/widgets/graphicsview/collidingmice/CMakeLists.txt       | 1 +
+ examples/widgets/graphicsview/diagramscene/CMakeLists.txt        | 1 +
+ examples/widgets/graphicsview/dragdroprobot/CMakeLists.txt       | 1 +
+ examples/widgets/graphicsview/elasticnodes/CMakeLists.txt        | 1 +
+ examples/widgets/graphicsview/simpleanchorlayout/CMakeLists.txt  | 1 +
+ examples/widgets/itemviews/addressbook/CMakeLists.txt            | 1 +
+ examples/widgets/itemviews/basicsortfiltermodel/CMakeLists.txt   | 1 +
+ examples/widgets/itemviews/combowidgetmapper/CMakeLists.txt      | 1 +
+ examples/widgets/itemviews/customsortfiltermodel/CMakeLists.txt  | 1 +
+ examples/widgets/itemviews/editabletreemodel/CMakeLists.txt      | 1 +
+ examples/widgets/itemviews/fetchmore/CMakeLists.txt              | 1 +
+ examples/widgets/itemviews/frozencolumn/CMakeLists.txt           | 1 +
+ examples/widgets/itemviews/spreadsheet/CMakeLists.txt            | 1 +
+ examples/widgets/itemviews/stardelegate/CMakeLists.txt           | 1 +
+ examples/widgets/layouts/basiclayouts/CMakeLists.txt             | 1 +
+ examples/widgets/layouts/flowlayout/CMakeLists.txt               | 1 +
+ examples/widgets/mainwindows/menus/CMakeLists.txt                | 1 +
+ examples/widgets/painting/affine/CMakeLists.txt                  | 1 +
+ examples/widgets/painting/basicdrawing/CMakeLists.txt            | 1 +
+ examples/widgets/painting/composition/CMakeLists.txt             | 1 +
+ examples/widgets/painting/deform/CMakeLists.txt                  | 1 +
+ examples/widgets/painting/gradients/CMakeLists.txt               | 1 +
+ examples/widgets/painting/imagecomposition/CMakeLists.txt        | 1 +
+ examples/widgets/painting/painterpaths/CMakeLists.txt            | 1 +
+ examples/widgets/painting/pathstroke/CMakeLists.txt              | 1 +
+ examples/widgets/painting/transformations/CMakeLists.txt         | 1 +
+ examples/widgets/rhi/cuberhiwidget/CMakeLists.txt                | 1 +
+ examples/widgets/rhi/simplerhiwidget/CMakeLists.txt              | 1 +
+ examples/widgets/richtext/orderform/CMakeLists.txt               | 1 +
+ examples/widgets/richtext/syntaxhighlighter/CMakeLists.txt       | 1 +
+ examples/widgets/tools/completer/CMakeLists.txt                  | 1 +
+ examples/widgets/tools/customcompleter/CMakeLists.txt            | 1 +
+ examples/widgets/tools/regularexpression/CMakeLists.txt          | 1 +
+ examples/widgets/tools/treemodelcompleter/CMakeLists.txt         | 1 +
+ examples/widgets/tools/undoframework/CMakeLists.txt              | 1 +
+ examples/widgets/touch/knobs/CMakeLists.txt                      | 1 +
+ examples/widgets/tutorials/modelview/1_readonly/CMakeLists.txt   | 1 +
+ examples/widgets/tutorials/modelview/2_formatting/CMakeLists.txt | 1 +
+ .../widgets/tutorials/modelview/3_changingmodel/CMakeLists.txt   | 1 +
+ examples/widgets/tutorials/modelview/4_headers/CMakeLists.txt    | 1 +
+ examples/widgets/tutorials/modelview/5_edit/CMakeLists.txt       | 1 +
+ examples/widgets/tutorials/modelview/6_treeview/CMakeLists.txt   | 1 +
+ examples/widgets/tutorials/modelview/7_selections/CMakeLists.txt | 1 +
+ examples/widgets/tutorials/notepad/CMakeLists.txt                | 1 +
+ examples/widgets/tutorials/widgets/childwidget/CMakeLists.txt    | 1 +
+ examples/widgets/tutorials/widgets/nestedlayouts/CMakeLists.txt  | 1 +
+ examples/widgets/tutorials/widgets/toplevel/CMakeLists.txt       | 1 +
+ examples/widgets/tutorials/widgets/windowlayout/CMakeLists.txt   | 1 +
+ examples/widgets/widgets/analogclock/CMakeLists.txt              | 1 +
+ examples/widgets/widgets/calculator/CMakeLists.txt               | 1 +
+ examples/widgets/widgets/calendarwidget/CMakeLists.txt           | 1 +
+ examples/widgets/widgets/lineedits/CMakeLists.txt                | 1 +
+ examples/widgets/widgets/scribble/CMakeLists.txt                 | 1 +
+ examples/widgets/widgets/shapedclock/CMakeLists.txt              | 1 +
+ examples/widgets/widgets/shortcuteditor/CMakeLists.txt           | 1 +
+ examples/widgets/widgets/sliders/CMakeLists.txt                  | 1 +
+ examples/widgets/widgets/spinboxes/CMakeLists.txt                | 1 +
+ examples/widgets/widgets/tablet/CMakeLists.txt                   | 1 +
+ examples/widgets/widgets/windowflags/CMakeLists.txt              | 1 +
+ examples/xml/dombookmarks/CMakeLists.txt                         | 1 +
+ tests/auto/corelib/io/qprocess/testGuiProcess/CMakeLists.txt     | 1 +
+ tests/auto/testlib/selftests/cmptest/CMakeLists.txt              | 1 +
+ tests/auto/testlib/selftests/keyboard/CMakeLists.txt             | 1 +
+ tests/auto/testlib/selftests/mouse/CMakeLists.txt                | 1 +
+ 128 files changed, 128 insertions(+)
+
+diff --git a/examples/corelib/bindableproperties/bindablesubscription/CMakeLists.txt b/examples/corelib/bindableproperties/bindablesubscription/CMakeLists.txt
+index 2734f44a1740..6b04d0c620a3 100644
+--- a/examples/corelib/bindableproperties/bindablesubscription/CMakeLists.txt
++++ b/examples/corelib/bindableproperties/bindablesubscription/CMakeLists.txt
+@@ -10,6 +10,7 @@ qt_add_executable(bindablesubscription
+ )
+ 
+ target_link_libraries(bindablesubscription PRIVATE
++    Qt6::DBus
+     bindableproperties_shared
+ )
+ 
+diff --git a/examples/corelib/bindableproperties/subscription/CMakeLists.txt b/examples/corelib/bindableproperties/subscription/CMakeLists.txt
+index 91b9340fbf6b..9daf6e619145 100644
+--- a/examples/corelib/bindableproperties/subscription/CMakeLists.txt
++++ b/examples/corelib/bindableproperties/subscription/CMakeLists.txt
+@@ -8,5 +8,6 @@ qt_add_executable(subscription
+ )
+ 
+ target_link_libraries(subscription PRIVATE
++    Qt6::DBus
+     bindableproperties_shared
+ )
+diff --git a/examples/corelib/ipc/localfortuneclient/CMakeLists.txt b/examples/corelib/ipc/localfortuneclient/CMakeLists.txt
+index f3f2b13f928e..ea2198783a14 100644
+--- a/examples/corelib/ipc/localfortuneclient/CMakeLists.txt
++++ b/examples/corelib/ipc/localfortuneclient/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(localfortuneclient PROPERTIES
+ 
+ target_link_libraries(localfortuneclient PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Network
+     Qt6::Widgets
+diff --git a/examples/corelib/ipc/localfortuneserver/CMakeLists.txt b/examples/corelib/ipc/localfortuneserver/CMakeLists.txt
+index 75f037171cb6..dcc348fbd622 100644
+--- a/examples/corelib/ipc/localfortuneserver/CMakeLists.txt
++++ b/examples/corelib/ipc/localfortuneserver/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(localfortuneserver PROPERTIES
+ 
+ target_link_libraries(localfortuneserver PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Network
+     Qt6::Widgets
+diff --git a/examples/corelib/ipc/sharedmemory/CMakeLists.txt b/examples/corelib/ipc/sharedmemory/CMakeLists.txt
+index db94911fc693..b94c2889f28e 100644
+--- a/examples/corelib/ipc/sharedmemory/CMakeLists.txt
++++ b/examples/corelib/ipc/sharedmemory/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(sharedmemory PROPERTIES
+ 
+ target_link_libraries(sharedmemory PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/corelib/mimetypes/mimetypebrowser/CMakeLists.txt b/examples/corelib/mimetypes/mimetypebrowser/CMakeLists.txt
+index b514965ff982..75c578eed8d4 100644
+--- a/examples/corelib/mimetypes/mimetypebrowser/CMakeLists.txt
++++ b/examples/corelib/mimetypes/mimetypebrowser/CMakeLists.txt
+@@ -21,6 +21,7 @@ set_target_properties(mimetypebrowser PROPERTIES
+ 
+ target_link_libraries(mimetypebrowser PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/corelib/serialization/streambookmarks/CMakeLists.txt b/examples/corelib/serialization/streambookmarks/CMakeLists.txt
+index bad55fa6613f..ac2e30e38b62 100644
+--- a/examples/corelib/serialization/streambookmarks/CMakeLists.txt
++++ b/examples/corelib/serialization/streambookmarks/CMakeLists.txt
+@@ -22,6 +22,7 @@ set_target_properties(streambookmarks PROPERTIES
+ 
+ target_link_libraries(streambookmarks PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/corelib/threads/mandelbrot/CMakeLists.txt b/examples/corelib/threads/mandelbrot/CMakeLists.txt
+index be296918cc46..865dd5492eef 100644
+--- a/examples/corelib/threads/mandelbrot/CMakeLists.txt
++++ b/examples/corelib/threads/mandelbrot/CMakeLists.txt
+@@ -21,6 +21,7 @@ set_target_properties(mandelbrot PROPERTIES
+ 
+ target_link_libraries(mandelbrot PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/corelib/threads/queuedcustomtype/CMakeLists.txt b/examples/corelib/threads/queuedcustomtype/CMakeLists.txt
+index 725c2686156d..4d92c6f9eae6 100644
+--- a/examples/corelib/threads/queuedcustomtype/CMakeLists.txt
++++ b/examples/corelib/threads/queuedcustomtype/CMakeLists.txt
+@@ -22,6 +22,7 @@ set_target_properties(queuedcustomtype PROPERTIES
+ 
+ target_link_libraries(queuedcustomtype PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/corelib/time/calendarbackendplugin/application/CMakeLists.txt b/examples/corelib/time/calendarbackendplugin/application/CMakeLists.txt
+index da432fe2c752..676ca10465db 100644
+--- a/examples/corelib/time/calendarbackendplugin/application/CMakeLists.txt
++++ b/examples/corelib/time/calendarbackendplugin/application/CMakeLists.txt
+@@ -10,6 +10,7 @@ target_include_directories(JulianGregorianCalendar PRIVATE ../common)
+ 
+ target_link_libraries(JulianGregorianCalendar
+     PRIVATE
++	Qt::DBus
+         Qt::Widgets
+         Qt::Core
+ )
+diff --git a/examples/corelib/tools/contiguouscache/CMakeLists.txt b/examples/corelib/tools/contiguouscache/CMakeLists.txt
+index 2fab4803c187..bc0b91eb005c 100644
+--- a/examples/corelib/tools/contiguouscache/CMakeLists.txt
++++ b/examples/corelib/tools/contiguouscache/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(contiguouscache PROPERTIES
+ 
+ target_link_libraries(contiguouscache PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/gui/rasterwindow/CMakeLists.txt b/examples/gui/rasterwindow/CMakeLists.txt
+index 7fb00895c9bd..3ad210e691f6 100644
+--- a/examples/gui/rasterwindow/CMakeLists.txt
++++ b/examples/gui/rasterwindow/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(rasterwindow PROPERTIES
+ 
+ target_link_libraries(rasterwindow PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+ )
+ 
+diff --git a/examples/gui/rhiwindow/CMakeLists.txt b/examples/gui/rhiwindow/CMakeLists.txt
+index fde957b69c47..7eb44182db75 100644
+--- a/examples/gui/rhiwindow/CMakeLists.txt
++++ b/examples/gui/rhiwindow/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(rhiwindow PROPERTIES
+ 
+ target_link_libraries(rhiwindow PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::GuiPrivate
+ )
+diff --git a/examples/network/blockingfortuneclient/CMakeLists.txt b/examples/network/blockingfortuneclient/CMakeLists.txt
+index de010f3805eb..171958a2e34a 100644
+--- a/examples/network/blockingfortuneclient/CMakeLists.txt
++++ b/examples/network/blockingfortuneclient/CMakeLists.txt
+@@ -21,6 +21,7 @@ set_target_properties(blockingfortuneclient PROPERTIES
+ 
+ target_link_libraries(blockingfortuneclient PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Network
+     Qt6::Widgets
+diff --git a/examples/network/broadcastreceiver/CMakeLists.txt b/examples/network/broadcastreceiver/CMakeLists.txt
+index fca4b8d48e69..a76692fb3c1f 100644
+--- a/examples/network/broadcastreceiver/CMakeLists.txt
++++ b/examples/network/broadcastreceiver/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(broadcastreceiver PROPERTIES
+ 
+ target_link_libraries(broadcastreceiver PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Network
+     Qt6::Widgets
+diff --git a/examples/network/broadcastsender/CMakeLists.txt b/examples/network/broadcastsender/CMakeLists.txt
+index 447fcd54251e..b4a552c339ba 100644
+--- a/examples/network/broadcastsender/CMakeLists.txt
++++ b/examples/network/broadcastsender/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(broadcastsender PROPERTIES
+ 
+ target_link_libraries(broadcastsender PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Network
+     Qt6::Widgets
+diff --git a/examples/network/fortuneclient/CMakeLists.txt b/examples/network/fortuneclient/CMakeLists.txt
+index ba55939b377a..a649aae4845a 100644
+--- a/examples/network/fortuneclient/CMakeLists.txt
++++ b/examples/network/fortuneclient/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(fortuneclient PROPERTIES
+ 
+ target_link_libraries(fortuneclient PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Network
+     Qt6::Widgets
+diff --git a/examples/network/fortuneserver/CMakeLists.txt b/examples/network/fortuneserver/CMakeLists.txt
+index af51db6a5e33..46680b8b3f91 100644
+--- a/examples/network/fortuneserver/CMakeLists.txt
++++ b/examples/network/fortuneserver/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(fortuneserver PROPERTIES
+ 
+ target_link_libraries(fortuneserver PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Network
+     Qt6::Widgets
+diff --git a/examples/network/http/CMakeLists.txt b/examples/network/http/CMakeLists.txt
+index 705c3a0beb98..513cf337aa39 100644
+--- a/examples/network/http/CMakeLists.txt
++++ b/examples/network/http/CMakeLists.txt
+@@ -21,6 +21,7 @@ set_target_properties(http PROPERTIES
+ 
+ target_link_libraries(http PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Network
+     Qt6::Widgets
+diff --git a/examples/network/multicastreceiver/CMakeLists.txt b/examples/network/multicastreceiver/CMakeLists.txt
+index cb1139e69a55..105f17b6c951 100644
+--- a/examples/network/multicastreceiver/CMakeLists.txt
++++ b/examples/network/multicastreceiver/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(multicastreceiver PROPERTIES
+ 
+ target_link_libraries(multicastreceiver PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Network
+     Qt6::Widgets
+diff --git a/examples/network/multicastsender/CMakeLists.txt b/examples/network/multicastsender/CMakeLists.txt
+index eb45b9f2fa49..029d7b89118a 100644
+--- a/examples/network/multicastsender/CMakeLists.txt
++++ b/examples/network/multicastsender/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(multicastsender PROPERTIES
+ 
+ target_link_libraries(multicastsender PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Network
+     Qt6::Widgets
+diff --git a/examples/network/network-chat/CMakeLists.txt b/examples/network/network-chat/CMakeLists.txt
+index 127a4c2fb5b9..52748323fb67 100644
+--- a/examples/network/network-chat/CMakeLists.txt
++++ b/examples/network/network-chat/CMakeLists.txt
+@@ -28,6 +28,7 @@ target_compile_definitions(network-chat PRIVATE
+ 
+ target_link_libraries(network-chat PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Network
+     Qt6::Widgets
+diff --git a/examples/network/rsslisting/CMakeLists.txt b/examples/network/rsslisting/CMakeLists.txt
+index 58d9edcb920f..76ed6345525e 100644
+--- a/examples/network/rsslisting/CMakeLists.txt
++++ b/examples/network/rsslisting/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(rsslisting PROPERTIES
+ 
+ target_link_libraries(rsslisting PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Network
+     Qt6::Widgets
+diff --git a/examples/network/securesocketclient/CMakeLists.txt b/examples/network/securesocketclient/CMakeLists.txt
+index 8066e5eba743..e787b2c84eba 100644
+--- a/examples/network/securesocketclient/CMakeLists.txt
++++ b/examples/network/securesocketclient/CMakeLists.txt
+@@ -22,6 +22,7 @@ set_target_properties(securesocketclient PROPERTIES
+ 
+ target_link_libraries(securesocketclient PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Network
+     Qt6::Widgets
+diff --git a/examples/network/secureudpclient/CMakeLists.txt b/examples/network/secureudpclient/CMakeLists.txt
+index 53a8c1340eff..bb47354da711 100644
+--- a/examples/network/secureudpclient/CMakeLists.txt
++++ b/examples/network/secureudpclient/CMakeLists.txt
+@@ -22,6 +22,7 @@ set_target_properties(secureudpclient PROPERTIES
+ 
+ target_link_libraries(secureudpclient PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Network
+     Qt6::Widgets
+diff --git a/examples/network/secureudpserver/CMakeLists.txt b/examples/network/secureudpserver/CMakeLists.txt
+index e92186b574e3..75a4d5d5ecd8 100644
+--- a/examples/network/secureudpserver/CMakeLists.txt
++++ b/examples/network/secureudpserver/CMakeLists.txt
+@@ -22,6 +22,7 @@ set_target_properties(secureudpserver PROPERTIES
+ 
+ target_link_libraries(secureudpserver PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Network
+     Qt6::Widgets
+diff --git a/examples/network/threadedfortuneserver/CMakeLists.txt b/examples/network/threadedfortuneserver/CMakeLists.txt
+index 8fc8cc416d0d..46757fa7150c 100644
+--- a/examples/network/threadedfortuneserver/CMakeLists.txt
++++ b/examples/network/threadedfortuneserver/CMakeLists.txt
+@@ -22,6 +22,7 @@ set_target_properties(threadedfortuneserver PROPERTIES
+ 
+ target_link_libraries(threadedfortuneserver PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Network
+     Qt6::Widgets
+diff --git a/examples/network/torrent/CMakeLists.txt b/examples/network/torrent/CMakeLists.txt
+index fbf974efef01..54fabf14a7f3 100644
+--- a/examples/network/torrent/CMakeLists.txt
++++ b/examples/network/torrent/CMakeLists.txt
+@@ -31,6 +31,7 @@ set_target_properties(torrent PROPERTIES
+ 
+ target_link_libraries(torrent PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Network
+     Qt6::Widgets
+diff --git a/examples/opengl/2dpainting/CMakeLists.txt b/examples/opengl/2dpainting/CMakeLists.txt
+index b4ae3aa313e8..3d1c16e6db27 100644
+--- a/examples/opengl/2dpainting/CMakeLists.txt
++++ b/examples/opengl/2dpainting/CMakeLists.txt
+@@ -23,6 +23,7 @@ set_target_properties(2dpainting PROPERTIES
+ 
+ target_link_libraries(2dpainting PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::OpenGL
+     Qt6::OpenGLWidgets
+diff --git a/examples/opengl/cube/CMakeLists.txt b/examples/opengl/cube/CMakeLists.txt
+index 7486d058a475..3738bcea532e 100644
+--- a/examples/opengl/cube/CMakeLists.txt
++++ b/examples/opengl/cube/CMakeLists.txt
+@@ -21,6 +21,7 @@ set_target_properties(cube PROPERTIES
+ 
+ target_link_libraries(cube PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::OpenGL
+     Qt6::OpenGLWidgets
+diff --git a/examples/opengl/hellogl2/CMakeLists.txt b/examples/opengl/hellogl2/CMakeLists.txt
+index 74ef4a8c24f9..3d1009b95c07 100644
+--- a/examples/opengl/hellogl2/CMakeLists.txt
++++ b/examples/opengl/hellogl2/CMakeLists.txt
+@@ -23,6 +23,7 @@ set_target_properties(hellogl2 PROPERTIES
+ 
+ target_link_libraries(hellogl2 PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::OpenGL
+     Qt6::OpenGLWidgets
+diff --git a/examples/opengl/hellogles3/CMakeLists.txt b/examples/opengl/hellogles3/CMakeLists.txt
+index 07df173a47b9..1b9d6bfff6ef 100644
+--- a/examples/opengl/hellogles3/CMakeLists.txt
++++ b/examples/opengl/hellogles3/CMakeLists.txt
+@@ -21,6 +21,7 @@ set_target_properties(hellogles3 PROPERTIES
+ 
+ target_link_libraries(hellogles3 PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::OpenGL
+ )
+diff --git a/examples/opengl/openglwindow/CMakeLists.txt b/examples/opengl/openglwindow/CMakeLists.txt
+index 0258a4282285..099c17fcbdeb 100644
+--- a/examples/opengl/openglwindow/CMakeLists.txt
++++ b/examples/opengl/openglwindow/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(openglwindow PROPERTIES
+ 
+ target_link_libraries(openglwindow PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::OpenGL
+ )
+diff --git a/examples/opengl/stereoqopenglwidget/CMakeLists.txt b/examples/opengl/stereoqopenglwidget/CMakeLists.txt
+index d0fb7a03451b..208d87aca67c 100644
+--- a/examples/opengl/stereoqopenglwidget/CMakeLists.txt
++++ b/examples/opengl/stereoqopenglwidget/CMakeLists.txt
+@@ -21,6 +21,7 @@ set_target_properties(stereoqopenglwidget PROPERTIES
+ 
+ target_link_libraries(stereoqopenglwidget PUBLIC
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::OpenGL
+     Qt6::OpenGLWidgets
+diff --git a/examples/opengl/textures/CMakeLists.txt b/examples/opengl/textures/CMakeLists.txt
+index 2765355c5aee..fa2e6d68ed49 100644
+--- a/examples/opengl/textures/CMakeLists.txt
++++ b/examples/opengl/textures/CMakeLists.txt
+@@ -21,6 +21,7 @@ set_target_properties(textures PROPERTIES
+ 
+ target_link_libraries(textures PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::OpenGL
+     Qt6::OpenGLWidgets
+diff --git a/examples/qtconcurrent/imagescaling/CMakeLists.txt b/examples/qtconcurrent/imagescaling/CMakeLists.txt
+index d053d04fc1e3..a87d4ea489b5 100644
+--- a/examples/qtconcurrent/imagescaling/CMakeLists.txt
++++ b/examples/qtconcurrent/imagescaling/CMakeLists.txt
+@@ -22,6 +22,7 @@ set_target_properties(imagescaling PROPERTIES
+ target_link_libraries(imagescaling PRIVATE
+     Qt6::Concurrent
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Network
+     Qt6::Widgets
+diff --git a/examples/qtconcurrent/primecounter/CMakeLists.txt b/examples/qtconcurrent/primecounter/CMakeLists.txt
+index c8ac5f20e84f..d9c323df5acf 100644
+--- a/examples/qtconcurrent/primecounter/CMakeLists.txt
++++ b/examples/qtconcurrent/primecounter/CMakeLists.txt
+@@ -23,6 +23,7 @@ set_target_properties(primecounter PROPERTIES
+ target_link_libraries(primecounter PRIVATE
+     Qt6::Concurrent
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/qtconcurrent/wordcount/CMakeLists.txt b/examples/qtconcurrent/wordcount/CMakeLists.txt
+index 0be10c3f3522..059ce0bc819d 100644
+--- a/examples/qtconcurrent/wordcount/CMakeLists.txt
++++ b/examples/qtconcurrent/wordcount/CMakeLists.txt
+@@ -15,6 +15,7 @@ qt_add_executable(wordcount
+ target_link_libraries(wordcount PRIVATE
+     Qt6::Concurrent
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/qtestlib/tutorial1/CMakeLists.txt b/examples/qtestlib/tutorial1/CMakeLists.txt
+index b4fc090e949d..48a1854d3aec 100644
+--- a/examples/qtestlib/tutorial1/CMakeLists.txt
++++ b/examples/qtestlib/tutorial1/CMakeLists.txt
+@@ -19,6 +19,7 @@ set_target_properties(tutorial1 PROPERTIES
+ 
+ target_link_libraries(tutorial1 PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Test
+     Qt6::Widgets
+diff --git a/examples/qtestlib/tutorial2/CMakeLists.txt b/examples/qtestlib/tutorial2/CMakeLists.txt
+index ff4862e3c474..9e7a9ded923b 100644
+--- a/examples/qtestlib/tutorial2/CMakeLists.txt
++++ b/examples/qtestlib/tutorial2/CMakeLists.txt
+@@ -19,6 +19,7 @@ set_target_properties(tutorial2 PROPERTIES
+ 
+ target_link_libraries(tutorial2 PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Test
+     Qt6::Widgets
+diff --git a/examples/qtestlib/tutorial3/CMakeLists.txt b/examples/qtestlib/tutorial3/CMakeLists.txt
+index be09e1d05b52..692d4cbcec82 100644
+--- a/examples/qtestlib/tutorial3/CMakeLists.txt
++++ b/examples/qtestlib/tutorial3/CMakeLists.txt
+@@ -19,6 +19,7 @@ set_target_properties(tutorial3 PROPERTIES
+ 
+ target_link_libraries(tutorial3 PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Test
+     Qt6::Widgets
+diff --git a/examples/qtestlib/tutorial4/CMakeLists.txt b/examples/qtestlib/tutorial4/CMakeLists.txt
+index 6f13c7c2babb..0f94ddd95c16 100644
+--- a/examples/qtestlib/tutorial4/CMakeLists.txt
++++ b/examples/qtestlib/tutorial4/CMakeLists.txt
+@@ -19,6 +19,7 @@ set_target_properties(tutorial4 PROPERTIES
+ 
+ target_link_libraries(tutorial4 PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Test
+     Qt6::Widgets
+diff --git a/examples/qtestlib/tutorial5/CMakeLists.txt b/examples/qtestlib/tutorial5/CMakeLists.txt
+index 55bb4fb2517e..2fd03a450026 100644
+--- a/examples/qtestlib/tutorial5/CMakeLists.txt
++++ b/examples/qtestlib/tutorial5/CMakeLists.txt
+@@ -19,6 +19,7 @@ set_target_properties(tutorial5 PROPERTIES
+ 
+ target_link_libraries(tutorial5 PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Test
+     Qt6::Widgets
+diff --git a/examples/sql/books/CMakeLists.txt b/examples/sql/books/CMakeLists.txt
+index 3fff91716382..ecf3a8fa6ad1 100644
+--- a/examples/sql/books/CMakeLists.txt
++++ b/examples/sql/books/CMakeLists.txt
+@@ -22,6 +22,7 @@ set_target_properties(books PROPERTIES
+ 
+ target_link_libraries(books PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Sql
+     Qt6::Widgets
+diff --git a/examples/sql/cachedtable/CMakeLists.txt b/examples/sql/cachedtable/CMakeLists.txt
+index af6843b7341c..5307a2400150 100644
+--- a/examples/sql/cachedtable/CMakeLists.txt
++++ b/examples/sql/cachedtable/CMakeLists.txt
+@@ -21,6 +21,7 @@ set_target_properties(cachedtable PROPERTIES
+ 
+ target_link_libraries(cachedtable PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Sql
+     Qt6::Widgets
+diff --git a/examples/sql/drilldown/CMakeLists.txt b/examples/sql/drilldown/CMakeLists.txt
+index fb9b441fa322..4892c73de72f 100644
+--- a/examples/sql/drilldown/CMakeLists.txt
++++ b/examples/sql/drilldown/CMakeLists.txt
+@@ -23,6 +23,7 @@ set_target_properties(drilldown PROPERTIES
+ 
+ target_link_libraries(drilldown PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Sql
+     Qt6::Widgets
+diff --git a/examples/sql/masterdetail/CMakeLists.txt b/examples/sql/masterdetail/CMakeLists.txt
+index 454aae1b7d58..501d6db9eb33 100644
+--- a/examples/sql/masterdetail/CMakeLists.txt
++++ b/examples/sql/masterdetail/CMakeLists.txt
+@@ -22,6 +22,7 @@ set_target_properties(masterdetail PROPERTIES
+ 
+ target_link_libraries(masterdetail PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Sql
+     Qt6::Widgets
+diff --git a/examples/sql/querymodel/CMakeLists.txt b/examples/sql/querymodel/CMakeLists.txt
+index b7d863ab05a9..78270cd612dc 100644
+--- a/examples/sql/querymodel/CMakeLists.txt
++++ b/examples/sql/querymodel/CMakeLists.txt
+@@ -22,6 +22,7 @@ set_target_properties(querymodel PROPERTIES
+ 
+ target_link_libraries(querymodel PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Sql
+     Qt6::Widgets
+diff --git a/examples/sql/relationaltablemodel/CMakeLists.txt b/examples/sql/relationaltablemodel/CMakeLists.txt
+index fcca1f182bac..c1fc1e39450c 100644
+--- a/examples/sql/relationaltablemodel/CMakeLists.txt
++++ b/examples/sql/relationaltablemodel/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(relationaltablemodel PROPERTIES
+ 
+ target_link_libraries(relationaltablemodel PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Sql
+     Qt6::Widgets
+diff --git a/examples/sql/sqlwidgetmapper/CMakeLists.txt b/examples/sql/sqlwidgetmapper/CMakeLists.txt
+index 91ce3cf339f4..55274a5ad686 100644
+--- a/examples/sql/sqlwidgetmapper/CMakeLists.txt
++++ b/examples/sql/sqlwidgetmapper/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(sqlwidgetmapper PROPERTIES
+ 
+ target_link_libraries(sqlwidgetmapper PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Sql
+     Qt6::Widgets
+diff --git a/examples/sql/tablemodel/CMakeLists.txt b/examples/sql/tablemodel/CMakeLists.txt
+index 28919bb69a4e..ab5abf38c681 100644
+--- a/examples/sql/tablemodel/CMakeLists.txt
++++ b/examples/sql/tablemodel/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(tablemodel PROPERTIES
+ 
+ target_link_libraries(tablemodel PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Sql
+     Qt6::Widgets
+diff --git a/examples/widgets/animation/easing/CMakeLists.txt b/examples/widgets/animation/easing/CMakeLists.txt
+index 8398f7d3e09d..db5a76f36f51 100644
+--- a/examples/widgets/animation/easing/CMakeLists.txt
++++ b/examples/widgets/animation/easing/CMakeLists.txt
+@@ -22,6 +22,7 @@ set_target_properties(easing PROPERTIES
+ 
+ target_link_libraries(easing PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/desktop/screenshot/CMakeLists.txt b/examples/widgets/desktop/screenshot/CMakeLists.txt
+index 4d9b97d11474..11b32e506b6d 100644
+--- a/examples/widgets/desktop/screenshot/CMakeLists.txt
++++ b/examples/widgets/desktop/screenshot/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(screenshot PROPERTIES
+ 
+ target_link_libraries(screenshot PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/desktop/systray/CMakeLists.txt b/examples/widgets/desktop/systray/CMakeLists.txt
+index c42469bf5936..28c644569645 100644
+--- a/examples/widgets/desktop/systray/CMakeLists.txt
++++ b/examples/widgets/desktop/systray/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(systray PROPERTIES
+ 
+ target_link_libraries(systray PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/dialogs/standarddialogs/CMakeLists.txt b/examples/widgets/dialogs/standarddialogs/CMakeLists.txt
+index 07e22469eedd..7f2d9590407d 100644
+--- a/examples/widgets/dialogs/standarddialogs/CMakeLists.txt
++++ b/examples/widgets/dialogs/standarddialogs/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(standarddialogs PROPERTIES
+ 
+ target_link_libraries(standarddialogs PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/dialogs/tabdialog/CMakeLists.txt b/examples/widgets/dialogs/tabdialog/CMakeLists.txt
+index b959a5c3e449..a85e489cfac2 100644
+--- a/examples/widgets/dialogs/tabdialog/CMakeLists.txt
++++ b/examples/widgets/dialogs/tabdialog/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(tabdialog PROPERTIES
+ 
+ target_link_libraries(tabdialog PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/dialogs/trivialwizard/CMakeLists.txt b/examples/widgets/dialogs/trivialwizard/CMakeLists.txt
+index 966d99a7aa4e..d1e2f567d9ff 100644
+--- a/examples/widgets/dialogs/trivialwizard/CMakeLists.txt
++++ b/examples/widgets/dialogs/trivialwizard/CMakeLists.txt
+@@ -19,6 +19,7 @@ set_target_properties(trivialwizard PROPERTIES
+ 
+ target_link_libraries(trivialwizard PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/draganddrop/draggableicons/CMakeLists.txt b/examples/widgets/draganddrop/draggableicons/CMakeLists.txt
+index c1fac8da6b77..b1bf1bee2f0c 100644
+--- a/examples/widgets/draganddrop/draggableicons/CMakeLists.txt
++++ b/examples/widgets/draganddrop/draggableicons/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(draggableicons PROPERTIES
+ 
+ target_link_libraries(draggableicons PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/draganddrop/draggabletext/CMakeLists.txt b/examples/widgets/draganddrop/draggabletext/CMakeLists.txt
+index bc1e72db8073..ddfe10f70fd9 100644
+--- a/examples/widgets/draganddrop/draggabletext/CMakeLists.txt
++++ b/examples/widgets/draganddrop/draggabletext/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(draggabletext PROPERTIES
+ 
+ target_link_libraries(draggabletext PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/draganddrop/dropsite/CMakeLists.txt b/examples/widgets/draganddrop/dropsite/CMakeLists.txt
+index ae8d00eb9161..e9bf40eb3460 100644
+--- a/examples/widgets/draganddrop/dropsite/CMakeLists.txt
++++ b/examples/widgets/draganddrop/dropsite/CMakeLists.txt
+@@ -21,6 +21,7 @@ set_target_properties(dropsite PROPERTIES
+ 
+ target_link_libraries(dropsite PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/gallery/CMakeLists.txt b/examples/widgets/gallery/CMakeLists.txt
+index e0c87afb0be3..af457646e86a 100644
+--- a/examples/widgets/gallery/CMakeLists.txt
++++ b/examples/widgets/gallery/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(gallery PROPERTIES
+ 
+ target_link_libraries(gallery PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/gestures/imagegestures/CMakeLists.txt b/examples/widgets/gestures/imagegestures/CMakeLists.txt
+index 1e173dc63f4d..e0a4304830c3 100644
+--- a/examples/widgets/gestures/imagegestures/CMakeLists.txt
++++ b/examples/widgets/gestures/imagegestures/CMakeLists.txt
+@@ -21,6 +21,7 @@ set_target_properties(imagegestures PROPERTIES
+ 
+ target_link_libraries(imagegestures PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/graphicsview/basicgraphicslayouts/CMakeLists.txt b/examples/widgets/graphicsview/basicgraphicslayouts/CMakeLists.txt
+index dae3884e8bc1..94a30c365ffc 100644
+--- a/examples/widgets/graphicsview/basicgraphicslayouts/CMakeLists.txt
++++ b/examples/widgets/graphicsview/basicgraphicslayouts/CMakeLists.txt
+@@ -21,6 +21,7 @@ set_target_properties(basicgraphicslayouts PROPERTIES
+ 
+ target_link_libraries(basicgraphicslayouts PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/graphicsview/chip/CMakeLists.txt b/examples/widgets/graphicsview/chip/CMakeLists.txt
+index 81b2e195523c..4b215a0b74e3 100644
+--- a/examples/widgets/graphicsview/chip/CMakeLists.txt
++++ b/examples/widgets/graphicsview/chip/CMakeLists.txt
+@@ -25,6 +25,7 @@ set_target_properties(chip PROPERTIES
+ 
+ target_link_libraries(chip PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/graphicsview/collidingmice/CMakeLists.txt b/examples/widgets/graphicsview/collidingmice/CMakeLists.txt
+index 226b72b05118..9c3dbe140d51 100644
+--- a/examples/widgets/graphicsview/collidingmice/CMakeLists.txt
++++ b/examples/widgets/graphicsview/collidingmice/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(collidingmice PROPERTIES
+ 
+ target_link_libraries(collidingmice PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/graphicsview/diagramscene/CMakeLists.txt b/examples/widgets/graphicsview/diagramscene/CMakeLists.txt
+index 9db835478d7c..cca051488e1f 100644
+--- a/examples/widgets/graphicsview/diagramscene/CMakeLists.txt
++++ b/examples/widgets/graphicsview/diagramscene/CMakeLists.txt
+@@ -24,6 +24,7 @@ set_target_properties(diagramscene PROPERTIES
+ 
+ target_link_libraries(diagramscene PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/graphicsview/dragdroprobot/CMakeLists.txt b/examples/widgets/graphicsview/dragdroprobot/CMakeLists.txt
+index df2425260efe..8bfd1e58f96b 100644
+--- a/examples/widgets/graphicsview/dragdroprobot/CMakeLists.txt
++++ b/examples/widgets/graphicsview/dragdroprobot/CMakeLists.txt
+@@ -21,6 +21,7 @@ set_target_properties(dragdroprobot PROPERTIES
+ 
+ target_link_libraries(dragdroprobot PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/graphicsview/elasticnodes/CMakeLists.txt b/examples/widgets/graphicsview/elasticnodes/CMakeLists.txt
+index 07299cd5a74d..55847a3e6e14 100644
+--- a/examples/widgets/graphicsview/elasticnodes/CMakeLists.txt
++++ b/examples/widgets/graphicsview/elasticnodes/CMakeLists.txt
+@@ -22,6 +22,7 @@ set_target_properties(elasticnodes PROPERTIES
+ 
+ target_link_libraries(elasticnodes PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/graphicsview/simpleanchorlayout/CMakeLists.txt b/examples/widgets/graphicsview/simpleanchorlayout/CMakeLists.txt
+index 2f31e12bbfed..3848ee260b75 100644
+--- a/examples/widgets/graphicsview/simpleanchorlayout/CMakeLists.txt
++++ b/examples/widgets/graphicsview/simpleanchorlayout/CMakeLists.txt
+@@ -19,6 +19,7 @@ set_target_properties(simpleanchorlayout PROPERTIES
+ 
+ target_link_libraries(simpleanchorlayout PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/itemviews/addressbook/CMakeLists.txt b/examples/widgets/itemviews/addressbook/CMakeLists.txt
+index 91e9cd03c942..ba0215a12cd6 100644
+--- a/examples/widgets/itemviews/addressbook/CMakeLists.txt
++++ b/examples/widgets/itemviews/addressbook/CMakeLists.txt
+@@ -24,6 +24,7 @@ set_target_properties(addressbook PROPERTIES
+ 
+ target_link_libraries(addressbook PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/itemviews/basicsortfiltermodel/CMakeLists.txt b/examples/widgets/itemviews/basicsortfiltermodel/CMakeLists.txt
+index da15c4c19641..32f7e763c74c 100644
+--- a/examples/widgets/itemviews/basicsortfiltermodel/CMakeLists.txt
++++ b/examples/widgets/itemviews/basicsortfiltermodel/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(basicsortfiltermodel PROPERTIES
+ 
+ target_link_libraries(basicsortfiltermodel PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/itemviews/combowidgetmapper/CMakeLists.txt b/examples/widgets/itemviews/combowidgetmapper/CMakeLists.txt
+index f95031b26089..737da63bd74f 100644
+--- a/examples/widgets/itemviews/combowidgetmapper/CMakeLists.txt
++++ b/examples/widgets/itemviews/combowidgetmapper/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(combowidgetmapper PROPERTIES
+ 
+ target_link_libraries(combowidgetmapper PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/itemviews/customsortfiltermodel/CMakeLists.txt b/examples/widgets/itemviews/customsortfiltermodel/CMakeLists.txt
+index a1b2c41cf6bf..0d31787efb21 100644
+--- a/examples/widgets/itemviews/customsortfiltermodel/CMakeLists.txt
++++ b/examples/widgets/itemviews/customsortfiltermodel/CMakeLists.txt
+@@ -22,6 +22,7 @@ set_target_properties(customsortfiltermodel PROPERTIES
+ 
+ target_link_libraries(customsortfiltermodel PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/itemviews/editabletreemodel/CMakeLists.txt b/examples/widgets/itemviews/editabletreemodel/CMakeLists.txt
+index e255cdbc633d..037413da3b2d 100644
+--- a/examples/widgets/itemviews/editabletreemodel/CMakeLists.txt
++++ b/examples/widgets/itemviews/editabletreemodel/CMakeLists.txt
+@@ -22,6 +22,7 @@ set_target_properties(editabletreemodel PROPERTIES
+ 
+ target_link_libraries(editabletreemodel PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/itemviews/fetchmore/CMakeLists.txt b/examples/widgets/itemviews/fetchmore/CMakeLists.txt
+index 856b0cc3ba65..0e1f4ff72749 100644
+--- a/examples/widgets/itemviews/fetchmore/CMakeLists.txt
++++ b/examples/widgets/itemviews/fetchmore/CMakeLists.txt
+@@ -21,6 +21,7 @@ set_target_properties(fetchmore PROPERTIES
+ 
+ target_link_libraries(fetchmore PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/itemviews/frozencolumn/CMakeLists.txt b/examples/widgets/itemviews/frozencolumn/CMakeLists.txt
+index 4801dbffd65b..4a233dc7a136 100644
+--- a/examples/widgets/itemviews/frozencolumn/CMakeLists.txt
++++ b/examples/widgets/itemviews/frozencolumn/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(frozencolumn PROPERTIES
+ 
+ target_link_libraries(frozencolumn PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/itemviews/spreadsheet/CMakeLists.txt b/examples/widgets/itemviews/spreadsheet/CMakeLists.txt
+index b6521f0c2f23..9c023aaae728 100644
+--- a/examples/widgets/itemviews/spreadsheet/CMakeLists.txt
++++ b/examples/widgets/itemviews/spreadsheet/CMakeLists.txt
+@@ -26,6 +26,7 @@ set_target_properties(spreadsheet PROPERTIES
+ 
+ target_link_libraries(spreadsheet PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/itemviews/stardelegate/CMakeLists.txt b/examples/widgets/itemviews/stardelegate/CMakeLists.txt
+index 500a03f59bcf..29ade99a7793 100644
+--- a/examples/widgets/itemviews/stardelegate/CMakeLists.txt
++++ b/examples/widgets/itemviews/stardelegate/CMakeLists.txt
+@@ -22,6 +22,7 @@ set_target_properties(stardelegate PROPERTIES
+ 
+ target_link_libraries(stardelegate PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/layouts/basiclayouts/CMakeLists.txt b/examples/widgets/layouts/basiclayouts/CMakeLists.txt
+index 5f126c308ab1..1d29cb4180b4 100644
+--- a/examples/widgets/layouts/basiclayouts/CMakeLists.txt
++++ b/examples/widgets/layouts/basiclayouts/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(basiclayouts PROPERTIES
+ 
+ target_link_libraries(basiclayouts PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/layouts/flowlayout/CMakeLists.txt b/examples/widgets/layouts/flowlayout/CMakeLists.txt
+index 9693d409b71c..32b9def21808 100644
+--- a/examples/widgets/layouts/flowlayout/CMakeLists.txt
++++ b/examples/widgets/layouts/flowlayout/CMakeLists.txt
+@@ -21,6 +21,7 @@ set_target_properties(flowlayout PROPERTIES
+ 
+ target_link_libraries(flowlayout PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/mainwindows/menus/CMakeLists.txt b/examples/widgets/mainwindows/menus/CMakeLists.txt
+index 9b3735eff86a..9c8eef020dae 100644
+--- a/examples/widgets/mainwindows/menus/CMakeLists.txt
++++ b/examples/widgets/mainwindows/menus/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(menus PROPERTIES
+ 
+ target_link_libraries(menus PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/painting/affine/CMakeLists.txt b/examples/widgets/painting/affine/CMakeLists.txt
+index dd3908662069..9c3c26106bea 100644
+--- a/examples/widgets/painting/affine/CMakeLists.txt
++++ b/examples/widgets/painting/affine/CMakeLists.txt
+@@ -24,6 +24,7 @@ endif()
+ 
+ target_link_libraries(affine PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+     painting_shared::painting_shared
+diff --git a/examples/widgets/painting/basicdrawing/CMakeLists.txt b/examples/widgets/painting/basicdrawing/CMakeLists.txt
+index c3fb855709aa..ccacb5345d6d 100644
+--- a/examples/widgets/painting/basicdrawing/CMakeLists.txt
++++ b/examples/widgets/painting/basicdrawing/CMakeLists.txt
+@@ -21,6 +21,7 @@ set_target_properties(basicdrawing PROPERTIES
+ 
+ target_link_libraries(basicdrawing PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/painting/composition/CMakeLists.txt b/examples/widgets/painting/composition/CMakeLists.txt
+index b88ee42e4137..3c79d5581f6c 100644
+--- a/examples/widgets/painting/composition/CMakeLists.txt
++++ b/examples/widgets/painting/composition/CMakeLists.txt
+@@ -24,6 +24,7 @@ endif()
+ 
+ target_link_libraries(composition PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+     painting_shared::painting_shared
+diff --git a/examples/widgets/painting/deform/CMakeLists.txt b/examples/widgets/painting/deform/CMakeLists.txt
+index 1038df03ad1c..ce40d8d972d9 100644
+--- a/examples/widgets/painting/deform/CMakeLists.txt
++++ b/examples/widgets/painting/deform/CMakeLists.txt
+@@ -24,6 +24,7 @@ endif()
+ 
+ target_link_libraries(deform PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+     painting_shared::painting_shared
+diff --git a/examples/widgets/painting/gradients/CMakeLists.txt b/examples/widgets/painting/gradients/CMakeLists.txt
+index 39cc44ed8f42..c6ae77e4c660 100644
+--- a/examples/widgets/painting/gradients/CMakeLists.txt
++++ b/examples/widgets/painting/gradients/CMakeLists.txt
+@@ -24,6 +24,7 @@ endif()
+ 
+ target_link_libraries(gradients PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+     painting_shared::painting_shared
+diff --git a/examples/widgets/painting/imagecomposition/CMakeLists.txt b/examples/widgets/painting/imagecomposition/CMakeLists.txt
+index eea0c2417340..7f4a24088cc1 100644
+--- a/examples/widgets/painting/imagecomposition/CMakeLists.txt
++++ b/examples/widgets/painting/imagecomposition/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(imagecomposition PROPERTIES
+ 
+ target_link_libraries(imagecomposition PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/painting/painterpaths/CMakeLists.txt b/examples/widgets/painting/painterpaths/CMakeLists.txt
+index 46f79482773a..f83b9de2b7fe 100644
+--- a/examples/widgets/painting/painterpaths/CMakeLists.txt
++++ b/examples/widgets/painting/painterpaths/CMakeLists.txt
+@@ -21,6 +21,7 @@ set_target_properties(painterpaths PROPERTIES
+ 
+ target_link_libraries(painterpaths PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/painting/pathstroke/CMakeLists.txt b/examples/widgets/painting/pathstroke/CMakeLists.txt
+index 5c995617eb6e..0cbc000e881c 100644
+--- a/examples/widgets/painting/pathstroke/CMakeLists.txt
++++ b/examples/widgets/painting/pathstroke/CMakeLists.txt
+@@ -24,6 +24,7 @@ endif()
+ 
+ target_link_libraries(pathstroke PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+     painting_shared::painting_shared
+diff --git a/examples/widgets/painting/transformations/CMakeLists.txt b/examples/widgets/painting/transformations/CMakeLists.txt
+index dfc35b255151..c5188971fb66 100644
+--- a/examples/widgets/painting/transformations/CMakeLists.txt
++++ b/examples/widgets/painting/transformations/CMakeLists.txt
+@@ -21,6 +21,7 @@ set_target_properties(transformations PROPERTIES
+ 
+ target_link_libraries(transformations PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/rhi/cuberhiwidget/CMakeLists.txt b/examples/widgets/rhi/cuberhiwidget/CMakeLists.txt
+index 4693cee8ad18..ce9086f72e12 100644
+--- a/examples/widgets/rhi/cuberhiwidget/CMakeLists.txt
++++ b/examples/widgets/rhi/cuberhiwidget/CMakeLists.txt
+@@ -21,6 +21,7 @@ set_target_properties(cuberhiwidget PROPERTIES
+ # needs GuiPrivate to be able to include <rhi/qrhi.h>
+ target_link_libraries(cuberhiwidget PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::GuiPrivate
+     Qt6::Widgets
+diff --git a/examples/widgets/rhi/simplerhiwidget/CMakeLists.txt b/examples/widgets/rhi/simplerhiwidget/CMakeLists.txt
+index e1b444f028a3..2ec9af904275 100644
+--- a/examples/widgets/rhi/simplerhiwidget/CMakeLists.txt
++++ b/examples/widgets/rhi/simplerhiwidget/CMakeLists.txt
+@@ -21,6 +21,7 @@ set_target_properties(simplerhiwidget PROPERTIES
+ # needs GuiPrivate to be able to include <rhi/qrhi.h>
+ target_link_libraries(simplerhiwidget PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::GuiPrivate
+     Qt6::Widgets
+diff --git a/examples/widgets/richtext/orderform/CMakeLists.txt b/examples/widgets/richtext/orderform/CMakeLists.txt
+index eacf41fd1f3e..e7652a970fb6 100644
+--- a/examples/widgets/richtext/orderform/CMakeLists.txt
++++ b/examples/widgets/richtext/orderform/CMakeLists.txt
+@@ -21,6 +21,7 @@ set_target_properties(orderform PROPERTIES
+ 
+ target_link_libraries(orderform PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/richtext/syntaxhighlighter/CMakeLists.txt b/examples/widgets/richtext/syntaxhighlighter/CMakeLists.txt
+index 13fd37ba1b32..ce0bbb468ade 100644
+--- a/examples/widgets/richtext/syntaxhighlighter/CMakeLists.txt
++++ b/examples/widgets/richtext/syntaxhighlighter/CMakeLists.txt
+@@ -21,6 +21,7 @@ set_target_properties(syntaxhighlighter PROPERTIES
+ 
+ target_link_libraries(syntaxhighlighter PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/tools/completer/CMakeLists.txt b/examples/widgets/tools/completer/CMakeLists.txt
+index a4ad8055b9f2..d127ea630b6d 100644
+--- a/examples/widgets/tools/completer/CMakeLists.txt
++++ b/examples/widgets/tools/completer/CMakeLists.txt
+@@ -21,6 +21,7 @@ set_target_properties(completer PROPERTIES
+ 
+ target_link_libraries(completer PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/tools/customcompleter/CMakeLists.txt b/examples/widgets/tools/customcompleter/CMakeLists.txt
+index 8340f2cfdf62..fda13feb552e 100644
+--- a/examples/widgets/tools/customcompleter/CMakeLists.txt
++++ b/examples/widgets/tools/customcompleter/CMakeLists.txt
+@@ -21,6 +21,7 @@ set_target_properties(customcompleter PROPERTIES
+ 
+ target_link_libraries(customcompleter PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/tools/regularexpression/CMakeLists.txt b/examples/widgets/tools/regularexpression/CMakeLists.txt
+index af7701f1cf22..467ff615f7e4 100644
+--- a/examples/widgets/tools/regularexpression/CMakeLists.txt
++++ b/examples/widgets/tools/regularexpression/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(regularexpression PROPERTIES
+ 
+ target_link_libraries(regularexpression PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/tools/treemodelcompleter/CMakeLists.txt b/examples/widgets/tools/treemodelcompleter/CMakeLists.txt
+index 4f512db3ee64..dc23f43bcf69 100644
+--- a/examples/widgets/tools/treemodelcompleter/CMakeLists.txt
++++ b/examples/widgets/tools/treemodelcompleter/CMakeLists.txt
+@@ -21,6 +21,7 @@ set_target_properties(treemodelcompleter PROPERTIES
+ 
+ target_link_libraries(treemodelcompleter PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/tools/undoframework/CMakeLists.txt b/examples/widgets/tools/undoframework/CMakeLists.txt
+index 27912f04c715..50264d49eb55 100644
+--- a/examples/widgets/tools/undoframework/CMakeLists.txt
++++ b/examples/widgets/tools/undoframework/CMakeLists.txt
+@@ -23,6 +23,7 @@ set_target_properties(undoframework PROPERTIES
+ 
+ target_link_libraries(undoframework PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/touch/knobs/CMakeLists.txt b/examples/widgets/touch/knobs/CMakeLists.txt
+index eae0e58b36c3..92a022e34f5e 100644
+--- a/examples/widgets/touch/knobs/CMakeLists.txt
++++ b/examples/widgets/touch/knobs/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(knobs PROPERTIES
+ 
+ target_link_libraries(knobs PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/tutorials/modelview/1_readonly/CMakeLists.txt b/examples/widgets/tutorials/modelview/1_readonly/CMakeLists.txt
+index 3ff7f067212e..e19837dc026b 100644
+--- a/examples/widgets/tutorials/modelview/1_readonly/CMakeLists.txt
++++ b/examples/widgets/tutorials/modelview/1_readonly/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(mv_readonly PROPERTIES
+ 
+ target_link_libraries(mv_readonly PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/tutorials/modelview/2_formatting/CMakeLists.txt b/examples/widgets/tutorials/modelview/2_formatting/CMakeLists.txt
+index a758b6eaa5af..bc3c14f8c10a 100644
+--- a/examples/widgets/tutorials/modelview/2_formatting/CMakeLists.txt
++++ b/examples/widgets/tutorials/modelview/2_formatting/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(mv_formatting PROPERTIES
+ 
+ target_link_libraries(mv_formatting PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/tutorials/modelview/3_changingmodel/CMakeLists.txt b/examples/widgets/tutorials/modelview/3_changingmodel/CMakeLists.txt
+index 1b8dd84c9287..3daad45d78a9 100644
+--- a/examples/widgets/tutorials/modelview/3_changingmodel/CMakeLists.txt
++++ b/examples/widgets/tutorials/modelview/3_changingmodel/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(mv_changingmodel PROPERTIES
+ 
+ target_link_libraries(mv_changingmodel PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/tutorials/modelview/4_headers/CMakeLists.txt b/examples/widgets/tutorials/modelview/4_headers/CMakeLists.txt
+index b0c05e4212d4..0f780a205616 100644
+--- a/examples/widgets/tutorials/modelview/4_headers/CMakeLists.txt
++++ b/examples/widgets/tutorials/modelview/4_headers/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(mv_headers PROPERTIES
+ 
+ target_link_libraries(mv_headers PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/tutorials/modelview/5_edit/CMakeLists.txt b/examples/widgets/tutorials/modelview/5_edit/CMakeLists.txt
+index f0269ac2bc67..742fcfc2c824 100644
+--- a/examples/widgets/tutorials/modelview/5_edit/CMakeLists.txt
++++ b/examples/widgets/tutorials/modelview/5_edit/CMakeLists.txt
+@@ -21,6 +21,7 @@ set_target_properties(mv_edit PROPERTIES
+ 
+ target_link_libraries(mv_edit PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/tutorials/modelview/6_treeview/CMakeLists.txt b/examples/widgets/tutorials/modelview/6_treeview/CMakeLists.txt
+index 2a47ebc24a1a..9a137eb3ebd1 100644
+--- a/examples/widgets/tutorials/modelview/6_treeview/CMakeLists.txt
++++ b/examples/widgets/tutorials/modelview/6_treeview/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(mv_tree PROPERTIES
+ 
+ target_link_libraries(mv_tree PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/tutorials/modelview/7_selections/CMakeLists.txt b/examples/widgets/tutorials/modelview/7_selections/CMakeLists.txt
+index 0eda358808b4..d35a9dbd7757 100644
+--- a/examples/widgets/tutorials/modelview/7_selections/CMakeLists.txt
++++ b/examples/widgets/tutorials/modelview/7_selections/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(mv_selections PROPERTIES
+ 
+ target_link_libraries(mv_selections PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/tutorials/notepad/CMakeLists.txt b/examples/widgets/tutorials/notepad/CMakeLists.txt
+index 43048830c2ed..855ec9a928d2 100644
+--- a/examples/widgets/tutorials/notepad/CMakeLists.txt
++++ b/examples/widgets/tutorials/notepad/CMakeLists.txt
+@@ -23,6 +23,7 @@ set_target_properties(notepad PROPERTIES
+ 
+ target_link_libraries(notepad PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/tutorials/widgets/childwidget/CMakeLists.txt b/examples/widgets/tutorials/widgets/childwidget/CMakeLists.txt
+index a4f8b5b8a26c..c1d43f92bac7 100644
+--- a/examples/widgets/tutorials/widgets/childwidget/CMakeLists.txt
++++ b/examples/widgets/tutorials/widgets/childwidget/CMakeLists.txt
+@@ -19,6 +19,7 @@ set_target_properties(childwidget PROPERTIES
+ 
+ target_link_libraries(childwidget PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/tutorials/widgets/nestedlayouts/CMakeLists.txt b/examples/widgets/tutorials/widgets/nestedlayouts/CMakeLists.txt
+index cb6db0ec4899..0e21a68f97a0 100644
+--- a/examples/widgets/tutorials/widgets/nestedlayouts/CMakeLists.txt
++++ b/examples/widgets/tutorials/widgets/nestedlayouts/CMakeLists.txt
+@@ -19,6 +19,7 @@ set_target_properties(nestedlayouts PROPERTIES
+ 
+ target_link_libraries(nestedlayouts PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/tutorials/widgets/toplevel/CMakeLists.txt b/examples/widgets/tutorials/widgets/toplevel/CMakeLists.txt
+index 2d241556f9f0..fef4bdf75c8b 100644
+--- a/examples/widgets/tutorials/widgets/toplevel/CMakeLists.txt
++++ b/examples/widgets/tutorials/widgets/toplevel/CMakeLists.txt
+@@ -19,6 +19,7 @@ set_target_properties(toplevel PROPERTIES
+ 
+ target_link_libraries(toplevel PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/tutorials/widgets/windowlayout/CMakeLists.txt b/examples/widgets/tutorials/widgets/windowlayout/CMakeLists.txt
+index ea6e21e968cd..6a4756e24331 100644
+--- a/examples/widgets/tutorials/widgets/windowlayout/CMakeLists.txt
++++ b/examples/widgets/tutorials/widgets/windowlayout/CMakeLists.txt
+@@ -19,6 +19,7 @@ set_target_properties(windowlayout PROPERTIES
+ 
+ target_link_libraries(windowlayout PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/widgets/analogclock/CMakeLists.txt b/examples/widgets/widgets/analogclock/CMakeLists.txt
+index 82b9ef3928fe..738611acfd77 100644
+--- a/examples/widgets/widgets/analogclock/CMakeLists.txt
++++ b/examples/widgets/widgets/analogclock/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(analogclock PROPERTIES
+ 
+ target_link_libraries(analogclock PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/widgets/calculator/CMakeLists.txt b/examples/widgets/widgets/calculator/CMakeLists.txt
+index abf12d566375..2fb40416c672 100644
+--- a/examples/widgets/widgets/calculator/CMakeLists.txt
++++ b/examples/widgets/widgets/calculator/CMakeLists.txt
+@@ -21,6 +21,7 @@ set_target_properties(calculator PROPERTIES
+ 
+ target_link_libraries(calculator PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/widgets/calendarwidget/CMakeLists.txt b/examples/widgets/widgets/calendarwidget/CMakeLists.txt
+index 9e8f7681ca65..73a89fca01ab 100644
+--- a/examples/widgets/widgets/calendarwidget/CMakeLists.txt
++++ b/examples/widgets/widgets/calendarwidget/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(calendarwidget PROPERTIES
+ 
+ target_link_libraries(calendarwidget PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/widgets/lineedits/CMakeLists.txt b/examples/widgets/widgets/lineedits/CMakeLists.txt
+index 9cfaa784c82e..9018872c0fa4 100644
+--- a/examples/widgets/widgets/lineedits/CMakeLists.txt
++++ b/examples/widgets/widgets/lineedits/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(lineedits PROPERTIES
+ 
+ target_link_libraries(lineedits PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/widgets/scribble/CMakeLists.txt b/examples/widgets/widgets/scribble/CMakeLists.txt
+index ec78b1ece861..072b87b79cca 100644
+--- a/examples/widgets/widgets/scribble/CMakeLists.txt
++++ b/examples/widgets/widgets/scribble/CMakeLists.txt
+@@ -24,6 +24,7 @@ set_target_properties(scribble PROPERTIES
+ 
+ target_link_libraries(scribble PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/widgets/shapedclock/CMakeLists.txt b/examples/widgets/widgets/shapedclock/CMakeLists.txt
+index dd8dc217ef81..52f3c15f8a29 100644
+--- a/examples/widgets/widgets/shapedclock/CMakeLists.txt
++++ b/examples/widgets/widgets/shapedclock/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(shapedclock PROPERTIES
+ 
+ target_link_libraries(shapedclock PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/widgets/shortcuteditor/CMakeLists.txt b/examples/widgets/widgets/shortcuteditor/CMakeLists.txt
+index d10248fbd74e..58882e2004a1 100644
+--- a/examples/widgets/widgets/shortcuteditor/CMakeLists.txt
++++ b/examples/widgets/widgets/shortcuteditor/CMakeLists.txt
+@@ -24,6 +24,7 @@ set_target_properties(shortcuteditor PROPERTIES
+ 
+ target_link_libraries(shortcuteditor PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/widgets/sliders/CMakeLists.txt b/examples/widgets/widgets/sliders/CMakeLists.txt
+index c4c9d11e033b..205b62a7a4fd 100644
+--- a/examples/widgets/widgets/sliders/CMakeLists.txt
++++ b/examples/widgets/widgets/sliders/CMakeLists.txt
+@@ -21,6 +21,7 @@ set_target_properties(sliders PROPERTIES
+ 
+ target_link_libraries(sliders PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/widgets/spinboxes/CMakeLists.txt b/examples/widgets/widgets/spinboxes/CMakeLists.txt
+index 83e54166bb7e..a7320bc428d6 100644
+--- a/examples/widgets/widgets/spinboxes/CMakeLists.txt
++++ b/examples/widgets/widgets/spinboxes/CMakeLists.txt
+@@ -20,6 +20,7 @@ set_target_properties(spinboxes PROPERTIES
+ 
+ target_link_libraries(spinboxes PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/widgets/tablet/CMakeLists.txt b/examples/widgets/widgets/tablet/CMakeLists.txt
+index caf99227417f..efb3963346ea 100644
+--- a/examples/widgets/widgets/tablet/CMakeLists.txt
++++ b/examples/widgets/widgets/tablet/CMakeLists.txt
+@@ -22,6 +22,7 @@ set_target_properties(qttablet PROPERTIES
+ 
+ target_link_libraries(qttablet PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/widgets/widgets/windowflags/CMakeLists.txt b/examples/widgets/widgets/windowflags/CMakeLists.txt
+index fbc1bf217bed..ae0702743887 100644
+--- a/examples/widgets/widgets/windowflags/CMakeLists.txt
++++ b/examples/widgets/widgets/windowflags/CMakeLists.txt
+@@ -21,6 +21,7 @@ set_target_properties(windowflags PROPERTIES
+ 
+ target_link_libraries(windowflags PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+ )
+diff --git a/examples/xml/dombookmarks/CMakeLists.txt b/examples/xml/dombookmarks/CMakeLists.txt
+index 58efd94a556f..be4926f546b1 100644
+--- a/examples/xml/dombookmarks/CMakeLists.txt
++++ b/examples/xml/dombookmarks/CMakeLists.txt
+@@ -21,6 +21,7 @@ set_target_properties(dombookmarks PROPERTIES
+ 
+ target_link_libraries(dombookmarks PRIVATE
+     Qt6::Core
++    Qt6::DBus
+     Qt6::Gui
+     Qt6::Widgets
+     Qt6::Xml
+diff --git a/tests/auto/corelib/io/qprocess/testGuiProcess/CMakeLists.txt b/tests/auto/corelib/io/qprocess/testGuiProcess/CMakeLists.txt
+index 781f49e515aa..18f6a273d895 100644
+--- a/tests/auto/corelib/io/qprocess/testGuiProcess/CMakeLists.txt
++++ b/tests/auto/corelib/io/qprocess/testGuiProcess/CMakeLists.txt
+@@ -10,6 +10,7 @@ qt_internal_add_executable(testGuiProcess
+     SOURCES
+         main.cpp
+     LIBRARIES
++	Qt::DBus
+         Qt::Gui
+         Qt::Widgets
+ )
+diff --git a/tests/auto/testlib/selftests/cmptest/CMakeLists.txt b/tests/auto/testlib/selftests/cmptest/CMakeLists.txt
+index 67700db36ee0..20b0257cf878 100644
+--- a/tests/auto/testlib/selftests/cmptest/CMakeLists.txt
++++ b/tests/auto/testlib/selftests/cmptest/CMakeLists.txt
+@@ -12,6 +12,7 @@ qt_internal_add_executable(cmptest
+     SOURCES
+         tst_cmptest.cpp
+     LIBRARIES
++	Qt::DBus
+         Qt::Test
+ )
+ 
+diff --git a/tests/auto/testlib/selftests/keyboard/CMakeLists.txt b/tests/auto/testlib/selftests/keyboard/CMakeLists.txt
+index a1c1482e0465..b56b2784ebd5 100644
+--- a/tests/auto/testlib/selftests/keyboard/CMakeLists.txt
++++ b/tests/auto/testlib/selftests/keyboard/CMakeLists.txt
+@@ -12,6 +12,7 @@ qt_internal_add_executable(keyboard
+     SOURCES
+         tst_keyboard.cpp
+     LIBRARIES
++	Qt::DBus
+         Qt::Gui
+         Qt::GuiPrivate
+         Qt::Test
+diff --git a/tests/auto/testlib/selftests/mouse/CMakeLists.txt b/tests/auto/testlib/selftests/mouse/CMakeLists.txt
+index 9eb4aec2cea4..988a3399c683 100644
+--- a/tests/auto/testlib/selftests/mouse/CMakeLists.txt
++++ b/tests/auto/testlib/selftests/mouse/CMakeLists.txt
+@@ -12,6 +12,7 @@ qt_internal_add_executable(mouse
+     SOURCES
+         tst_mouse.cpp
+     LIBRARIES
++	Qt::DBus
+         Qt::Gui
+         Qt::GuiPrivate
+         Qt::Test
+-- 
+2.53.0
+

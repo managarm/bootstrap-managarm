@@ -1,7 +1,7 @@
-From 05b80d1d01ae42f92f36900b297d08a6f40a3831 Mon Sep 17 00:00:00 2001
+From 9358c2a51d2dd738e672ac1782251004d3838cfe Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Mon, 13 Apr 2026 13:59:16 +0200
-Subject: [PATCH] Add Managarm support
+Subject: [PATCH 1/2] Add Managarm support
 
 ---
  cmake/QtMkspecHelpers.cmake                   |  6 ++
@@ -11,17 +11,18 @@ Subject: [PATCH] Add Managarm support
  mkspecs/managarm-g++/qmake.conf               | 12 +++
  mkspecs/managarm-g++/qplatformdefs.h          | 88 +++++++++++++++++++
  src/corelib/global/qsystemdetection.h         |  2 +
+ src/corelib/io/qfilesystemwatcher.cpp         |  2 +-
  src/corelib/io/qstorageinfo_unix.cpp          |  3 +
  src/corelib/thread/qthread_unix.cpp           |  2 +-
  src/gui/configure.cmake                       |  4 +-
  src/network/kernel/qnetworkinterface_unix.cpp |  4 +
- 11 files changed, 178 insertions(+), 5 deletions(-)
+ 12 files changed, 179 insertions(+), 6 deletions(-)
  create mode 100644 mkspecs/common/managarm.conf
  create mode 100644 mkspecs/managarm-g++/qmake.conf
  create mode 100644 mkspecs/managarm-g++/qplatformdefs.h
 
 diff --git a/cmake/QtMkspecHelpers.cmake b/cmake/QtMkspecHelpers.cmake
-index 8b133d185b1..5d5b06069c2 100644
+index 8b133d185b1a..5d5b06069c20 100644
 --- a/cmake/QtMkspecHelpers.cmake
 +++ b/cmake/QtMkspecHelpers.cmake
 @@ -50,6 +50,12 @@ macro(qt_internal_setup_platform_definitions_and_mkspec)
@@ -38,7 +39,7 @@ index 8b133d185b1..5d5b06069c2 100644
          if(GCC)
              set(QT_DEFAULT_MKSPEC android-g++)
 diff --git a/cmake/QtPlatformSupport.cmake b/cmake/QtPlatformSupport.cmake
-index 071711a5bd5..e52204792a1 100644
+index 071711a5bd57..e52204792a1d 100644
 --- a/cmake/QtPlatformSupport.cmake
 +++ b/cmake/QtPlatformSupport.cmake
 @@ -7,6 +7,12 @@ else()
@@ -56,7 +57,7 @@ index 071711a5bd5..e52204792a1 100644
  else()
 diff --git a/mkspecs/common/managarm.conf b/mkspecs/common/managarm.conf
 new file mode 100644
-index 00000000000..e7ea7d13ccf
+index 000000000000..e7ea7d13ccff
 --- /dev/null
 +++ b/mkspecs/common/managarm.conf
 @@ -0,0 +1,52 @@
@@ -113,7 +114,7 @@ index 00000000000..e7ea7d13ccf
 +QMAKE_STRIP             = strip
 +QMAKE_STRIPFLAGS_LIB   += --strip-unneeded
 diff --git a/mkspecs/common/posix/qplatformdefs.h b/mkspecs/common/posix/qplatformdefs.h
-index e7ce7a568db..97a6f4f1dcc 100644
+index e7ce7a568dbc..97a6f4f1dccb 100644
 --- a/mkspecs/common/posix/qplatformdefs.h
 +++ b/mkspecs/common/posix/qplatformdefs.h
 @@ -12,7 +12,7 @@
@@ -136,7 +137,7 @@ index e7ce7a568db..97a6f4f1dcc 100644
  #else
 diff --git a/mkspecs/managarm-g++/qmake.conf b/mkspecs/managarm-g++/qmake.conf
 new file mode 100644
-index 00000000000..8dc4ff15f28
+index 000000000000..8dc4ff15f28b
 --- /dev/null
 +++ b/mkspecs/managarm-g++/qmake.conf
 @@ -0,0 +1,12 @@
@@ -154,7 +155,7 @@ index 00000000000..8dc4ff15f28
 +load(qt_config)
 diff --git a/mkspecs/managarm-g++/qplatformdefs.h b/mkspecs/managarm-g++/qplatformdefs.h
 new file mode 100644
-index 00000000000..91654548bcc
+index 000000000000..91654548bcca
 --- /dev/null
 +++ b/mkspecs/managarm-g++/qplatformdefs.h
 @@ -0,0 +1,88 @@
@@ -247,7 +248,7 @@ index 00000000000..91654548bcc
 +
 +#endif // QPLATFORMDEFS_H
 diff --git a/src/corelib/global/qsystemdetection.h b/src/corelib/global/qsystemdetection.h
-index bd1ef8dd747..0120af45860 100644
+index bd1ef8dd747e..0120af458609 100644
 --- a/src/corelib/global/qsystemdetection.h
 +++ b/src/corelib/global/qsystemdetection.h
 @@ -129,6 +129,8 @@
@@ -259,8 +260,21 @@ index bd1ef8dd747..0120af45860 100644
  #elif defined(__MAKEDEPEND__)
  #else
  #  error "Qt has not been ported to this OS - see http://www.qt-project.org/"
+diff --git a/src/corelib/io/qfilesystemwatcher.cpp b/src/corelib/io/qfilesystemwatcher.cpp
+index cd72f21acdff..0777911fdcb0 100644
+--- a/src/corelib/io/qfilesystemwatcher.cpp
++++ b/src/corelib/io/qfilesystemwatcher.cpp
+@@ -11,7 +11,7 @@
+ #include <qloggingcategory.h>
+ #include <qset.h>
+ 
+-#if (defined(Q_OS_LINUX) || defined(Q_OS_QNX)) && QT_CONFIG(inotify)
++#if (defined(Q_OS_LINUX) || defined(Q_OS_QNX) || defined(Q_OS_MANAGARM)) && QT_CONFIG(inotify)
+ #define USE_INOTIFY
+ #endif
+ 
 diff --git a/src/corelib/io/qstorageinfo_unix.cpp b/src/corelib/io/qstorageinfo_unix.cpp
-index 34ba7b9682b..e70d58734fd 100644
+index 34ba7b9682bd..e70d58734fd1 100644
 --- a/src/corelib/io/qstorageinfo_unix.cpp
 +++ b/src/corelib/io/qstorageinfo_unix.cpp
 @@ -54,6 +54,9 @@
@@ -274,7 +288,7 @@ index 34ba7b9682b..e70d58734fd 100644
  #  if defined(QT_LARGEFILE_SUPPORT)
  #    define QT_STATFSBUF struct statvfs64
 diff --git a/src/corelib/thread/qthread_unix.cpp b/src/corelib/thread/qthread_unix.cpp
-index 00d2b87b7ea..6d9564b11cb 100644
+index 00d2b87b7ea2..6d9564b11cb4 100644
 --- a/src/corelib/thread/qthread_unix.cpp
 +++ b/src/corelib/thread/qthread_unix.cpp
 @@ -844,7 +844,7 @@ void QThread::start(Priority priority)
@@ -287,7 +301,7 @@ index 00d2b87b7ea..6d9564b11cb 100644
  #else
          int code = ENOSYS; // stack size not supported, automatically fail
 diff --git a/src/gui/configure.cmake b/src/gui/configure.cmake
-index e34f4d8b30a..de6d34826dd 100644
+index e34f4d8b30af..de6d34826dd1 100644
 --- a/src/gui/configure.cmake
 +++ b/src/gui/configure.cmake
 @@ -28,7 +28,7 @@ set_property(CACHE INPUT_libpng PROPERTY STRINGS undefined no qt system)
@@ -309,7 +323,7 @@ index e34f4d8b30a..de6d34826dd 100644
                      MODULE_NAME gui QMAKE_LIB wayland_server)
      qt_find_package(Wayland MODULE PROVIDED_TARGETS Wayland::Client
 diff --git a/src/network/kernel/qnetworkinterface_unix.cpp b/src/network/kernel/qnetworkinterface_unix.cpp
-index 5313e1707dc..dfe5b0f4f6c 100644
+index 5313e1707dc2..dfe5b0f4f6c5 100644
 --- a/src/network/kernel/qnetworkinterface_unix.cpp
 +++ b/src/network/kernel/qnetworkinterface_unix.cpp
 @@ -22,6 +22,10 @@
