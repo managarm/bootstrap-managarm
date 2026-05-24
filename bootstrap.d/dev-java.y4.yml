@@ -113,7 +113,7 @@ packages:
       - managarm-system
       - xorg-proto
       - zlib
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -140,3 +140,7 @@ packages:
       - args: ['touch', 'images/jdk/.systemPrefs/.systemRootModFile']
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/lib/jvm']
       - args: ['cp', '-pPr', 'images/jdk', '@THIS_COLLECT_DIR@/usr/lib/jvm/java-17']
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: openjdk17-dbg
+        include: ['/usr/lib/debug/**']
