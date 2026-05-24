@@ -41,7 +41,7 @@ packages:
       - libxml
       - libxtst
       - systemd
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'meson'

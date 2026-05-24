@@ -20,12 +20,12 @@ packages:
       - host-qt6
     pkgs_required:
       - mlibc
-      - libqtxdg
-      - qtbase6
       - kwindowsystem
+      - libqtxdg
       - libx11
       - libxscrnsaver
-    revision: 3
+      - qtbase6
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -63,12 +63,12 @@ packages:
       - host-qt6
     pkgs_required:
       - mlibc
-      - libqtxdg
-      - liblxqt
-      - layer-shell-qt
       - kwindowsystem
+      - layer-shell-qt
+      - liblxqt
+      - libqtxdg
       - qtbase6
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'

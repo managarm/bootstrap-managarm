@@ -20,14 +20,14 @@ packages:
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
-      - python
-      - libexpat
-      - zlib
-      - openssl
       - curl
+      - libexpat
       - libiconv
+      - openssl
       - pcre2
-    revision: 1
+      - python
+      - zlib
+    revision: 2
     configure:
       - args:
         - 'meson'

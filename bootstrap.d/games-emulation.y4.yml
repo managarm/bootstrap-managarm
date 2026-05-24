@@ -22,11 +22,11 @@ packages:
       - host-automake-v1.15
     pkgs_required:
       - mlibc
-      - sdl2
-      - libintl
       - libiconv
+      - libintl
+      - sdl2
       - zlib
-    revision: 14
+    revision: 15
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

@@ -82,8 +82,8 @@ sources:
   - name: nss
     subdir: 'ports'
     git: 'https://github.com/nss-dev/nss.git'
-    tag: 'NSS_3_117_RTM'
-    version: '3.117.RTM'
+    tag: 'NSS_3_124_RTM'
+    version: '3.124.RTM'
 
   - name: plasma-wayland-protocols
     subdir: 'ports'
@@ -300,7 +300,7 @@ packages:
       - libxml
       - libxmlb
       - libyaml
-    revision: 3
+    revision: 4
     configure:
       - args: ['mkdir', '-pv', '@THIS_BUILD_DIR@/data']
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/data/org.freedesktop.appstream.cli.metainfo.xml', '@THIS_BUILD_DIR@/data/nol10n_withrelinfo_org.freedesktop.appstream.cli.metainfo.xml']
@@ -704,12 +704,12 @@ packages:
       - host-mlibc
     pkgs_required:
       - mlibc
+      - cairo
       - glib
       - libffi
-      - cairo
       - pcre2
       - python
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -976,7 +976,7 @@ packages:
       - libevdev
       - libxkbcommon
       - systemd
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -1065,7 +1065,7 @@ packages:
       - mlibc
       - openssl
       - zlib
-    revision: 12
+    revision: 13
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1247,7 +1247,7 @@ packages:
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
-    revision: 5
+    revision: 6
     configure:
       # libgee doesn't seem to like being compiled out of tree
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
@@ -1364,9 +1364,9 @@ packages:
     pkgs_required:
       - mlibc
       - glib
-      - systemd
       - gobject-introspection
-    revision: 5
+      - systemd
+    revision: 6
     configure:
       - args:
         - 'meson'
@@ -1503,10 +1503,10 @@ packages:
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
-      - systemd
       - libevdev
       - mtdev
-    revision: 4
+      - systemd
+    revision: 5
     configure:
       - args:
         - 'meson'
@@ -1732,26 +1732,26 @@ packages:
         arch: [x86_64]
         item: gobject-introspection
       - gtk+-3
-    revision: 1
+    revision: 2
     configure:
       - args:
-          - 'meson'
-          - 'setup'
-          - '--cross-file'
-          - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@-goi.cross-file'
-          - '--prefix=/usr'
-          - '--sysconfdir=/etc'
-          - !managarm::arch_ite
-            arch: [x86_64]
-            then: '-Dintrospection=true'
-            else: '-Dintrospection=false'
-          - '-Dvapi=false'
-          - '-Dlua51=false'
-          - '-Dpython2=false'
-          - '-Dpython3=false'
-          - '-Dgtk_doc=false'
-          - '-Dglade_catalog=false'
-          - '@THIS_SOURCE_DIR@'
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@-goi.cross-file'
+        - '--prefix=/usr'
+        - '--sysconfdir=/etc'
+        - !managarm::arch_ite
+          arch: [x86_64]
+          then: '-Dintrospection=true'
+          else: '-Dintrospection=false'
+        - '-Dvapi=false'
+        - '-Dlua51=false'
+        - '-Dpython2=false'
+        - '-Dpython3=false'
+        - '-Dgtk_doc=false'
+        - '-Dglade_catalog=false'
+        - '@THIS_SOURCE_DIR@'
         environ:
           # Same as below
           RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
@@ -1843,7 +1843,7 @@ packages:
       - glib
       - qtbase6
       - qtsvg6
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -2017,7 +2017,7 @@ packages:
     pkgs_required:
       - mlibc
       - systemd
-    revision: 12
+    revision: 13
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -2145,12 +2145,12 @@ packages:
     pkgs_required:
       - mlibc
       - glib
-      - xz-utils
-      - zstd
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
-    revision: 2
+      - xz-utils
+      - zstd
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -2596,14 +2596,14 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/openssl/openssl.git'
-      tag: 'OpenSSL_1_1_1w'
-      version: '1.1.1w'
+      tag: 'openssl-3.6.1'
+      version: '3.6.1'
     tools_required:
       - system-gcc
     pkgs_required:
       - mlibc
       - zlib
-    revision: 5
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/Configure'
@@ -2626,9 +2626,9 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
       # Move the doc dir to a versioned directory
-      - args: ['mv', '@THIS_COLLECT_DIR@/usr/share/doc/openssl', '@THIS_COLLECT_DIR@/usr/share/doc/openssl-1.1.1w']
+      - args: ['mv', '@THIS_COLLECT_DIR@/usr/share/doc/openssl', '@THIS_COLLECT_DIR@/usr/share/doc/openssl-3.6.1']
       # Install more documentation
-      - args: ['cp', '-fr', '@THIS_SOURCE_DIR@/doc/.', '@THIS_COLLECT_DIR@/usr/share/doc/openssl-1.1.1w']
+      - args: ['cp', '-fr', '@THIS_SOURCE_DIR@/doc/.', '@THIS_COLLECT_DIR@/usr/share/doc/openssl-3.6.1']
       - args: ['@SOURCE_ROOT@/scripts/keep-empty-directories.py', '@THIS_COLLECT_DIR@']
 
   - name: pcre

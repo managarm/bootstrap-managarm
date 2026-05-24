@@ -104,28 +104,28 @@ packages:
         program_name: host-pkg-config
     pkgs_required:
       - mlibc
-      - xorg-util-macros
-      - xcb-proto
-      - xorg-proto
       - libdrm
-      - systemd
-      - libxshmfence
-      - libx11
-      - libxxf86vm
-      - libxkbfile
-      - libxfont2
       - libepoxy
-      - libxi
-      - libxdamage
-      - libxrender
-      - libxrandr
+      - libx11
       - libxcb
-      - libxfixes
+      - libxdamage
       - libxext
+      - libxfixes
+      - libxfont2
+      - libxi
+      - libxkbfile
+      - libxrandr
+      - libxrender
+      - libxshmfence
+      - libxxf86vm
       - nettle
-      - xkbcomp
       - pixman
-    revision: 12
+      - systemd
+      - xcb-proto
+      - xkbcomp
+      - xorg-proto
+      - xorg-util-macros
+    revision: 13
     configure:
       - args:
         - 'meson'
@@ -185,23 +185,23 @@ packages:
         program_name: host-pkg-config
     pkgs_required:
       - mlibc
-      - wayland
-      - wayland-protocols
-      - libxcvt
-      - xcb-proto
-      - xorg-proto
       - libdrm
-      - libxshmfence
-      - libxkbfile
-      - libxfont2
       - libepoxy
       - libxcb
-      - libxext
+      - libxcvt
       - libxdmcp
+      - libxext
+      - libxfont2
+      - libxkbfile
+      - libxshmfence
       - nettle
-      - xkbcomp
       - pixman
-    revision: 8
+      - wayland
+      - wayland-protocols
+      - xcb-proto
+      - xkbcomp
+      - xorg-proto
+    revision: 9
     configure:
       - args:
         - 'meson'

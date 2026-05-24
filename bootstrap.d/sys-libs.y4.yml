@@ -480,11 +480,11 @@ packages:
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
-      - json-c
       - dbus
+      - json-c
       - openssl
       - util-linux-libs
-    revision: 2
+    revision: 3
     configure:
       - args:
           - 'meson'
@@ -570,12 +570,12 @@ packages:
     pkgs_required:
       - mlibc
       - bzip2
-      - zlib
       - libiconv
-      - xz-utils
       - openssl
+      - xz-utils
+      - zlib
       - zstd
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'

@@ -20,19 +20,19 @@ packages:
       - wayland-scanner
     pkgs_required:
       - mlibc
+      - dbus
       - freeglut
       - freetype
       - glew
       - glu
+      - gtk+-3
       - libdrm
       - libx11
       - libxext
+      - libxkbcommon
       - mesa
       - wayland
-      - libxkbcommon
-      - dbus
-      - gtk+-3
-    revision: 4
+    revision: 5
     configure:
       - args:
         - 'meson'

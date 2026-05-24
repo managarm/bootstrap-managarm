@@ -70,25 +70,25 @@ packages:
         item: gobject-introspection
       - libgcrypt
       - libxslt
-    revision: 4
+    revision: 5
     configure:
       - args:
-          - 'meson'
-          - 'setup'
-          - '--buildtype=debugoptimized'
-          - '--cross-file'
-          - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
-          - '--prefix=/usr'
-          - '--wrap-mode=nofallback'
-          - '--sysconfdir=/etc'
-          - '-Dgtk_doc=false'
-          - !managarm::arch_ite
-            arch: [x86_64]
-            then: '-Dintrospection=true'
-            else: '-Dintrospection=false'
-          - '-Dvapi=true'
-          - '-Dmanpage=false'
-          - '@THIS_SOURCE_DIR@'
+        - 'meson'
+        - 'setup'
+        - '--buildtype=debugoptimized'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--wrap-mode=nofallback'
+        - '--sysconfdir=/etc'
+        - '-Dgtk_doc=false'
+        - !managarm::arch_ite
+          arch: [x86_64]
+          then: '-Dintrospection=true'
+          else: '-Dintrospection=false'
+        - '-Dvapi=true'
+        - '-Dmanpage=false'
+        - '@THIS_SOURCE_DIR@'
         environ:
           # Same as below
           RUN_WRAPPER_LD_LIBRARY_PATH: '@BUILD_ROOT@/tools/host-mlibc/lib:@SYSROOT_DIR@/usr/lib:@SYSROOT_DIR@/usr/lib64:@THIS_BUILD_DIR@/girepository'
@@ -165,7 +165,7 @@ packages:
       - libffi
       - libtasn
       - systemd
-    revision: 6
+    revision: 7
     configure:
       - args:
         - 'meson'

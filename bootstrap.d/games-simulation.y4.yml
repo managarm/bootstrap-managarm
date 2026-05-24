@@ -45,20 +45,20 @@ packages:
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
-      - zlib
-      - pcre
-      - sdl2
+      - curl
+      - freetype
       - glu
+      - harfbuzz
+      - libjpeg-turbo
       - libpng
       - libvorbis
-      - libjpeg-turbo
-      - freetype
-      - harfbuzz
-      - curl
       - openttd-opengfx
       - openttd-openmsx
       - openttd-opensfx
-    revision: 3
+      - pcre
+      - sdl2
+      - zlib
+    revision: 4
     configure:
       - args:
         - 'cmake'

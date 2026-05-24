@@ -25,7 +25,7 @@ packages:
       - openssl
       - zlib
       - zstd
-    revision: 8
+    revision: 9
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -64,7 +64,7 @@ packages:
     pkgs_required:
       - mlibc
       - systemd
-    revision: 9
+    revision: 10
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
@@ -262,14 +262,14 @@ packages:
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
+      - libiconv
       - lz4
       - openssl
-      - libiconv
-      - zlib
-      - xxhash
-      - zstd
       - popt
-    revision: 8
+      - xxhash
+      - zlib
+      - zstd
+    revision: 9
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -319,9 +319,9 @@ packages:
     pkgs_required:
       - mlibc
       - ncurses
-      - readline
       - openssl
-    revision: 8
+      - readline
+    revision: 9
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -362,9 +362,9 @@ packages:
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
-      - pcre
       - openssl
-    revision: 9
+      - pcre
+    revision: 10
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -409,10 +409,10 @@ packages:
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
+      - openssl
       - pam
       - zlib
-      - openssl
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

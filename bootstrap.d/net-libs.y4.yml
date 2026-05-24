@@ -27,7 +27,7 @@ packages:
       - glib
       - gnutls
       - gsettings-desktop-schemas
-    revision: 10
+    revision: 11
     configure:
       - args:
         - 'meson'
@@ -79,16 +79,16 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-      - libtasn
-      - p11-kit
-      - nettle
       - gmp
-      - libunistring
-      - libidn2
       - libiconv
+      - libidn2
       - libintl
+      - libtasn
+      - libunistring
+      - nettle
       - openssl
-    revision: 11
+      - p11-kit
+    revision: 12
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -269,11 +269,11 @@ packages:
       - mlibc
       - glib
       - glib-networking
-      - zlib
+      - libpsl
       - libxml
       - sqlite
-      - libpsl
-    revision: 8
+      - zlib
+    revision: 9
     configure:
       - args:
         - 'meson'
@@ -336,17 +336,17 @@ packages:
       - host-glib
     pkgs_required:
       - mlibc
+      - brotli
       - glib
       - glib-networking
-      - nghttp2
-      - sqlite
-      - brotli
-      - libpsl
-      - zlib
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
-    revision: 2
+      - libpsl
+      - nghttp2
+      - sqlite
+      - zlib
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -429,13 +429,13 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-      - openssl
+      - boost
+      - c-ares
       - libevent
       - libxml
+      - openssl
       - zlib
-      - c-ares
-      - boost
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -477,36 +477,36 @@ packages:
       - host-glib
     pkgs_required:
       - mlibc
+      - at-spi2-core
       - cairo
       - fontconfig
       - freetype
-      - libgcrypt
       - glib
+      - gst-plugins-bad
+      - gst-plugins-base
+      - gst-plugins-good
+      - gtk+-3
       - harfbuzz
       - icu
+      - libgcrypt
       - libjpeg-turbo
-      - zlib
-      - sqlite
       - libpng
-      - libxml
-      - libwebp
-      - gtk+-3
       - libsoup3
-      - libxslt
-      - at-spi2-core
       - libtasn
+      - libwebp
       - libx11
       - libxcomposite
       - libxdamage
+      - libxml
       - libxrender
+      - libxslt
       - libxt
       - mesa
-      - systemd
       - shared-mime-info
-      - gst-plugins-base
-      - gst-plugins-bad
-      - gst-plugins-good
-    revision: 2
+      - sqlite
+      - systemd
+      - zlib
+    revision: 3
     configure:
       - args:
         - 'cmake'

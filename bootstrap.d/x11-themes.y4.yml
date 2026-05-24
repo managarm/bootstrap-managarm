@@ -61,9 +61,9 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-      - xorg-util-macros
       - libxcursor
-    revision: 9
+      - xorg-util-macros
+    revision: 10
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -71,6 +71,7 @@ packages:
         - '--prefix=/usr'
         - '--sysconfdir=/etc'
         - '--localstatedir=/var'
+        - '--with-cursordir=/usr/share/icons'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']

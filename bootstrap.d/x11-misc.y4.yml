@@ -53,9 +53,9 @@ packages:
     pkgs_required:
       - mlibc
       - glib
-      - libxml
       - itstool
-    revision: 14
+      - libxml
+    revision: 15
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

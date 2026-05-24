@@ -899,10 +899,10 @@ packages:
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
-      - libnvme
       - json-c
+      - libnvme
       - zlib
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'meson'
@@ -947,10 +947,10 @@ packages:
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
-      - systemd
       - hwdata
+      - systemd
       - zlib
-    revision: 7
+    revision: 8
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -1174,11 +1174,11 @@ packages:
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
-      - libusb
-      - systemd
       - hwdata
       - libiconv
-    revision: 5
+      - libusb
+      - systemd
+    revision: 6
     configure:
       - args:
         - 'meson'
@@ -1210,7 +1210,7 @@ packages:
       - ncurses
       - readline
       - zlib
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -1351,16 +1351,16 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
+      - file
+      - libiconv
+      - libxcrypt
+      - ncurses
+      - pcre2
+      - readline
       - systemd
       - util-linux-libs
-      - readline
-      - ncurses
       - zlib
-      - libiconv
-      - file
-      - libxcrypt
-      - pcre2
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'meson'
@@ -1451,10 +1451,10 @@ packages:
     pkgs_required:
       - mlibc
       - libarchive
+      - lz4
       - openssl
       - zlib
-      - lz4
-    revision: 6
+    revision: 7
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
@@ -1493,11 +1493,11 @@ packages:
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
-      - libxkbcommon
       - libdrm
       - libtsm
+      - libxkbcommon
       - systemd
-    revision: 16
+    revision: 17
     configure:
       - args:
         - 'meson'
