@@ -82,8 +82,8 @@ sources:
   - name: nss
     subdir: 'ports'
     git: 'https://github.com/nss-dev/nss.git'
-    tag: 'NSS_3_117_RTM'
-    version: '3.117.RTM'
+    tag: 'NSS_3_124_RTM'
+    version: '3.124.RTM'
 
   - name: plasma-wayland-protocols
     subdir: 'ports'
