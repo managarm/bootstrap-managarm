@@ -239,7 +239,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 8
+    revision: 9
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
@@ -257,6 +257,10 @@ packages:
         - '-j@PARALLELISM@'
       - args: ['make', 'install', 'INSTALL_TOP=@THIS_COLLECT_DIR@/usr']
         quiet: true
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: lua-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: nasm
     architecture: '@OPTION:arch@'
@@ -288,7 +292,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 4
+    revision: 5
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
@@ -302,6 +306,10 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: nasm-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: perl
     architecture: '@OPTION:arch@'
@@ -390,7 +398,7 @@ packages:
       - xz-utils
       - zlib
       - zstd
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -414,6 +422,10 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: python-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: tcl
     architecture: '@OPTION:arch@'
@@ -438,7 +450,7 @@ packages:
       - mlibc
       - sqlite
       - zlib
-    revision: 3
+    revision: 4
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
@@ -472,6 +484,10 @@ packages:
       - args: ['ln', '-v', '-sf', 'libtcl8.6.so', '@THIS_COLLECT_DIR@/usr/lib/libtcl8.so']
       - args: ['ln', '-v', '-sf', 'libtcl8.6.so', '@THIS_COLLECT_DIR@/usr/lib/libtcl.so']
       - args: ['chmod', '-v', '755', '@THIS_COLLECT_DIR@/usr/lib/libtcl8.6.so']
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: tcl-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: yasm
     architecture: '@OPTION:arch@'
@@ -504,7 +520,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 12
+    revision: 13
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -517,3 +533,7 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: yasm-dbg
+        include: ['/usr/lib/debug/**']
