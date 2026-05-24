@@ -845,12 +845,12 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '-DBUILD_TESTING=OFF'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DBUILD_WEBSITE=OFF'
@@ -866,6 +866,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: imath-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: json-c
     architecture: '@OPTION:arch@'
@@ -886,12 +890,13 @@ packages:
       - host-cmake
     pkgs_required:
       - mlibc
-    revision: 4
+    revision: 5
     configure:
       - args:
         - 'cmake'
         - '-GNinja'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_POLICY_VERSION_MINIMUM=3.5'
         - '@THIS_SOURCE_DIR@'
@@ -900,6 +905,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: json-c-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: kirigami-addons
     architecture: '@OPTION:arch@'
@@ -930,7 +939,7 @@ packages:
       - qtbase6
       - qtdeclarative6
       - qtmultimedia6
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -956,6 +965,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: kirigami-addons-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libbsd
     architecture: '@OPTION:arch@'
@@ -981,7 +994,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -993,6 +1006,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libbsd-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libei
     labels: [aarch64, riscv64]
@@ -1019,7 +1036,7 @@ packages:
       - libevdev
       - libxkbcommon
       - systemd
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -1038,6 +1055,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libei-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libevdev
     labels: [aarch64, riscv64]
@@ -1067,7 +1088,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1080,6 +1101,10 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libevdev-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libevent
     architecture: '@OPTION:arch@'
@@ -1108,7 +1133,7 @@ packages:
       - mlibc
       - openssl
       - zlib
-    revision: 13
+    revision: 14
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1120,6 +1145,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libevent-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libexpat
     labels: [aarch64, riscv64]
@@ -1150,7 +1179,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/expat/configure'
@@ -1165,6 +1194,10 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libexpat-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libffi
     labels: [aarch64, riscv64]
