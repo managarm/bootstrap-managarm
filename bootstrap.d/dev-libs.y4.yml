@@ -595,7 +595,7 @@ packages:
       - host-automake-v1.15
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -606,6 +606,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: fribidi-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: glib
     labels: [aarch64, riscv64]
@@ -626,12 +630,12 @@ packages:
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
-      - pcre2
       - libffi
-      - zlib
       - libiconv
       - libintl
-    revision: 3
+      - pcre2
+      - zlib
+    revision: 4
     configure:
       - args:
         - 'meson'
@@ -655,6 +659,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: glib-dbg
+        include: ['/usr/lib/debug/**']
     scripts:
         post_install:
           - args: ['glib-compile-schemas /usr/share/glib-2.0/schemas']
@@ -689,7 +697,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -704,6 +712,10 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: gmp-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: gobject-introspection
     architecture: '@OPTION:arch@'
@@ -731,7 +743,7 @@ packages:
       - libffi
       - pcre2
       - python
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'meson'
@@ -739,6 +751,7 @@ packages:
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@-goi.cross-file'
         - '--prefix=/usr'
+        - '--buildtype=debugoptimized'
         - '-Dgi_cross_ldd_wrapper=ldd-wrapper'
         - '-Dgi_cross_use_prebuilt_gi=true'
         - '-Dbuild_introspection_data=true'
@@ -764,6 +777,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: gobject-introspection-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: icu
     labels: [aarch64, riscv64]
@@ -781,7 +798,7 @@ packages:
       - host-icu
     pkgs_required:
       - mlibc
-    revision: 5
+    revision: 6
     configure:
       - args: ['cp',
           '@THIS_SOURCE_DIR@/icu4c/source/config/mh-linux',
@@ -803,6 +820,10 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: icu-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: imath
     architecture: '@OPTION:arch@'
