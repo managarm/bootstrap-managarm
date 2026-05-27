@@ -12,8 +12,8 @@ sources:
   - name: glib
     subdir: ports
     git: 'https://gitlab.gnome.org/GNOME/glib.git'
-    tag: '2.82.4'
-    version: '2.82.4'
+    tag: '2.88.1'
+    version: '2.88.1'
 
   - name: gnulib
     subdir: ports
@@ -635,7 +635,7 @@ packages:
       - libintl
       - pcre2
       - zlib
-    revision: 4
+    revision: 1
     configure:
       - args:
         - 'meson'

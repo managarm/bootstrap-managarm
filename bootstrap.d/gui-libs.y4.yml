@@ -15,8 +15,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.gnome.org/GNOME/gtk.git'
-      tag: '4.18.5'
-      version: '4.18.5'
+      tag: '4.22.4'
+      version: '4.22.4'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -63,7 +63,7 @@ packages:
       - pango
       - wayland
       - wayland-protocols
-    revision: 3
+    revision: 1
     configure:
       - args:
         - 'meson'
@@ -234,8 +234,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.gnome.org/GNOME/libadwaita.git'
-      tag: '1.4.2'
-      version: '1.4.2'
+      tag: '1.8.6'
+      version: '1.8.6'
     tools_required:
       - system-gcc
       - host-pkg-config
@@ -260,7 +260,7 @@ packages:
         arch: [x86_64]
         item: gobject-introspection
       - gtk4
-    revision: 4
+    revision: 1
     configure:
       - args:
         - 'meson'
