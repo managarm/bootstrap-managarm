@@ -16,6 +16,13 @@ sources:
     commit: e05715b2e6a3ae913aecdb86f4fd2dba30304e45
     version: '0.0pl@ROLLING_ID@'
 
+  - name: uhda
+    subdir: 'ports'
+    git: 'https://github.com/uDrivers/uHDA.git'
+    branch: 'main'
+    commit: a631f3e7c794a7c8b55b3d54faa6636c224e26e6
+    version: '0.0pl@ROLLING_ID@'
+
   - name: managarm
     git: 'https://github.com/managarm/managarm.git'
     branch: 'master'
@@ -24,10 +31,12 @@ sources:
     sources_required:
       - cralgo
       - uacpi
+      - uhda
     regenerate:
       - args: ['mkdir', '-p', '@THIS_SOURCE_DIR@/subprojects']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cralgo', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/uacpi', '@THIS_SOURCE_DIR@/subprojects/']
+      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/uhda', '@THIS_SOURCE_DIR@/subprojects/']
 
 
 tools:
