@@ -20,7 +20,8 @@ sources:
     subdir: 'ports'
     git: 'https://github.com/uDrivers/uHDA.git'
     branch: 'main'
-    commit: a631f3e7c794a7c8b55b3d54faa6636c224e26e6
+    rolling_version: true
+    commit: 56fa19579af0d57354045d05a609f51b3e881b0b
     version: '0.0pl@ROLLING_ID@'
 
   - name: managarm
@@ -31,12 +32,10 @@ sources:
     sources_required:
       - cralgo
       - uacpi
-      - uhda
     regenerate:
       - args: ['mkdir', '-p', '@THIS_SOURCE_DIR@/subprojects']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cralgo', '@THIS_SOURCE_DIR@/subprojects/']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/uacpi', '@THIS_SOURCE_DIR@/subprojects/']
-      - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/uhda', '@THIS_SOURCE_DIR@/subprojects/']
 
 
 tools:
@@ -250,6 +249,48 @@ packages:
       - '-quiet'
       - '\.(h|c|cpp|hpp)$'
 
+  - name: uhda
+    metadata:
+      summary: The uHDA HDA driver
+      description: This package provides a HDA driver.
+      spdx: 'BSD-3-Clause'
+      website: 'https://github.com/uDrivers/uHDA'
+      maintainer: "Qwinci <qwinci222@gmail.com>"
+      categories: ['sys-kernel']
+    labels: [aarch64, riscv64]
+    architecture: '@OPTION:arch@'
+    from_source: uhda
+    tools_required:
+      - host-llvm-toolchain
+      - host-mold
+      - cross-binutils
+    pkgs_required:
+      - mlibc
+    revision: 1
+    configure:
+      - args: |
+          sed -e 's|_BUILD_ROOT_|@BUILD_ROOT@|' -e 's|_SYSROOT_DIR_|@SYSROOT_DIR@|' @SOURCE_ROOT@/scripts/meson-clang-@OPTION:arch-triple@.cross-file \
+              > ./meson-custom.cross-file
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file=./meson-custom.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '--wrap-mode=nodownload'
+        - '-Dbuild_library=true'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: uhda-dbg
+        include: ['/usr/lib/debug/**']
+
   - name: managarm-system
     metadata:
       summary: The Managarm userspace
@@ -284,6 +325,7 @@ packages:
       - cli11
       - boost
       - bragi
+      - uhda
       - !managarm::arch_dep
         arch: [x86_64]
         item: freebsd-e1000
