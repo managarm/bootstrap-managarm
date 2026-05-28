@@ -638,7 +638,7 @@ packages:
         - '-DUSE_SYSPROF_CAPTURE=NO'
         - '@THIS_SOURCE_DIR@'
     build:
-      - args: ['ninja', '-j14']
+      - args: ['ninja', '-j6']
         isolate_network: false
       - args: ['ninja', 'install']
         environ:
