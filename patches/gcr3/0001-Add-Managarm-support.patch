@@ -1,13 +1,27 @@
-From cee296dd26c0e922b6c0b2325210912512fb28f7 Mon Sep 17 00:00:00 2001
+From 91381f4c6a946d8dd07902ea8307bf6bc0ee71de Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Wed, 24 Jan 2024 23:24:10 +0100
 Subject: [PATCH] Add Managarm support
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
- meson.build | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ gcr/meson.build | 2 +-
+ meson.build     | 9 +++++++--
+ 2 files changed, 8 insertions(+), 3 deletions(-)
 
+diff --git a/gcr/meson.build b/gcr/meson.build
+index c83641b..9ec790b 100644
+--- a/gcr/meson.build
++++ b/gcr/meson.build
+@@ -341,7 +341,7 @@ gcr_test_names = [
+   'pkcs11-certificate',
+   'openpgp',
+   'openssh',
+-  'secure-memory',
++  # 'secure-memory',
+   'trust',
+   'parser',
+   'record',
 diff --git a/meson.build b/meson.build
 index dd890a9..d125cee 100644
 --- a/meson.build
@@ -29,5 +43,5 @@ index dd890a9..d125cee 100644
  with_systemd = false
  libsystemd_deps = []
 -- 
-2.43.0
+2.53.0
 

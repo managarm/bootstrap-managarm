@@ -953,8 +953,8 @@ packages:
         # Disabled on all architectures for now
         - !managarm::arch_ite
           arch: [x86_64]
-          then: '-Dintrospection=false'
-          else: '-Dintrospection=false'
+          then: '-Dintrospection=disabled'
+          else: '-Dintrospection=disabled'
         - '@THIS_SOURCE_DIR@'
         environ:
           # Same as below

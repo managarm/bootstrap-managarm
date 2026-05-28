@@ -1,4 +1,4 @@
-From bfc377608dad078fd25d569cbf5125d71296ef24 Mon Sep 17 00:00:00 2001
+From 196d87154fe3e5371b98aa677d783e0b9856ad68 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Sat, 18 Oct 2025 16:08:37 +0200
 Subject: [PATCH] Add Managarm support
@@ -6,13 +6,14 @@ Subject: [PATCH] Add Managarm support
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
  gdk/loaders/gdkpng.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ meson.build          | 2 ++
+ 2 files changed, 10 insertions(+)
 
 diff --git a/gdk/loaders/gdkpng.c b/gdk/loaders/gdkpng.c
-index b82fd05..f642100 100644
+index d5922f2..295bf08 100644
 --- a/gdk/loaders/gdkpng.c
 +++ b/gdk/loaders/gdkpng.c
-@@ -344,7 +344,11 @@ gdk_load_png (GBytes      *bytes,
+@@ -345,7 +345,11 @@ gdk_load_png (GBytes      *bytes,
    png_set_read_user_chunk_fn (png, &cicp, png_read_chunk_func);
  #endif
  
@@ -24,7 +25,7 @@ index b82fd05..f642100 100644
      {
        g_free (buffer);
        g_free (row_pointers);
-@@ -639,7 +643,11 @@ gdk_save_png (GdkTexture *texture)
+@@ -664,7 +668,11 @@ gdk_save_png (GdkTexture *texture,
    gdk_color_state_ref (color_state);
    bytes = NULL;
  
@@ -36,6 +37,19 @@ index b82fd05..f642100 100644
      {
        gdk_color_state_unref (color_state);
        g_clear_pointer (&bytes, g_bytes_unref);
+diff --git a/meson.build b/meson.build
+index 8a5b7b1..a87b051 100644
+--- a/meson.build
++++ b/meson.build
+@@ -152,6 +152,8 @@ elif host_machine.system() == 'android'
+   os_android = true
+ elif host_machine.system() == 'linux'
+   os_linux = true
++elif host_machine.system() == 'managarm'
++  os_linux = true
+ endif
+ os_unix = not os_win32
+ 
 -- 
-2.51.0
+2.53.0
 
