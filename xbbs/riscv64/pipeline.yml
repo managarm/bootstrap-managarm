@@ -8,6 +8,7 @@ jobs:
 
   - name: image
     tasks:
+      - useful-image-dependencies
       - initialize-empty-image
       - remake-image
       - xz-image
