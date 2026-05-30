@@ -25,6 +25,7 @@ packages:
       - managarm-kernel
       - managarm-kernel-uefi
       - managarm-system
+      - managarm-system-rs
       - kmscon
       - bash
       - xkeyboard-config
@@ -61,7 +62,7 @@ packages:
       - libgcc
       - libstdc++
       - locale-data
-    revision: 12
+    revision: 13
     configure: []
     build: []
 
