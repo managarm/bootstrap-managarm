@@ -17,6 +17,7 @@ tasks:
       - libstdc++
       - managarm-kernel
       - managarm-system
+      - managarm-system-rs
     tasks_required:
       - task: useful-image-dependencies
         order_only: true
