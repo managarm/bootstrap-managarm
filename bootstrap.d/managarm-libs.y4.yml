@@ -48,7 +48,7 @@ sources:
     subdir: 'ports'
     git: 'https://github.com/osdev0/freestnd-cxx-hdrs.git'
     branch: 'trunk'
-    commit: '8596b5e080d18698021fc1e7d43321adc5bfb433'
+    commit: '9d6a92ab19a57140f1e3ecc6668014d7f46094b6'
 
   - name: nvidia-open
     subdir: 'ports'
