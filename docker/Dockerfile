@@ -210,6 +210,11 @@ RUN cd /root && \
 	tar xf mdbook.tar.gz && \
 	install -D mdbook /usr/local/bin/mdbook
 
+# Install blueprint-compiler, the version in trixie is too old.
+RUN cd /root && \
+	wget -O blueprint-compiler.deb https://raptor.dennisbonke.com/blueprint-compiler_0.20.4-1_all.deb && \
+	dpkg -i /root/blueprint-compiler.deb
+
 #----------------------------------------------------------------------------------------
 # "user" stage that also adds a user account.
 #----------------------------------------------------------------------------------------

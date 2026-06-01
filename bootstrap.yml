@@ -307,3 +307,5 @@ container:
     - libxcb-util0-dev
     - libxcb-keysyms1-dev
     - libxcb-icccm4-dev
+    # Used by epiphany
+    - blueprint-compiler
