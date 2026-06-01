@@ -1,4 +1,76 @@
 packages:
+  - name: epiphany
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: GNOME webbrowser based on Webkit
+      description: Epiphany is a simple yet powerful GNOME web browser targeted at non-technical users. Its principles are simplicity and standards compliance.
+      spdx: 'GPL-3.0-or-later'
+      website: 'https://apps.gnome.org/Epiphany/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['www-client']
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.gnome.org/GNOME/epiphany.git'
+      tag: '49.8.1'
+      version: '49.8.1'
+    tools_required:
+      - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - iso-codes
+      - cairo
+      - gcr4
+      - json-glib
+      - libarchive
+      - libadwaita
+      - libsoup3
+      - libportal
+      - webkitgtk4
+      - desktop-file-utils
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--buildtype=debugoptimized'
+        - '-Ddeveloper_mode=false'
+        - '-Dtech_preview=false'
+        - '-Dunit_tests=disabled'
+        - '-Dgranite=disabled'
+        - '-Dman-pages=disabled'
+        - '@THIS_SOURCE_DIR@'
+        environ:
+          PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
+          # Path to the introspection data installed by other packages
+          GIRDIR: '@SYSROOT_DIR@/usr/share/gir-1.0'
+          TYPEDIR: '@SYSROOT_DIR@/usr/lib/girepository-1.0'
+    build:
+      - args: ['ninja']
+        environ:
+          # Path to the introspection data installed by other packages
+          GIRDIR: '@SYSROOT_DIR@/usr/share/gir-1.0'
+          TYPEDIR: '@SYSROOT_DIR@/usr/lib/girepository-1.0'
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: epiphany-dbg
+        include: ['/usr/lib/debug/**']
+    scripts:
+        post_install:
+          - args: ['glib-compile-schemas /usr/share/glib-2.0/schemas']
+          - args: ['gtk4-update-icon-cache', '-q', '-t', '-f', '/usr/share/icons/hicolor']
+          - args: 'echo "Running update-mime-database; this may take a minute or 2..."'
+          - args: '/usr/bin/update-mime-database /usr/share/mime/'
+
   - name: links
     architecture: '@OPTION:arch@'
     source:
