@@ -904,6 +904,11 @@ def do_qemu(args):
         else:
             qemu_args += ["-device", "usb-tablet,bus=xhci.0"]
 
+    # Add audio.
+    qemu_args += ["-audiodev", "pa,id=snd0"]
+    qemu_args += ["-device", "intel-hda"]
+    qemu_args += ["-device", "hda-output,audiodev=snd0"]
+
     # Add debugging devices.
     if have_dmalog:
         qemu_args += [
