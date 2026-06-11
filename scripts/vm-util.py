@@ -46,6 +46,16 @@ def qemu_check_device(qemu, args, dev, fatal=False):
         sys.exit(1)
     return False
 
+def qemu_check_audiodev(qemu, args, dev, fatal=False):
+    out = subprocess.check_output([qemu] + args + ["-audiodev", "?"], encoding="ascii")
+    for line in out.splitlines():
+        if line.strip() == dev:
+            return True
+    if fatal:
+        print("QEMU does not support audiodev {}".format(dev), file=sys.stderr)
+        sys.exit(1)
+    return False
+
 def qemu_check_nic(qemu, args, nic):
     out = subprocess.check_output([qemu] + args + ["-nic", "?"], encoding="ascii")
     for line in out.splitlines():
@@ -907,9 +917,14 @@ def do_qemu(args):
             qemu_args += ["-device", "usb-tablet,bus=xhci.0"]
 
     # Add audio.
-    qemu_args += ["-audiodev", "pa,id=snd0"]
-    qemu_args += ["-device", "intel-hda"]
-    qemu_args += ["-device", "hda-output,audiodev=snd0"]
+    if (
+        qemu_check_device(qemu, qemu_args, "intel-hda")
+        and qemu_check_device(qemu, qemu_args, "hda-output")
+        and qemu_check_audiodev(qemu, qemu_args, "pa")
+    ):
+        qemu_args += ["-audiodev", "pa,id=snd0"]
+        qemu_args += ["-device", "intel-hda"]
+        qemu_args += ["-device", "hda-output,audiodev=snd0"]
 
     # Add debugging devices.
     if have_dmalog:
