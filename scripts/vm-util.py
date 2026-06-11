@@ -11,6 +11,7 @@ import re
 import shlex
 import shutil
 import subprocess
+import stat
 import string
 import struct
 import socket
@@ -55,6 +56,19 @@ def qemu_check_audiodev(qemu, args, dev, fatal=False):
         print("QEMU does not support audiodev {}".format(dev), file=sys.stderr)
         sys.exit(1)
     return False
+
+def pulseaudio_socket_available():
+    xdg_runtime_dir = os.environ.get('XDG_RUNTIME_DIR')
+    if not xdg_runtime_dir:
+        uid = os.getuid()
+        xdg_runtime_dir = f"/run/user/{uid}"
+
+    socket_path = os.path.join(xdg_runtime_dir, 'pulse', 'native')
+    try:
+        file_stat = os.stat(socket_path)
+        return stat.S_ISSOCK(file_stat.st_mode)
+    except OSError:
+        return False
 
 def qemu_check_nic(qemu, args, nic):
     out = subprocess.check_output([qemu] + args + ["-nic", "?"], encoding="ascii")
@@ -921,6 +935,7 @@ def do_qemu(args):
         qemu_check_device(qemu, qemu_args, "intel-hda")
         and qemu_check_device(qemu, qemu_args, "hda-output")
         and qemu_check_audiodev(qemu, qemu_args, "pa")
+        and pulseaudio_socket_available()
     ):
         qemu_args += ["-audiodev", "pa,id=snd0"]
         qemu_args += ["-device", "intel-hda"]
