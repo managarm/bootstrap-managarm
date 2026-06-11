@@ -36,13 +36,15 @@ def which(cmd):
 # qemu subcommand.
 # ---------------------------------------------------------------------------------------
 
-def qemu_check_device(qemu, args, dev):
+def qemu_check_device(qemu, args, dev, fatal=False):
     out = subprocess.check_output([qemu] + args + ["-device", "?"], encoding="ascii")
     for line in out.splitlines():
         if line.startswith(f"name \"{dev}\""):
             return True
-    print("QEMU does not support device {}".format(dev), file=sys.stderr)
-    sys.exit(1)
+    if fatal:
+        print("QEMU does not support device {}".format(dev), file=sys.stderr)
+        sys.exit(1)
+    return False
 
 def qemu_check_nic(qemu, args, nic):
     out = subprocess.check_output([qemu] + args + ["-nic", "?"], encoding="ascii")
@@ -965,7 +967,7 @@ def do_qemu(args):
             qemu_args += qemu_process_usb_passthrough(device, True)
 
     if args.usb_redir:
-        qemu_check_device(qemu, qemu_args, 'usb-redir')
+        qemu_check_device(qemu, qemu_args, 'usb-redir', fatal=True)
 
         for num, server in enumerate(args.usb_redir):
             [host, port] = server.rsplit(':', 1)
