@@ -108,6 +108,20 @@ tasks:
         path: '@BUILD_ROOT@'
     args: ['xz', '--fast', '--keep', '@BUILD_ROOT@/image']
 
+  - name: get-nightly-image
+    args: |
+      wget https://repos.managarm.org/images/image-nightly-@OPTION:arch@.zst -O image.zst
+      zstd -d --rm image.zst
+    workdir: '@BUILD_ROOT@'
+    containerless: true
+
+  - name: get-stable-image
+    args: |
+      wget https://repos.managarm.org/images/image-stable-@OPTION:arch@.zst -O image.zst
+      zstd -d --rm image.zst
+    workdir: '@BUILD_ROOT@'
+    containerless: true
+
   - name: qemu
     tools_required:
       - tool: ovmf
