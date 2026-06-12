@@ -25,7 +25,7 @@ tools:
         - '--enable-sdl'
         - '--enable-trace-backends=log'
         environ:
-          CFLAGS: '-Wno-int-conversion'
+          CFLAGS: '-Wno-int-conversion -Wno-discarded-qualifiers'
     compile:
       - args: ['ninja']
     install:
