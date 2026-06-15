@@ -827,7 +827,7 @@ def do_qemu(args):
     qemu_args += ["-drive", "id=boot-drive,file=image,format=raw,if=none"]
 
     if args.boot_drive == "virtio":
-        qemu_args += ["-device", "virtio-blk-pci,drive=boot-drive"]
+        qemu_args += ["-device", f"virtio-blk-pci,drive=boot-drive,disable-legacy=on,iommu_platform={"on" if args.iommu else "off"}"]
     elif args.boot_drive == "virtio-legacy":
         qemu_args += [
             "-device",
@@ -880,6 +880,9 @@ def do_qemu(args):
         qemu_args += ["-device", "rtl8139,netdev=net0"]
     elif args.nic == "virtio":
         qemu_check_nic(qemu, qemu_args, "virtio-net-pci")
+        qemu_args += ["-device", f"virtio-net,disable-legacy=on,netdev=net0,iommu_platform={"on" if args.iommu else "off"}"]
+    elif args.nic == "virtio-legacy":
+        qemu_check_nic(qemu, qemu_args, "virtio-net-pci")
         qemu_args += ["-device", "virtio-net,disable-modern=on,netdev=net0"]
     elif args.nic == "usb":
         qemu_check_nic(qemu, qemu_args, "usb-net")
@@ -899,10 +902,9 @@ def do_qemu(args):
         qemu_args += ["-vga", "none", "-display", "none"]
     elif args.gfx == "default":
         if args.arch == "x86_64":
-            qemu_args += ["-vga", "virtio"]
+            qemu_args += ["-device", f"virtio-vga,disable-legacy=on,iommu_platform={"on" if args.iommu else "off"}"]
         else:
-            assert args.arch in {"aarch64", "riscv64"}
-            qemu_args += ["-device", "virtio-gpu"]
+            qemu_args += ["-device", f"virtio-gpu-pci,disable-legacy=on,iommu_platform={"on" if args.iommu else "off"}"]
     elif args.gfx == "ramfb":
         assert args.arch in {"aarch64", "riscv64"}
         qemu_args += ["-device", "ramfb"]
@@ -910,14 +912,16 @@ def do_qemu(args):
         if args.arch == "x86_64":
             if args.gfx == "bga":
                 qemu_args += ["-vga", "std"]
-            else:  # virtio or vmware
+            elif args.gfx == "virtio":
+                qemu_args += ["-device", f"virtio-vga,disable-legacy=on,iommu_platform={"on" if args.iommu else "off"}"]
+            else:  # vmware
                 qemu_args += ["-vga", args.gfx]
         else:
             assert args.arch == "aarch64"
             if args.gfx == "bga":
                 qemu_args += ["-device", "bochs-display"]
             elif args.gfx == "virtio":
-                qemu_args += ["-device", "virtio-gpu"]
+                qemu_args += ["-device", f"virtio-gpu-pci,disable-legacy=on,iommu_platform={"on" if args.iommu else "off"}"]
             else:
                 assert args.gfx == "vmware"
                 qemu_args += ["-device", "vmware-svga"]
@@ -1065,7 +1069,7 @@ qemu_parser.add_argument(
     default="virtio",
 )
 qemu_parser.add_argument("--net-bridge", action="store_true")
-qemu_parser.add_argument("--nic", choices=["i8254x", "virtio", "rtl8139", "usb", "none"], default="virtio")
+qemu_parser.add_argument("--nic", choices=["i8254x", "virtio", "virtio-legacy", "rtl8139", "usb", "none"], default="virtio")
 qemu_parser.add_argument("--gfx", choices=["bga", "virtio", "vmware", "ramfb", "none"], default="default")
 qemu_parser.add_argument("--ps2", action="store_true")
 qemu_parser.add_argument("--mouse", action="store_true")
