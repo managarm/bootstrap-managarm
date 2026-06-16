@@ -38,6 +38,12 @@ tasks:
       - ci-boot-uefi-mb2
       - !managarm::arch_dep
         arch: [x86_64]
+        item: ci-boot-virtio-transitional
+      - !managarm::arch_dep
+        arch: [x86_64]
+        item: ci-boot-virtio-legacy
+      - !managarm::arch_dep
+        arch: [x86_64]
         item: ci-os-test
       - ci-test-rust
     args:
@@ -101,6 +107,34 @@ tasks:
       - '--logfile=ci-boot-uefi-mb2.txt'
       - '--uefi'
       - '--ci-protocol=mb2'
+      - '--ci-script=/usr/bin/true'
+    environ: !ci-environ
+    workdir: '@BUILD_ROOT@'
+    containerless: true
+  - name: ci-boot-virtio-transitional
+    tools_required: !ci-tools-required
+    tasks_required: !ci-tasks-required
+    args:
+      - !ci-common-args
+      - '--logfile=ci-boot-virtio-transitional.txt'
+      - '--boot-drive'
+      - 'virtio-transitional'
+      - '--nic'
+      - 'virtio-transitional'
+      - '--ci-script=/usr/bin/true'
+    environ: !ci-environ
+    workdir: '@BUILD_ROOT@'
+    containerless: true
+  - name: ci-boot-virtio-legacy
+    tools_required: !ci-tools-required
+    tasks_required: !ci-tasks-required
+    args:
+      - !ci-common-args
+      - '--logfile=ci-boot-virtio-legacy.txt'
+      - '--boot-drive'
+      - 'virtio-legacy'
+      - '--nic'
+      - 'virtio-legacy'
       - '--ci-script=/usr/bin/true'
     environ: !ci-environ
     workdir: '@BUILD_ROOT@'
