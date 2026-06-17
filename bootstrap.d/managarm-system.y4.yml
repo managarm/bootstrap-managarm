@@ -22,7 +22,7 @@ sources:
     git: 'https://github.com/uDrivers/uHDA.git'
     branch: 'main'
     rolling_version: true
-    commit: 1e1fdbb8278ad9c851146bf0c7dd75ddb8b50427
+    commit: 4e10f054d49cf142a4aad9679c136ac6fe5f5815
     version: '0.0pl@ROLLING_ID@'
 
   - name: managarm
