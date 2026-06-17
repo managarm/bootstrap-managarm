@@ -1,0 +1,33 @@
+From b0eb0a3f293c515be8bde2af802b9386f8eef585 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Mon, 15 Jun 2026 20:55:45 +0200
+Subject: [PATCH 2/2] Disable post install steps
+
+We're cross-compiling, and we'll let xbps handle our post install items.
+Disable them here to avoid adding extra host dependencies
+---
+ meson.build | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/meson.build b/meson.build
+index cf3e5c9..1431ece 100644
+--- a/meson.build
++++ b/meson.build
+@@ -166,8 +166,9 @@ subdir('embed')
+ subdir('src')
+ subdir('tests')
+ 
+-gnome.post_install(
+-  gtk_update_icon_cache: true,
+-  glib_compile_schemas: true,
+-  update_desktop_database: true
+-)
++# HACK: Cross compile means this does nothing, disable to not depend on them either on the host
++#gnome.post_install(
++#  gtk_update_icon_cache: true,
++#  glib_compile_schemas: true,
++#  update_desktop_database: true
++#)
+-- 
+2.53.0
+

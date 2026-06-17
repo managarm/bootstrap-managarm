@@ -42,7 +42,7 @@ packages:
       - libxml
       - mpc
       - mpfr
-    revision: 4
+    revision: 5
     configure:
       - args:
         - 'meson'
@@ -91,5 +91,5 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
     scripts:
         post_install:
-          - args: ['glib-compile-schemas', '/usr/share/glib-2.0/schemas']
           - args: ['gtk4-update-icon-cache', '-q', '-t', '-f', '/usr/share/icons/hicolor']
+          - args: ['glib-compile-schemas', '/usr/share/glib-2.0/schemas']
