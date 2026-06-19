@@ -13,7 +13,7 @@ sources:
     subdir: 'ports'
     git: 'https://github.com/uACPI/uACPI.git'
     branch: 'master'
-    commit: e05715b2e6a3ae913aecdb86f4fd2dba30304e45
+    commit: abc6e6b3b8f9d5141fcaa5f24667240167b9cf5f
     rolling_version: true
     version: '0.0pl@ROLLING_ID@'
 
