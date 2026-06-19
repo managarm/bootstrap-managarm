@@ -564,6 +564,46 @@ packages:
       - name: elfutils-dbg
         include: ['/usr/lib/debug/**']
 
+  - name: libfmt
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: C++ modern format library
+      description: A modern formatting library.
+      spdx: 'MIT'
+      website: 'https://fmt.dev'
+      maintainer: "Elizabeth P. <lizzie@eden-emu.dev>"
+      categories: ['dev-libs']
+    source:
+      subdir: 'ports'
+      url: 'https://github.com/fmtlib/fmt/archive/refs/tags/12.1.0.tar.gz'
+      format: 'tar.gz'
+      checksum: 'blake2b:9e9cc77bd6f5ec31f0b43091e54eb508349d278e7873bcdff4eb9388d78584467da5837bdd10de1de84feb8ab0d63880df1c9fe0f6f0db40e47598646179b06e'
+      extract_path: 'fmt-12.1.0'
+      version: '12.1.0'
+    tools_required:
+      - host-cmake
+      - system-gcc
+    pkgs_required:
+      - mlibc
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libfmt-dbg
+        include: ['/usr/lib/debug/**']
+
   - name: fribidi
     labels: [aarch64, riscv64]
     architecture: '@OPTION:arch@'
