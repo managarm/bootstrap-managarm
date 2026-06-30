@@ -496,6 +496,48 @@ def iterate_plan(plan, callbacks):
         fn(*args, **kwargs)
 
 
+def build_rsync_shift_args(sysroot):
+    # Assumption: /usr is owned by root. Use it as the source of truth for the host UID of the sysroot's root.
+    try:
+        ref_st = os.lstat(os.path.join(sysroot, "usr"))
+    except OSError:
+        return []
+
+    base_uid = ref_st.st_uid
+    base_gid = ref_st.st_gid
+    if not base_uid and not base_gid:
+        return []  # Already owned by host root; nothing to shift.
+
+    uids = set()
+    gids = set()
+    for dirpath, dirnames, filenames in os.walk(sysroot):
+        for name in [None] + filenames + dirnames:
+            path = dirpath if name is None else os.path.join(dirpath, name)
+            try:
+                st = os.lstat(path)
+            except OSError:
+                continue
+            if base_uid:
+                uids.add(st.st_uid)
+            if base_gid:
+                gids.add(st.st_gid)
+
+    # Map everything outside of the expected range to nobody.
+    def shift(i, base):
+        if i < base or i >= base + 65536:
+            return 65534 # nobody/nogroup.
+        return i - base
+
+    args = ["--numeric-ids"]
+    if uids:
+        usermap = ",".join(f"{u}:{shift(u, base_uid)}" for u in sorted(uids))
+        args.append(f"--usermap={usermap}")
+    if gids:
+        groupmap = ",".join(f"{g}:{shift(g, base_gid)}" for g in sorted(gids))
+        args.append(f"--groupmap={groupmap}")
+    return args
+
+
 class UpdateFsAction:
     def __init__(self, mountpoint, sysroot, arch):
         self.mountpoint = mountpoint
@@ -555,6 +597,11 @@ class UpdateFsAction:
 
         steps = [["set", "-ex"]]
 
+        # Let rsync shift UIDs/GIDs. This is only possible when running as root.
+        rsync_id_args = []
+        if needs_root:
+            rsync_id_args = build_rsync_shift_args(self.sysroot)
+
         def plan_create_dir(dir):
             steps.append(["mkdir", "-p", os.path.join(target_mntpoint, dir)])
 
@@ -568,7 +615,9 @@ class UpdateFsAction:
         def plan_rsync(dir, exclude_files=[]):
             source = os.path.join(self.sysroot, dir)
             target = os.path.join(target_mntpoint, dir)
-            command = ["rsync", "--checksum", "-a", "--delete", source, target]
+            command = ["rsync", "--checksum", "-a", "--delete"]
+            command += rsync_id_args
+            command += [source, target]
             if exclude_files:
                 for f in exclude_files:
                     command.append(f"--exclude={os.path.join(f)}")
