@@ -1,7 +1,28 @@
 #!/bin/sh
+
+# parse options
+XBSTRAP="xbstrap"
+BUILD_DIR=""
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --xbstrap-bin=*)
+            XBSTRAP="${1#*=}"
+            shift 1
+            ;;
+        *)
+            if [ -z "$BUILD_DIR" ]; then
+                BUILD_DIR="$1"
+            fi
+            shift 1
+            ;;
+    esac
+done
+BUILD_DIR="${BUILD_DIR:-/dev/null}"
+
 set -ue
-# check if $1 is a valid build directory
-[ -L "${1:-/dev/null}"/bootstrap.link ] || exit 1
+
+# check if the build directory is valid
+[ -L "$BUILD_DIR"/bootstrap.link ] || exit 1
 
 # find compile_commands.json
 sourcedir="$(pwd)"
@@ -18,7 +39,7 @@ x="${x%/*}"
 x="${x##*/}"
 
 # run the lsp server
-exec xbstrap -C "$1" \
+exec $XBSTRAP -C "$BUILD_DIR" \
     lsp "$x" --extra-tools host-llvm-toolchain -- \
     env HOME=@BUILD_ROOT@/clangd_home \
         XDG_CACHE_HOME=@BUILD_ROOT@/clangd_home/cache \
