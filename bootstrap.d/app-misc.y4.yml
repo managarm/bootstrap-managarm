@@ -1,5 +1,6 @@
 packages:
   - name: broot
+    stability_level: 'broken' # Needs newer rust-libc, so rust upgrade time
     architecture: '@OPTION:arch@'
     metadata:
       summary: A new way to see and navigate directory trees
