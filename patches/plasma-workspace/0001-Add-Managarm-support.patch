@@ -1,14 +1,16 @@
-From 2525c0885fbb4dc73528ac19f8fb22ae50708256 Mon Sep 17 00:00:00 2001
+From 16df20799a4ff575ffd41ccb5fe0515868da6c0c Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Tue, 19 Aug 2025 11:36:03 +0200
 Subject: [PATCH] Add Managarm support
 
 ---
- CMakeLists.txt                          | 2 +-
- kcms/lookandfeel/tool/CMakeLists.txt    | 1 +
- startkde/CMakeLists.txt                 | 1 +
- startkde/session-restore/CMakeLists.txt | 1 +
- 4 files changed, 4 insertions(+), 1 deletion(-)
+ CMakeLists.txt                                    | 2 +-
+ kcms/lookandfeel/tool/CMakeLists.txt              | 1 +
+ ksmserver/plasma-restoresession.service.in        | 2 +-
+ startkde/CMakeLists.txt                           | 1 +
+ startkde/kcminit/plasma-kcminit-phase1.service.in | 2 +-
+ startkde/session-restore/CMakeLists.txt           | 1 +
+ 6 files changed, 6 insertions(+), 3 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
 index daf1599..7d5b56e 100644
@@ -35,6 +37,17 @@ index 75528e9..d442191 100644
      PW::KLookAndFeel
  )
  
+diff --git a/ksmserver/plasma-restoresession.service.in b/ksmserver/plasma-restoresession.service.in
+index 2c52a4b..2cc1f68 100644
+--- a/ksmserver/plasma-restoresession.service.in
++++ b/ksmserver/plasma-restoresession.service.in
+@@ -5,5 +5,5 @@ RefuseManualStart=yes
+ 
+ [Service]
+ Type=oneshot
+-ExecStart=-@QtBinariesDir@/qdbus org.kde.ksmserver /KSMServer org.kde.KSMServerInterface.restoreSession
++ExecStart=qdbus org.kde.ksmserver /KSMServer org.kde.KSMServerInterface.restoreSession
+ Slice=session.slice
 diff --git a/startkde/CMakeLists.txt b/startkde/CMakeLists.txt
 index f21b851..61ea8e9 100644
 --- a/startkde/CMakeLists.txt
@@ -47,6 +60,17 @@ index f21b851..61ea8e9 100644
      PW::KWorkspace
      KNightTime
  )
+diff --git a/startkde/kcminit/plasma-kcminit-phase1.service.in b/startkde/kcminit/plasma-kcminit-phase1.service.in
+index 7218628..5c0beb2 100644
+--- a/startkde/kcminit/plasma-kcminit-phase1.service.in
++++ b/startkde/kcminit/plasma-kcminit-phase1.service.in
+@@ -6,5 +6,5 @@ PartOf=graphical-session.target
+ 
+ [Service]
+ Type=oneshot
+-ExecStart=@QtBinariesDir@/qdbus org.kde.kcminit /kcminit org.kde.KCMInit.runPhase1
++ExecStart=qdbus org.kde.kcminit /kcminit org.kde.KCMInit.runPhase1
+ Slice=session.slice
 diff --git a/startkde/session-restore/CMakeLists.txt b/startkde/session-restore/CMakeLists.txt
 index 6949e0d..8c707e5 100644
 --- a/startkde/session-restore/CMakeLists.txt
