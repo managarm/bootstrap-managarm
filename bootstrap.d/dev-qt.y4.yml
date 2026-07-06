@@ -151,7 +151,7 @@ packages:
       - xcb-util-wm
       - zlib
       - zstd
-    revision: 4
+    revision: 5
     configure:
       - args:
         - 'cmake'
