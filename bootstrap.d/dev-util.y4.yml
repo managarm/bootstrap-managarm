@@ -518,6 +518,51 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
 
+  - name: vulkan-tools
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Vulkan Development Tools
+      description: This project provides Vulkan tools and utilities that can assist development by enabling developers to verify their applications correct use of the Vulkan API.
+      spdx: 'Apache-2.0'
+      website: 'https://github.com/KhronosGroup/Vulkan-Tools'
+      maintainer: "no92 <leo@managarm.org>"
+      categories: ['dev-util']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/KhronosGroup/Vulkan-Tools.git'
+      tag: 'v1.3.269'
+      version: '1.3.269'
+    tools_required:
+      - system-gcc
+      - wayland-scanner
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - vulkan-headers
+      - vulkan-loader
+      - wayland
+      - wayland-protocols
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DCMAKE_PREFIX=/usr'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DBUILD_TESTS=OFF'
+        - '-DBUILD_WSI_XCB_SUPPORT=OFF'
+        - '-DBUILD_WSI_XLIB_SUPPORT=OFF'
+        - '-DCUBE_WSI_SELECTION=WAYLAND'
+        - '@THIS_SOURCE_DIR@/'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+
   - name: pc
     architecture: '@OPTION:arch@'
     metadata:
