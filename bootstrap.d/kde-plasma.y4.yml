@@ -40,7 +40,7 @@ packages:
       - qtbase6
       - qtdeclarative6
       - qtsvg6
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -68,6 +68,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: breeze-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: kactivitymanagerd
     architecture: '@OPTION:arch@'
@@ -96,7 +100,7 @@ packages:
       - ki18n
       - kio
       - qtbase6
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -121,6 +125,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: kactivitymanagerd-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: kdecoration
     architecture: '@OPTION:arch@'
@@ -146,7 +154,7 @@ packages:
       - mlibc
       - ki18n
       - qtbase6
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -171,6 +179,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: kdecoration-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: kglobalacceld
     architecture: '@OPTION:arch@'
@@ -205,7 +217,7 @@ packages:
       - libxcb
       - qtbase6
       - xcb-util-keysyms
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -231,6 +243,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: kglobalacceld-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: knighttime
     architecture: '@OPTION:arch@'
@@ -262,7 +278,7 @@ packages:
       - ki18n
       - qtbase6
       - qtpositioning6
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -288,6 +304,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: knighttime-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: kscreenlocker
     architecture: '@OPTION:arch@'
@@ -339,7 +359,7 @@ packages:
       - solid
       - wayland
       - xcb-util-keysyms
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -370,6 +390,10 @@ packages:
       - args: ['cp', '-v', '@SOURCE_ROOT@/extrafiles/pam.d/kde-fingerprint', '@THIS_COLLECT_DIR@/etc/pam.d/']
       - args: ['cp', '-v', '@SOURCE_ROOT@/extrafiles/pam.d/kde', '@THIS_COLLECT_DIR@/etc/pam.d/']
       - args: ['cp', '-v', '@SOURCE_ROOT@/extrafiles/pam.d/kde-smartcard', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: kscreenlocker-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: kwayland
     architecture: '@OPTION:arch@'
@@ -399,7 +423,7 @@ packages:
       - qtwayland6
       - wayland
       - wayland-protocols
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -424,6 +448,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: kwayland-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: kwin
     architecture: '@OPTION:arch@'
@@ -492,7 +520,7 @@ packages:
       - qttools6
       - qtwayland6
       - xwayland
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -519,6 +547,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: kwin-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: layer-shell-qt
     architecture: '@OPTION:arch@'
@@ -548,7 +580,7 @@ packages:
       - qtwayland6
       - wayland
       - wayland-protocols
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -573,6 +605,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: layer-shell-qt-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libkscreen
     architecture: '@OPTION:arch@'
@@ -603,7 +639,7 @@ packages:
       - qttools6
       - qtwayland6
       - wayland
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -627,6 +663,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libkscreen-dbg
+        include: ['/usr/lib/debug/**']
 
   # TODO: We use a stub process implementation here, move to Linux?
   - name: libksysguard
@@ -663,7 +703,7 @@ packages:
       - qtdeclarative6
       - solid
       - zlib
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -687,6 +727,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libksysguard-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libplasma
     architecture: '@OPTION:arch@'
@@ -739,7 +783,7 @@ packages:
       - qtwayland6
       - wayland
       - wayland-protocols
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -764,6 +808,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libplasma-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: plasma5support
     architecture: '@OPTION:arch@'
@@ -803,7 +851,7 @@ packages:
       - qtbase6
       - qtdeclarative6
       - solid
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -829,6 +877,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: plasma5support-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: plasma-activities
     architecture: '@OPTION:arch@'
@@ -857,7 +909,7 @@ packages:
       - kcoreaddons
       - qtbase6
       - qtdeclarative6
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -882,6 +934,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: plasma-activities-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: plasma-activities-stats
     architecture: '@OPTION:arch@'
@@ -908,7 +964,7 @@ packages:
       - kconfig
       - plasma-activities
       - qtbase6
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -933,6 +989,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: plasma-activities-stats-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: plasma-desktop
     architecture: '@OPTION:arch@'
@@ -1004,7 +1064,7 @@ packages:
       - solid
       - sonnet
       - xkeyboard-config
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -1037,6 +1097,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: plasma-desktop-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: plasma-integration
     architecture: '@OPTION:arch@'
@@ -1076,7 +1140,7 @@ packages:
       - kxmlgui
       - qtbase6
       - qtdeclarative6
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -1104,6 +1168,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: plasma-integration-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: plasma-workspace
     architecture: '@OPTION:arch@'
@@ -1211,7 +1279,7 @@ packages:
       - wayland
       - xcb-util
       - xcb-util-image
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -1242,6 +1310,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: plasma-workspace-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: qqc2-breeze-style
     architecture: '@OPTION:arch@'
@@ -1272,7 +1344,7 @@ packages:
       - kirigami
       - qtbase6
       - qtdeclarative6
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -1297,3 +1369,7 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: qqc2-breeze-style-dbg
+        include: ['/usr/lib/debug/**']
