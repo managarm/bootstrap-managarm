@@ -25,7 +25,7 @@ packages:
       - openssl
       - zlib
       - zstd
-    revision: 9
+    revision: 10
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -40,6 +40,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: curl-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: dhcpcd
     labels: [aarch64, riscv64]
@@ -140,7 +144,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -151,6 +155,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: iperf2-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: iperf3
     labels: [aarch64, riscv64]
@@ -183,7 +191,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -194,6 +202,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: iperf3-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: iputils
     labels: [aarch64, riscv64]
@@ -214,27 +226,31 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
-          - 'meson'
-          - 'setup'
-          - '--cross-file'
-          - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
-          - '--prefix=/usr'
-          - '--libdir=lib'
-          - '--buildtype=debugoptimized'
-          - '-DBUILD_HTML_MANS=false'
-          - '-DUSE_CAP=false'
-          - '-DUSE_GETTEXT=false'
-          - '-DSKIP_TESTS=true'
-          - '@THIS_SOURCE_DIR@'
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '-DBUILD_HTML_MANS=false'
+        - '-DUSE_CAP=false'
+        - '-DUSE_GETTEXT=false'
+        - '-DSKIP_TESTS=true'
+        - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: iputils-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: rsync
     architecture: '@OPTION:arch@'
@@ -269,7 +285,7 @@ packages:
       - xxhash
       - zlib
       - zstd
-    revision: 9
+    revision: 10
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -297,6 +313,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: rsync-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: socat
     architecture: '@OPTION:arch@'
@@ -321,7 +341,7 @@ packages:
       - ncurses
       - openssl
       - readline
-    revision: 9
+    revision: 10
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -338,6 +358,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: socat-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: wget
     labels: [aarch64, riscv64]
@@ -364,7 +388,7 @@ packages:
       - mlibc
       - openssl
       - pcre
-    revision: 10
+    revision: 11
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -379,6 +403,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: wget-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: openssh
     labels: [aarch64, riscv64]
@@ -412,7 +440,7 @@ packages:
       - openssl
       - pam
       - zlib
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -466,3 +494,7 @@ packages:
       - args: ['install', '-v', '-m644', '@THIS_SOURCE_DIR@/contrib/ssh-copy-id.1', '@THIS_COLLECT_DIR@/usr/share/man/man1']
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc/pam.d/']
       - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/sshd', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: openssh-dbg
+        include: ['/usr/lib/debug/**']
