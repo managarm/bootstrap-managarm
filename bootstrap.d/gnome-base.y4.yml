@@ -40,12 +40,12 @@ packages:
       - host-glib
     pkgs_required:
       - mlibc
+      - gdk-pixbuf
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
-      - gdk-pixbuf
       - gtk4
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -53,7 +53,7 @@ packages:
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@-goi.cross-file'
         - '--prefix=/usr'
-        - '--buildtype=release'
+        - '--buildtype=debugoptimized'
         - '--wrap-mode=nodownload'
         - !managarm::arch_ite
           arch: [x86_64]
@@ -103,6 +103,10 @@ packages:
           GI_CROSS_LAUNCHER: run-wrapper
           # Path to the introspection data installed by other packages
           GI_GIR_PATH: '@SYSROOT_DIR@/usr/share/gir-1.0'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: gnome-desktop-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: gsettings-desktop-schemas
     architecture: '@OPTION:arch@'
