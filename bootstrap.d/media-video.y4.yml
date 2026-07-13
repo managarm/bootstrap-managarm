@@ -25,17 +25,17 @@ packages:
     pkgs_required:
       - mlibc
       - alsa-lib
-      - libintl
-      - ncurses
-      - systemd
       - dbus
-      - gstreamer
-      - gst-plugins-base
       - glib
+      - gst-plugins-base
+      - gstreamer
       - libcanberra
+      - libintl
       - libpulse
       - libx11
       - libxfixes
+      - ncurses
+      - systemd
     revision: 2
     configure:
       - args:
@@ -113,10 +113,10 @@ packages:
     pkgs_required:
       - mlibc
       - glib
-      - pipewire
       - libintl
-      - systemd
       - lua
+      - pipewire
+      - systemd
     revision: 1
     configure:
       - args:
