@@ -28,7 +28,7 @@ packages:
       - libx11
       - libxpm
       - zlib
-    revision: 14
+    revision: 15
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -40,6 +40,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: ace-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libremines
     architecture: '@OPTION:arch@'
@@ -62,12 +66,13 @@ packages:
     pkgs_required:
       - mlibc
       - qtbase6
-      - qtsvg6
       - qtmultimedia6
-    revision: 16
+      - qtsvg6
+    revision: 17
     configure:
       - args:
         - 'cmake'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_SYSTEM_PROCESSOR=@OPTION:arch@'
@@ -80,3 +85,7 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libremines-dbg
+        include: ['/usr/lib/debug/**']
