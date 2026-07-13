@@ -18,7 +18,7 @@ packages:
     pkgs_required:
       - mlibc
       - libbsd
-    revision: 1
+    revision: 2
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -29,3 +29,7 @@ packages:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/share/man/man1']
       - args: ['cp', '@THIS_BUILD_DIR@/nc', '@THIS_COLLECT_DIR@/usr/bin/nc']
       - args: ['cp', '-r', '@THIS_BUILD_DIR@/nc.1', '@THIS_COLLECT_DIR@/usr/share/man/man1']
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: netcat-dbg
+        include: ['/usr/lib/debug/**']
