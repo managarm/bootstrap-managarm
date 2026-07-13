@@ -18,11 +18,12 @@ packages:
       - host-cmake
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
         - '-GNinja'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '@THIS_SOURCE_DIR@'
@@ -31,6 +32,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: c-ares-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libidn2
     architecture: '@OPTION:arch@'
@@ -65,9 +70,9 @@ packages:
       - host-pkg-config
     pkgs_required:
       - mlibc
-      - libunistring
       - libiconv
-    revision: 14
+      - libunistring
+    revision: 15
     configure:
       # Remove some files from the source directory if they exist.
       - args: |
@@ -107,3 +112,7 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libidn2-dbg
+        include: ['/usr/lib/debug/**']
