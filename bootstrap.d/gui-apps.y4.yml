@@ -21,10 +21,10 @@ packages:
       - wayland-scanner
     pkgs_required:
       - mlibc
+      - libxkbcommon
       - wayland
       - wayland-protocols
-      - libxkbcommon
-    revision: 3
+    revision: 4
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -49,6 +49,10 @@ packages:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/root/.config']
       - args: ['cp', '@THIS_SOURCE_DIR@/havoc.cfg', '@THIS_COLLECT_DIR@/home/managarm/.config/havoc.cfg']
       - args: ['cp', '@THIS_SOURCE_DIR@/havoc.cfg', '@THIS_COLLECT_DIR@/root/.config/havoc.cfg']
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: havoc-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: swaybg
     architecture: '@OPTION:arch@'
@@ -78,7 +82,7 @@ packages:
       - gdk-pixbuf
       - wayland
       - wayland-protocols
-    revision: 4
+    revision: 5
     configure:
       - args:
         - 'meson'
@@ -88,7 +92,7 @@ packages:
         - '--native-file'
         - '@SOURCE_ROOT@/scripts/meson.native-file'
         - '--prefix=/usr'
-        - '--buildtype=release'
+        - '--buildtype=debugoptimized'
         - '-Dman-pages=disabled'
         - '-Dgdk-pixbuf=disabled'
         - '@THIS_SOURCE_DIR@'
@@ -97,6 +101,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: swaybg-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: wlgears
     architecture: '@OPTION:arch@'
@@ -121,11 +129,11 @@ packages:
         program_name: host-pkg-config
     pkgs_required:
       - mlibc
+      - libepoxy
+      - mesa
       - wayland
       - wayland-protocols
-      - mesa
-      - libepoxy
-    revision: 10
+    revision: 11
     configure:
       - args:
         - 'meson'
@@ -144,6 +152,10 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: wlgears-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: wofi
     architecture: '@OPTION:arch@'
@@ -170,7 +182,7 @@ packages:
       - mlibc
       - gtk+-3
       - wayland
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'meson'
@@ -187,4 +199,8 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: wofi-dbg
+        include: ['/usr/lib/debug/**']
 
