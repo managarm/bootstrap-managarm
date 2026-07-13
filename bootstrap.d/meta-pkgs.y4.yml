@@ -19,49 +19,49 @@ packages:
       version: '1.0'
     pkgs_required:
       - mlibc
-      - core-files
-      - tzdata
+      - bash
+      - bzip2
       - ca-certificates
+      - core-files
+      - coreutils
+      - dbus
+      - dhcpcd
+      - diffutils
+      - findutils
+      - gawk
+      - grep
+      - gzip
+      - htop
+      - iana-etc
+      - iproute2
+      - kmscon
+      - less
+      - libgcc
+      - libstdc++
+      - libxcrypt
+      - locale-data
+      - man-db
+      - man-pages-posix
       - managarm-kernel
       - managarm-kernel-uefi
       - managarm-system
       - managarm-system-rs
-      - kmscon
-      - bash
-      - xkeyboard-config
-      - coreutils
-      - vim
       - nano
-      - wget
-      - xbps
-      - grep
-      - sed
-      - gawk
-      - less
-      - tar
-      - bzip2
-      - gzip
-      - which
-      - iana-etc
-      - diffutils
-      - xz-utils
-      - findutils
-      - util-linux
-      - libxcrypt
-      - man-db
-      - man-pages-posix
-      - iproute2
-      - dhcpcd
-      - procps
-      - htop
-      - shadow
-      - dbus
-      - systemd
       - pciutils
+      - procps
+      - sed
+      - shadow
+      - systemd
+      - tar
+      - tzdata
       - usbutils
-      - libgcc
-      - libstdc++
-      - locale-data
+      - util-linux
+      - vim
+      - wget
+      - which
+      - xbps
+      - xkeyboard-config
+      - xz-utils
     revision: 13
     configure: []
     build: []
@@ -81,16 +81,16 @@ packages:
       categories: ['meta-pkgs']
     pkgs_required:
       - base
-      - binutils
-      - gcc
-      - make
-      - patch
-      - m4
-      - nasm
-      - pkg-config
-      - cmake
       - bc
+      - binutils
+      - cmake
+      - gcc
+      - m4
+      - make
       - man-pages-posix
+      - nasm
+      - patch
+      - pkg-config
     revision: 3
     configure: []
     build: []
