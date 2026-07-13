@@ -34,7 +34,7 @@ packages:
       - glib
       - gnutls
       - gsettings-desktop-schemas
-    revision: 11
+    revision: 12
     configure:
       - args:
         - 'meson'
@@ -55,6 +55,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: glib-networking-dbg
+        include: ['/usr/lib/debug/**']
     scripts:
         post_install:
           - args: ['gio-querymodules', '/usr/lib/gio/modules']
@@ -95,7 +99,7 @@ packages:
       - nettle
       - openssl
       - p11-kit
-    revision: 12
+    revision: 13
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -118,6 +122,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: gnutls-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libmbim
     architecture: '@OPTION:arch@'
@@ -141,7 +149,7 @@ packages:
     pkgs_required:
       - mlibc
       - glib
-    revision: 7
+    revision: 8
     configure:
       - args:
         - 'meson'
@@ -163,6 +171,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libmbim-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libmnl
     architecture: '@OPTION:arch@'
@@ -190,7 +202,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -203,6 +215,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libmnl-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libpsl
     architecture: '@OPTION:arch@'
@@ -230,10 +246,10 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
+      - libiconv
       - libidn2
       - libunistring
-      - libiconv
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -252,6 +268,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libpsl-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libsoup
     architecture: '@OPTION:arch@'
@@ -280,7 +300,7 @@ packages:
       - libxml
       - sqlite
       - zlib
-    revision: 9
+    revision: 10
     configure:
       - args:
         - 'meson'
@@ -310,6 +330,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libsoup-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libsoup3
     architecture: '@OPTION:arch@'
@@ -353,7 +377,7 @@ packages:
       - nghttp2
       - sqlite
       - zlib
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'meson'
@@ -409,6 +433,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libsoup3-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: nghttp2
     architecture: '@OPTION:arch@'
@@ -442,7 +470,7 @@ packages:
       - libxml
       - openssl
       - zlib
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -462,6 +490,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: nghttp2-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: webkitgtk
     architecture: '@OPTION:arch@'
