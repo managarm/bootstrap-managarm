@@ -27,7 +27,7 @@ packages:
       - pcre2
       - python
       - zlib
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -45,3 +45,7 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: git-dbg
+        include: ['/usr/lib/debug/**']
