@@ -58,14 +58,14 @@ packages:
       - pcre
       - sdl2
       - zlib
-    revision: 4
+    revision: 5
     configure:
       - args:
         - 'cmake'
         - '-GNinja'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
-        - '-DCMAKE_BUILD_TYPE=Release'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '-DFREETYPE_INCLUDEDIR=@SYSROOT_DIR@/usr/include'
         - '-DFREETYPE_LIBRARY=@SYSROOT_DIR@/usr/lib/libfreetype.so'
         - '@THIS_SOURCE_DIR@'
@@ -77,3 +77,7 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: openttd-dbg
+        include: ['/usr/lib/debug/**']
