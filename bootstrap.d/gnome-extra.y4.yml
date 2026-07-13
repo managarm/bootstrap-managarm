@@ -42,7 +42,7 @@ packages:
       - libxml
       - mpc
       - mpfr
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'meson'
@@ -52,7 +52,7 @@ packages:
         - '--native-file'
         - '@SOURCE_ROOT@/scripts/meson.native-file'
         - '--prefix=/usr'
-        - '--buildtype=release'
+        - '--buildtype=debugoptimized'
         - '--wrap-mode=nodownload'
         - '-Dgcalc=true'
         - '-Dgci=true'
@@ -89,6 +89,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: gnome-calculator-dbg
+        include: ['/usr/lib/debug/**']
     scripts:
         post_install:
           - args: ['gtk4-update-icon-cache', '-q', '-t', '-f', '/usr/share/icons/hicolor']
