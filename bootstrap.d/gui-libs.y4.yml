@@ -63,7 +63,7 @@ packages:
       - pango
       - wayland
       - wayland-protocols
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -71,7 +71,7 @@ packages:
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
-        - '--buildtype=release'
+        - '--buildtype=debugoptimized'
         - '--wrap-mode=nodownload'
         - !managarm::arch_ite
           arch: [x86_64]
@@ -124,6 +124,10 @@ packages:
           GI_CROSS_LAUNCHER: run-wrapper
           # Path to the introspection data installed by other packages
           GI_GIR_PATH: '@SYSROOT_DIR@/usr/share/gir-1.0'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: gtk4-dbg
+        include: ['/usr/lib/debug/**']
     scripts:
         post_install:
           - args: ['glib-compile-schemas', '/usr/share/glib-2.0/schemas']
@@ -169,7 +173,7 @@ packages:
       - libxml
       - pango
       - pcre2
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'meson'
@@ -177,7 +181,7 @@ packages:
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
         - '--prefix=/usr'
-        - '--buildtype=release'
+        - '--buildtype=debugoptimized'
         - '--wrap-mode=nodownload'
         - '-Dinstall-tests=false'
         - !managarm::arch_ite
@@ -218,6 +222,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: gtksourceview5-dbg
+        include: ['/usr/lib/debug/**']
     scripts:
         post_install:
           - args: ['gtk4-update-icon-cache', '-q', '-t', '-f', '/usr/share/icons/hicolor']
@@ -260,7 +268,7 @@ packages:
         arch: [x86_64]
         item: gobject-introspection
       - gtk4
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -270,7 +278,7 @@ packages:
         - '--native-file'
         - '@SOURCE_ROOT@/scripts/meson.native-file'
         - '--prefix=/usr'
-        - '--buildtype=release'
+        - '--buildtype=debugoptimized'
         - '--wrap-mode=nodownload'
         - '-Dprofiling=false'
         - !managarm::arch_ite
@@ -312,6 +320,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libadwaita-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libhandy
     architecture: '@OPTION:arch@'
@@ -348,7 +360,7 @@ packages:
         arch: [x86_64]
         item: gobject-introspection
       - gtk+-3
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -356,7 +368,7 @@ packages:
         - '--cross-file'
         - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@-goi.cross-file'
         - '--prefix=/usr'
-        - '--buildtype=release'
+        - '--buildtype=debugoptimized'
         - '--wrap-mode=nodownload'
         - !managarm::arch_ite
           arch: [x86_64]
@@ -416,6 +428,10 @@ packages:
           VALAC: 'cross-valac'
           # Wrapper to add our valadir
           VAPIGEN: 'cross-vapigen'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libhandy-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libwpe
     architecture: '@OPTION:arch@'
@@ -438,9 +454,9 @@ packages:
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
-      - mesa
       - libxkbcommon
-    revision: 3
+      - mesa
+    revision: 4
     configure:
       - args:
         - 'meson'
@@ -458,6 +474,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libwpe-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: wlroots
     architecture: '@OPTION:arch@'
@@ -501,7 +521,7 @@ packages:
       - xcb-util-image
       - xcb-util-wm
       - xwayland
-    revision: 4
+    revision: 5
     configure:
       - args: 'sed -i s#{XBSTRAP_SYSTEM_ROOT}#@SYSROOT_DIR@# @THIS_SOURCE_DIR@/xwayland/meson.build'
       - args:
@@ -522,6 +542,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: wlroots-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: wpebackend-fdo
     architecture: '@OPTION:arch@'
@@ -550,7 +574,7 @@ packages:
       - wayland
       - libepoxy
       - glib
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'meson'
@@ -567,3 +591,7 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: wpebackend-fdo-dbg
+        include: ['/usr/lib/debug/**']
