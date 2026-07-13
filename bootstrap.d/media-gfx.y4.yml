@@ -116,7 +116,7 @@ packages:
     pkgs_required:
       - mlibc
       - libstdc++
-    revision: 13
+    revision: 14
     configure:
       - args:
         - 'cmake'
@@ -129,6 +129,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: graphite2-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: qrencode
     architecture: '@OPTION:arch@'
@@ -156,7 +160,7 @@ packages:
     pkgs_required:
       - mlibc
       - libpng
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -168,3 +172,7 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: qrencode-dbg
+        include: ['/usr/lib/debug/**']

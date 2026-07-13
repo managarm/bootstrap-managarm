@@ -209,7 +209,6 @@ tools:
     install:
       - args: ['ninja', 'install']
 
-
 packages:
   - name: cmake
     architecture: '@OPTION:arch@'
@@ -228,13 +227,13 @@ packages:
       - curl
       - libarchive
       - libexpat
-      - openssl
       - libuv
       - libxml
+      - openssl
       - xz-utils
       - zlib
       - zstd
-    revision: 4
+    revision: 5
     configure:
       - args: ['sed', '-i', '/"lib64"/s/64//', '@THIS_SOURCE_DIR@/Modules/GNUInstallDirs.cmake']
       - args: ['cp', '-f', '@SOURCE_ROOT@/scripts/managarm.cmake', '@THIS_SOURCE_DIR@/Modules/Platform/']
@@ -256,6 +255,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: cmake-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: desktop-file-utils
     architecture: '@OPTION:arch@'
@@ -287,7 +290,7 @@ packages:
     pkgs_required:
       - mlibc
       - glib
-    revision: 8
+    revision: 9
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -298,6 +301,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: desktop-file-utils-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: git-delta
     stability_level: 'broken' # Rustix new version got imported, ignore for now.
@@ -369,7 +376,7 @@ packages:
       - mlibc
       - glib
       - systemd
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -385,6 +392,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: gnome-desktop-testing-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: itstool
     architecture: '@OPTION:arch@'
@@ -429,6 +440,7 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      # No split debug needed, it's just a script
 
   - name: ninja
     architecture: '@OPTION:arch@'
@@ -445,10 +457,11 @@ packages:
       - host-cmake
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_POLICY_VERSION_MINIMUM=3.5'
@@ -460,6 +473,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: ninja-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: pkg-config
     architecture: '@OPTION:arch@'
@@ -469,7 +486,7 @@ packages:
     pkgs_required:
       - mlibc
       - glib
-    revision: 12
+    revision: 13
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -481,6 +498,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: pkg-config-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: vulkan-headers
     architecture: '@OPTION:arch@'
@@ -537,10 +558,14 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     build:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/bin']
       - args: ['@OPTION:arch-triple@-gcc', '-Os', '-s', '@THIS_SOURCE_DIR@/pc.c', '-o', '@THIS_COLLECT_DIR@/usr/bin/pc']
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: pc-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: os-test
     architecture: '@OPTION:arch@'

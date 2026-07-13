@@ -28,7 +28,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -39,6 +39,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: alsa-lib-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libpulse
     architecture: '@OPTION:arch@'
@@ -64,15 +68,15 @@ packages:
       - host-xorg-macros
     pkgs_required:
       - mlibc
-      - libsndfile
-      - systemd
       - dbus
       - glib
       - gtk+-3
+      - libintl
+      - libsndfile
       - libx11
       - libxcb
+      - systemd
       - xorg-proto
-      - libintl
     revision: 1
     configure:
       - args:
@@ -158,10 +162,10 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-      - nasm
-      - libogg
       - libiconv
-    revision: 3
+      - libogg
+      - nasm
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -178,6 +182,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: flac-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: fontconfig
     labels: [aarch64, riscv64]
@@ -216,9 +224,9 @@ packages:
     pkgs_required:
       - mlibc
       - freetype
-      - libxml
       - libiconv
-    revision: 4
+      - libxml
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -236,6 +244,10 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
       - args: ['@SOURCE_ROOT@/scripts/keep-empty-directories.py', '@THIS_COLLECT_DIR@']
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: fontconfig-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: freeglut
     labels: [aarch64, riscv64]
@@ -257,14 +269,15 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
+      - glu
       - libxi
       - mesa
-      - glu
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
         - '-GNinja'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DBUILD_SHARED_LIBS=ON'
@@ -277,6 +290,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: freeglut-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: freetype
     labels: [aarch64, riscv64]
@@ -319,7 +336,7 @@ packages:
       - bzip2
       - libpng
       - zlib
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -333,6 +350,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: freetype-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: giflib
     labels: [aarch64, riscv64]
@@ -353,7 +374,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 12
+    revision: 13
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -363,6 +384,10 @@ packages:
       - args: ['make', 'PREFIX=/usr', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: giflib-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: glew
     architecture: '@OPTION:arch@'
@@ -379,7 +404,7 @@ packages:
       - mlibc
       - glu
       - mesa
-    revision: 12
+    revision: 13
     configure:
       # These two seds lets the build system respect the GCC variable
       - args: ['sed', '-i', 's/CC = cc/CC = $(GCC)/g', '@THIS_SOURCE_DIR@/config/Makefile.linux']
@@ -396,6 +421,10 @@ packages:
           DESTDIR: '@THIS_COLLECT_DIR@'
           GCC: "@OPTION:arch-triple@-gcc"
           M_ARCH: ""
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: glew-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: glu
     labels: [aarch64, riscv64]
@@ -414,7 +443,7 @@ packages:
       - mlibc
       - libstdc++
       - mesa
-    revision: 9
+    revision: 10
     configure:
       - args:
         - 'meson'
@@ -430,6 +459,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: glu-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: graphene
     architecture: '@OPTION:arch@'
@@ -464,7 +497,7 @@ packages:
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
-    revision: 7
+    revision: 8
     configure:
       - args:
         - 'meson'
@@ -504,6 +537,10 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: graphene-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: gst-plugins-bad
     architecture: '@OPTION:arch@'
@@ -548,7 +585,7 @@ packages:
       - vulkan-headers
       - wayland
       - wayland-protocols
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'meson'
@@ -569,6 +606,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: gst-plugins-bad-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: gst-plugins-base
     architecture: '@OPTION:arch@'
@@ -622,7 +663,7 @@ packages:
       - wayland
       - wayland-protocols
       - zlib
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'meson'
@@ -664,6 +705,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: gst-plugins-base-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: gst-plugins-good
     architecture: '@OPTION:arch@'
@@ -703,7 +748,7 @@ packages:
       - nettle
       - wayland
       - wayland-protocols
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'meson'
@@ -722,6 +767,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: gst-plugins-good-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: gstreamer
     architecture: '@OPTION:arch@'
@@ -758,7 +807,7 @@ packages:
       - !managarm::arch_dep
         arch: [x86_64]
         item: gobject-introspection
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'meson'
@@ -804,6 +853,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: gstreamer-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: harfbuzz
     labels: [aarch64, riscv64]
@@ -845,7 +898,7 @@ packages:
       - icu
       - libgcc
       - zlib
-    revision: 4
+    revision: 5
     configure:
       - args:
         - 'meson'
@@ -892,6 +945,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: harfbuzz-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: lcms
     architecture: '@OPTION:arch@'
@@ -925,7 +982,7 @@ packages:
       - mlibc
       - libjpeg-turbo
       - libtiff
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -937,6 +994,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: lcms-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libaom
     architecture: '@OPTION:arch@'
@@ -957,12 +1018,12 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DBUILD_SHARED_LIBS=ON'
         - '-DBUILD_SHARED_LIBS=1'
@@ -983,6 +1044,10 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
       - args: ['rm', '@THIS_COLLECT_DIR@/usr/lib/libaom.a']
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libaom-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libcanberra
     architecture: '@OPTION:arch@'
@@ -1018,7 +1083,7 @@ packages:
       - gtk+-3
       - libtool
       - libvorbis
-    revision: 6
+    revision: 7
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1033,6 +1098,10 @@ packages:
       - args: ['make', 'docdir=@THIS_COLLECT_DIR@/usr/share/doc/libcanberra-0.30', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libcanberra-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libdisplay-info
     labels: [aarch64, riscv64]
@@ -1059,23 +1128,28 @@ packages:
         program_name: host-pkg-config
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
-          - 'meson'
-          - 'setup'
-          - '--native-file'
-          - '@SOURCE_ROOT@/scripts/meson.native-file'
-          - '--cross-file'
-          - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
-          - '--prefix=/usr'
-          - '@THIS_SOURCE_DIR@'
+        - 'meson'
+        - 'setup'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--buildtype=debugoptimized'
+        - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libdisplay-info-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libdmtx
     architecture: '@OPTION:arch@'
@@ -1102,7 +1176,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1114,6 +1188,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libdmtx-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libepoxy
     labels: [aarch64, riscv64]
@@ -1137,24 +1215,29 @@ packages:
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
+      - libx11
       - mesa
       - xorg-proto
-      - libx11
-    revision: 11
+    revision: 12
     configure:
       - args:
-          - 'meson'
-          - 'setup'
-          - '--cross-file'
-          - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
-          - '--prefix=/usr'
-          - '@THIS_SOURCE_DIR@'
+        - 'meson'
+        - 'setup'
+        - '--buildtype=debugoptimized'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '@THIS_SOURCE_DIR@'
     build:
       - args: ['ninja']
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libepoxy-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libglvnd
     labels: [aarch64, riscv64]
@@ -1180,7 +1263,7 @@ packages:
       - mlibc
       - libx11
       - libxext
-    revision: 9
+    revision: 10
     configure:
       - args:
         - 'meson'
@@ -1203,6 +1286,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libglvnd-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libheif
     architecture: '@OPTION:arch@'
@@ -1232,12 +1319,12 @@ packages:
       - libwebp
       - sdl2
       - zlib
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DBUILD_SHARED_LIBS=ON'
         - '-DBUILD_TESTING=OFF'
@@ -1271,6 +1358,10 @@ packages:
       - args: ['mv', '@THIS_COLLECT_DIR@/var/lib/managarm-buildenv/build/system-root/usr/lib/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-heif.so', '@THIS_COLLECT_DIR@/usr/lib/gdk-pixbuf-2.0/2.10.0/loaders/']
       - args: ['rm', '-r', '@THIS_COLLECT_DIR@/var']
       - args: ['@SOURCE_ROOT@/scripts/keep-empty-directories.py', '@THIS_COLLECT_DIR@']
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libheif-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libjpeg-turbo
     labels: [aarch64, riscv64]
@@ -1295,13 +1386,13 @@ packages:
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
-        - '-DCMAKE_BUILD_TYPE=RELEASE'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '-DENABLE_STATIC=FALSE'
         - '-DCMAKE_INSTALL_DOCDIR=/usr/share/doc/libjpeg-turbo-3.1.1'
         - '-DCMAKE_INSTALL_DEFAULT_LIBDIR=lib'
@@ -1314,6 +1405,10 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libjpeg-turbo-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libmodplug
     architecture: '@OPTION:arch@'
@@ -1342,7 +1437,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1353,6 +1448,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libmodplug-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libogg
     architecture: '@OPTION:arch@'
@@ -1381,7 +1480,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1393,6 +1492,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libogg-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libpng
     labels: [aarch64, riscv64]
@@ -1424,7 +1527,7 @@ packages:
     pkgs_required:
       - mlibc
       - zlib
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1442,6 +1545,10 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libpng-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libtiff
     labels: [aarch64, riscv64]
@@ -1471,10 +1578,10 @@ packages:
       - mlibc
       - freeglut
       - libjpeg-turbo
+      - xz-utils
       - zlib
       - zstd
-      - xz-utils
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1495,6 +1602,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libtiff-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libsndfile
     architecture: '@OPTION:arch@'
@@ -1523,12 +1634,12 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-      - flac
-      - opus
-      - libvorbis
-      - sqlite
       - alsa-lib
-    revision: 8
+      - flac
+      - libvorbis
+      - opus
+      - sqlite
+    revision: 9
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1542,6 +1653,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libsndfile-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libtheora
     architecture: '@OPTION:arch@'
@@ -1570,7 +1685,7 @@ packages:
       - mlibc
       - libogg
       - libvorbis
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1590,6 +1705,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libtheora-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libvorbis
     architecture: '@OPTION:arch@'
@@ -1619,7 +1738,7 @@ packages:
     pkgs_required:
       - mlibc
       - libogg
-    revision: 13
+    revision: 14
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1631,6 +1750,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libvorbis-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libvpx
     architecture: '@OPTION:arch@'
@@ -1651,7 +1774,7 @@ packages:
     pkgs_required:
       - mlibc
       - nasm
-    revision: 2
+    revision: 3
     configure:
       # Fix ownership and permission of installed files.
       - args: ['sed', '-i', 's/cp -p/cp/', '@THIS_SOURCE_DIR@/build/make/Makefile']
@@ -1675,6 +1798,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libvpx-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: libwebp
     labels: [aarch64, riscv64]
@@ -1708,7 +1835,7 @@ packages:
       - libpng
       - libtiff
       - sdl2
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1725,6 +1852,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: libwebp-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: mesa
     labels: [aarch64, riscv64]
@@ -1745,22 +1876,22 @@ packages:
     pkgs_required:
       - mlibc
       - libdrm
+      - libexpat
+      - libglvnd
+      - libx11
+      - libxcb
+      - libxdamage
+      - libxext
+      - libxfixes
+      - libxrandr
+      - libxshmfence
+      - libxxf86vm
       - llvm
       - wayland
       - wayland-protocols
       - zlib
-      - libxshmfence
-      - libxrandr
-      - libxdamage
-      - libxxf86vm
-      - libxfixes
-      - libx11
-      - libxext
-      - libxcb
-      - libglvnd
-      - libexpat
       - zstd
-    revision: 3
+    revision: 4
     configure:
       - args: ['cp', '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file', 'meson.cross-file']
       - args:
@@ -1802,6 +1933,10 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: mesa-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: opencolorio
     architecture: '@OPTION:arch@'
@@ -1832,12 +1967,12 @@ packages:
       - openexr
       - pystring
       - yaml-cpp
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DOCIO_BUILD_APPS=OFF' # Blocked on lcms
         - '-DOCIO_BUILD_DOCS=OFF'
@@ -1854,6 +1989,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: opencolorio-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: openjph
     architecture: '@OPTION:arch@'
@@ -1874,12 +2013,12 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DOPENEXR_CXX_STANDARD=17'
         - '-DBUILD_SHARED_LIBS=YES'
@@ -1889,6 +2028,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: openjph-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: openexr
     architecture: '@OPTION:arch@'
@@ -1909,15 +2052,15 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-      - libdeflate
       - imath
+      - libdeflate
       - openjph
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DOPENEXR_CXX_STANDARD=17'
         - '-DBUILD_SHARED_LIBS=YES'
@@ -1941,6 +2084,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: openexr-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: vulkan-loader
     architecture: '@OPTION:arch@'
@@ -1967,11 +2114,12 @@ packages:
       - wayland-protocols
       # This is only required for building.
       - vulkan-headers
-    revision: 8
+    revision: 9
     configure:
       - args:
         - 'cmake'
         - '-GNinja'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DBUILD_TESTS=OFF'
@@ -1987,6 +2135,10 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: vulkan-loader-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: opus
     architecture: '@OPTION:arch@'
@@ -2014,7 +2166,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -2029,6 +2181,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: opus-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: sdl2
     labels: [aarch64, riscv64]
@@ -2068,11 +2224,12 @@ packages:
       - systemd
       - wayland
       - wayland-protocols
-    revision: 4
+    revision: 5
     configure:
       - args:
         - 'cmake'
         - '-GNinja'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DSDL_ALTIVEC=OFF'
@@ -2118,6 +2275,10 @@ packages:
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
         quiet: true
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: sdl2-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: zxing-cpp
     architecture: '@OPTION:arch@'
@@ -2138,11 +2299,12 @@ packages:
       - host-cmake
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
         - '-GNinja'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DZXING_USE_BUNDLED_ZINT=OFF'
@@ -2158,3 +2320,7 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: zxing-cpp-dbg
+        include: ['/usr/lib/debug/**']

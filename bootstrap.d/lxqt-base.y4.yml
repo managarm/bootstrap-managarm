@@ -25,13 +25,13 @@ packages:
       - libx11
       - libxscrnsaver
       - qtbase6
-    revision: 4
+    revision: 5
     configure:
       - args:
         - 'cmake'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/host-qt6'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DBUILD_SHARED_LIBS=ON'
         - '-DBUILD_BACKLIGHT_LINUX_BACKEND=OFF'
@@ -41,6 +41,10 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: liblxqt-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: lxqt-notificationd
     architecture: '@OPTION:arch@'
@@ -68,13 +72,13 @@ packages:
       - liblxqt
       - libqtxdg
       - qtbase6
-    revision: 4
+    revision: 5
     configure:
       - args:
         - 'cmake'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DQT_HOST_PATH=@BUILD_ROOT@/tools/host-qt6'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DBUILD_SHARED_LIBS=ON'
         - '@THIS_SOURCE_DIR@'
@@ -83,3 +87,7 @@ packages:
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: lxqt-notificationd-dbg
+        include: ['/usr/lib/debug/**']

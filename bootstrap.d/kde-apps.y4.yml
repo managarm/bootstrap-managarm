@@ -22,10 +22,7 @@ packages:
       - host-pkg-config
     pkgs_required:
       - mlibc
-      - qtbase6
-      - qt5compat
       - gmp
-      - mpfr
       - kconfig
       - kconfigwidgets
       - kcoreaddons
@@ -35,7 +32,10 @@ packages:
       - knotifications
       - kwidgetsaddons
       - kxmlgui
-    revision: 4
+      - mpfr
+      - qt5compat
+      - qtbase6
+    revision: 5
     configure:
       - args:
         - 'cmake'
@@ -43,7 +43,7 @@ packages:
         - '-DCMAKE_INSTALL_PREFIX=/usr'
         - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
         - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
-        - '-DCMAKE_BUILD_TYPE=Debug'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
         ### from ecm.class
         - '-DQT_MAJOR_VERSION=6'
         - '-DBUILD_TESTING=OFF'
@@ -60,6 +60,10 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: kcalc-dbg
+        include: ['/usr/lib/debug/**']
 
   - name: konsole
     architecture: '@OPTION:arch@'
@@ -106,7 +110,7 @@ packages:
       - qt5compat
       - qtbase6
       - qtmultimedia6
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -131,3 +135,7 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: konsole-dbg
+        include: ['/usr/lib/debug/**']

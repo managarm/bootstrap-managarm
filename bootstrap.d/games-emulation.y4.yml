@@ -26,7 +26,7 @@ packages:
       - libintl
       - sdl2
       - zlib
-    revision: 15
+    revision: 16
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -45,3 +45,7 @@ packages:
               if [ -f @THIS_COLLECT_DIR@/usr/lib/ ]; then
                   rm -rf @THIS_COLLECT_DIR@/usr/lib/
               fi
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: mednafen-dbg
+        include: ['/usr/lib/debug/**']
