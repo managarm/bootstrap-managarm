@@ -432,7 +432,10 @@ class QemuRunner:
         self.proc = await asyncio.create_subprocess_exec(
             qemu,
             *qemu_args,
-            stdout=subprocess.PIPE
+            # Qemu switches stdin to non-blocking.
+            # This is a problem since it may match stdout and we are writing to stdout.
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
         )
         self.launch_time = time.time()
         self.last_io_time = time.time()
@@ -473,10 +476,6 @@ class QemuRunner:
                 break
 
     async def process_stdout(self, *, expect_all, expect_none):
-        loop = asyncio.get_running_loop()
-        w_transport, w_protocol = await loop.connect_write_pipe(asyncio.streams.FlowControlMixin, sys.stdout)
-        writer = asyncio.StreamWriter(w_transport, w_protocol, None, loop)
-
         buf = bytes()
         while True:
             chunk = await self.proc.stdout.read(4096)
@@ -488,9 +487,12 @@ class QemuRunner:
             # Echo the chunk to stdout.
             if self.logfile:
                 self.logfile.write(chunk)
+                self.logfile.flush()
             else:
-                writer.write(chunk)
-                await writer.drain()
+                # Validate that Qemu did not switch to non-blocking mode.
+                assert os.get_blocking(sys.stdout.fileno())
+                sys.stdout.buffer.write(chunk)
+                sys.stdout.buffer.flush()
 
             # Split the chunk into lines, analyze each line.
             buf += chunk
