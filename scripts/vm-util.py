@@ -619,7 +619,9 @@ def do_qemu(args):
         qemu_args += ["-m", args.memory]
 
     qemu_args += ["-name", f"Managarm {args.arch}"]
-    if args.sdl:
+    if args.no_display:
+        qemu_args += ["-display", "none"]
+    elif args.sdl:
         qemu_args += ["-display", "sdl"]
     else:
         qemu_args += ["-display", "gtk,zoom-to-fit=off"]
@@ -925,7 +927,7 @@ def do_qemu(args):
 
     # Add graphics output.
     if args.gfx == "none":
-        qemu_args += ["-vga", "none", "-display", "none"]
+        qemu_args += ["-vga", "none"]
     elif args.gfx == "default":
         if args.arch == "x86_64":
             qemu_args += qemu_virtio_device("virtio-vga", [], args.iommu)
@@ -1113,7 +1115,9 @@ qemu_parser.add_argument(
 qemu_parser.add_argument("--gfx", choices=["bga", "virtio", "vmware", "ramfb", "none"], default="default")
 qemu_parser.add_argument("--ps2", action="store_true")
 qemu_parser.add_argument("--mouse", action="store_true")
-qemu_parser.add_argument("--sdl", action="store_true")
+display_group = qemu_parser.add_mutually_exclusive_group()
+display_group.add_argument("--sdl", action="store_true")
+display_group.add_argument("--no-display", action="store_true")
 qemu_parser.add_argument("--init-launch", type=str, default="weston")
 qemu_parser.add_argument("--device-spec", type=argparse.FileType('r'))
 qemu_parser.add_argument("--pci-passthrough", type=str)
