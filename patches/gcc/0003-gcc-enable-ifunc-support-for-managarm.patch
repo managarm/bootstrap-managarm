@@ -1,0 +1,24 @@
+From 0ad9db4be51275cbadff03f4d3e5f1c4a42c4d43 Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Sat, 16 May 2026 19:01:43 +0200
+Subject: [PATCH 3/3] gcc: enable ifunc support for managarm
+
+---
+ gcc/config.gcc | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/gcc/config.gcc b/gcc/config.gcc
+index dc350422f39..68318a9be72 100644
+--- a/gcc/config.gcc
++++ b/gcc/config.gcc
+@@ -980,6 +980,7 @@ case ${target} in
+   case "${target}" in
+     *-managarm-mlibc*)
+       tmake_file="${tmake_file} t-slibgcc"
++      default_gnu_indirect_function=yes
+       thread_file=posix
+       ;;
+     *-managarm-kernel*)
+-- 
+2.54.0
+
