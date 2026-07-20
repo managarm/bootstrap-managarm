@@ -3409,7 +3409,7 @@ packages:
       - xcb-proto
       - xcb-util-cursor
       - xwayland
-    revision: 9
+    revision: 10
     configure:
       - args:
         - 'meson'

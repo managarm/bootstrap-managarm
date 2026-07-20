@@ -1,7 +1,7 @@
 From 5424f59ee0e3235b0a05e1aa31878a532f02df17 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Mon, 18 May 2026 21:21:09 +0200
-Subject: [PATCH 3/3] HACK: Ignore the timestamp of the config file.
+Subject: [PATCH 3/4] HACK: Ignore the timestamp of the config file.
 
 This is currently broken on Managarm and should be investigated later.
 ---
