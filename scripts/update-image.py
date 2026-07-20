@@ -254,11 +254,17 @@ class MountAction:
                 pass
             run_elevated(["mount", f"{diskdev}{sep}{root_partition}", self.mountpoint])
         elif self.mount_using == "guestfs":
-            # guestfs requires us to specify all mountpoints at once
+            # guestfs requires us to specify all mountpoints at once.
+            # Remap UIDs/GIDs to the calling user so that root-owned files in the image
+            # (notably under /boot and on the FAT ESP) can be modified without elevation.
             args = [
                 "guestmount",
                 "--pid-file",
                 "guestfs.pid",
+                "-o",
+                f"uid={os.getuid()}",
+                "-o",
+                f"gid={os.getgid()}",
                 "-a",
                 self.image,
                 "-m",

@@ -77,6 +77,28 @@ tasks:
     workdir: '@BUILD_ROOT@'
     containerless: true
 
+  # Like make-image but do not use root regardless of mount-using.
+  - name: make-image-rootless
+    pkgs_required:
+      - core-files
+      - limine
+      - managarm-kernel
+      - managarm-kernel-uefi
+      - managarm-system
+    tools_required:
+      - tool: host-limine
+        expose: false
+    tasks_required:
+      - update-initrd
+    args:
+      - '@SOURCE_ROOT@/scripts/update-image.py'
+      - '--triple'
+      - '@OPTION:arch-triple@'
+      - '--mount-using'
+      - 'guestfs'
+    workdir: '@BUILD_ROOT@'
+    containerless: true
+
   - name: remake-image
     pkgs_required:
       - core-files
