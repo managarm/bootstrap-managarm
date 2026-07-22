@@ -13,8 +13,8 @@ sources:
   - name: limine
     subdir: 'ports'
     git: 'https://github.com/Limine-Bootloader/Limine.git'
-    tag: 'v12.5.1'
-    version: '12.5.1'
+    tag: 'v12.5.2'
+    version: '12.5.2'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.16
