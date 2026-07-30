@@ -184,6 +184,30 @@ tasks:
     workdir: '@BUILD_ROOT@'
     containerless: true
 
+  - name: test-image-acpi
+    tools_required:
+      - tool: ovmf
+        expose: false
+    tasks_required:
+      - task: make-image
+        order_only: true
+      - task: remake-image
+        order_only: true
+    args:
+      - '@SOURCE_ROOT@/scripts/vm-util.py'
+      - 'qemu'
+      - '--arch'
+      - '@OPTION:arch@'
+      - '--timeout=1200'
+      - '--io-timeout=300'
+      - '--acpi'
+      - '--expect'
+      - "Starting Wayland user session: \"/usr/share/sddm/scripts/wayland-session\" \"weston --xwayland\""
+    environ:
+      QFLAGS: '-snapshot -display none'
+    workdir: '@BUILD_ROOT@'
+    containerless: true
+
   - name: mlibc-docs
     pkgs_required:
       - mlibc-docs
