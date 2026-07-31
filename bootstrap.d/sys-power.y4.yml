@@ -23,7 +23,7 @@ packages:
       - mlibc
       - libgudev
       - glib
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'meson'

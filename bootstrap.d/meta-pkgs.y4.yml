@@ -62,7 +62,7 @@ packages:
       - xbps
       - xkeyboard-config
       - xz-utils
-    revision: 13
+    revision: 14
     configure: []
     build: []
 
@@ -91,7 +91,7 @@ packages:
       - nasm
       - patch
       - pkg-config
-    revision: 3
+    revision: 4
     configure: []
     build: []
 
@@ -119,6 +119,6 @@ packages:
       - xkill
       - xlsclients
       - xwininfo
-    revision: 3
+    revision: 4
     configure: []
     build: []

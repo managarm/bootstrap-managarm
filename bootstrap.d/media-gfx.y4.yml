@@ -43,7 +43,7 @@ packages:
       - librsvg
       - libjpeg-turbo
       - gnome-desktop
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -116,7 +116,7 @@ packages:
     pkgs_required:
       - mlibc
       - libstdc++
-    revision: 14
+    revision: 15
     configure:
       - args:
         - 'cmake'
@@ -160,7 +160,7 @@ packages:
     pkgs_required:
       - mlibc
       - libpng
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

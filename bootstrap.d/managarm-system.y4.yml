@@ -85,6 +85,7 @@ packages:
       subdir: 'ports'
       git: 'https://github.com/managarm/boot-artifacts.git'
       branch: 'main'
+    revision: 1
     configure:
       - args:
         - 'meson'
@@ -130,6 +131,7 @@ packages:
       - libsmarter
       - uacpi
       - mlibc-headers
+    revision: 2
     configure:
       - args: |
           sed -e 's|_BUILD_ROOT_|@BUILD_ROOT@|' @SOURCE_ROOT@/scripts/meson-kernel-@OPTION:arch-triple@.cross-file \
@@ -218,6 +220,7 @@ packages:
       - freestnd-c-hdrs
       - freestnd-cxx-hdrs
       - uacpi
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -267,7 +270,7 @@ packages:
       - cross-binutils
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args: |
           sed -e 's|_BUILD_ROOT_|@BUILD_ROOT@|' -e 's|_SYSROOT_DIR_|@SYSROOT_DIR@|' @SOURCE_ROOT@/scripts/meson-clang-@OPTION:arch-triple@.cross-file \
@@ -336,6 +339,7 @@ packages:
       - !managarm::arch_dep
         arch: [x86_64]
         item: nvidia-open
+    revision: 2
     configure:
       - args: |
           sed -e 's|_BUILD_ROOT_|@BUILD_ROOT@|' -e 's|_SYSROOT_DIR_|@SYSROOT_DIR@|' @SOURCE_ROOT@/scripts/meson-clang-@OPTION:arch-triple@.cross-file \
@@ -418,7 +422,7 @@ packages:
       - rust-patched-libs
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
         isolate_network: false

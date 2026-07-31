@@ -71,7 +71,7 @@ packages:
       - qtbase6
       - qtdeclarative6
       - qtshadertools6
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -153,7 +153,7 @@ packages:
       - xcb-util-wm
       - zlib
       - zstd
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'cmake'
@@ -261,7 +261,7 @@ packages:
       - qtlanguageserver6
       - qtshadertools6
       - qtsvg6
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -310,7 +310,7 @@ packages:
       - mesa
       - qtbase6
       - zlib
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -354,7 +354,7 @@ packages:
     pkgs_required:
       - mlibc
       - qtbase6
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -397,7 +397,7 @@ packages:
       - qtbase6
       - qtdeclarative6
       - qtpositioning6
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -443,7 +443,7 @@ packages:
       - qtbase6
       - qtdeclarative6
       - qtshadertools6
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -488,7 +488,7 @@ packages:
       - mlibc
       - qtbase6
       - qtdeclarative6
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -530,7 +530,7 @@ packages:
       - mlibc
       - qtbase6
       - qtdeclarative6
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -574,7 +574,7 @@ packages:
       - libxkbcommon
       - mesa
       - qtbase6
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -618,7 +618,7 @@ packages:
       - qtbase6
       - qtdeclarative6
       - qtmultimedia6
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -661,7 +661,7 @@ packages:
       - mlibc
       - qtbase6
       - zlib
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -706,7 +706,7 @@ packages:
       - mlibc
       - qtbase6
       - qtdeclarative6
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -752,7 +752,7 @@ packages:
       - qtbase6
       - qtdeclarative6
       - wayland
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'

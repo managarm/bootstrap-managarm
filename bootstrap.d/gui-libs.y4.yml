@@ -63,7 +63,7 @@ packages:
       - pango
       - wayland
       - wayland-protocols
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -173,7 +173,7 @@ packages:
       - libxml
       - pango
       - pcre2
-    revision: 4
+    revision: 5
     configure:
       - args:
         - 'meson'
@@ -268,7 +268,7 @@ packages:
         arch: [x86_64]
         item: gobject-introspection
       - gtk4
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -360,7 +360,7 @@ packages:
         arch: [x86_64]
         item: gobject-introspection
       - gtk+-3
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'meson'
@@ -456,7 +456,7 @@ packages:
       - mlibc
       - libxkbcommon
       - mesa
-    revision: 4
+    revision: 5
     configure:
       - args:
         - 'meson'
@@ -521,7 +521,7 @@ packages:
       - xcb-util-image
       - xcb-util-wm
       - xwayland
-    revision: 5
+    revision: 6
     configure:
       - args: 'sed -i s#{XBSTRAP_SYSTEM_ROOT}#@SYSROOT_DIR@# @THIS_SOURCE_DIR@/xwayland/meson.build'
       - args:
@@ -574,7 +574,7 @@ packages:
       - wayland
       - libepoxy
       - glib
-    revision: 4
+    revision: 5
     configure:
       - args:
         - 'meson'

@@ -34,7 +34,7 @@ packages:
       - wayland-protocols
       - wlroots
       - xwayland
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'meson'

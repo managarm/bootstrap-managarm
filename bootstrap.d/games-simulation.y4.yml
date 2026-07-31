@@ -9,6 +9,7 @@ tools:
   - name: host-openttd-compile-tools
     architecture: '@OPTION:arch@'
     from_source: openttd
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -58,7 +59,7 @@ packages:
       - pcre
       - sdl2
       - zlib
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'cmake'

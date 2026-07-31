@@ -21,7 +21,7 @@ packages:
       - rust-patched-libs
     pkgs_required:
       - mlibc
-    revision: 8
+    revision: 9
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
         isolate_network: false
@@ -75,7 +75,7 @@ packages:
       - p11-kit
     sources_required:
       - nss
-    revision: 1
+    revision: 2
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args: ['cp', '@THIS_SOURCE_DIR@/../nss/lib/ckfw/builtins/certdata.txt', '@THIS_SOURCE_DIR@']
@@ -116,7 +116,7 @@ packages:
     pkgs_required:
       - mlibc
       - ncurses
-    revision: 11
+    revision: 12
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -157,7 +157,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -203,7 +203,7 @@ packages:
       - wayland
       - yyjson
       - zlib
-    revision: 6
+    revision: 7
     configure:
       - args:
         - 'cmake'
@@ -269,7 +269,7 @@ packages:
     pkgs_required:
       - mlibc
       - ncurses
-    revision: 15
+    revision: 16
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
     build:
@@ -338,7 +338,7 @@ packages:
       - mlibc
       - libevent
       - ncurses
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

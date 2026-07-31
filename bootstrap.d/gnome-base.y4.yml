@@ -45,7 +45,7 @@ packages:
         arch: [x86_64]
         item: gobject-introspection
       - gtk4
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'meson'
@@ -138,7 +138,7 @@ packages:
       - mlibc
       - glib
       - gobject-introspection
-    revision: 5
+    revision: 6
     configure:
       - args: |
               sed -i -r 's:"(/system):"/org/gnome\1:g' @THIS_SOURCE_DIR@/schemas/*.in
@@ -235,7 +235,7 @@ packages:
         item: gobject-introspection
     sources_required:
       - rust-patched-libs
-    revision: 1
+    revision: 2
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
         isolate_network: false
@@ -339,7 +339,7 @@ packages:
         item: gobject-introspection
     sources_required:
       - rust-patched-libs
-    revision: 1
+    revision: 2
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
         isolate_network: false

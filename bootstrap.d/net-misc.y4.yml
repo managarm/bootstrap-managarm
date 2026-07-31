@@ -25,7 +25,7 @@ packages:
       - openssl
       - zlib
       - zstd
-    revision: 10
+    revision: 11
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -68,7 +68,7 @@ packages:
     pkgs_required:
       - mlibc
       - systemd
-    revision: 10
+    revision: 11
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
@@ -144,7 +144,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 2
+    revision: 3
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -191,7 +191,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -226,7 +226,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 4
+    revision: 5
     configure:
       - args:
         - 'meson'
@@ -285,7 +285,7 @@ packages:
       - xxhash
       - zlib
       - zstd
-    revision: 10
+    revision: 11
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -341,7 +341,7 @@ packages:
       - ncurses
       - openssl
       - readline
-    revision: 10
+    revision: 11
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -388,7 +388,7 @@ packages:
       - mlibc
       - openssl
       - pcre
-    revision: 11
+    revision: 12
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -440,7 +440,7 @@ packages:
       - openssl
       - pam
       - zlib
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

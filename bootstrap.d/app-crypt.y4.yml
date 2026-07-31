@@ -72,7 +72,7 @@ packages:
       - gtk+-3
       - libxml
       - openssh
-    revision: 1
+    revision: 2
     configure:
       - args:
           - 'meson'
@@ -175,7 +175,7 @@ packages:
       - libsecret
       - libxml
       - p11-kit
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -279,7 +279,7 @@ packages:
         item: gobject-introspection
       - libgcrypt
       - libxslt
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'meson'
@@ -374,7 +374,7 @@ packages:
       - libffi
       - libtasn
       - systemd
-    revision: 7
+    revision: 8
     configure:
       - args:
         - 'meson'
@@ -423,7 +423,7 @@ packages:
       - openssl
       - qt5compat
       - qtbase6
-    revision: 4
+    revision: 5
     configure:
       - args:
         - 'cmake'

@@ -53,7 +53,7 @@ packages:
       - mlibc
       - qtbase6
       - qtdeclarative6
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'cmake'
@@ -113,7 +113,7 @@ packages:
       - glib
       - itstool
       - libxml
-    revision: 15
+    revision: 16
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -154,7 +154,7 @@ packages:
     pkgs_required:
       - mlibc
       - xorg-util-macros
-    revision: 9
+    revision: 10
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -183,7 +183,7 @@ packages:
       - mlibc
       - libx11
       - xorg-proto
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'meson'
@@ -206,7 +206,7 @@ packages:
     tools_required:
       - system-gcc
       - host-xorg-macros
-    revision: 3
+    revision: 4
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

@@ -76,7 +76,7 @@ packages:
       - libiconv
       - ncurses
       - readline
-    revision: 19
+    revision: 20
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -130,7 +130,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 5
+    revision: 6
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -182,7 +182,7 @@ packages:
       - gdbm
       - ncurses
       - pcre
-    revision: 7
+    revision: 8
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
