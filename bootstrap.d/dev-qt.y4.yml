@@ -23,6 +23,7 @@ tools:
     from_source: qt6
     revision: 1
     tools_required:
+      - host-llvm-toolchain
       - host-cmake
       - wayland-scanner
     configure:
@@ -38,6 +39,7 @@ tools:
         - '-DFEATURE_xlib=ON'
         - '-DFEATURE_xcb=ON'
         - '-DFEATURE_xcb_xlib=ON'
+        - '-DFEATURE_qdoc=ON'
         - '@THIS_SOURCE_DIR@'
     compile:
       - args: ['cmake', '--build', '.', '--parallel', '@PARALLELISM@']
