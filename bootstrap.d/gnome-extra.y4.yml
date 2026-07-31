@@ -42,7 +42,7 @@ packages:
       - libxml
       - mpc
       - mpfr
-    revision: 6
+    revision: 7
     configure:
       - args:
         - 'meson'

@@ -29,7 +29,7 @@ packages:
       - libportal
       - webkitgtk4
       - desktop-file-utils
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -97,7 +97,7 @@ packages:
       - xz-utils
       - zlib
       - zstd
-    revision: 4
+    revision: 5
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'

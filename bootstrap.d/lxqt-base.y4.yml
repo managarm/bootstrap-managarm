@@ -25,7 +25,7 @@ packages:
       - libx11
       - libxscrnsaver
       - qtbase6
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'cmake'
@@ -72,7 +72,7 @@ packages:
       - liblxqt
       - libqtxdg
       - qtbase6
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'cmake'

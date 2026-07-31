@@ -19,7 +19,7 @@ packages:
     pkgs_required:
       - mlibc
       - python
-    revision: 2
+    revision: 3
     configure:
       # python modules do not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead.

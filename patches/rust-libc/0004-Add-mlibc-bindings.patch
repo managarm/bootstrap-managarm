@@ -1,4 +1,4 @@
-From c4c04af034ecbca4d3d46cae0e65de2f970b0962 Mon Sep 17 00:00:00 2001
+From 719982d2a331cd17bedb69719d2908450be44331 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Fri, 9 Jan 2026 11:39:38 +0100
 Subject: [PATCH 4/4] Add mlibc bindings
@@ -514,5 +514,5 @@ index 2e6b451a9..869399376 100644
          pub use pthread::*;
          pub use unistd::*;
 -- 
-2.52.0
+2.54.0
 

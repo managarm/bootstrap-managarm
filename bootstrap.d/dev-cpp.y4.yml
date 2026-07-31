@@ -42,7 +42,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'meson'
@@ -82,7 +82,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -124,7 +124,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -166,7 +166,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -204,7 +204,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -238,7 +238,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'

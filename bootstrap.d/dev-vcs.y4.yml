@@ -27,7 +27,7 @@ packages:
       - pcre2
       - python
       - zlib
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'meson'

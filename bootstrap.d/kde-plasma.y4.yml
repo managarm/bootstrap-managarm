@@ -40,7 +40,7 @@ packages:
       - qtbase6
       - qtdeclarative6
       - qtsvg6
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -100,7 +100,7 @@ packages:
       - ki18n
       - kio
       - qtbase6
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -154,7 +154,7 @@ packages:
       - mlibc
       - ki18n
       - qtbase6
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -217,7 +217,7 @@ packages:
       - libxcb
       - qtbase6
       - xcb-util-keysyms
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -278,7 +278,7 @@ packages:
       - ki18n
       - qtbase6
       - qtpositioning6
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -359,7 +359,7 @@ packages:
       - solid
       - wayland
       - xcb-util-keysyms
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -423,7 +423,7 @@ packages:
       - qtwayland6
       - wayland
       - wayland-protocols
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -520,7 +520,7 @@ packages:
       - qttools6
       - qtwayland6
       - xwayland
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -580,7 +580,7 @@ packages:
       - qtwayland6
       - wayland
       - wayland-protocols
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -639,7 +639,7 @@ packages:
       - qttools6
       - qtwayland6
       - wayland
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -703,7 +703,7 @@ packages:
       - qtdeclarative6
       - solid
       - zlib
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -783,7 +783,7 @@ packages:
       - qtwayland6
       - wayland
       - wayland-protocols
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -851,7 +851,7 @@ packages:
       - qtbase6
       - qtdeclarative6
       - solid
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -909,7 +909,7 @@ packages:
       - kcoreaddons
       - qtbase6
       - qtdeclarative6
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -964,7 +964,7 @@ packages:
       - kconfig
       - plasma-activities
       - qtbase6
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -1064,7 +1064,7 @@ packages:
       - solid
       - sonnet
       - xkeyboard-config
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -1140,7 +1140,7 @@ packages:
       - kxmlgui
       - qtbase6
       - qtdeclarative6
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
@@ -1279,7 +1279,7 @@ packages:
       - wayland
       - xcb-util
       - xcb-util-image
-    revision: 4
+    revision: 5
     configure:
       - args:
         - 'cmake'
@@ -1344,7 +1344,7 @@ packages:
       - kirigami
       - qtbase6
       - qtdeclarative6
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'cmake'
