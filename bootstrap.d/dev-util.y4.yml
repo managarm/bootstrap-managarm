@@ -608,7 +608,5 @@ packages:
       - args: |
           mkdir -p @THIS_COLLECT_DIR@/opt/os-test/
           cp -r ./ @THIS_COLLECT_DIR@/opt/os-test/
-          echo panic > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/basic/spawn/posix_spawnattr_setschedparam.out
-          echo panic > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/basic/spawn/posix_spawnattr_setschedpolicy.out
           echo inconsistent hangs > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/basic/signal/killpg.out
           rm @THIS_COLLECT_DIR@/opt/os-test/*.xbstrap
