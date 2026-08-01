@@ -171,7 +171,7 @@ packages:
       categories: ['app-arch']
     source:
       subdir: ports
-      url: 'https://ftpmirror.gnu.org/gnu/cpio/cpio-2.15.tar.bz2'
+      url: 'https://ftp.fau.de/gnu/cpio/cpio-2.15.tar.bz2'
       checksum: 'blake2b:ca2aae6a00239be7aff5558a2e62b4fb4b43c2ed7f4d7a23699c958ae10b348c4ebf39233f0dd0242cba895fdac4d0ff3b4e56fefa0b1afe3db41eb6916e0b23'
       format: tar.bz2
       extract_path: 'cpio-2.15'
