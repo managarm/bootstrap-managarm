@@ -1,32 +1,32 @@
-From aea7f7cb181138dbced771090b344b34474f1b69 Mon Sep 17 00:00:00 2001
+From 57e7b54e10a66cc758a6e00873ddd2246e8dc338 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Sun, 31 Mar 2024 19:21:57 +0200
-Subject: [PATCH 1/6] meta: add patched libraries
+Subject: [PATCH 1/5] meta: add patched libraries
 
 ---
  Cargo.lock             | 4 +---
  Cargo.toml             | 2 ++
  library/Cargo.lock     | 4 +---
- library/Cargo.toml     | 1 +
+ library/Cargo.toml     | 2 ++
  library/std/Cargo.toml | 2 +-
  library/std/src/lib.rs | 2 +-
- 6 files changed, 7 insertions(+), 8 deletions(-)
+ 6 files changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/Cargo.lock b/Cargo.lock
-index 2c290b39..5a20ffc2 100644
+index 059b203f..2b00c406 100644
 --- a/Cargo.lock
 +++ b/Cargo.lock
-@@ -2091,9 +2091,7 @@ checksum = "9fa0e2a1fcbe2f6be6c42e342259976206b383122fc152e872795338b5a3f3a7"
+@@ -2214,9 +2214,7 @@ checksum = "9fa0e2a1fcbe2f6be6c42e342259976206b383122fc152e872795338b5a3f3a7"
  
  [[package]]
  name = "libc"
--version = "0.2.174"
+-version = "0.2.183"
 -source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "1171693293099992e19cddea4e8b849964e9846f4acee11b3948bcc337be8776"
-+version = "0.2.175"
+-checksum = "b5b646652bf6661599e1da8901b3b9522896f01e736bad5f723fe7a3a27f899d"
++version = "0.2.189"
  
  [[package]]
- name = "libdbus-sys"
+ name = "libffi"
 diff --git a/Cargo.toml b/Cargo.toml
 index 67c7a9d6..c9892d15 100644
 --- a/Cargo.toml
@@ -38,47 +38,48 @@ index 67c7a9d6..c9892d15 100644
 +[patch.crates-io]
 +libc = { path = '../rust-libc' }
 diff --git a/library/Cargo.lock b/library/Cargo.lock
-index 50fb060f..8352c393 100644
+index 99e97651..db88a08e 100644
 --- a/library/Cargo.lock
 +++ b/library/Cargo.lock
-@@ -139,9 +139,7 @@ dependencies = [
+@@ -146,9 +146,7 @@ dependencies = [
  
  [[package]]
  name = "libc"
--version = "0.2.177"
+-version = "0.2.185"
 -source = "registry+https://github.com/rust-lang/crates.io-index"
--checksum = "2874a2af47a2325c2001a6e6fad9b16a53b802102b528163885171cf92b15976"
-+version = "0.2.175"
+-checksum = "52ff2c0fe9bc6cb6b14a0592c2ff4fa9ceb83eea9db979b0487cd054946a2b8f"
++version = "0.2.189"
  dependencies = [
   "rustc-std-workspace-core",
  ]
 diff --git a/library/Cargo.toml b/library/Cargo.toml
-index e30e6240..a761277b 100644
+index 788c990c..0e4ef72b 100644
 --- a/library/Cargo.toml
 +++ b/library/Cargo.toml
-@@ -59,3 +59,4 @@ rustflags = ["-Cpanic=abort"]
- rustc-std-workspace-core = { path = 'rustc-std-workspace-core' }
- rustc-std-workspace-alloc = { path = 'rustc-std-workspace-alloc' }
- rustc-std-workspace-std = { path = 'rustc-std-workspace-std' }
+@@ -88,3 +88,5 @@ rustc-std-workspace-std = { path = 'rustc-std-workspace-std' }
+ 
+ # See comments in `library/windows-sys/Cargo.toml` for why this is patched
+ windows-sys = { path = 'windows-sys' }
++
 +libc = { path = '../../rust-libc' }
 diff --git a/library/std/Cargo.toml b/library/std/Cargo.toml
-index 685c2cf1..53b60f27 100644
+index 4c433d49..8aa50dfa 100644
 --- a/library/std/Cargo.toml
 +++ b/library/std/Cargo.toml
 @@ -33,7 +33,7 @@ miniz_oxide = { version = "0.8.0", optional = true, default-features = false }
  addr2line = { version = "0.25.0", optional = true, default-features = false }
  
  [target.'cfg(not(all(windows, target_env = "msvc")))'.dependencies]
--libc = { version = "0.2.177", default-features = false, features = [
+-libc = { version = "0.2.185", default-features = false, features = [
 +libc = { path = "../../../rust-libc", default-features = false, features = [
      'rustc-dep-of-std',
  ], public = true }
  
 diff --git a/library/std/src/lib.rs b/library/std/src/lib.rs
-index a8c50cec..548e868c 100644
+index 8b863b07..c558a8e5 100644
 --- a/library/std/src/lib.rs
 +++ b/library/std/src/lib.rs
-@@ -695,7 +695,7 @@ pub mod arch {
+@@ -712,7 +712,7 @@ pub mod arch {
  // Private support modules
  mod panicking;
  
@@ -88,5 +89,5 @@ index a8c50cec..548e868c 100644
  mod backtrace_rs;
  
 -- 
-2.52.0
+2.54.0
 

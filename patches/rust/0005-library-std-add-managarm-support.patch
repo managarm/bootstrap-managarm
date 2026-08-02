@@ -1,0 +1,992 @@
+From cdcdd5bf5f3ff2129f320eb0d8b6d5711399d4da Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Fri, 1 Sep 2023 16:49:14 +0200
+Subject: [PATCH 5/5] library/std: add managarm support
+
+---
+ library/std/build.rs                          |   1 +
+ library/std/src/env.rs                        |   1 +
+ library/std/src/os/managarm/fs.rs             | 129 ++++++++++++++++++
+ library/std/src/os/managarm/mod.rs            |   7 +
+ library/std/src/os/managarm/net.rs            |   8 ++
+ library/std/src/os/managarm/raw.rs            |  19 +++
+ library/std/src/os/mod.rs                     |   4 +-
+ library/std/src/os/net/linux_ext/mod.rs       |   1 +
+ library/std/src/os/net/mod.rs                 |   2 +-
+ library/std/src/os/unix/mod.rs                |   2 +
+ library/std/src/os/unix/net/ancillary.rs      |  16 ++-
+ library/std/src/os/unix/net/datagram.rs       |  14 +-
+ library/std/src/os/unix/net/mod.rs            |   8 +-
+ library/std/src/os/unix/net/stream.rs         |  10 +-
+ library/std/src/os/unix/net/ucred.rs          |   4 +-
+ library/std/src/sys/args/unix.rs              |   1 +
+ library/std/src/sys/env_consts.rs             |  11 ++
+ library/std/src/sys/fd/unix.rs                |   8 ++
+ library/std/src/sys/fs/unix.rs                |  21 ++-
+ library/std/src/sys/fs/unix/dir.rs            |   1 +
+ library/std/src/sys/io/error/unix.rs          |   1 +
+ .../std/src/sys/net/connection/socket/unix.rs |  11 +-
+ library/std/src/sys/paths/unix.rs             |   3 +-
+ library/std/src/sys/process/unix/unix.rs      |   4 +-
+ library/std/src/sys/random/mod.rs             |   2 +-
+ library/std/src/sys/thread/unix.rs            |   3 +-
+ library/unwind/src/lib.rs                     |   4 +
+ 27 files changed, 263 insertions(+), 33 deletions(-)
+ create mode 100644 library/std/src/os/managarm/fs.rs
+ create mode 100644 library/std/src/os/managarm/mod.rs
+ create mode 100644 library/std/src/os/managarm/net.rs
+ create mode 100644 library/std/src/os/managarm/raw.rs
+
+diff --git a/library/std/build.rs b/library/std/build.rs
+index 5f2e441b..8f690804 100644
+--- a/library/std/build.rs
++++ b/library/std/build.rs
+@@ -57,6 +57,7 @@ fn main() {
+         || target_os == "nuttx"
+         || target_os == "cygwin"
+         || target_os == "vexos"
++        || target_os == "managarm"
+ 
+         // See src/bootstrap/src/core/build_steps/synthetic_targets.rs
+         || env::var("RUSTC_BOOTSTRAP_SYNTHETIC_TARGET").is_ok()
+diff --git a/library/std/src/env.rs b/library/std/src/env.rs
+index 047dfbe1..e487c0c8 100644
+--- a/library/std/src/env.rs
++++ b/library/std/src/env.rs
+@@ -1107,6 +1107,7 @@ pub mod consts {
+     /// * `"vita"`
+     /// * `"vxworks"`
+     /// * `"xous"`
++    /// * `"managarm"`
+     ///
+     /// </details>
+     #[stable(feature = "env", since = "1.0.0")]
+diff --git a/library/std/src/os/managarm/fs.rs b/library/std/src/os/managarm/fs.rs
+new file mode 100644
+index 00000000..5a422c95
+--- /dev/null
++++ b/library/std/src/os/managarm/fs.rs
+@@ -0,0 +1,129 @@
++//! Managarm-specific extensions to primitives in the [`std::fs`] module.
++//!
++//! [`std::fs`]: crate::fs
++
++#![stable(feature = "metadata_ext", since = "1.1.0")]
++
++use crate::fs::Metadata;
++use crate::sys::AsInner;
++
++/// OS-specific extensions to [`fs::Metadata`].
++///
++/// [`fs::Metadata`]: crate::fs::Metadata
++#[stable(feature = "metadata_ext", since = "1.1.0")]
++pub trait MetadataExt {
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_dev(&self) -> u64;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_ino(&self) -> u64;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_mode(&self) -> u32;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_nlink(&self) -> u64;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_uid(&self) -> u32;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_gid(&self) -> u32;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_rdev(&self) -> u64;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_size(&self) -> u64;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_atime(&self) -> i64;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_atime_nsec(&self) -> i64;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_mtime(&self) -> i64;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_mtime_nsec(&self) -> i64;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_ctime(&self) -> i64;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_ctime_nsec(&self) -> i64;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_blksize(&self) -> u64;
++
++    #[stable(feature = "metadata_ext2", since = "1.8.0")]
++    fn st_blocks(&self) -> u64;
++}
++
++#[stable(feature = "metadata_ext", since = "1.1.0")]
++impl MetadataExt for Metadata {
++    fn st_dev(&self) -> u64 {
++        self.as_inner().as_inner().st_dev as u64
++    }
++
++    fn st_ino(&self) -> u64 {
++        self.as_inner().as_inner().st_ino as u64
++    }
++
++    fn st_mode(&self) -> u32 {
++        self.as_inner().as_inner().st_mode as u32
++    }
++
++    fn st_nlink(&self) -> u64 {
++        self.as_inner().as_inner().st_nlink as u64
++    }
++
++    fn st_uid(&self) -> u32 {
++        self.as_inner().as_inner().st_uid as u32
++    }
++
++    fn st_gid(&self) -> u32 {
++        self.as_inner().as_inner().st_gid as u32
++    }
++
++    fn st_rdev(&self) -> u64 {
++        self.as_inner().as_inner().st_rdev as u64
++    }
++
++    fn st_size(&self) -> u64 {
++        self.as_inner().as_inner().st_size as u64
++    }
++
++    fn st_atime(&self) -> i64 {
++        self.as_inner().as_inner().st_atime as i64
++    }
++
++    fn st_atime_nsec(&self) -> i64 {
++        self.as_inner().as_inner().st_atime_nsec as i64
++    }
++
++    fn st_mtime(&self) -> i64 {
++        self.as_inner().as_inner().st_mtime as i64
++    }
++
++    fn st_mtime_nsec(&self) -> i64 {
++        self.as_inner().as_inner().st_mtime_nsec as i64
++    }
++
++    fn st_ctime(&self) -> i64 {
++        self.as_inner().as_inner().st_ctime as i64
++    }
++
++    fn st_ctime_nsec(&self) -> i64 {
++        self.as_inner().as_inner().st_ctime_nsec as i64
++    }
++
++    fn st_blksize(&self) -> u64 {
++        self.as_inner().as_inner().st_blksize as u64
++    }
++
++    fn st_blocks(&self) -> u64 {
++        self.as_inner().as_inner().st_blocks as u64
++    }
++}
+diff --git a/library/std/src/os/managarm/mod.rs b/library/std/src/os/managarm/mod.rs
+new file mode 100644
+index 00000000..d2978f3e
+--- /dev/null
++++ b/library/std/src/os/managarm/mod.rs
+@@ -0,0 +1,7 @@
++//! Managarm-specific definitions
++
++#![stable(feature = "raw_ext", since = "1.1.0")]
++
++pub mod fs;
++pub mod net;
++pub mod raw;
+diff --git a/library/std/src/os/managarm/net.rs b/library/std/src/os/managarm/net.rs
+new file mode 100644
+index 00000000..3d94cb14
+--- /dev/null
++++ b/library/std/src/os/managarm/net.rs
+@@ -0,0 +1,8 @@
++//! Managarm-specific networking functionality.
++
++#![stable(feature = "unix_socket_abstract", since = "1.70.0")]
++
++#[stable(feature = "unix_socket_abstract", since = "1.70.0")]
++pub use crate::os::net::linux_ext::addr::SocketAddrExt;
++#[unstable(feature = "unix_socket_ancillary_data", issue = "76915")]
++pub use crate::os::net::linux_ext::socket::UnixSocketExt;
+diff --git a/library/std/src/os/managarm/raw.rs b/library/std/src/os/managarm/raw.rs
+new file mode 100644
+index 00000000..37776a63
+--- /dev/null
++++ b/library/std/src/os/managarm/raw.rs
+@@ -0,0 +1,19 @@
++//! Managarm-specific raw type definitions.
++
++#![stable(feature = "raw_ext", since = "1.1.0")]
++#![deprecated(
++    since = "1.8.0",
++    note = "these type aliases are no longer supported by \
++            the standard library, the `libc` crate on \
++            crates.io should be used instead for the correct \
++            definitions"
++)]
++#![allow(deprecated)]
++
++use crate::os::raw::c_ulong;
++
++#[stable(feature = "pthread_t", since = "1.8.0")]
++pub type pthread_t = c_ulong;
++
++#[stable(feature = "raw_ext", since = "1.1.0")]
++pub use libc::{blkcnt_t, blksize_t, ino_t, nlink_t, off_t, time_t, dev_t, mode_t};
+diff --git a/library/std/src/os/mod.rs b/library/std/src/os/mod.rs
+index 76374402..3a9cc4ab 100644
+--- a/library/std/src/os/mod.rs
++++ b/library/std/src/os/mod.rs
+@@ -155,6 +155,8 @@ pub mod windows {}
+ pub mod l4re;
+ #[cfg(target_os = "macos")]
+ pub mod macos;
++#[cfg(target_os = "managarm")]
++pub mod managarm;
+ #[cfg(target_os = "motor")]
+ pub mod motor;
+ #[cfg(target_os = "netbsd")]
+@@ -194,5 +196,5 @@ pub mod windows {}
+ ))]
+ pub mod fd;
+ 
+-#[cfg(any(target_os = "linux", target_os = "android", target_os = "cygwin", doc))]
++#[cfg(any(target_os = "linux", target_os = "android", target_os = "cygwin", target_os = "managarm", doc))]
+ mod net;
+diff --git a/library/std/src/os/net/linux_ext/mod.rs b/library/std/src/os/net/linux_ext/mod.rs
+index f3f3fdd2..baacbcc7 100644
+--- a/library/std/src/os/net/linux_ext/mod.rs
++++ b/library/std/src/os/net/linux_ext/mod.rs
+@@ -8,6 +8,7 @@
+ #[unstable(feature = "unix_socket_ancillary_data", issue = "76915")]
+ pub(crate) mod socket;
+ 
++#[cfg(not(target_os = "managarm"))]
+ #[stable(feature = "tcp_quickack", since = "1.89.0")]
+ pub(crate) mod tcp;
+ 
+diff --git a/library/std/src/os/net/mod.rs b/library/std/src/os/net/mod.rs
+index 47e69b3a..01237f9f 100644
+--- a/library/std/src/os/net/mod.rs
++++ b/library/std/src/os/net/mod.rs
+@@ -9,5 +9,5 @@
+         all(target_vendor = "fortanix", target_env = "sgx")
+     )
+ )))]
+-#[cfg(any(target_os = "linux", target_os = "android", target_os = "cygwin", doc))]
++#[cfg(any(target_os = "linux", target_os = "android", target_os = "cygwin", target_os = "managarm", doc))]
+ pub(super) mod linux_ext;
+diff --git a/library/std/src/os/unix/mod.rs b/library/std/src/os/unix/mod.rs
+index 78c95727..d465c2ee 100644
+--- a/library/std/src/os/unix/mod.rs
++++ b/library/std/src/os/unix/mod.rs
+@@ -67,6 +67,8 @@ mod platform {
+     pub use crate::os::l4re::*;
+     #[cfg(target_os = "linux")]
+     pub use crate::os::linux::*;
++    #[cfg(target_os = "managarm")]
++    pub use crate::os::managarm::*;
+     #[cfg(target_os = "netbsd")]
+     pub use crate::os::netbsd::*;
+     #[cfg(target_os = "nto")]
+diff --git a/library/std/src/os/unix/net/ancillary.rs b/library/std/src/os/unix/net/ancillary.rs
+index d0984bdf..3a72fd84 100644
+--- a/library/std/src/os/unix/net/ancillary.rs
++++ b/library/std/src/os/unix/net/ancillary.rs
+@@ -195,6 +195,7 @@ fn next(&mut self) -> Option<T> {
+     doc,
+     not(target_os = "android"),
+     not(target_os = "linux"),
++    not(target_os = "managarm"),
+     not(target_os = "netbsd"),
+     not(target_os = "freebsd"),
+     not(target_os = "cygwin"),
+@@ -204,7 +205,7 @@ fn next(&mut self) -> Option<T> {
+ pub struct SocketCred(());
+ 
+ /// Unix credential.
+-#[cfg(any(target_os = "android", target_os = "linux", target_os = "cygwin"))]
++#[cfg(any(target_os = "android", target_os = "linux", target_os = "cygwin", target_os = "managarm"))]
+ #[unstable(feature = "unix_socket_ancillary_data", issue = "76915")]
+ #[derive(Clone)]
+ pub struct SocketCred(libc::ucred);
+@@ -219,8 +220,8 @@ fn next(&mut self) -> Option<T> {
+ #[derive(Clone)]
+ pub struct SocketCred(libc::sockcred2);
+ 
+-#[doc(cfg(any(target_os = "android", target_os = "linux", target_os = "cygwin")))]
+-#[cfg(any(target_os = "android", target_os = "linux", target_os = "cygwin"))]
++#[doc(cfg(any(target_os = "android", target_os = "linux", target_os = "cygwin", target_os = "managarm")))]
++#[cfg(any(target_os = "android", target_os = "linux", target_os = "cygwin", target_os = "managarm"))]
+ impl SocketCred {
+     /// Creates a Unix credential struct.
+     ///
+@@ -408,6 +409,7 @@ fn next(&mut self) -> Option<RawFd> {
+     doc,
+     not(target_os = "android"),
+     not(target_os = "linux"),
++    not(target_os = "managarm"),
+     not(target_os = "netbsd"),
+     not(target_os = "freebsd"),
+     not(target_os = "cygwin"),
+@@ -418,7 +420,7 @@ fn next(&mut self) -> Option<RawFd> {
+ /// This control message contains unix credentials.
+ ///
+ /// The level is equal to `SOL_SOCKET` and the type is equal to `SCM_CREDENTIALS` or `SCM_CREDS`.
+-#[cfg(any(target_os = "android", target_os = "linux", target_os = "cygwin"))]
++#[cfg(any(target_os = "android", target_os = "linux", target_os = "cygwin", target_os = "managarm"))]
+ #[unstable(feature = "unix_socket_ancillary_data", issue = "76915")]
+ pub struct ScmCredentials<'a>(AncillaryDataIter<'a, libc::ucred>);
+ 
+@@ -434,6 +436,7 @@ fn next(&mut self) -> Option<RawFd> {
+     doc,
+     target_os = "android",
+     target_os = "linux",
++    target_os = "managarm",
+     target_os = "netbsd",
+     target_os = "freebsd",
+     target_os = "cygwin",
+@@ -463,6 +466,7 @@ pub enum AncillaryData<'a> {
+         doc,
+         target_os = "android",
+         target_os = "linux",
++        target_os = "managarm",
+         target_os = "netbsd",
+         target_os = "freebsd",
+         target_os = "cygwin",
+@@ -493,6 +497,7 @@ unsafe fn as_rights(data: &'a [u8]) -> Self {
+         doc,
+         target_os = "android",
+         target_os = "linux",
++        target_os = "managarm",
+         target_os = "netbsd",
+         target_os = "freebsd",
+         target_os = "cygwin",
+@@ -513,7 +518,7 @@ fn try_from_cmsghdr(cmsg: &'a libc::cmsghdr) -> Result<Self, AncillaryError> {
+             match (*cmsg).cmsg_level {
+                 libc::SOL_SOCKET => match (*cmsg).cmsg_type {
+                     libc::SCM_RIGHTS => Ok(AncillaryData::as_rights(data)),
+-                    #[cfg(any(target_os = "android", target_os = "linux", target_os = "cygwin"))]
++                    #[cfg(any(target_os = "android", target_os = "linux", target_os = "cygwin", target_os = "managarm"))]
+                     libc::SCM_CREDENTIALS => Ok(AncillaryData::as_credentials(data)),
+                     #[cfg(target_os = "freebsd")]
+                     libc::SCM_CREDS2 => Ok(AncillaryData::as_credentials(data)),
+@@ -734,6 +739,7 @@ pub fn add_fds(&mut self, fds: &[RawFd]) -> bool {
+         doc,
+         target_os = "android",
+         target_os = "linux",
++        target_os = "managarm",
+         target_os = "netbsd",
+         target_os = "freebsd",
+         target_os = "cygwin",
+diff --git a/library/std/src/os/unix/net/datagram.rs b/library/std/src/os/unix/net/datagram.rs
+index beda3700..4467b0b1 100644
+--- a/library/std/src/os/unix/net/datagram.rs
++++ b/library/std/src/os/unix/net/datagram.rs
+@@ -4,6 +4,7 @@
+     target_os = "dragonfly",
+     target_os = "freebsd",
+     target_os = "openbsd",
++    target_os = "managarm",
+     target_os = "netbsd",
+     target_os = "solaris",
+     target_os = "illumos",
+@@ -14,9 +15,9 @@
+ use libc::MSG_NOSIGNAL;
+ 
+ use super::{SocketAddr, sockaddr_un};
+-#[cfg(any(doc, target_os = "android", target_os = "linux", target_os = "cygwin"))]
++#[cfg(any(doc, target_os = "android", target_os = "linux", target_os = "cygwin", target_os = "managarm"))]
+ use super::{SocketAncillary, recv_vectored_with_ancillary_from, send_vectored_with_ancillary_to};
+-#[cfg(any(doc, target_os = "android", target_os = "linux", target_os = "cygwin"))]
++#[cfg(any(doc, target_os = "android", target_os = "linux", target_os = "cygwin", target_os = "managarm"))]
+ use crate::io::{IoSlice, IoSliceMut};
+ use crate::net::Shutdown;
+ use crate::os::unix::io::{AsFd, AsRawFd, BorrowedFd, FromRawFd, IntoRawFd, OwnedFd, RawFd};
+@@ -32,6 +33,7 @@
+     target_os = "dragonfly",
+     target_os = "freebsd",
+     target_os = "openbsd",
++    target_os = "managarm",
+     target_os = "netbsd",
+     target_os = "solaris",
+     target_os = "illumos",
+@@ -433,7 +435,7 @@ pub fn recv(&self, buf: &mut [u8]) -> io::Result<usize> {
+     ///     Ok(())
+     /// }
+     /// ```
+-    #[cfg(any(doc, target_os = "android", target_os = "linux", target_os = "cygwin"))]
++    #[cfg(any(doc, target_os = "android", target_os = "linux", target_os = "cygwin", target_os = "managarm"))]
+     #[unstable(feature = "unix_socket_ancillary_data", issue = "76915")]
+     pub fn recv_vectored_with_ancillary_from(
+         &self,
+@@ -489,7 +491,7 @@ pub fn recv_vectored_with_ancillary_from(
+     ///     Ok(())
+     /// }
+     /// ```
+-    #[cfg(any(doc, target_os = "android", target_os = "linux", target_os = "cygwin"))]
++    #[cfg(any(doc, target_os = "android", target_os = "linux", target_os = "cygwin", target_os = "managarm"))]
+     #[unstable(feature = "unix_socket_ancillary_data", issue = "76915")]
+     pub fn recv_vectored_with_ancillary(
+         &self,
+@@ -630,7 +632,7 @@ pub fn send(&self, buf: &[u8]) -> io::Result<usize> {
+     ///     Ok(())
+     /// }
+     /// ```
+-    #[cfg(any(doc, target_os = "android", target_os = "linux", target_os = "cygwin"))]
++    #[cfg(any(doc, target_os = "android", target_os = "linux", target_os = "cygwin", target_os = "managarm"))]
+     #[unstable(feature = "unix_socket_ancillary_data", issue = "76915")]
+     pub fn send_vectored_with_ancillary_to<P: AsRef<Path>>(
+         &self,
+@@ -678,7 +680,7 @@ pub fn send_vectored_with_ancillary_to<P: AsRef<Path>>(
+     ///     Ok(())
+     /// }
+     /// ```
+-    #[cfg(any(doc, target_os = "android", target_os = "linux", target_os = "cygwin"))]
++    #[cfg(any(doc, target_os = "android", target_os = "linux", target_os = "cygwin", target_os = "managarm"))]
+     #[unstable(feature = "unix_socket_ancillary_data", issue = "76915")]
+     pub fn send_vectored_with_ancillary(
+         &self,
+diff --git a/library/std/src/os/unix/net/mod.rs b/library/std/src/os/unix/net/mod.rs
+index a44b23a7..5d380a88 100644
+--- a/library/std/src/os/unix/net/mod.rs
++++ b/library/std/src/os/unix/net/mod.rs
+@@ -4,8 +4,8 @@
+ #![stable(feature = "unix_socket", since = "1.10.0")]
+ 
+ mod addr;
+-#[doc(cfg(any(target_os = "android", target_os = "linux", target_os = "cygwin")))]
+-#[cfg(any(doc, target_os = "android", target_os = "linux", target_os = "cygwin"))]
++#[doc(cfg(any(target_os = "android", target_os = "linux", target_os = "cygwin", target_os = "managarm")))]
++#[cfg(any(doc, target_os = "android", target_os = "linux", target_os = "cygwin", target_os = "managarm"))]
+ mod ancillary;
+ mod datagram;
+ mod listener;
+@@ -17,6 +17,7 @@
+     target_os = "linux",
+     target_os = "dragonfly",
+     target_os = "freebsd",
++    target_os = "managarm",
+     target_os = "netbsd",
+     target_os = "openbsd",
+     target_os = "nto",
+@@ -27,7 +28,7 @@
+ 
+ #[stable(feature = "unix_socket", since = "1.10.0")]
+ pub use self::addr::*;
+-#[cfg(any(doc, target_os = "android", target_os = "linux", target_os = "cygwin"))]
++#[cfg(any(doc, target_os = "android", target_os = "linux", target_os = "cygwin", target_os = "managarm"))]
+ #[unstable(feature = "unix_socket_ancillary_data", issue = "76915")]
+ pub use self::ancillary::*;
+ #[stable(feature = "unix_socket", since = "1.10.0")]
+@@ -41,6 +42,7 @@
+     target_os = "linux",
+     target_os = "dragonfly",
+     target_os = "freebsd",
++    target_os = "managarm",
+     target_os = "netbsd",
+     target_os = "openbsd",
+     target_os = "nto",
+diff --git a/library/std/src/os/unix/net/stream.rs b/library/std/src/os/unix/net/stream.rs
+index 30124d96..206bdc4f 100644
+--- a/library/std/src/os/unix/net/stream.rs
++++ b/library/std/src/os/unix/net/stream.rs
+@@ -6,7 +6,7 @@
+         target_os = "openbsd", target_os = "netbsd",
+         target_os = "solaris", target_os = "illumos",
+         target_os = "haiku", target_os = "nto",
+-        target_os = "cygwin",
++        target_os = "cygwin", target_os = "managarm",
+     ) => {
+         use libc::MSG_NOSIGNAL;
+     }
+@@ -16,11 +16,12 @@
+ }
+ 
+ use super::{SocketAddr, sockaddr_un};
+-#[cfg(any(doc, target_os = "android", target_os = "linux", target_os = "cygwin"))]
++#[cfg(any(doc, target_os = "android", target_os = "linux", target_os = "cygwin", target_os = "managarm"))]
+ use super::{SocketAncillary, recv_vectored_with_ancillary_from, send_vectored_with_ancillary_to};
+ #[cfg(any(
+     target_os = "android",
+     target_os = "linux",
++    target_os = "managarm",
+     target_os = "dragonfly",
+     target_os = "freebsd",
+     target_os = "netbsd",
+@@ -255,6 +256,7 @@ pub fn peer_addr(&self) -> io::Result<SocketAddr> {
+     #[cfg(any(
+         target_os = "android",
+         target_os = "linux",
++        target_os = "managarm",
+         target_os = "dragonfly",
+         target_os = "freebsd",
+         target_os = "netbsd",
+@@ -551,7 +553,7 @@ pub fn peek(&self, buf: &mut [u8]) -> io::Result<usize> {
+     ///     Ok(())
+     /// }
+     /// ```
+-    #[cfg(any(doc, target_os = "android", target_os = "linux", target_os = "cygwin"))]
++    #[cfg(any(doc, target_os = "android", target_os = "linux", target_os = "cygwin", target_os = "managarm"))]
+     #[unstable(feature = "unix_socket_ancillary_data", issue = "76915")]
+     pub fn recv_vectored_with_ancillary(
+         &self,
+@@ -600,7 +602,7 @@ pub fn recv_vectored_with_ancillary(
+     ///     Ok(())
+     /// }
+     /// ```
+-    #[cfg(any(doc, target_os = "android", target_os = "linux", target_os = "cygwin"))]
++    #[cfg(any(doc, target_os = "android", target_os = "linux", target_os = "cygwin", target_os = "managarm"))]
+     #[unstable(feature = "unix_socket_ancillary_data", issue = "76915")]
+     pub fn send_vectored_with_ancillary(
+         &self,
+diff --git a/library/std/src/os/unix/net/ucred.rs b/library/std/src/os/unix/net/ucred.rs
+index 1395d2ef..a7e6dceb 100644
+--- a/library/std/src/os/unix/net/ucred.rs
++++ b/library/std/src/os/unix/net/ucred.rs
+@@ -33,10 +33,10 @@ pub struct UCred {
+     target_os = "nto"
+ ))]
+ pub(super) use self::impl_bsd::peer_cred;
+-#[cfg(any(target_os = "android", target_os = "linux", target_os = "cygwin"))]
++#[cfg(any(target_os = "android", target_os = "linux", target_os = "cygwin", target_os = "managarm"))]
+ pub(super) use self::impl_linux::peer_cred;
+ 
+-#[cfg(any(target_os = "linux", target_os = "android", target_os = "cygwin"))]
++#[cfg(any(target_os = "linux", target_os = "android", target_os = "cygwin", target_os = "managarm"))]
+ mod impl_linux {
+     use libc::{SO_PEERCRED, SOL_SOCKET, c_void, getsockopt, socklen_t, ucred};
+ 
+diff --git a/library/std/src/sys/args/unix.rs b/library/std/src/sys/args/unix.rs
+index 7a592c2b..642cc37c 100644
+--- a/library/std/src/sys/args/unix.rs
++++ b/library/std/src/sys/args/unix.rs
+@@ -84,6 +84,7 @@ pub fn args() -> Args {
+     target_os = "hurd",
+     target_os = "rtems",
+     target_os = "nuttx",
++    target_env = "mlibc",
+ ))]
+ mod imp {
+     use crate::ffi::c_char;
+diff --git a/library/std/src/sys/env_consts.rs b/library/std/src/sys/env_consts.rs
+index 573f5404..066353b6 100644
+--- a/library/std/src/sys/env_consts.rs
++++ b/library/std/src/sys/env_consts.rs
+@@ -202,6 +202,17 @@ pub mod os {
+     pub const EXE_EXTENSION: &str = "";
+ }
+ 
++#[cfg(target_os = "managarm")]
++pub mod os {
++    pub const FAMILY: &str = "unix";
++    pub const OS: &str = "managarm";
++    pub const DLL_PREFIX: &str = "lib";
++    pub const DLL_SUFFIX: &str = ".so";
++    pub const DLL_EXTENSION: &str = "so";
++    pub const EXE_SUFFIX: &str = "";
++    pub const EXE_EXTENSION: &str = "";
++}
++
+ #[cfg(target_os = "netbsd")]
+ pub mod os {
+     pub const FAMILY: &str = "unix";
+diff --git a/library/std/src/sys/fd/unix.rs b/library/std/src/sys/fd/unix.rs
+index c5e8646d..682e7dd8 100644
+--- a/library/std/src/sys/fd/unix.rs
++++ b/library/std/src/sys/fd/unix.rs
+@@ -66,6 +66,7 @@
+     target_os = "openbsd",
+     target_vendor = "apple",
+     target_os = "cygwin",
++    target_os = "managarm",
+ ))]
+ const fn max_iov() -> usize {
+     libc::IOV_MAX as usize
+@@ -88,6 +89,7 @@ const fn max_iov() -> usize {
+     target_os = "espidf",
+     target_os = "freebsd",
+     target_os = "linux",
++    target_os = "managarm",
+     target_os = "netbsd",
+     target_os = "nuttx",
+     target_os = "nto",
+@@ -217,6 +219,7 @@ pub fn read_buf_at(&self, mut cursor: BorrowedCursor<'_>, offset: u64) -> io::Re
+         target_os = "hurd",
+         target_os = "illumos",
+         target_os = "linux",
++        target_os = "managarm",
+         target_os = "netbsd",
+         target_os = "openbsd", // OpenBSD 2.7
+     ))]
+@@ -242,6 +245,7 @@ pub fn read_vectored_at(&self, bufs: &mut [IoSliceMut<'_>], offset: u64) -> io::
+         target_os = "hurd",
+         target_os = "illumos",
+         target_os = "linux",
++        target_os = "managarm",
+         target_os = "netbsd",
+         target_os = "openbsd",
+         target_vendor = "apple",
+@@ -424,6 +428,7 @@ pub fn write_at(&self, buf: &[u8], offset: u64) -> io::Result<usize> {
+         target_os = "hurd",
+         target_os = "illumos",
+         target_os = "linux",
++        target_os = "managarm",
+         target_os = "netbsd",
+         target_os = "openbsd", // OpenBSD 2.7
+     ))]
+@@ -449,6 +454,7 @@ pub fn write_vectored_at(&self, bufs: &[IoSlice<'_>], offset: u64) -> io::Result
+         target_os = "hurd",
+         target_os = "illumos",
+         target_os = "linux",
++        target_os = "managarm",
+         target_os = "netbsd",
+         target_os = "openbsd",
+         target_vendor = "apple",
+@@ -562,6 +568,7 @@ fn pwritev(
+         target_os = "vxworks",
+         target_os = "nto",
+         target_os = "wasi",
++        target_os = "managarm",
+     )))]
+     pub fn set_cloexec(&self) -> io::Result<()> {
+         unsafe {
+@@ -586,6 +593,7 @@ pub fn set_cloexec(&self) -> io::Result<()> {
+         target_os = "vxworks",
+         target_os = "nto",
+         target_os = "wasi",
++        target_os = "managarm",
+     ))]
+     pub fn set_cloexec(&self) -> io::Result<()> {
+         unsafe {
+diff --git a/library/std/src/sys/fs/unix.rs b/library/std/src/sys/fs/unix.rs
+index a7cb9eba..0701cdaa 100644
+--- a/library/std/src/sys/fs/unix.rs
++++ b/library/std/src/sys/fs/unix.rs
+@@ -15,9 +15,10 @@
+     target_os = "hurd",
+     target_os = "illumos",
+     target_vendor = "apple",
++    target_os = "managarm",
+ ))]
+ use libc::dirfd;
+-#[cfg(any(target_os = "fuchsia", target_os = "illumos", target_vendor = "apple"))]
++#[cfg(any(target_os = "fuchsia", target_os = "illumos", target_vendor = "apple", target_os = "managarm"))]
+ use libc::fstatat as fstatat64;
+ #[cfg(any(all(target_os = "linux", not(target_env = "musl")), target_os = "hurd"))]
+ use libc::fstatat64;
+@@ -324,7 +325,7 @@ fn get_mode(fd: c_int) -> Option<(bool, bool)> {
+ }
+ 
+ fn get_path_from_fd(fd: c_int) -> Option<PathBuf> {
+-    #[cfg(any(target_os = "linux", target_os = "illumos", target_os = "solaris"))]
++    #[cfg(any(target_os = "linux", target_os = "illumos", target_os = "solaris", target_os = "managarm",))]
+     fn get_path(fd: c_int) -> Option<PathBuf> {
+         let mut p = PathBuf::from("/proc/self/fd");
+         p.push(&fd.to_string());
+@@ -391,6 +392,7 @@ fn get_path(fd: c_int) -> Option<PathBuf> {
+         target_os = "netbsd",
+         target_os = "illumos",
+         target_os = "solaris",
++        target_os = "managarm",
+         target_vendor = "apple",
+     )))]
+     fn get_path(_fd: c_int) -> Option<PathBuf> {
+@@ -1057,6 +1059,7 @@ pub fn file_name(&self) -> OsString {
+             target_os = "fuchsia",
+             target_os = "hurd",
+             target_os = "illumos",
++            target_os = "managarm",
+             target_vendor = "apple",
+         ),
+         not(miri) // no dirfd on Miri
+@@ -1088,6 +1091,7 @@ pub fn metadata(&self) -> io::Result<FileAttr> {
+             target_os = "fuchsia",
+             target_os = "hurd",
+             target_os = "illumos",
++            target_os = "managarm",
+             target_vendor = "apple",
+         )),
+         miri // no dirfd on Miri
+@@ -1145,6 +1149,7 @@ pub fn file_type(&self) -> io::Result<FileType> {
+         target_os = "illumos",
+         target_os = "l4re",
+         target_os = "linux",
++        target_os = "managarm",
+         target_os = "nto",
+         target_os = "redox",
+         target_os = "rtems",
+@@ -1420,6 +1425,7 @@ unsafe fn os_datasync(fd: c_int) -> c_int {
+             target_os = "openbsd",
+             target_os = "nto",
+             target_os = "hurd",
++            target_os = "managarm",
+         ))]
+         unsafe fn os_datasync(fd: c_int) -> c_int {
+             libc::fdatasync(fd)
+@@ -1434,6 +1440,7 @@ unsafe fn os_datasync(fd: c_int) -> c_int {
+             target_os = "openbsd",
+             target_os = "nto",
+             target_os = "hurd",
++            target_os = "managarm",
+             target_vendor = "apple",
+         )))]
+         unsafe fn os_datasync(fd: c_int) -> c_int {
+@@ -1451,6 +1458,7 @@ unsafe fn os_datasync(fd: c_int) -> c_int {
+         target_os = "cygwin",
+         target_os = "illumos",
+         target_os = "aix",
++        target_os = "managarm",
+         target_vendor = "apple",
+     ))]
+     pub fn lock(&self) -> io::Result<()> {
+@@ -1478,6 +1486,7 @@ pub fn lock(&self) -> io::Result<()> {
+         target_os = "solaris",
+         target_os = "illumos",
+         target_os = "aix",
++        target_os = "managarm",
+         target_vendor = "apple",
+     )))]
+     pub fn lock(&self) -> io::Result<()> {
+@@ -1494,6 +1503,7 @@ pub fn lock(&self) -> io::Result<()> {
+         target_os = "cygwin",
+         target_os = "illumos",
+         target_os = "aix",
++        target_os = "managarm",
+         target_vendor = "apple",
+     ))]
+     pub fn lock_shared(&self) -> io::Result<()> {
+@@ -1521,6 +1531,7 @@ pub fn lock_shared(&self) -> io::Result<()> {
+         target_os = "solaris",
+         target_os = "illumos",
+         target_os = "aix",
++        target_os = "managarm",
+         target_vendor = "apple",
+     )))]
+     pub fn lock_shared(&self) -> io::Result<()> {
+@@ -1537,6 +1548,7 @@ pub fn lock_shared(&self) -> io::Result<()> {
+         target_os = "cygwin",
+         target_os = "illumos",
+         target_os = "aix",
++        target_os = "managarm",
+         target_vendor = "apple",
+     ))]
+     pub fn try_lock(&self) -> Result<(), TryLockError> {
+@@ -1580,6 +1592,7 @@ pub fn try_lock(&self) -> Result<(), TryLockError> {
+         target_os = "solaris",
+         target_os = "illumos",
+         target_os = "aix",
++        target_os = "managarm",
+         target_vendor = "apple",
+     )))]
+     pub fn try_lock(&self) -> Result<(), TryLockError> {
+@@ -1599,6 +1612,7 @@ pub fn try_lock(&self) -> Result<(), TryLockError> {
+         target_os = "cygwin",
+         target_os = "illumos",
+         target_os = "aix",
++        target_os = "managarm",
+         target_vendor = "apple",
+     ))]
+     pub fn try_lock_shared(&self) -> Result<(), TryLockError> {
+@@ -1642,6 +1656,7 @@ pub fn try_lock_shared(&self) -> Result<(), TryLockError> {
+         target_os = "solaris",
+         target_os = "illumos",
+         target_os = "aix",
++        target_os = "managarm",
+         target_vendor = "apple",
+     )))]
+     pub fn try_lock_shared(&self) -> Result<(), TryLockError> {
+@@ -1661,6 +1676,7 @@ pub fn try_lock_shared(&self) -> Result<(), TryLockError> {
+         target_os = "cygwin",
+         target_os = "illumos",
+         target_os = "aix",
++        target_os = "managarm",
+         target_vendor = "apple",
+     ))]
+     pub fn unlock(&self) -> io::Result<()> {
+@@ -1688,6 +1704,7 @@ pub fn unlock(&self) -> io::Result<()> {
+         target_os = "solaris",
+         target_os = "illumos",
+         target_os = "aix",
++        target_os = "managarm",
+         target_vendor = "apple",
+     )))]
+     pub fn unlock(&self) -> io::Result<()> {
+diff --git a/library/std/src/sys/fs/unix/dir.rs b/library/std/src/sys/fs/unix/dir.rs
+index 094d1bfd..f89a0467 100644
+--- a/library/std/src/sys/fs/unix/dir.rs
++++ b/library/std/src/sys/fs/unix/dir.rs
+@@ -7,6 +7,7 @@
+             target_os = "l4re",
+             target_os = "android",
+             target_os = "hurd",
++            target_env = "mlibc",
+         )
+     ) => {
+         use libc::{open as open64, openat as openat64};
+diff --git a/library/std/src/sys/io/error/unix.rs b/library/std/src/sys/io/error/unix.rs
+index b10343b2..8d154726 100644
+--- a/library/std/src/sys/io/error/unix.rs
++++ b/library/std/src/sys/io/error/unix.rs
+@@ -10,6 +10,7 @@
+             target_os = "fuchsia",
+             target_os = "l4re",
+             target_os = "hurd",
++            target_os = "managarm",
+         ),
+         link_name = "__errno_location"
+     )]
+diff --git a/library/std/src/sys/net/connection/socket/unix.rs b/library/std/src/sys/net/connection/socket/unix.rs
+index 936dd4c9..27dee043 100644
+--- a/library/std/src/sys/net/connection/socket/unix.rs
++++ b/library/std/src/sys/net/connection/socket/unix.rs
+@@ -77,6 +77,7 @@ pub fn new(family: c_int, ty: c_int) -> io::Result<Socket> {
+                 target_os = "cygwin",
+                 target_os = "nto",
+                 target_os = "solaris",
++                target_os = "managarm",
+             ) => {
+                 // On platforms that support it we pass the SOCK_CLOEXEC
+                 // flag to atomically create the socket and set it as
+@@ -120,6 +121,7 @@ pub fn new_pair(fam: c_int, ty: c_int) -> io::Result<(Socket, Socket)> {
+                     target_os = "illumos",
+                     target_os = "linux",
+                     target_os = "hurd",
++                    target_os = "managarm",
+                     target_os = "netbsd",
+                     target_os = "openbsd",
+                     target_os = "cygwin",
+@@ -251,6 +253,7 @@ pub fn accept(&self, storage: *mut sockaddr, len: *mut socklen_t) -> io::Result<
+                 target_os = "illumos",
+                 target_os = "linux",
+                 target_os = "hurd",
++                target_os = "managarm",
+                 target_os = "netbsd",
+                 target_os = "openbsd",
+                 target_os = "cygwin",
+@@ -352,7 +355,7 @@ pub fn recv_from(&self, buf: &mut [u8]) -> io::Result<(usize, SocketAddr)> {
+         self.recv_from_with_flags(buf, 0)
+     }
+ 
+-    #[cfg(any(target_os = "android", target_os = "linux", target_os = "cygwin"))]
++    #[cfg(any(target_os = "android", target_os = "linux", target_os = "cygwin", target_os = "managarm"))]
+     pub fn recv_msg(&self, msg: &mut libc::msghdr) -> io::Result<usize> {
+         let n = cvt(unsafe { libc::recvmsg(self.as_raw_fd(), msg, libc::MSG_CMSG_CLOEXEC) })?;
+         Ok(n as usize)
+@@ -376,7 +379,7 @@ pub fn is_write_vectored(&self) -> bool {
+         self.0.is_write_vectored()
+     }
+ 
+-    #[cfg(any(target_os = "android", target_os = "linux", target_os = "cygwin"))]
++    #[cfg(any(target_os = "android", target_os = "linux", target_os = "cygwin", target_os = "managarm"))]
+     pub fn send_msg(&self, msg: &mut libc::msghdr) -> io::Result<usize> {
+         let n = cvt(unsafe { libc::sendmsg(self.as_raw_fd(), msg, 0) })?;
+         Ok(n as usize)
+@@ -546,12 +549,12 @@ pub fn exclbind(&self) -> io::Result<bool> {
+         Ok(raw != 0)
+     }
+ 
+-    #[cfg(any(target_os = "android", target_os = "linux", target_os = "cygwin"))]
++    #[cfg(any(target_os = "android", target_os = "linux", target_os = "cygwin", target_os = "managarm"))]
+     pub fn set_passcred(&self, passcred: bool) -> io::Result<()> {
+         unsafe { setsockopt(self, libc::SOL_SOCKET, libc::SO_PASSCRED, passcred as libc::c_int) }
+     }
+ 
+-    #[cfg(any(target_os = "android", target_os = "linux", target_os = "cygwin"))]
++    #[cfg(any(target_os = "android", target_os = "linux", target_os = "cygwin", target_os = "managarm"))]
+     pub fn passcred(&self) -> io::Result<bool> {
+         let passcred: libc::c_int =
+             unsafe { getsockopt(self, libc::SOL_SOCKET, libc::SO_PASSCRED)? };
+diff --git a/library/std/src/sys/paths/unix.rs b/library/std/src/sys/paths/unix.rs
+index e0b1aafd..a9125cd8 100644
+--- a/library/std/src/sys/paths/unix.rs
++++ b/library/std/src/sys/paths/unix.rs
+@@ -257,7 +257,8 @@ pub fn current_exe() -> io::Result<PathBuf> {
+     target_os = "hurd",
+     target_os = "android",
+     target_os = "nuttx",
+-    target_os = "emscripten"
++    target_os = "emscripten",
++    target_os = "managarm"
+ ))]
+ pub fn current_exe() -> io::Result<PathBuf> {
+     match crate::fs::read_link("/proc/self/exe") {
+diff --git a/library/std/src/sys/process/unix/unix.rs b/library/std/src/sys/process/unix/unix.rs
+index d476072a..8ccf57e4 100644
+--- a/library/std/src/sys/process/unix/unix.rs
++++ b/library/std/src/sys/process/unix/unix.rs
+@@ -749,7 +749,7 @@ fn drop(&mut self) {
+             if self.get_setsid() {
+                 cfg_select! {
+                     all(target_os = "linux", target_env = "gnu") => {
+-                        flags |= libc::POSIX_SPAWN_SETSID;
++                        flags |= libc::POSIX_SPAWN_SETSID as i32;
+                     }
+                     _ => {
+                         return Ok(None);
+@@ -1202,7 +1202,7 @@ fn signal_string(signal: i32) -> &'static str {
+             )
+         ))]
+         libc::SIGSTKFLT => " (SIGSTKFLT)",
+-        #[cfg(any(target_os = "linux", target_os = "nto", target_os = "cygwin"))]
++        #[cfg(any(target_os = "linux", target_os = "nto", target_os = "cygwin", target_os = "managarm"))]
+         libc::SIGPWR => " (SIGPWR)",
+         #[cfg(any(
+             target_os = "freebsd",
+diff --git a/library/std/src/sys/random/mod.rs b/library/std/src/sys/random/mod.rs
+index 12346ef5..c7d6bfeb 100644
+--- a/library/std/src/sys/random/mod.rs
++++ b/library/std/src/sys/random/mod.rs
+@@ -44,7 +44,7 @@
+         mod hermit;
+         pub use hermit::fill_bytes;
+     }
+-    any(target_os = "horizon", target_os = "cygwin") => {
++    any(target_os = "horizon", target_os = "cygwin", target_os = "managarm") => {
+         // FIXME(horizon): add arc4random_buf to shim-3ds
+         mod getrandom;
+         pub use getrandom::fill_bytes;
+diff --git a/library/std/src/sys/thread/unix.rs b/library/std/src/sys/thread/unix.rs
+index 81ef3958..4a02604f 100644
+--- a/library/std/src/sys/thread/unix.rs
++++ b/library/std/src/sys/thread/unix.rs
+@@ -421,7 +421,8 @@ pub fn set_name(name: &CStr) {
+     target_os = "freebsd",
+     target_os = "dragonfly",
+     target_os = "nuttx",
+-    target_os = "cygwin"
++    target_os = "cygwin",
++    target_os = "managarm",
+ ))]
+ pub fn set_name(name: &CStr) {
+     unsafe {
+diff --git a/library/unwind/src/lib.rs b/library/unwind/src/lib.rs
+index 22568d5f..6b06acee 100644
+--- a/library/unwind/src/lib.rs
++++ b/library/unwind/src/lib.rs
+@@ -214,3 +214,7 @@
+ #[link(name = "unwind", kind = "static", modifiers = "-bundle", cfg(target_feature = "crt-static"))]
+ #[link(name = "unwind", cfg(not(target_feature = "crt-static")))]
+ unsafe extern "C" {}
++
++#[cfg(target_os = "managarm")]
++#[link(name = "gcc_s", cfg(not(target_feature = "crt-static")))]
++unsafe extern "C" {}
+-- 
+2.54.0
+
