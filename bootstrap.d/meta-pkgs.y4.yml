@@ -51,6 +51,7 @@ packages:
       - procps
       - sed
       - shadow
+      - sudo
       - systemd
       - tar
       - tzdata
@@ -62,7 +63,7 @@ packages:
       - xbps
       - xkeyboard-config
       - xz-utils
-    revision: 13
+    revision: 14
     configure: []
     build: []
 
