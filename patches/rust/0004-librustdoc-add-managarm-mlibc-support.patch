@@ -1,0 +1,25 @@
+From 772df4d27b1d68070a33b47086dee6c3f407f0f6 Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Thu, 28 Aug 2025 22:29:53 +0200
+Subject: [PATCH 4/5] librustdoc: add managarm/mlibc support
+
+---
+ src/librustdoc/clean/cfg.rs | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/librustdoc/clean/cfg.rs b/src/librustdoc/clean/cfg.rs
+index 5dc9f17c..b22fe044 100644
+--- a/src/librustdoc/clean/cfg.rs
++++ b/src/librustdoc/clean/cfg.rs
+@@ -593,7 +593,7 @@ fn human_readable_target_env(env: Symbol) -> Option<&'static str> {
+         // tidy-alphabetical-start
+         Gnu => "GNU",
+         MacAbi => "Catalyst",
+-        Mlibc => "Managarm C Library",
++        Mlibc => "mlibc",
+         Msvc => "MSVC",
+         Musl => "musl",
+         Newlib => "Newlib",
+-- 
+2.54.0
+

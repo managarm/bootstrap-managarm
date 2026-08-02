@@ -1,0 +1,1662 @@
+From 446b3ca5b29ad68df4ee05ddf1dbdaf3f9dbf67c Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Mon, 12 Feb 2024 00:32:53 +0100
+Subject: [PATCH 1/2] Add managarm support
+
+---
+ Cargo.toml                                  |   3 +
+ build.rs                                    |   3 +-
+ src/new/common/linux_like/mod.rs            |   3 +-
+ src/new/common/linux_like/pthread.rs        |   8 +-
+ src/new/common/mod.rs                       |   1 +
+ src/new/common/posix/mod.rs                 |   1 +
+ src/new/common/posix/pthread.rs             | 177 +++++--
+ src/new/mlibc/mod.rs                        |   2 +
+ src/new/mlibc/pthread.rs                    |  52 ++
+ src/new/mlibc/unistd.rs                     |   7 +
+ src/new/mod.rs                              |   6 +-
+ src/unix/linux_like/managarm/aarch64/mod.rs |  64 +++
+ src/unix/linux_like/managarm/mod.rs         | 532 ++++++++++++++++++++
+ src/unix/linux_like/managarm/riscv64/mod.rs |  86 ++++
+ src/unix/linux_like/managarm/x86_64/mod.rs  | 110 ++++
+ src/unix/linux_like/mod.rs                  |  38 +-
+ src/unix/mod.rs                             |  19 +-
+ 17 files changed, 1066 insertions(+), 46 deletions(-)
+ create mode 100644 src/new/mlibc/mod.rs
+ create mode 100644 src/new/mlibc/pthread.rs
+ create mode 100644 src/new/mlibc/unistd.rs
+ create mode 100644 src/unix/linux_like/managarm/aarch64/mod.rs
+ create mode 100644 src/unix/linux_like/managarm/mod.rs
+ create mode 100644 src/unix/linux_like/managarm/riscv64/mod.rs
+ create mode 100644 src/unix/linux_like/managarm/x86_64/mod.rs
+
+diff --git a/Cargo.toml b/Cargo.toml
+index 380dd89fb..2cc860cbb 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -94,6 +94,7 @@ targets = [
+     "aarch64-unknown-freebsd",
+     "aarch64-unknown-hermit",
+     "aarch64-unknown-illumos",
++    "aarch64-unknown-managarm-mlibc",
+     "aarch64-unknown-netbsd",
+     "aarch64-unknown-qnx",
+     "aarch64-unknown-openbsd",
+@@ -137,6 +138,7 @@ targets = [
+     "riscv64-wrs-vxworks",
+     "riscv64gc-unknown-freebsd",
+     "riscv64gc-unknown-hermit",
++    "riscv64gc-unknown-managarm-mlibc",
+     "riscv64gc-unknown-none-elf",
+     "riscv64imac-unknown-none-elf",
+     "s390x-unknown-linux-musl",
+@@ -154,6 +156,7 @@ targets = [
+     "x86_64-unknown-hermit",
+     "x86_64-unknown-hurd-gnu",
+     "x86_64-unknown-l4re-uclibc",
++    "x86_64-unknown-managarm-mlibc",
+     "x86_64-unknown-openbsd",
+     "x86_64-wrs-vxworks"
+ ]
+diff --git a/build.rs b/build.rs
+index 67da9c63b..46595c1c7 100644
+--- a/build.rs
++++ b/build.rs
+@@ -47,11 +47,12 @@ const CHECK_CFG_EXTRA: &[(&str, &[&str])] = &[
+         "target_os",
+         &[
+             "switch", "aix", "ohos", "hurd", "rtems", "visionos", "nuttx", "cygwin", "qurt", "qnx",
++            "managarm",
+         ],
+     ),
+     (
+         "target_env",
+-        &["illumos", "wasi", "aix", "ohos", "nto71_iosock"],
++        &["illumos", "wasi", "aix", "ohos", "nto71_iosock", "mlibc"],
+     ),
+     (
+         "target_arch",
+diff --git a/src/new/common/linux_like/mod.rs b/src/new/common/linux_like/mod.rs
+index 9c41fe256..76aa6256d 100644
+--- a/src/new/common/linux_like/mod.rs
++++ b/src/new/common/linux_like/mod.rs
+@@ -4,6 +4,7 @@
+     target_os = "android",
+     target_os = "emscripten",
+     target_os = "l4re",
+-    target_os = "linux"
++    target_os = "linux",
++    target_os = "managarm"
+ ))]
+ pub(crate) mod pthread;
+diff --git a/src/new/common/linux_like/pthread.rs b/src/new/common/linux_like/pthread.rs
+index b54d385f9..dd2eb3665 100644
+--- a/src/new/common/linux_like/pthread.rs
++++ b/src/new/common/linux_like/pthread.rs
+@@ -1,7 +1,7 @@
+ use crate::prelude::*;
+ 
+ extern "C" {
+-    #[cfg(any(target_os = "linux", target_os = "l4re"))]
++    #[cfg(any(target_os = "linux", target_os = "l4re", target_os = "managarm"))]
+     pub fn pthread_getaffinity_np(
+         thread: crate::pthread_t,
+         cpusetsize: size_t,
+@@ -10,16 +10,16 @@ extern "C" {
+ 
+     pub fn pthread_getattr_np(native: crate::pthread_t, attr: *mut crate::pthread_attr_t) -> c_int;
+ 
+-    #[cfg(target_os = "linux")]
++    #[cfg(any(target_os = "linux", target_os = "managarm"))]
+     pub fn pthread_getname_np(thread: crate::pthread_t, name: *mut c_char, len: size_t) -> c_int;
+ 
+-    #[cfg(any(target_os = "linux", target_os = "l4re"))]
++    #[cfg(any(target_os = "linux", target_os = "l4re", target_os = "managarm"))]
+     pub fn pthread_setaffinity_np(
+         thread: crate::pthread_t,
+         cpusetsize: size_t,
+         cpuset: *const crate::cpu_set_t,
+     ) -> c_int;
+ 
+-    #[cfg(any(target_os = "android", target_os = "linux"))]
++    #[cfg(any(target_os = "android", target_os = "linux", target_os = "managarm"))]
+     pub fn pthread_setname_np(thread: crate::pthread_t, name: *const c_char) -> c_int;
+ }
+diff --git a/src/new/common/mod.rs b/src/new/common/mod.rs
+index acb18917c..027b3d94a 100644
+--- a/src/new/common/mod.rs
++++ b/src/new/common/mod.rs
+@@ -23,6 +23,7 @@ pub(crate) mod bsd;
+     target_os = "emscripten",
+     target_os = "l4re",
+     target_os = "linux",
++    target_os = "managarm",
+ ))]
+ pub(crate) mod linux_like;
+ 
+diff --git a/src/new/common/posix/mod.rs b/src/new/common/posix/mod.rs
+index 44ae64a98..10b4c0856 100644
+--- a/src/new/common/posix/mod.rs
++++ b/src/new/common/posix/mod.rs
+@@ -8,6 +8,7 @@
+     target_os = "emscripten",
+     target_os = "l4re",
+     target_os = "linux",
++    target_os = "managarm",
+     target_os = "qurt",
+     target_vendor = "apple",
+ ))]
+diff --git a/src/new/common/posix/pthread.rs b/src/new/common/posix/pthread.rs
+index b50c21fe6..d9d8ef5ef 100644
+--- a/src/new/common/posix/pthread.rs
++++ b/src/new/common/posix/pthread.rs
+@@ -5,14 +5,19 @@
+ use crate::prelude::*;
+ 
+ extern "C" {
+-    #[cfg(any(target_os = "android", target_os = "linux"))]
++    #[cfg(any(target_os = "android", target_os = "linux", target_os = "managarm"))]
+     pub fn pthread_atfork(
+         prepare: Option<unsafe extern "C" fn()>,
+         parent: Option<unsafe extern "C" fn()>,
+         child: Option<unsafe extern "C" fn()>,
+     ) -> c_int;
+ 
+-    #[cfg(any(target_os = "android", target_os = "l4re", target_os = "linux"))]
++    #[cfg(any(
++        target_os = "android",
++        target_os = "l4re",
++        target_os = "linux",
++        target_os = "managarm"
++    ))]
+     pub fn pthread_attr_getguardsize(
+         attr: *const crate::pthread_attr_t,
+         guardsize: *mut size_t,
+@@ -22,6 +27,7 @@ extern "C" {
+         target_os = "android",
+         target_os = "l4re",
+         target_os = "linux",
++        target_os = "managarm",
+         target_vendor = "apple",
+     ))]
+     pub fn pthread_attr_getinheritsched(
+@@ -29,13 +35,23 @@ extern "C" {
+         inheritsched: *mut c_int,
+     ) -> c_int;
+ 
+-    #[cfg(any(target_os = "l4re", target_os = "linux", target_vendor = "apple"))]
++    #[cfg(any(
++        target_os = "l4re",
++        target_os = "linux",
++        target_os = "managarm",
++        target_vendor = "apple"
++    ))]
+     pub fn pthread_attr_getschedparam(
+         attr: *const crate::pthread_attr_t,
+         param: *mut crate::sched_param,
+     ) -> c_int;
+ 
+-    #[cfg(any(target_os = "l4re", target_os = "linux", target_vendor = "apple"))]
++    #[cfg(any(
++        target_os = "l4re",
++        target_os = "linux",
++        target_os = "managarm",
++        target_vendor = "apple"
++    ))]
+     pub fn pthread_attr_getschedpolicy(
+         attr: *const crate::pthread_attr_t,
+         policy: *mut c_int,
+@@ -45,7 +61,8 @@ extern "C" {
+         target_os = "android",
+         target_os = "emscripten",
+         target_os = "linux",
+-        target_os = "l4re"
++        target_os = "l4re",
++        target_os = "managarm",
+     ))]
+     pub fn pthread_attr_getstack(
+         attr: *const crate::pthread_attr_t,
+@@ -53,13 +70,19 @@ extern "C" {
+         stacksize: *mut size_t,
+     ) -> c_int;
+ 
+-    #[cfg(any(target_os = "android", target_os = "l4re", target_os = "linux"))]
++    #[cfg(any(
++        target_os = "android",
++        target_os = "l4re",
++        target_os = "linux",
++        target_os = "managarm"
++    ))]
+     pub fn pthread_attr_setguardsize(attr: *mut crate::pthread_attr_t, guardsize: size_t) -> c_int;
+ 
+     #[cfg(any(
+         target_os = "android",
+         target_os = "l4re",
+         target_os = "linux",
++        target_os = "managarm",
+         target_vendor = "apple"
+     ))]
+     pub fn pthread_attr_setinheritsched(
+@@ -67,19 +90,30 @@ extern "C" {
+         inheritsched: c_int,
+     ) -> c_int;
+ 
+-    #[cfg(any(target_os = "l4re", target_os = "linux", target_vendor = "apple"))]
++    #[cfg(any(
++        target_os = "l4re",
++        target_os = "linux",
++        target_os = "managarm",
++        target_vendor = "apple"
++    ))]
+     pub fn pthread_attr_setschedparam(
+         attr: *mut crate::pthread_attr_t,
+         param: *const crate::sched_param,
+     ) -> c_int;
+ 
+-    #[cfg(any(target_os = "l4re", target_os = "linux", target_vendor = "apple"))]
++    #[cfg(any(
++        target_os = "l4re",
++        target_os = "linux",
++        target_os = "managarm",
++        target_vendor = "apple"
++    ))]
+     pub fn pthread_attr_setschedpolicy(attr: *mut crate::pthread_attr_t, policy: c_int) -> c_int;
+ 
+     #[cfg(any(
+         target_os = "android",
+         target_os = "emscripten",
+         target_os = "linux",
++        target_os = "managarm",
+         target_os = "l4re"
+     ))]
+     pub fn pthread_attr_setstack(
+@@ -88,41 +122,80 @@ extern "C" {
+         stacksize: size_t,
+     ) -> c_int;
+ 
+-    #[cfg(any(target_os = "android", target_os = "l4re", target_os = "linux"))]
++    #[cfg(any(
++        target_os = "android",
++        target_os = "l4re",
++        target_os = "linux",
++        target_os = "managarm"
++    ))]
+     pub fn pthread_barrier_destroy(barrier: *mut crate::pthread_barrier_t) -> c_int;
+ 
+-    #[cfg(any(target_os = "android", target_os = "l4re", target_os = "linux"))]
++    #[cfg(any(
++        target_os = "android",
++        target_os = "l4re",
++        target_os = "linux",
++        target_os = "managarm"
++    ))]
+     pub fn pthread_barrier_init(
+         barrier: *mut crate::pthread_barrier_t,
+         attr: *const crate::pthread_barrierattr_t,
+         count: c_uint,
+     ) -> c_int;
+ 
+-    #[cfg(any(target_os = "android", target_os = "l4re", target_os = "linux"))]
++    #[cfg(any(
++        target_os = "android",
++        target_os = "l4re",
++        target_os = "linux",
++        target_os = "managarm"
++    ))]
+     pub fn pthread_barrier_wait(barrier: *mut crate::pthread_barrier_t) -> c_int;
+ 
+-    #[cfg(any(target_os = "android", target_os = "l4re", target_os = "linux"))]
++    #[cfg(any(
++        target_os = "android",
++        target_os = "l4re",
++        target_os = "linux",
++        target_os = "managarm"
++    ))]
+     pub fn pthread_barrierattr_destroy(attr: *mut crate::pthread_barrierattr_t) -> c_int;
+ 
+-    #[cfg(any(target_os = "android", target_os = "linux"))]
++    #[cfg(any(target_os = "android", target_os = "linux", target_os = "managarm"))]
+     pub fn pthread_barrierattr_getpshared(
+         attr: *const crate::pthread_barrierattr_t,
+         shared: *mut c_int,
+     ) -> c_int;
+ 
+-    #[cfg(any(target_os = "android", target_os = "l4re", target_os = "linux"))]
++    #[cfg(any(
++        target_os = "android",
++        target_os = "l4re",
++        target_os = "linux",
++        target_os = "managarm"
++    ))]
+     pub fn pthread_barrierattr_init(attr: *mut crate::pthread_barrierattr_t) -> c_int;
+ 
+-    #[cfg(any(target_os = "android", target_os = "l4re", target_os = "linux"))]
++    #[cfg(any(
++        target_os = "android",
++        target_os = "l4re",
++        target_os = "linux",
++        target_os = "managarm"
++    ))]
+     pub fn pthread_barrierattr_setpshared(
+         attr: *mut crate::pthread_barrierattr_t,
+         shared: c_int,
+     ) -> c_int;
+ 
+-    #[cfg(any(target_os = "l4re", all(target_os = "linux", not(target_env = "ohos"))))]
++    #[cfg(any(
++        target_os = "l4re",
++        all(target_os = "linux", not(target_env = "ohos")),
++        target_os = "managarm"
++    ))]
+     pub fn pthread_cancel(thread: crate::pthread_t) -> c_int;
+ 
+-    #[cfg(any(target_os = "android", target_os = "emscripten", target_os = "linux",))]
++    #[cfg(any(
++        target_os = "android",
++        target_os = "emscripten",
++        target_os = "linux",
++        target_os = "managarm"
++    ))]
+     pub fn pthread_condattr_getclock(
+         attr: *const crate::pthread_condattr_t,
+         clock_id: *mut crate::clockid_t,
+@@ -132,6 +205,7 @@ extern "C" {
+         target_os = "android",
+         target_os = "l4re",
+         target_os = "linux",
++        target_os = "managarm",
+         target_vendor = "apple",
+     ))]
+     pub fn pthread_condattr_getpshared(
+@@ -139,7 +213,12 @@ extern "C" {
+         pshared: *mut c_int,
+     ) -> c_int;
+ 
+-    #[cfg(any(target_os = "android", target_os = "emscripten", target_os = "linux",))]
++    #[cfg(any(
++        target_os = "android",
++        target_os = "emscripten",
++        target_os = "linux",
++        target_os = "managarm"
++    ))]
+     pub fn pthread_condattr_setclock(
+         attr: *mut crate::pthread_condattr_t,
+         clock_id: crate::clockid_t,
+@@ -149,6 +228,7 @@ extern "C" {
+         target_os = "android",
+         target_os = "emscripten",
+         target_os = "linux",
++        target_os = "managarm",
+         target_os = "l4re",
+         target_vendor = "apple",
+     ))]
+@@ -162,6 +242,7 @@ extern "C" {
+         target_os = "emscripten",
+         target_os = "l4re",
+         target_os = "linux",
++        target_os = "managarm",
+     ))]
+     pub fn pthread_create(
+         native: *mut crate::pthread_t,
+@@ -177,6 +258,7 @@ extern "C" {
+         target_os = "android",
+         target_os = "l4re",
+         target_os = "linux",
++        target_os = "managarm",
+         target_vendor = "apple",
+     ))]
+     pub fn pthread_getschedparam(
+@@ -191,14 +273,20 @@ extern "C" {
+         target_os = "android",
+         target_os = "emscripten",
+         target_os = "l4re",
+-        target_os = "linux"
++        target_os = "linux",
++        target_os = "managarm"
+     ))]
+     pub fn pthread_kill(thread: crate::pthread_t, sig: c_int) -> c_int;
+ 
+     #[cfg(all(target_os = "linux", not(target_env = "ohos")))]
+     pub fn pthread_mutex_consistent(mutex: *mut crate::pthread_mutex_t) -> c_int;
+ 
+-    #[cfg(any(target_os = "android", target_os = "l4re", target_os = "linux"))]
++    #[cfg(any(
++        target_os = "android",
++        target_os = "l4re",
++        target_os = "linux",
++        target_os = "managarm"
++    ))]
+     #[cfg_attr(gnu_time_bits64, link_name = "__pthread_mutex_timedlock64")]
+     #[cfg_attr(musl_redir_time64, link_name = "__pthread_mutex_timedlock_time64")]
+     pub fn pthread_mutex_timedlock(
+@@ -206,7 +294,7 @@ extern "C" {
+         abstime: *const crate::timespec,
+     ) -> c_int;
+ 
+-    #[cfg(target_os = "linux")]
++    #[cfg(any(target_os = "linux", target_os = "managarm"))]
+     pub fn pthread_mutexattr_getprotocol(
+         attr: *const crate::pthread_mutexattr_t,
+         protocol: *mut c_int,
+@@ -216,6 +304,7 @@ extern "C" {
+         target_os = "android",
+         target_os = "l4re",
+         target_os = "linux",
++        target_os = "managarm",
+         target_vendor = "apple",
+     ))]
+     pub fn pthread_mutexattr_getpshared(
+@@ -229,7 +318,7 @@ extern "C" {
+         robustness: *mut c_int,
+     ) -> c_int;
+ 
+-    #[cfg(target_os = "linux")]
++    #[cfg(any(target_os = "linux", target_os = "managarm"))]
+     pub fn pthread_mutexattr_setprotocol(
+         attr: *mut crate::pthread_mutexattr_t,
+         protocol: c_int,
+@@ -240,6 +329,7 @@ extern "C" {
+         target_os = "emscripten",
+         target_os = "linux",
+         target_os = "l4re",
++        target_os = "managarm",
+         target_vendor = "apple",
+     ))]
+     pub fn pthread_mutexattr_setpshared(
+@@ -258,6 +348,7 @@ extern "C" {
+         target_os = "emscripten",
+         target_os = "linux",
+         target_os = "l4re",
++        target_os = "managarm",
+         target_vendor = "apple",
+     ))]
+     pub fn pthread_rwlockattr_getpshared(
+@@ -270,6 +361,7 @@ extern "C" {
+         target_os = "emscripten",
+         target_os = "linux",
+         target_os = "l4re",
++        target_os = "managarm",
+         target_vendor = "apple",
+     ))]
+     pub fn pthread_rwlockattr_setpshared(
+@@ -278,7 +370,7 @@ extern "C" {
+     ) -> c_int;
+ 
+     // FIXME(1.0): These shoul be combined to the version that takes an optional unsafe function.
+-    #[cfg(any(target_os = "l4re", target_os = "linux"))]
++    #[cfg(any(target_os = "l4re", target_os = "linux", target_os = "managarm"))]
+     pub fn pthread_once(control: *mut crate::pthread_once_t, routine: extern "C" fn()) -> c_int;
+     #[cfg(target_vendor = "apple")]
+     pub fn pthread_once(
+@@ -290,6 +382,7 @@ extern "C" {
+         target_os = "android",
+         target_os = "l4re",
+         target_os = "linux",
++        target_os = "managarm",
+         target_vendor = "apple",
+     ))]
+     pub fn pthread_setschedparam(
+@@ -307,7 +400,8 @@ extern "C" {
+         target_os = "android",
+         target_os = "emscripten",
+         target_os = "l4re",
+-        target_os = "linux"
++        target_os = "linux",
++        target_os = "managarm"
+     ))]
+     pub fn pthread_sigmask(
+         how: c_int,
+@@ -315,18 +409,43 @@ extern "C" {
+         oldset: *mut crate::sigset_t,
+     ) -> c_int;
+ 
+-    #[cfg(any(target_os = "android", target_os = "l4re", target_os = "linux"))]
++    #[cfg(any(
++        target_os = "android",
++        target_os = "l4re",
++        target_os = "linux",
++        target_os = "managarm"
++    ))]
+     pub fn pthread_spin_destroy(lock: *mut crate::pthread_spinlock_t) -> c_int;
+ 
+-    #[cfg(any(target_os = "android", target_os = "l4re", target_os = "linux"))]
++    #[cfg(any(
++        target_os = "android",
++        target_os = "l4re",
++        target_os = "linux",
++        target_os = "managarm"
++    ))]
+     pub fn pthread_spin_init(lock: *mut crate::pthread_spinlock_t, pshared: c_int) -> c_int;
+ 
+-    #[cfg(any(target_os = "android", target_os = "l4re", target_os = "linux"))]
++    #[cfg(any(
++        target_os = "android",
++        target_os = "l4re",
++        target_os = "linux",
++        target_os = "managarm"
++    ))]
+     pub fn pthread_spin_lock(lock: *mut crate::pthread_spinlock_t) -> c_int;
+ 
+-    #[cfg(any(target_os = "android", target_os = "l4re", target_os = "linux"))]
++    #[cfg(any(
++        target_os = "android",
++        target_os = "l4re",
++        target_os = "linux",
++        target_os = "managarm"
++    ))]
+     pub fn pthread_spin_trylock(lock: *mut crate::pthread_spinlock_t) -> c_int;
+ 
+-    #[cfg(any(target_os = "android", target_os = "l4re", target_os = "linux"))]
++    #[cfg(any(
++        target_os = "android",
++        target_os = "l4re",
++        target_os = "linux",
++        target_os = "managarm"
++    ))]
+     pub fn pthread_spin_unlock(lock: *mut crate::pthread_spinlock_t) -> c_int;
+ }
+diff --git a/src/new/mlibc/mod.rs b/src/new/mlibc/mod.rs
+new file mode 100644
+index 000000000..99664b12f
+--- /dev/null
++++ b/src/new/mlibc/mod.rs
+@@ -0,0 +1,2 @@
++pub(crate) mod pthread;
++pub(crate) mod unistd;
+diff --git a/src/new/mlibc/pthread.rs b/src/new/mlibc/pthread.rs
+new file mode 100644
+index 000000000..a4bede965
+--- /dev/null
++++ b/src/new/mlibc/pthread.rs
+@@ -0,0 +1,52 @@
++//! Header: `pthread.h`
++
++pub use crate::new::common::linux_like::pthread::{
++    pthread_getaffinity_np,
++    pthread_getattr_np,
++    pthread_getname_np,
++    pthread_setaffinity_np,
++    pthread_setname_np,
++};
++pub use crate::new::common::posix::pthread::{
++    pthread_atfork,
++    pthread_attr_getguardsize,
++    pthread_attr_getinheritsched,
++    pthread_attr_getschedparam,
++    pthread_attr_getschedpolicy,
++    pthread_attr_getstack,
++    pthread_attr_setguardsize,
++    pthread_attr_setinheritsched,
++    pthread_attr_setschedparam,
++    pthread_attr_setschedpolicy,
++    pthread_attr_setstack,
++    pthread_barrier_destroy,
++    pthread_barrier_init,
++    pthread_barrier_wait,
++    pthread_barrierattr_destroy,
++    pthread_barrierattr_getpshared,
++    pthread_barrierattr_init,
++    pthread_barrierattr_setpshared,
++    pthread_cancel,
++    pthread_condattr_getclock,
++    pthread_condattr_getpshared,
++    pthread_condattr_setclock,
++    pthread_condattr_setpshared,
++    pthread_create,
++    pthread_getschedparam,
++    pthread_kill,
++    pthread_mutex_timedlock,
++    pthread_mutexattr_getprotocol,
++    pthread_mutexattr_getpshared,
++    pthread_mutexattr_setprotocol,
++    pthread_mutexattr_setpshared,
++    pthread_once,
++    pthread_rwlockattr_getpshared,
++    pthread_rwlockattr_setpshared,
++    pthread_setschedparam,
++    pthread_sigmask,
++    pthread_spin_destroy,
++    pthread_spin_init,
++    pthread_spin_lock,
++    pthread_spin_trylock,
++    pthread_spin_unlock,
++};
+diff --git a/src/new/mlibc/unistd.rs b/src/new/mlibc/unistd.rs
+new file mode 100644
+index 000000000..8d55ee582
+--- /dev/null
++++ b/src/new/mlibc/unistd.rs
+@@ -0,0 +1,7 @@
++//! Header: `unistd.h`
++
++pub use crate::new::common::posix::unistd::{
++    STDERR_FILENO,
++    STDIN_FILENO,
++    STDOUT_FILENO,
++};
+diff --git a/src/new/mod.rs b/src/new/mod.rs
+index f4387e7aa..bae686daf 100644
+--- a/src/new/mod.rs
++++ b/src/new/mod.rs
+@@ -167,6 +167,9 @@ cfg_if! {
+     } else if #[cfg(target_env = "uclibc")] {
+         mod uclibc;
+         pub(crate) use uclibc::*;
++    } else if #[cfg(target_env = "mlibc")] {
++        mod mlibc;
++        pub(crate) use mlibc::*;
+     }
+ }
+ 
+@@ -249,7 +252,8 @@ cfg_if! {
+             target_os = "android",
+             target_os = "emscripten",
+             target_os = "l4re",
+-            target_os = "linux"
++            target_os = "linux",
++            target_os = "managarm"
+         ))]
+         pub use pthread::*;
+         pub use unistd::*;
+diff --git a/src/unix/linux_like/managarm/aarch64/mod.rs b/src/unix/linux_like/managarm/aarch64/mod.rs
+new file mode 100644
+index 000000000..b0ac8ff57
+--- /dev/null
++++ b/src/unix/linux_like/managarm/aarch64/mod.rs
+@@ -0,0 +1,64 @@
++use crate::prelude::*;
++use crate::{
++    off64_t,
++    off_t,
++};
++
++pub type nlink_t = c_uint;
++pub type blksize_t = c_int;
++
++pub type stat64 = stat;
++
++s! {
++    pub struct stat {
++        pub st_dev: crate::dev_t,
++        pub st_ino: crate::ino_t,
++        pub st_mode: crate::mode_t,
++        pub st_nlink: crate::nlink_t,
++        pub st_uid: crate::uid_t,
++        pub st_gid: crate::gid_t,
++        pub st_rdev: crate::dev_t,
++        __pad1: Padding<crate::dev_t>,
++        pub st_size: off_t,
++        pub st_blksize: crate::blksize_t,
++        __pad2: Padding<c_int>,
++        pub st_blocks: crate::blkcnt_t,
++        pub st_atime: crate::time_t,
++        pub st_atime_nsec: c_long,
++        pub st_mtime: crate::time_t,
++        pub st_mtime_nsec: c_long,
++        pub st_ctime: crate::time_t,
++        pub st_ctime_nsec: c_long,
++        __unused: [c_int; 2],
++    }
++
++    pub struct ucontext_t {
++        pub uc_flags: c_ulong,
++        pub uc_link: *mut ucontext_t,
++        pub uc_stack: crate::stack_t,
++        pub uc_sigmask: crate::sigset_t,
++        pub uc_mcontext: mcontext_t,
++    }
++
++    #[repr(align(16))]
++    pub struct mcontext_t {
++        pub fault_address: c_ulonglong,
++        pub regs: [c_ulonglong; 31],
++        pub sp: c_ulonglong,
++        pub pc: c_ulonglong,
++        pub pstate: c_ulonglong,
++        __reserved: [u64; 512],
++    }
++}
++
++s_no_extra_traits! {
++    #[repr(align(16))]
++    pub struct max_align_t {
++        priv_: [f32; 8],
++    }
++}
++
++pub const O_DIRECTORY: c_int = 0x4000;
++pub const O_NOFOLLOW: c_int = 0x8000;
++pub const O_DIRECT: c_int = 0x10000;
++pub const O_LARGEFILE: c_int = 0x20000;
+diff --git a/src/unix/linux_like/managarm/mod.rs b/src/unix/linux_like/managarm/mod.rs
+new file mode 100644
+index 000000000..d58593d0e
+--- /dev/null
++++ b/src/unix/linux_like/managarm/mod.rs
+@@ -0,0 +1,532 @@
++use crate::prelude::*;
++use crate::{
++    cc_t,
++    gid_t,
++    iovec,
++    pid_t,
++    sockaddr,
++    speed_t,
++    tcflag_t,
++    uid_t,
++};
++
++pub type __u8 = c_uchar;
++pub type __u16 = c_ushort;
++pub type __s16 = c_short;
++pub type __u32 = c_uint;
++pub type __s32 = c_int;
++pub type __u64 = c_ulonglong;
++pub type __s64 = c_longlong;
++pub type blkcnt64_t = i64;
++pub type rlimit64 = crate::rlimit;
++pub type rlim64_t = crate::rlim_t;
++pub type dirent64 = crate::dirent;
++pub type statfs64 = crate::statfs;
++pub type statvfs64 = crate::statvfs;
++pub type idtype_t = c_uint;
++pub type Ioctl = c_ulong;
++pub type pthread_t = *mut c_void;
++pub type off_t = i64;
++pub type off64_t = i64;
++pub type clock_t = crate::c_long;
++pub type time_t = i64;
++pub type socklen_t = crate::c_uint;
++pub type blkcnt_t = i64;
++pub type dev_t = u64;
++pub type fsblkcnt_t = u64;
++pub type fsfilcnt_t = u64;
++pub type ino_t = u64;
++pub type ino64_t = ino_t;
++pub type mode_t = crate::c_uint;
++pub type reclen_t = crate::c_ushort;
++pub type suseconds_t = crate::c_long;
++pub type pthread_key_t = usize;
++pub type Elf64_Addr = u64;
++pub type Elf64_Off = u64;
++pub type Elf64_Half = u16;
++pub type Elf64_Word = u32;
++pub type Elf64_Xword = u64;
++pub type wchar_t = crate::c_int;
++pub type nfds_t = usize;
++pub type greg_t = crate::c_ulong;
++pub type rlim_t = crate::c_ulong;
++
++s! {
++    pub struct siginfo_t {
++        pub si_signo: crate::c_int,
++        pub si_errno: crate::c_int,
++        pub si_code: crate::c_int,
++        pub _pad: [c_int; 29],
++        _align: [u64; 0],
++    }
++
++    #[allow(unpredictable_function_pointer_comparisons)]
++    pub struct sigaction {
++        pub sa_sigaction: crate::sighandler_t,
++        pub sa_flags: c_int,
++        pub sa_restorer: Option<extern "C" fn()>,
++        pub sa_mask: crate::sigset_t,
++    }
++
++    #[repr(align(8))]
++    pub struct pthread_attr_t {
++        pub opaque: u64,
++    }
++
++    #[repr(align(8))]
++    pub struct sigset_t {
++        pub opaque: [u64; 16usize],
++    }
++
++    pub struct stack_t {
++        pub ss_sp: *mut crate::c_void,
++        pub ss_flags: crate::c_int,
++        pub ss_size: usize,
++    }
++
++    #[repr(align(8))]
++    pub struct cpu_set_t {
++        pub opaque: [u64; 16usize],
++    }
++
++    pub struct msghdr {
++        pub msg_name: *mut crate::c_void,
++        pub msg_namelen: socklen_t,
++        pub msg_iov: *mut iovec,
++        pub msg_iovlen: crate::c_int,
++        pub __pad0: crate::c_int,
++        pub msg_control: *mut crate::c_void,
++        pub msg_controllen: socklen_t,
++        pub __pad1: crate::c_int,
++        pub msg_flags: crate::c_int,
++    }
++
++    pub struct cmsghdr {
++        pub cmsg_len: socklen_t,
++        pub __pad: crate::c_int,
++        pub cmsg_level: crate::c_int,
++        pub cmsg_type: crate::c_int,
++    }
++
++    pub struct ucred {
++        pub pid: pid_t,
++        pub uid: uid_t,
++        pub gid: gid_t,
++    }
++
++    #[repr(align(8))]
++    pub struct pthread_barrier_t {
++        pub opaque: [u64; 8usize],
++    }
++
++    #[repr(align(8))]
++    pub struct pthread_barrierattr_t {
++        pub opaque: u64,
++    }
++
++    #[repr(align(8))]
++    pub struct pthread_cond_t {
++        pub opaque: [u64; 8usize],
++    }
++
++    #[repr(align(8))]
++    pub struct pthread_condattr_t {
++        pub opaque: u64,
++    }
++
++    #[repr(align(8))]
++    pub struct pthread_mutex_t {
++        pub opaque: [u64; 8usize],
++    }
++
++    #[repr(align(8))]
++    pub struct pthread_mutexattr_t {
++        pub opaque: u64,
++    }
++
++    #[repr(align(8))]
++    pub struct pthread_rwlock_t {
++        pub opaque: [u64; 8usize],
++    }
++
++    #[repr(align(8))]
++    pub struct pthread_rwlockattr_t {
++        pub opaque: u64,
++    }
++
++    pub struct pthread_once_t {
++        pub __opaque: [crate::c_int; 1usize],
++    }
++
++    #[repr(align(4))]
++    pub struct pthread_spinlock_t {
++        pub opaque: u32,
++    }
++
++    pub struct dirent {
++        pub d_ino: ino_t,
++        pub d_off: off_t,
++        pub d_reclen: reclen_t,
++        pub d_type: crate::c_uchar,
++        pub d_name: [crate::c_char; 256usize],
++    }
++
++    pub struct Elf64_Phdr {
++        pub p_type: Elf64_Word,
++        pub p_flags: Elf64_Word,
++        pub p_offset: Elf64_Off,
++        pub p_vaddr: Elf64_Addr,
++        pub p_paddr: Elf64_Addr,
++        pub p_filesz: Elf64_Xword,
++        pub p_memsz: Elf64_Xword,
++        pub p_align: Elf64_Xword,
++    }
++
++    pub struct dl_phdr_info {
++        pub dlpi_addr: Elf64_Addr,
++        pub dlpi_name: *const crate::c_char,
++        pub dlpi_phdr: *const Elf64_Phdr,
++        pub dlpi_phnum: Elf64_Half,
++        pub dlpi_adds: crate::c_ulonglong,
++        pub dlpi_subs: crate::c_ulonglong,
++        pub dlpi_tls_modid: usize,
++        pub dlpi_tls_data: *mut crate::c_void,
++    }
++
++    #[repr(align(8))]
++    pub struct sched_param {
++        pub sched_priority: crate::c_int,
++        pub __reserved: [u32; 15usize],
++    }
++
++    pub struct termios {
++        pub c_iflag: tcflag_t,
++        pub c_oflag: tcflag_t,
++        pub c_cflag: tcflag_t,
++        pub c_lflag: tcflag_t,
++        pub c_line: cc_t,
++        pub c_cc: [cc_t; 32usize],
++        pub c_ibaud: speed_t,
++        pub c_obaud: speed_t,
++    }
++
++    pub struct passwd {
++        pub pw_name: *mut crate::c_char,
++        pub pw_passwd: *mut crate::c_char,
++        pub pw_uid: uid_t,
++        pub pw_gid: gid_t,
++        pub pw_gecos: *mut crate::c_char,
++        pub pw_dir: *mut crate::c_char,
++        pub pw_shell: *mut crate::c_char,
++    }
++
++    pub struct sem_t {
++        pub __mlibc_count: crate::c_uint,
++    }
++
++    pub struct fsid_t {
++        pub __val: [crate::c_int; 2usize],
++    }
++
++    pub struct statfs {
++        pub f_type: crate::c_ulong,
++        pub f_bsize: crate::c_ulong,
++        pub f_blocks: fsblkcnt_t,
++        pub f_bfree: fsblkcnt_t,
++        pub f_bavail: fsblkcnt_t,
++        pub f_files: fsfilcnt_t,
++        pub f_ffree: fsfilcnt_t,
++        pub f_fsid: fsid_t,
++        pub f_namelen: crate::c_ulong,
++        pub f_frsize: crate::c_ulong,
++        pub f_flags: crate::c_ulong,
++        pub __f_spare: [crate::c_ulong; 4usize],
++    }
++
++    pub struct statvfs {
++        pub f_bsize: crate::c_ulong,
++        pub f_frsize: crate::c_ulong,
++        pub f_blocks: fsblkcnt_t,
++        pub f_bfree: fsblkcnt_t,
++        pub f_bavail: fsblkcnt_t,
++        pub f_files: fsfilcnt_t,
++        pub f_ffree: fsfilcnt_t,
++        pub f_favail: fsfilcnt_t,
++        pub f_fsid: crate::c_ulong,
++        pub f_flag: crate::c_ulong,
++        pub f_namemax: crate::c_ulong,
++        pub f_spare: [crate::c_uint; 6usize],
++    }
++}
++
++pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t { opaque: [0; 8] };
++pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t { opaque: [0; 8] };
++pub const SIGPROF: crate::c_int = 27;
++pub const SIGIO: crate::c_int = 29;
++pub const SIGPWR: crate::c_int = 30;
++pub const SIGRTMIN: crate::c_int = 35;
++pub const SIGRTMAX: crate::c_int = 64;
++pub const SIGBUS: crate::c_int = 7;
++pub const SIGUSR1: crate::c_int = 10;
++pub const SIGUSR2: crate::c_int = 12;
++pub const SIGSTKFLT: crate::c_int = 16;
++pub const SIGCHLD: crate::c_int = 17;
++pub const SIGCONT: crate::c_int = 18;
++pub const SIGSTOP: crate::c_int = 19;
++pub const SIGTSTP: crate::c_int = 20;
++pub const SIGTTIN: crate::c_int = 21;
++pub const SIGTTOU: crate::c_int = 22;
++pub const SIGURG: crate::c_int = 23;
++pub const SIGXCPU: crate::c_int = 24;
++pub const SIGXFSZ: crate::c_int = 25;
++pub const SIGVTALRM: crate::c_int = 26;
++pub const SIGWINCH: crate::c_int = 28;
++pub const SIGPOLL: crate::c_int = 29;
++pub const SIGSYS: crate::c_int = 31;
++pub const SIGUNUSED: crate::c_int = 31;
++pub const SIGCANCEL: crate::c_int = 32;
++pub const SIGTIMER: crate::c_int = 33;
++pub const SOCK_STREAM: crate::c_int = 1;
++pub const SOCK_DGRAM: crate::c_int = 2;
++pub const SO_REUSEADDR: crate::c_int = 2;
++pub const SO_ERROR: crate::c_int = 4;
++pub const SO_BROADCAST: crate::c_int = 6;
++pub const SO_KEEPALIVE: crate::c_int = 9;
++pub const SO_LINGER: crate::c_int = 13;
++pub const SO_RCVTIMEO: crate::c_int = 20;
++pub const SO_SNDTIMEO: crate::c_int = 21;
++pub const SO_PASSCRED: crate::c_int = 16;
++pub const SO_PEERCRED: crate::c_int = 17;
++pub const SO_TIMESTAMP: crate::c_int = 29;
++pub const SOL_SOCKET: crate::c_int = 1;
++pub const SOMAXCONN: crate::c_int = 4096;
++pub const EPERM: crate::c_int = 1;
++pub const ENOENT: crate::c_int = 2;
++pub const ESRCH: crate::c_int = 3;
++pub const EINTR: crate::c_int = 4;
++pub const EIO: crate::c_int = 5;
++pub const ENXIO: crate::c_int = 6;
++pub const E2BIG: crate::c_int = 7;
++pub const ENOEXEC: crate::c_int = 8;
++pub const EBADF: crate::c_int = 9;
++pub const ECHILD: crate::c_int = 10;
++pub const EAGAIN: crate::c_int = 11;
++pub const ENOMEM: crate::c_int = 12;
++pub const EACCES: crate::c_int = 13;
++pub const EFAULT: crate::c_int = 14;
++pub const ENOTBLK: crate::c_int = 15;
++pub const EBUSY: crate::c_int = 16;
++pub const EEXIST: crate::c_int = 17;
++pub const EXDEV: crate::c_int = 18;
++pub const ENODEV: crate::c_int = 19;
++pub const ENOTDIR: crate::c_int = 20;
++pub const EISDIR: crate::c_int = 21;
++pub const EINVAL: crate::c_int = 22;
++pub const ENFILE: crate::c_int = 23;
++pub const EMFILE: crate::c_int = 24;
++pub const ENOTTY: crate::c_int = 25;
++pub const ETXTBSY: crate::c_int = 26;
++pub const EFBIG: crate::c_int = 27;
++pub const ENOSPC: crate::c_int = 28;
++pub const ESPIPE: crate::c_int = 29;
++pub const EROFS: crate::c_int = 30;
++pub const EMLINK: crate::c_int = 31;
++pub const EPIPE: crate::c_int = 32;
++pub const EDOM: crate::c_int = 33;
++pub const ERANGE: crate::c_int = 34;
++pub const EDEADLK: crate::c_int = 35;
++pub const ENAMETOOLONG: crate::c_int = 36;
++pub const ENOLCK: crate::c_int = 37;
++pub const ENOSYS: crate::c_int = 38;
++pub const ENOTEMPTY: crate::c_int = 39;
++pub const ELOOP: crate::c_int = 40;
++pub const EWOULDBLOCK: crate::c_int = 11;
++pub const ENOMSG: crate::c_int = 42;
++pub const EIDRM: crate::c_int = 43;
++pub const ECHRNG: crate::c_int = 44;
++pub const EL2NSYNC: crate::c_int = 45;
++pub const EL3HLT: crate::c_int = 46;
++pub const EL3RST: crate::c_int = 47;
++pub const ELNRNG: crate::c_int = 48;
++pub const EUNATCH: crate::c_int = 49;
++pub const ENOCSI: crate::c_int = 50;
++pub const EL2HLT: crate::c_int = 51;
++pub const EBADE: crate::c_int = 52;
++pub const EBADR: crate::c_int = 53;
++pub const EXFULL: crate::c_int = 54;
++pub const ENOANO: crate::c_int = 55;
++pub const EBADRQC: crate::c_int = 56;
++pub const EBADSLT: crate::c_int = 57;
++pub const EDEADLOCK: crate::c_int = 35;
++pub const EBFONT: crate::c_int = 59;
++pub const ENOSTR: crate::c_int = 60;
++pub const ENODATA: crate::c_int = 61;
++pub const ETIME: crate::c_int = 62;
++pub const ENOSR: crate::c_int = 63;
++pub const ENONET: crate::c_int = 64;
++pub const ENOPKG: crate::c_int = 65;
++pub const EREMOTE: crate::c_int = 66;
++pub const ENOLINK: crate::c_int = 67;
++pub const EADV: crate::c_int = 68;
++pub const ESRMNT: crate::c_int = 69;
++pub const ECOMM: crate::c_int = 70;
++pub const EPROTO: crate::c_int = 71;
++pub const EMULTIHOP: crate::c_int = 72;
++pub const EDOTDOT: crate::c_int = 73;
++pub const EBADMSG: crate::c_int = 74;
++pub const EOVERFLOW: crate::c_int = 75;
++pub const ENOTUNIQ: crate::c_int = 76;
++pub const EBADFD: crate::c_int = 77;
++pub const EREMCHG: crate::c_int = 78;
++pub const ELIBACC: crate::c_int = 79;
++pub const ELIBBAD: crate::c_int = 80;
++pub const ELIBSCN: crate::c_int = 81;
++pub const ELIBMAX: crate::c_int = 82;
++pub const ELIBEXEC: crate::c_int = 83;
++pub const EILSEQ: crate::c_int = 84;
++pub const ERESTART: crate::c_int = 85;
++pub const ESTRPIPE: crate::c_int = 86;
++pub const EUSERS: crate::c_int = 87;
++pub const ENOTSOCK: crate::c_int = 88;
++pub const EDESTADDRREQ: crate::c_int = 89;
++pub const EMSGSIZE: crate::c_int = 90;
++pub const EPROTOTYPE: crate::c_int = 91;
++pub const ENOPROTOOPT: crate::c_int = 92;
++pub const EPROTONOSUPPORT: crate::c_int = 93;
++pub const ESOCKTNOSUPPORT: crate::c_int = 94;
++pub const EOPNOTSUPP: crate::c_int = 95;
++pub const ENOTSUP: crate::c_int = 95;
++pub const EPFNOSUPPORT: crate::c_int = 96;
++pub const EAFNOSUPPORT: crate::c_int = 97;
++pub const EADDRINUSE: crate::c_int = 98;
++pub const EADDRNOTAVAIL: crate::c_int = 99;
++pub const ENETDOWN: crate::c_int = 100;
++pub const ENETUNREACH: crate::c_int = 101;
++pub const ENETRESET: crate::c_int = 102;
++pub const ECONNABORTED: crate::c_int = 103;
++pub const ECONNRESET: crate::c_int = 104;
++pub const ENOBUFS: crate::c_int = 105;
++pub const EISCONN: crate::c_int = 106;
++pub const ENOTCONN: crate::c_int = 107;
++pub const ESHUTDOWN: crate::c_int = 108;
++pub const ETOOMANYREFS: crate::c_int = 109;
++pub const ETIMEDOUT: crate::c_int = 110;
++pub const ECONNREFUSED: crate::c_int = 111;
++pub const EHOSTDOWN: crate::c_int = 112;
++pub const EHOSTUNREACH: crate::c_int = 113;
++pub const EALREADY: crate::c_int = 114;
++pub const EINPROGRESS: crate::c_int = 115;
++pub const ESTALE: crate::c_int = 116;
++pub const EUCLEAN: crate::c_int = 117;
++pub const ENOTNAM: crate::c_int = 118;
++pub const ENAVAIL: crate::c_int = 119;
++pub const EISNAM: crate::c_int = 120;
++pub const EREMOTEIO: crate::c_int = 121;
++pub const EDQUOT: crate::c_int = 122;
++pub const ENOMEDIUM: crate::c_int = 123;
++pub const EMEDIUMTYPE: crate::c_int = 124;
++pub const ECANCELED: crate::c_int = 125;
++pub const ENOKEY: crate::c_int = 126;
++pub const EKEYEXPIRED: crate::c_int = 127;
++pub const EKEYREVOKED: crate::c_int = 128;
++pub const EKEYREJECTED: crate::c_int = 129;
++pub const EOWNERDEAD: crate::c_int = 130;
++pub const ENOTRECOVERABLE: crate::c_int = 131;
++pub const ERFKILL: crate::c_int = 132;
++pub const EHWPOISON: crate::c_int = 133;
++pub const O_ACCMODE: crate::c_int = 2097155;
++pub const O_CREAT: crate::c_int = 64;
++pub const O_EXCL: crate::c_int = 128;
++pub const O_TRUNC: crate::c_int = 512;
++pub const O_APPEND: crate::c_int = 1024;
++pub const O_NONBLOCK: crate::c_int = 2048;
++pub const O_CLOEXEC: crate::c_int = 524288;
++pub const _SC_PAGESIZE: crate::c_int = 30;
++pub const _SC_GETPW_R_SIZE_MAX: crate::c_int = 70;
++pub const _SC_HOST_NAME_MAX: crate::c_int = 180;
++pub const PTHREAD_STACK_MIN: usize = 16384;
++pub const IOV_MAX: crate::c_int = 1024;
++pub const FIONBIO: u64 = 21537;
++pub const EAI_SYSTEM: crate::c_int = 9;
++pub const PTHREAD_MUTEX_NORMAL: crate::c_int = 0;
++pub const MAP_ANON: crate::c_int = 32;
++
++f! {
++    pub unsafe fn CMSG_NXTHDR(
++        mhdr: *const crate::msghdr,
++        cmsg: *const crate::cmsghdr,
++    ) -> *mut crate::cmsghdr {
++        if ((*cmsg).cmsg_len as usize) < size_of::<crate::cmsghdr>() {
++            return ptr::null_mut();
++        }
++        let next_cmsg = cmsg
++            .cast::<u8>()
++            .wrapping_add(super::CMSG_ALIGN((*cmsg).cmsg_len as usize))
++            .cast::<crate::cmsghdr>();
++        if (next_cmsg as usize) < (cmsg as usize) {
++            return ptr::null_mut();
++        }
++        let max_addr = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
++        if next_cmsg as usize + size_of::<crate::cmsghdr>() > max_addr {
++            ptr::null_mut()
++        } else {
++            next_cmsg as *mut crate::cmsghdr
++        }
++    }
++}
++
++extern "C" {
++    pub fn accept4(
++        sockfd: crate::c_int,
++        addr: *mut sockaddr,
++        addrlen: *mut socklen_t,
++        flags: crate::c_int,
++    ) -> crate::c_int;
++    pub fn recvfrom(
++        sockfd: crate::c_int,
++        buf: *mut crate::c_void,
++        size: usize,
++        flags: crate::c_int,
++        src_addr: *mut sockaddr,
++        addrlen: *mut socklen_t,
++    ) -> isize;
++    pub fn __errno_location() -> *mut crate::c_int;
++    pub fn dl_iterate_phdr(
++        callback: ::core::option::Option<
++            unsafe extern "C" fn(
++                __info: *mut dl_phdr_info,
++                __size: usize,
++                __data: *mut crate::c_void,
++            ) -> crate::c_int,
++        >,
++        data: *mut crate::c_void,
++    ) -> crate::c_int;
++    pub fn mprotect(addr: *mut crate::c_void, size: usize, prot: crate::c_int) -> crate::c_int;
++    pub fn msync(addr: *mut crate::c_void, size: usize, flags: crate::c_int) -> crate::c_int;
++    pub fn madvise(addr: *mut crate::c_void, size: usize, advise: crate::c_int) -> crate::c_int;
++    pub fn getrandom(buffer: *mut crate::c_void, max_size: usize, flags: crate::c_uint) -> isize;
++    pub fn preadv(
++        fd: crate::c_int,
++        iov: *const iovec,
++        iovcnt: crate::c_int,
++        offset: off_t,
++    ) -> isize;
++    pub fn pwritev(
++        fd: crate::c_int,
++        iov: *const iovec,
++        iovcnt: crate::c_int,
++        offset: off_t,
++    ) -> isize;
++}
++cfg_if! {
++    if #[cfg(target_arch = "x86_64")] {
++        mod x86_64;
++        pub use self::x86_64::*;
++    } else if #[cfg(target_arch = "aarch64")] {
++        mod aarch64;
++        pub use self::aarch64::*;
++    } else if #[cfg(target_arch = "riscv64")] {
++        mod riscv64;
++        pub use self::riscv64::*;
++    }
++}
+diff --git a/src/unix/linux_like/managarm/riscv64/mod.rs b/src/unix/linux_like/managarm/riscv64/mod.rs
+new file mode 100644
+index 000000000..e49d715c5
+--- /dev/null
++++ b/src/unix/linux_like/managarm/riscv64/mod.rs
+@@ -0,0 +1,86 @@
++use crate::prelude::*;
++use crate::{
++    off64_t,
++    off_t,
++};
++
++pub type nlink_t = c_uint;
++pub type blksize_t = c_int;
++
++pub type stat64 = stat;
++
++s! {
++    pub struct stat {
++        pub st_dev: crate::dev_t,
++        pub st_ino: crate::ino_t,
++        pub st_mode: crate::mode_t,
++        pub st_nlink: crate::nlink_t,
++        pub st_uid: crate::uid_t,
++        pub st_gid: crate::gid_t,
++        pub st_rdev: crate::dev_t,
++        __pad1: Padding<crate::dev_t>,
++        pub st_size: off_t,
++        pub st_blksize: crate::blksize_t,
++        __pad2: Padding<c_int>,
++        pub st_blocks: crate::blkcnt_t,
++        pub st_atime: crate::time_t,
++        pub st_atime_nsec: c_long,
++        pub st_mtime: crate::time_t,
++        pub st_mtime_nsec: c_long,
++        pub st_ctime: crate::time_t,
++        pub st_ctime_nsec: c_long,
++        __unused: [c_int; 2],
++    }
++}
++
++s_no_extra_traits! {
++    pub struct ucontext_t {
++        pub uc_flags: c_ulong,
++        pub uc_link: *mut ucontext_t,
++        pub uc_stack: crate::stack_t,
++        pub uc_sigmask: crate::sigset_t,
++        pub uc_mcontext: mcontext_t,
++    }
++
++    #[repr(align(16))]
++    pub struct mcontext_t {
++        pub __gregs: [c_ulong; 32],
++        pub __fpregs: __riscv_mc_fp_state,
++    }
++
++    pub union __riscv_mc_fp_state {
++        pub __f: __riscv_mc_f_ext_state,
++        pub __d: __riscv_mc_d_ext_state,
++        pub __q: __riscv_mc_q_ext_state,
++    }
++
++    pub struct __riscv_mc_f_ext_state {
++        pub __f: [c_uint; 32],
++        pub __fcsr: c_uint,
++    }
++
++    pub struct __riscv_mc_d_ext_state {
++        pub __f: [c_ulonglong; 32],
++        pub __fcsr: c_uint,
++    }
++
++    #[repr(align(16))]
++    pub struct __riscv_mc_q_ext_state {
++        pub __f: [c_ulonglong; 64],
++        pub __fcsr: c_uint,
++        pub __reserved: [c_uint; 3],
++    }
++}
++
++pub const NGREG: usize = 32;
++pub const REG_PC: usize = 0;
++pub const REG_RA: usize = 1;
++pub const REG_SP: usize = 2;
++pub const REG_TP: usize = 4;
++pub const REG_S0: usize = 8;
++pub const REG_A0: usize = 10;
++
++pub const O_DIRECT: c_int = 0x4000;
++pub const O_LARGEFILE: c_int = 0x8000;
++pub const O_DIRECTORY: c_int = 0x10000;
++pub const O_NOFOLLOW: c_int = 0x20000;
+diff --git a/src/unix/linux_like/managarm/x86_64/mod.rs b/src/unix/linux_like/managarm/x86_64/mod.rs
+new file mode 100644
+index 000000000..1e2cb6890
+--- /dev/null
++++ b/src/unix/linux_like/managarm/x86_64/mod.rs
+@@ -0,0 +1,110 @@
++use crate::prelude::*;
++use crate::{
++    greg_t,
++    off_t,
++};
++
++pub type nlink_t = c_ulong;
++pub type blksize_t = c_long;
++
++pub type stat64 = stat;
++
++s! {
++    pub struct stat {
++        pub st_dev: crate::dev_t,
++        pub st_ino: crate::ino_t,
++        pub st_nlink: crate::nlink_t,
++        pub st_mode: crate::mode_t,
++        pub st_uid: crate::uid_t,
++        pub st_gid: crate::gid_t,
++        __pad0: Padding<c_int>,
++        pub st_rdev: crate::dev_t,
++        pub st_size: off_t,
++        pub st_blksize: crate::blksize_t,
++        pub st_blocks: crate::blkcnt_t,
++        pub st_atime: crate::time_t,
++        pub st_atime_nsec: i64,
++        pub st_mtime: crate::time_t,
++        pub st_mtime_nsec: i64,
++        pub st_ctime: crate::time_t,
++        pub st_ctime_nsec: i64,
++        __unused: Padding<[i64; 3]>,
++    }
++
++    pub struct _libc_fpxreg {
++        pub significand: [u16; 4],
++        pub exponent: u16,
++        __private: [u16; 3],
++    }
++
++    pub struct _libc_xmmreg {
++        pub element: [u32; 4],
++    }
++
++    pub struct _libc_fpstate {
++        pub cwd: u16,
++        pub swd: u16,
++        pub ftw: u16,
++        pub fop: u16,
++        pub rip: u64,
++        pub rdp: u64,
++        pub mxcsr: u32,
++        pub mxcr_mask: u32,
++        pub _st: [_libc_fpxreg; 8],
++        pub _xmm: [_libc_xmmreg; 16],
++        __private: [u32; 24],
++    }
++
++    pub struct mcontext_t {
++        pub gregs: [greg_t; 23],
++        pub fpregs: *mut _libc_fpstate,
++        __private: [u64; 8],
++    }
++
++    pub struct ucontext_t {
++        pub uc_flags: c_ulong,
++        pub uc_link: *mut ucontext_t,
++        pub uc_stack: crate::stack_t,
++        pub uc_mcontext: mcontext_t,
++        pub uc_sigmask: crate::sigset_t,
++        __fpregs_mem: _libc_fpstate,
++        __ssp: [u64; 4],
++    }
++}
++
++s_no_extra_traits! {
++    #[repr(align(16))]
++    pub struct max_align_t {
++        priv_: [f64; 4],
++    }
++}
++
++// offsets in mcontext_t.gregs from sys/ucontext.h
++pub const REG_R8: c_int = 0;
++pub const REG_R9: c_int = 1;
++pub const REG_R10: c_int = 2;
++pub const REG_R11: c_int = 3;
++pub const REG_R12: c_int = 4;
++pub const REG_R13: c_int = 5;
++pub const REG_R14: c_int = 6;
++pub const REG_R15: c_int = 7;
++pub const REG_RDI: c_int = 8;
++pub const REG_RSI: c_int = 9;
++pub const REG_RBP: c_int = 10;
++pub const REG_RBX: c_int = 11;
++pub const REG_RDX: c_int = 12;
++pub const REG_RAX: c_int = 13;
++pub const REG_RCX: c_int = 14;
++pub const REG_RSP: c_int = 15;
++pub const REG_RIP: c_int = 16;
++pub const REG_EFL: c_int = 17;
++pub const REG_CSGSFS: c_int = 18;
++pub const REG_ERR: c_int = 19;
++pub const REG_TRAPNO: c_int = 20;
++pub const REG_OLDMASK: c_int = 21;
++pub const REG_CR2: c_int = 22;
++
++pub const O_DIRECT: c_int = 0x4000;
++pub const O_LARGEFILE: c_int = 0x8000;
++pub const O_DIRECTORY: c_int = 0x10000;
++pub const O_NOFOLLOW: c_int = 0x20000;
+diff --git a/src/unix/linux_like/mod.rs b/src/unix/linux_like/mod.rs
+index 9081f8472..2eeccaa83 100644
+--- a/src/unix/linux_like/mod.rs
++++ b/src/unix/linux_like/mod.rs
+@@ -103,7 +103,12 @@ s! {
+         pub tm_zone: *const c_char,
+     }
+ 
+-    #[cfg(not(any(target_env = "musl", target_os = "emscripten", target_env = "ohos")))]
++    #[cfg(not(any(
++        target_env = "musl",
++        target_os = "emscripten",
++        target_env = "ohos",
++        target_os = "managarm"
++    )))]
+     pub struct sched_param {
+         pub sched_priority: c_int,
+     }
+@@ -229,7 +234,11 @@ s! {
+ }
+ 
+ cfg_if! {
+-    if #[cfg(not(any(target_os = "emscripten", target_os = "l4re")))] {
++    if #[cfg(not(any(
++        target_os = "emscripten",
++        target_os = "l4re",
++        target_os = "managarm"
++    )))] {
+         s! {
+             pub struct file_clone_range {
+                 pub src_fd: crate::__s64,
+@@ -258,6 +267,7 @@ cfg_if! {
+     if #[cfg(any(
+         target_env = "gnu",
+         target_os = "android",
++        target_os = "managarm",
+         all(target_env = "musl", musl_v1_2_3)
+     ))] {
+         s! {
+@@ -611,7 +621,11 @@ pub const MADV_COLD: c_int = 20;
+ pub const MADV_PAGEOUT: c_int = 21;
+ pub const MADV_HWPOISON: c_int = 100;
+ cfg_if! {
+-    if #[cfg(not(any(target_os = "emscripten", target_os = "l4re")))] {
++    if #[cfg(not(any(
++        target_os = "emscripten",
++        target_os = "l4re",
++        target_os = "managarm"
++    )))] {
+         pub const MADV_POPULATE_READ: c_int = 22;
+         pub const MADV_POPULATE_WRITE: c_int = 23;
+         pub const MADV_DONTNEED_LOCKED: c_int = 24;
+@@ -1059,7 +1073,7 @@ pub const MNT_EXPIRE: c_int = 0x4;
+ pub const UMOUNT_NOFOLLOW: c_int = 0x8;
+ 
+ cfg_if! {
+-    if #[cfg(not(target_os = "l4re"))] {
++    if #[cfg(not(any(target_os = "l4re", target_os = "managarm")))] {
+         pub const Q_GETFMT: c_int = 0x800004;
+         pub const Q_GETINFO: c_int = 0x800005;
+         pub const Q_SETINFO: c_int = 0x800006;
+@@ -1433,7 +1447,11 @@ pub const ARPHRD_VOID: u16 = 0xFFFF;
+ pub const ARPHRD_NONE: u16 = 0xFFFE;
+ 
+ cfg_if! {
+-    if #[cfg(not(any(target_os = "emscripten", target_os = "l4re")))] {
++    if #[cfg(not(any(
++        target_os = "emscripten",
++        target_os = "l4re",
++        target_os = "managarm"
++    )))] {
+         // linux/if_tun.h
+         /* TUNSETIFF ifr flags */
+         pub const IFF_TUN: c_int = 0x0001;
+@@ -1638,7 +1656,8 @@ cfg_if! {
+         target_env = "gnu",
+         target_os = "android",
+         all(target_env = "musl", musl_v1_2_3),
+-        target_os = "l4re"
++        target_os = "l4re",
++        target_os = "managarm"
+     ))] {
+         pub const AT_STATX_SYNC_TYPE: c_int = 0x6000;
+         pub const AT_STATX_SYNC_AS_STAT: c_int = 0x0000;
+@@ -1809,10 +1828,12 @@ f! {
+ }
+ 
+ safe_f! {
++    #[cfg(not(target_env = "mlibc"))]
+     pub safe fn SIGRTMAX() -> c_int {
+         unsafe { __libc_current_sigrtmax() }
+     }
+ 
++    #[cfg(not(target_env = "mlibc"))]
+     pub safe fn SIGRTMIN() -> c_int {
+         unsafe { __libc_current_sigrtmin() }
+     }
+@@ -1885,8 +1906,10 @@ safe_f! {
+ 
+ extern "C" {
+     #[doc(hidden)]
++    #[cfg(not(target_env = "mlibc"))]
+     pub fn __libc_current_sigrtmax() -> c_int;
+     #[doc(hidden)]
++    #[cfg(not(target_env = "mlibc"))]
+     pub fn __libc_current_sigrtmin() -> c_int;
+ 
+     pub fn sem_destroy(sem: *mut sem_t) -> c_int;
+@@ -2228,6 +2251,9 @@ cfg_if! {
+     } else if #[cfg(target_os = "android")] {
+         mod android;
+         pub use self::android::*;
++    } else if #[cfg(target_os = "managarm")] {
++        mod managarm;
++        pub use self::managarm::*;
+     } else {
+         // Unknown target_os
+     }
+diff --git a/src/unix/mod.rs b/src/unix/mod.rs
+index 6c64020d4..3740983f0 100644
+--- a/src/unix/mod.rs
++++ b/src/unix/mod.rs
+@@ -264,7 +264,8 @@ cfg_if! {
+     if #[cfg(not(any(
+         target_os = "nto",
+         target_os = "qnx",
+-        target_os = "l4re"
++        target_os = "l4re",
++        target_os = "managarm"
+     )))] {
+         pub const USRQUOTA: c_int = 0;
+         pub const GRPQUOTA: c_int = 1;
+@@ -601,6 +602,9 @@ cfg_if! {
+         #[link(name = "bsd")]
+         #[link(name = "pthread")]
+         extern "C" {}
++    } else if #[cfg(target_env = "mlibc")] {
++        #[link(name = "c")]
++        extern "C" {}
+     } else {
+         #[link(name = "c")]
+         #[link(name = "m")]
+@@ -2154,6 +2158,7 @@ cfg_if! {
+         target_os = "cygwin",
+         target_os = "aix",
+         target_os = "l4re",
++        target_os = "managarm"
+     )))] {
+         extern "C" {
+             #[cfg_attr(target_os = "netbsd", link_name = "__adjtime50")]
+@@ -2224,7 +2229,11 @@ cfg_if! {
+ }
+ 
+ cfg_if! {
+-    if #[cfg(not(any(target_env = "uclibc", target_os = "nto")))] {
++    if #[cfg(not(any(
++        target_env = "uclibc",
++        target_os = "nto",
++        target_env = "mlibc"
++    )))] {
+         extern "C" {
+             pub fn open_wmemstream(ptr: *mut *mut wchar_t, sizeloc: *mut size_t) -> *mut FILE;
+         }
+@@ -2352,7 +2361,8 @@ cfg_if! {
+     } else if #[cfg(not(any(
+         target_os = "solaris",
+         target_os = "illumos",
+-        target_os = "nto"
++        target_os = "nto",
++        target_os = "managarm"
+     )))] {
+         extern "C" {
+             #[cfg(not(target_os = "l4re"))]
+@@ -2473,7 +2483,8 @@ cfg_if! {
+         target_os = "linux",
+         target_os = "l4re",
+         target_os = "android",
+-        target_os = "emscripten"
++        target_os = "emscripten",
++        target_os = "managarm"
+     ))] {
+         mod linux_like;
+         pub use self::linux_like::*;
+-- 
+2.54.0
+

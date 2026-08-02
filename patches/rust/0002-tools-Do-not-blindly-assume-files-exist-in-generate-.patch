@@ -1,7 +1,7 @@
-From f46f899430bb414efc3f61797782863c7bc5dd0d Mon Sep 17 00:00:00 2001
+From 5a63ead8e35bc73b5debab88d02aff31e8af2391 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Fri, 25 Jul 2025 12:47:46 +0200
-Subject: [PATCH 3/6] tools: Do not blindly assume files exist in
+Subject: [PATCH 2/5] tools: Do not blindly assume files exist in
  generate-copyright
 
 ---
@@ -26,5 +26,5 @@ index 87cd85c8..b0124e00 100644
          let entry = entry?;
          let metadata = entry.metadata()?;
 -- 
-2.52.0
+2.54.0
 

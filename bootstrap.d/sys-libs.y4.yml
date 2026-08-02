@@ -2,8 +2,8 @@ sources:
   - name: rust-libc
     subdir: 'ports'
     git: 'https://github.com/rust-lang/libc.git'
-    tag: '0.2.180'
-    version: '0.2.180'
+    tag: '0.2.189'
+    version: '0.2.189'
 
   - name: rust-num-cpus
     subdir: 'ports'
@@ -20,8 +20,8 @@ sources:
   - name: rust-backtrace
     subdir: 'ports'
     git: 'https://github.com/rust-lang/backtrace-rs.git'
-    tag: '0.3.75'
-    version: '0.3.75'
+    tag: '0.3.76'
+    version: '0.3.76'
 
   - name: rust-calloop
     subdir: 'ports'
@@ -105,8 +105,8 @@ sources:
   - name: rust-errno
     subdir: 'ports'
     git: 'https://github.com/lambda-fairy/rust-errno.git'
-    tag: 'v0.3.10'
-    version: '0.3.10'
+    tag: 'v0.3.13'
+    version: '0.3.13'
 
   - name: rust-rustix-0.38
     subdir: 'ports'

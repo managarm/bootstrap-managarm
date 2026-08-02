@@ -1,7 +1,7 @@
-From a8bcd422c9a45fd412bbdc99f33327cac8dc5143 Mon Sep 17 00:00:00 2001
+From 27e439a21be4ed9b2fd0630a81030d3cbb0e800d Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Mon, 1 Sep 2025 17:08:46 +0200
-Subject: [PATCH 1/4] linux_uapi: silence new rustc warnings
+Subject: [PATCH 2/2] linux_uapi: silence new rustc warnings
 
 ---
  src/new/linux_uapi/linux/can/j1939.rs | 2 +-
@@ -9,7 +9,7 @@ Subject: [PATCH 1/4] linux_uapi: silence new rustc warnings
  2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/src/new/linux_uapi/linux/can/j1939.rs b/src/new/linux_uapi/linux/can/j1939.rs
-index fdf425ce6..988042bff 100644
+index 7f132b89f..3e859eb1d 100644
 --- a/src/new/linux_uapi/linux/can/j1939.rs
 +++ b/src/new/linux_uapi/linux/can/j1939.rs
 @@ -1,6 +1,6 @@
@@ -21,7 +21,7 @@ index fdf425ce6..988042bff 100644
  pub const J1939_MAX_UNICAST_ADDR: c_uchar = 0xfd;
  pub const J1939_IDLE_ADDR: c_uchar = 0xfe;
 diff --git a/src/new/linux_uapi/linux/can/raw.rs b/src/new/linux_uapi/linux/can/raw.rs
-index 470334bd5..a738d9840 100644
+index 217badf21..b17e68a61 100644
 --- a/src/new/linux_uapi/linux/can/raw.rs
 +++ b/src/new/linux_uapi/linux/can/raw.rs
 @@ -1,6 +1,6 @@
@@ -31,7 +31,7 @@ index 470334bd5..a738d9840 100644
 +pub(crate) use crate::linux::can::*;
  
  pub const SOL_CAN_RAW: c_int = SOL_CAN_BASE + CAN_RAW;
- pub const CAN_RAW_FILTER_MAX: c_int = 512;
+ 
 -- 
 2.54.0
 

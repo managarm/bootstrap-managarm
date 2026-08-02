@@ -1,17 +1,17 @@
-From 7dee1dad10dec96db8d414cc9bb1c833fc9d8dea Mon Sep 17 00:00:00 2001
+From e9364618be59cdde41c747f0fe86fb8314569f74 Mon Sep 17 00:00:00 2001
 From: no92 <no92.mail@gmail.com>
 Date: Thu, 28 Aug 2025 22:29:30 +0200
-Subject: [PATCH 4/6] tools/rust-analyzer: add managarm/mlibc support
+Subject: [PATCH 3/5] tools/rust-analyzer: add managarm/mlibc support
 
 ---
  .../crates/ide-completion/src/completions/attribute/cfg.rs     | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/src/tools/rust-analyzer/crates/ide-completion/src/completions/attribute/cfg.rs b/src/tools/rust-analyzer/crates/ide-completion/src/completions/attribute/cfg.rs
-index b6739c9f..b32c2fdc 100644
+index 1672e8e7..83394d06 100644
 --- a/src/tools/rust-analyzer/crates/ide-completion/src/completions/attribute/cfg.rs
 +++ b/src/tools/rust-analyzer/crates/ide-completion/src/completions/attribute/cfg.rs
-@@ -103,7 +103,7 @@ pub(crate) fn complete_cfg(acc: &mut Completions, ctx: &CompletionContext<'_>) {
+@@ -112,7 +112,7 @@ pub(crate) fn complete_cfg(acc: &mut Completions, ctx: &CompletionContext<'_, '_
      "x86_64",
  ];
  
@@ -20,7 +20,7 @@ index b6739c9f..b32c2fdc 100644
  
  const KNOWN_OS: [&str; 20] = [
      "cuda",
-@@ -126,6 +126,7 @@ pub(crate) fn complete_cfg(acc: &mut Completions, ctx: &CompletionContext<'_>) {
+@@ -135,6 +135,7 @@ pub(crate) fn complete_cfg(acc: &mut Completions, ctx: &CompletionContext<'_, '_
      "unknown",
      "vxworks",
      "windows",
@@ -29,5 +29,5 @@ index b6739c9f..b32c2fdc 100644
  
  const KNOWN_VENDOR: [&str; 8] =
 -- 
-2.52.0
+2.54.0
 

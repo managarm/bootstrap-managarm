@@ -1,0 +1,46 @@
+From 201f6dc300d639da1a5f51747acad2211488a0b6 Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Sun, 2 Aug 2026 12:12:05 +0200
+Subject: [PATCH] Add managarm support
+
+---
+ src/symbolize/gimli.rs     | 2 ++
+ src/symbolize/gimli/elf.rs | 2 +-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/src/symbolize/gimli.rs b/src/symbolize/gimli.rs
+index cbc0b76..ea9bc43 100644
+--- a/src/symbolize/gimli.rs
++++ b/src/symbolize/gimli.rs
+@@ -44,6 +44,7 @@ cfg_if::cfg_if! {
+         target_os = "illumos",
+         target_os = "aix",
+         target_os = "cygwin",
++        target_os = "managarm",
+     ))] {
+         #[path = "gimli/mmap_unix.rs"]
+         mod mmap;
+@@ -231,6 +232,7 @@ cfg_if::cfg_if! {
+             target_os = "netbsd",
+             target_os = "nto",
+             target_os = "android",
++            target_os = "managarm",
+         ),
+         not(target_env = "uclibc"),
+     ))] {
+diff --git a/src/symbolize/gimli/elf.rs b/src/symbolize/gimli/elf.rs
+index 11fbda7..d4585bf 100644
+--- a/src/symbolize/gimli/elf.rs
++++ b/src/symbolize/gimli/elf.rs
+@@ -398,7 +398,7 @@ const DEBUG_PATH: &str = "/usr/lib/debug";
+ 
+ fn debug_path_exists() -> bool {
+     cfg_if::cfg_if! {
+-        if #[cfg(any(target_os = "freebsd", target_os = "hurd", target_os = "linux"))] {
++        if #[cfg(any(target_os = "freebsd", target_os = "hurd", target_os = "linux", target_os = "managarm"))] {
+             use core::sync::atomic::{AtomicU8, Ordering};
+             static DEBUG_PATH_EXISTS: AtomicU8 = AtomicU8::new(0);
+ 
+-- 
+2.54.0
+
