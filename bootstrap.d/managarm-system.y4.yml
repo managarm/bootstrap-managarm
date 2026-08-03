@@ -422,6 +422,7 @@ packages:
       - rust-patched-libs
     pkgs_required:
       - mlibc
+      - uacpi
     revision: 3
     configure:
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
@@ -442,6 +443,8 @@ packages:
         environ:
           # Required to build hel bindings
           CC: '@OPTION:arch@-managarm-gcc'
+          # Required for uacpi-sys to locate the uacpi sources via pkg-config
+          PKG_CONFIG: '@OPTION:arch-triple@-pkg-config'
           # Link the server binaries statically and don't touch SIGPIPE on startup
           RUSTFLAGS: "-C relocation-model=static -Z on-broken-pipe=inherit"
       - args: |
@@ -474,6 +477,8 @@ packages:
       environ:
         # Required to build hel bindings
         CC: '@OPTION:arch@-managarm-gcc'
+        # Required for uacpi-sys to locate the uacpi sources via pkg-config
+        PKG_CONFIG: '@OPTION:arch-triple@-pkg-config'
         # Link the server binaries statically and don't touch SIGPIPE on startup
         RUSTFLAGS: "-C relocation-model=static -Z on-broken-pipe=inherit"
     - name: cargo-clippy
@@ -491,6 +496,8 @@ packages:
       environ:
         # Required to build hel bindings
         CC: '@OPTION:arch@-managarm-gcc'
+        # Required for uacpi-sys to locate the uacpi sources via pkg-config
+        PKG_CONFIG: '@OPTION:arch-triple@-pkg-config'
         # Link the server binaries statically and don't touch SIGPIPE on startup
         RUSTFLAGS: "-C relocation-model=static -Z on-broken-pipe=inherit"
 
