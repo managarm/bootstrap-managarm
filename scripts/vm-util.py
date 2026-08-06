@@ -639,7 +639,10 @@ def do_qemu(args):
 
     if args.arch == "aarch64":
         # For aarch64 we use the virt machine
-        qemu_args += ["-machine", "virt,acpi=off"]
+        machine = "virt"
+        if not args.acpi:
+            machine += ",acpi=off"
+        qemu_args += ["-machine", machine]
         qemu_args += ["-serial", "stdio"]
         if not args.uefi:
             qemu_args += ["-kernel", "system-root/usr/managarm/bin/eir-linux.bin"]
@@ -647,7 +650,10 @@ def do_qemu(args):
             qemu_args += ["-append", f"init.launch={args.init_launch}"]
     elif args.arch == "riscv64":
         # Use the virt machine and -kernel, similar to aarch64.
-        qemu_args += ["-machine", "virt,acpi=off"]
+        machine = "virt"
+        if not args.acpi:
+            machine += ",acpi=off"
+        qemu_args += ["-machine", machine]
         qemu_args += ["-serial", "stdio"]
         if not args.uefi:
             qemu_args += ["-kernel", "system-root/usr/managarm/bin/eir-linux.bin"]
@@ -1145,6 +1151,7 @@ qemu_parser.add_argument("--expect-not", action="append")
 qemu_parser.add_argument("--inhibit-usb", action="store_true")
 qemu_parser.add_argument("--iommu", action="store_true")
 qemu_parser.add_argument("--iommu-trace", action="store_true")
+qemu_parser.add_argument("--acpi", action="store_true")
 
 # ---------------------------------------------------------------------------------------
 # gdb subcommand.
