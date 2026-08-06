@@ -1350,6 +1350,8 @@ packages:
     from_source: util-linux
     tools_required:
       - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: '@OPTION:arch-triple@'
     pkgs_required:
       - mlibc
       - file
@@ -1361,7 +1363,7 @@ packages:
       - systemd
       - util-linux-libs
       - zlib
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'meson'
@@ -1380,6 +1382,7 @@ packages:
         - '-Dbuild-nsenter=disabled'
         - '-Dbuild-ipcrm=disabled'
         - '-Dbuild-ipcs=disabled'
+        - '-Dbuild-lsblk=disabled'
         - '-Dbuild-lsfd=disabled'
         - '-Dbuild-lsns=disabled'
         - '-Dbuild-agetty=disabled'
