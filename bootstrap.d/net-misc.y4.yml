@@ -285,7 +285,7 @@ packages:
       - xxhash
       - zlib
       - zstd
-    revision: 11
+    revision: 12
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -308,6 +308,7 @@ packages:
         - '--with-rsyncd-conf=/etc/rscynd.conf'
         environ:
           rsync_cv_HAVE_GETTIMEOFDAY_TZ: 'yes'
+          rsync_cv_HAVE_SECURE_MKSTEMP: 'yes'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
