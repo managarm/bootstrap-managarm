@@ -1,4 +1,74 @@
 packages:
+  - name: sudo
+    labels: [aarch64, riscv64]
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Allows users or groups to run commands as other users
+      description: This package allows a system administrator to give certain users (or groups of users) the ability to run some (or all) commands as root or another user while logging the commands and arguments.
+      spdx: 'ISC'
+      website: 'https://www.sudo.ws/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['app-admin']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/sudo-project/sudo.git'
+      tag: 'v1.9.17p2'
+      version: '1.9.17p2'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+        - host-libtool
+      regenerate:
+        - args: ['./autogen.sh']
+    tools_required:
+      - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - libiconv
+      - libintl
+      - libxcrypt
+      - openssl
+      - pam
+    revision: 1
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--libexecdir=/usr/lib'
+        - '--with-secure-path'
+        - '--with-env-editor'
+        - '--docdir=/usr/share/doc/sudo-1.9.17p2'
+        - '--with-passprompt=[sudo] password for %p: '
+        - '--with-all-insults'
+        - '--disable-python'
+        - '--enable-zlib=system'
+        - '--with-plugindir=/usr/lib/sudo'
+        - '--with-rundir=/run/sudo'
+        - '--with-vardir=/var/db/sudo'
+        - '--without-linux-audit'
+        - '--without-opie'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      # PACKAGING HACK, THIS MAKES SUDO NOT WORK!
+      # SUDO NEEDS ACTUAL PROPER PERMS AND OWNERSHIP ON DISK!
+      - args: ['make', 'INSTALL_OWNER=', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc/sudoers.d/']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/00-sudo', '@THIS_COLLECT_DIR@/etc/sudoers.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/pam.d/sudo', '@THIS_COLLECT_DIR@/etc/pam.d/']
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: sudo-dbg
+        include: ['/usr/lib/debug/**']
+    scripts:
+      post_install:
+        - args: ['chmod', 'u+s', '/usr/bin/sudo']
+
   - name: sysklogd
     architecture: '@OPTION:arch@'
     stability_level: broken
