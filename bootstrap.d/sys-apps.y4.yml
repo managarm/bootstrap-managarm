@@ -336,6 +336,45 @@ packages:
           CC: '@OPTION:arch-triple@-gcc'
           DESTDIR: '@THIS_COLLECT_DIR@'
 
+  - name: drm-howto
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: DRM modesetting examples
+      description: DRM modesetting examples
+      spdx: 'no-spdx: Public Domain'
+      website: 'https://github.com/dvdhrm/docs'
+      maintainer: "no92 <leo@managarm.org>"
+      categories: ['sys-apps']
+    source:
+      subdir: ports
+      git: 'https://github.com/dvdhrm/docs.git'
+      branch: master
+      commit: '815de035b291cfdf3c858d4420482ffa42c878a1'
+      version: '20260708'
+    tools_required:
+      - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - libdrm
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--buildtype=debugoptimized'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+        quiet: true
+
   - name: drm_info
     architecture: '@OPTION:arch@'
     metadata:
