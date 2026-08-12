@@ -642,6 +642,8 @@ def do_qemu(args):
         machine = "virt"
         if not args.acpi:
             machine += ",acpi=off"
+        if not args.el1:
+            machine += ",virtualization=on"
         qemu_args += ["-machine", machine]
         qemu_args += ["-serial", "stdio"]
         if not args.uefi:
@@ -684,7 +686,13 @@ def do_qemu(args):
                 qemu_args += ["--trace", "vtd*"]
     elif args.arch == "aarch64":
         if not have_kvm or args.virtual_cpu:
-            cpu_model = "cortex-a72"
+            # Possible alternatives to max:
+            # - cortex-a76: ARMv8.2-A
+            # - cortex-a710: ARMv9.0-A
+            cpu_model = "max"
+            if args.el2_novhe:
+                # cortex-a72 is ARMv8.0 and does not implement VHE.
+                cpu_model = "cortex-a72"
     else:
         assert args.arch == "riscv64"
         cpu_model = "rv64"
@@ -1152,6 +1160,8 @@ qemu_parser.add_argument("--inhibit-usb", action="store_true")
 qemu_parser.add_argument("--iommu", action="store_true")
 qemu_parser.add_argument("--iommu-trace", action="store_true")
 qemu_parser.add_argument("--acpi", action="store_true")
+qemu_parser.add_argument("--el1", action="store_true")
+qemu_parser.add_argument("--el2-novhe", action="store_true")
 
 # ---------------------------------------------------------------------------------------
 # gdb subcommand.
