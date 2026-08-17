@@ -425,12 +425,16 @@ packages:
       - uacpi
     revision: 3
     configure:
+      # Managarm does not have a committed lockfile.
+      # Delete any re-existing one such that cargo-inject-patches.py generates a fresh lockfile.
+      - args: ['rm', '-f', '@THIS_SOURCE_DIR@/Cargo.lock']
       - args: ['@SOURCE_ROOT@/scripts/cargo-inject-patches.py', '@THIS_SOURCE_DIR@/Cargo.toml']
         isolate_network: false
     build:
       - args:
         - 'cargo'
         - 'build'
+        - '--locked'
         - '--release'
         - '--target-dir'
         - '@THIS_BUILD_DIR@'
