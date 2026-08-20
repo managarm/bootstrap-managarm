@@ -8,7 +8,6 @@ daemon:x:6:
 floppy:x:7:
 disk:x:8:
 lp:x:9:
-kmem:x:15:
 messagebus:x:18:
 lpadmin:x:19:
 systemd-journal:x:23:
@@ -26,7 +25,7 @@ systemd-coredump:x:79:
 uuidd:x:80:
 systemd-oom:x:81:
 sshd:x:82:
-wheel:x:97:
-users:x:999:
+wheel:x:97:managarm
+users:x:999:managarm
 managarm:x:1000:
 nogroup:x:65534:
