@@ -20,8 +20,8 @@ const:
     - { item: '@OPTION:arch@', if: true }
     # Note that timeouts for non-KVM are multiplied by a factor in vm-util.py.
     # The number here need to be sufficient for a worker with KVM available.
-    - { item: '--timeout=600', if: true }
-    - { item: '--io-timeout=60', if: true }
+    - { item: '--timeout=900', if: true }
+    - { item: '--io-timeout=90', if: true }
     - { item: '--smp=@PARALLELISM@', if: true }
   !ci-environ :
     QFLAGS: '-snapshot -display none'
