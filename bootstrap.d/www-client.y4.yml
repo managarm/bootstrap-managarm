@@ -29,7 +29,7 @@ packages:
       - libportal
       - webkitgtk4
       - desktop-file-utils
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -66,7 +66,7 @@ packages:
         include: ['/usr/lib/debug/**']
     scripts:
         post_install:
-          - args: ['glib-compile-schemas /usr/share/glib-2.0/schemas']
+          - args: ['glib-compile-schemas', '/usr/share/glib-2.0/schemas']
           - args: ['gtk4-update-icon-cache', '-q', '-t', '-f', '/usr/share/icons/hicolor']
           - args: 'echo "Running update-mime-database; this may take a minute or 2..."'
           - args: '/usr/bin/update-mime-database /usr/share/mime/'
