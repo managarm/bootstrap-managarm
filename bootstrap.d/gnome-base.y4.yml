@@ -138,7 +138,7 @@ packages:
       - mlibc
       - glib
       - gobject-introspection
-    revision: 6
+    revision: 7
     configure:
       - args: |
               sed -i -r 's:"(/system):"/org/gnome\1:g' @THIS_SOURCE_DIR@/schemas/*.in
@@ -190,7 +190,7 @@ packages:
           GI_GIR_PATH: '@SYSROOT_DIR@/usr/share/gir-1.0'
     scripts:
         post_install:
-          - args: 'glib-compile-schemas /usr/share/glib-2.0/schemas'
+          - args: ['glib-compile-schemas', '/usr/share/glib-2.0/schemas']
 
   - name: librsvg
     stability_level: 'broken' # librsvg seems to be missing a patch?

@@ -635,7 +635,7 @@ packages:
       - libintl
       - pcre2
       - zlib
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -665,8 +665,8 @@ packages:
         include: ['/usr/lib/debug/**']
     scripts:
         post_install:
-          - args: ['glib-compile-schemas /usr/share/glib-2.0/schemas']
-          - args: ['gio-querymodules /usr/lib/gio/modules']
+          - args: ['glib-compile-schemas', '/usr/share/glib-2.0/schemas']
+          - args: ['gio-querymodules', '/usr/lib/gio/modules']
 
   - name: gmp
     labels: [aarch64, riscv64]
