@@ -1,0 +1,25 @@
+From f54983cf8fd2864ce5b9d50ae6129774ed080983 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Sat, 20 Jun 2026 17:32:42 +0200
+Subject: [PATCH] Add missing include
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ plugins/sudoers/auth/passwd.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/plugins/sudoers/auth/passwd.c b/plugins/sudoers/auth/passwd.c
+index 7524ada..87d18e6 100644
+--- a/plugins/sudoers/auth/passwd.c
++++ b/plugins/sudoers/auth/passwd.c
+@@ -33,6 +33,7 @@
+ #include <string.h>
+ #include <unistd.h>
+ #include <pwd.h>
++#include <crypt.h>
+ 
+ #include <sudoers.h>
+ #include "sudo_auth.h"
+-- 
+2.53.0
+
