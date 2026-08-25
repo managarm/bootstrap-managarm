@@ -1,0 +1,27 @@
+From aa5508671484ad98d647f5051fdaa8d3f46cea9e Mon Sep 17 00:00:00 2001
+From: no92 <leo@managarm.org>
+Date: Wed, 8 Jul 2026 18:46:33 +0200
+Subject: [PATCH] Add meson build
+
+---
+ meson.build | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+ create mode 100644 meson.build
+
+diff --git a/meson.build b/meson.build
+new file mode 100644
+index 0000000..49a94e7
+--- /dev/null
++++ b/meson.build
+@@ -0,0 +1,8 @@
++project('drm-howto', 'c')
++
++libdrm_dep = dependency('libdrm')
++
++executable('modeset', files('drm-howto/modeset.c'), dependencies: libdrm_dep, install: true)
++executable('modeset-atomic', files('drm-howto/modeset-atomic.c'), dependencies: libdrm_dep, install: true)
++executable('modeset-double-buffered', files('drm-howto/modeset-double-buffered.c'), dependencies: libdrm_dep, install: true)
++executable('modeset-vsync', files('drm-howto/modeset-vsync.c'), dependencies: libdrm_dep, install: true)
+-- 
+2.54.0
+
