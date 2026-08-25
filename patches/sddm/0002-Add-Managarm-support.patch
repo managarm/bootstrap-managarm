@@ -1,7 +1,7 @@
 From 7b07b27bbb6c08c67b53583e18fced48f557b21d Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Thu, 14 May 2026 00:20:37 +0200
-Subject: [PATCH 2/3] Add Managarm support
+Subject: [PATCH 2/4] Add Managarm support
 
 ---
  CMakeLists.txt | 2 +-

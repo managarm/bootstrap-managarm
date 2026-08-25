@@ -1,0 +1,115 @@
+From 74b92bf0c9d594a54e0f0151f5c6afd866fed48b Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Thu, 9 Jul 2026 21:13:54 +0200
+Subject: [PATCH 4/4] Fix session and layout selectors
+
+---
+ components/2.0/ComboBox.qml | 37 ++++++++++++++++++++++++-------------
+ src/greeter/theme/Main.qml  |  2 ++
+ 2 files changed, 26 insertions(+), 13 deletions(-)
+
+diff --git a/components/2.0/ComboBox.qml b/components/2.0/ComboBox.qml
+index 26bbef3..a77ab9e 100644
+--- a/components/2.0/ComboBox.qml
++++ b/components/2.0/ComboBox.qml
+@@ -41,6 +41,8 @@ FocusScope {
+     property int index: 0
+     property alias arrowColor: arrow.color
+     property alias arrowIcon: arrowIcon.source
++    property Item popupParent: null
++    property bool popupOpen: false
+ 
+     property Component rowDelegate: defaultRowDelegate
+ 
+@@ -149,9 +151,12 @@ FocusScope {
+ 
+     Rectangle {
+         id: dropDown
+-        width: container.width; height: 0
+-        anchors.top: container.bottom
+-        anchors.topMargin: 0
++        parent: container.popupParent ? container.popupParent : container
++        width: container.width
++        height: container.popupOpen ? (container.height - 2*container.borderWidth) * listView.count + container.borderWidth : 0
++        x: 0
++        y: container.height
++        z: 1000
+ 
+         color: container.menuColor
+ 
+@@ -184,6 +189,7 @@ FocusScope {
+ 
+                     hoverEnabled: true
+                     onEntered: listView.currentIndex = index
++                    onPressed: container.focus = true
+                     onClicked: close(true)
+                 }
+             }
+@@ -207,29 +213,34 @@ FocusScope {
+             border.color: main.border.color
+             border.width: main.border.width
+         }
+-
+-        states: [
+-            State {
+-                name: "visible";
+-                PropertyChanges { target: dropDown; height: (container.height - 2*container.borderWidth) * listView.count + container.borderWidth}
+-            }
+-        ]
+     }
+ 
+     function toggle() {
+-        if (dropDown.state === "visible")
++        if (container.popupOpen)
+             close(false)
+         else
+             open()
+     }
+ 
+     function open() {
+-        dropDown.state = "visible"
++        updateDropDownPosition()
++        container.popupOpen = true
+         listView.currentIndex = container.index
+     }
+ 
++    function updateDropDownPosition() {
++        if (container.popupParent) {
++            var pos = container.mapToItem(container.popupParent, 0, container.height)
++            dropDown.x = pos.x
++            dropDown.y = pos.y
++        } else {
++            dropDown.x = 0
++            dropDown.y = container.height
++        }
++    }
++
+     function close(update) {
+-        dropDown.state = ""
++        container.popupOpen = false
+ 
+         if (update) {
+             container.index = listView.currentIndex
+diff --git a/src/greeter/theme/Main.qml b/src/greeter/theme/Main.qml
+index 0a2ab9c..5211ad3 100644
+--- a/src/greeter/theme/Main.qml
++++ b/src/greeter/theme/Main.qml
+@@ -221,6 +221,7 @@ Rectangle {
+                     id: session
+                     width: 245
+                     anchors.verticalCenter: parent.verticalCenter
++                    popupParent: container
+ 
+                     arrowIcon: "angle-down.png"
+ 
+@@ -245,6 +246,7 @@ Rectangle {
+                     id: layoutBox
+                     width: 90
+                     anchors.verticalCenter: parent.verticalCenter
++                    popupParent: container
+                     font.pixelSize: 14
+ 
+                     arrowIcon: "angle-down.png"
+-- 
+2.53.0
+

@@ -1,0 +1,28 @@
+From 29fbe668b724359f3766e74ba0ac32d57e0dc2ee Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Mon, 13 Jul 2026 22:11:14 +0200
+Subject: [PATCH 4/4] libweston: Generate a serial when replaying pointer focus
+ to late-bound clients
+
+---
+ libweston/input.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/libweston/input.c b/libweston/input.c
+index 3faa6be..2661c6d 100644
+--- a/libweston/input.c
++++ b/libweston/input.c
+@@ -3655,6 +3655,10 @@ seat_get_pointer(struct wl_client *client, struct wl_resource *resource,
+ 		surf_pos = weston_coord_global_to_surface(pointer->focus,
+ 							  pointer->pos);
+ 
++		if (pointer->focus_serial == 0)
++			pointer->focus_serial =
++				wl_display_next_serial(seat->compositor->wl_display);
++
+ 		wl_pointer_send_enter(cr,
+ 				      pointer->focus_serial,
+ 				      pointer->focus->surface->resource,
+-- 
+2.53.0
+
