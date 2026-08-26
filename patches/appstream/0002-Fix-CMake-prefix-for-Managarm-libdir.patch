@@ -1,0 +1,39 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Wed, 26 Aug 2026 21:00:00 +0200
+Subject: [PATCH] Fix CMake prefix for Managarm's libdir layout
+
+AppStream's CMake package files assume that libdir contains a multiarch
+directory. Managarm installs libraries directly below /usr/lib, so the
+original relative prefix points at the sysroot instead of /usr.
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ qt/cmake/AppStreamQt5Config.cmake.in | 2 +-
+ qt/cmake/AppStreamQtConfig.cmake.in  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/qt/cmake/AppStreamQt5Config.cmake.in b/qt/cmake/AppStreamQt5Config.cmake.in
+index 5facb7fb1062fb1ce888f2b16cdd90a79cc5dd82..97c0cc2a5322a2fbd40d8f193b771ffbadae8486 100644
+--- a/qt/cmake/AppStreamQt5Config.cmake.in
++++ b/qt/cmake/AppStreamQt5Config.cmake.in
+@@ -1,4 +1,4 @@
+ 
+-get_filename_component(PACKAGE_PREFIX_DIR "${CMAKE_CURRENT_LIST_DIR}/../../../../" ABSOLUTE)
++get_filename_component(PACKAGE_PREFIX_DIR "${CMAKE_CURRENT_LIST_DIR}/../../../" ABSOLUTE)
+ 
+ # Use original install prefix when loaded through a "/usr move"
+ # cross-prefix symbolic link such as /lib -> /usr/lib.
+diff --git a/qt/cmake/AppStreamQtConfig.cmake.in b/qt/cmake/AppStreamQtConfig.cmake.in
+index 63df65f2567662b530bfc84acb4910ce72453ae1..5ab2d0ec7bd3519da38629df8de1ebbbb58f77be 100644
+--- a/qt/cmake/AppStreamQtConfig.cmake.in
++++ b/qt/cmake/AppStreamQtConfig.cmake.in
+@@ -1,4 +1,4 @@
+ 
+-get_filename_component(PACKAGE_PREFIX_DIR "${CMAKE_CURRENT_LIST_DIR}/../../../../" ABSOLUTE)
++get_filename_component(PACKAGE_PREFIX_DIR "${CMAKE_CURRENT_LIST_DIR}/../../../" ABSOLUTE)
+ 
+ # Use original install prefix when loaded through a "/usr move"
+ # cross-prefix symbolic link such as /lib -> /usr/lib.
+-- 
+2.45.2

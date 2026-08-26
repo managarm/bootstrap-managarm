@@ -1,3 +1,10 @@
+sources:
+  - name: meson
+    subdir: 'ports'
+    git: 'https://github.com/mesonbuild/meson.git'
+    tag: '1.10.0'
+    version: '1.10.0'
+
 packages:
   - name: meson
     architecture: '@OPTION:arch@'
@@ -8,18 +15,14 @@ packages:
       website: 'https://pypi.org/project/meson/'
       maintainer: "no92 <leo@managarm.org>"
       categories: ['dev-build']
-    source:
-      subdir: 'ports'
-      git: 'https://github.com/mesonbuild/meson.git'
-      tag: '1.10.0'
-      version: '1.10.0'
+    from_source: meson
     tools_required:
       - host-gpep517
       - system-gcc
     pkgs_required:
       - mlibc
       - python
-    revision: 3
+    revision: 4
     configure:
       # python modules do not seem to support out-of-tree builds, so we just copy
       # the source tree into the build directory instead.

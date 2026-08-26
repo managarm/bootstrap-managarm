@@ -293,14 +293,20 @@ packages:
       - host-appstream
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
+      - host-qt6
     pkgs_required:
       - mlibc
+      - attica
       - curl
       - glib
+      - kirigami-addons
+      - knewstuff
       - libxml
       - libxmlb
       - libyaml
-    revision: 6
+      - qcoro
+      - qtbase6
+    revision: 7
     configure:
       - args: ['mkdir', '-pv', '@THIS_BUILD_DIR@/data']
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/data/org.freedesktop.appstream.cli.metainfo.xml', '@THIS_BUILD_DIR@/data/nol10n_withrelinfo_org.freedesktop.appstream.cli.metainfo.xml']
@@ -321,7 +327,7 @@ packages:
         - '-Dapt-support=false'
         - '-Dinstall-docs=false'
         - '-Dgir=false'
-        - '-Dqt=false'
+        - '-Dqt=true'
         - '-Dsystemd=false'
         - '@THIS_SOURCE_DIR@'
     build:

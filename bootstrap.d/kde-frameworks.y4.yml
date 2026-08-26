@@ -107,6 +107,12 @@ sources:
     tag: 'v6.25.0'
     version: '6.25.0'
 
+  - name: kfilemetadata
+    subdir: 'ports'
+    git: 'https://github.com/KDE/kfilemetadata.git'
+    tag: 'v6.25.0'
+    version: '6.25.0'
+
   - name: kglobalaccel
     subdir: 'ports'
     git: 'https://github.com/KDE/kglobalaccel.git'
@@ -272,6 +278,12 @@ sources:
   - name: prison
     subdir: 'ports'
     git: 'https://github.com/KDE/prison.git'
+    tag: 'v6.25.0'
+    version: '6.25.0'
+
+  - name: purpose
+    subdir: 'ports'
+    git: 'https://github.com/KDE/purpose.git'
     tag: 'v6.25.0'
     version: '6.25.0'
 
@@ -2194,6 +2206,59 @@ packages:
       - name: kded-dbg
         include: ['/usr/lib/debug/**']
 
+  - name: kfilemetadata
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Library for extracting file metadata
+      description: This package provides a library for extracting file metadata.
+      spdx: 'LGPL-2.0-or-later'
+      website: 'https://develop.kde.org/products/frameworks/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['kde-frameworks']
+    from_source: kfilemetadata
+    tools_required:
+      - system-gcc
+      - host-cmake
+      - host-ecm
+      - host-qt6
+    pkgs_required:
+      - mlibc
+      - karchive
+      - kcodecs
+      - kconfig
+      - kcoreaddons
+      - ki18n
+      - qtbase6
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=/usr/lib/qt6/qml'
+        - '-DKDE_INSTALL_PLUGINDIR=/usr/lib/qt6/plugins'
+        - '-DKDE_INSTALL_QTPLUGINDIR=/usr/lib/qt6/plugins'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: kfilemetadata-dbg
+        include: ['/usr/lib/debug/**']
+
   - name: kglobalaccel
     architecture: '@OPTION:arch@'
     metadata:
@@ -3784,6 +3849,65 @@ packages:
       - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
     subpackages:
       - name: prison-dbg
+        include: ['/usr/lib/debug/**']
+
+  - name: purpose
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Library for providing abstractions to get the developer's purposes fulfilled
+      description: This package contains a library for providing abstractions to get the developer's purposes fulfilled.
+      spdx: 'LGPL-2.1-or-later'
+      website: 'https://invent.kde.org/frameworks/purpose'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['kde-frameworks']
+    from_source: purpose
+    tools_required:
+      - system-gcc
+      - host-cmake
+      - host-ecm
+      - host-qt6
+    pkgs_required:
+      - mlibc
+      - kcmutils
+      - kconfig
+      - kcoreaddons
+      - ki18n
+      - kio
+      - kirigami
+      - kitemmodels
+      - knotifications
+      - kservice
+      - prison
+      - qtbase6
+      - qtdeclarative6
+    revision: 1
+    configure:
+      - args:
+        - 'cmake'
+        - '-GNinja'
+        - '-DCMAKE_INSTALL_PREFIX=/usr'
+        - '-DCMAKE_TOOLCHAIN_FILE=@SOURCE_ROOT@/scripts/CMakeToolchain-@OPTION:arch-triple@.txt'
+        - '-DECM_DIR=@BUILD_ROOT@/tools/host-ecm'
+        - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
+        ### from ecm.class
+        - '-DQT_MAJOR_VERSION=6'
+        - '-DBUILD_TESTING=OFF'
+        - '-DBUILD_QCH=FALSE'
+        - '-DKDE_INSTALL_USE_QT_SYS_PATHS=ON'
+        - '-DKDE_INSTALL_QMLDIR=/usr/lib/qt6/qml'
+        - '-DKDE_INSTALL_PLUGINDIR=/usr/lib/qt6/plugins'
+        - '-DKDE_INSTALL_QTPLUGINDIR=/usr/lib/qt6/plugins'
+        ### end ecm.class
+        - '-DKF_IGNORE_PLATFORM_CHECK=TRUE' # We're porting, and this is the recommended way to do it.
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: purpose-dbg
         include: ['/usr/lib/debug/**']
 
   - name: qqc2-desktop-style

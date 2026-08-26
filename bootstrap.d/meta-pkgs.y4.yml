@@ -123,3 +123,34 @@ packages:
     revision: 4
     configure: []
     build: []
+
+  # Meta package for KDE Plasma
+  - name: kde-desktop
+    architecture: noarch
+    source:
+      subdir: meta-sources
+      version: '1.0'
+    metadata:
+      summary: Meta-package to provide KDE Plasma 6 and various GUI applications to use
+      description: This meta-package provides a Desktop environment based on KDE and various applications that are useful in managing it, or to add basic usability.
+      spdx: 'MIT'
+      website: 'https://managarm.org'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['meta-pkgs']
+    pkgs_required:
+      - base
+      - discover
+      - dolphin
+      - kactivitymanagerd
+      - kcalc
+      - konsole
+      - plasma-desktop
+      - plasma-integration
+      - qqc2-breeze-style
+      - qqc2-desktop-style
+      - qtcharts6
+      - sddm
+      - systemsettings
+    revision: 1
+    configure: []
+    build: []
