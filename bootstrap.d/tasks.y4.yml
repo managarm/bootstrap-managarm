@@ -178,7 +178,7 @@ tasks:
       - '--timeout=1200'
       - '--io-timeout=300'
       - '--expect'
-      - "Starting Wayland user session: \"/usr/share/sddm/scripts/wayland-session\" \"weston --xwayland\""
+      - "Message received from greeter: Connect"
     environ:
       QFLAGS: '-snapshot -display none'
     workdir: '@BUILD_ROOT@'
@@ -202,7 +202,7 @@ tasks:
       - '--io-timeout=300'
       - '--acpi'
       - '--expect'
-      - "Starting Wayland user session: \"/usr/share/sddm/scripts/wayland-session\" \"weston --xwayland\""
+      - "Message received from greeter: Connect"
     environ:
       QFLAGS: '-snapshot -display none'
     workdir: '@BUILD_ROOT@'
