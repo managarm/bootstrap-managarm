@@ -1149,7 +1149,7 @@ packages:
       - solid
       - sonnet
       - xkeyboard-config
-    revision: 4
+    revision: 5
     configure:
       - args:
         - 'cmake'
@@ -1182,6 +1182,8 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc/xdg']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/kdeglobals', '@THIS_COLLECT_DIR@/etc/xdg']
       - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
     subpackages:
       - name: plasma-desktop-dbg
