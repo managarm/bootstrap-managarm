@@ -1,0 +1,42 @@
+From 0d693b274dbd59862bd05aafc18d510229ae310d Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Wed, 26 Aug 2026 19:10:34 +0200
+Subject: [PATCH] qt module: look for qt tools only on build machine Qt tools
+ may be needed at build time, let's make their detection based on the build
+ machine rather than the host machine as currently done.
+
+This incidentally fixes cross-compilation search for moc, rcc, uic and
+lrelease Qt tools because they are installed in libexec dir and that
+path is somehow not properly looked for otherwise.
+
+Lifted from https://github.com/mesonbuild/meson/pull/14381
+---
+ mesonbuild/modules/_qt.py | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/mesonbuild/modules/_qt.py b/mesonbuild/modules/_qt.py
+index b75169e..ca1accd 100644
+--- a/mesonbuild/modules/_qt.py
++++ b/mesonbuild/modules/_qt.py
+@@ -15,7 +15,7 @@ from .. import build
+ from .. import options
+ from .. import mlog
+ from ..dependencies import DependencyMethods, find_external_dependency, Dependency, ExternalLibrary, InternalDependency
+-from ..mesonlib import MesonException, File, FileMode, version_compare, Popen_safe
++from ..mesonlib import MachineChoice, MesonException, File, FileMode, version_compare, Popen_safe
+ from ..interpreter import extract_required_kwarg
+ from ..interpreter.type_checking import DEPENDENCY_METHOD_KW, INSTALL_DIR_KW, INSTALL_KW, NoneType
+ from ..interpreterbase import ContainerTypeInfo, FeatureDeprecated, KwargInfo, noPosargs, FeatureNew, typed_kwargs, typed_pos_args
+@@ -271,6 +271,9 @@ class QtBaseModule(ExtensionModule):
+         self._tools_detected = True
+         mlog.log(f'Detecting Qt{self.qt_version} tools')
+         kwargs: DependencyObjectKWs = {'required': required, 'modules': ['Core'], 'method': method}
++        # Tools are for compile-time steps, so force native check for
++        # compatibility with cross-compile scenarios
++        kwargs["native"] = MachineChoice.BUILD
+         # Just pick one to make mypy happy
+         qt = T.cast('QtPkgConfigDependency', find_external_dependency(f'qt{self.qt_version}', state.environment, kwargs))
+         if qt.found():
+-- 
+2.55.0
+
