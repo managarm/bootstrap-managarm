@@ -77,6 +77,7 @@ tools:
       - hatch-fancy-pypi-readme
       - hatch-vcs
       - maturin
+      - meson
       - pdm
       - pdm-backend
       - rust-patched-libs
@@ -88,7 +89,7 @@ tools:
         # Avoid exposing the original python3.
         expose: false
       - host-cargo
-    revision: 11
+    revision: 12
     install:
       - args: ['@BUILD_ROOT@/tools/host-python/bin/python3', '-m', 'venv', '.']
         workdir: '@PREFIX@'
@@ -127,6 +128,10 @@ tools:
         environ:
           CARGO_BUILD_TARGET: 'x86_64-unknown-linux-gnu'
           MATURIN_NO_INSTALL_RUST: '1'
+      # Meson gets installed cuz we need to patch it for Qt cross compilation support, see meson #14381
+      - args: ['bin/pip', 'install', '@THIS_SOURCE_DIR@/../meson']
+        workdir: '@PREFIX@'
+        isolate_network: false
 
 packages:
   - name: python-arrow
