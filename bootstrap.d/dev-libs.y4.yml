@@ -294,6 +294,7 @@ packages:
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"
       - host-qt6
+      - host-gpep517
     pkgs_required:
       - mlibc
       - attica
