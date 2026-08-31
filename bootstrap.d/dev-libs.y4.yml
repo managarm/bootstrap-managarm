@@ -3413,7 +3413,7 @@ packages:
       - xcb-proto
       - xcb-util-cursor
       - xwayland
-    revision: 10
+    revision: 11
     configure:
       - args:
         - 'meson'
