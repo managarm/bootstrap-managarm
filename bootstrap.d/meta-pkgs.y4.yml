@@ -63,7 +63,7 @@ packages:
       - xbps
       - xkeyboard-config
       - xz-utils
-    revision: 14
+    revision: 15
     configure: []
     build: []
 
