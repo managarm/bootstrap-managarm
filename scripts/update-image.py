@@ -621,6 +621,10 @@ class UpdateFsAction:
         def plan_rsync(dir, exclude_files=[]):
             source = os.path.join(self.sysroot, dir)
             target = os.path.join(target_mntpoint, dir)
+            if os.path.islink(source):
+                # rsync 3.5 cannot use an existing symlink as its destination
+                # directory. Sync the link through its parent instead.
+                target = os.path.dirname(target)
             command = ["rsync", "--checksum", "-a", "--delete"]
             command += rsync_id_args
             command += [source, target]
