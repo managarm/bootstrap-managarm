@@ -5,7 +5,7 @@ tools:
     source:
       name: autoconf-v2.64
       subdir: 'ports'
-      url: 'https://ftpmirror.gnu.org/gnu/autoconf/autoconf-2.64.tar.xz'
+      url: 'https://ftp.nluug.nl/pub/gnu/autoconf/autoconf-2.64.tar.xz'
       format: 'tar.xz'
       checksum: blake2b:598873209a67725150cd4cf09c4b78b26b3d1782f259846da48dc8106a1d32ae2b24f3a864c3be0e9e8dc7d6b6ca8781b83ff33a691c88e68391d1ea861ccf23
       extract_path: 'autoconf-2.64'
@@ -87,7 +87,7 @@ tools:
     source:
       name: autoconf-v2.69
       subdir: 'ports'
-      url: 'https://ftpmirror.gnu.org/gnu/autoconf/autoconf-2.69.tar.xz'
+      url: 'https://ftp.nluug.nl/pub/gnu/autoconf/autoconf-2.69.tar.xz'
       format: 'tar.xz'
       checksum: blake2b:71d33d72a06e9a05fbed0eda73bc9d8a3805c7c90bf082959862f93f3c5f01192114176e84d84ecb58fa99512eafbc0ab21ad1407be18c8c63bb3dc1117c482d
       extract_path: 'autoconf-2.69'
