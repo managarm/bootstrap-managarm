@@ -20,6 +20,11 @@ jobs:
     packages:
       - webkitgtk
 
+  - name: webkitgtk4
+    capabilities: ["heavy"]
+    packages:
+      - webkitgtk4
+
   - name: image
     capabilities: ["!builder", "test-images"]
     tasks:
