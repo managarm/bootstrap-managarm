@@ -688,7 +688,7 @@ packages:
     source:
       subdir: 'ports'
       # We switched to a tarball as the GMP repos are currently returning 403 forbidden (2024-12-31)
-      url: 'https://ftpmirror.gnu.org/gnu/gmp/gmp-6.3.0.tar.xz'
+      url: 'https://ftp.nluug.nl/pub/gnu/gmp/gmp-6.3.0.tar.xz'
       format: 'tar.xz'
       checksum: 'blake2b:a865129e2b3f634ec5bad7f97ed89532e43f5662ac47a7d8ab7f0df8c9f8d0886bd984651422e2573c2163bca69c0547c248147ec90880accbd53db97dc0ddee'
       extract_path: 'gmp-6.3.0'
@@ -2274,7 +2274,7 @@ packages:
       categories: ['dev-libs']
     source:
       subdir: 'ports'
-      url: 'https://ftpmirror.gnu.org/gnu/libunistring/libunistring-1.3.tar.xz'
+      url: 'https://ftp.nluug.nl/pub/gnu/libunistring/libunistring-1.3.tar.xz'
       format: 'tar.xz'
       checksum: blake2b:213d24ea4ba5e960a030bd83fc1b6c9d9a5e33d63ade8874e2a15d1b7a0acbe4b2d03df18065f6c17f01bfed94f7e70ef474e713f5c5ad2375cf2438457b0379
       extract_path: 'libunistring-1.3'
@@ -2687,7 +2687,7 @@ packages:
       categories: ['dev-libs']
     source:
       subdir: 'ports'
-      url: 'https://ftpmirror.gnu.org/gnu/mpfr/mpfr-4.2.2.tar.xz'
+      url: 'https://ftp.nluug.nl/pub/gnu/mpfr/mpfr-4.2.2.tar.xz'
       format: 'tar.xz'
       checksum: blake2b:6bbf5658e70fbb673a3b65246a6bac708d1571aa6943c6742efd92f468ac71e6f0fe351b757f7133440ea312d9a5fc3549acd89d54f4d975c58bdc204d7b21ec
       extract_path: 'mpfr-4.2.2'
