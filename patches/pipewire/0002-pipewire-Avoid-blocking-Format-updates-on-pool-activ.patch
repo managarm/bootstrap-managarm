@@ -1,0 +1,134 @@
+From 0dda594976c4d63ccda963a6aff04dcc88e1229f Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Mon, 14 Sep 2026 13:33:30 +0200
+Subject: [PATCH 2/2] pipewire: Avoid blocking Format updates on pool
+ activation
+
+---
+ src/gst/gstpipewire.c     |  2 +-
+ src/gst/gstpipewiresink.c | 47 ++++++++++++++++++++++++---------------
+ src/gst/gstpipewiresink.h |  2 ++
+ 3 files changed, 32 insertions(+), 19 deletions(-)
+
+diff --git a/src/gst/gstpipewire.c b/src/gst/gstpipewire.c
+index 5761a09..4a823cd 100644
+--- a/src/gst/gstpipewire.c
++++ b/src/gst/gstpipewire.c
+@@ -28,7 +28,7 @@ plugin_init (GstPlugin *plugin)
+ 
+   gst_element_register (plugin, "pipewiresrc", GST_RANK_PRIMARY + 1,
+       GST_TYPE_PIPEWIRE_SRC);
+-  gst_element_register (plugin, "pipewiresink", GST_RANK_NONE,
++  gst_element_register (plugin, "pipewiresink", GST_RANK_PRIMARY + 1,
+       GST_TYPE_PIPEWIRE_SINK);
+ 
+ #ifdef HAVE_GSTREAMER_DEVICE_PROVIDER
+diff --git a/src/gst/gstpipewiresink.c b/src/gst/gstpipewiresink.c
+index 99235b1..b6baebb 100644
+--- a/src/gst/gstpipewiresink.c
++++ b/src/gst/gstpipewiresink.c
+@@ -367,13 +367,6 @@ gst_pipewire_sink_update_params (GstPipeWireSink *sink)
+   gst_structure_free (config);
+ }
+ 
+-static void
+-pool_activated (GstPipeWirePool *pool, GstPipeWireSink *sink)
+-{
+-  GST_DEBUG_OBJECT (pool, "activated");
+-  g_cond_signal (&sink->stream->pool->cond);
+-}
+-
+ static void
+ gst_pipewire_sink_init (GstPipeWireSink * sink)
+ {
+@@ -383,10 +376,10 @@ gst_pipewire_sink_init (GstPipeWireSink * sink)
+   sink->use_bufferpool = DEFAULT_PROP_USE_BUFFERPOOL;
+   sink->is_rawvideo = false;
+   sink->first_buffer = true;
++  sink->pool_started = false;
++  sink->pending_format = false;
+ 
+   GST_OBJECT_FLAG_SET (sink, GST_ELEMENT_FLAG_PROVIDE_CLOCK);
+-
+-  g_signal_connect (sink->stream->pool, "activated", G_CALLBACK (pool_activated), sink);
+ }
+ 
+ static GstCaps *
+@@ -830,19 +823,22 @@ static void
+ on_param_changed (void *data, uint32_t id, const struct spa_pod *param)
+ {
+   GstPipeWireSink *pwsink = data;
+-  GstPipeWirePool *pool = pwsink->stream->pool;
++  gboolean update_params;
+ 
+   if (param == NULL || id != SPA_PARAM_Format)
+     return;
+ 
+-  GST_OBJECT_LOCK (pool);
+-  while (!gst_buffer_pool_is_active (GST_BUFFER_POOL (pool))) {
+-    GST_DEBUG_OBJECT (pool, "waiting for pool to become active");
+-    g_cond_wait(&pool->cond, GST_OBJECT_GET_LOCK (pool));
+-  }
+-  GST_OBJECT_UNLOCK (pool);
++  /* The thread loop must keep dispatching while the streaming path starts the pool. */
++  GST_OBJECT_LOCK (pwsink);
++  update_params = pwsink->pool_started;
++  if (update_params)
++    pwsink->pending_format = FALSE;
++  else
++    pwsink->pending_format = TRUE;
++  GST_OBJECT_UNLOCK (pwsink);
+ 
+-  gst_pipewire_sink_update_params (pwsink);
++  if (update_params)
++    gst_pipewire_sink_update_params (pwsink);
+ }
+ 
+ static gboolean
+@@ -1022,7 +1018,18 @@ gst_pipewire_sink_render (GstBaseSink * bsink, GstBuffer * buffer)
+     gst_buffer_pool_config_set_params (config, caps, size, min_buffers, max_buffers);
+     gst_buffer_pool_set_config (GST_BUFFER_POOL_CAST (pwsink->stream->pool), config);
+ 
+-    gst_buffer_pool_set_active (GST_BUFFER_POOL_CAST (pwsink->stream->pool), TRUE);
++    if (gst_buffer_pool_set_active (GST_BUFFER_POOL_CAST (pwsink->stream->pool), TRUE)) {
++      gboolean update_params;
++
++      GST_OBJECT_LOCK (pwsink);
++      pwsink->pool_started = TRUE;
++      update_params = pwsink->pending_format;
++      pwsink->pending_format = FALSE;
++      GST_OBJECT_UNLOCK (pwsink);
++
++      if (update_params)
++        gst_pipewire_sink_update_params (pwsink);
++    }
+   }
+ 
+   pw_thread_loop_lock (pwsink->stream->core->loop);
+@@ -1213,6 +1220,10 @@ gst_pipewire_sink_change_state (GstElement * element, GstStateChange transition)
+       break;
+     case GST_STATE_CHANGE_PAUSED_TO_READY:
+       gst_buffer_pool_set_active(GST_BUFFER_POOL_CAST(this->stream->pool), FALSE);
++      GST_OBJECT_LOCK (this);
++      this->pool_started = FALSE;
++      this->pending_format = FALSE;
++      GST_OBJECT_UNLOCK (this);
+       this->negotiated = FALSE;
+       break;
+     case GST_STATE_CHANGE_READY_TO_NULL:
+diff --git a/src/gst/gstpipewiresink.h b/src/gst/gstpipewiresink.h
+index 5816f7a..acceb81 100644
+--- a/src/gst/gstpipewiresink.h
++++ b/src/gst/gstpipewiresink.h
+@@ -71,6 +71,8 @@ struct _GstPipeWireSink {
+   gint rate;
+   gboolean is_rawvideo;
+   gboolean first_buffer;
++  gboolean pool_started;
++  gboolean pending_format;
+   GstClockTime first_buffer_pts;
+ 
+   GstPipeWireSinkMode mode;
+-- 
+2.55.0
+

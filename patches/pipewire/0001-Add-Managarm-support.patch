@@ -1,7 +1,7 @@
-From 74ce12fece4abc144035321234e50c178e38208c Mon Sep 17 00:00:00 2001
+From d42258463ab25f71e37d12fbbe2b9bca0181dce3 Mon Sep 17 00:00:00 2001
 From: Qwinci <qwinci222@gmail.com>
 Date: Fri, 29 May 2026 14:38:20 +0300
-Subject: [PATCH] Add Managarm support
+Subject: [PATCH 1/2] Add Managarm support
 
 ---
  meson.build                               | 8 ++++++--
@@ -99,5 +99,5 @@ index 3072c99..be1583d 100644
  
  #include <spa/utils/list.h>
 -- 
-2.53.0
+2.55.0
 

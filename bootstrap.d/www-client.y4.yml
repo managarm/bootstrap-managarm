@@ -19,17 +19,18 @@ packages:
         triple: "@OPTION:arch-triple@"
     pkgs_required:
       - mlibc
-      - iso-codes
       - cairo
-      - gcr4
-      - json-glib
-      - libarchive
-      - libadwaita
-      - libsoup3
-      - libportal
-      - webkitgtk4
       - desktop-file-utils
-    revision: 3
+      - gcr4
+      - gst-plugins-libav
+      - iso-codes
+      - json-glib
+      - libadwaita
+      - libarchive
+      - libportal
+      - libsoup3
+      - webkitgtk4
+    revision: 4
     configure:
       - args:
         - 'meson'
