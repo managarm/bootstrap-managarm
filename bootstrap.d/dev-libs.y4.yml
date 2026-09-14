@@ -18,9 +18,9 @@ sources:
   - name: gnulib
     subdir: ports
     git: 'https://github.com/coreutils/gnulib.git'
-    commit: 'b65a8d11a79bd72224deb06cf379bcbbd713fe36'
+    commit: '17fe0d9e0ae455d1774658503fdab26fc4e58638'
     branch: 'master'
-    version: '20250811'
+    version: '20260914'
 
   - name: gobject-introspection
     subdir: 'ports'
