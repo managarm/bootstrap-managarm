@@ -36,7 +36,7 @@ packages:
       - libxfixes
       - ncurses
       - systemd
-    revision: 3
+    revision: 4
     configure:
       - args:
         - 'meson'
@@ -86,6 +86,8 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['systemctl', 'enable', '--global', '--root', '@THIS_COLLECT_DIR@', 'pipewire.socket']
+      - args: ['systemctl', 'enable', '--global', '--root', '@THIS_COLLECT_DIR@', 'pipewire-pulse.socket']
       - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
     subpackages:
       - name: pipewire-dbg
@@ -117,7 +119,7 @@ packages:
       - lua
       - pipewire
       - systemd
-    revision: 2
+    revision: 3
     configure:
       - args:
         - 'meson'
@@ -145,6 +147,7 @@ packages:
       - args: ['ninja', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['systemctl', 'enable', '--global', '--root', '@THIS_COLLECT_DIR@', 'wireplumber']
       - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
     subpackages:
       - name: wireplumber-dbg
