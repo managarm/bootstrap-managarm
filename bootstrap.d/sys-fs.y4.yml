@@ -1,4 +1,47 @@
 packages:
+  - name: dosfstools
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: DOS filesystem tools - provides mkdosfs, mkfs.msdos, mkfs.vfat
+      description: This package contains various utilities for use with the FAT family of file systems.
+      spdx: 'GPL-3.0-only'
+      website: 'https://github.com/dosfstools/dosfstools'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-fs']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/dosfstools/dosfstools.git'
+      tag: 'v4.2'
+      version: '4.2'
+      tools_required:
+        - host-autoconf-v2.69
+        - host-automake-v1.15
+      regenerate:
+        - args: ['./autogen.sh']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - libiconv
+    revision: 1
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--enable-compat-symlinks'
+        - '--mandir=/usr/share/man'
+        - '--docdir=/usr/share/doc/dosfstools-4.2'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: dosfstools-dbg
+        include: ['/usr/lib/debug/**']
+
   - name: e2fsprogs
     architecture: '@OPTION:arch@'
     metadata:
