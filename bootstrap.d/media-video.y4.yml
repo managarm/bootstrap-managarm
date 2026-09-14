@@ -41,6 +41,7 @@ packages:
       - libxext
       - libxml
       - openssl
+      - opus
       - sdl2
     revision: 1
     configure:
