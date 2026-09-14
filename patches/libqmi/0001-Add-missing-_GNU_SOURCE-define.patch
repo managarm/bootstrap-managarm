@@ -1,0 +1,25 @@
+From 2bb74b9cfea19838b1fb4c175caec5377a5a94fa Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Tue, 18 Jun 2024 21:07:19 +0200
+Subject: [PATCH] Add missing _GNU_SOURCE define
+
+Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
+---
+ src/qmi-firmware-update/qfu-at-device.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/qmi-firmware-update/qfu-at-device.c b/src/qmi-firmware-update/qfu-at-device.c
+index 89005bd..aeeeed0 100644
+--- a/src/qmi-firmware-update/qfu-at-device.c
++++ b/src/qmi-firmware-update/qfu-at-device.c
+@@ -19,6 +19,7 @@
+  * Copyright (C) 2016-2017 Aleksander Morgado <aleksander@aleksander.es>
+  */
+ 
++#define _GNU_SOURCE
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <stdlib.h>
+-- 
+2.45.2
+
