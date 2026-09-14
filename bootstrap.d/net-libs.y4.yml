@@ -259,8 +259,8 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/jpirko/libndp.git'
-      tag: 'v1.8'
-      version: '1.8'
+      tag: 'v1.9'
+      version: '1.9'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
