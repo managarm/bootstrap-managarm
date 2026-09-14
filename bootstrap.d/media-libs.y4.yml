@@ -773,6 +773,57 @@ packages:
       - name: gst-plugins-good-dbg
         include: ['/usr/lib/debug/**']
 
+  - name: gst-plugins-libav
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: FFmpeg based gstreamer plugin
+      description: The GStreamer Libav package contains GStreamer plugins for Libav (a fork of FFmpeg).
+      spdx: 'LGPL-2.0-or-later'
+      website: 'https://gstreamer.freedesktop.org/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['media-libs']
+    source:
+      subdir: 'ports'
+      url: 'https://gstreamer.freedesktop.org/src/gst-libav/gst-libav-1.26.5.tar.xz'
+      format: 'tar.xz'
+      extract_path: 'gst-libav-1.26.5'
+      checksum: blake2b:04eff4584d262aaa0a98551f2f1371eeb1034bc7c58791af58318e70a0d601b1c7878d2ac517bc4ae546567e6b75d25842373aed9f2692334c8ebb79fa6f9393
+      version: '1.26.5'
+      patch-path-strip: 1
+    tools_required:
+      - system-gcc
+      - host-pkg-config
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - gstreamer
+      - gst-plugins-base
+      - ffmpeg
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '--wrap-mode=nodownload'
+        - '-Dpackage-origin=https://managarm.org/'
+        - '-Dpackage-name="GStreamer 1.26.5 Managarm"'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: gst-plugins-libav-dbg
+        include: ['/usr/lib/debug/**']
+
   - name: gstreamer
     architecture: '@OPTION:arch@'
     metadata:
