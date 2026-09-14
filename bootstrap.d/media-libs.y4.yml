@@ -659,11 +659,12 @@ packages:
       - libx11
       - libxext
       - mesa
+      - opus
       - pango
       - wayland
       - wayland-protocols
       - zlib
-    revision: 5
+    revision: 6
     configure:
       - args:
         - 'meson'
