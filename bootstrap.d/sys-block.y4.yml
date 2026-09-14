@@ -38,3 +38,56 @@ packages:
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'DESTDIR=@THIS_COLLECT_DIR@', 'prefix=/usr', 'mandir=/usr/share/man', 'install']
+
+  - name: parted
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Create, destroy, resize, check, copy partitions and file systems
+      description: This package contains a disk partitioning and partition resizing tool.
+      spdx: 'GPL-3.0-or-later'
+      website: 'https://www.gnu.org/software/parted/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-block']
+    source:
+      subdir: 'ports'
+      git: 'https://https.git.savannah.gnu.org/git/parted.git/'
+      tag: 'v3.7'
+      version: '3.7'
+      sources_required:
+        - gnulib
+      tools_required:
+        - host-autoconf-v2.72
+        - host-automake-v1.16
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['python3', '@SOURCE_ROOT@/scripts/checkout-gnulib.py', '@SOURCE_ROOT@/ports/gnulib']
+        - args: ['./bootstrap', '--skip-po']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - libiconv
+      - libintl
+      - util-linux-libs
+    revision: 1
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--disable-static'
+        - '--with-readline'
+        - '--disable-rpath'
+        - '--disable-device-mapper'
+        environ:
+          gl_cv_warn_c__fanalyzer: 'no' # Emits loads of warnings, and not needed
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: parted-dbg
+        include: ['/usr/lib/debug/**']
