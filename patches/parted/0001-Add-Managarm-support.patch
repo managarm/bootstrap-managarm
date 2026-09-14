@@ -1,0 +1,58 @@
+From 1c86fa9cd3fd87838fc0d172fd891721d74b3ff0 Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Mon, 14 Sep 2026 21:56:21 +0200
+Subject: [PATCH] Add Managarm support
+
+---
+ configure.ac             | 4 ++--
+ libparted/arch/linux.c   | 2 ++
+ libparted/architecture.c | 2 +-
+ 3 files changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 2783530..06c0f97 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -59,10 +59,10 @@ AM_SILENT_RULES([yes]) # make --enable-silent-rules the default.
+ 
+ AC_CANONICAL_HOST
+ case "$host_os" in
+-	linux*|uclinux*) OS=linux ;;
++	linux*|uclinux*|managarm*) OS=linux ;;
+ 	gnu*)	OS=gnu ;;
+ 	beos*)	OS=beos ;;
+-	*)	AC_MSG_ERROR([Unknown or unsupported OS "$host_os".  Only "linux", "uclinux", "gnu" and "beos" are supported in this version of GNU Parted.]) ;;
++	*)	AC_MSG_ERROR([Unknown or unsupported OS "$host_os".  Only "linux", "uclinux", "gnu", "managarm" and "beos" are supported in this version of GNU Parted.]) ;;
+ esac
+ AC_SUBST([OS])
+ 
+diff --git a/libparted/arch/linux.c b/libparted/arch/linux.c
+index 238d992..1afe00c 100644
+--- a/libparted/arch/linux.c
++++ b/libparted/arch/linux.c
+@@ -31,7 +31,9 @@
+ #include <fcntl.h>
+ #include <libgen.h>
+ #include <stdio.h>
++#ifdef __linux__
+ #include <syscall.h>
++#endif
+ #include <unistd.h>
+ #include <stdbool.h>
+ #include <dirent.h>
+diff --git a/libparted/architecture.c b/libparted/architecture.c
+index 1728697..f048b68 100644
+--- a/libparted/architecture.c
++++ b/libparted/architecture.c
+@@ -29,7 +29,7 @@ ped_set_architecture ()
+ 	if (ped_architecture)
+ 		return;
+ 
+-#ifdef linux
++#if defined(linux) || defined(__managarm__)
+ 	extern PedArchitecture ped_linux_arch;
+ 	const PedArchitecture* arch = &ped_linux_arch;
+ #elif defined(__BEOS__)
+-- 
+2.55.0
+
