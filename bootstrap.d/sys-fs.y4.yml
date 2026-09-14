@@ -1,0 +1,57 @@
+packages:
+  - name: e2fsprogs
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Standard EXT2/EXT3/EXT4 filesystem utilities
+      description: This package contains the utilities for handling the ext2 file system. It also supports the ext3 and ext4 journaling file systems.
+      spdx: 'GPL-2.0-only BSD'
+      website: 'http://e2fsprogs.sourceforge.net/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-fs']
+    source:
+      subdir: 'ports'
+      git: 'https://github.com/tytso/e2fsprogs.git'
+      tag: 'v1.47.4'
+      version: '1.47.4'
+      tools_required:
+        - host-autoconf-archive
+        - host-autoconf-v2.72
+        - host-automake-v1.16
+        - host-gettext
+        - host-libtool
+        - host-pkg-config
+      regenerate:
+        - args: ['autoreconf', '-fvi']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - libintl
+      - libarchive
+      - util-linux-libs
+    revision: 1
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--sysconfdir=/etc'
+        - '--enable-elf-shlibs'
+        - '--disable-libblkid'
+        - '--disable-libuuid'
+        - '--disable-uuidd'
+        - '--disable-fsck'
+        - '--with-systemd-unit-dir=/usr/lib/systemd/system'
+        - '--with-udev-rules-dir=/usr/lib/udev/rules.d'
+        - '--enable-symlink-install'
+        - '--with-pthread'
+        - '--enable-largefile'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: e2fsprogs-dbg
+        include: ['/usr/lib/debug/**']
