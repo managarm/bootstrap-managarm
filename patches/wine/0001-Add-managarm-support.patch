@@ -1,0 +1,140 @@
+From 30c3167cf5793331ea1479483073a44aff7d079a Mon Sep 17 00:00:00 2001
+From: Qwinci <qwinci222@gmail.com>
+Date: Sat, 2 Aug 2025 17:26:21 +0300
+Subject: [PATCH] Add managarm support
+
+---
+ dlls/ntdll/unix/signal_x86_64.c | 39 +++++++++++++++++++++++++++++++++
+ dlls/ntdll/unix/system.c        |  2 +-
+ dlls/ntdll/unix/virtual.c       |  2 +-
+ server/change.c                 |  4 ++--
+ tools/wrc/parser.l              |  1 +
+ 5 files changed, 44 insertions(+), 4 deletions(-)
+
+diff --git a/dlls/ntdll/unix/signal_x86_64.c b/dlls/ntdll/unix/signal_x86_64.c
+index 6ec662b..a36a1bc 100644
+--- a/dlls/ntdll/unix/signal_x86_64.c
++++ b/dlls/ntdll/unix/signal_x86_64.c
+@@ -83,6 +83,11 @@ extern void _thread_set_tsd_base(uint64_t);
+ #include "unix_private.h"
+ #include "wine/debug.h"
+ 
++#ifdef __managarm__
++#include <hel.h>
++#include <hel-syscalls.h>
++#endif
++
+ WINE_DEFAULT_DEBUG_CHANNEL(unwind);
+ WINE_DECLARE_DEBUG_CHANNEL(seh);
+ 
+@@ -300,6 +305,38 @@ static inline XMM_SAVE_AREA32 *FPU_sig( const ucontext_t *context )
+ 
+ #define XState_sig(context)  NULL
+ 
++#elif defined(__managarm__)
++
++#ifndef FP_XSTATE_MAGIC1
++#define FP_XSTATE_MAGIC1 0x46505853
++#endif
++
++#define RAX_sig(context)     ((context)->uc_mcontext.gregs[REG_RAX])
++#define RBX_sig(context)     ((context)->uc_mcontext.gregs[REG_RBX])
++#define RCX_sig(context)     ((context)->uc_mcontext.gregs[REG_RCX])
++#define RDX_sig(context)     ((context)->uc_mcontext.gregs[REG_RDX])
++#define RSI_sig(context)     ((context)->uc_mcontext.gregs[REG_RSI])
++#define RDI_sig(context)     ((context)->uc_mcontext.gregs[REG_RDI])
++#define RBP_sig(context)     ((context)->uc_mcontext.gregs[REG_RBP])
++#define R8_sig(context)      ((context)->uc_mcontext.gregs[REG_R8])
++#define R9_sig(context)      ((context)->uc_mcontext.gregs[REG_R9])
++#define R10_sig(context)     ((context)->uc_mcontext.gregs[REG_R10])
++#define R11_sig(context)     ((context)->uc_mcontext.gregs[REG_R11])
++#define R12_sig(context)     ((context)->uc_mcontext.gregs[REG_R12])
++#define R13_sig(context)     ((context)->uc_mcontext.gregs[REG_R13])
++#define R14_sig(context)     ((context)->uc_mcontext.gregs[REG_R14])
++#define R15_sig(context)     ((context)->uc_mcontext.gregs[REG_R15])
++#define CS_sig(context)      (*((WORD *)&(context)->uc_mcontext.gregs[REG_CSGSFS] + 0))
++#define GS_sig(context)      (*((WORD *)&(context)->uc_mcontext.gregs[REG_CSGSFS] + 1))
++#define FS_sig(context)      (*((WORD *)&(context)->uc_mcontext.gregs[REG_CSGSFS] + 2))
++#define RSP_sig(context)     ((context)->uc_mcontext.gregs[REG_RSP])
++#define RIP_sig(context)     ((context)->uc_mcontext.gregs[REG_RIP])
++#define EFL_sig(context)     ((context)->uc_mcontext.gregs[REG_EFL])
++#define TRAP_sig(context)    ((context)->uc_mcontext.gregs[REG_TRAPNO])
++#define ERROR_sig(context)   ((context)->uc_mcontext.gregs[REG_ERR])
++#define FPU_sig(context)     ((XMM_SAVE_AREA32 *)((context)->uc_mcontext.fpregs))
++#define XState_sig(fpu)      (((unsigned int *)fpu->Reserved4)[12] == FP_XSTATE_MAGIC1 ? (XSAVE_AREA_HEADER *)(fpu + 1) : NULL)
++
+ #else
+ #error You must define the signal context functions for your platform
+ #endif
+@@ -2609,6 +2646,8 @@ void init_syscall_frame( LPTHREAD_START_ROUTINE entry, void *arg, BOOL suspend,
+     sysarch( X86_64_SET_GSBASE, &teb );
+ #elif defined (__APPLE__)
+     thread_data->pthread_teb = mac_thread_gsbase();
++#elif defined(__managarm__)
++    helWriteGsBase(teb);
+ #else
+ # error Please define setting %gs for your architecture
+ #endif
+diff --git a/dlls/ntdll/unix/system.c b/dlls/ntdll/unix/system.c
+index e486da4..6d4f1ff 100644
+--- a/dlls/ntdll/unix/system.c
++++ b/dlls/ntdll/unix/system.c
+@@ -1889,7 +1889,7 @@ static void create_smbios_processors( struct smbios_buffer *buf )
+ 
+ #undef ADD_STR
+ 
+-#ifdef linux
++#if defined(linux) || defined(__managarm)
+ 
+ static const char *get_smbios_string( const char *path, char *str, size_t size )
+ {
+diff --git a/dlls/ntdll/unix/virtual.c b/dlls/ntdll/unix/virtual.c
+index e733e3f..bef4bf5 100644
+--- a/dlls/ntdll/unix/virtual.c
++++ b/dlls/ntdll/unix/virtual.c
+@@ -73,7 +73,7 @@
+ #undef host_page_size
+ #endif
+ 
+-#if defined(HAVE_LINUX_USERFAULTFD_H) && defined(HAVE_LINUX_FS_H)
++#if defined(HAVE_LINUX_USERFAULTFD_H) && defined(HAVE_LINUX_FS_H) && !defined(__managarm__)
+ # include <linux/userfaultfd.h>
+ # include <linux/fs.h>
+ #if defined(UFFD_FEATURE_WP_ASYNC) && defined(PM_SCAN_WP_MATCHING)
+diff --git a/server/change.c b/server/change.c
+index 5bcd067..0679ae4 100644
+--- a/server/change.c
++++ b/server/change.c
+@@ -51,7 +51,7 @@
+ 
+ /* dnotify support */
+ 
+-#ifdef linux
++#if defined(linux) && !defined(__managarm__)
+ #ifndef F_NOTIFY
+ #define F_NOTIFY 1026
+ #define DN_ACCESS       0x00000001      /* File accessed */
+@@ -232,7 +232,7 @@ static void release_dir_cache_entry( struct dir *dir )
+ 
+ static void dnotify_adjust_changes( struct dir *dir )
+ {
+-#if defined(F_SETSIG) && defined(F_NOTIFY)
++#if defined(F_SETSIG) && defined(F_NOTIFY) && !defined(__managarm__)
+     int fd = get_unix_fd( dir->fd );
+     unsigned int filter = dir->filter;
+     unsigned int val;
+diff --git a/tools/wrc/parser.l b/tools/wrc/parser.l
+index 3c3cf97..3730678 100644
+--- a/tools/wrc/parser.l
++++ b/tools/wrc/parser.l
+@@ -100,6 +100,7 @@ ws	[ \f\t\r]
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <strings.h>
+ #include <ctype.h>
+ #include <assert.h>
+ #include <errno.h>
+-- 
+2.49.0
+
