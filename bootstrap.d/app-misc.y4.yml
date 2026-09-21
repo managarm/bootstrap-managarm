@@ -203,7 +203,7 @@ packages:
       - wayland
       - yyjson
       - zlib
-    revision: 7
+    revision: 8
     configure:
       - args:
         - 'cmake'

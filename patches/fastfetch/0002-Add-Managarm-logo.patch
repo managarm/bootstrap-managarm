@@ -1,7 +1,7 @@
-From 0487b7c2cf77e5e3039961df62be18bf71f733f7 Mon Sep 17 00:00:00 2001
+From 59bd4caf0e46e8d4b75e3031d910dca613e8a286 Mon Sep 17 00:00:00 2001
 From: iretq <me@iretq.dev>
 Date: Sun, 26 Apr 2026 19:18:42 +0200
-Subject: [PATCH] Add Managarm logo
+Subject: [PATCH 2/2] Add Managarm logo
 
 Co-authored-by: conkkerxd <conkkerxd@gmail.com>
 ---
@@ -52,5 +52,5 @@ index b062be1..451df37 100644
      {
          .names = {"mandriva", "mandrake"},
 -- 
-2.54.0
+2.55.0
 

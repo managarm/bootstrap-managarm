@@ -1,7 +1,7 @@
-From 4807cfac0b52b2f242eaa8091108c6f131c6353c Mon Sep 17 00:00:00 2001
+From b47256b4e5fdb0b8c6527e8cc616b8977f227cb7 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Sun, 5 Jan 2025 22:21:51 +0100
-Subject: [PATCH] Add Managarm support
+Subject: [PATCH 1/2] Add Managarm support
 
 Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
@@ -18,7 +18,7 @@ Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
  10 files changed, 114 insertions(+), 22 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 71c0e88..e1d0bfb 100644
+index 71c0e88..7c4ce48 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -30,6 +30,8 @@ elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "DragonFly")
@@ -93,13 +93,13 @@ index 71c0e88..e1d0bfb 100644
 +        src/detection/brightness/brightness_nosupport.c
 +        src/detection/btrfs/btrfs_nosupport.c
 +        src/detection/chassis/chassis_nosupport.c
-+        src/detection/cpu/cpu_nosupport.c # No /proc/cpuinfo
++        src/detection/cpu/cpu_linux.c # No /proc/cpuinfo
 +        src/detection/cpucache/cpucache_nosupport.c
 +        src/detection/cpuusage/cpuusage_nosupport.c # /proc/stat is filled with stubs
 +        src/detection/cursor/cursor_nosupport.c # No cursor support?
 +        src/detection/bluetooth/bluetooth_nosupport.c
 +        src/detection/bluetoothradio/bluetoothradio_nosupport.c
-+        src/detection/disk/disk_nosupport.c # No /proc/mounts
++        src/detection/disk/disk_linux.c # No /proc/mounts
 +        src/detection/dns/dns_linux.c
 +        src/detection/physicaldisk/physicaldisk_nosupport.c
 +        src/detection/physicalmemory/physicalmemory_nosupport.c
@@ -125,7 +125,7 @@ index 71c0e88..e1d0bfb 100644
 +        src/detection/host/host_mac.c
 +        src/detection/icons/icons_linux.c
 +        src/detection/initsystem/initsystem_linux.c
-+        src/detection/keyboard/keyboard_nosupport.c # No /dev/input/by-path
++        src/detection/keyboard/keyboard_linux.c # No /dev/input/by-path
 +        src/detection/libc/libc_linux.c
 +        src/detection/lm/lm_nosupport.c
 +        src/detection/loadavg/loadavg_nosupport.c
@@ -148,7 +148,7 @@ index 71c0e88..e1d0bfb 100644
 +        src/detection/terminalshell/terminalshell_linux.c
 +        src/detection/terminalsize/terminalsize_linux.c
 +        src/detection/theme/theme_linux.c
-+        src/detection/tpm/tpm_nosupport.c # No tmp
++        src/detection/tpm/tpm_nosupport.c # No tpm
 +        src/detection/uptime/uptime_linux.c
 +        src/detection/users/users_linux.c
 +        src/detection/wallpaper/wallpaper_nosupport.c # No wallpapers
@@ -315,5 +315,5 @@ index 1bce70b..98b01a0 100644
  bool ffGetSmbiosValue(const char* devicesPath, const char* classPath, FFstrbuf* buffer);
  #endif
 -- 
-2.47.2
+2.55.0
 
