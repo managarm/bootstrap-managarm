@@ -250,9 +250,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://https.git.savannah.gnu.org/git/m4.git'
-      branch: 'branch-1.4'
-      commit: '817edf1a766b10e132ffe595bf66606cf2ceee22'
-      version: '1.4.19'
+      tag: 'v1.4.21'
+      version: '1.4.21'
       sources_required:
         - gnulib
       tools_required:
@@ -269,7 +268,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 16
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -277,7 +276,7 @@ packages:
         - '--prefix=/usr'
       - args: 'sed -i s/-Werror//g @THIS_BUILD_DIR@/src/Makefile'
       # This sed disables the building of the documentation
-      - args: 'sed -i s/"SUBDIRS = . examples lib src doc checks po tests"/"SUBDIRS = . examples lib src checks po tests"/ @THIS_BUILD_DIR@/Makefile'
+      - args: 'sed -i -e "s|^SUBDIRS = \. examples lib src doc checks po tests$|SUBDIRS = . examples lib src checks po tests|" -e "s| doc/m4\.1||" @THIS_BUILD_DIR@/Makefile'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']

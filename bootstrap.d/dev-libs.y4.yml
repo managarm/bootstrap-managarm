@@ -1596,8 +1596,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://https.git.savannah.gnu.org/git/libiconv.git'
-      tag: 'v1.17'
-      version: '1.17'
+      tag: 'v1.19'
+      version: '1.19'
       sources_required:
         - gnulib
       tools_required:
@@ -1642,7 +1642,7 @@ packages:
       - host-libtool
     pkgs_required:
       - mlibc
-    revision: 14
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
