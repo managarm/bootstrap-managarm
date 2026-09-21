@@ -1,42 +1,41 @@
-From 858ee78090f83b5323e8665ed12316fe0f04f546 Mon Sep 17 00:00:00 2001
+From 5587e5a534dbed6c8287c3ed8ee29490091587b1 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
-Date: Mon, 29 Aug 2022 00:54:41 +0200
+Date: Mon, 21 Sep 2026 16:55:18 +0200
 Subject: [PATCH] Remove calls to versioned binaries
 
-Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
 ---
  Makefile.devel            | 4 ++--
  libcharset/Makefile.devel | 2 +-
  2 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/Makefile.devel b/Makefile.devel
-index 3102ad2..d49e74a 100644
+index efcf358..d43157a 100644
 --- a/Makefile.devel
 +++ b/Makefile.devel
-@@ -6,8 +6,8 @@ SHELL = /bin/sh
+@@ -13,8 +13,8 @@ SHELL = /bin/sh
  MAKE = make
  AUTOCONF = autoconf
  AUTOHEADER = autoheader
--AUTOMAKE = automake-1.16
--ACLOCAL = aclocal-1.16
+-AUTOMAKE = automake-1.18
+-ACLOCAL = aclocal-1.18
 +AUTOMAKE = automake
 +ACLOCAL = aclocal
  GPERF = gperf
- CC = gcc -Wall
- CFLAGS = -O
+ 
+ # Ignore the built-in default for CC. Also ignore $(CC) if it is empty.
 diff --git a/libcharset/Makefile.devel b/libcharset/Makefile.devel
-index 7a991cd..3e0e2ca 100644
+index e1f5cba..506421a 100644
 --- a/libcharset/Makefile.devel
 +++ b/libcharset/Makefile.devel
 @@ -5,7 +5,7 @@ SHELL = /bin/sh
  MAKE = make
  AUTOCONF = autoconf
  AUTOHEADER = autoheader
--ACLOCAL = aclocal-1.16
+-ACLOCAL = aclocal-1.18
 +ACLOCAL = aclocal
  CP = cp
  RM = rm -f
  
 -- 
-2.37.2
+2.55.0
 
