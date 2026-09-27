@@ -29,12 +29,12 @@ tools:
     from_source: limine
     tools_required:
       - host-llvm-toolchain
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--prefix=@PREFIX@'
         - '--enable-all'
-        - '--disable-uefi-loongarch64'
         - 'LDFLAGS=-static'
     compile:
       - args: ['make', '-j@PARALLELISM@']
@@ -49,42 +49,16 @@ packages:
     from_source: limine
     tools_required:
       - system-gcc
+      - host-llvm-toolchain
     pkgs_required:
       - mlibc
+    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
-        # TODO(qookie): splice_if flattening the to-be-spliced list would help here
-        # x86_64 flags
-        - !managarm::arch_dep
-          arch: [x86_64]
-          item: '--enable-uefi-ia32'
-        - !managarm::arch_dep
-          arch: [x86_64]
-          item: '--enable-uefi-x86-64'
-        - !managarm::arch_dep
-          arch: [x86_64]
-          item: '--enable-uefi-cd'
-        - !managarm::arch_dep
-          arch: [x86_64]
-          item: '--enable-bios'
-        - !managarm::arch_dep
-          arch: [x86_64]
-          item: '--enable-bios-cd'
-        - !managarm::arch_dep
-          arch: [x86_64]
-          item: '--enable-bios-pxe'
-        # aarch64 flags
-        - !managarm::arch_dep
-          arch: [aarch64]
-          item: '--enable-uefi-aarch64'
-        # riscv64 flags
-        - !managarm::arch_dep
-          arch: [riscv64]
-          item: '--enable-uefi-riscv64'
-        - 'TOOLCHAIN_FOR_TARGET=@OPTION:arch-triple@-'
+        - '--enable-all'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
