@@ -244,7 +244,7 @@ tools:
       - binutils
     tools_required:
       - host-cmake
-    revision: 1
+    revision: 2
     configure:
       - args:
         - 'cmake'
@@ -258,7 +258,7 @@ tools:
         # Building it in debug mode produces tens of GiB of debugging info.
         - '-DCMAKE_BUILD_TYPE=Release'
         - '-DLLVM_LINK_LLVM_DYLIB=ON'
-        - '-DLLVM_TARGETS_TO_BUILD=X86;AArch64;RISCV'
+        - '-DLLVM_TARGETS_TO_BUILD=X86;AArch64;RISCV;LoongArch'
         - '-DLLVM_ENABLE_PROJECTS=clang;clang-tools-extra;lld'
 
         # clang configuration options.
