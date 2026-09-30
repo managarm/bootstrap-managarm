@@ -705,6 +705,9 @@ def do_qemu(args):
 
     qemu_args += ["-smp", str(args.smp)]
 
+    if args.passthrough_pm:
+        qemu_args += ["-overcommit", "cpu-pm=on"]
+
     if args.ci_script is not None:
         esp_uuid = None
 
@@ -1162,6 +1165,7 @@ qemu_parser.add_argument("--iommu-trace", action="store_true")
 qemu_parser.add_argument("--acpi", action="store_true")
 qemu_parser.add_argument("--el1", action="store_true")
 qemu_parser.add_argument("--el2-novhe", action="store_true")
+qemu_parser.add_argument("--passthrough-pm", action="store_true")
 
 # ---------------------------------------------------------------------------------------
 # gdb subcommand.
