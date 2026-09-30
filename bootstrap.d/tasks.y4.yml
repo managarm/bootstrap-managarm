@@ -144,6 +144,25 @@ tasks:
     workdir: '@BUILD_ROOT@'
     containerless: true
 
+  - name: make-uki
+    tools_required:
+      - tool: host-llvm-toolchain
+    tasks_required:
+      - update-initrd
+    args: |
+        set -e
+        f=$(mktemp)
+        echo -n 'sif' > "$f"
+        rm -f eir-uefi.efi
+        llvm-objcopy \
+            --add-section .initrd=initrd.cpio \
+            --set-section-flags .initrd=data,readonly \
+            --add-section .cmdline="$f" \
+            --set-section-flags .cmdline=data,readonly \
+            system-root/usr/managarm/bin/eir-uefi eir-uefi.efi
+        rm "$f"
+    workdir: '@BUILD_ROOT@'
+
   - name: qemu
     tools_required:
       - tool: ovmf
