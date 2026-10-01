@@ -248,6 +248,31 @@ packages:
       - name: fastfetch-dbg
         include: ['/usr/lib/debug/**']
 
+  - name: meow
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Meow
+      description: Meow meow
+      spdx: 'CC0'
+      website: 'https://github.com/robotman2412/meow'
+      maintainer: "Julian Scheffers <julian@scheffers.net>"
+      categories: ['app-misc']
+    source:
+      subdir: ports
+      git: 'https://github.com/robotman2412/meow.git'
+      branch: 'main'
+      commit: '78a9b7e9fe09ba44837dc461b1bf81fbe6299e22'
+      version: '1.0'
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+    revision: 1
+    build:
+      - args: ['@OPTION:arch-triple@-gcc', '@THIS_SOURCE_DIR@/meow.c', '-o', '@THIS_BUILD_DIR@/meow']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/bin']
+      - args: ['cp', '@THIS_BUILD_DIR@/meow', '@THIS_COLLECT_DIR@/usr/bin']
+
   - name: sl
     labels: [aarch64]
     architecture: '@OPTION:arch@'
