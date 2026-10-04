@@ -13,8 +13,8 @@ sources:
   - name: limine
     subdir: 'ports'
     git: 'https://github.com/Limine-Bootloader/Limine.git'
-    tag: 'v12.9.1'
-    version: '12.9.1'
+    tag: 'v12.9.2'
+    version: '12.9.2'
     tools_required:
       - host-autoconf-v2.69
       - host-automake-v1.16
@@ -29,7 +29,6 @@ tools:
     from_source: limine
     tools_required:
       - host-llvm-toolchain
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -52,7 +51,6 @@ packages:
       - host-llvm-toolchain
     pkgs_required:
       - mlibc
-    revision: 2
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
