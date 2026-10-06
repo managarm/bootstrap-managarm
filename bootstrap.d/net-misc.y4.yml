@@ -374,6 +374,104 @@ packages:
       - name: modemmanager-dbg
         include: ['/usr/lib/debug/**']
 
+  - name: networkmanager
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: A set of co-operative tools that make networking simple and straightforward
+      description: NetworkManager is a set of co-operative tools that make networking simple and straightforward. Whether you use WiFi, wired, 3G, or Bluetooth, NetworkManager allows you to quickly move from one network to another. Once a network has been configured and joined once, it can be detected and re-joined automatically the next time it's available.
+      spdx: 'GPL-2.0-or-later LGPL-2.1-or-later'
+      website: 'https://wiki.gnome.org/Projects/NetworkManager'
+      maintainer: 'Dennis Bonke <dennis@managarm.org>'
+      categories: ['net-misc']
+    source:
+      subdir: 'ports'
+      git: 'https://gitlab.freedesktop.org/NetworkManager/NetworkManager.git'
+      tag: '1.58.1'
+      version: '1.58.1'
+    tools_required:
+      - host-pkg-config
+      - system-gcc
+      - virtual: pkgconfig-for-target
+        triple: "@OPTION:arch-triple@"
+    pkgs_required:
+      - mlibc
+      - util-linux-libs
+      - systemd
+      - dbus
+      # - curl
+      # - dhcpcd
+      # - glib
+      - libndp
+      - libpsl
+      - newt
+      - gnutls
+      # - nss
+      # - readline
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--cross-file'
+        - '@SOURCE_ROOT@/scripts/meson-@OPTION:arch-triple@.cross-file'
+        - '--prefix=/usr'
+        - '--libdir=lib'
+        - '--buildtype=debugoptimized'
+        - '-Dlibaudit=no'
+        - '-Dnmtui=true'
+        - '-Dovs=false'
+        - '-Dppp=false'
+        - '-Dselinux=false'
+        - '-Dsession_tracking=systemd'
+        - '-Dsuspend_resume=systemd'
+        - '-Dsession_tracking_consolekit=false'
+        - '-Dmodem_manager=false' # Needs mobile-broadband-provider-info
+        - '-Dsystemdsystemunitdir=/usr/lib/systemd/system'
+        - '-Dsystemdsystemgeneratordir=/usr/lib/systemd/system-generators'
+        - '-Dsystemd_journal=true'
+        - '-Dconfig_logging_backend_default=journal'
+        - '-Dqt=false'
+        - '-Dpolkit=false'
+        - '-Debpf=false'
+        - '-Dintrospection=false'
+        - '-Dvapi=false'
+        - '-Dsystem_ca_path=/etc/ssl/certs'
+        - '-Ddbus_conf_dir=/usr/share/dbus-1/system.d'
+        - '-Dkernel_firmware_dir=/usr/lib/firmware'
+        - '-Dmodify_system=false'
+        - '-Dconfig_plugins_default=keyfile'
+        - '-Difcfg_rh=false'
+        - '-Difupdown=false'
+        - '-Dconfig_migrate_ifcfg_rh_default=false'
+        - '-Dconfig_dhcp_default=dhcpcd'
+        - '-Dcrypto=gnutls'
+        - '-Dreadline=libreadline'
+        - '-Dteamdctl=false'
+        - '-Dtests=no'
+        - '-Dnbft=false'
+        - '-Dnm_cloud_setup=false'
+        - '-Dclat=false'
+        - '-Dconcheck=false'
+        - '-Dman=false'
+        # - '-Dpolkit_agent_helper_1=/usr/lib/polkit-1/polkit-agent-helper-1'
+        - '@THIS_SOURCE_DIR@'
+    build:
+      - args: ['ninja']
+      - args: ['ninja', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['mkdir', '-pv', '@THIS_COLLECT_DIR@/etc/NetworkManager/conf.d']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/networkmanager/NetworkManager.conf', '@THIS_COLLECT_DIR@/etc/NetworkManager/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/networkmanager/no-dns-update.conf', '@THIS_COLLECT_DIR@/etc/NetworkManager/conf.d/']
+      - args: ['cp', '@SOURCE_ROOT@/extrafiles/networkmanager/dhcp.conf', '@THIS_COLLECT_DIR@/etc/NetworkManager/conf.d/']
+      - args: ['@SOURCE_ROOT@/scripts/keep-empty-directories.py', '@THIS_COLLECT_DIR@']
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: networkmanager-dbg
+        include: ['/usr/lib/debug/**']
+
   - name: rsync
     architecture: '@OPTION:arch@'
     source:
