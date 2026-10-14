@@ -1,0 +1,203 @@
+From 894109742d2d55a5e8dcc1e0de50e28b436c624b Mon Sep 17 00:00:00 2001
+From: Dennis Bonke <admin@dennisbonke.com>
+Date: Mon, 14 Sep 2026 23:22:18 +0200
+Subject: [PATCH] Add Managarm support
+
+---
+ meson.build                                          |  3 ++-
+ src/c-stdaux/src/c-stdaux-generic.h                  |  2 +-
+ src/libnm-glib-aux/nm-random-utils.c                 |  2 ++
+ src/libnm-glib-aux/nm-shared-utils.c                 |  6 ++++++
+ .../sd-adapt-core/nm-sd-adapt-core.h                 |  2 ++
+ .../src/libsystemd-network/sd-dhcp6-client.c         |  2 +-
+ .../sd-adapt-shared/nm-sd-adapt-shared.h             |  4 ++++
+ src/libnm-systemd-shared/src/basic/missing_syscall.h | 12 ++++++++++++
+ src/n-acd/src/n-acd-bpf.c                            |  6 ++++++
+ 9 files changed, 36 insertions(+), 3 deletions(-)
+
+diff --git a/meson.build b/meson.build
+index 5345a65..7cd0198 100644
+--- a/meson.build
++++ b/meson.build
+@@ -160,7 +160,8 @@ config_h.set('HAVE___SECURE_GETENV', cc.has_function('__secure_getenv'))
+ config_h.set10('HAVE_DECL_REALLOCARRAY', cc.has_function('reallocarray', prefix: '''#include <malloc.h>
+                                                                                     #include <stdlib.h>'''))
+ config_h.set10('HAVE_DECL_EXPLICIT_BZERO', cc.has_function('explicit_bzero', prefix: '#include <string.h>'))
+-config_h.set10('HAVE_DECL_MEMFD_CREATE', cc.has_function('memfd_create', prefix: '#include <sys/mman.h>'))
++config_h.set10('HAVE_DECL_MEMFD_CREATE', cc.has_function('memfd_create', prefix: '''#define _GNU_SOURCE
++                                                                                    #include <sys/mman.h>'''))
+ 
+ config_h.set10('HAVE_DLVSYM', cc.has_function('dlvsym', prefix: '''#define _GNU_SOURCE
+                                                                    #include <dlfcn.h>'''))
+diff --git a/src/c-stdaux/src/c-stdaux-generic.h b/src/c-stdaux/src/c-stdaux-generic.h
+index 6f87fd4..51d6e08 100644
+--- a/src/c-stdaux/src/c-stdaux-generic.h
++++ b/src/c-stdaux/src/c-stdaux-generic.h
+@@ -60,7 +60,7 @@ extern "C" {
+ #  define C_COMPILER_MSVC 1
+ #endif
+ 
+-#if defined(__linux__)
++#if defined(__linux__) || defined(__managarm__)
+ #  define C_OS_LINUX 1
+ #endif
+ 
+diff --git a/src/libnm-glib-aux/nm-random-utils.c b/src/libnm-glib-aux/nm-random-utils.c
+index 66c6225..f809813 100644
+--- a/src/libnm-glib-aux/nm-random-utils.c
++++ b/src/libnm-glib-aux/nm-random-utils.c
+@@ -10,7 +10,9 @@
+ 
+ #include <fcntl.h>
+ #include <sys/auxv.h>
++#if !HAVE_GETRANDOM
+ #include <sys/syscall.h>
++#endif
+ #include <poll.h>
+ 
+ #if USE_SYS_RANDOM_H
+diff --git a/src/libnm-glib-aux/nm-shared-utils.c b/src/libnm-glib-aux/nm-shared-utils.c
+index e39831c..2111c27 100644
+--- a/src/libnm-glib-aux/nm-shared-utils.c
++++ b/src/libnm-glib-aux/nm-shared-utils.c
+@@ -13,7 +13,9 @@
+ #include <arpa/inet.h>
+ #include <poll.h>
+ #include <fcntl.h>
++#ifndef __mlibc__
+ #include <sys/syscall.h>
++#endif
+ #include <net/if.h>
+ #include <net/ethernet.h>
+ #include <pthread.h>
+@@ -149,7 +151,11 @@ nm_utils_inet6_interface_identifier_to_token(const NMUtilsIPv6IfaceId *iid,
+ pid_t
+ nm_utils_gettid(void)
+ {
++#ifdef __mlibc__
++    return (pid_t) gettid();
++#else
+     return (pid_t) syscall(SYS_gettid);
++#endif
+ }
+ 
+ /* Used for asserting that this function is called on the main-thread.
+diff --git a/src/libnm-systemd-core/sd-adapt-core/nm-sd-adapt-core.h b/src/libnm-systemd-core/sd-adapt-core/nm-sd-adapt-core.h
+index 9cb5574..9239b9f 100644
+--- a/src/libnm-systemd-core/sd-adapt-core/nm-sd-adapt-core.h
++++ b/src/libnm-systemd-core/sd-adapt-core/nm-sd-adapt-core.h
+@@ -37,7 +37,9 @@
+ #include <sys/auxv.h>
+ #endif
+ #include <unistd.h>
++#ifdef __linux__
+ #include <sys/syscall.h>
++#endif
+ #include <sys/ioctl.h>
+ 
+ #define HAVE_EPOLL_PWAIT2 0
+diff --git a/src/libnm-systemd-core/src/libsystemd-network/sd-dhcp6-client.c b/src/libnm-systemd-core/src/libsystemd-network/sd-dhcp6-client.c
+index a7cd6a2..781b5d7 100644
+--- a/src/libnm-systemd-core/src/libsystemd-network/sd-dhcp6-client.c
++++ b/src/libnm-systemd-core/src/libsystemd-network/sd-dhcp6-client.c
+@@ -6,7 +6,7 @@
+ #include "nm-sd-adapt-core.h"
+ 
+ #include <errno.h>
+-#ifdef __GLIBC__
++#if defined(__GLIBC__) || defined(__mlibc__)
+ #include <linux/if_arp.h>
+ #endif
+ #include <linux/if_infiniband.h>
+diff --git a/src/libnm-systemd-shared/sd-adapt-shared/nm-sd-adapt-shared.h b/src/libnm-systemd-shared/sd-adapt-shared/nm-sd-adapt-shared.h
+index e2fd27b..96f82af 100644
+--- a/src/libnm-systemd-shared/sd-adapt-shared/nm-sd-adapt-shared.h
++++ b/src/libnm-systemd-shared/sd-adapt-shared/nm-sd-adapt-shared.h
+@@ -38,7 +38,9 @@
+ 
+ #if (NETWORKMANAGER_COMPILATION) & NM_NETWORKMANAGER_COMPILATION_WITH_SYSTEMD
+ 
++#ifndef __mlibc__
+ #include <sys/syscall.h>
++#endif
+ #include <sys/ioctl.h>
+ #include <pthread.h>
+ 
+@@ -71,6 +73,8 @@ raw_getpid(void)
+ {
+ #if defined(__alpha__)
+     return (pid_t) syscall(__NR_getxpid);
++#elif defined(__mlibc__)
++    return (pid_t) getpid();
+ #else
+     return (pid_t) syscall(__NR_getpid);
+ #endif
+diff --git a/src/libnm-systemd-shared/src/basic/missing_syscall.h b/src/libnm-systemd-shared/src/basic/missing_syscall.h
+index 55475f7..8ca7323 100644
+--- a/src/libnm-systemd-shared/src/basic/missing_syscall.h
++++ b/src/libnm-systemd-shared/src/basic/missing_syscall.h
+@@ -6,7 +6,9 @@
+ #include <errno.h>
+ #include <linux/time_types.h>
+ #include <signal.h>
++#ifdef __linux__
+ #include <sys/syscall.h>
++#endif
+ #include <sys/types.h>
+ #include <sys/wait.h>
+ #include <unistd.h>
+@@ -146,7 +148,12 @@ static inline long missing_get_mempolicy(int *mode, unsigned long *nodemask,
+ #if !HAVE_PIDFD_SEND_SIGNAL
+ /* since kernel v5.1 (3eb39f47934f9d5a3027fe00d906a45fe3a15fad) */
+ static inline int missing_pidfd_send_signal(int fd, int sig, siginfo_t *info, unsigned flags) {
++#ifdef __managarm__
++        errno = ENOSYS;
++        return -1;
++#else
+         return syscall(__NR_pidfd_send_signal, fd, sig, info, flags);
++#endif
+ }
+ 
+ #  define pidfd_send_signal missing_pidfd_send_signal
+@@ -157,7 +164,12 @@ static inline int missing_pidfd_send_signal(int fd, int sig, siginfo_t *info, un
+ #if !HAVE_PIDFD_OPEN
+ /* since kernel v5.3 (7615d9e1780e26e0178c93c55b73309a5dc093d7) */
+ static inline int missing_pidfd_open(pid_t pid, unsigned flags) {
++#ifdef __managarm__
++        errno = ENOSYS;
++        return -1;
++#else
+         return syscall(__NR_pidfd_open, pid, flags);
++#endif
+ }
+ 
+ #  define pidfd_open missing_pidfd_open
+diff --git a/src/n-acd/src/n-acd-bpf.c b/src/n-acd/src/n-acd-bpf.c
+index 55b44ab..a2c50e4 100644
+--- a/src/n-acd/src/n-acd-bpf.c
++++ b/src/n-acd/src/n-acd-bpf.c
+@@ -21,7 +21,9 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <sys/resource.h>
++#ifdef __linux__
+ #include <sys/syscall.h>
++#endif
+ #include <unistd.h>
+ #include "n-acd-private.h"
+ 
+@@ -141,7 +143,11 @@
+         })
+ 
+ static int n_acd_syscall_bpf(int cmd, union bpf_attr *attr, unsigned int size) {
++#ifdef __managarm__
++        return -ENOSYS;
++#else
+         return (int)syscall(__NR_bpf, cmd, attr, size);
++#endif
+ }
+ 
+ int n_acd_bpf_map_create(int *mapfdp, size_t max_entries) {
+-- 
+2.55.0
+
