@@ -98,3 +98,51 @@ packages:
     subpackages:
       - name: e2fsprogs-dbg
         include: ['/usr/lib/debug/**']
+
+  - name: mtools
+    architecture: '@OPTION:arch@'
+    metadata:
+      summary: Utilities to access MS-DOS disks without mounting them
+      description: This package provides tools to read, write and manipulate files on FAT file systems, such as the EFI system partition, without mounting them.
+      spdx: 'GPL-3.0-or-later'
+      website: 'https://www.gnu.org/software/mtools/'
+      maintainer: "Dennis Bonke <dennis@managarm.org>"
+      categories: ['sys-fs']
+    source:
+      subdir: 'ports'
+      url: 'https://ftp.fau.de/gnu/mtools/mtools-4.0.49.tar.bz2'
+      checksum: 'blake2b:4147fb151392a920f691ca543bd5d6fd0be83fd1b59cd610747eeb2a9c19633e17f15aa0a85659433e70e802bf6ccb6ec07f4d1357f7417d58e238476d68db19'
+      format: tar.bz2
+      extract_path: 'mtools-4.0.49'
+      version: '4.0.49'
+      tools_required:
+        - host-automake-v1.15
+      regenerate:
+        - args: ['cp',
+            '@BUILD_ROOT@/tools/host-automake-v1.15/share/automake-1.15/config.sub',
+            '@THIS_SOURCE_DIR@/']
+    tools_required:
+      - system-gcc
+    pkgs_required:
+      - mlibc
+      - libiconv
+    revision: 1
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=@OPTION:arch-triple@'
+        - '--prefix=/usr'
+        - '--sysconfdir=/etc'
+        - '--without-x'
+        environ:
+          # configure does not detect that iconv lives in libiconv.
+          LIBS: '-liconv'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+      - args: ['@SOURCE_ROOT@/scripts/split-debug.py', '--binutils', '@THIS_COLLECT_DIR@']
+    subpackages:
+      - name: mtools-dbg
+        include: ['/usr/lib/debug/**']
