@@ -1,0 +1,26 @@
+From 76bd7a7c7205be78bc71b3f82f731f70c08f7b0c Mon Sep 17 00:00:00 2001
+From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
+Date: Tue, 20 Oct 2026 18:54:44 +0200
+Subject: [PATCH] blkdev: Define the block device ioctls on Managarm
+
+Assisted-by: Claude Code (Opus 5.5)
+---
+ include/blkdev.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/blkdev.h b/include/blkdev.h
+index 3f3c5e2..fc91850 100644
+--- a/include/blkdev.h
++++ b/include/blkdev.h
+@@ -23,7 +23,7 @@
+ 
+ #define DEFAULT_SECTOR_SIZE       512
+ 
+-#ifdef __linux__
++#if defined(__linux__) || defined(__managarm__)
+ /* very basic ioctls, should be available everywhere */
+ # ifndef BLKROSET
+ #  define BLKROSET   _IO(0x12,93)	/* set device read-only (0 = read-write) */
+-- 
+2.47.3
+
