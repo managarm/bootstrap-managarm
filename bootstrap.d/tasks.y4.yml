@@ -32,6 +32,34 @@ tasks:
       - '--sysroot=@SYSROOT_DIR@'
     workdir: '@BUILD_ROOT@'
 
+  # Adds the live image's users and the stable xbps repository to the sysroot.
+  # Rerunning it is harmless, and it must rerun after every install of core-files.
+  - name: provision-sysroot
+    pkgs_required:
+      - core-files
+      - managarm-scripts
+    args:
+      - '@SYSROOT_DIR@/usr/managarm/bin/provision-sysroot.py'
+      - 'apply'
+      - '--root'
+      - '@SYSROOT_DIR@'
+      - '--arch'
+      - '@OPTION:arch@'
+      - '--xbps-stable'
+      - '--user'
+      - 'managarm'
+      - '--groups'
+      - 'managarm'
+      - 'wheel,users'
+      - '--password-hash'
+      - 'managarm'
+      - 'WJg36EZUlJ96k'
+      - '--password-hash'
+      - 'root'
+      - '4T1CNB2BgzJeI'
+      - '--sshd-password-auth'
+    workdir: '@BUILD_ROOT@'
+
   - name: initialize-empty-image
     sources_required:
       - image_create
@@ -69,6 +97,7 @@ tasks:
         expose: false
     tasks_required:
       - update-initrd
+      - provision-sysroot
     args:
       - '@SOURCE_ROOT@/scripts/update-image.py'
       - '--triple'
@@ -92,6 +121,7 @@ tasks:
         expose: false
     tasks_required:
       - update-initrd
+      - provision-sysroot
     args:
       - '@SOURCE_ROOT@/scripts/update-image.py'
       - '--triple'
@@ -114,6 +144,7 @@ tasks:
         expose: false
     tasks_required:
       - update-initrd
+      - provision-sysroot
     args:
       - '@SOURCE_ROOT@/scripts/update-image.py'
       - '--triple'
