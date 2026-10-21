@@ -60,3 +60,23 @@ packages:
       - args: ['ln', '-svf', 'usr/bin', '@THIS_COLLECT_DIR@/bin']
       - args: ['ln', '-svf', 'usr/lib', '@THIS_COLLECT_DIR@/lib']
       - args: ['ln', '-svf', 'usr/sbin', '@THIS_COLLECT_DIR@/sbin']
+
+  - name: managarm-scripts
+    labels: [aarch64, riscv64]
+    architecture: noarch
+    metadata:
+      summary: Managarm distribution scripts
+      description: This package provides scripts that build or maintain a Managarm installation
+      spdx: 'MIT'
+      website: 'https://managarm.org'
+      maintainer: "Alexander van der Grinten <avdgrinten@managarm.org>"
+      categories: ['sys-apps']
+    default: true
+    source:
+      subdir: meta-sources
+      version: '1.0'
+    revision: 1
+    configure: []
+    build:
+      # update-image.py runs this from the sysroot, so it lives at the same path on the host and the target.
+      - args: ['install', '-Dm755', '@SOURCE_ROOT@/extrafiles/managarm-scripts/update-boot.py', '@THIS_COLLECT_DIR@/usr/managarm/bin/update-boot.py']
