@@ -795,7 +795,7 @@ class RemakeImageAction:
                 "-U",
                 root_uuid,
                 "-d",
-                "system-root/",
+                self.sysroot,
                 "-E",
                 # XXX: is 512 correct?
                 "offset={}".format(512 * start),
