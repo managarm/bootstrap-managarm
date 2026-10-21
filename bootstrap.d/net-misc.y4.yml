@@ -563,7 +563,7 @@ packages:
       - openssl
       - pam
       - zlib
-    revision: 6
+    revision: 7
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -602,9 +602,13 @@ packages:
           [Install]
           WantedBy=multi-user.target
           EOF
+      # sshd uses the first value it reads, so the drop-ins go first to override the settings below.
+      - args: ['sed', '-i', '1i Include /etc/ssh/sshd_config.d/*.conf\n', '@THIS_COLLECT_DIR@/etc/ssh/sshd_config']
       - args: |
           echo "UsePAM yes" >> @THIS_COLLECT_DIR@/etc/ssh/sshd_config
           echo "PermitRootLogin no" >> @THIS_COLLECT_DIR@/etc/ssh/sshd_config
+          echo "PasswordAuthentication no" >> @THIS_COLLECT_DIR@/etc/ssh/sshd_config
+          echo "KbdInteractiveAuthentication no" >> @THIS_COLLECT_DIR@/etc/ssh/sshd_config
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/multi-user.target.wants']
       - args: ['ln', '-svn', '../sshd.service', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/multi-user.target.wants/']
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/etc/tmpfiles.d']
