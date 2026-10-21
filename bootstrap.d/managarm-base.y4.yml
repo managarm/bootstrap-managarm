@@ -13,7 +13,7 @@ packages:
     source:
       subdir: meta-sources
       version: '1.0'
-    revision: 18
+    revision: 19
     configure: []
     build:
       # Create initial directories
@@ -24,7 +24,7 @@ packages:
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/sys']
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/proc']
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/tmp']
-      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/home/managarm']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/home']
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr']
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/share']
       - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/var']
@@ -40,7 +40,7 @@ packages:
       - args: ['touch', '@THIS_COLLECT_DIR@/sys/.keep']
       - args: ['touch', '@THIS_COLLECT_DIR@/proc/.keep']
       - args: ['touch', '@THIS_COLLECT_DIR@/tmp/.keep']
-      - args: ['touch', '@THIS_COLLECT_DIR@/home/managarm/.keep']
+      - args: ['touch', '@THIS_COLLECT_DIR@/home/.keep']
       - args: ['touch', '@THIS_COLLECT_DIR@/var/.keep']
       - args: ['touch', '@THIS_COLLECT_DIR@/usr/bin/.keep']
       - args: ['touch', '@THIS_COLLECT_DIR@/usr/sbin/.keep']
