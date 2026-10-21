@@ -339,7 +339,7 @@ class MountAction:
 FsAction = Enum("FsAction", "CREATE_DIR ENSURE_LINKS INSTALL CP RSYNC")
 
 
-def generate_plan(arch, scriptdir):
+def generate_plan(arch, sysroot, scriptdir):
     tmpdir = tempfile.TemporaryDirectory()
     tmpdirs.append(tmpdir) # Prevent GC until script terminates.
 
@@ -368,11 +368,22 @@ def generate_plan(arch, scriptdir):
     yield FsAction.INSTALL, "initrd.cpio", "boot/managarm", dict(ignore_sysroot=True)
 
     limine_conf = os.path.join(tmpdir.name, "limine.conf")
+    update_boot = os.path.join(sysroot, "usr/managarm/bin/update-boot.py")
+    if not os.path.exists(update_boot):
+        # Sysroots from repositories that predate managarm-scripts, e.g., CI's stable images.
+        print("update-image: The sysroot has no update-boot.py, using the one from extrafiles/")
+        update_boot = os.path.join(scriptdir, "../extrafiles/managarm-scripts/update-boot.py")
     subprocess.run(
         [
-            os.path.join(scriptdir, "gen-limine-conf.py"),
-            "--arch=" + arch.split('-')[0],
-            limine_conf,
+            sys.executable,
+            update_boot,
+            "esp-contents",
+            "--root",
+            sysroot,
+            "--arch",
+            arch.split('-')[0],
+            "--esp-dir",
+            tmpdir.name,
         ],
         check=True,
     )
@@ -576,7 +587,7 @@ class UpdateFsAction:
             ensure_sysroot_links(self.sysroot)
 
         iterate_plan(
-            generate_plan(self.arch, scriptdir),
+            generate_plan(self.arch, self.sysroot, scriptdir),
             {
                 FsAction.CREATE_DIR: plan_create_dir,
                 FsAction.ENSURE_LINKS: plan_ensure_links,
@@ -770,7 +781,7 @@ class RemakeImageAction:
 
         # start by correcting the sysroot slightly
         iterate_plan(
-            generate_plan(self.arch, scriptdir),
+            generate_plan(self.arch, self.sysroot, scriptdir),
             {
                 FsAction.CREATE_DIR: self._create_dir,
                 FsAction.ENSURE_LINKS: self._ensure_links,
