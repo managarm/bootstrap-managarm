@@ -163,11 +163,10 @@ def dev_for_mountpoint(mountpoint):
 
 
 class MountAction:
-    def __init__(self, mount_using, image, mountpoint, sysroot):
+    def __init__(self, mount_using, image, mountpoint):
         self.mount_using = mount_using
         self.image = image
         self.mountpoint = mountpoint
-        self.sysroot = sysroot
 
     def run(self):
         global global_mount_info
@@ -280,88 +279,26 @@ class MountAction:
             except FileExistsError:
                 pass
             run_regular(args)
-        elif self.mount_using == "docker":
-            cmds = "mkdir /devtmpfs\n"
-            cmds += "mount -t devtmpfs devtmpfs /devtmpfs\n"
-            cmds += 'BLOCKDEV=$(losetup -Pf --show image | sed "s/dev/devtmpfs/")\n'
-            cmds += f'mount "$BLOCKDEV"p{root_partition} /mnt\n'
-            cmds += f'mount "$BLOCKDEV"p{efi_partition} /mnt/boot\n'
-
-            cmds += 'echo "$BLOCKDEV" > /stuff/scripts/tmp-docker-blockdev\n'
-            cmds += "tail -f /dev/null"
-
-            script_dir = os.path.realpath(os.path.dirname(sys.argv[0]))
-
-            try:
-                os.remove(os.path.join(script_dir, "tmp-docker-blockdev"))
-            except FileNotFoundError:
-                pass
-
-            sysroot_dir = os.path.realpath(self.sysroot)
-            initrd = os.path.realpath("initrd.cpio")
-            tools_dir = os.path.realpath("tools")
-            image = os.path.realpath(self.image)
-
-            run_regular(
-                [
-                    "docker",
-                    "run",
-                    "--privileged=true",
-                    "--rm",
-                    "--name",
-                    "managarm-mount",
-                    "-v",
-                    f"{sysroot_dir}:/stuff/system-root:ro",
-                    "-v",
-                    f"{initrd}:/stuff/initrd.cpio:ro",
-                    "-v",
-                    f"{tools_dir}:/stuff/tools:ro",
-                    "-v",
-                    f"{script_dir}:/stuff/scripts:rw",
-                    "-v",
-                    f"{image}:/stuff/image:rw",
-                    "-w",
-                    "/stuff",
-                    "-u",
-                    "root:root",
-                    "-d",
-                    "managarm-buildenv",
-                    "bash",
-                    "-c",
-                    cmds,
-                ]
-            )
-
-            while not os.access(os.path.join(script_dir, "tmp-docker-blockdev"), os.F_OK):
-                pass
-
-            with open(os.path.join(script_dir, "tmp-docker-blockdev")) as f:
-                diskdev = f.read().rstrip()
-
-            os.remove(os.path.join(script_dir, "tmp-docker-blockdev"))
-
-            self.mountpoint = "/mnt inside of container"
         else:
             raise RuntimeError(f"Unknown mount method {self.mount_using}")
 
-        if self.mount_using != "docker":
-            efi_path = os.path.join(self.mountpoint, "boot")
+        efi_path = os.path.join(self.mountpoint, "boot")
 
-            print(f"update-image: EFI partition exists, mounting to {efi_path}")
-            if not os.path.isdir(efi_path):
-                if self.mount_using == "block" or self.mount_using == "loopback":
-                    run_elevated(["mkdir", efi_path])
-                else:
-                    raise RuntimeError(
-                        "/boot does not exist on mountpoint (or is not a directory)"
-                    )
-
-            sep = ""
-            if diskdev and diskdev[-1].isdigit():
-                sep = "p"
-
+        print(f"update-image: EFI partition exists, mounting to {efi_path}")
+        if not os.path.isdir(efi_path):
             if self.mount_using == "block" or self.mount_using == "loopback":
-                run_elevated(["mount", f"{diskdev}{sep}{efi_partition}", efi_path])
+                run_elevated(["mkdir", efi_path])
+            else:
+                raise RuntimeError(
+                    "/boot does not exist on mountpoint (or is not a directory)"
+                )
+
+        sep = ""
+        if diskdev and diskdev[-1].isdigit():
+            sep = "p"
+
+        if self.mount_using == "block" or self.mount_using == "loopback":
+            run_elevated(["mount", f"{diskdev}{sep}{efi_partition}", efi_path])
 
         global_mount_info = MountInfo(
             diskdev,
@@ -552,20 +489,13 @@ class UpdateFsAction:
 
     def run(self):
         root_uuid = None
-        is_docker = False
         needs_root = False
         target_mntpoint = self.mountpoint
         scriptdir = os.path.dirname(sys.argv[0])
 
         if global_mount_info:
             root_uuid = global_mount_info.root_uuid
-
-            if global_mount_info.mount_using == "docker":
-                target_mntpoint = "/mnt"
-                scriptdir = "/stuff/scripts"
-                is_docker = True
-            else:
-                needs_root = not global_mount_info.mount_using == "guestfs"
+            needs_root = not global_mount_info.mount_using == "guestfs"
         else:
             # Determine root uuid manually for mountpoint
             diskdev, partdev = dev_for_mountpoint(self.mountpoint)
@@ -662,13 +592,7 @@ class UpdateFsAction:
 
         commands = "\n".join([join_command(step) for step in steps])
 
-        if is_docker:
-            run_regular(
-                ["docker", "exec", "-i", "-u", "root:root", "managarm-mount", "bash"],
-                commands,
-                False,
-            )
-        elif needs_root:
+        if needs_root:
             run_elevated(["bash"], commands, False)
         else:
             run_regular(["bash"], commands, False)
@@ -717,28 +641,6 @@ class UnmountAction:
 
                 while check_if_running(pid):
                     time.sleep(1)
-        elif mount_using == "docker":
-            cmds = "sync\n"
-            cmds += "umount /mnt/boot\n"
-            cmds += "umount /mnt\n"
-            cmds += f"losetup -d {blockdev}\n"
-            cmds += "umount /devtmpfs"
-
-            run_regular(
-                [
-                    "docker",
-                    "exec",
-                    "-i",
-                    "-u",
-                    "root:root",
-                    "managarm-mount",
-                    "bash",
-                    "-c",
-                    cmds,
-                ]
-            )
-
-            run_regular(["docker", "stop", "-t", "0", "managarm-mount"])
         else:
             raise RuntimeError(f"Unknown mount method {mount_using}")
 
@@ -978,7 +880,7 @@ class RemakeImageAction:
 
 def make_action(name, mount_using, image, mountpoint, sysroot, arch):
     if name == "mount":
-        return MountAction(mount_using, image, mountpoint, sysroot)
+        return MountAction(mount_using, image, mountpoint)
     elif name == "update-fs":
         return UpdateFsAction(mountpoint, sysroot, arch)
     elif name == "unmount":
@@ -1027,7 +929,7 @@ parser.add_argument(
     "-m",
     "--mount-using",
     dest="mount_using",
-    choices=["loopback", "docker", "guestfs", "block"],
+    choices=["loopback", "guestfs", "block"],
     default="guestfs",
     help="How to mount the image (default: guestfs)",
 )
