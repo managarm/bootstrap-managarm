@@ -78,5 +78,8 @@ packages:
     revision: 1
     configure: []
     build:
+      # Laid out as in extrafiles/managarm-scripts, so that the scripts find their data files next to themselves.
+      - args: ['install', '-Dm755', '@SOURCE_ROOT@/extrafiles/managarm-scripts/update-boot.py', '@THIS_COLLECT_DIR@/usr/managarm/lib/managarm-scripts/update-boot.py']
       # update-image.py runs this from the sysroot, so it lives at the same path on the host and the target.
-      - args: ['install', '-Dm755', '@SOURCE_ROOT@/extrafiles/managarm-scripts/update-boot.py', '@THIS_COLLECT_DIR@/usr/managarm/bin/update-boot.py']
+      - args: ['mkdir', '-p', '@THIS_COLLECT_DIR@/usr/managarm/bin']
+      - args: ['ln', '-svf', '../lib/managarm-scripts/update-boot.py', '@THIS_COLLECT_DIR@/usr/managarm/bin/update-boot.py']
