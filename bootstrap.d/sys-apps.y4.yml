@@ -1250,7 +1250,7 @@ packages:
       - ncurses
       - readline
       - zlib
-    revision: 4
+    revision: 5
     configure:
       - args:
         - 'meson'
@@ -1402,7 +1402,7 @@ packages:
       - systemd
       - util-linux-libs
       - zlib
-    revision: 6
+    revision: 7
     configure:
       - args:
         - 'meson'
