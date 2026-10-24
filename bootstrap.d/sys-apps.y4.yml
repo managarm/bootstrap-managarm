@@ -1402,7 +1402,7 @@ packages:
       - systemd
       - util-linux-libs
       - zlib
-    revision: 7
+    revision: 8
     configure:
       - args:
         - 'meson'
