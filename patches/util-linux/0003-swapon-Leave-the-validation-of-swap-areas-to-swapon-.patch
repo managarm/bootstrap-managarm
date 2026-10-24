@@ -1,0 +1,31 @@
+From 77e380e939b11a08c009130038fb79bc952de97b Mon Sep 17 00:00:00 2001
+From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
+Date: Sat, 24 Oct 2026 21:55:38 +0200
+Subject: [PATCH] swapon: Leave the validation of swap areas to swapon(2) on
+ Managarm
+
+Assisted-by: Claude Code (Opus 5.5)
+---
+ sys-utils/swapon.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/sys-utils/swapon.c b/sys-utils/swapon.c
+index 7667857..8e1bc1b 100644
+--- a/sys-utils/swapon.c
++++ b/sys-utils/swapon.c
+@@ -571,6 +571,12 @@ static int swapon_checks(const struct swapon_ctl *ctl, struct swap_device *dev)
+ 		goto err;
+ 	}
+ 
++#ifdef __managarm__
++	/* Managarm swap areas do not use Linux's swap header; swapon(2) validates them. */
++	close(fd);
++	return 0;
++#endif
++
+ 	hdr = swap_get_header(fd, &sig, &dev->pagesize);
+ 	if (!hdr) {
+ 		warnx(_("%s: read swap header failed"), dev->path);
+-- 
+2.47.3
+
