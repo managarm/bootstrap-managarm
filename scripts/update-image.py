@@ -3,7 +3,6 @@
 import argparse
 import errno
 import functools
-import io
 import json
 import os
 import shlex
@@ -29,14 +28,13 @@ sfdisk_command = None
 tmpdirs = []
 
 class MountInfo:
-    def __init__(self, blockdev, mount_using, image, mountpoint, root_idx, efi_idx, root_uuid):
+    def __init__(self, blockdev, mount_using, image, mountpoint, root_idx, efi_idx):
         self.blockdev = blockdev
         self.mount_using = mount_using
         self.image = image
         self.mountpoint = mountpoint
         self.root_idx = root_idx
         self.efi_idx = efi_idx
-        self.root_uuid = root_uuid
 
 
 class Partition:
@@ -157,17 +155,37 @@ def get_partition_list(image):
 def dev_for_mountpoint(mountpoint):
     mnt = json.loads(run_regular(["findmnt", "--json", mountpoint]))
     partdev = mnt["filesystems"][0]["source"]
-    diskdev = run_regular(["lsblk", "-no", "pkname", partdev])
+    diskdev = "/dev/" + run_regular(["lsblk", "-no", "pkname", partdev])
 
     return (diskdev, partdev)
 
 
+def get_partuuid(partitions, idx, what):
+    for part in partitions:
+        if part.idx == idx and part.uuid:
+            # This also normalizes it to lowercase.
+            return str(uuid.UUID(part.uuid))
+    raise RuntimeError(f"Could not determine the PARTUUID of the {what} partition")
+
+
+# Must happen before the root fs is synced or made, so that the file also lands on the image.
+def write_partition_config(sysroot, root_partuuid, esp_partuuid):
+    path = os.path.join(sysroot, "etc/managarm/partitions.toml")
+    if verbose:
+        print(f"update-image: Writing {path} (root PARTUUID {root_partuuid})")
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w") as f:
+        f.write("[root]\n")
+        f.write(f'partuuid = "{root_partuuid}"\n')
+        f.write("\n[esp]\n")
+        f.write(f'partuuid = "{esp_partuuid}"\n')
+
+
 class MountAction:
-    def __init__(self, mount_using, image, mountpoint, sysroot):
+    def __init__(self, mount_using, image, mountpoint):
         self.mount_using = mount_using
         self.image = image
         self.mountpoint = mountpoint
-        self.sysroot = sysroot
 
     def run(self):
         global global_mount_info
@@ -176,12 +194,10 @@ class MountAction:
 
         diskdev = self.image
         root_partition = None
-        root_uuid = None
         efi_partition = None
         for part in partitions:
             if part.type == MANAGARM_ROOT_PART_TYPE:
                 root_partition = part.idx
-                root_uuid = part.uuid
             elif part.type == EFI_SYSTEM_PART_TYPE:
                 efi_partition = part.idx
                 # image_create creates a 256MiB ESP partition, while older images
@@ -280,88 +296,26 @@ class MountAction:
             except FileExistsError:
                 pass
             run_regular(args)
-        elif self.mount_using == "docker":
-            cmds = "mkdir /devtmpfs\n"
-            cmds += "mount -t devtmpfs devtmpfs /devtmpfs\n"
-            cmds += 'BLOCKDEV=$(losetup -Pf --show image | sed "s/dev/devtmpfs/")\n'
-            cmds += f'mount "$BLOCKDEV"p{root_partition} /mnt\n'
-            cmds += f'mount "$BLOCKDEV"p{efi_partition} /mnt/boot\n'
-
-            cmds += 'echo "$BLOCKDEV" > /stuff/scripts/tmp-docker-blockdev\n'
-            cmds += "tail -f /dev/null"
-
-            script_dir = os.path.realpath(os.path.dirname(sys.argv[0]))
-
-            try:
-                os.remove(os.path.join(script_dir, "tmp-docker-blockdev"))
-            except FileNotFoundError:
-                pass
-
-            sysroot_dir = os.path.realpath(self.sysroot)
-            initrd = os.path.realpath("initrd.cpio")
-            tools_dir = os.path.realpath("tools")
-            image = os.path.realpath(self.image)
-
-            run_regular(
-                [
-                    "docker",
-                    "run",
-                    "--privileged=true",
-                    "--rm",
-                    "--name",
-                    "managarm-mount",
-                    "-v",
-                    f"{sysroot_dir}:/stuff/system-root:ro",
-                    "-v",
-                    f"{initrd}:/stuff/initrd.cpio:ro",
-                    "-v",
-                    f"{tools_dir}:/stuff/tools:ro",
-                    "-v",
-                    f"{script_dir}:/stuff/scripts:rw",
-                    "-v",
-                    f"{image}:/stuff/image:rw",
-                    "-w",
-                    "/stuff",
-                    "-u",
-                    "root:root",
-                    "-d",
-                    "managarm-buildenv",
-                    "bash",
-                    "-c",
-                    cmds,
-                ]
-            )
-
-            while not os.access(os.path.join(script_dir, "tmp-docker-blockdev"), os.F_OK):
-                pass
-
-            with open(os.path.join(script_dir, "tmp-docker-blockdev")) as f:
-                diskdev = f.read().rstrip()
-
-            os.remove(os.path.join(script_dir, "tmp-docker-blockdev"))
-
-            self.mountpoint = "/mnt inside of container"
         else:
             raise RuntimeError(f"Unknown mount method {self.mount_using}")
 
-        if self.mount_using != "docker":
-            efi_path = os.path.join(self.mountpoint, "boot")
+        efi_path = os.path.join(self.mountpoint, "boot")
 
-            print(f"update-image: EFI partition exists, mounting to {efi_path}")
-            if not os.path.isdir(efi_path):
-                if self.mount_using == "block" or self.mount_using == "loopback":
-                    run_elevated(["mkdir", efi_path])
-                else:
-                    raise RuntimeError(
-                        "/boot does not exist on mountpoint (or is not a directory)"
-                    )
-
-            sep = ""
-            if diskdev and diskdev[-1].isdigit():
-                sep = "p"
-
+        print(f"update-image: EFI partition exists, mounting to {efi_path}")
+        if not os.path.isdir(efi_path):
             if self.mount_using == "block" or self.mount_using == "loopback":
-                run_elevated(["mount", f"{diskdev}{sep}{efi_partition}", efi_path])
+                run_elevated(["mkdir", efi_path])
+            else:
+                raise RuntimeError(
+                    "/boot does not exist on mountpoint (or is not a directory)"
+                )
+
+        sep = ""
+        if diskdev and diskdev[-1].isdigit():
+            sep = "p"
+
+        if self.mount_using == "block" or self.mount_using == "loopback":
+            run_elevated(["mount", f"{diskdev}{sep}{efi_partition}", efi_path])
 
         global_mount_info = MountInfo(
             diskdev,
@@ -370,7 +324,6 @@ class MountAction:
             self.mountpoint,
             root_partition,
             efi_partition,
-            root_uuid,
         )
 
         with open("update-image-mount-info", "w") as f:
@@ -383,10 +336,10 @@ class MountAction:
         return f'mount ("{self.image}" to "{self.mountpoint}" using {self.mount_using})'
 
 
-FsAction = Enum("FsAction", "CREATE_DIR ENSURE_LINKS INSTALL CP CP_SED RSYNC")
+FsAction = Enum("FsAction", "CREATE_DIR ENSURE_LINKS INSTALL CP RSYNC")
 
 
-def generate_plan(arch, root_uuid, scriptdir):
+def generate_plan(arch, sysroot, scriptdir):
     tmpdir = tempfile.TemporaryDirectory()
     tmpdirs.append(tmpdir) # Prevent GC until script terminates.
 
@@ -415,11 +368,22 @@ def generate_plan(arch, root_uuid, scriptdir):
     yield FsAction.INSTALL, "initrd.cpio", "boot/managarm", dict(ignore_sysroot=True)
 
     limine_conf = os.path.join(tmpdir.name, "limine.conf")
+    update_boot = os.path.join(sysroot, "usr/managarm/bin/update-boot.py")
+    if not os.path.exists(update_boot):
+        # Sysroots from repositories that predate managarm-scripts, e.g., CI's stable images.
+        print("update-image: The sysroot has no update-boot.py, using the one from extrafiles/")
+        update_boot = os.path.join(scriptdir, "../extrafiles/managarm-scripts/update-boot.py")
     subprocess.run(
         [
-            os.path.join(scriptdir, "gen-limine-conf.py"),
-            "--arch=" + arch.split('-')[0],
-            limine_conf,
+            sys.executable,
+            update_boot,
+            "esp-contents",
+            "--root",
+            sysroot,
+            "--arch",
+            arch.split('-')[0],
+            "--esp-dir",
+            tmpdir.name,
         ],
         check=True,
     )
@@ -428,8 +392,7 @@ def generate_plan(arch, root_uuid, scriptdir):
         yield FsAction.INSTALL, "usr/managarm/bin/eir-mb2", "boot/managarm"
         yield FsAction.INSTALL, "usr/managarm/bin/eir-limine", "boot/managarm"
         yield FsAction.INSTALL, "usr/managarm/bin/eir-uefi", "boot/managarm"
-        yield FsAction.CP_SED, os.path.join(scriptdir, "grub.cfg"), \
-            "boot/grub/", "@ROOT_UUID@", root_uuid
+        yield FsAction.CP, os.path.join(scriptdir, "grub.cfg"), "boot/grub/"
 
         yield (
             FsAction.CP,
@@ -443,7 +406,7 @@ def generate_plan(arch, root_uuid, scriptdir):
             "boot/",
         )
 
-        yield FsAction.CP_SED, limine_conf, "boot/", "@ROOT_UUID@", root_uuid
+        yield FsAction.CP, limine_conf, "boot/"
     elif arch == "aarch64-managarm":
         yield FsAction.INSTALL, "usr/managarm/bin/eir-limine", "boot/managarm"
         yield FsAction.INSTALL, "usr/managarm/bin/eir-linux.bin", "boot/managarm"
@@ -454,7 +417,7 @@ def generate_plan(arch, root_uuid, scriptdir):
             "boot/EFI/BOOT",
         )
 
-        yield FsAction.CP_SED, limine_conf, "boot/", "@ROOT_UUID@", root_uuid
+        yield FsAction.CP, limine_conf, "boot/"
     elif arch == "riscv64-managarm":
         yield FsAction.INSTALL, "usr/managarm/bin/eir-limine", "boot/managarm"
         yield FsAction.INSTALL, "usr/managarm/bin/eir-linux.bin", "boot/managarm"
@@ -465,7 +428,7 @@ def generate_plan(arch, root_uuid, scriptdir):
             "boot/EFI/BOOT",
         )
 
-        yield FsAction.CP_SED, limine_conf, "boot/", "@ROOT_UUID@", root_uuid
+        yield FsAction.CP, limine_conf, "boot/"
 
     yield FsAction.RSYNC, "bin"
     yield FsAction.RSYNC, "lib"
@@ -551,49 +514,32 @@ class UpdateFsAction:
         self.arch = arch
 
     def run(self):
-        root_uuid = None
-        is_docker = False
         needs_root = False
         target_mntpoint = self.mountpoint
         scriptdir = os.path.dirname(sys.argv[0])
 
         if global_mount_info:
-            root_uuid = global_mount_info.root_uuid
-
-            if global_mount_info.mount_using == "docker":
-                target_mntpoint = "/mnt"
-                scriptdir = "/stuff/scripts"
-                is_docker = True
-            else:
-                needs_root = not global_mount_info.mount_using == "guestfs"
+            partitions = get_partition_list(global_mount_info.image)
+            root_idx = global_mount_info.root_idx
+            efi_idx = global_mount_info.efi_idx
+            needs_root = not global_mount_info.mount_using == "guestfs"
         else:
-            # Determine root uuid manually for mountpoint
+            # The root is whatever is mounted at the mountpoint; the ESP is on the same disk.
             diskdev, partdev = dev_for_mountpoint(self.mountpoint)
-
-            if os.path.isdir("/dev/disk/by-uuid"):
-                for diskuuid in os.listdir("/dev/disk/by-uuid"):
-                    part = os.path.realpath(f"/dev/disk/by-uuid/{diskuuid}")
-                    if part == partdev:
-                        root_uuid = uuid
-                        break
-
-            if not root_uuid:
-                partitions = get_partition_list(diskdev)
-
-                if diskdev[-1].isdigit():
-                    diskdev += "p"
-
-                idx = int(partdev[len(diskdev) :])
-
-                for part in partitions:
-                    if part.idx == idx:
-                        root_uuid = part.uuid
-                        break
-
-            if verbose:
-                print(f'update-image: Determined UUID for "{self.mountpoint}" is' f" {root_uuid}")
+            partitions = get_partition_list(diskdev)
+            root_idx = partdev[len(diskdev) :]
+            efi_idx = None
+            for part in partitions:
+                if part.type == EFI_SYSTEM_PART_TYPE:
+                    efi_idx = part.idx
 
             needs_root = not os.access(target_mntpoint, os.W_OK, effective_ids=True)
+
+        write_partition_config(
+            self.sysroot,
+            get_partuuid(partitions, root_idx, "root"),
+            get_partuuid(partitions, efi_idx, "EFI system"),
+        )
 
         print(
             "update-image: Updating the image",
@@ -637,23 +583,16 @@ class UpdateFsAction:
             target = os.path.join(target_mntpoint, dest)
             steps.append(["cp", source, target])
 
-        def plan_cp_sed(source, dest, pattern, replace):
-            _, name = os.path.split(source)
-            target = os.path.join(target_mntpoint, dest, name)
-            steps.append(["cp", source, target])
-            steps.append(["sed", "-i", f"s|{pattern}|{replace}|g", target])
-
         def plan_ensure_links():
             ensure_sysroot_links(self.sysroot)
 
         iterate_plan(
-            generate_plan(self.arch, root_uuid, scriptdir),
+            generate_plan(self.arch, self.sysroot, scriptdir),
             {
                 FsAction.CREATE_DIR: plan_create_dir,
                 FsAction.ENSURE_LINKS: plan_ensure_links,
                 FsAction.INSTALL: plan_install,
                 FsAction.CP: plan_cp,
-                FsAction.CP_SED: plan_cp_sed,
                 FsAction.RSYNC: plan_rsync,
             },
         )
@@ -662,13 +601,7 @@ class UpdateFsAction:
 
         commands = "\n".join([join_command(step) for step in steps])
 
-        if is_docker:
-            run_regular(
-                ["docker", "exec", "-i", "-u", "root:root", "managarm-mount", "bash"],
-                commands,
-                False,
-            )
-        elif needs_root:
+        if needs_root:
             run_elevated(["bash"], commands, False)
         else:
             run_regular(["bash"], commands, False)
@@ -717,28 +650,6 @@ class UnmountAction:
 
                 while check_if_running(pid):
                     time.sleep(1)
-        elif mount_using == "docker":
-            cmds = "sync\n"
-            cmds += "umount /mnt/boot\n"
-            cmds += "umount /mnt\n"
-            cmds += f"losetup -d {blockdev}\n"
-            cmds += "umount /devtmpfs"
-
-            run_regular(
-                [
-                    "docker",
-                    "exec",
-                    "-i",
-                    "-u",
-                    "root:root",
-                    "managarm-mount",
-                    "bash",
-                    "-c",
-                    cmds,
-                ]
-            )
-
-            run_regular(["docker", "stop", "-t", "0", "managarm-mount"])
         else:
             raise RuntimeError(f"Unknown mount method {mount_using}")
 
@@ -837,46 +748,45 @@ class RemakeImageAction:
         installargs += [src, dst]
         logged_check_call(installargs)
 
-    def _cp_sed(self, src, dst, var, val):
-        if _is_boot(add_dest_basename(src, dst)):
-            dstopen = io.BytesIO
-            if dst.endswith("/"):
-                dst = os.path.join(dst, os.path.basename(src))
-            dst = os.path.normpath("/" + dst)
-        else:
-            dst = os.path.join(self.sysroot, dst)
-            if os.path.isdir(dst):
-                dst = os.path.join(dst, os.path.basename(src))
-            dstopen = functools.partial(open, dst, "wb")
-        var = var.encode("utf-8")
-        val = val.encode("utf-8")
-
-        with open(src, "rb") as fsrc, dstopen() as fdst:
-            while chunk := fsrc.read(32768):
-                # XXX(arsen): edge case: if @VAR@ is on a 32kB boundary, this will fail.
-                #             files we currently substitute on are very small, so this
-                #             shouldn't be problematic
-                fdst.write(chunk.replace(var, val))
-
-            if isinstance(fdst, io.BytesIO):
-                self._boot_files[dst] = fdst.getvalue()
-
     def run(self):
         if not os.access(self.image, os.W_OK | os.R_OK):
             raise RuntimeError(f"{self.image} does not exist or is not r/w accessible")
 
         scriptdir = os.path.dirname(sys.argv[0])
 
+        part_lines = (
+            logged_run(
+                ["partx", "-gbs", "--output", "start,size,type,uuid", self.image],
+                stdout=subprocess.PIPE,
+            )
+            .stdout.decode()
+            .splitlines()
+        )
+        parts = [[x for x in part_line.split(" ") if x] for part_line in part_lines]
+        if not parts:
+            raise RuntimeError(f"couldn't find any partitions in {self.image}")
+
+        def partuuid_of_type(wanted_type, what):
+            partuuids = [partuuid for _, _, parttype, partuuid in parts
+                         if parttype.upper() == wanted_type]
+            if len(partuuids) != 1:
+                raise RuntimeError(f"{self.image} does not have exactly one {what} partition")
+            return str(uuid.UUID(partuuids[0]))
+
+        write_partition_config(
+            self.sysroot,
+            partuuid_of_type(MANAGARM_ROOT_PART_TYPE, "root"),
+            partuuid_of_type(EFI_SYSTEM_PART_TYPE, "EFI system"),
+        )
+
         # start by correcting the sysroot slightly
-        root_uuid = str(uuid.uuid4())
         iterate_plan(
-            generate_plan(self.arch, root_uuid, scriptdir),
+            generate_plan(self.arch, self.sysroot, scriptdir),
             {
                 FsAction.CREATE_DIR: self._create_dir,
                 FsAction.ENSURE_LINKS: self._ensure_links,
                 FsAction.INSTALL: self._install,
                 FsAction.CP: functools.partial(self._install, ignore_sysroot=True),
-                FsAction.CP_SED: self._cp_sed,
                 FsAction.RSYNC: lambda *a, **kw: None,  # ignored
             },
         )
@@ -890,10 +800,8 @@ class RemakeImageAction:
                 "/",
                 "-L",
                 "managarm_rootfs",
-                "-U",
-                root_uuid,
                 "-d",
-                "system-root/",
+                self.sysroot,
                 "-E",
                 # XXX: is 512 correct?
                 "offset={}".format(512 * start),
@@ -943,19 +851,7 @@ class RemakeImageAction:
                 file = file[len("boot") :]
                 logged_check_call(["mcopy", "-i", dosimg, "-", f"::{file}"], input=val)
 
-        part_lines = (
-            logged_run(
-                ["partx", "-gbs", "--output", "start,size,type", self.image],
-                stdout=subprocess.PIPE,
-            )
-            .stdout.decode()
-            .splitlines()
-        )
-
-        done_make = False
-        for part_line in part_lines:
-            [start, size, parttype] = [x for x in part_line.split(" ") if x]
-
+        for start, size, parttype, _ in parts:
             setup_fn = {
                 MANAGARM_ROOT_PART_TYPE: setup_rootfs,
                 EFI_SYSTEM_PART_TYPE: setup_esp,
@@ -963,11 +859,7 @@ class RemakeImageAction:
                 parttype.upper(), lambda x, y: None
             )  # noop default
 
-            done_make = True
             setup_fn(int(start), int(size))
-
-        if not done_make:
-            raise RuntimeError(f"couldn't find any partitions in {self.image}")
 
     def name(self):
         return "remake"
@@ -978,7 +870,7 @@ class RemakeImageAction:
 
 def make_action(name, mount_using, image, mountpoint, sysroot, arch):
     if name == "mount":
-        return MountAction(mount_using, image, mountpoint, sysroot)
+        return MountAction(mount_using, image, mountpoint)
     elif name == "update-fs":
         return UpdateFsAction(mountpoint, sysroot, arch)
     elif name == "unmount":
@@ -1027,7 +919,7 @@ parser.add_argument(
     "-m",
     "--mount-using",
     dest="mount_using",
-    choices=["loopback", "docker", "guestfs", "block"],
+    choices=["loopback", "guestfs", "block"],
     default="guestfs",
     help="How to mount the image (default: guestfs)",
 )
@@ -1108,7 +1000,6 @@ try:
             info["mountpoint"],
             info["root_idx"],
             info["efi_idx"],
-            info["root_uuid"],
         )
 except (FileNotFoundError, json.JSONDecodeError):
     pass

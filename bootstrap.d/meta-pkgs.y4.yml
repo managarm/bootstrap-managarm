@@ -44,6 +44,7 @@ packages:
       - man-pages-posix
       - managarm-kernel
       - managarm-kernel-uefi
+      - managarm-scripts
       - managarm-system
       - managarm-system-rs
       - nano
@@ -63,7 +64,7 @@ packages:
       - xbps
       - xkeyboard-config
       - xz-utils
-    revision: 15
+    revision: 16
     configure: []
     build: []
 
