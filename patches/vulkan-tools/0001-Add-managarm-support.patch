@@ -1,0 +1,137 @@
+From 9024620e3e6c693d50ab1e2d46ed9f1d507674a1 Mon Sep 17 00:00:00 2001
+From: no92 <no92.mail@gmail.com>
+Date: Wed, 8 Jul 2026 20:30:19 +0200
+Subject: [PATCH] Add managarm support
+
+---
+ cube/CMakeLists.txt     | 10 +++++-----
+ cube/cube.cpp           |  2 +-
+ icd/CMakeLists.txt      |  2 +-
+ vulkaninfo/vulkaninfo.h | 10 +++++-----
+ 4 files changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/cube/CMakeLists.txt b/cube/CMakeLists.txt
+index 8ab409e..64f8879 100644
+--- a/cube/CMakeLists.txt
++++ b/cube/CMakeLists.txt
+@@ -15,7 +15,7 @@
+ # limitations under the License.
+ # ~~~
+ 
+-if (CMAKE_SYSTEM_NAME MATCHES "Linux|BSD")
++if (CMAKE_SYSTEM_NAME MATCHES "Linux|BSD|managarm")
+     option(BUILD_WSI_XCB_SUPPORT "Build XCB WSI support" ON)
+     option(BUILD_WSI_XLIB_SUPPORT "Build Xlib WSI support" ON)
+     option(BUILD_WSI_WAYLAND_SUPPORT "Build Wayland WSI support" ON)
+@@ -95,7 +95,7 @@ elseif(ANDROID)
+     add_definitions(-DVK_USE_PLATFORM_ANDROID_KHR)
+ elseif(APPLE)
+     add_definitions(-DVK_USE_PLATFORM_METAL_EXT)
+-elseif(CMAKE_SYSTEM_NAME MATCHES "Linux|BSD")
++elseif(CMAKE_SYSTEM_NAME MATCHES "Linux|BSD|managarm")
+     if(NOT CUBE_WSI_SELECTION)
+         set(CUBE_WSI_SELECTION "XCB")
+     endif()
+@@ -179,7 +179,7 @@ elseif (ANDROID)
+     add_subdirectory(android)
+ 
+     target_link_libraries(vkcube PRIVATE Vulkan::Headers)
+-elseif(CMAKE_SYSTEM_NAME MATCHES "Linux|BSD")
++elseif(CMAKE_SYSTEM_NAME MATCHES "Linux|BSD|managarm")
+     add_executable(vkcube)
+     target_sources(vkcube PRIVATE
+         cube.c
+@@ -241,7 +241,7 @@ endif()
+ 
+ if(APPLE)
+     include(macOS/cubepp/cubepp.cmake)
+-elseif(CMAKE_SYSTEM_NAME MATCHES "Linux|BSD")
++elseif(CMAKE_SYSTEM_NAME MATCHES "Linux|BSD|managarm")
+     add_executable(vkcubepp
+                    cube.cpp
+                    ${PROJECT_SOURCE_DIR}/cube/cube.vert
+@@ -284,7 +284,7 @@ endif()
+ # ----------------------------------------------------------------------------
+ # vkcube-wayland
+ 
+-if (CMAKE_SYSTEM_NAME MATCHES "Linux|BSD")
++if (CMAKE_SYSTEM_NAME MATCHES "Linux|BSD|managarm")
+     if(BUILD_WSI_WAYLAND_SUPPORT AND EXISTS ${WAYLAND_PROTOCOLS_PATH}/unstable/xdg-decoration/xdg-decoration-unstable-v1.xml)
+         add_executable(vkcube-wayland)
+ 
+diff --git a/cube/cube.cpp b/cube/cube.cpp
+index 6674825..03fcb24 100644
+--- a/cube/cube.cpp
++++ b/cube/cube.cpp
+@@ -3385,7 +3385,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
+     return static_cast<int>(msg.wParam);
+ }
+ 
+-#elif defined(__linux__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__QNX__)
++#elif defined(__linux__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__QNX__) || defined(__managarm__)
+ 
+ int main(int argc, char **argv) {
+     Demo demo;
+diff --git a/icd/CMakeLists.txt b/icd/CMakeLists.txt
+index 52ec92f..31d4a60 100644
+--- a/icd/CMakeLists.txt
++++ b/icd/CMakeLists.txt
+@@ -33,7 +33,7 @@ elseif(APPLE)
+     add_definitions(-DVK_USE_PLATFORM_MACOS_MVK)
+ elseif(BUILD_MOCK_ANDROID_SUPPORT)
+     add_definitions(-DVK_USE_PLATFORM_ANDROID_KHR)
+-elseif(CMAKE_SYSTEM_NAME MATCHES "Linux|BSD")
++elseif(CMAKE_SYSTEM_NAME MATCHES "Linux|BSD|managarm")
+     if(BUILD_WSI_XCB_SUPPORT)
+         add_definitions(-DVK_USE_PLATFORM_XCB_KHR -DVK_USE_PLATFORM_XCB_KHX)
+     endif()
+diff --git a/vulkaninfo/vulkaninfo.h b/vulkaninfo/vulkaninfo.h
+index 1390863..ae7f453 100644
+--- a/vulkaninfo/vulkaninfo.h
++++ b/vulkaninfo/vulkaninfo.h
+@@ -67,7 +67,7 @@
+ #endif
+ #endif  // _WIN32
+ 
+-#if defined(__linux__) || defined(__APPLE__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__QNX__)
++#if defined(__linux__) || defined(__APPLE__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__QNX__) || defined(__managarm__)
+ #include <dlfcn.h>
+ #endif
+ 
+@@ -252,7 +252,7 @@ auto GetVector(const char *func_name, F &&f, Ts &&...ts) -> std::vector<T> {
+ // ----------- Instance Setup ------- //
+ struct VkDll {
+     VkResult Initialize() {
+-#if defined(__linux__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__QNX__)
++#if defined(__linux__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__QNX__) || defined(__managarm__)
+         library = dlopen("libvulkan.so", RTLD_NOW | RTLD_LOCAL);
+         if (!library) library = dlopen("libvulkan.so.1", RTLD_NOW | RTLD_LOCAL);
+ #elif defined(_WIN32)
+@@ -264,7 +264,7 @@ struct VkDll {
+         return VK_SUCCESS;
+     }
+     void Close() {
+-#if defined(__linux__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__QNX__)
++#if defined(__linux__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__QNX__) || defined(__managarm__)
+         dlclose(library);
+ #elif defined(_WIN32)
+         FreeLibrary(library);
+@@ -433,13 +433,13 @@ struct VkDll {
+   private:
+     template <typename T>
+     void Load(T &func_dest, const char *func_name) {
+-#if defined(__linux__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__QNX__)
++#if defined(__linux__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__QNX__) || defined(__managarm__)
+         func_dest = reinterpret_cast<T>(dlsym(library, func_name));
+ #elif defined(_WIN32)
+         func_dest = reinterpret_cast<T>(GetProcAddress(library, func_name));
+ #endif
+     }
+-#if defined(__linux__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__QNX__)
++#if defined(__linux__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__QNX__) || defined(__managarm__)
+     void *library;
+ #elif defined(_WIN32)
+     HMODULE library;
+-- 
+2.54.0
+
