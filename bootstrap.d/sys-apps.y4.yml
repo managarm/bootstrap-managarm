@@ -1497,19 +1497,19 @@ packages:
       - lz4
       - openssl
       - zlib
-    revision: 8
+    revision: 9
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
         - '@THIS_SOURCE_DIR@/configure'
         - '--host=@OPTION:arch-triple@'
         - '--prefix=/usr'
+        - '--sysconfdir=/etc'
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'
-      - args: ['cp', '@SOURCE_ROOT@/extrafiles/xbps.conf', '@THIS_COLLECT_DIR@/usr/share/xbps.d/']
       - args: ['mkdir', '-pv', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/sysinit.target.wants/']
       - args: ['cp', '-v', '@THIS_SOURCE_DIR@/xbps.service', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/']
       - args: ['ln', '-svn', '../xbps.service', '@THIS_COLLECT_DIR@/usr/lib/systemd/system/sysinit.target.wants/']
