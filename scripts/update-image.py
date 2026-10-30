@@ -23,6 +23,7 @@ verbose = False
 MANAGARM_ROOT_PART_TYPE = "64212B3B-56A1-4DFB-971E-BC8CD027996A"
 EFI_SYSTEM_PART_TYPE = "C12A7328-F81F-11D2-BA4B-00A0C93EC93B"
 global_mount_info = None
+fuse2fs_process = None
 sfdisk_command = None
 
 tmpdirs = []
@@ -38,11 +39,12 @@ class MountInfo:
 
 
 class Partition:
-    def __init__(self, idx, type, uuid, size):
+    def __init__(self, idx, type, uuid, size, start):
         self.idx = idx
         self.type = type
         self.uuid = uuid
         self.size = size
+        self.start = start
 
 
 # shlex.join is only available since Python 3.8
@@ -138,16 +140,23 @@ def get_partition_list(image):
             type_param = [i for i in toks if i.startswith("type=")]
             uuid_param = [i for i in toks if i.startswith("uuid=")]
             size_param = [i for i in toks if i.startswith("size=")]
+            start_param = [i for i in toks if i.startswith("start=")]
 
-            if len(type_param) != 1 or len(uuid_param) != 1 or len(size_param) != 1:
+            if (
+                len(type_param) != 1
+                or len(uuid_param) != 1
+                or len(size_param) != 1
+                or len(start_param) != 1
+            ):
                 continue
 
             type = type_param[0][5:]
             uuid = uuid_param[0][5:]
             size = int(size_param[0][5:])
+            start = int(start_param[0][6:])
             idx = name[len(image) :]
 
-            partitions.append(Partition(idx, type, uuid, size))
+            partitions.append(Partition(idx, type, uuid, size, start))
 
     return partitions
 
@@ -189,15 +198,18 @@ class MountAction:
 
     def run(self):
         global global_mount_info
+        global fuse2fs_process
 
         partitions = get_partition_list(self.image)
 
         diskdev = self.image
         root_partition = None
+        root_start = None
         efi_partition = None
         for part in partitions:
             if part.type == MANAGARM_ROOT_PART_TYPE:
                 root_partition = part.idx
+                root_start = part.start
             elif part.type == EFI_SYSTEM_PART_TYPE:
                 efi_partition = part.idx
                 # image_create creates a 256MiB ESP partition, while older images
@@ -296,19 +308,42 @@ class MountAction:
             except FileExistsError:
                 pass
             run_regular(args)
+        elif self.mount_using == "fuse2fs":
+            repair_root_fs(self.image, root_start)
+
+            try:
+                os.mkdir(self.mountpoint)
+            except FileExistsError:
+                pass
+            fuse2fs_process = subprocess.Popen(
+                [
+                    try_find_command_exec("fuse2fs"),
+                    "-f",
+                    "-o",
+                    f"offset={512 * root_start}",
+                    self.image,
+                    self.mountpoint,
+                ]
+            )
+            while subprocess.run(["findmnt", self.mountpoint], stdout=subprocess.DEVNULL).returncode:
+                if fuse2fs_process.poll() is not None:
+                    raise RuntimeError(f"fuse2fs failed with code {fuse2fs_process.returncode}")
+                time.sleep(0.1)
         else:
             raise RuntimeError(f"Unknown mount method {self.mount_using}")
 
-        efi_path = os.path.join(self.mountpoint, "boot")
+        # fuse2fs cannot mount the FAT ESP; UpdateFsAction writes to it using mtools instead.
+        if self.mount_using != "fuse2fs":
+            efi_path = os.path.join(self.mountpoint, "boot")
 
-        print(f"update-image: EFI partition exists, mounting to {efi_path}")
-        if not os.path.isdir(efi_path):
-            if self.mount_using == "block" or self.mount_using == "loopback":
-                run_elevated(["mkdir", efi_path])
-            else:
-                raise RuntimeError(
-                    "/boot does not exist on mountpoint (or is not a directory)"
-                )
+            print(f"update-image: EFI partition exists, mounting to {efi_path}")
+            if not os.path.isdir(efi_path):
+                if self.mount_using == "block" or self.mount_using == "loopback":
+                    run_elevated(["mkdir", efi_path])
+                else:
+                    raise RuntimeError(
+                        "/boot does not exist on mountpoint (or is not a directory)"
+                    )
 
         sep = ""
         if diskdev and diskdev[-1].isdigit():
@@ -515,6 +550,7 @@ class UpdateFsAction:
 
     def run(self):
         needs_root = False
+        is_fuse2fs = False
         target_mntpoint = self.mountpoint
         scriptdir = os.path.dirname(sys.argv[0])
 
@@ -522,7 +558,8 @@ class UpdateFsAction:
             partitions = get_partition_list(global_mount_info.image)
             root_idx = global_mount_info.root_idx
             efi_idx = global_mount_info.efi_idx
-            needs_root = not global_mount_info.mount_using == "guestfs"
+            is_fuse2fs = global_mount_info.mount_using == "fuse2fs"
+            needs_root = global_mount_info.mount_using not in ("guestfs", "fuse2fs")
         else:
             # The root is whatever is mounted at the mountpoint; the ESP is on the same disk.
             diskdev, partdev = dev_for_mountpoint(self.mountpoint)
@@ -553,13 +590,26 @@ class UpdateFsAction:
         rsync_id_args = []
         if needs_root:
             rsync_id_args = build_rsync_shift_args(self.sysroot)
+        elif is_fuse2fs:
+            # No shift: fuse2fs runs in the same user namespace as rsync. rsync's temporary files
+            # must be avoided since fuse2fs syncs the entire file system on each rename.
+            rsync_id_args = ["--numeric-ids", "--inplace"]
+
+        boot_dirs = []
+        boot_files = {}
 
         def plan_create_dir(dir):
+            if is_fuse2fs and _is_boot(dir):
+                boot_dirs.append(dir)
+                return
             steps.append(["mkdir", "-p", os.path.join(target_mntpoint, dir)])
 
         def plan_install(source, dest, ignore_sysroot=False):
             if not ignore_sysroot:
                 source = os.path.join(self.sysroot, source)
+            if is_fuse2fs and _is_boot(add_dest_basename(source, dest)):
+                read_boot_file(boot_files, source, dest)
+                return
             target = os.path.join(target_mntpoint, dest)
 
             steps.append(["install", source, target])
@@ -580,6 +630,9 @@ class UpdateFsAction:
             steps.append(command)
 
         def plan_cp(source, dest):
+            if is_fuse2fs and _is_boot(add_dest_basename(source, dest)):
+                read_boot_file(boot_files, source, dest)
+                return
             target = os.path.join(target_mntpoint, dest)
             steps.append(["cp", source, target])
 
@@ -605,6 +658,10 @@ class UpdateFsAction:
             run_elevated(["bash"], commands, False)
         else:
             run_regular(["bash"], commands, False)
+
+        if is_fuse2fs:
+            efi_start = next(part.start for part in partitions if part.idx == efi_idx)
+            populate_esp(global_mount_info.image, efi_start, boot_dirs, boot_files)
 
         print("update-image: Done")
 
@@ -650,6 +707,12 @@ class UnmountAction:
 
                 while check_if_running(pid):
                     time.sleep(1)
+        elif mount_using == "fuse2fs":
+            run_regular([try_find_command_exec("fusermount3"), "-u", mountpoint])
+
+            # fuse2fs only flushes the file system after the unmount has returned.
+            if fuse2fs_process.wait() != 0:
+                raise RuntimeError(f"fuse2fs failed with code {fuse2fs_process.returncode}")
         else:
             raise RuntimeError(f"Unknown mount method {mount_using}")
 
@@ -705,6 +768,16 @@ def read_boot_file(boot_files, src, dst):
         boot_files[dst] = fsrc.read()
 
 
+def repair_root_fs(image, start):
+    # fuse2fs refuses file systems with errors, and guest writes routinely leave some behind.
+    res = logged_run([e2fsck_command, "-fy", "{}?offset={}".format(image, 512 * start)])
+    if res.returncode not in (0, 1):
+        raise RuntimeError(
+            f"e2fsck could not repair the root file system of {image} "
+            f"(code {res.returncode}), recreate it using remake-image"
+        )
+
+
 def populate_esp(image, start, boot_dirs, boot_files):
     # manipulate it using mtools
     dosimg = "{}@@{}".format(image, start * 512)
@@ -714,13 +787,20 @@ def populate_esp(image, start, boot_dirs, boot_files):
         if dir.startswith("/"):
             dir = dir[1:]
         dir = dir[len("boot") :]
-        logged_check_call(["mmd", "-i", dosimg, dir])
+        # mmd fails if the directory already exists.
+        probe = logged_run(
+            ["mdir", "-i", dosimg, f"::{dir}"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+        if probe.returncode:
+            logged_check_call(["mmd", "-i", dosimg, dir])
     # ... then with files
     for file, val in boot_files.items():
         if file.startswith("/"):
             file = file[1:]
         file = file[len("boot") :]
-        logged_check_call(["mcopy", "-i", dosimg, "-", f"::{file}"], input=val)
+        logged_check_call(["mcopy", "-o", "-i", dosimg, "-", f"::{file}"], input=val)
 
 
 @dataclass
@@ -924,7 +1004,7 @@ parser.add_argument(
     "-m",
     "--mount-using",
     dest="mount_using",
-    choices=["loopback", "guestfs", "block"],
+    choices=["loopback", "guestfs", "block", "fuse2fs"],
     default="guestfs",
     help="How to mount the image (default: guestfs)",
 )
@@ -1012,6 +1092,7 @@ except (FileNotFoundError, json.JSONDecodeError):
 sfdisk_command = try_find_command_exec("sfdisk")
 mkfsvfat_command = try_find_command_exec("mkfs.vfat")
 mke2fs_command = try_find_command_exec("mke2fs")
+e2fsck_command = try_find_command_exec("e2fsck")
 
 if verbose:
     print(f'update-image: Found sfdisk at "{sfdisk_command}"')
