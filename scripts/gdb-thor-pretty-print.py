@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import glob, os, sys
-matches = glob.glob("system-root/usr/share/gcc*/python/")
+matches = glob.glob("system-root.volume/usr/share/gcc*/python/") + glob.glob("system-root/usr/share/gcc*/python/")
 if matches:
 	sys.path.insert(0, matches[0])
 	try:
