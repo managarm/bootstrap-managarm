@@ -149,6 +149,8 @@ tasks:
       - '@SOURCE_ROOT@/scripts/update-image.py'
       - '--triple'
       - '@OPTION:arch-triple@'
+      - '--with-sysroot'
+      - '@SYSROOT_DIR@'
       - 'remake'
     workdir: '@BUILD_ROOT@'
 

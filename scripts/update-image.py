@@ -116,6 +116,14 @@ def try_find_command_exec(command):
     raise RuntimeError(f"Couldn't find {command} (tried looking in PATH and using whereis)")
 
 
+def find_default_sysroot():
+    # With sysroot_volume, xbstrap links the volume here. Tasks that run inside of the container
+    # see the volume at @SYSROOT_DIR@ and have to pass it via --with-sysroot.
+    if os.path.lexists("system-root.volume"):
+        return "system-root.volume"
+    return "system-root"
+
+
 def check_if_running(pid):
     try:
         os.kill(pid, 0)
@@ -431,7 +439,7 @@ def generate_plan(arch, sysroot, scriptdir):
 
         yield (
             FsAction.CP,
-            "system-root/usr/share/limine/BOOTX64.EFI",
+            os.path.join(sysroot, "usr/share/limine/BOOTX64.EFI"),
             "boot/EFI/BOOT",
         )
 
@@ -448,7 +456,7 @@ def generate_plan(arch, sysroot, scriptdir):
         yield FsAction.INSTALL, "usr/managarm/bin/eir-uefi", "boot/managarm"
         yield (
             FsAction.CP,
-            "system-root/usr/share/limine/BOOTAA64.EFI",
+            os.path.join(sysroot, "usr/share/limine/BOOTAA64.EFI"),
             "boot/EFI/BOOT",
         )
 
@@ -459,7 +467,7 @@ def generate_plan(arch, sysroot, scriptdir):
         yield FsAction.INSTALL, "usr/managarm/bin/eir-uefi", "boot/managarm"
         yield (
             FsAction.CP,
-            "system-root/usr/share/limine/BOOTRISCV64.EFI",
+            os.path.join(sysroot, "usr/share/limine/BOOTRISCV64.EFI"),
             "boot/EFI/BOOT",
         )
 
@@ -1032,8 +1040,8 @@ parser.add_argument(
     dest="sysroot_path",
     metavar="sysroot",
     type=str,
-    default="system-root",
-    help="Path to system root (default: system-root)",
+    default=find_default_sysroot(),
+    help="Path to system root (default: system-root.volume if it exists, otherwise system-root)",
 )
 parser.add_argument(
     "-e",
