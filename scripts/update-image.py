@@ -698,6 +698,31 @@ def logged_check_call(cmd, *args, **kwargs):
     return logged_run(cmd, check=True, *args, **kwargs)
 
 
+def read_boot_file(boot_files, src, dst):
+    # XXX(arsen): I assume the path provided is a dir
+    dst = os.path.join(dst, os.path.basename(src))
+    with open(src, "rb") as fsrc:
+        boot_files[dst] = fsrc.read()
+
+
+def populate_esp(image, start, boot_dirs, boot_files):
+    # manipulate it using mtools
+    dosimg = "{}@@{}".format(image, start * 512)
+
+    # ... and populate it, first with directories ...
+    for dir in boot_dirs:
+        if dir.startswith("/"):
+            dir = dir[1:]
+        dir = dir[len("boot") :]
+        logged_check_call(["mmd", "-i", dosimg, dir])
+    # ... then with files
+    for file, val in boot_files.items():
+        if file.startswith("/"):
+            file = file[1:]
+        file = file[len("boot") :]
+        logged_check_call(["mcopy", "-i", dosimg, "-", f"::{file}"], input=val)
+
+
 @dataclass
 class RemakeImageAction:
     """
@@ -727,14 +752,8 @@ class RemakeImageAction:
         if not ignore_sysroot:
             src = os.path.join(self.sysroot, src)
         if _is_boot(add_dest_basename(src, dst)):
-            with tempfile.NamedTemporaryFile('r+b') as tmpf:
-                actual_src = src
-
-                # XXX(arsen): I assume the path provided is a dir
-                dst = os.path.join(dst, os.path.basename(src))
-                with open(actual_src, "rb") as fsrc:
-                    self._boot_files[dst] = fsrc.read()
-                    return
+            read_boot_file(self._boot_files, src, dst)
+            return
 
         if os.path.isdir(dst):
             dst = os.path.join(dst, os.path.basename(src))
@@ -835,21 +854,7 @@ class RemakeImageAction:
             ]
             logged_check_call(cmd)
 
-            # manipulate it using mtools
-            dosimg = "{}@@{}".format(self.image, start * 512)
-
-            # ... and populate it, first with directories ...
-            for dir in self._boot_dirs:
-                if dir.startswith("/"):
-                    dir = dir[1:]
-                dir = dir[len("boot") :]
-                logged_check_call(["mmd", "-i", dosimg, dir])
-            # ... then with files
-            for file, val in self._boot_files.items():
-                if file.startswith("/"):
-                    file = file[1:]
-                file = file[len("boot") :]
-                logged_check_call(["mcopy", "-i", dosimg, "-", f"::{file}"], input=val)
+            populate_esp(self.image, start, self._boot_dirs, self._boot_files)
 
         for start, size, parttype, _ in parts:
             setup_fn = {
