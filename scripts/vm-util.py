@@ -24,6 +24,13 @@ import yaml
 main_parser = argparse.ArgumentParser()
 main_subparsers = main_parser.add_subparsers()
 
+def find_sysroot():
+    # With sysroot_volume, system-root is only a mount point for the container.
+    if os.path.exists("system-root.volume"):
+        return "system-root.volume"
+    return "system-root"
+
+
 def which(cmd):
     path = shutil.which(cmd)
     if path is not None:
@@ -647,7 +654,7 @@ def do_qemu(args):
         qemu_args += ["-machine", machine]
         qemu_args += ["-serial", "stdio"]
         if not args.uefi:
-            qemu_args += ["-kernel", "system-root/usr/managarm/bin/eir-linux.bin"]
+            qemu_args += ["-kernel", f"{find_sysroot()}/usr/managarm/bin/eir-linux.bin"]
             qemu_args += ["-initrd", "initrd.cpio"]
             qemu_args += ["-append", f"init.launch={args.init_launch}"]
     elif args.arch == "riscv64":
@@ -658,7 +665,7 @@ def do_qemu(args):
         qemu_args += ["-machine", machine]
         qemu_args += ["-serial", "stdio"]
         if not args.uefi:
-            qemu_args += ["-kernel", "system-root/usr/managarm/bin/eir-linux.bin"]
+            qemu_args += ["-kernel", f"{find_sysroot()}/usr/managarm/bin/eir-linux.bin"]
             qemu_args += ["-initrd", "initrd.cpio"]
             qemu_args += ["-append", f"init.launch={args.init_launch}"]
     else:
@@ -1179,7 +1186,7 @@ def do_gdb(args):
     gdb_args += ["-ex", f"source {src_path}/scripts/gdb-commands.py"]
     gdb_args += ["-ex", f"set substitute-path ../../../src {src_path}"]
     gdb_args += ["-ex", f"set substitute-path /var/lib/managarm-buildenv/ ../"]
-    gdb_args += ["-ex", f"set sysroot system-root"]
+    gdb_args += ["-ex", f"set sysroot {find_sysroot()}"]
     gdb_args += ["-ex", f"set debuginfod enabled off"]
 
     if args.gdb_debug:
@@ -1197,7 +1204,7 @@ def do_gdb(args):
 
         gdb_args += [
             "-ex",
-            "file system-root/usr/managarm/bin/thor",
+            f"file {find_sysroot()}/usr/managarm/bin/thor",
             "-ex",
             "target remote " + remote_string,
         ]
@@ -1298,7 +1305,7 @@ def do_alloc_trace(args):
             [
                 "pkg-builds/frigg/slab_trace_analyzer",
                 "kernel-alloc-trace.bin",
-                "system-root/usr/managarm/bin/thor",
+                f"{find_sysroot()}/usr/managarm/bin/thor",
             ]
         )
     except subprocess.CalledProcessError:

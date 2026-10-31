@@ -22,6 +22,8 @@ elevation_method = None
 verbose = False
 MANAGARM_ROOT_PART_TYPE = "64212B3B-56A1-4DFB-971E-BC8CD027996A"
 EFI_SYSTEM_PART_TYPE = "C12A7328-F81F-11D2-BA4B-00A0C93EC93B"
+# container.uid and container.gid of bootstrap-site.yml.
+CONTAINER_BUILD_ID = 1000
 global_mount_info = None
 fuse2fs_process = None
 sfdisk_command = None
@@ -114,6 +116,14 @@ def try_find_command_exec(command):
         pass
 
     raise RuntimeError(f"Couldn't find {command} (tried looking in PATH and using whereis)")
+
+
+def find_default_sysroot():
+    # With sysroot_volume, xbstrap links the volume here. Tasks that run inside of the container
+    # see the volume at @SYSROOT_DIR@ and have to pass it via --with-sysroot.
+    if os.path.lexists("system-root.volume"):
+        return "system-root.volume"
+    return "system-root"
 
 
 def check_if_running(pid):
@@ -431,7 +441,7 @@ def generate_plan(arch, sysroot, scriptdir):
 
         yield (
             FsAction.CP,
-            "system-root/usr/share/limine/BOOTX64.EFI",
+            os.path.join(sysroot, "usr/share/limine/BOOTX64.EFI"),
             "boot/EFI/BOOT",
         )
 
@@ -448,7 +458,7 @@ def generate_plan(arch, sysroot, scriptdir):
         yield FsAction.INSTALL, "usr/managarm/bin/eir-uefi", "boot/managarm"
         yield (
             FsAction.CP,
-            "system-root/usr/share/limine/BOOTAA64.EFI",
+            os.path.join(sysroot, "usr/share/limine/BOOTAA64.EFI"),
             "boot/EFI/BOOT",
         )
 
@@ -459,7 +469,7 @@ def generate_plan(arch, sysroot, scriptdir):
         yield FsAction.INSTALL, "usr/managarm/bin/eir-uefi", "boot/managarm"
         yield (
             FsAction.CP,
-            "system-root/usr/share/limine/BOOTRISCV64.EFI",
+            os.path.join(sysroot, "usr/share/limine/BOOTRISCV64.EFI"),
             "boot/EFI/BOOT",
         )
 
@@ -500,46 +510,43 @@ def iterate_plan(plan, callbacks):
         fn(*args, **kwargs)
 
 
-def build_rsync_shift_args(sysroot):
-    # Assumption: /usr is owned by root. Use it as the source of truth for the host UID of the sysroot's root.
+def read_sysroot_volume_workspace(sysroot):
+    # With sysroot_volume, xbstrap links the volume at <cbuildrt workspace>/volumes/<name>.
+    workspace = os.path.dirname(os.path.dirname(os.path.realpath(sysroot)))
     try:
-        ref_st = os.lstat(os.path.join(sysroot, "usr"))
-    except OSError:
-        return []
+        with open(os.path.join(workspace, "workspace.json"), "r") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return None
 
-    base_uid = ref_st.st_uid
-    base_gid = ref_st.st_gid
-    if not base_uid and not base_gid:
-        return []  # Already owned by host root; nothing to shift.
 
+def build_rsync_shift_args(sysroot):
+    workspace = read_sysroot_volume_workspace(sysroot)
+    if workspace is None:
+        # Everything in the sysroot is owned by the current user.
+        return ["--numeric-ids", f"--usermap={os.getuid()}:0", f"--groupmap={os.getgid()}:0"]
+
+    # This needs root since a sysroot with real ownership has directories that we cannot read.
+    # The trailing slash makes find follow the sysroot if it is a link.
     uids = set()
     gids = set()
-    for dirpath, dirnames, filenames in os.walk(sysroot):
-        for name in [None] + filenames + dirnames:
-            path = dirpath if name is None else os.path.join(dirpath, name)
-            try:
-                st = os.lstat(path)
-            except OSError:
-                continue
-            if base_uid:
-                uids.add(st.st_uid)
-            if base_gid:
-                gids.add(st.st_gid)
+    for line in run_elevated(["find", os.path.join(sysroot, ""), "-printf", "%U %G\n"]).split("\n"):
+        uid, gid = line.split(" ")
+        uids.add(int(uid))
+        gids.add(int(gid))
 
     # Map everything outside of the expected range to nobody.
-    def shift(i, base):
-        if i < base or i >= base + 65536:
+    def shift(i, subids, host_id):
+        # cbuildrt maps the build user to the host user and not into the subordinate range.
+        if i == host_id:
+            return CONTAINER_BUILD_ID
+        if i < subids["start"] or i >= subids["start"] + subids["count"]:
             return 65534 # nobody/nogroup.
-        return i - base
+        return i - subids["start"]
 
-    args = ["--numeric-ids"]
-    if uids:
-        usermap = ",".join(f"{u}:{shift(u, base_uid)}" for u in sorted(uids))
-        args.append(f"--usermap={usermap}")
-    if gids:
-        groupmap = ",".join(f"{g}:{shift(g, base_gid)}" for g in sorted(gids))
-        args.append(f"--groupmap={groupmap}")
-    return args
+    usermap = ",".join(f"{u}:{shift(u, workspace['subUid'], os.getuid())}" for u in sorted(uids))
+    groupmap = ",".join(f"{g}:{shift(g, workspace['subGid'], os.getgid())}" for g in sorted(gids))
+    return ["--numeric-ids", f"--usermap={usermap}", f"--groupmap={groupmap}"]
 
 
 class UpdateFsAction:
@@ -1032,8 +1039,8 @@ parser.add_argument(
     dest="sysroot_path",
     metavar="sysroot",
     type=str,
-    default="system-root",
-    help="Path to system root (default: system-root)",
+    default=find_default_sysroot(),
+    help="Path to system root (default: system-root.volume if it exists, otherwise system-root)",
 )
 parser.add_argument(
     "-e",
