@@ -8,6 +8,7 @@ import sys
 import tomllib
 
 REGISTRY_PREFIX = "registry+"
+GIT_PREFIX = "git+"
 
 
 def fail(message):
@@ -27,33 +28,44 @@ def compat_class(version):
     return (0, 0, patch)
 
 
+def canonical_url(url):
+    """A git URL without what Cargo ignores when it matches [patch] tables."""
+    url = url.rstrip("/")
+    return url.removesuffix(".git")
+
+
 def load_patch_table():
-    """Map crate name -> compatibility class -> the port that supersedes it."""
+    """Map (patched source, crate name) -> compatibility class -> the port that supersedes it.
+
+    The patched source is "crates-io" or the URL of a git repository."""
     cargo_home = os.environ.get("CARGO_HOME")
     if not cargo_home:
-        fail("CARGO_HOME is not set, cannot locate the [patch.crates-io] table")
+        fail("CARGO_HOME is not set, cannot locate the [patch] tables")
 
     config = os.path.join(cargo_home, "config.toml")
     if not os.path.exists(config):
         fail(f"{config} does not exist")
 
     with open(config, "rb") as f:
-        patches = tomllib.load(f).get("patch", {}).get("crates-io", {})
+        tables = tomllib.load(f).get("patch", {})
 
     table = {}
-    for key, spec in patches.items():
-        # The key is only a rename; "package" carries the real crate name.
-        name = spec.get("package", key)
-        port = os.path.join(spec["path"], "Cargo.toml")
-        if not os.path.exists(port):
-            fail(f"patch `{key}` points at {spec['path']}, which has no Cargo.toml")
+    for source, patches in tables.items():
+        if source != "crates-io":
+            source = canonical_url(source)
+        for key, spec in patches.items():
+            # The key is only a rename; "package" carries the real crate name.
+            name = spec.get("package", key)
+            port = os.path.join(spec["path"], "Cargo.toml")
+            if not os.path.exists(port):
+                fail(f"patch `{key}` points at {spec['path']}, which has no Cargo.toml")
 
-        with open(port, "rb") as f:
-            version = tomllib.load(f).get("package", {}).get("version")
-        if not isinstance(version, str):
-            fail(f"patch `{key}` has a non-literal version, which we cannot resolve")
+            with open(port, "rb") as f:
+                version = tomllib.load(f).get("package", {}).get("version")
+            if not isinstance(version, str):
+                fail(f"patch `{key}` has a non-literal version, which we cannot resolve")
 
-        table.setdefault(name, {})[compat_class(version)] = (version, spec["path"])
+            table.setdefault((source, name), {})[compat_class(version)] = (version, spec["path"])
     return table
 
 
@@ -62,14 +74,25 @@ def load_lock(lockfile):
         return tomllib.load(f).get("package", [])
 
 
+def patched_source(source):
+    """The [patch] table that can supersede a lock entry from `source`, if any."""
+    if source.startswith(REGISTRY_PREFIX):
+        return "crates-io"
+    if source.startswith(GIT_PREFIX):
+        # git+<url>?<branch, tag or rev>#<commit>
+        return canonical_url(source.removeprefix(GIT_PREFIX).split("#")[0].split("?")[0])
+    return None
+
+
 def unpatched(lockfile, table):
-    """Lock entries still coming from the registry that a patched port supersedes."""
+    """Lock entries still coming from a registry or a git repository that a patched port
+    supersedes."""
     pending = []
     for pkg in load_lock(lockfile):
-        source = pkg.get("source", "")
-        if not source.startswith(REGISTRY_PREFIX):
+        source = patched_source(pkg.get("source", ""))
+        if source is None:
             continue
-        port = table.get(pkg["name"], {}).get(compat_class(pkg["version"]))
+        port = table.get((source, pkg["name"]), {}).get(compat_class(pkg["version"]))
         if port:
             pending.append((pkg["name"], pkg["version"], port))
     return pending
