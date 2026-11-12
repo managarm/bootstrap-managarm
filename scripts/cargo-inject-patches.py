@@ -100,25 +100,37 @@ def unpatched(lockfile, table):
 
 parser = argparse.ArgumentParser(description="Inject patched Rust libraries into Cargo lockfiles")
 parser.add_argument("manifest", type=pathlib.Path, help="path to Cargo.toml")
-manifest = parser.parse_args().manifest
+parser.add_argument(
+    "--lockfile-path",
+    type=pathlib.Path,
+    help="lockfile to use instead of the workspace's (passed to cargo as --lockfile-path)",
+)
+args = parser.parse_args()
+manifest = args.manifest
 
 table = load_patch_table()
 
-# The lockfile lives next to the workspace root, which need not be the given manifest.
-root = subprocess.run(
-    ["cargo", "locate-project", "--workspace", "--message-format", "plain",
-     "--manifest-path", manifest],
-    capture_output=True,
-)
-if root.returncode:
-    fail(f"cargo locate-project failed:\n{root.stderr.decode('utf-8')}")
-lockfile = os.path.join(os.path.dirname(root.stdout.decode("utf-8").strip()), "Cargo.lock")
+if args.lockfile_path:
+    lockfile = args.lockfile_path
+    lockfile_args = ["-Zunstable-options", "--lockfile-path", lockfile]
+else:
+    # The lockfile lives next to the workspace root, which need not be the given manifest.
+    root = subprocess.run(
+        ["cargo", "locate-project", "--workspace", "--message-format", "plain",
+         "--manifest-path", manifest],
+        capture_output=True,
+    )
+    if root.returncode:
+        fail(f"cargo locate-project failed:\n{root.stderr.decode('utf-8')}")
+    lockfile = os.path.join(os.path.dirname(root.stdout.decode("utf-8").strip()), "Cargo.lock")
+    lockfile_args = []
 
 if not os.path.exists(lockfile):
     # Resolving from scratch already applies the patches, so this needs no update pass.
     print("cargo-inject-patches: no lockfile, generating one...")
     generate = subprocess.run(
-        ["cargo", "generate-lockfile", "--manifest-path", manifest], capture_output=True
+        ["cargo", "generate-lockfile", "--manifest-path", manifest, *lockfile_args],
+        capture_output=True,
     )
     if generate.returncode:
         fail(f"cargo generate-lockfile failed:\n{generate.stderr.decode('utf-8')}")
@@ -131,7 +143,7 @@ if not pending:
 
 # Only ever update the patched crates by exact version: a bare `cargo update` would
 # re-resolve the whole graph and drift every unrelated dependency off its pin.
-cmd = ["cargo", "update", "--manifest-path", manifest]
+cmd = ["cargo", "update", "--manifest-path", manifest, *lockfile_args]
 cmd += [f"-p{name}@{version}" for name, version, _ in pending]
 
 output = subprocess.run(cmd, capture_output=True)
