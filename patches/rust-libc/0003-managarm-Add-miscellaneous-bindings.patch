@@ -1,14 +1,14 @@
-From 1ae74e19c00ff821ccb9e6579883f4aedf4430b7 Mon Sep 17 00:00:00 2001
+From ef059b3b83005158ac10a6ab57b4c6bdfe650de7 Mon Sep 17 00:00:00 2001
 From: Alexander van der Grinten <alexander.vandergrinten@gmail.com>
 Date: Mon, 9 Nov 2026 19:25:58 +0100
 Subject: [PATCH 3/3] managarm: Add miscellaneous bindings
 
 ---
- src/unix/linux_like/managarm/mod.rs | 349 ++++++++++++++++++++++++++++
- 1 file changed, 349 insertions(+)
+ src/unix/linux_like/managarm/mod.rs | 351 ++++++++++++++++++++++++++++
+ 1 file changed, 351 insertions(+)
 
 diff --git a/src/unix/linux_like/managarm/mod.rs b/src/unix/linux_like/managarm/mod.rs
-index d58593d..41c9c00 100644
+index d58593d..69eda14 100644
 --- a/src/unix/linux_like/managarm/mod.rs
 +++ b/src/unix/linux_like/managarm/mod.rs
 @@ -1,13 +1,18 @@
@@ -447,6 +447,15 @@ index d58593d..41c9c00 100644
      pub fn getrandom(buffer: *mut crate::c_void, max_size: usize, flags: crate::c_uint) -> isize;
      pub fn preadv(
          fd: crate::c_int,
+@@ -517,6 +866,8 @@ extern "C" {
+         iovcnt: crate::c_int,
+         offset: off_t,
+     ) -> isize;
++    pub fn futimes(fd: crate::c_int, times: *const crate::timeval) -> crate::c_int;
++    pub fn lutimes(file: *const crate::c_char, times: *const crate::timeval) -> crate::c_int;
+ }
+ cfg_if! {
+     if #[cfg(target_arch = "x86_64")] {
 -- 
 2.47.3
 
