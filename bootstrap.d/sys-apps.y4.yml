@@ -1472,7 +1472,7 @@ packages:
       - lz4
       - openssl
       - zlib
-    revision: 9
+    revision: 10
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
