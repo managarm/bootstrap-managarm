@@ -1,26 +1,31 @@
-From 5693f1455bc126f55ad226f6e2bd3d2c5e589597 Mon Sep 17 00:00:00 2001
+From beef94c819409f8e1813f07468f041c4806ef1e7 Mon Sep 17 00:00:00 2001
 From: Dennis Bonke <admin@dennisbonke.com>
 Date: Mon, 17 Mar 2025 20:34:07 +0100
 Subject: [PATCH 4/5] Add systemd unit file
 
 ---
- xbps.service | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ xbps.service | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
  create mode 100644 xbps.service
 
 diff --git a/xbps.service b/xbps.service
 new file mode 100644
-index 0000000..e1468cb
+index 0000000..59497b2
 --- /dev/null
 +++ b/xbps.service
-@@ -0,0 +1,18 @@
+@@ -0,0 +1,23 @@
 +[Unit]
 +Description=Unit to configure all packages using xbps-reconfigure
 +Documentation=man:xbps-reconfigure(1)
 +Documentation=https://voidlinux.org/xbps/
 +
-+# Since we are part of the sysinit target, make sure we are started before
-+Before=multi-user.target
++# Configure the packages before sysinit.target, such that no service (and in particular,
++# no login session) runs while packages are still unconfigured.
++DefaultDependencies=no
++After=local-fs.target systemd-sysusers.service systemd-tmpfiles-setup.service
++Before=sysinit.target systemd-update-done.service
++Conflicts=shutdown.target
++Before=shutdown.target
 +
 +[Service]
 +Type=oneshot
@@ -33,5 +38,5 @@ index 0000000..e1468cb
 +[Install]
 +WantedBy=sysinit.target
 -- 
-2.51.1
+2.47.3
 
