@@ -151,8 +151,8 @@ tools:
     architecture: noarch
     from_source: mlibc
     tools_required:
-      - host-freestnd-c-hdrs
-      - host-freestnd-cxx-hdrs
+      - host-freestanding-c-hdrs
+      - host-freestanding-cxx-hdrs
       - host-linux-headers
       - host-frigg
       - host-libsmarter
@@ -170,6 +170,7 @@ tools:
         - '--buildtype=debugoptimized'
         - '--wrap-mode=nofallback'
         - '-Dno_headers=true'
+        - '-Duse_freestnd_hdrs=enabled'
         - '-Dlinux_kernel_headers=@BUILD_ROOT@/tools/host-linux-headers/src/linux-headers'
         - '@THIS_SOURCE_DIR@'
     compile:
@@ -289,6 +290,7 @@ packages:
         - '--buildtype=debugoptimized'
         - '--wrap-mode=nofallback'
         - '-Dno_headers=true'
+        - '-Duse_freestnd_hdrs=disabled'
         - '-Dld_library_name=@OPTION:arch@-managarm-mlibc-ld'
         - '-Dlinux_kernel_headers=@SYSROOT_DIR@/usr/src/linux-headers'
         - '@THIS_SOURCE_DIR@'

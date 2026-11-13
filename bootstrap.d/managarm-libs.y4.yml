@@ -50,6 +50,23 @@ sources:
     branch: 'trunk'
     commit: '9d6a92ab19a57140f1e3ecc6668014d7f46094b6'
 
+  # Keep these in sync with mlibc's subprojects/freestanding-{c,cxx}-hdrs.wrap.
+  - name: freestanding-c-hdrs
+    rolling_version: true
+    version: '0.0pl@ROLLING_ID@'
+    subdir: 'ports'
+    git: 'https://github.com/osdev0/freestanding-c-hdrs.git'
+    branch: 'trunk'
+    commit: '5e951873194cf131d00abe4978426e5aaaf6e379'
+
+  - name: freestanding-cxx-hdrs
+    rolling_version: true
+    version: '0.0pl@ROLLING_ID@'
+    subdir: 'ports'
+    git: 'https://github.com/osdev0/freestanding-cxx-hdrs.git'
+    branch: 'trunk'
+    commit: 'a1787cd05a88eed4548002fa1f6c80ab2d80d9e5'
+
   - name: nvidia-open
     subdir: 'ports'
     git: 'https://github.com/NVIDIA/open-gpu-kernel-modules.git'
@@ -78,25 +95,39 @@ tools:
     install:
       - args: ['ninja', 'install']
 
-  - name: host-freestnd-c-hdrs
+  - name: host-freestanding-c-hdrs
     architecture: noarch
-    from_source: freestnd-c-hdrs
-    configure:
-      - args: ['cp', '-rpv', '@THIS_SOURCE_DIR@/.', './']
-    compile:
-      - args: ['make']
+    from_source: freestanding-c-hdrs
     install:
-      - args: ['make', 'install', 'PREFIX=@PREFIX@']
+      - args: ['mkdir', '-p', '@PREFIX@/lib/pkgconfig']
+      - args: ['cp', '-rT', '@THIS_SOURCE_DIR@/include', '@PREFIX@/include']
+      - args: |
+          cat << EOF > @PREFIX@/lib/pkgconfig/freestanding-c-hdrs.pc
+          prefix=@PREFIX@
+          includedir=\${prefix}/include
 
-  - name: host-freestnd-cxx-hdrs
+          Name: freestanding-c-hdrs
+          Description: Freestanding C headers
+          Version: 0.0
+          Cflags: -isystem \${includedir}
+          EOF
+
+  - name: host-freestanding-cxx-hdrs
     architecture: noarch
-    from_source: freestnd-cxx-hdrs
-    configure:
-      - args: ['cp', '-rpv', '@THIS_SOURCE_DIR@/.', './']
-    compile:
-      - args: ['make']
+    from_source: freestanding-cxx-hdrs
     install:
-      - args: ['make', 'install', 'PREFIX=@PREFIX@']
+      - args: ['mkdir', '-p', '@PREFIX@/lib/pkgconfig']
+      - args: ['cp', '-rT', '@THIS_SOURCE_DIR@/include', '@PREFIX@/include']
+      - args: |
+          cat << EOF > @PREFIX@/lib/pkgconfig/freestanding-cxx-hdrs.pc
+          prefix=@PREFIX@
+          includedir=\${prefix}/include
+
+          Name: freestanding-cxx-hdrs
+          Description: Freestanding C++ headers
+          Version: 0.0
+          Cflags: -isystem \${includedir}
+          EOF
 
 packages:
   - name: bragi
