@@ -189,6 +189,8 @@ def make_default_entries(writer, *, protocol, targets):
     if "sddm" in targets:
         entries.append(("SDDM", "systemd.unit=sddm.target"))
     entries.append(("kmscon", "systemd.unit=kmscon.target"))
+    # plainfb only claims the boot framebuffer on a modeset, so the kernel log stays on screen.
+    entries.append(("Headless", "systemd.unit=multi-user.target plainfb.force=1"))
     for title, extra_cmdline in entries:
         writer.write_entry(
             f"{title} (via {name_of_protocol(protocol)})",
