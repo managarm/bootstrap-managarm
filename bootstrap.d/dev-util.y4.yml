@@ -580,7 +580,7 @@ packages:
       subdir: 'ports'
       git: 'https://gitlab.com/sortix/os-test.git'
       branch: 'main'
-      commit: '89da5d6e7c30143599794232972f701a9d95380e'
+      commit: '5d947a823cf099344d6cfa9d4c32bb65df14783f'
       rolling_version: true
       version: '0.0pl@ROLLING_ID@'
     tools_required:
@@ -590,7 +590,7 @@ packages:
       - make
       - libiconv
       - libintl
-    revision: 3
+    revision: 1
     configure:
       - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args: ['rm', '-rf', '@THIS_BUILD_DIR@/out/']
@@ -609,4 +609,20 @@ packages:
           mkdir -p @THIS_COLLECT_DIR@/opt/os-test/
           cp -r ./ @THIS_COLLECT_DIR@/opt/os-test/
           echo inconsistent hangs > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/basic/signal/killpg.out
+          echo crashes > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/stdio/asprintf-failure-null-clobber-eoverflow.out
+          echo crashes > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/stdio/asprintf-failure-null-clobber-eilseq.out
+          echo crashes > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/stdio/asprintf-failure-null-clobber-enomem.out
+          echo hangs > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/unix/server-sockatmark.out
+          echo hangs > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/unix/server-shutdown.out
+          echo hangs > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/unix/server-send.out
+          echo hangs > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/unix/server-recv.out
+          echo hangs > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/unix/server-listen.out
+          echo hangs > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/unix/server-poll.out
+          echo hangs > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/unix/server-getsockname.out
+          echo hangs > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/unix/server-getpeername.out
+          echo hangs > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/unix/server-accept.out
+          echo hangs > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/unix/connect.out
+          echo hangs > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/unix/bind-connect-other.out
+          echo hangs > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/unix/bind-accept.out
+          echo hangs > @THIS_COLLECT_DIR@/opt/os-test/out/managarm/unix/accept.out
           rm @THIS_COLLECT_DIR@/opt/os-test/*.xbstrap

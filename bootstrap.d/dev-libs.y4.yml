@@ -476,14 +476,14 @@ packages:
     source:
       subdir: ports
       git: 'https://github.com/google/double-conversion.git'
-      tag: 'v3.3.1'
-      version: '3.3.1'
+      tag: 'v3.4.0'
+      version: '3.4.0'
     tools_required:
       - host-cmake
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 6
+    revision: 1
     configure:
       - args:
         - 'cmake'
@@ -584,8 +584,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://github.com/fribidi/fribidi.git'
-      tag: 'v1.0.16'
-      version: '1.0.16'
+      tag: 'v1.0.18'
+      version: '1.0.18'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -602,7 +602,7 @@ packages:
       - host-automake-v1.15
     pkgs_required:
       - mlibc
-    revision: 5
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
@@ -1102,8 +1102,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/libinput/libei.git'
-      tag: '1.5.0'
-      version: '1.5.0'
+      tag: '1.6.0'
+      version: '1.6.0'
     tools_required:
       - host-pkg-config
       - system-gcc
@@ -1114,7 +1114,7 @@ packages:
       - libevdev
       - libxkbcommon
       - systemd
-    revision: 4
+    revision: 1
     configure:
       - args:
         - 'meson'
@@ -1151,8 +1151,8 @@ packages:
     source:
       subdir: 'ports'
       git: 'https://gitlab.freedesktop.org/libevdev/libevdev.git'
-      tag: 'libevdev-1.13.4'
-      version: '1.13.4'
+      tag: 'libevdev-1.14.0'
+      version: '1.14.0'
       tools_required:
         - host-autoconf-v2.69
         - host-automake-v1.15
@@ -1166,7 +1166,7 @@ packages:
       - system-gcc
     pkgs_required:
       - mlibc
-    revision: 5
+    revision: 1
     configure:
       - args:
         - '@THIS_SOURCE_DIR@/configure'
