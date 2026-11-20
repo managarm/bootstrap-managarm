@@ -39,6 +39,8 @@ tasks:
     pkgs_required:
       - core-files
       - managarm-scripts
+      # We use the wheel and users groups below and they are created from systemd's sysusers configuration.
+      - systemd
     args:
       - '@SOURCE_ROOT@/scripts/run-as-sysroot-owner.py'
       - '@SYSROOT_DIR@'
