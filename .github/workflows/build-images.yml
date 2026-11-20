@@ -111,11 +111,16 @@ jobs:
             - name: Install system packages
               run: |
                   sudo apt-get update
-                  sudo apt-get install -y dosfstools e2fsprogs mtools util-linux zstd
+                  sudo apt-get install -y dosfstools e2fsprogs mtools uidmap util-linux zstd
             - name: Install rsync-ssl
               run: |
                   wget https://raw.githubusercontent.com/WayneD/rsync/c3f7414c450faaf6a8281cc4a4403529aeb7d859/rsync-ssl
                   sudo install -D rsync-ssl /usr/local/bin/rsync-ssl
+            - name: Permit unprivileged user namespaces
+              run: |
+                  set -x
+                  sudo sysctl -w kernel.apparmor_restrict_unprivileged_unconfined=0
+                  sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
             - name: Download empty image artifact
               uses: actions/download-artifact@v4
               with:
@@ -129,10 +134,10 @@ jobs:
                   fi
             - name: Create sysroot
               run: |
-                  src/extrafiles/managarm-scripts/managarm-install.py sysroot --arch ${{ matrix.arch }} --xbps-${{ matrix.image-type }} system-root
+                  unshare --map-root-user --map-auto src/extrafiles/managarm-scripts/managarm-install.py sysroot --arch ${{ matrix.arch }} --xbps-${{ matrix.image-type }} system-root
             - name: Build image
               run: |
-                  src/scripts/update-image.py --triple ${{ matrix.triple }} remake
+                  unshare --map-root-user --map-auto src/scripts/update-image.py --triple ${{ matrix.triple }} remake
             - name: Compress final image
               run: |
                   zstd image -o image.zst --force
