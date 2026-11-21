@@ -312,8 +312,6 @@ container:
     - libxcb-util0-dev
     - libxcb-keysyms1-dev
     - libxcb-icccm4-dev
-    # Used by epiphany
-    - blueprint-compiler
     uid: 1000
     gid: 1000
     src_mount: /var/lib/managarm-buildenv/src
