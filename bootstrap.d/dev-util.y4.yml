@@ -40,6 +40,28 @@ sources:
           'NOCONFIGURE': 'yes'
 
 tools:
+  - name: host-blueprint-compiler
+    labels: [aarch64, riscv64]
+    architecture: noarch
+    source:
+      subdir: ports
+      git: 'https://gitlab.gnome.org/GNOME/blueprint-compiler.git'
+      tag: 'v0.20.4'
+      version: '0.20.4'
+    revision: 1
+    configure:
+      - args:
+        - 'meson'
+        - 'setup'
+        - '--native-file'
+        - '@SOURCE_ROOT@/scripts/meson.native-file'
+        - '--prefix=@PREFIX@'
+        - '@THIS_SOURCE_DIR@'
+    compile:
+      - args: ['ninja']
+    install:
+      - args: ['ninja', 'install']
+
   - name: host-cmake
     labels: [aarch64, riscv64]
     architecture: noarch
