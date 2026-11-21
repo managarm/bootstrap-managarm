@@ -21,4 +21,4 @@ jobs:
       - initialize-empty-image
       - remake-image
       # TODO(qookie): - test-image
-      - xz-image
+      - zstd-image

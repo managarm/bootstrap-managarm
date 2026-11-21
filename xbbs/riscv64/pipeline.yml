@@ -11,4 +11,4 @@ jobs:
       - useful-image-dependencies
       - initialize-empty-image
       - remake-image
-      - xz-image
+      - zstd-image

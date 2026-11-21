@@ -32,4 +32,4 @@ jobs:
       - initialize-empty-image
       - remake-image
       - test-image
-      - xz-image
+      - zstd-image
