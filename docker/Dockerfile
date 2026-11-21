@@ -173,6 +173,8 @@ RUN apt-get update \
 		xsltproc \
 		# Used by various programs, for example, it is used by file
 		zlib1g-dev \
+		# Used to compress images
+		zstd \
 		# Used by the developers
 		clangd \
 		# used to generate images
