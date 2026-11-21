@@ -12,7 +12,6 @@ pkg_management:
 
 container:
     runtime: cbuildrt
-    rootfs:  /var/lib/cbuildrt/managarm-buildenv
     uid: 1000
     gid: 1000
     src_mount: /var/lib/managarm-buildenv/src

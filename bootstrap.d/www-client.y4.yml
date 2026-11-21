@@ -14,6 +14,7 @@ packages:
       tag: '49.8.1'
       version: '49.8.1'
     tools_required:
+      - host-blueprint-compiler
       - system-gcc
       - virtual: pkgconfig-for-target
         triple: "@OPTION:arch-triple@"

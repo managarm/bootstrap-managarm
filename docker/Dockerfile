@@ -209,17 +209,6 @@ RUN apt-get update \
 RUN pip3 install --break-system-packages meson==1.9.2 \
 	&& pip3 install --break-system-packages xbstrap
 
-# Install mdbook.
-RUN cd /root && \
-	wget -O mdbook.tar.gz https://github.com/rust-lang/mdBook/releases/download/v0.3.7/mdbook-v0.3.7-x86_64-unknown-linux-gnu.tar.gz && \
-	tar xf mdbook.tar.gz && \
-	install -D mdbook /usr/local/bin/mdbook
-
-# Install blueprint-compiler, the version in trixie is too old.
-RUN cd /root && \
-	wget -O blueprint-compiler.deb https://raptor.dennisbonke.com/blueprint-compiler_0.20.4-1_all.deb && \
-	dpkg -i /root/blueprint-compiler.deb
-
 #----------------------------------------------------------------------------------------
 # "user" stage that also adds a user account.
 #----------------------------------------------------------------------------------------
