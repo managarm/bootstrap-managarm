@@ -315,7 +315,7 @@ packages:
       - mlibc
     revision: 6
     configure:
-      - args: ['cp', '-r', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
+      - args: ['cp', '-rp', '@THIS_SOURCE_DIR@/.', '@THIS_BUILD_DIR@']
       - args:
         - '@THIS_BUILD_DIR@/configure'
         - '--host=@OPTION:arch-triple@'
