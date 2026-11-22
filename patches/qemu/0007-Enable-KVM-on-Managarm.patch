@@ -1,0 +1,84 @@
+From e9e6fdceba5c187fc988f20d9108bb77bcbd9d0c Mon Sep 17 00:00:00 2001
+From: iretq <me@iretq.dev>
+Date: Sun, 22 Nov 2026 15:20:42 +0100
+Subject: [PATCH] Enable KVM on Managarm
+
+---
+ include/migration/vmstate.h | 4 ++--
+ meson.build                 | 4 ++--
+ target/i386/kvm/kvm.c       | 6 ++++++
+ 3 files changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/include/migration/vmstate.h b/include/migration/vmstate.h
+index f313f2f..c1068bb 100644
+--- a/include/migration/vmstate.h
++++ b/include/migration/vmstate.h
+@@ -902,7 +902,7 @@ extern const VMStateInfo vmstate_info_qlist;
+ #define VMSTATE_UINT64_V(_f, _s, _v)                                  \
+     VMSTATE_SINGLE(_f, _s, _v, vmstate_info_uint64, uint64_t)
+ 
+-#ifdef CONFIG_LINUX
++#if defined(CONFIG_LINUX) || defined(CONFIG_MANAGARM)
+ 
+ #define VMSTATE_U8_V(_f, _s, _v)                                   \
+     VMSTATE_SINGLE(_f, _s, _v, vmstate_info_uint8, __u8)
+@@ -936,7 +936,7 @@ extern const VMStateInfo vmstate_info_qlist;
+ #define VMSTATE_UINT64(_f, _s)                                        \
+     VMSTATE_UINT64_V(_f, _s, 0)
+ 
+-#ifdef CONFIG_LINUX
++#if defined(CONFIG_LINUX) || defined(CONFIG_MANAGARM)
+ 
+ #define VMSTATE_U8(_f, _s)                                         \
+     VMSTATE_U8_V(_f, _s, 0)
+diff --git a/meson.build b/meson.build
+index e17b4cb..0f44789 100644
+--- a/meson.build
++++ b/meson.build
+@@ -835,7 +835,7 @@ endif
+ ###############################################
+ 
+ accelerators = []
+-if get_option('kvm').allowed() and host_os == 'linux'
++if get_option('kvm').allowed() and (host_os == 'linux' or host_os == 'managarm')
+   accelerators += 'CONFIG_KVM'
+ endif
+ if get_option('whpx').allowed() and host_os == 'windows'
+@@ -2402,7 +2402,7 @@ endif
+ config_host_data.set('HOST_' + host_arch.to_upper(), 1)
+ 
+ kvm_targets_c = '""'
+-if get_option('kvm').allowed() and host_os == 'linux'
++if get_option('kvm').allowed() and (host_os == 'linux' or host_os == 'managarm')
+   kvm_targets_c = '"' + '" ,"'.join(kvm_targets) + '"'
+ endif
+ config_host_data.set('CONFIG_KVM_TARGETS', kvm_targets_c)
+diff --git a/target/i386/kvm/kvm.c b/target/i386/kvm/kvm.c
+index 2ff618f..df30e28 100644
+--- a/target/i386/kvm/kvm.c
++++ b/target/i386/kvm/kvm.c
+@@ -19,7 +19,9 @@
+ #include <math.h>
+ #include <sys/ioctl.h>
+ #include <sys/utsname.h>
++#ifdef CONFIG_LINUX
+ #include <sys/syscall.h>
++#endif
+ #include <sys/resource.h>
+ #include <sys/time.h>
+ 
+@@ -6395,7 +6397,11 @@ void kvm_request_xsave_components(X86CPU *cpu, uint64_t mask)
+ 
+     while (mask) {
+         int bit = ctz64(mask);
++#ifdef CONFIG_LINUX
+         int rc = syscall(SYS_arch_prctl, ARCH_REQ_XCOMP_GUEST_PERM, bit);
++#else
++        int rc = -1;
++#endif
+         if (rc) {
+             /*
+              * Older kernel version (<5.17) do not support
+-- 
+2.56.1
+
