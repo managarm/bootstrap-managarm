@@ -42,6 +42,8 @@ sources:
     regenerate:
       - args: ['mkdir', '-p', '@THIS_SOURCE_DIR@/subprojects']
       - args: ['ln', '-sf', '@SOURCE_ROOT@/ports/cralgo', '@THIS_SOURCE_DIR@/subprojects/']
+      - args: ['meson', 'subprojects', 'download', 'zstd']
+        isolate_network: false
 
 
 tools:
