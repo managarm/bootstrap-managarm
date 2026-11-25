@@ -13,7 +13,7 @@ packages:
     source:
       subdir: meta-sources
       version: '1.0'
-    revision: 22
+    revision: 23
     config_files:
       - '/etc/passwd'
       - '/etc/group'
