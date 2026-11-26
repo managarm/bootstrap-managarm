@@ -171,6 +171,7 @@ tools:
         - '--wrap-mode=nofallback'
         - '-Dno_headers=true'
         - '-Duse_freestnd_hdrs=enabled'
+        - '-Dlibgcc_dependency=enabled'
         - '-Dlinux_kernel_headers=@BUILD_ROOT@/tools/host-linux-headers/src/linux-headers'
         - '@THIS_SOURCE_DIR@'
     compile:
@@ -291,6 +292,7 @@ packages:
         - '--wrap-mode=nofallback'
         - '-Dno_headers=true'
         - '-Duse_freestnd_hdrs=disabled'
+        - '-Dlibgcc_dependency=enabled'
         - '-Dld_library_name=@OPTION:arch@-managarm-mlibc-ld'
         - '-Dlinux_kernel_headers=@SYSROOT_DIR@/usr/src/linux-headers'
         - '@THIS_SOURCE_DIR@'
@@ -362,6 +364,7 @@ packages:
         - '--buildtype=debugoptimized'
         - '--wrap-mode=nofallback'
         - '-Dno_headers=true'
+        - '-Dlibgcc_dependency=enabled'
         - '-Dlinux_kernel_headers=@SYSROOT_DIR@/usr/src/linux-headers'
         - '@THIS_SOURCE_DIR@'
     build:
