@@ -29,10 +29,6 @@ jobs:
               run: |
                   pip3 install xbstrap y4
                   xbstrap prereqs cbuildrt xbps
-            - name: Download and unpack rootfs
-              run: |
-                  curl https://repos.managarm.org/buildenv/managarm-buildenv.tar.gz -o managarm-rootfs.tar.gz
-                  tar xvf managarm-rootfs.tar.gz
             - name: Permit unprivileged user namespaces
               run: |
                   set -x
@@ -51,7 +47,6 @@ jobs:
                     format: xbps
                   container:
                     runtime: cbuildrt
-                    rootfs:  $GITHUB_WORKSPACE/rootfs
                     uid: 1000
                     gid: 1000
                     src_mount: /var/lib/managarm-buildenv/src
