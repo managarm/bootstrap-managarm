@@ -97,6 +97,7 @@ repositories:
         x86_64: 'https://builds.managarm.org/projects/managarm/success/repo/packages/x86_64/'
         aarch64: 'https://builds.managarm.org/projects/managarm_aarch64/success/repo/packages/aarch64/'
         riscv64: 'https://builds.managarm.org/projects/managarm_riscv64/success/repo/packages/riscv64/'
+    rootfs_archives: 'https://builds.managarm.org/projects/managarm/success/repo/rootfses/'
 
 # TODO: We currently don't support computed options or anything of that sort,
 #       so we just define the architecture, and the triple as 2 options
