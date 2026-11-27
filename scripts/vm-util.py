@@ -213,7 +213,7 @@ def setup_tftp_directory():
     shutil.copytree("packages/limine/usr/share/limine/", tftp_dir.name, dirs_exist_ok=True)
     shutil.copytree("packages/managarm-kernel/usr/managarm/bin/", os.path.join(tftp_dir.name, "managarm"), dirs_exist_ok=True)
     shutil.copytree("packages/managarm-kernel-uefi/usr/managarm/bin/", os.path.join(tftp_dir.name, "managarm"), dirs_exist_ok=True)
-    shutil.copyfile("initrd.cpio", os.path.join(tftp_dir.name, "managarm", "initrd.cpio"))
+    shutil.copyfile("initrd.cpio.zst", os.path.join(tftp_dir.name, "managarm", "initrd.cpio.zst"))
     shutil.copyfile("../src/scripts/nvme-of-boot.conf", os.path.join(tftp_dir.name, "limine.conf"))
     return tftp_dir
 
@@ -655,7 +655,7 @@ def do_qemu(args):
         qemu_args += ["-serial", "stdio"]
         if not args.uefi:
             qemu_args += ["-kernel", f"{find_sysroot()}/usr/managarm/bin/eir-linux.bin"]
-            qemu_args += ["-initrd", "initrd.cpio"]
+            qemu_args += ["-initrd", "initrd.cpio.zst"]
             qemu_args += ["-append", f"init.launch={args.init_launch}"]
     elif args.arch == "riscv64":
         # Use the virt machine and -kernel, similar to aarch64.
@@ -666,7 +666,7 @@ def do_qemu(args):
         qemu_args += ["-serial", "stdio"]
         if not args.uefi:
             qemu_args += ["-kernel", f"{find_sysroot()}/usr/managarm/bin/eir-linux.bin"]
-            qemu_args += ["-initrd", "initrd.cpio"]
+            qemu_args += ["-initrd", "initrd.cpio.zst"]
             qemu_args += ["-append", f"init.launch={args.init_launch}"]
     else:
         assert args.arch == "x86_64"
@@ -759,7 +759,7 @@ def do_qemu(args):
             else:
                 raise RuntimeError(f"Bad --ci-protocol: {ci_protocol}")
             if ci_protocol in {"limine", "linux", "mb2"}:
-                f.write(f"module_path: guid({esp_uuid}):/managarm/initrd.cpio\n")
+                f.write(f"module_path: guid({esp_uuid}):/managarm/initrd.cpio.zst\n")
             f.write("cmdline: bochs systemd.unit=ci-boot.target\n")
 
         qemu_args += [
