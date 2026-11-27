@@ -29,12 +29,15 @@ EIR_FILES = {
     "aarch64": ["eir-limine", "eir-linux.bin", "eir-uefi"],
     "riscv64": ["eir-limine", "eir-linux.bin", "eir-uefi"],
 }
+# eir declares which initrds it reads in share/eir/<binary>.json.
+EIR_FEATURES_DIR = "usr/managarm/share/eir"
 EFI_LOADERS = {
     "x86_64": "BOOTX64.EFI",
     "aarch64": "BOOTAA64.EFI",
     "riscv64": "BOOTRISCV64.EFI",
 }
 STAMP_PATH = "managarm/update-boot.json"
+ZSTD_INITRD_PATH = "managarm/initrd.cpio.zst"
 # Bump when the ESP has to be rewritten even though the generated files are unchanged.
 STAMP_VERSION = 1
 
@@ -109,15 +112,17 @@ class LimineWriter:
     __slots__ = (
         "base_cmdline",
         "user_cmdline",
+        "initrd_name",
         "out",
         "_level",
     )
 
-    def __init__(self, out, *, base_cmdline, user_cmdline):
+    def __init__(self, out, *, base_cmdline, user_cmdline, initrd_name):
         self.out = out
         self._level = 0
         self.base_cmdline = base_cmdline
         self.user_cmdline = user_cmdline
+        self.initrd_name = initrd_name
 
     def write_header(self):
         self.out.writelines(
@@ -159,7 +164,7 @@ class LimineWriter:
             ]
         )
         if protocol in {"limine", "multiboot2", "linux"}:
-            self.out.write(f"{subindent}module_path: boot():/managarm/initrd.cpio\n")
+            self.out.write(f"{subindent}module_path: boot():/managarm/{self.initrd_name}\n")
 
         # The user's options go last so that they override those of the entry.
         cmdlines = [*self.base_cmdline, extra_cmdline, self.user_cmdline]
@@ -249,20 +254,25 @@ def write_live_menu(writer, *, arch, targets):
             make_default_entries(writer, protocol="multiboot2", targets=targets)
 
 
-def write_limine_conf(path, config, *, arch, targets):
+def write_limine_conf(path, config, *, arch, targets, initrd_name):
     # eir detects e9 under QEMU on its own, so x86 needs no bochs.
     base_cmdline = [
         "serial" if arch != "x86_64" else None,
         f"root=PARTUUID={config.root_partuuid}",
     ]
     with open(path, "w") as f:
-        writer = LimineWriter(f, base_cmdline=base_cmdline, user_cmdline=config.cmdline)
+        writer = LimineWriter(f, base_cmdline=base_cmdline, user_cmdline=config.cmdline, initrd_name=initrd_name)
         write_live_menu(writer, arch=arch, targets=targets)
 
 
 def cmd_esp_contents(args):
     config = Config.load(args.root, partitions=args.partitions)
-    files, external = make_esp_tree(args.root, args.arch, config, args.esp_dir, has_bios_boot=args.bios_boot)
+    with tempfile.TemporaryDirectory() as scratch:
+        files, external, archive = make_esp_tree(
+            args.root, args.arch, config, args.esp_dir, scratch, has_bios_boot=args.bios_boot
+        )
+        if archive is not None:
+            compress_zstd(archive, os.path.join(args.esp_dir, ZSTD_INITRD_PATH))
     write_stamp(os.path.join(args.esp_dir, STAMP_PATH), files, external)
 
 
@@ -324,31 +334,75 @@ def read_stamp(esp, mtools_env):
     return stamp
 
 
-def make_esp_tree(root, arch, config, tree, *, has_bios_boot):
+# The root may have an older eir than this script expects (e.g., stable images are built by newer scripts).
+# eir builds without a features file only read uncompressed initrds.
+def eir_reads_zstd(root, arch):
+    for eir in EIR_FILES[arch]:
+        path = os.path.join(root, EIR_FEATURES_DIR, f"{eir}.json")
+        try:
+            with open(path, "rb") as f:
+                features = json.load(f)
+        except FileNotFoundError:
+            return False
+        except ValueError as e:
+            raise ConfigError(f"{path}: {e}")
+        if not isinstance(features, dict) or not isinstance(features.get("initrd_compression", []), list):
+            raise ConfigError(f"{path}: expected an object whose initrd_compression is a list")
+        if "zstd" not in features.get("initrd_compression", []):
+            return False
+    return True
+
+
+def compress_zstd(source, dest):
+    try:
+        from compression import zstd
+    except ImportError:
+        # Python < 3.14 has no zstd in the stdlib (e.g., on build hosts).
+        if shutil.which("zstd") is None:
+            raise ConfigError("compressing the initrd needs Python >= 3.14 or the zstd program")
+        subprocess.run(["zstd", "-q", "-f", "-T0", source, "-o", dest], check=True)
+        return
+
+    with open(source, "rb") as f:
+        data = f.read()
+    # Like the zstd program, record a checksum; one-shot compression also records the content size.
+    with open(dest, "wb") as f:
+        f.write(zstd.compress(data, options={zstd.CompressionParameter.checksum_flag: 1}))
+
+
+# Returns the hashes of the ESP files and of external files, and the uncompressed archive that still has to be
+# compressed into the tree (None if the initrd is not compressed).
+def make_esp_tree(root, arch, config, tree, scratch, *, has_bios_boot):
     bin_dir = os.path.join(root, "usr/managarm/bin")
     limine_dir = os.path.join(root, "usr/share/limine")
 
     os.makedirs(os.path.join(tree, "EFI/BOOT"))
     os.makedirs(os.path.join(tree, "managarm"))
 
+    # The uncompressed archive stays out of the tree, so that it is only compressed if it changed.
+    compress = eir_reads_zstd(root, arch)
+    initrd_name = "initrd.cpio.zst" if compress else "initrd.cpio"
+    archive = os.path.join(scratch, "initrd.cpio") if compress else os.path.join(tree, "managarm/initrd.cpio")
     subprocess.run(
         [sys.executable, os.path.join(bin_dir, "gen-initrd.py"), "--triple", f"{arch}-managarm",
-         "--sysroot", root, "-o", os.path.join(tree, "managarm/initrd.cpio")],
+         "--sysroot", root, "-o", archive],
         check=True,
     )
     for eir in EIR_FILES[arch]:
         shutil.copy(os.path.join(bin_dir, eir), os.path.join(tree, "managarm"))
     shutil.copy(os.path.join(limine_dir, EFI_LOADERS[arch]), os.path.join(tree, "EFI/BOOT"))
     targets = installed_targets(root)
-    write_limine_conf(os.path.join(tree, "limine.conf"), config, arch=arch, targets=targets)
+    write_limine_conf(os.path.join(tree, "limine.conf"), config, arch=arch, targets=targets, initrd_name=initrd_name)
 
     files = hash_tree(tree)
+    if compress:
+        files[ZSTD_INITRD_PATH] = hash_file(archive)
     # limine-bios.sys has to match the stages on the disk, so it is tracked by the root's copy that was
     # last paired with them, not by its content on the ESP.
     external = {}
     if has_bios_boot:
         external["limine-bios.sys"] = hash_file(os.path.join(limine_dir, "limine-bios.sys"))
-    return files, external
+    return files, external, archive if compress else None
 
 
 def cmd_update_esp(args):
@@ -362,8 +416,10 @@ def cmd_update_esp(args):
     limine_dir = os.path.join(args.root, "usr/share/limine")
     mtools_env = {**os.environ, "MTOOLS_SKIP_CHECK": "1"}
 
-    with tempfile.TemporaryDirectory() as tree:
-        files, external = make_esp_tree(args.root, args.arch, config, tree, has_bios_boot=has_bios_boot)
+    with tempfile.TemporaryDirectory() as tree, tempfile.TemporaryDirectory() as scratch:
+        files, external, archive = make_esp_tree(
+            args.root, args.arch, config, tree, scratch, has_bios_boot=has_bios_boot
+        )
 
         old = read_stamp(esp, mtools_env)
         if not args.force and old is not None and old["files"] == files and old["external"] == external:
@@ -378,11 +434,17 @@ def cmd_update_esp(args):
         if old is not None and not args.force:
             for path, digest in files.items():
                 if old["files"].get(path) == digest:
-                    os.unlink(os.path.join(tree, path))
+                    if path == ZSTD_INITRD_PATH:
+                        archive = None
+                    else:
+                        os.unlink(os.path.join(tree, path))
             # Only files that an earlier run wrote are removed; the ESP may be shared. A file that is gone
             # already does not fail the run.
             for path in old["files"].keys() - files.keys():
                 subprocess.run(["mdel", "-i", f"/dev/{esp}", f"::{path}"], env=mtools_env)
+
+        if archive is not None:
+            compress_zstd(archive, os.path.join(tree, ZSTD_INITRD_PATH))
 
         # -s merges into directories that exist already and creates the others, and -o overwrites existing files.
         sources = [os.path.join(tree, f) for f in os.listdir(tree)]

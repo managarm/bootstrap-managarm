@@ -25,11 +25,11 @@ tasks:
         order_only: true
     tools_required:
       - cross-binutils
-    args:
-      - '@SYSROOT_DIR@/usr/managarm/bin/gen-initrd.py'
-      - '--triple'
-      - '@OPTION:arch-triple@'
-      - '--sysroot=@SYSROOT_DIR@'
+    # The uncompressed initrd.cpio is kept for inspection.
+    args: |
+        set -e
+        '@SYSROOT_DIR@/usr/managarm/bin/gen-initrd.py' --triple '@OPTION:arch-triple@' --sysroot='@SYSROOT_DIR@'
+        zstd -q -f -T0 initrd.cpio -o initrd.cpio.zst
     workdir: '@BUILD_ROOT@'
 
   # Adds the base directories, the live image's users and the stable xbps repository to the sysroot.
@@ -204,7 +204,7 @@ tasks:
         echo -n 'sif' > "$f"
         rm -f eir-uefi.efi
         llvm-objcopy \
-            --add-section .initrd=initrd.cpio \
+            --add-section .initrd=initrd.cpio.zst \
             --set-section-flags .initrd=data,readonly \
             --add-section .cmdline="$f" \
             --set-section-flags .cmdline=data,readonly \
