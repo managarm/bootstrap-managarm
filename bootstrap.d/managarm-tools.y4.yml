@@ -1,3 +1,11 @@
+sources:
+  - name: syzkaller
+    subdir: 'ports'
+    git: 'https://github.com/managarm/syzkaller.git'
+    branch: 'master'
+    rolling_version: true
+    version: '0.0pl@ROLLING_ID@'
+
 tools:
   - name: host-iasl
     labels: [aarch64, riscv64]
@@ -164,3 +172,38 @@ tools:
           cp *.rom @PREFIX@/
         environ:
           PYTHON_COMMAND: 'python3'
+
+  - name: host-syzkaller
+    labels: [not-on-xbbs]
+    architecture: '@OPTION:arch@'
+    from_source: syzkaller
+    containerless: true
+    tools_required:
+      - tool: system-gcc
+        expose: false
+    stages:
+      - name: syzkaller
+        pkgs_required:
+          - mlibc
+          - mlibc-headers
+          - libgcc
+          - libstdc++
+          - managarm-system
+        compile:
+          - args: |
+              SYZ_ARCH="@OPTION:arch@"
+              case "$SYZ_ARCH" in
+                "x86_64")
+                  SYZ_ARCH="amd64"
+                  ;;
+                "aarch64")
+                  SYZ_ARCH="arm64"
+                  ;;
+              esac
+              export SYZ_CC_managarm_$SYZ_ARCH="@BUILD_ROOT@/tools/system-gcc/bin/@OPTION:arch-triple@-gcc --sysroot=@SYSROOT_DIR@"
+              export SYZ_CXX_managarm_$SYZ_ARCH="@BUILD_ROOT@/tools/system-gcc/bin/@OPTION:arch-triple@-g++ --sysroot=@SYSROOT_DIR@"
+              make -j@PARALLELISM@ TARGETOS=managarm TARGETARCH="$SYZ_ARCH"
+            workdir: '@THIS_SOURCE_DIR@'
+        install:
+          - args: ['rm', '-rf', '@PREFIX@/bin']
+          - args: ['cp', '-r', '@THIS_SOURCE_DIR@/bin', '@PREFIX@/']
