@@ -436,8 +436,6 @@ def plan_esp_tree(arch, sysroot, scriptdir, bios_boot, update_boot, esp_dir, par
                 yield FsAction.CP, os.path.join(dirpath, filename), dest
 
     if arch == "x86_64-managarm":
-        yield FsAction.CP, os.path.join(scriptdir, "grub.cfg"), "boot/grub/"
-
         yield (
             FsAction.CP,
             "tools/host-limine/share/limine/limine-bios.sys",
@@ -466,7 +464,6 @@ def generate_plan(arch, sysroot, scriptdir, bios_boot, partition_config):
         "boot",
         "boot/EFI",
         "boot/EFI/BOOT",
-        "boot/grub",
         "boot/managarm",
         "opt",
     ]:
