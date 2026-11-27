@@ -284,7 +284,7 @@ container:
     - xsltproc
     # Used by various programs, for example, it is used by file
     - zlib1g-dev
-    # Used to compress images
+    # Used to compress images and the initrd
     - zstd
     # Used by the developers
     - clangd
